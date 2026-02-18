@@ -1,0 +1,460 @@
+/* ===================================================================
+   LAYOUT.CSS — Power BI Guide 🌸
+   Header, sidebar, main content, footer y responsive design
+   =================================================================== */
+
+/* === RESET COMPLETO === */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow-x: hidden;
+}
+
+/* === PAGE WRAPPER === */
+.page-wrapper {
+  margin-left: 220px;
+  margin-top: 0 !important;
+  padding: 0 !important;
+  min-height: 100vh;
+}
+
+.main-content {
+  padding: 24px 48px;
+  margin: 0 !important;
+}
+
+/* === HEADER === */
+/* Barra superior fija con logo, controles de idioma y tema */
+#main-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--header-height);
+  z-index: 100;
+  background: var(--color-white);
+  border-bottom: 1.5px solid var(--color-mauve);
+  display: flex;
+  align-items: center;
+}
+
+.header-inner {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1.5rem;
+  gap: 1rem;
+}
+
+.header-logo {
+  font-size: 1.0625rem;
+  font-weight: 700;
+  color: var(--color-dark);
+  text-decoration: none;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.header-logo:hover {
+  color: var(--color-coral);
+  text-decoration: none;
+}
+
+.header-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+/* === SELECTOR DE IDIOMA === */
+/* Toggle ES | EN con estado activo */
+.lang-toggle {
+  display: flex;
+  align-items: center;
+  background: var(--color-rose);
+  border-radius: var(--border-radius-sm);
+  overflow: hidden;
+  border: 1.5px solid var(--color-mauve);
+}
+
+.lang-toggle__btn {
+  padding: 0.3rem 0.625rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--color-slate);
+  transition: var(--transition);
+  font-family: var(--font-main);
+}
+
+.lang-toggle__btn.active {
+  background: var(--color-coral);
+  color: var(--color-white);
+}
+
+.lang-toggle__btn:hover:not(.active) {
+  color: var(--color-coral);
+}
+
+/* === LAYOUT WRAPPER === */
+/* Contenedor principal para sidebar + main content */
+.layout-wrapper {
+  display: flex;
+  min-height: calc(100vh - var(--header-height));
+  margin-top: var(--header-height);
+}
+
+/* === SIDEBAR === */
+/* Navegación lateral fija con scroll independiente */
+#sidebar {
+  width: var(--sidebar-width);
+  min-height: 100vh;
+  position: fixed;
+  top: var(--header-height);
+  left: 0;
+  bottom: 0;
+  background: var(--color-rose);
+  border-right: 1.5px solid var(--color-mauve);
+  overflow-y: auto;
+  z-index: 90;
+  transition: transform 0.3s ease;
+}
+
+.sidebar-logo-area {
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid var(--color-mauve);
+}
+
+.sidebar-nav__section-title {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-slate);
+  padding: 1.25rem 1.5rem 0.375rem;
+}
+
+.sidebar-nav__link {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 0.5rem 1.5rem;
+  font-size: 0.875rem;
+  color: var(--color-dark);
+  text-decoration: none;
+  transition: var(--transition);
+  border-left: 3px solid transparent;
+  line-height: 1.4;
+}
+
+.sidebar-nav__link:hover {
+  background: var(--color-blush);
+  border-left-color: var(--color-peach);
+  color: var(--color-coral);
+  text-decoration: none;
+}
+
+.sidebar-nav__link.active {
+  background: var(--color-blush);
+  border-left-color: var(--color-coral);
+  color: var(--color-coral);
+  font-weight: 600;
+}
+
+.sidebar-nav__icon {
+  font-size: 1rem;
+  width: 1.25rem;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+/* ===== SIDEBAR - TAMAÑO FIJO EN TODAS LAS PÁGINAS ===== */
+.site-sidebar {
+  width: 220px;           /* FIJO: no cambiar */
+  height: 100vh;          /* FIJO: altura completa */
+  background: var(--color-white);
+  border-right: 1px solid var(--color-mauve);
+  display: flex;
+  flex-direction: column;
+  padding: 0;             /* FIJO: sin padding exterior */
+  position: fixed;
+  top: 0;
+  left: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  z-index: 100;
+}
+
+/* Ocultar scrollbar pero mantener funcionalidad */
+.site-sidebar::-webkit-scrollbar {
+  width: 4px;
+}
+
+.site-sidebar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.site-sidebar::-webkit-scrollbar-thumb {
+  background: var(--color-mauve);
+  border-radius: 2px;
+}
+
+.site-sidebar::-webkit-scrollbar-thumb:hover {
+  background: var(--color-slate);
+}
+
+/* Profile section - espaciado consistente */
+.site-sidebar__profile {
+  padding: 20px 16px 12px;  /* Consistente en todas las páginas */
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.site-sidebar__avatar,
+.site-sidebar__avatar-img {
+  width: 72px;              /* Tamaño consistente */
+  height: 72px;             /* Tamaño consistente */
+  border-radius: 50%;
+  border: 3px solid var(--color-coral);
+  display: block;
+  margin: 0 auto 10px;
+  object-fit: cover;
+}
+
+.site-sidebar__name,
+.site-sidebar__avatar-name {
+  font-size: 14px;          /* Consistente */
+  font-weight: 700;
+  color: var(--color-dark);
+  margin: 0 0 4px;
+  line-height: 1.2;
+}
+
+.site-sidebar__subtitle,
+.site-sidebar__avatar-role {
+  font-size: 12px;          /* Consistente */
+  color: var(--color-slate);
+  margin: 0;
+  line-height: 1.2;
+}
+
+/* Navegación - espaciado consistente */
+.site-sidebar__nav {
+  flex: 1;
+  padding: 12px 12px;       /* Consistente */
+  overflow-y: auto;
+}
+
+.site-sidebar__nav ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;                 /* Consistente */
+}
+
+.site-sidebar__link,
+.site-sidebar__nav-link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;       /* Consistente */
+  border-radius: 8px;
+  font-size: 13px;          /* Consistente */
+  font-weight: 500;
+  color: var(--color-dark);
+  text-decoration: none;
+  transition: background 0.15s, color 0.15s;
+  line-height: 1.2;
+}
+
+.site-sidebar__link:hover,
+.site-sidebar__link.is-active,
+.site-sidebar__nav-link:hover,
+.site-sidebar__nav-link--active {
+  background: var(--color-blush);
+  color: var(--color-coral);
+}
+
+.site-sidebar__link--highlight {
+  background: var(--color-rose);
+  color: var(--color-coral);
+  font-weight: 700;
+  margin-top: 4px;
+}
+
+.site-sidebar__icon,
+.site-sidebar__nav-icon {
+  font-size: 16px;          /* Consistente */
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.site-sidebar__nav-text {
+  line-height: 1.2;
+}
+
+/* Divider - espaciado consistente */
+.site-sidebar__divider {
+  height: 1px;
+  background: var(--color-mauve);
+  margin: 12px 16px;        /* Consistente */
+  flex-shrink: 0;
+}
+
+/* Footer - espaciado consistente */
+.site-sidebar__footer {
+  padding: 12px 16px 20px;  /* Consistente */
+  flex-shrink: 0;
+}
+
+.site-sidebar__social {
+  display: flex;
+  gap: 14px;                /* Consistente */
+  justify-content: center;
+  margin-top: 12px;
+}
+
+.site-sidebar__social a {
+  transition: transform 0.15s;
+  display: block;
+}
+
+.site-sidebar__social a:hover {
+  transform: scale(1.1);
+}
+
+.site-sidebar__social-icon {
+  width: 24px;              /* Consistente */
+  height: 24px;             /* Consistente */
+  display: block;
+}
+
+.site-sidebar__logo-bottom {
+  margin-top: 12px;         /* Consistente */
+  padding-top: 12px;        /* Consistente */
+  border-top: 1px solid var(--color-mauve);
+  text-align: center;
+}
+
+.site-sidebar__logo-bottom .site-sidebar__logo-img {
+  width: 85px;              /* Consistente */
+  border-radius: 8px;
+  opacity: 0.9;
+  display: block;
+  margin: 0 auto;
+}
+
+.site-sidebar__copyright {
+  text-align: center;
+  font-size: 10px;          /* Consistente */
+  color: var(--color-slate);
+  margin: 10px 0 0;         /* Consistente */
+  line-height: 1.4;
+}
+
+/* === MAIN CONTENT === */
+/* Área de contenido principal con margen para sidebar */
+#main-content {
+  flex: 1;
+  margin-left: 220px;
+  min-width: 0;
+  padding: 0;
+}
+
+/* Páginas de topic individuales con ancho máximo centrado */
+.topic-page {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2.5rem 2rem;
+}
+
+/* === FOOTER === */
+/* Pie de página con información y créditos */
+#main-footer {
+  margin-left: 220px;
+  background: var(--color-rose);
+  border-top: 1.5px solid var(--color-mauve);
+  padding: 2rem 1.5rem;
+  text-align: center;
+  font-size: 0.875rem;
+  color: var(--color-slate);
+}
+
+/* === RESPONSIVE — TABLET Y MÓVIL === */
+/* Tablets y móviles (< 768px) */
+@media (max-width: 768px) {
+  /* Sidebar oculto por defecto, se muestra al abrir */
+  #sidebar {
+    transform: translateX(-100%);
+  }
+
+  #sidebar.sidebar--open {
+    transform: translateX(0);
+  }
+
+  /* Site sidebar oculto en móviles */
+  .site-sidebar {
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+  }
+
+  .site-sidebar.is-open {
+    transform: translateX(0);
+  }
+
+  /* Main content y footer sin margen lateral */
+  #main-content {
+    margin-left: 0;
+  }
+
+  #main-footer {
+    margin-left: 0;
+  }
+
+  .page-wrapper {
+    margin-left: 0;
+    margin-top: 0 !important;
+  }
+
+  /* Mostrar botón hamburguesa */
+  .hamburger {
+    display: flex;
+  }
+
+  /* Reducir padding en secciones principales */
+  .hero {
+    padding: 2.5rem 1.25rem;
+  }
+
+  .topics-section {
+    padding: 1.5rem 1.25rem;
+  }
+
+  /* Grid de topics a una columna */
+  .topics-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* === RESPONSIVE — MÓVIL PEQUEÑO === */
+/* Móviles muy pequeños (< 480px) */
+@media (max-width: 480px) {
+  /* Ocultar texto largo del logo, mantener solo emoji */
+  .header-logo span {
+    display: none;
+  }
+}

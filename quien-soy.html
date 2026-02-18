@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Conoce a Sara Lozano Martí, Microsoft MVP Data Platform, creadora de Kawaii BI y experta en Power BI y Microsoft Fabric">
+  <title>¿Quién soy? — Sara Lozano Martí | Power BI Guide by Kawaii BI</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+
+  <!-- Prism.js para syntax highlighting -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1/themes/prism-okaidia.min.css">
+
+  <!-- Estilos CSS en orden -->
+  <link rel="stylesheet" href="assets/css/main.css">
+  <link rel="stylesheet" href="assets/css/themes.css">
+  <link rel="stylesheet" href="assets/css/components.css">
+  <link rel="stylesheet" href="assets/css/layout.css">
+
+  <style>
+    /* Hero quien soy */
+    .quien-soy-hero {
+      background: linear-gradient(135deg, var(--color-blush) 0%, var(--color-rose) 100%);
+      padding: 64px 48px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      border-radius: 0 0 24px 24px;
+      margin-top: 0 !important;
+    }
+
+    .quien-soy-hero::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 350px;
+      height: 350px;
+      background-image: url('assets/images/Logo Kawaii.jpg');
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      opacity: 0.05;
+      pointer-events: none;
+      border-radius: 50%;
+    }
+
+    .quien-soy-hero__avatar {
+      width: 160px;
+      height: 160px;
+      border-radius: 50%;
+      border: 4px solid var(--color-coral);
+      box-shadow: 0 8px 32px rgba(231, 78, 55, 0.25);
+      object-fit: cover;
+      margin: 0 auto 24px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .quien-soy-hero__name {
+      font-size: 36px;
+      font-weight: 800;
+      color: var(--color-dark);
+      margin: 0 0 16px;
+    }
+
+    .quien-soy-hero__badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    .badge {
+      background: var(--color-rose);
+      color: var(--color-coral);
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 14px;
+      font-weight: 600;
+      border: 1.5px solid var(--color-mauve);
+    }
+
+    .quien-soy-hero__quote {
+      font-style: italic;
+      font-size: 16px;
+      color: var(--color-coral);
+      max-width: 500px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Secciones */
+    .quien-soy-section {
+      max-width: 860px;
+      margin: 48px auto;
+      padding: 0 24px;
+    }
+
+    .quien-soy-section h2 {
+      font-size: 26px;
+      font-weight: 800;
+      color: var(--color-dark);
+      margin-bottom: 24px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid var(--color-mauve);
+    }
+
+    .quien-soy-historia p {
+      font-size: 16px;
+      line-height: 1.8;
+      color: var(--color-dark);
+      margin-bottom: 16px;
+    }
+
+    /* Grid de proyectos */
+    .quien-soy-proyectos .project-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 24px;
+      margin-top: 32px;
+    }
+
+    .project-card {
+      background: var(--color-white);
+      border: 2px solid var(--color-mauve);
+      border-radius: 16px;
+      padding: 28px 24px;
+      transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .project-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--color-coral);
+      box-shadow: 0 8px 24px rgba(231, 78, 55, 0.12);
+    }
+
+    .project-card__icon {
+      font-size: 40px;
+      line-height: 1;
+    }
+
+    .project-card__title {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--color-dark);
+      margin: 0;
+    }
+
+    .project-card__desc {
+      font-size: 14px;
+      color: var(--color-slate);
+      line-height: 1.6;
+      flex: 1;
+    }
+
+    .project-card__btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--color-coral);
+      color: white;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: background 0.15s, transform 0.15s;
+      align-self: flex-start;
+      margin-top: auto;
+    }
+
+    .project-card__btn:hover {
+      background: #c43d2a;
+      transform: translateX(2px);
+      text-decoration: none;
+    }
+
+    /* Sección contacto */
+    .quien-soy-contacto {
+      background: var(--color-blush);
+      border-radius: 16px;
+      padding: 32px;
+      text-align: center;
+      margin-top: 48px;
+    }
+
+    .quien-soy-contacto h2 {
+      border-bottom: none;
+      margin-bottom: 16px;
+    }
+
+    .quien-soy-contacto__text {
+      font-size: 16px;
+      color: var(--color-slate);
+      margin-bottom: 24px;
+      line-height: 1.6;
+    }
+
+    .quien-soy-contacto__buttons {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--color-coral);
+      color: white;
+      padding: 12px 24px;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: background 0.2s, transform 0.2s;
+      border: 2px solid var(--color-coral);
+    }
+
+    .btn-primary:hover {
+      background: #c43d2a;
+      transform: translateY(-2px);
+      text-decoration: none;
+    }
+
+    .btn-outline {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: transparent;
+      color: var(--color-coral);
+      padding: 12px 24px;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: background 0.2s, transform 0.2s;
+      border: 2px solid var(--color-coral);
+    }
+
+    .btn-outline:hover {
+      background: var(--color-coral);
+      color: white;
+      transform: translateY(-2px);
+      text-decoration: none;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .quien-soy-hero {
+        margin-left: 0;
+        padding: 48px 24px;
+      }
+
+      .quien-soy-hero__name {
+        font-size: 28px;
+      }
+
+      .quien-soy-proyectos .project-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .quien-soy-section {
+        margin: 32px auto;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- SIDEBAR: Navegación principal -->
+  <aside class="site-sidebar">
+
+    <!-- Avatar y nombre -->
+    <div class="site-sidebar__profile">
+      <img src="assets/images/avatar Sara.png" alt="Sara Lozano Martí" class="site-sidebar__avatar" />
+      <p class="site-sidebar__name">Sara Lozano Martí</p>
+      <p class="site-sidebar__subtitle">Power BI Expert</p>
+    </div>
+
+    <!-- Navegación principal -->
+    <nav class="site-sidebar__nav" aria-label="Navegación principal">
+      <ul>
+        <li><a href="index.html" class="site-sidebar__link">
+          <span class="site-sidebar__icon">🏠</span> Inicio
+        </a></li>
+
+        <li><a href="topics/dax.html" class="site-sidebar__link">
+          <span class="site-sidebar__icon">⚡</span> Funciones DAX
+        </a></li>
+
+        <li><a href="topics/power-query.html" class="site-sidebar__link">
+          <span class="site-sidebar__icon">🔄</span> Power Query
+        </a></li>
+
+        <li><a href="topics/lenguaje-m.html" class="site-sidebar__link">
+          <span class="site-sidebar__icon">〽️</span> Lenguaje M
+        </a></li>
+
+        <li><a href="topics/modelado.html" class="site-sidebar__link">
+          <span class="site-sidebar__icon">🗄️</span> Modelado
+        </a></li>
+
+        <li><a href="topics/conceptos-powerbi.html" class="site-sidebar__link">
+          <span class="site-sidebar__icon">📊</span> Conceptos Power BI
+        </a></li>
+
+        <li><a href="topics/fabric.html" class="site-sidebar__link">
+          <span class="site-sidebar__icon">🧵</span> Microsoft Fabric
+        </a></li>
+
+        <li><a href="topics/tmdl.html" class="site-sidebar__link">
+          <span class="site-sidebar__icon">📝</span> TMDL
+        </a></li>
+
+        <li><a href="topics/mejores-practicas.html" class="site-sidebar__link">
+          <span class="site-sidebar__icon">🏆</span> Mejores Prácticas
+        </a></li>
+
+        <li><a href="topics/diseno-ux.html" class="site-sidebar__link">
+          <span class="site-sidebar__icon">🎨</span> Diseño y UX
+        </a></li>
+
+        <li><a href="topics/gobernanza.html" class="site-sidebar__link">
+          <span class="site-sidebar__icon">🔒</span> Gobernanza
+        </a></li>
+      </ul>
+    </nav>
+
+    <!-- Separador -->
+    <div class="site-sidebar__divider"></div>
+
+    <!-- Footer del sidebar -->
+    <div class="site-sidebar__footer">
+      <!-- Enlace a quien soy (ACTIVO) -->
+      <a href="quien-soy.html" class="site-sidebar__link site-sidebar__link--highlight is-active">
+        <span class="site-sidebar__icon">👩‍💻</span> ¿Quién soy?
+      </a>
+
+      <!-- Iconos sociales -->
+      <div class="site-sidebar__social">
+        <a href="https://www.linkedin.com/in/saralozanomarti" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+          <img src="assets/images/logo linkedIN.png" alt="LinkedIn" class="site-sidebar__social-icon" />
+        </a>
+        <a href="https://www.youtube.com/@KawaiiPowerBI" target="_blank" rel="noopener noreferrer" aria-label="YouTube">
+          <img src="assets/images/logo youtube.png" alt="YouTube" class="site-sidebar__social-icon" />
+        </a>
+        <a href="https://github.com/KawaiiBI" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
+          <img src="assets/images/logo github.png" alt="GitHub" class="site-sidebar__social-icon" />
+        </a>
+      </div>
+
+      <!-- Logo Kawaii BI -->
+      <div class="site-sidebar__logo-bottom">
+        <img src="assets/images/Logo Kawaii.jpg" alt="Kawaii BI" class="site-sidebar__logo-img" />
+      </div>
+
+      <!-- Copyright -->
+      <p class="site-sidebar__copyright">
+        Power BI Guide 🌸<br>
+        © 2026 Kawaii BI
+      </p>
+    </div>
+
+  </aside>
+
+  <!-- PAGE WRAPPER -->
+  <div class="page-wrapper">
+    <!-- CONTENIDO PRINCIPAL -->
+    <main id="main-content" role="main">
+    <!-- SECCIÓN HERO -->
+    <section class="quien-soy-hero">
+      <img src="assets/images/avatar Sara.png" alt="Sara Lozano Martí" class="quien-soy-hero__avatar">
+      <h1 class="quien-soy-hero__name">Sara Lozano Martí</h1>
+      <div class="quien-soy-hero__badges">
+        <span class="badge">🏅 Microsoft MVP Data Platform</span>
+        <span class="badge">📊 Power BI & Fabric Consultant</span>
+        <span class="badge">🎤 Speaker</span>
+        <span class="badge">🌸 Kawaii BI Creator</span>
+      </div>
+      <p class="quien-soy-hero__quote">"Fusionando finanzas, tecnología y formación con mucho color y cariño 💕"</p>
+    </section>
+
+    <!-- SECCIÓN HISTORIA -->
+    <section class="quien-soy-section quien-soy-historia">
+      <h2>Mi historia 🌸</h2>
+      <p>¡Holi! Me llamo Sara y mi historia profesional es todo menos lineal 😄 Como buena millennial, mi trayectoria podría resumirse en una gymkana laboral continua que me ha empujado a reinventarme constantemente.</p>
+
+      <p>He vendido lavadoras 🧺, he sido hostelera 🍽️ y en mi vida anterior fui contable-fiscal 💰... pero la vida tenía otros planes para mí. Soy Técnica Superior en Sistemas de Telecomunicación e Informáticos 👩‍💻 y Diplomada en Ciencias Empresariales, y un día descubrí que podía fusionar todo lo que me apasiona en una sola herramienta: Power BI. 📊✨</p>
+
+      <p>Después de mucho estudiar, practicar y esforzarme, hoy soy consultora de Power BI y Microsoft Fabric, formadora y creadora de contenido. Y en 2024 llegó el reconocimiento que nunca esperé: ser nombrada Microsoft MVP Data Platform. 🏅 Un premio que no es solo mío, sino de toda la comunidad que me acompaña.</p>
+
+      <p>Tengo un canal de YouTube — Kawaii BI 🌸 — donde comparto trucos cortos de Power BI con todo el color y la personalidad que me caracterizan. Porque aprender datos puede ser serio y divertido al mismo tiempo, ¿verdad?</p>
+
+      <p>También soy cibervoluntaria 💞, porque me encanta romper la brecha digital allá donde voy y ayudar a que nadie se quede fuera de este mundo tan avanzado.</p>
+
+      <p>Si me ves hablar en algún evento, no te extrañes si aparecen colores, emojis y algún que otro ejemplo con lavadoras 😂 ¡Es mi sello!</p>
+    </section>
+
+    <!-- SECCIÓN PROYECTOS -->
+    <section class="quien-soy-section quien-soy-proyectos">
+      <h2>Mis proyectos y comunidad 🚀</h2>
+      <div class="project-grid">
+        <!-- Card 1: Kawaii BI YouTube -->
+        <div class="project-card">
+          <div class="project-card__icon">🌸</div>
+          <h3 class="project-card__title">Kawaii BI — Canal de YouTube</h3>
+          <p class="project-card__desc">Trucos cortos de Power BI con mucho color y personalidad. DAX, visualización, Power Query y todo lo que necesitas para llevar tus dashboards al siguiente nivel.</p>
+          <a href="https://www.youtube.com/@KawaiiPowerBI" target="_blank" rel="noopener" class="project-card__btn">Ver canal →</a>
+        </div>
+
+        <!-- Card 2: Calendario de Eventos -->
+        <div class="project-card">
+          <div class="project-card__icon">📅</div>
+          <h3 class="project-card__title">Calendario de Eventos de Datos</h3>
+          <p class="project-card__desc">El recurso definitivo de la comunidad de datos en español. Todos los eventos, conferencias y formaciones de Power BI, Fabric y datos en un solo lugar.</p>
+          <a href="https://calendarioeventosdatos.com/" target="_blank" rel="noopener" class="project-card__btn">Ver calendario →</a>
+        </div>
+
+        <!-- Card 3: Sessionize -->
+        <div class="project-card">
+          <div class="project-card__icon">🎤</div>
+          <h3 class="project-card__title">Sessionize — Mis Sesiones</h3>
+          <p class="project-card__desc">Most Active Speaker 2025. Charlas sobre Power BI, diseño de informes, visualización inteligente, TMDL y Microsoft Fabric en eventos de toda España.</p>
+          <a href="https://sessionize.com/sara-lozano-marti/" target="_blank" rel="noopener" class="project-card__btn">Ver sesiones →</a>
+        </div>
+
+        <!-- Card 4: Microsoft MVP -->
+        <div class="project-card">
+          <div class="project-card__icon">🏅</div>
+          <h3 class="project-card__title">Microsoft MVP Data Platform</h3>
+          <p class="project-card__desc">Reconocida por Microsoft como Most Valuable Professional en la categoría Data Platform por la contribución a la comunidad técnica de Power BI y Microsoft Fabric.</p>
+          <a href="https://mvp.microsoft.com/es-ES/MVP/profile/a6d7ca9b-7679-44e7-86b1-e65bbd69ea4f" target="_blank" rel="noopener" class="project-card__btn">Ver perfil MVP →</a>
+        </div>
+
+        <!-- Card 5: LinkedIn -->
+        <div class="project-card">
+          <div class="project-card__icon">💼</div>
+          <h3 class="project-card__title">LinkedIn</h3>
+          <p class="project-card__desc">Conéctate conmigo en LinkedIn para estar al día de novedades de Power BI, Fabric, eventos y todo lo que pasa en el mundo de los datos.</p>
+          <a href="https://www.linkedin.com/in/saralozanomarti" target="_blank" rel="noopener" class="project-card__btn">Conectar →</a>
+        </div>
+
+        <!-- Card 6: GitHub -->
+        <div class="project-card">
+          <div class="project-card__icon">🐙</div>
+          <h3 class="project-card__title">GitHub — KawaiiBI</h3>
+          <p class="project-card__desc">Repositorios con proyectos, plantillas y recursos de Power BI y Microsoft Fabric. Todo el código de esta guía y más.</p>
+          <a href="https://github.com/KawaiiBI" target="_blank" rel="noopener" class="project-card__btn">Ver GitHub →</a>
+        </div>
+      </div>
+
+      <!-- SECCIÓN CONTACTO -->
+      <div class="quien-soy-contacto">
+        <h2>¿Hablamos? 💬</h2>
+        <p class="quien-soy-contacto__text">Si quieres colaborar, tienes alguna propuesta de charla, formación o simplemente quieres saludar, ¡encantada de conocerte!</p>
+        <div class="quien-soy-contacto__buttons">
+          <a href="https://www.linkedin.com/in/saralozanomarti" target="_blank" rel="noopener" class="btn-primary">LinkedIn</a>
+          <a href="https://www.youtube.com/@KawaiiPowerBI" target="_blank" rel="noopener" class="btn-outline">YouTube</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  </div><!-- .page-wrapper -->
+
+  <!-- ============================================
+       BOTÓN VOLVER ARRIBA
+  ============================================= -->
+  <button id="back-to-top" class="back-to-top" aria-label="Volver arriba" title="Volver arriba">↑</button>
+
+  <!-- ============================================
+       SCRIPTS
+  ============================================= -->
+  <!-- i18next desde CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/i18next@23/dist/umd/i18next.min.js"></script>
+
+  <!-- Prism.js para syntax highlighting -->
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1/prism.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1/components/prism-javascript.min.js"></script>
+
+  <!-- Scripts del proyecto -->
+  <script src="assets/js/theme.js"></script>
+  <script src="assets/js/i18n.js"></script>
+  <script src="assets/js/search.js"></script>
+  <script src="assets/js/main.js"></script>
+  <script src="assets/js/cursor.js"></script>
+</body>
+</html>
