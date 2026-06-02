@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta content="Text.Upper, Text.Lower, Text.Split, Text.Replace y más funciones de texto del Lenguaje M de Power Query." name="description"/>
+<title>Funciones de Texto (Text.*) — Lenguaje M | Power BI Guide by Kawaii BI</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Fira+Code:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<!-- Prism.js -->
+<link href="https://cdn.jsdelivr.net/npm/prismjs@1/themes/prism-okaidia.min.css" rel="stylesheet"/>
+<!-- Estilos CSS -->
+<link href="../../assets/css/main.css" rel="stylesheet"/>
+<link href="../../assets/css/themes.css" rel="stylesheet"/>
+<link href="../../assets/css/components.css" rel="stylesheet"/>
+<link href="../../assets/css/layout.css" rel="stylesheet"/>
+<link href="../../assets/css/dax-search.css" rel="stylesheet"/>
+<style>
+        /* Topic header con icono grande */
+    .topic-header {
+      text-align: center;
+      padding: 2.5rem 0 2rem;
+      border-bottom: 2px solid var(--color-mauve);
+      margin-bottom: 2.5rem;
+    }
+
+    .topic-header__icon {
+      font-size: 4rem;
+      margin-bottom: 0.75rem;
+      display: block;
+    }
+
+    .topic-header__title {
+      font-size: clamp(1.875rem, 4vw, 2.5rem);
+      font-weight: 800;
+      color: var(--color-dark);
+      margin-bottom: 0.625rem;
+      line-height: 1.2;
+    }
+
+    .topic-header__subtitle {
+      font-size: 1.0625rem;
+      color: var(--color-slate);
+      margin-bottom: 1.25rem;
+      line-height: 1.5;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .topic-header__levels {
+      display: flex;
+      gap: 0.5rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    /* Category header */
+    .category-header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin: 2.5rem 0 1.25rem;
+      padding: 0.875rem 1.25rem;
+      background: var(--color-rose);
+      border-radius: var(--border-radius-sm);
+      border-left: 4px solid var(--color-coral);
+    }
+    .category-header__icon { font-size: 1.5rem; }
+    .category-header__title { font-size: 1.25rem; font-weight: 700; margin: 0; }
+
+    /* Function cards */
+    .function-card {
+      background: var(--color-white);
+      border: 1.5px solid var(--color-mauve);
+      border-radius: var(--border-radius);
+      padding: 1.75rem;
+      margin-bottom: 1.5rem;
+      scroll-margin-top: 80px;
+      transition: border-color 0.2s;
+    }
+    .function-card:hover { border-color: var(--color-coral); }
+
+    .function-card__header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.25rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 2px solid var(--color-blush);
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .function-card__title {
+      font-size: 1.375rem;
+      font-weight: 800;
+      color: var(--color-coral);
+      margin: 0;
+      font-family: 'Fira Code', monospace;
+    }
+
+    .function-card h4 {
+      font-size: 0.9375rem;
+      font-weight: 700;
+      color: var(--color-dark);
+      margin: 1.25rem 0 0.625rem;
+    }
+
+    .function-card p { font-size: 0.9375rem; line-height: 1.7; color: var(--color-dark); }
+
+    .function-card__params ul { list-style: none; padding: 0; margin: 0; }
+    .function-card__params li {
+      padding: 0.5rem 0 0.5rem 1.5rem;
+      position: relative;
+      line-height: 1.6;
+      font-size: 0.9rem;
+      border-bottom: 1px solid var(--color-blush);
+    }
+    .function-card__params li:last-child { border-bottom: none; }
+    .function-card__params li::before {
+      content: "→";
+      position: absolute;
+      left: 0;
+      color: var(--color-coral);
+      font-weight: 700;
+    }
+    .function-card__params code {
+      background: var(--color-blush);
+      padding: 0.1em 0.4em;
+      border-radius: 4px;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.85em;
+      color: var(--color-coral);
+    }
+
+    /* TOC */
+    .toc {
+      background: var(--color-rose);
+      border-radius: var(--border-radius);
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 2rem;
+      border: 1.5px solid var(--color-mauve);
+    }
+    .toc__title { font-size: 1rem; font-weight: 700; margin: 0 0 0.75rem; }
+    .toc__list { display: flex; flex-wrap: wrap; gap: 0.5rem; list-style: none; padding: 0; margin: 0; }
+    .toc__list a {
+      font-size: 0.8125rem;
+      color: var(--color-coral);
+      text-decoration: none;
+      padding: 0.25rem 0.625rem;
+      background: var(--color-white);
+      border-radius: 999px;
+      border: 1px solid var(--color-mauve);
+      transition: background 0.15s, color 0.15s;
+      font-family: 'Fira Code', monospace;
+    }
+    .toc__list a:hover { background: var(--color-coral); color: white; }
+
+    /* Table (tipo.html) */
+    .type-table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.9rem; }
+    .type-table th { background: var(--color-rose); color: var(--color-dark); font-weight: 600; padding: 0.6rem 1rem; text-align: left; }
+    .type-table td { padding: 0.55rem 1rem; border-bottom: 1px solid var(--color-mauve); }
+    .type-table tr:last-child td { border-bottom: none; }
+    .type-table code { font-family: 'Fira Code', monospace; font-size: 0.85em; }
+  </style>
+</head>
+<body>
+<!-- SIDEBAR: Navegación principal -->
+<aside class="site-sidebar">
+<div class="site-sidebar__profile">
+<img alt="Sara Lozano Martí" class="site-sidebar__avatar" src="../../assets/images/avatar Sara.png"/>
+<p class="site-sidebar__name">Sara Lozano Martí</p>
+<p class="site-sidebar__subtitle">Power BI Expert</p>
+</div>
+<nav aria-label="Navegación principal" class="site-sidebar__nav">
+<ul>
+<li><a class="site-sidebar__link" href="../../index.html">
+<span class="site-sidebar__icon">🏠</span> Inicio
+        </a></li>
+<li><a class="site-sidebar__link" href="../dax.html">
+<span class="site-sidebar__icon">⚡</span> Funciones DAX
+        </a></li>
+<li><a class="site-sidebar__link" href="../power-query.html">
+<span class="site-sidebar__icon">🔄</span> Power Query
+        </a></li>
+<li><a class="site-sidebar__link is-active" href="../lenguaje-m.html">
+<span class="site-sidebar__icon">〽️</span> Lenguaje M
+        </a></li>
+<li><a class="site-sidebar__link" href="../modelado.html">
+<span class="site-sidebar__icon">🗄️</span> Modelado
+        </a></li>
+<li><a class="site-sidebar__link" href="../conceptos-powerbi.html">
+<span class="site-sidebar__icon">📊</span> Conceptos Power BI
+        </a></li>
+<li><a class="site-sidebar__link" href="../fabric.html">
+<span class="site-sidebar__icon">🧵</span> Microsoft Fabric
+        </a></li>
+<li><a class="site-sidebar__link" href="../tmdl.html">
+<span class="site-sidebar__icon">📝</span> TMDL
+        </a></li>
+<li><a class="site-sidebar__link" href="../diseno-ux.html">
+<span class="site-sidebar__icon">🎨</span> Diseño y UX
+        </a></li>
+<li><a class="site-sidebar__link" href="../gobernanza.html">
+<span class="site-sidebar__icon">🔒</span> Gobernanza
+        </a></li>
+</ul>
+</nav>
+<div class="site-sidebar__divider"></div>
+<div class="site-sidebar__footer">
+<a class="site-sidebar__link site-sidebar__link--highlight" href="../../quien-soy.html">
+<span class="site-sidebar__icon">👩‍💻</span> ¿Quién soy?
+      </a>
+<div class="site-sidebar__social">
+<a aria-label="LinkedIn" href="https://www.linkedin.com/in/saralozanomarti" rel="noopener noreferrer" target="_blank">
+<img alt="LinkedIn" class="site-sidebar__social-icon" src="../../assets/images/logo linkedIN.png"/>
+</a>
+<a aria-label="YouTube" href="https://www.youtube.com/@KawaiiPowerBI" rel="noopener noreferrer" target="_blank">
+<img alt="YouTube" class="site-sidebar__social-icon" src="../../assets/images/logo youtube.png"/>
+</a>
+<a aria-label="GitHub" href="https://github.com/KawaiiBI" rel="noopener noreferrer" target="_blank">
+<img alt="GitHub" class="site-sidebar__social-icon" src="../../assets/images/logo github.png"/>
+</a>
+</div>
+<div class="site-sidebar__logo-bottom">
+<img alt="Kawaii BI" class="site-sidebar__logo-img" src="../../assets/images/Logo Kawaii.jpg"/>
+</div>
+<p class="site-sidebar__copyright">
+        Power BI Guide 🌸<br/>
+        © 2026 Kawaii BI
+      </p>
+</div>
+</aside>
+<!-- CONTENIDO PRINCIPAL -->
+<div class="page-wrapper">
+<main class="main-content">
+<div class="topic-page">
+<nav aria-label="Ruta de navegación" class="breadcrumb">
+<span class="breadcrumb__item"><a href="../../index.html">🏠 Inicio</a></span>
+<span aria-hidden="true" class="breadcrumb__separator">›</span>
+<span class="breadcrumb__item"><a href="../lenguaje-m.html">Lenguaje M</a></span>
+<span aria-hidden="true" class="breadcrumb__separator">›</span>
+<span class="breadcrumb__item">Funciones de Texto</span>
+</nav>
+<header class="topic-header">
+          <span class="topic-header__icon">📝</span>
+          <h1 class="topic-header__title">Funciones de Texto (Text.*)</h1>
+          <p class="topic-header__subtitle">Manipula, limpia y transforma cadenas de texto con las funciones Text.* de Power Query M.</p>
+          <div class="topic-header__levels">
+<span class="badge--beginner">Principiante</span>
+<span class="badge--intermediate">Intermedio</span>
+</div>
+        </header>
+<div class="dax-search-wrapper dax-search-wrapper--compact" data-m-search="true">
+<div class="dax-search-input-row">
+<span aria-hidden="true" class="dax-search-icon">🔍</span>
+<input aria-autocomplete="list" aria-expanded="false" aria-label="Buscar funciones del Lenguaje M" autocomplete="off" class="dax-search-input" placeholder="Buscar otra función M..." spellcheck="false" type="search"/>
+<button aria-label="Limpiar búsqueda" class="dax-search-clear" hidden="">✕</button>
+</div>
+<div aria-label="Resultados de búsqueda" class="dax-search-results" role="listbox"></div>
+</div>
+<nav aria-label="Índice de funciones" class="toc">
+<p class="toc__title">📌 Funciones en esta página:</p>
+<ul class="toc__list">
+<li><a href="#case">Mayúsculas y Minúsculas</a></li>
+<li><a href="#length">Longitud y Limpieza</a></li>
+<li><a href="#contains">Búsqueda</a></li>
+<li><a href="#replace">Reemplazar</a></li>
+<li><a href="#split">Dividir y Combinar</a></li>
+<li><a href="#extract">Extraer</a></li>
+<li><a href="#pad">Relleno</a></li>
+<li><a href="#convert">Conversión</a></li>
+<li><a href="#format">Formato</a></li>
+</ul>
+</nav>
+<!-- Breadcrumb --><!-- Buscador compacto de funciones M --><!-- Cabecera --><div class="category-header" id="case">
+<span class="category-header__icon">🔠</span>
+<h2 class="category-header__title">Mayúsculas y Minúsculas</h2>
+</div><article class="function-card" id="upper">
+<header class="function-card__header">
+<h3 class="function-card__title">Text.Upper</h3>
+<span class="badge badge--beginner">Principiante</span>
+</header>
+<div class="function-card__syntax"><h4>Sintaxis</h4>
+<pre><code class="language-javascript">Text.Upper(text as nullable text, optional culture as nullable text) as nullable text</code></pre>
+</div>
+<div class="function-card__description"><h4>¿Qué hace?</h4>
+<p>Convierte todos los caracteres de un texto a mayúsculas. Puedes especificar una cultura para respetar reglas lingüísticas específicas.</p>
+</div>
+<div class="function-card__example"><h4>Ejemplo</h4>
+<pre><code class="language-javascript">Text.Upper("kawaii power bi")
+// Resultado: "KAWAII POWER BI"
+
+Text.Upper("straße", "de-DE")
+// Resultado: "STRASSE" (alemán: ß → SS)</code></pre>
+</div>
+</article><article class="function-card" id="lower">
+<header class="function-card__header">
+<h3 class="function-card__title">Text.Lower</h3>
+<span class="badge badge--beginner">Principiante</span>
+</header>
+<div class="function-card__syntax"><h4>Sintaxis</h4>
+<pre><code class="language-javascript">Text.Lower(text as nullable text, optional culture as nullable text) as nullable text</code></pre>
+</div>
+<div class="function-card__description"><h4>¿Qué hace?</h4>
+<p>Convierte todos los caracteres a minúsculas. Muy útil para normalizar campos antes de comparaciones o agrupaciones.</p>
+</div>
+<div class="function-card__example"><h4>Ejemplo</h4>
+<pre><code class="language-javascript">Text.Lower("VENTAS Q1 Madrid")
+// Resultado: "ventas q1 madrid"</code></pre>
+</div>
+</article><article class="function-card" id="proper">
+<header class="function-card__header">
+<h3 class="function-card__title">Text.Proper</h3>
+<span class="badge badge--beginner">Principiante</span>
+</header>
+<div class="function-card__syntax"><h4>Sintaxis</h4>
+<pre><code class="language-javascript">Text.Proper(text as nullable text, optional culture as nullable text) as nullable text</code></pre>
+</div>
+<div class="function-card__description"><h4>¿Qué hace?</h4>
+<p>Capitaliza la primera letra de cada palabra. Perfecto para normalizar nombres de personas o ciudades.</p>
+</div>
+<div class="function-card__example"><h4>Ejemplo</h4>
+<pre><code class="language-javascript">Text.Proper("ana garcía martínez")
+// Resultado: "Ana García Martínez"</code></pre>
+</div>
+<div class="note note--tip">
+            💡 <strong>Tip kawaii:</strong> <code>Text.Proper</code> también capitaliza después de guiones y apóstrofes. Ideal para nombres compuestos como "María-José" o "O'Brien".
+          </div>
+</article><div class="category-header" id="length">
+<span class="category-header__icon">📏</span>
+<h2 class="category-header__title">Longitud y Limpieza</h2>
+</div><article class="function-card" id="length-fn">
+<header class="function-card__header">
+<h3 class="function-card__title">Text.Length</h3>
+<span class="badge badge--beginner">Principiante</span>
+</header>
+<div class="function-card__syntax"><h4>Sintaxis</h4>
+<pre><code class="language-javascript">Text.Length(text as nullable text) as nullable number</code></pre>
+</div>
+<div class="function-card__description"><h4>¿Qué hace?</h4>
+<p>Devuelve el número de caracteres de un texto, incluyendo espacios. Útil para validaciones y cálculos de longitud.</p>
+</div>
+<div class="function-card__example"><h4>Ejemplo</h4>
+<pre><code class="language-javascript">Text.Length("Power Query")
+// Resultado: 11
+
+// Filtrar códigos con longitud incorrecta
+Table.SelectRows(tabla, each Text.Length([Codigo]) = 8)</code></pre>
+</div>
+</article><article class="function-card" id="trim">
+<header class="function-card__header">
+<h3 class="function-card__title">Text.Trim</h3>
+<span class="badge badge--beginner">Principiante</span>
+</header>
+<div class="function-card__syntax"><h4>Sintaxis</h4>
+<pre><code class="language-javascript">Text.Trim(text as nullable text, optional trim as any) as nullable text</code></pre>
+</div>
+<div class="function-card__description"><h4>¿Qué hace?</h4>
+<p>Elimina espacios en blanco (u otros caracteres) al inicio y al final de un texto. El parámetro <code>trim</code> puede ser un carácter específico a eliminar.</p>
+</div>
+<div class="function-card__example"><h4>Ejemplo</h4>
+<pre><code class="language-javascript">Text.Trim("  hola mundo  ")
+// Resultado: "hola mundo"
+
+Text.Trim("***precio***", "*")
+// Resultado: "precio"</code></pre>
+</div>
+</article><article class="function-card" id="clean">
+<header class="function-card__header">
+<h3 class="function-card__title">Text.Clean</h3>
+<span class="badge badge--intermediate">Intermedio</span>
+</header>
+<div class="function-card__syntax"><h4>Sintaxis</h4>
+<pre><code class="language-javascript">Text.Clean(text as nullable text) as nullable text</code></pre>
+</div>
+<div class="function-card__description"><h4>¿Qué hace?</h4>
+<p>Elimina todos los caracteres no imprimibles de un texto (caracteres de control, tabuladores, saltos de línea, etc.). Muy útil al importar datos de sistemas legacy.</p>
+</div>
+<div class="function-card__example"><h4>Ejemplo</h4>
+<pre><code class="language-javascript">Text.Clean("hola" &amp; Character.FromNumber(9) &amp; "mundo")
+// Elimina el tabulador: "holamundo"
+
+// En una columna
+Table.TransformColumns(tabla, {{"Descripcion", Text.Clean}})</code></pre>
+</div>
+<div class="note note--warning">
+            ⚠️ <strong>Ojo con esto:</strong> <code>Text.Clean</code> elimina saltos de línea (<code>#(lf)</code>, <code>#(cr)</code>). Si necesitas conservarlos, usa <code>Text.Replace</code> primero.
+          </div>
+</article><div class="category-header" id="contains">
+<span class="category-header__icon">🔍</span>
+<h2 class="category-header__title">Búsqueda</h2>
+</div><article class="function-card" id="contains-fn">
+<header class="function-card__header">
+<h3 class="function-card__title">Text.Contains</h3>
+<span class="badge badge--beginner">Principiante</span>
+</header>
+<div class="function-card__syntax"><h4>Sintaxis</h4>
+<pre><code class="language-javascript">Text.Contains(text as nullable text, substring as text, optional comparer as nullable function) as nullable logical</code></pre>
+</div>
+<div class="function-card__description"><h4>¿Qué hace?</h4>
+<p>Devuelve <code>true</code> si el texto contiene la subcadena especificada. Por defecto es sensible a mayúsculas.</p>
+</div>
+<div class="function-card__params"><h4>Parámetros</h4>
+<ul>
+<li><code>text</code> — Texto donde buscar</li>
+<li><code>substring</code> — Subcadena a buscar</li>
+<li><code>comparer</code> — Comparador opcional (ej. <code>Comparer.OrdinalIgnoreCase</code>)</li>
+</ul>
+</div>
+<div class="function-card__example"><h4>Ejemplo</h4>
+<pre><code class="language-javascript">Text.Contains("Kawaii Power BI", "Power")
+// true
+
+// Búsqueda sin distinción de mayúsculas
+Text.Contains("Madrid Centro", "madrid", Comparer.OrdinalIgnoreCase)
+// true
+
+// Filtrar filas que contengan "ERROR"
+Table.SelectRows(tabla, each Text.Contains([Mensaje], "ERROR"))</code></pre>
+</div>
+</article><article class="function-card" id="startswith">
+<header class="function-card__header">
+<h3 class="function-card__title">Text.StartsWith / Text.EndsWith</h3>
+<span class="badge badge--beginner">Principiante</span>
+</header>
+<div class="function-card__syntax"><h4>Sintaxis</h4>
+<pre><code class="language-javascript">Text.StartsWith(text as nullable text, substring as text, optional comparer as nullable function) as nullable logical
+Text.EndsWith(text as nullable text, substring as text, optional comparer as nullable function) as nullable logical</code></pre>
+</div>
+<div class="function-card__description"><h4>¿Qué hace?</h4>
+<p>Comprueba si un texto empieza o termina con una subcadena determinada. Muy útiles para filtrar por prefijos o sufijos.</p>
+</div>
+<div class="function-card__example"><h4>Ejemplo</h4>
+<pre><code class="language-javascript">Text.StartsWith("ES-2024-001", "ES-")   // true
+Text.EndsWith("informe_final.xlsx", ".xlsx")  // true
+
+// Filtrar archivos Excel
+Table.SelectRows(archivos, each Text.EndsWith([Name], ".xlsx"))</code></pre>
+</div>
+</article><article class="function-card" id="positionof">
+<header class="function-card__header">
+<h3 class="function-card__title">Text.PositionOf</h3>
+<span class="badge badge--intermediate">Intermedio</span>
+</header>
+<div class="function-card__syntax"><h4>Sintaxis</h4>
+<pre><code class="language-javascript">Text.PositionOf(text as text, substring as text, optional occurrence as nullable number, optional comparer as nullable function) as any</code></pre>
+</div>
+<div class="function-card__description"><h4>¿Qué hace?</h4>
+<p>Devuelve la posición (índice base 0) donde aparece la subcadena. Si no se encuentra, devuelve <code>-1</code>. Con <code>Occurrence.All</code> devuelve una lista de todas las posiciones.</p>
+</div>
+<div class="function-card__example"><h4>Ejemplo</h4>
+<pre><code class="language-javascript">Text.PositionOf("hola mundo", "mundo")  // 5
+Text.PositionOf("aabaa", "a", Occurrence.All)  // {0, 1, 3, 4}
+Text.PositionOf("Power BI", "X")  // -1</code></pre>
+</div>
+</article><div class="category-header" id="replace">
+<span class="category-header__icon">✏️</span>
+<h2 class="category-header__title">Reemplazar</h2>
+</div><article class="function-card" id="replace-fn">
+<header class="function-card__header">
+<h3 class="function-card__title">Text.Replace</h3>
+<span class="badge badge--beginner">Principiante</span>
+</header>
+<div class="function-card__syntax"><h4>Sintaxis</h4>
+<pre><code class="language-javascript">Text.Replace(text as nullable text, old as text, new as text) as nullable text</code></pre>
+</div>
+<div class="function-card__description"><h4>¿Qué hace?</h4>
+<p>Reemplaza todas las ocurrencias de <code>old</code> por <code>new</code> en el texto. Es sensible a mayúsculas.</p>
+</div>
+<div class="function-card__example"><h4>Ejemplo</h4>
+<pre><code class="language-javascript">Text.Replace("ventas,2024,madrid", ",", " | ")
+// "ventas | 2024 | madrid"
+
+// Eliminar caracteres no deseados
+Text.Replace([Telefono], " ", "")  // quita espacios del teléfono
+Text.Replace([Precio], "€", "")   // quita símbolo de euro</code></pre>
+</div>
+</article><article class="function-card" id="removematching">
+<header class="function-card__header">
+<h3 class="function-card__title">Text.Remove / Text.Select</h3>
+<span class="badge badge--intermediate">Intermedio</span>
+</header>
+<div class="function-card__syntax"><h4>Sintaxis</h4>
+<pre><code class="language-javascript">Text.Remove(text as nullable text, removeChars as any) as nullable text
+Text.Select(text as nullable text, selectChars as any) as nullable text</code></pre>
+</div>
+<div class="function-card__description"><h4>¿Qué hace?</h4>
+<p><code>Text.Remove</code> elimina todos los caracteres especificados. <code>Text.Select</code> conserva sólo los caracteres especificados. Aceptan un carácter o una lista.</p>
+</div>
+<div class="function-card__example"><h4>Ejemplo</h4>
+<pre><code class="language-javascript">// Eliminar vocales
+Text.Remove("hola mundo", {"a","e","i","o","u"})
+// "hl mnd"
+
+// Conservar sólo dígitos
+Text.Select("Tel: +34 91 234 56 78", {"0".."9"})
+// "34912345678"
+
+// Conservar letras y números
+Text.Select([Codigo], {"A".."Z","a".."z","0".."9"})</code></pre>
+</div>
+<div class="note note--tip">
+            💡 <strong>Tip kawaii:</strong> Las ranges de caracteres <code>{"0".."9"}</code> y <code>{"A".."Z"}</code> son una sintaxis muy potente de M para definir conjuntos de caracteres de forma concisa.
+          </div>
+</article><div class="category-header" id="split">
+<span class="category-header__icon">✂️</span>
+<h2 class="category-header__title">Dividir y Combinar</h2>
+</div><article class="function-card" id="split-fn">
+<header class="function-card__header">
+<h3 class="function-card__title">Text.Split</h3>
+<span class="badge badge--beginner">Principiante</span>
+</header>
+<div class="function-card__syntax"><h4>Sintaxis</h4>
+<pre><code class="language-javascript">Text.Split(text as text, separator as text) as list</code></pre>
+</div>
+<div class="function-card__description"><h4>¿Qué hace?</h4>
+<p>Divide un texto por el separador indicado y devuelve una lista de fragmentos. El equivalente M de TEXTOANTESDE/TEXTODESPUESDE de Excel pero más potente.</p>
+</div>
+<div class="function-card__example"><h4>Ejemplo</h4>
+<pre><code class="language-javascript">Text.Split("Madrid;Barcelona;Valencia", ";")
+// {"Madrid", "Barcelona", "Valencia"}
+
+// Obtener el primer elemento tras dividir
+List.First(Text.Split([Email], "@"))
+// Devuelve el nombre de usuario del email</code></pre>
+</div>
+</article><article class="function-card" id="combine">
+<header class="function-card__header">
+<h3 class="function-card__title">Text.Combine</h3>
+<span class="badge badge--beginner">Principiante</span>
+</header>
+<div class="function-card__syntax"><h4>Sintaxis</h4>
+<pre><code class="language-javascript">Text.Combine(texts as list, optional separator as nullable text) as text</code></pre>
+</div>
+<div class="function-card__description"><h4>¿Qué hace?</h4>
+<p>Une una lista de textos, opcionalmente con un separador. Es el inverso de <code>Text.Split</code>.</p>
+</div>
+<div class="function-card__example"><h4>Ejemplo</h4>
+<pre><code class="language-javascript">Text.Combine({"Nombre", "Apellido1", "Apellido2"}, " ")
+// "Nombre Apellido1 Apellido2"
+
+// Concatenar columnas con separador
+Text.Combine({[Ciudad], [Pais]}, ", ")
+// "Madrid, España"</code></pre>
+</div>
+</article><div class="category-header" id="extract">
+<span class="category-header__icon">🎯</span>
+<h2 class="category-header__title">Extraer Subcadenas</h2>
+</div><article class="function-card" id="start">
+<header class="function-card__header">
+<h3 class="function-card__title">Text.Start / Text.End</h3>
+<span class="badge badge--beginner">Principiante</span>
+</header>
+<div class="function-card__syntax"><h4>Sintaxis</h4>
+<pre><code class="language-javascript">Text.Start(text as nullable text, count as number) as nullable text
+Text.End(text as nullable text, count as number) as nullable text</code></pre>
+</div>
+<div class="function-card__description"><h4>¿Qué hace?</h4>
+<p>Extrae los primeros (o últimos) <code>count</code> caracteres de un texto. Equivalentes a IZQUIERDA/DERECHA de Excel.</p>
+</div>
+<div class="function-card__example"><h4>Ejemplo</h4>
+<pre><code class="language-javascript">Text.Start("ES-2024-001", 2)   // "ES"
+Text.End("informe_2024.xlsx", 4)  // "xlsx"
+
+// Extraer código de país de un identificador
+Text.Start([CodigoProducto], 3)  // "ESP", "FRA", etc.</code></pre>
+</div>
+</article><article class="function-card" id="middle">
+<header class="function-card__header">
+<h3 class="function-card__title">Text.Middle</h3>
+<span class="badge badge--intermediate">Intermedio</span>
+</header>
+<div class="function-card__syntax"><h4>Sintaxis</h4>
+<pre><code class="language-javascript">Text.Middle(text as nullable text, start as number, optional count as nullable number) as nullable text</code></pre>
+</div>
+<div class="function-card__description"><h4>¿Qué hace?</h4>
+<p>Extrae una subcadena desde la posición <code>start</code> (base 0) con longitud <code>count</code>. Si omites <code>count</code>, extrae hasta el final. Equivalente a EXTRAE de Excel.</p>
+</div>
+<div class="function-card__example"><h4>Ejemplo</h4>
+<pre><code class="language-javascript">Text.Middle("ES-2024-001", 3, 4)   // "2024"
+Text.Middle("ES-2024-001", 3)       // "2024-001"
+
+// Extraer año de un código con formato "XX-YYYY-NNN"
+Text.Middle([Codigo], 3, 4)</code></pre>
+</div>
+</article><article class="function-card" id="beforedelimiter">
+<header class="function-card__header">
+<h3 class="function-card__title">Text.BeforeDelimiter / Text.AfterDelimiter</h3>
+<span class="badge badge--intermediate">Intermedio</span>
+</header>
+<div class="function-card__syntax"><h4>Sintaxis</h4>
+<pre><code class="language-javascript">Text.BeforeDelimiter(text as nullable text, delimiter as text, optional index as any) as any
+Text.AfterDelimiter(text as nullable text, delimiter as text, optional index as any) as any</code></pre>
+</div>
+<div class="function-card__description"><h4>¿Qué hace?</h4>
+<p>Extrae el texto antes o después de un delimitador. El parámetro <code>index</code> permite especificar la ocurrencia (0 = primera, <code>{0, RelativePosition.FromEnd}</code> = última).</p>
+</div>
+<div class="function-card__example"><h4>Ejemplo</h4>
+<pre><code class="language-javascript">Text.BeforeDelimiter("nombre@empresa.com", "@")
+// "nombre"
+
+Text.AfterDelimiter("nombre@empresa.com", "@")
+// "empresa.com"
+
+// Última ocurrencia del delimitador
+Text.AfterDelimiter("C:/datos/2024/archivo.csv", "/", {0, RelativePosition.FromEnd})
+// "archivo.csv"</code></pre>
+</div>
+<div class="note note--practice">
+            📌 <strong>Buena práctica:</strong> Prefiere <code>Text.BeforeDelimiter</code> / <code>Text.AfterDelimiter</code> sobre combinaciones de <code>Text.PositionOf</code> + <code>Text.Middle</code>. El código queda más legible y mantenible.
+          </div>
+</article><article class="function-card" id="betweendelimiters">
+<header class="function-card__header">
+<h3 class="function-card__title">Text.BetweenDelimiters</h3>
+<span class="badge badge--intermediate">Intermedio</span>
+</header>
+<div class="function-card__syntax"><h4>Sintaxis</h4>
+<pre><code class="language-javascript">Text.BetweenDelimiters(text as nullable text, startDelimiter as text, endDelimiter as text, optional startIndex as any, optional endIndex as any) as any</code></pre>
+</div>
+<div class="function-card__description"><h4>¿Qué hace?</h4>
+<p>Extrae el texto comprendido entre dos delimitadores. Ideal para parsear cadenas con estructura definida.</p>
+</div>
+<div class="function-card__example"><h4>Ejemplo</h4>
+<pre><code class="language-javascript">Text.BetweenDelimiters("[2024-01-15] Venta Madrid", "[", "]")
+// "2024-01-15"
+
+Text.BetweenDelimiters("SELECT * FROM [Ventas] WHERE", "[", "]")
+// "Ventas"</code></pre>
+</div>
+</article><div class="category-header" id="pad">
+<span class="category-header__icon">📐</span>
+<h2 class="category-header__title">Relleno (Padding)</h2>
+</div><article class="function-card" id="padstart">
+<header class="function-card__header">
+<h3 class="function-card__title">Text.PadStart / Text.PadEnd</h3>
+<span class="badge badge--intermediate">Intermedio</span>
+</header>
+<div class="function-card__syntax"><h4>Sintaxis</h4>
+<pre><code class="language-javascript">Text.PadStart(text as nullable text, count as number, optional character as nullable text) as nullable text
+Text.PadEnd(text as nullable text, count as number, optional character as nullable text) as nullable text</code></pre>
+</div>
+<div class="function-card__description"><h4>¿Qué hace?</h4>
+<p>Rellena un texto al inicio (<code>PadStart</code>) o al final (<code>PadEnd</code>) hasta alcanzar la longitud <code>count</code>. Por defecto rellena con espacios, pero puedes especificar otro carácter.</p>
+</div>
+<div class="function-card__example"><h4>Ejemplo</h4>
+<pre><code class="language-javascript">Text.PadStart("42", 6, "0")   // "000042"
+Text.PadEnd("ES", 5, "-")     // "ES---"
+
+// Normalizar códigos postales españoles (5 dígitos)
+Text.PadStart(Text.From([CodigoPostal]), 5, "0")
+// 28 → "00028", 8001 → "08001"</code></pre>
+</div>
+<div class="note note--tip">
+            💡 <strong>Tip kawaii:</strong> <code>Text.PadStart</code> con ceros es el truco clásico para normalizar códigos numéricos que deben tener longitud fija, como códigos postales o IDs.
+          </div>
+</article><div class="category-header" id="convert">
+<span class="category-header__icon">🔄</span>
+<h2 class="category-header__title">Conversión</h2>
+</div><article class="function-card" id="from">
+<header class="function-card__header">
+<h3 class="function-card__title">Text.From</h3>
+<span class="badge badge--beginner">Principiante</span>
+</header>
+<div class="function-card__syntax"><h4>Sintaxis</h4>
+<pre><code class="language-javascript">Text.From(value as any, optional culture as nullable text) as nullable text</code></pre>
+</div>
+<div class="function-card__description"><h4>¿Qué hace?</h4>
+<p>Convierte cualquier valor (número, fecha, lógico…) a su representación como texto. Es la función de conversión a texto más versátil de M.</p>
+</div>
+<div class="function-card__example"><h4>Ejemplo</h4>
+<pre><code class="language-javascript">Text.From(2024)            // "2024"
+Text.From(true)            // "true"
+Text.From(3.14, "es-ES")   // "3,14" (con coma decimal)
+Text.From(#date(2024,1,15)) // "2024-01-15"</code></pre>
+</div>
+</article><article class="function-card" id="tonumber">
+<header class="function-card__header">
+<h3 class="function-card__title">Number.FromText</h3>
+<span class="badge badge--beginner">Principiante</span>
+</header>
+<div class="function-card__syntax"><h4>Sintaxis</h4>
+<pre><code class="language-javascript">Number.FromText(text as nullable text, optional culture as nullable text) as nullable number</code></pre>
+</div>
+<div class="function-card__description"><h4>¿Qué hace?</h4>
+<p>Convierte un texto que representa un número a tipo numérico. Permite especificar la cultura para manejar separadores decimales y de miles.</p>
+</div>
+<div class="function-card__example"><h4>Ejemplo</h4>
+<pre><code class="language-javascript">Number.FromText("1234.56")            // 1234.56
+Number.FromText("1.234,56", "es-ES")  // 1234.56 (formato español)
+Number.FromText("€1.234,56", "es-ES") // Error — quita el símbolo primero</code></pre>
+</div>
+</article><div class="category-header" id="format">
+<span class="category-header__icon">🎨</span>
+<h2 class="category-header__title">Formato</h2>
+</div><article class="function-card" id="format-fn">
+<header class="function-card__header">
+<h3 class="function-card__title">Text.Format</h3>
+<span class="badge badge--intermediate">Intermedio</span>
+</header>
+<div class="function-card__syntax"><h4>Sintaxis</h4>
+<pre><code class="language-javascript">Text.Format(formatString as text, arguments as any, optional culture as nullable text) as text</code></pre>
+</div>
+<div class="function-card__description"><h4>¿Qué hace?</h4>
+<p>Construye un texto interpolando valores en una plantilla de formato. Los marcadores de posición son <code>#{0}</code>, <code>#{1}</code>, etc. (o claves si pasas un record).</p>
+</div>
+<div class="function-card__example"><h4>Ejemplo</h4>
+<pre><code class="language-javascript">// Con lista de argumentos
+Text.Format("Hola #{0}, tienes #{1} mensajes", {"María", 5})
+// "Hola María, tienes 5 mensajes"
+
+// Con record (más legible)
+Text.Format("#{ciudad} registró #{ventas} ventas en #{año}",
+  [ciudad = "Madrid", ventas = 1500, año = 2024])
+// "Madrid registró 1500 ventas en 2024"</code></pre>
+</div>
+<div class="note note--practice">
+            📌 <strong>Buena práctica:</strong> Usa <code>Text.Format</code> con records cuando tienes más de 2-3 valores a interpolar. Los nombres de clave hacen el código mucho más legible que índices numéricos.
+          </div>
+</article><div class="note note--next">
+        🚀 <strong>¡Dominas el texto!</strong> Ahora explora las <a href="numero.html">Funciones de Número</a> para operaciones matemáticas y de redondeo avanzadas.
+      </div>
+</div>
+</main>
+</div>
+<button aria-label="Volver arriba" class="back-to-top" id="back-to-top" title="Volver arriba">↑</button>
+<script src="https://cdn.jsdelivr.net/npm/i18next@23/dist/umd/i18next.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1/prism.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1/components/prism-javascript.min.js"></script>
+<script src="../../assets/js/theme.js"></script>
+<script src="../../assets/js/i18n.js"></script>
+<script src="../../assets/js/main.js"></script>
+<script src="../../assets/js/cursor.js"></script>
+<script src="../../assets/js/m-search.js"></script>
+</body>
+</html>

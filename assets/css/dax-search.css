@@ -1,0 +1,555 @@
+/**
+ * ═══════════════════════════════════════════════════════
+ * DAX SEARCH — Estilos del buscador de funciones DAX
+ * Power BI Guide · 2026
+ * ═══════════════════════════════════════════════════════
+ */
+
+/* ─────────────────────────────────────────────────────
+   Wrapper principal
+   ───────────────────────────────────────────────────── */
+
+.dax-search-wrapper {
+  position: relative;
+  display: block;
+  width: 100%;
+}
+
+.dax-search-input-group {
+  position: relative;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+/* ─────────────────────────────────────────────────────
+   Input de búsqueda
+   ───────────────────────────────────────────────────── */
+
+.dax-search-input {
+  width: 100%;
+  padding: 14px 44px 14px 48px;
+  border: 2px solid var(--color-mauve);
+  border-radius: 12px;
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  font-size: 15px;
+  background: var(--color-white);
+  color: var(--color-dark);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.dax-search-input::placeholder {
+  color: var(--color-slate);
+  opacity: 0.6;
+}
+
+.dax-search-input:focus {
+  outline: none;
+  border-color: var(--color-coral);
+  box-shadow: 0 0 0 3px rgba(231, 78, 55, 0.15);
+}
+
+/* ─────────────────────────────────────────────────────
+   Icono de búsqueda
+   ───────────────────────────────────────────────────── */
+
+.dax-search-icon {
+  position: absolute;
+  left: 18px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 18px;
+  color: var(--color-slate);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* ─────────────────────────────────────────────────────
+   Botón de limpiar
+   ───────────────────────────────────────────────────── */
+
+.dax-search-clear {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: var(--color-mauve);
+  color: var(--color-slate);
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+}
+
+.dax-search-clear:hover {
+  background: var(--color-coral);
+  color: var(--color-white);
+  transform: translateY(-50%) scale(1.1);
+}
+
+.dax-search-clear:active {
+  transform: translateY(-50%) scale(0.95);
+}
+
+.dax-search-clear[hidden] {
+  display: none;
+}
+
+/* ─────────────────────────────────────────────────────
+   Dropdown de resultados
+   ───────────────────────────────────────────────────── */
+
+.dax-search-results {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background: var(--color-white);
+  border: 2px solid var(--color-mauve);
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+  max-height: 480px;
+  overflow-y: auto;
+  display: none;
+}
+
+.dax-search-results.is-open {
+  display: block;
+}
+
+/* Scroll suave */
+.dax-search-results {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-mauve) transparent;
+}
+
+.dax-search-results::-webkit-scrollbar {
+  width: 8px;
+}
+
+.dax-search-results::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.dax-search-results::-webkit-scrollbar-thumb {
+  background: var(--color-mauve);
+  border-radius: 4px;
+}
+
+.dax-search-results::-webkit-scrollbar-thumb:hover {
+  background: var(--color-coral);
+}
+
+/* ─────────────────────────────────────────────────────
+   Items de resultado
+   ───────────────────────────────────────────────────── */
+
+.dax-search-result-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 16px;
+  cursor: pointer;
+  border-bottom: 1px solid var(--color-rose);
+  transition: background 0.15s ease;
+}
+
+.dax-search-result-item:hover,
+.dax-search-result-item.is-active {
+  background: var(--color-blush);
+}
+
+.dax-search-result-item:last-of-type {
+  border-bottom: none;
+}
+
+.dax-search-result-icon {
+  font-size: 20px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.dax-search-result-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.dax-search-result-name {
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--color-dark);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.dax-search-result-name mark {
+  background: rgba(231, 78, 55, 0.15);
+  color: var(--color-coral);
+  border-radius: 3px;
+  padding: 0 2px;
+  font-style: normal;
+  font-weight: 700;
+}
+
+.dax-search-result-desc {
+  font-size: 13px;
+  color: var(--color-slate);
+  margin-top: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dax-search-result-meta {
+  display: flex;
+  gap: 6px;
+  margin-top: 4px;
+  flex-wrap: wrap;
+}
+
+.dax-search-result-category {
+  font-size: 11px;
+  color: var(--color-slate);
+  background: var(--color-rose);
+  padding: 2px 8px;
+  border-radius: 20px;
+  white-space: nowrap;
+}
+
+/* ─────────────────────────────────────────────────────
+   Badges de nivel
+   ───────────────────────────────────────────────────── */
+
+.dax-level-badge {
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 20px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.dax-level-badge--beginner {
+  background: rgba(91, 173, 146, 0.15);
+  color: #5BAD92;
+}
+
+.dax-level-badge--intermediate {
+  background: rgba(242, 184, 75, 0.15);
+  color: #D4961A;
+}
+
+.dax-level-badge--advanced {
+  background: rgba(231, 78, 55, 0.15);
+  color: var(--color-coral);
+}
+
+/* ─────────────────────────────────────────────────────
+   Badge "2024" para funciones nuevas
+   ───────────────────────────────────────────────────── */
+
+.dax-search-new-badge {
+  font-size: 10px;
+  background: var(--color-coral);
+  color: var(--color-white);
+  padding: 2px 6px;
+  border-radius: 20px;
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+/* ─────────────────────────────────────────────────────
+   Estado sin resultados
+   ───────────────────────────────────────────────────── */
+
+.dax-search-no-results {
+  padding: 32px 24px;
+  text-align: center;
+  color: var(--color-slate);
+}
+
+.dax-search-no-results-icon {
+  font-size: 48px;
+  display: block;
+  margin-bottom: 12px;
+  opacity: 0.3;
+}
+
+.dax-search-no-results p {
+  margin: 8px 0;
+  font-size: 14px;
+}
+
+.dax-search-no-results p:first-of-type {
+  color: var(--color-dark);
+  font-weight: 600;
+}
+
+.dax-search-no-results-hint {
+  font-size: 13px;
+  color: var(--color-slate);
+  margin-top: 4px;
+}
+
+/* ─────────────────────────────────────────────────────
+   Hint de navegación por teclado
+   ───────────────────────────────────────────────────── */
+
+.dax-search-hint {
+  padding: 8px 16px;
+  font-size: 12px;
+  color: var(--color-slate);
+  border-top: 1px solid var(--color-mauve);
+  background: var(--color-blush);
+  text-align: center;
+}
+
+/* ─────────────────────────────────────────────────────
+   Variante HERO para dax.html (página hub)
+   ───────────────────────────────────────────────────── */
+
+.dax-search-hero {
+  background: linear-gradient(135deg, var(--color-blush) 0%, var(--color-rose) 100%);
+  border-radius: 20px;
+  padding: 32px;
+  margin-bottom: 40px;
+  text-align: center;
+}
+
+.dax-search-hero-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--color-dark);
+  margin-bottom: 8px;
+}
+
+.dax-search-hero-subtitle {
+  font-size: 14px;
+  color: var(--color-slate);
+  margin-bottom: 20px;
+}
+
+.dax-search-hero .dax-search-wrapper {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.dax-search-hero .dax-search-input {
+  font-size: 17px;
+  padding: 16px 52px 16px 56px;
+  border-radius: 14px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.dax-search-hero .dax-search-icon {
+  left: 22px;
+  font-size: 20px;
+}
+
+.dax-search-hero .dax-search-clear {
+  right: 16px;
+}
+
+.dax-search-stats {
+  margin-top: 16px;
+  font-size: 13px;
+  color: var(--color-slate);
+}
+
+/* ─────────────────────────────────────────────────────
+   Variante COMPACTA para sub-páginas
+   ───────────────────────────────────────────────────── */
+
+.dax-search-compact-bar {
+  background: var(--color-blush);
+  border-bottom: 1px solid var(--color-mauve);
+  padding: 12px 24px;
+  margin-bottom: 24px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  backdrop-filter: blur(8px);
+}
+
+.dax-search-compact {
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+/* Espaciado entre buscador M y TOC (M files usan esta clase en lugar de .dax-search-compact-bar) */
+.dax-search-wrapper--compact {
+  margin-bottom: 24px;
+}
+
+.dax-search-compact .dax-search-input {
+  font-size: 14px;
+  padding: 10px 40px 10px 40px;
+  border-radius: 10px;
+}
+
+.dax-search-compact .dax-search-icon {
+  left: 14px;
+  font-size: 16px;
+}
+
+.dax-search-compact .dax-search-clear {
+  right: 10px;
+  width: 20px;
+  height: 20px;
+  font-size: 12px;
+}
+
+/* ─────────────────────────────────────────────────────
+   Responsive
+   ───────────────────────────────────────────────────── */
+
+@media (max-width: 768px) {
+  /* Hero en móvil */
+  .dax-search-hero {
+    padding: 20px;
+    border-radius: 16px;
+    margin-bottom: 24px;
+  }
+
+  .dax-search-hero-title {
+    font-size: 18px;
+  }
+
+  .dax-search-hero-subtitle {
+    font-size: 13px;
+    margin-bottom: 16px;
+  }
+
+  .dax-search-hero .dax-search-input {
+    font-size: 15px;
+    padding: 14px 44px 14px 48px;
+  }
+
+  .dax-search-stats {
+    font-size: 12px;
+    margin-top: 12px;
+  }
+
+  /* Dropdown más pequeño en móvil */
+  .dax-search-results {
+    max-height: 320px;
+  }
+
+  /* Resultados más compactos */
+  .dax-search-result-item {
+    padding: 10px 12px;
+    gap: 10px;
+  }
+
+  .dax-search-result-icon {
+    font-size: 18px;
+  }
+
+  .dax-search-result-name {
+    font-size: 14px;
+  }
+
+  .dax-search-result-desc {
+    font-size: 12px;
+  }
+
+  .dax-search-result-category,
+  .dax-level-badge {
+    font-size: 10px;
+    padding: 2px 6px;
+  }
+
+  /* Barra compacta en móvil */
+  .dax-search-compact-bar {
+    padding: 10px 16px;
+  }
+
+  .dax-search-compact {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .dax-search-hero {
+    padding: 16px;
+  }
+
+  .dax-search-hero-title {
+    font-size: 16px;
+  }
+
+  .dax-search-result-desc {
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
+    line-height: 1.4;
+  }
+}
+
+/* ─────────────────────────────────────────────────────
+   Animaciones
+   ───────────────────────────────────────────────────── */
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.dax-search-results.is-open {
+  animation: slideDown 0.2s ease-out;
+}
+
+/* ─────────────────────────────────────────────────────
+   Modo oscuro (preparado para futuro)
+   ───────────────────────────────────────────────────── */
+
+.dark-theme .dax-search-input {
+  background: var(--color-dark);
+  color: var(--color-white);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.dark-theme .dax-search-input:focus {
+  border-color: var(--color-coral);
+}
+
+.dark-theme .dax-search-results {
+  background: var(--color-dark);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.dark-theme .dax-search-result-item {
+  border-bottom-color: rgba(255, 255, 255, 0.1);
+}
+
+.dark-theme .dax-search-result-item:hover,
+.dark-theme .dax-search-result-item.is-active {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.dark-theme .dax-search-result-name {
+  color: var(--color-white);
+}
+
+.dark-theme .dax-search-hint {
+  background: rgba(255, 255, 255, 0.05);
+  border-top-color: rgba(255, 255, 255, 0.1);
+}

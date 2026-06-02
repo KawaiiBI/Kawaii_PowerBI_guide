@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Sensitivity Labels en Power BI con Microsoft Purview (MIP): etiquetas de confidencialidad, herencia, protección al exportar y aplicación en masa.">
+  <title>Sensitivity Labels (MIP) — Gobernanza | Power BI Guide by Kawaii BI</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/prismjs@1/themes/prism-okaidia.min.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="../../assets/css/main.css">
+  <link rel="stylesheet" href="../../assets/css/themes.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/layout.css">
+
+  <style>
+    .topic-header { text-align: center; padding: 2.5rem 0 2rem; border-bottom: 2px solid var(--color-mauve); margin-bottom: 2.5rem; }
+    .topic-header__icon { font-size: 4rem; margin-bottom: 0.75rem; display: block; }
+    .topic-header__title { font-size: clamp(1.875rem, 4vw, 2.5rem); font-weight: 800; color: var(--color-dark); margin-bottom: 0.625rem; line-height: 1.2; }
+    .topic-header__subtitle { font-size: 1.0625rem; color: var(--color-slate); margin-bottom: 1.25rem; line-height: 1.5; max-width: 600px; margin-left: auto; margin-right: auto; }
+    .topic-header__levels { display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap; align-items: center; }
+    .category-header { display: flex; align-items: center; gap: 0.75rem; margin: 2.5rem 0 1.25rem; padding: 0.875rem 1.25rem; background: var(--color-rose); border-radius: var(--border-radius-sm); border-left: 4px solid var(--color-coral); }
+    .category-header__icon { font-size: 1.5rem; }
+    .category-header__title { font-size: 1.25rem; font-weight: 700; margin: 0; }
+    .concept-card { background: var(--color-white); border: 1.5px solid var(--color-mauve); border-radius: var(--border-radius); padding: 1.75rem; margin-bottom: 1.5rem; scroll-margin-top: 80px; transition: border-color 0.2s; }
+    .concept-card:hover { border-color: var(--color-coral); }
+    .concept-card h3 { font-size: 1.25rem; font-weight: 700; color: var(--color-coral); margin-bottom: 0.75rem; }
+    .concept-card h4 { font-size: 0.9375rem; font-weight: 700; color: var(--color-dark); margin: 1.25rem 0 0.5rem; }
+    .concept-card p { font-size: 0.9375rem; line-height: 1.7; color: var(--color-dark); margin-bottom: 0.75rem; }
+    .concept-card ul { padding-left: 1.25rem; font-size: 0.9375rem; line-height: 1.8; color: var(--color-dark); }
+    .concept-card code { background: var(--color-blush); padding: 0.1em 0.4em; border-radius: 4px; font-family: 'Fira Code', monospace; font-size: 0.85em; color: var(--color-coral); }
+    .label-row { display: flex; align-items: center; gap: 0.75rem; padding: 0.5rem 0.875rem; margin: 0.4rem 0; border-radius: 999px; border: 1.5px solid var(--color-mauve); background: var(--color-white); font-size: 0.875rem; }
+    .label-pill { padding: 0.15rem 0.6rem; border-radius: 4px; font-weight: 700; font-size: 0.75rem; color: white; }
+    .toc { background: var(--color-rose); border-radius: var(--border-radius); padding: 1.25rem 1.5rem; margin-bottom: 2rem; border: 1.5px solid var(--color-mauve); }
+    .toc__title { font-size: 1rem; font-weight: 700; margin: 0 0 0.75rem; }
+    .toc__list { display: flex; flex-wrap: wrap; gap: 0.5rem; list-style: none; padding: 0; margin: 0; }
+    .toc__list a { font-size: 0.8125rem; color: var(--color-coral); text-decoration: none; padding: 0.25rem 0.625rem; background: var(--color-white); border-radius: 999px; border: 1px solid var(--color-mauve); transition: background 0.15s, color 0.15s; }
+    .toc__list a:hover { background: var(--color-coral); color: white; }
+  </style>
+</head>
+<body>
+
+  <aside class="site-sidebar">
+    <div class="site-sidebar__profile">
+      <img src="../../assets/images/avatar Sara.png" alt="Sara Lozano Martí" class="site-sidebar__avatar">
+      <p class="site-sidebar__name">Sara Lozano Martí</p>
+      <p class="site-sidebar__subtitle">Power BI Expert</p>
+    </div>
+    <nav class="site-sidebar__nav" aria-label="Navegación principal">
+      <ul>
+        <li><a href="../../index.html" class="site-sidebar__link"><span class="site-sidebar__icon">🏠</span> Inicio</a></li>
+        <li><a href="../dax.html" class="site-sidebar__link"><span class="site-sidebar__icon">⚡</span> Funciones DAX</a></li>
+        <li><a href="../power-query.html" class="site-sidebar__link"><span class="site-sidebar__icon">🔄</span> Power Query</a></li>
+        <li><a href="../lenguaje-m.html" class="site-sidebar__link"><span class="site-sidebar__icon">〽️</span> Lenguaje M</a></li>
+        <li><a href="../modelado.html" class="site-sidebar__link"><span class="site-sidebar__icon">🗄️</span> Modelado</a></li>
+        <li><a href="../conceptos-powerbi.html" class="site-sidebar__link"><span class="site-sidebar__icon">📊</span> Conceptos Power BI</a></li>
+        <li><a href="../fabric.html" class="site-sidebar__link"><span class="site-sidebar__icon">🧵</span> Microsoft Fabric</a></li>
+        <li><a href="../tmdl.html" class="site-sidebar__link"><span class="site-sidebar__icon">📝</span> TMDL</a></li>
+        <li><a href="../diseno-ux.html" class="site-sidebar__link"><span class="site-sidebar__icon">🎨</span> Diseño y UX</a></li>
+        <li><a href="../gobernanza.html" class="site-sidebar__link is-active"><span class="site-sidebar__icon">🔒</span> Gobernanza</a></li>
+      </ul>
+    </nav>
+    <div class="site-sidebar__divider"></div>
+    <div class="site-sidebar__footer">
+      <a href="../../quien-soy.html" class="site-sidebar__link site-sidebar__link--highlight"><span class="site-sidebar__icon">👩‍💻</span> ¿Quién soy?</a>
+      <div class="site-sidebar__social">
+        <a href="https://www.linkedin.com/in/saralozanomarti" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><img src="../../assets/images/logo linkedIN.png" alt="LinkedIn" class="site-sidebar__social-icon"></a>
+        <a href="https://www.youtube.com/@KawaiiPowerBI" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><img src="../../assets/images/logo youtube.png" alt="YouTube" class="site-sidebar__social-icon"></a>
+        <a href="https://github.com/KawaiiBI" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><img src="../../assets/images/logo github.png" alt="GitHub" class="site-sidebar__social-icon"></a>
+      </div>
+      <div class="site-sidebar__logo-bottom"><img src="../../assets/images/Logo Kawaii.jpg" alt="Kawaii BI" class="site-sidebar__logo-img"></div>
+      <p class="site-sidebar__copyright">Power BI Guide 🌸<br>© 2026 Kawaii BI</p>
+    </div>
+  </aside>
+
+  <div class="page-wrapper">
+    <main class="main-content">
+      <div class="topic-page">
+
+        <nav class="breadcrumb" aria-label="Ruta de navegación">
+          <span class="breadcrumb__item"><a href="../../index.html">🏠 Inicio</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item"><a href="../gobernanza.html">Gobernanza</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item">Sensitivity Labels</span>
+        </nav>
+
+        <header class="topic-header">
+          <span class="topic-header__icon">🛡️</span>
+          <h1 class="topic-header__title">Sensitivity Labels (MIP)</h1>
+          <p class="topic-header__subtitle">Etiquetas de confidencialidad de Microsoft Purview Information Protection: cómo se aplican, cómo se heredan y cómo protegen el dato cuando sale de Power BI.</p>
+          <div class="topic-header__levels">
+            <span class="badge badge--intermediate">Intermedio</span>
+          </div>
+        </header>
+
+        <nav class="toc" aria-label="Índice de contenidos">
+          <p class="toc__title">📌 En esta página:</p>
+          <ul class="toc__list">
+            <li><a href="#que-son">¿Qué son?</a></li>
+            <li><a href="#requisitos">Requisitos</a></li>
+            <li><a href="#aplicar">Cómo aplicarlas</a></li>
+            <li><a href="#herencia">Herencia automática</a></li>
+            <li><a href="#proteccion">Protección al exportar</a></li>
+            <li><a href="#escala">Aplicación en masa</a></li>
+          </ul>
+        </nav>
+
+        <div class="category-header" id="que-son">
+          <span class="category-header__icon">💭</span>
+          <h2 class="category-header__title">¿Qué son las sensitivity labels?</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>Etiquetas que viajan con el dato</h3>
+          <p>Las <strong>sensitivity labels</strong> (etiquetas de confidencialidad) son una característica de <strong>Microsoft Purview Information Protection</strong> (antes Microsoft Information Protection / MIP). Permiten clasificar contenido por su nivel de sensibilidad y, opcionalmente, aplicar protecciones técnicas (cifrado, marcas de agua, restricciones de copia).</p>
+          <p>Lo que las hace especiales en Power BI: <em>la etiqueta acompaña al dato cuando se exporta</em>. Si exportas un dataset con etiqueta "Confidencial" a Excel, el archivo Excel hereda la etiqueta y sus protecciones.</p>
+
+          <h4>Ejemplo típico de jerarquía de etiquetas:</h4>
+          <div>
+            <div class="label-row"><span class="label-pill" style="background: var(--color-success);">Public</span> Apto para difusión externa</div>
+            <div class="label-row"><span class="label-pill" style="background: var(--color-slate);">Internal</span> Solo para empleados</div>
+            <div class="label-row"><span class="label-pill" style="background: var(--color-warning);">Confidential</span> Limitado a quien lo necesita</div>
+            <div class="label-row"><span class="label-pill" style="background: var(--color-coral);">Highly Confidential</span> Cifrado y restringido</div>
+          </div>
+        </article>
+
+        <div class="category-header" id="requisitos">
+          <span class="category-header__icon">📋</span>
+          <h2 class="category-header__title">Requisitos previos</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>Antes de empezar comprueba que tienes</h3>
+          <ul>
+            <li>Licencia <strong>Microsoft 365 E3/E5</strong> (o equivalente) para crear y publicar etiquetas desde Purview</li>
+            <li>Power BI Pro o PPU para aplicar etiquetas en el Service</li>
+            <li>El admin de tenant debe haber <strong>activado las sensitivity labels en Power BI</strong>: Admin portal → Information protection → "Allow users to apply sensitivity labels for content"</li>
+            <li>Las etiquetas deben estar publicadas con un <strong>policy</strong> en Purview que incluya a los usuarios de Power BI</li>
+          </ul>
+        </article>
+
+        <div class="category-header" id="aplicar">
+          <span class="category-header__icon">🖱️</span>
+          <h2 class="category-header__title">Cómo aplicar etiquetas</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>Dónde aparece el selector</h3>
+          <p>Una vez activadas, el selector de etiqueta aparece en:</p>
+          <ul>
+            <li><strong>Power BI Desktop:</strong> barra superior → desplegable de sensitivity</li>
+            <li><strong>Power BI Service:</strong> en datasets, informes, dashboards, dataflows, lakehouses... cada artefacto tiene su etiqueta</li>
+            <li><strong>Workspace settings:</strong> ver/filtrar etiquetas de todos los artefactos</li>
+            <li><strong>API REST y PowerShell:</strong> aplicación programática</li>
+          </ul>
+          <p>La etiqueta se aplica por artefacto, no por workspace.</p>
+        </article>
+
+        <div class="category-header" id="herencia">
+          <span class="category-header__icon">🧬</span>
+          <h2 class="category-header__title">Herencia automática</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>Las etiquetas se propagan en cadena</h3>
+          <p>Power BI propaga etiquetas automáticamente en dos direcciones:</p>
+
+          <h4>Desde el origen → al dataset</h4>
+          <p>Si conectas Power BI a un origen que ya tiene una etiqueta MIP (un archivo Excel, una tabla en Azure SQL etiquetada, etc.), el dataset hereda la etiqueta más restrictiva detectada.</p>
+
+          <h4>Del dataset → al informe → al export</h4>
+          <p>Un informe hereda la etiqueta del dataset que consume. Si exportas a PDF, Excel o PowerPoint, el archivo resultante también la hereda. Es la cadena de custodia del dato.</p>
+
+          <h4>Cuándo la herencia se rompe</h4>
+          <ul>
+            <li>Cuando alguien con permisos aplica una etiqueta <em>manualmente</em> sobre la automática</li>
+            <li>Cuando el admin ha configurado etiquetas como "obligatorias" en lugar de "heredables"</li>
+            <li>Cuando el origen no soporta etiquetas MIP (la mayoría de orígenes no Microsoft)</li>
+          </ul>
+        </article>
+
+        <div class="note note--tip">
+          💡 <strong>Tip kawaii:</strong> Activa la política <em>"Mandatory label"</em> en el policy de Purview para Power BI. Así nadie publica contenido sin etiquetar, y la conversación sobre confidencialidad ocurre <em>antes</em> del publish, no después de un disgusto. 🌸
+        </div>
+
+        <div class="category-header" id="proteccion">
+          <span class="category-header__icon">🔒</span>
+          <h2 class="category-header__title">Protección al exportar</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>Más allá de pintar una etiqueta</h3>
+          <p>Una etiqueta puede ser solo informativa o aplicar <strong>protección real</strong> via Azure Rights Management (RMS). Cuando un usuario exporta un informe etiquetado con protección RMS a Excel/PDF:</p>
+          <ul>
+            <li>El archivo se cifra y solo lo abren los usuarios autorizados</li>
+            <li>Pueden bloquearse acciones como copiar/pegar, imprimir o reenviar</li>
+            <li>Las marcas de agua y los pies de página confidenciales se incrustan automáticamente</li>
+            <li>El acceso puede revocarse después de la distribución</li>
+          </ul>
+          <p>Esto es lo que diferencia las sensitivity labels de un "tag" decorativo: protegen el dato fuera de Power BI.</p>
+        </article>
+
+        <div class="category-header" id="escala">
+          <span class="category-header__icon">⚡</span>
+          <h2 class="category-header__title">Aplicación en masa</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>Etiquetar centenares de artefactos sin morir en el intento</h3>
+          <ul>
+            <li><strong>Default labels by workspace:</strong> el admin puede definir una etiqueta por defecto para los nuevos artefactos en un workspace</li>
+            <li><strong>API REST de Power BI:</strong> hay endpoints para listar y modificar etiquetas masivamente (<code>InformationProtection</code> APIs)</li>
+            <li><strong>PowerShell + módulo MicrosoftPowerBIMgmt:</strong> el patrón típico para "etiqueta inicial" en migraciones</li>
+            <li><strong>Purview compliance portal:</strong> permite escanear y reportar contenido sin etiquetar</li>
+          </ul>
+
+          <h4>Workflow recomendado en una migración</h4>
+          <ol style="padding-left: 1.25rem;">
+            <li>Definir y publicar 3–4 etiquetas en Purview</li>
+            <li>Activar mandatory labels en Power BI desde el admin portal</li>
+            <li>Aplicar etiqueta "Internal" por defecto a todos los workspaces existentes con script</li>
+            <li>Comunicar a los autores cómo cambiarla al subir contenido más sensible</li>
+            <li>Auditar mensualmente artefactos con etiqueta default que deberían estar más restringidos</li>
+          </ol>
+        </article>
+
+        <div class="note note--warning">
+          ⚠️ <strong>Ojo:</strong> Las sensitivity labels no sustituyen a <a href="rls.html">RLS</a> ni a <a href="ols.html">OLS</a>. Son una capa adicional. RLS protege qué <em>ve</em> el usuario; las labels protegen qué pasa con el dato cuando <em>sale</em> de Power BI.
+        </div>
+
+        <div class="note note--next" style="margin-top: 2rem;">
+          🚀 <strong>Siguiente paso:</strong> Para reforzar la protección al exportar añade políticas <a href="dlp.html">DLP</a>. Y si quieres saber quién está exportando contenido sensible, mira <a href="auditoria.html">Auditoría y Activity Log</a>.
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <button id="back-to-top" class="back-to-top" aria-label="Volver arriba" title="Volver arriba">↑</button>
+
+  <script src="https://cdn.jsdelivr.net/npm/i18next@23/dist/umd/i18next.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1/prism.min.js"></script>
+  <script src="../../assets/js/theme.js"></script>
+  <script src="../../assets/js/main.js"></script>
+  <script src="../../assets/js/cursor.js"></script>
+</body>
+</html>

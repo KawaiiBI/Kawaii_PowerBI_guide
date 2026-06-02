@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta content="Record.Field, Record.FieldNames, Record.Combine y más funciones para trabajar con records en M." name="description"/>
+<title>Funciones de Record (Record.*) — Lenguaje M | Power BI Guide by Kawaii BI</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Fira+Code:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<!-- Prism.js -->
+<link href="https://cdn.jsdelivr.net/npm/prismjs@1/themes/prism-okaidia.min.css" rel="stylesheet"/>
+<!-- Estilos CSS -->
+<link href="../../assets/css/main.css" rel="stylesheet"/>
+<link href="../../assets/css/themes.css" rel="stylesheet"/>
+<link href="../../assets/css/components.css" rel="stylesheet"/>
+<link href="../../assets/css/layout.css" rel="stylesheet"/>
+<link href="../../assets/css/dax-search.css" rel="stylesheet"/>
+<style>
+        /* Topic header con icono grande */
+    .topic-header {
+      text-align: center;
+      padding: 2.5rem 0 2rem;
+      border-bottom: 2px solid var(--color-mauve);
+      margin-bottom: 2.5rem;
+    }
+
+    .topic-header__icon {
+      font-size: 4rem;
+      margin-bottom: 0.75rem;
+      display: block;
+    }
+
+    .topic-header__title {
+      font-size: clamp(1.875rem, 4vw, 2.5rem);
+      font-weight: 800;
+      color: var(--color-dark);
+      margin-bottom: 0.625rem;
+      line-height: 1.2;
+    }
+
+    .topic-header__subtitle {
+      font-size: 1.0625rem;
+      color: var(--color-slate);
+      margin-bottom: 1.25rem;
+      line-height: 1.5;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .topic-header__levels {
+      display: flex;
+      gap: 0.5rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    /* Category header */
+    .category-header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin: 2.5rem 0 1.25rem;
+      padding: 0.875rem 1.25rem;
+      background: var(--color-rose);
+      border-radius: var(--border-radius-sm);
+      border-left: 4px solid var(--color-coral);
+    }
+    .category-header__icon { font-size: 1.5rem; }
+    .category-header__title { font-size: 1.25rem; font-weight: 700; margin: 0; }
+
+    /* Function cards */
+    .function-card {
+      background: var(--color-white);
+      border: 1.5px solid var(--color-mauve);
+      border-radius: var(--border-radius);
+      padding: 1.75rem;
+      margin-bottom: 1.5rem;
+      scroll-margin-top: 80px;
+      transition: border-color 0.2s;
+    }
+    .function-card:hover { border-color: var(--color-coral); }
+
+    .function-card__header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.25rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 2px solid var(--color-blush);
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .function-card__title {
+      font-size: 1.375rem;
+      font-weight: 800;
+      color: var(--color-coral);
+      margin: 0;
+      font-family: 'Fira Code', monospace;
+    }
+
+    .function-card h4 {
+      font-size: 0.9375rem;
+      font-weight: 700;
+      color: var(--color-dark);
+      margin: 1.25rem 0 0.625rem;
+    }
+
+    .function-card p { font-size: 0.9375rem; line-height: 1.7; color: var(--color-dark); }
+
+    .function-card__params ul { list-style: none; padding: 0; margin: 0; }
+    .function-card__params li {
+      padding: 0.5rem 0 0.5rem 1.5rem;
+      position: relative;
+      line-height: 1.6;
+      font-size: 0.9rem;
+      border-bottom: 1px solid var(--color-blush);
+    }
+    .function-card__params li:last-child { border-bottom: none; }
+    .function-card__params li::before {
+      content: "→";
+      position: absolute;
+      left: 0;
+      color: var(--color-coral);
+      font-weight: 700;
+    }
+    .function-card__params code {
+      background: var(--color-blush);
+      padding: 0.1em 0.4em;
+      border-radius: 4px;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.85em;
+      color: var(--color-coral);
+    }
+
+    /* TOC */
+    .toc {
+      background: var(--color-rose);
+      border-radius: var(--border-radius);
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 2rem;
+      border: 1.5px solid var(--color-mauve);
+    }
+    .toc__title { font-size: 1rem; font-weight: 700; margin: 0 0 0.75rem; }
+    .toc__list { display: flex; flex-wrap: wrap; gap: 0.5rem; list-style: none; padding: 0; margin: 0; }
+    .toc__list a {
+      font-size: 0.8125rem;
+      color: var(--color-coral);
+      text-decoration: none;
+      padding: 0.25rem 0.625rem;
+      background: var(--color-white);
+      border-radius: 999px;
+      border: 1px solid var(--color-mauve);
+      transition: background 0.15s, color 0.15s;
+      font-family: 'Fira Code', monospace;
+    }
+    .toc__list a:hover { background: var(--color-coral); color: white; }
+
+    /* Table (tipo.html) */
+    .type-table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.9rem; }
+    .type-table th { background: var(--color-rose); color: var(--color-dark); font-weight: 600; padding: 0.6rem 1rem; text-align: left; }
+    .type-table td { padding: 0.55rem 1rem; border-bottom: 1px solid var(--color-mauve); }
+    .type-table tr:last-child td { border-bottom: none; }
+    .type-table code { font-family: 'Fira Code', monospace; font-size: 0.85em; }
+  </style>
+</head>
+<body>
+<!-- SIDEBAR: Navegación principal -->
+<aside class="site-sidebar">
+<div class="site-sidebar__profile">
+<img alt="Sara Lozano Martí" class="site-sidebar__avatar" src="../../assets/images/avatar Sara.png"/>
+<p class="site-sidebar__name">Sara Lozano Martí</p>
+<p class="site-sidebar__subtitle">Power BI Expert</p>
+</div>
+<nav aria-label="Navegación principal" class="site-sidebar__nav">
+<ul>
+<li><a class="site-sidebar__link" href="../../index.html">
+<span class="site-sidebar__icon">🏠</span> Inicio
+        </a></li>
+<li><a class="site-sidebar__link" href="../dax.html">
+<span class="site-sidebar__icon">⚡</span> Funciones DAX
+        </a></li>
+<li><a class="site-sidebar__link" href="../power-query.html">
+<span class="site-sidebar__icon">🔄</span> Power Query
+        </a></li>
+<li><a class="site-sidebar__link is-active" href="../lenguaje-m.html">
+<span class="site-sidebar__icon">〽️</span> Lenguaje M
+        </a></li>
+<li><a class="site-sidebar__link" href="../modelado.html">
+<span class="site-sidebar__icon">🗄️</span> Modelado
+        </a></li>
+<li><a class="site-sidebar__link" href="../conceptos-powerbi.html">
+<span class="site-sidebar__icon">📊</span> Conceptos Power BI
+        </a></li>
+<li><a class="site-sidebar__link" href="../fabric.html">
+<span class="site-sidebar__icon">🧵</span> Microsoft Fabric
+        </a></li>
+<li><a class="site-sidebar__link" href="../tmdl.html">
+<span class="site-sidebar__icon">📝</span> TMDL
+        </a></li>
+<li><a class="site-sidebar__link" href="../diseno-ux.html">
+<span class="site-sidebar__icon">🎨</span> Diseño y UX
+        </a></li>
+<li><a class="site-sidebar__link" href="../gobernanza.html">
+<span class="site-sidebar__icon">🔒</span> Gobernanza
+        </a></li>
+</ul>
+</nav>
+<div class="site-sidebar__divider"></div>
+<div class="site-sidebar__footer">
+<a class="site-sidebar__link site-sidebar__link--highlight" href="../../quien-soy.html">
+<span class="site-sidebar__icon">👩‍💻</span> ¿Quién soy?
+      </a>
+<div class="site-sidebar__social">
+<a aria-label="LinkedIn" href="https://www.linkedin.com/in/saralozanomarti" rel="noopener noreferrer" target="_blank">
+<img alt="LinkedIn" class="site-sidebar__social-icon" src="../../assets/images/logo linkedIN.png"/>
+</a>
+<a aria-label="YouTube" href="https://www.youtube.com/@KawaiiPowerBI" rel="noopener noreferrer" target="_blank">
+<img alt="YouTube" class="site-sidebar__social-icon" src="../../assets/images/logo youtube.png"/>
+</a>
+<a aria-label="GitHub" href="https://github.com/KawaiiBI" rel="noopener noreferrer" target="_blank">
+<img alt="GitHub" class="site-sidebar__social-icon" src="../../assets/images/logo github.png"/>
+</a>
+</div>
+<div class="site-sidebar__logo-bottom">
+<img alt="Kawaii BI" class="site-sidebar__logo-img" src="../../assets/images/Logo Kawaii.jpg"/>
+</div>
+<p class="site-sidebar__copyright">
+        Power BI Guide 🌸<br/>
+        © 2026 Kawaii BI
+      </p>
+</div>
+</aside>
+<!-- CONTENIDO PRINCIPAL -->
+<div class="page-wrapper">
+<main class="main-content">
+<div class="topic-page">
+<nav aria-label="Ruta de navegación" class="breadcrumb">
+<span class="breadcrumb__item"><a href="../../index.html">🏠 Inicio</a></span>
+<span aria-hidden="true" class="breadcrumb__separator">›</span>
+<span class="breadcrumb__item"><a href="../lenguaje-m.html">Lenguaje M</a></span>
+<span aria-hidden="true" class="breadcrumb__separator">›</span>
+<span class="breadcrumb__item">Funciones de Record</span>
+</nav>
+<header class="topic-header">
+          <span class="topic-header__icon">📦</span>
+          <h1 class="topic-header__title">Funciones de Record (Record.*)</h1>
+          <p class="topic-header__subtitle">Trabaja con estructuras clave-valor en Power Query M. Los records son la base de las filas de una tabla.</p>
+          <div class="topic-header__levels">
+<span class="badge--intermediate">Intermedio</span>
+<span class="badge--advanced">Avanzado</span>
+</div>
+        </header>
+<div class="dax-search-wrapper dax-search-wrapper--compact" data-m-search="true">
+<div class="dax-search-input-row">
+<span aria-hidden="true" class="dax-search-icon">🔍</span>
+<input aria-autocomplete="list" aria-expanded="false" aria-label="Buscar funciones del Lenguaje M" autocomplete="off" class="dax-search-input" placeholder="Buscar otra función M..." spellcheck="false" type="search"/>
+<button aria-label="Limpiar búsqueda" class="dax-search-clear" hidden="">✕</button>
+</div>
+<div aria-label="Resultados de búsqueda" class="dax-search-results" role="listbox"></div>
+</div>
+<nav aria-label="Índice de funciones" class="toc">
+<p class="toc__title">📌 Funciones en esta página:</p>
+<ul class="toc__list">
+<li><a href="#basics">Crear y acceder</a></li>
+<li><a href="#fields">Campos y valores</a></li>
+<li><a href="#modify">Modificar records</a></li>
+<li><a href="#combine">Combinar records</a></li>
+<li><a href="#convert">Convertir</a></li>
+<li><a href="#patterns">Patrones prácticos</a></li>
+</ul>
+</nav>
+<!-- Breadcrumb --><!-- Buscador compacto de funciones M --><!-- Cabecera --><div class="category-header" id="basics">
+<span class="category-header__icon">🆕</span>
+<h2 class="category-header__title">Crear y Acceder a Records</h2>
+</div><article class="function-card" id="record-literal">
+<header class="function-card__header">
+<h3 class="function-card__title">Record literal — [ ]</h3>
+<span class="badge badge--beginner">Principiante</span>
+</header>
+<div class="function-card__syntax"><h4>Sintaxis</h4>
+<pre><code class="language-javascript">[ campo1 = valor1, campo2 = valor2, ... ]
+
+// Acceso por campo
+record[NombreCampo]
+record[#"Campo Con Espacios"]</code></pre>
+</div>
+<div class="function-card__description"><h4>¿Qué hace?</h4>
+<p>Un record en M es una colección ordenada de pares clave-valor, similar a un objeto JSON o una fila de tabla. Se crea con <code>[ ]</code> y se accede con <code>record[campo]</code>.</p>
+</div>
+<div class="function-card__example"><h4>Ejemplo</h4>
+<pre><code class="language-javascript">// Crear un record
+let persona = [Nombre = "Sara", Edad = 30, Ciudad = "Madrid"]
+in persona[Nombre]   // "Sara"
+
+// Campos con espacios o caracteres especiales
+let config = [#"Tasa de IVA" = 0.21, #"Año Fiscal" = 2024]
+in config[#"Tasa de IVA"]   // 0.21
+
+// El contexto de fila _ es un record de la fila actual
+Table.AddColumn(tabla, "NombreCompleto",
+    each _[Nombre] &amp; " " &amp; _[Apellido]
+)</code></pre>
+</div>
+<div class="note note--tip">
+            💡 <strong>Tip kawaii:</strong> En Power Query, cuando usas <code>each</code>, el <code>_</code> implícito es el record de la fila actual. Por eso <code>each [Columna]</code> es lo mismo que <code>each _[Columna]</code>.
+          </div>
+</article><article class="function-card" id="record-field">
+<header class="function-card__header">
+<h3 class="function-card__title">Record.Field / Record.HasFields</h3>
+<span class="badge badge--intermediate">Intermedio</span>
+</header>
+<div class="function-card__syntax"><h4>Sintaxis</h4>
+<pre><code class="language-javascript">Record.Field(record as record, field as text) as any
+Record.HasFields(record as record, fields as any) as logical</code></pre>
+</div>
+<div class="function-card__description"><h4>¿Qué hace?</h4>
+<p><code>Record.Field</code> accede a un campo cuyo nombre se conoce en tiempo de ejecución (dinámico). <code>Record.HasFields</code> comprueba si el record tiene uno o varios campos.</p>
+</div>
+<div class="function-card__example"><h4>Ejemplo</h4>
+<pre><code class="language-javascript">let r = [A = 1, B = 2, C = 3]
+in Record.Field(r, "B")   // 2
+
+// Acceso dinámico (útil cuando el nombre de campo viene de una variable)
+let
+    campoDeseado = "Ciudad",
+    persona = [Nombre = "Ana", Ciudad = "Barcelona"]
+in Record.Field(persona, campoDeseado)   // "Barcelona"
+
+// Comprobar existencia de campo
+Record.HasFields([A=1, B=2], "C")        // false
+Record.HasFields([A=1, B=2], {"A","B"})  // true (comprueba varios a la vez)</code></pre>
+</div>
+</article><div class="category-header" id="fields">
+<span class="category-header__icon">🗂️</span>
+<h2 class="category-header__title">Campos y Valores</h2>
+</div><article class="function-card" id="record-fieldnames">
+<header class="function-card__header">
+<h3 class="function-card__title">Record.FieldNames / Record.FieldValues</h3>
+<span class="badge badge--intermediate">Intermedio</span>
+</header>
+<div class="function-card__syntax"><h4>Sintaxis</h4>
+<pre><code class="language-javascript">Record.FieldNames(record as record) as list
+Record.FieldValues(record as record) as list
+Record.FieldCount(record as record) as number</code></pre>
+</div>
+<div class="function-card__description"><h4>¿Qué hace?</h4>
+<p>Extraen los nombres de campo, los valores o el número de campos de un record, respectivamente. Útiles para introspección y procesamiento dinámico.</p>
+</div>
+<div class="function-card__example"><h4>Ejemplo</h4>
+<pre><code class="language-javascript">let r = [Nombre = "Ana", Edad = 25, Ciudad = "BCN"]
+in [
+    nombres  = Record.FieldNames(r),   // {"Nombre", "Edad", "Ciudad"}
+    valores  = Record.FieldValues(r),  // {"Ana", 25, "BCN"}
+    cantidad = Record.FieldCount(r)    // 3
+]
+
+// Obtener nombres de columnas de la primera fila de una tabla
+Record.FieldNames(tabla{0})</code></pre>
+</div>
+</article><article class="function-card" id="record-tolist">
+<header class="function-card__header">
+<h3 class="function-card__title">Record.ToList / Record.ToTable</h3>
+<span class="badge badge--intermediate">Intermedio</span>
+</header>
+<div class="function-card__syntax"><h4>Sintaxis</h4>
+<pre><code class="language-javascript">Record.ToList(record as record) as list
+Record.ToTable(record as record) as table</code></pre>
+</div>
+<div class="function-card__description"><h4>¿Qué hace?</h4>
+<p><code>Record.ToList</code> convierte los valores del record a lista. <code>Record.ToTable</code> convierte el record a una tabla de dos columnas: Name y Value.</p>
+</div>
+<div class="function-card__example"><h4>Ejemplo</h4>
+<pre><code class="language-javascript">let r = [A = 10, B = 20, C = 30]
+in Record.ToList(r)    // {10, 20, 30}
+
+Record.ToTable([Pais = "ES", Año = 2024])
+// Tabla:
+// Name  | Value
+// ------+------
+// Pais  | "ES"
+// Año   | 2024</code></pre>
+</div>
+</article><div class="category-header" id="modify">
+<span class="category-header__icon">🧠</span>
+<h2 class="category-header__title">Modificar Records</h2>
+</div><article class="function-card" id="record-addfields">
+<header class="function-card__header">
+<h3 class="function-card__title">Record.AddFields / Record.RemoveFields</h3>
+<span class="badge badge--intermediate">Intermedio</span>
+</header>
+<div class="function-card__syntax"><h4>Sintaxis</h4>
+<pre><code class="language-javascript">Record.AddFields(record as record, fields as record) as record
+Record.RemoveFields(record as record, fields as any) as record
+Record.RenameFields(record as record, renames as list) as record</code></pre>
+</div>
+<div class="function-card__description"><h4>¿Qué hace?</h4>
+<p>Añade, elimina o renombra campos de un record sin modificar el original (M es inmutable). Devuelve un nuevo record con los cambios aplicados.</p>
+</div>
+<div class="function-card__example"><h4>Ejemplo</h4>
+<pre><code class="language-javascript">let base = [Nombre = "Ana", Edad = 25]
+in [
+    // Añadir campo
+    conCiudad  = Record.AddFields(base, [Ciudad = "Madrid"]),
+    // [Nombre = "Ana", Edad = 25, Ciudad = "Madrid"]
+
+    // Eliminar campo
+    sinEdad    = Record.RemoveFields(base, "Edad"),
+    // [Nombre = "Ana"]
+
+    // Renombrar campo
+    renombrado = Record.RenameFields(base, {{"Nombre", "Name"}, {"Edad", "Age"}})
+    // [Name = "Ana", Age = 25]
+]</code></pre>
+</div>
+</article><article class="function-card" id="record-transformfields">
+<header class="function-card__header">
+<h3 class="function-card__title">Record.TransformFields</h3>
+<span class="badge badge--advanced">Avanzado</span>
+</header>
+<div class="function-card__syntax"><h4>Sintaxis</h4>
+<pre><code class="language-javascript">Record.TransformFields(record as record, transformOperations as list, optional missingField as nullable number) as record</code></pre>
+</div>
+<div class="function-card__description"><h4>¿Qué hace?</h4>
+<p>Aplica transformaciones a campos específicos de un record. Cada operación es un par <code>{nombreCampo, función}</code>.</p>
+</div>
+<div class="function-card__example"><h4>Ejemplo</h4>
+<pre><code class="language-javascript">let r = [Nombre = "ana garcía", Precio = "1234.5", Activo = "true"]
+in Record.TransformFields(r, {
+    {"Nombre",  Text.Proper},
+    {"Precio",  Number.FromText},
+    {"Activo",  Logical.FromText}
+})
+// [Nombre = "Ana García", Precio = 1234.5, Activo = true]</code></pre>
+</div>
+</article><div class="category-header" id="combine">
+<span class="category-header__icon">🔗</span>
+<h2 class="category-header__title">Combinar Records</h2>
+</div><article class="function-card" id="record-combine">
+<header class="function-card__header">
+<h3 class="function-card__title">Record.Combine</h3>
+<span class="badge badge--intermediate">Intermedio</span>
+</header>
+<div class="function-card__syntax"><h4>Sintaxis</h4>
+<pre><code class="language-javascript">Record.Combine(records as list) as record</code></pre>
+</div>
+<div class="function-card__description"><h4>¿Qué hace?</h4>
+<p>Fusiona una lista de records en uno solo. Si hay campos con el mismo nombre, el último valor prevalece.</p>
+</div>
+<div class="function-card__example"><h4>Ejemplo</h4>
+<pre><code class="language-javascript">Record.Combine({
+    [Nombre = "Ana", Edad = 25],
+    [Ciudad = "Madrid", Pais = "ES"],
+    [Edad = 26]   // sobreescribe Edad
+})
+// [Nombre = "Ana", Edad = 26, Ciudad = "Madrid", Pais = "ES"]
+
+// Patrón: record de configuración por defecto + sobrescribir con parámetros
+let
+    defaults = [Timeout = 30, Reintentos = 3, Debug = false],
+    params   = [Timeout = 60, Debug = true]
+in Record.Combine({defaults, params})
+// [Timeout = 60, Reintentos = 3, Debug = true]</code></pre>
+</div>
+<div class="note note--tip">
+            💡 <strong>Tip kawaii:</strong> El patrón "defaults + overrides" con <code>Record.Combine</code> es muy útil para funciones personalizadas con muchos parámetros opcionales. Defines los valores por defecto y sólo el usuario sobrescribe los que necesita cambiar.
+          </div>
+</article><div class="category-header" id="convert">
+<span class="category-header__icon">🔄</span>
+<h2 class="category-header__title">Convertir Records</h2>
+</div><article class="function-card" id="record-fromlist">
+<header class="function-card__header">
+<h3 class="function-card__title">Record.FromList / Record.FromTable</h3>
+<span class="badge badge--intermediate">Intermedio</span>
+</header>
+<div class="function-card__syntax"><h4>Sintaxis</h4>
+<pre><code class="language-javascript">Record.FromList(list as list, fields as any) as record
+Record.FromTable(table as table) as record</code></pre>
+</div>
+<div class="function-card__description"><h4>¿Qué hace?</h4>
+<p><code>Record.FromList</code> crea un record desde una lista de valores y una lista de nombres de campo. <code>Record.FromTable</code> crea un record desde una tabla con columnas Name y Value.</p>
+</div>
+<div class="function-card__example"><h4>Ejemplo</h4>
+<pre><code class="language-javascript">// Desde lista
+Record.FromList({"Ana", 25, "Madrid"}, {"Nombre", "Edad", "Ciudad"})
+// [Nombre = "Ana", Edad = 25, Ciudad = "Madrid"]
+
+// Desde tabla de parámetros (patrón muy usado en PQ)
+let
+    tablaParams = #table({"Name", "Value"}, {
+        {"Servidor", "prodserver"},
+        {"BaseDatos", "ventas"},
+        {"Puerto", 1433}
+    }),
+    config = Record.FromTable(tablaParams)
+in config[Servidor]   // "prodserver"</code></pre>
+</div>
+<div class="note note--practice">
+            📌 <strong>Buena práctica:</strong> El patrón de tabla de parámetros + <code>Record.FromTable</code> es la forma estándar de gestionar configuración en Power Query. Crea una tabla llamada "Parametros" con columnas Name/Value y conviértela a record para acceder a los valores por nombre.
+          </div>
+</article><div class="category-header" id="patterns">
+<span class="category-header__icon">🔮</span>
+<h2 class="category-header__title">Patrones Prácticos</h2>
+</div><article class="function-card" id="row-as-record">
+<header class="function-card__header">
+<h3 class="function-card__title">Filas como Records — tabla{n} y Table.First</h3>
+<span class="badge badge--intermediate">Intermedio</span>
+</header>
+<div class="function-card__description"><h4>¿Qué hace?</h4>
+<p>En M, cada fila de una tabla es un record. Puedes acceder a una fila específica con <code>tabla{indice}</code> (base 0) o con <code>Table.First</code>. Esto es muy útil para leer valores de tablas de parámetros.</p>
+</div>
+<div class="function-card__example"><h4>Ejemplo</h4>
+<pre><code class="language-javascript">let tabla = #table({"Nombre","Valor"}, {{"IVA", 0.21}, {"IRPF", 0.15}})
+in [
+    // Acceder a la primera fila como record
+    primeraFila = tabla{0},           // [Nombre = "IVA", Valor = 0.21]
+
+    // Acceder a un campo de la primera fila
+    iva = tabla{0}[Valor],            // 0.21
+
+    // Buscar por condición
+    irpf = tabla{[Nombre = "IRPF"]}[Valor]  // 0.15 (búsqueda por campo)
+]</code></pre>
+</div>
+<div class="note note--tip">
+            💡 <strong>Tip kawaii:</strong> La sintaxis <code>tabla{[Campo = "valor"]}[OtroCampo]</code> es como un BUSCARV de M: busca la fila donde <code>Campo = "valor"</code> y devuelve el valor de <code>OtroCampo</code>. ¡Mucho más limpio que un join completo!
+          </div>
+</article><div class="note note--next">
+        🚀 <strong>¡Records dominados!</strong> Ahora explora las <a href="transformacion.html">Funciones de Transformación</a> para combinadores, comparadores y separadores avanzados.
+      </div>
+</div>
+</main>
+</div>
+<button aria-label="Volver arriba" class="back-to-top" id="back-to-top" title="Volver arriba">↑</button>
+<script src="https://cdn.jsdelivr.net/npm/i18next@23/dist/umd/i18next.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1/prism.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1/components/prism-javascript.min.js"></script>
+<script src="../../assets/js/theme.js"></script>
+<script src="../../assets/js/i18n.js"></script>
+<script src="../../assets/js/main.js"></script>
+<script src="../../assets/js/cursor.js"></script>
+<script src="../../assets/js/m-search.js"></script>
+</body>
+</html>

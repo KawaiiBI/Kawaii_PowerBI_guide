@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Fundamentos de gobernanza en Power BI: pilares, roles, modelos de gobernanza centralizado vs self-service y los principios que sostienen una plataforma de datos sana.">
+  <title>Fundamentos de Gobernanza — Gobernanza | Power BI Guide by Kawaii BI</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/prismjs@1/themes/prism-okaidia.min.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="../../assets/css/main.css">
+  <link rel="stylesheet" href="../../assets/css/themes.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/layout.css">
+
+  <style>
+    .topic-header { text-align: center; padding: 2.5rem 0 2rem; border-bottom: 2px solid var(--color-mauve); margin-bottom: 2.5rem; }
+    .topic-header__icon { font-size: 4rem; margin-bottom: 0.75rem; display: block; }
+    .topic-header__title { font-size: clamp(1.875rem, 4vw, 2.5rem); font-weight: 800; color: var(--color-dark); margin-bottom: 0.625rem; line-height: 1.2; }
+    .topic-header__subtitle { font-size: 1.0625rem; color: var(--color-slate); margin-bottom: 1.25rem; line-height: 1.5; max-width: 600px; margin-left: auto; margin-right: auto; }
+    .topic-header__levels { display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap; align-items: center; }
+
+    .category-header { display: flex; align-items: center; gap: 0.75rem; margin: 2.5rem 0 1.25rem; padding: 0.875rem 1.25rem; background: var(--color-rose); border-radius: var(--border-radius-sm); border-left: 4px solid var(--color-coral); }
+    .category-header__icon { font-size: 1.5rem; }
+    .category-header__title { font-size: 1.25rem; font-weight: 700; margin: 0; }
+
+    .concept-card { background: var(--color-white); border: 1.5px solid var(--color-mauve); border-radius: var(--border-radius); padding: 1.75rem; margin-bottom: 1.5rem; scroll-margin-top: 80px; transition: border-color 0.2s; }
+    .concept-card:hover { border-color: var(--color-coral); }
+    .concept-card h3 { font-size: 1.25rem; font-weight: 700; color: var(--color-coral); margin-bottom: 0.75rem; }
+    .concept-card h4 { font-size: 0.9375rem; font-weight: 700; color: var(--color-dark); margin: 1.25rem 0 0.5rem; }
+    .concept-card p { font-size: 0.9375rem; line-height: 1.7; color: var(--color-dark); margin-bottom: 0.75rem; }
+    .concept-card ul { padding-left: 1.25rem; font-size: 0.9375rem; line-height: 1.8; color: var(--color-dark); }
+    .concept-card code { background: var(--color-blush); padding: 0.1em 0.4em; border-radius: 4px; font-family: 'Fira Code', monospace; font-size: 0.85em; color: var(--color-coral); }
+
+    .comparison-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1rem 0; }
+    .comparison-col { background: var(--color-rose); border-radius: var(--border-radius-sm); padding: 1rem; border: 1px solid var(--color-mauve); }
+    .comparison-col h4 { font-size: 0.9rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--color-dark); }
+    .comparison-col ul { font-size: 0.875rem; padding-left: 1rem; margin: 0; }
+    @media (max-width: 600px) { .comparison-grid { grid-template-columns: 1fr; } }
+
+    .toc { background: var(--color-rose); border-radius: var(--border-radius); padding: 1.25rem 1.5rem; margin-bottom: 2rem; border: 1.5px solid var(--color-mauve); }
+    .toc__title { font-size: 1rem; font-weight: 700; margin: 0 0 0.75rem; }
+    .toc__list { display: flex; flex-wrap: wrap; gap: 0.5rem; list-style: none; padding: 0; margin: 0; }
+    .toc__list a { font-size: 0.8125rem; color: var(--color-coral); text-decoration: none; padding: 0.25rem 0.625rem; background: var(--color-white); border-radius: 999px; border: 1px solid var(--color-mauve); transition: background 0.15s, color 0.15s; }
+    .toc__list a:hover { background: var(--color-coral); color: white; }
+  </style>
+</head>
+<body>
+
+  <aside class="site-sidebar">
+    <div class="site-sidebar__profile">
+      <img src="../../assets/images/avatar Sara.png" alt="Sara Lozano Martí" class="site-sidebar__avatar">
+      <p class="site-sidebar__name">Sara Lozano Martí</p>
+      <p class="site-sidebar__subtitle">Power BI Expert</p>
+    </div>
+    <nav class="site-sidebar__nav" aria-label="Navegación principal">
+      <ul>
+        <li><a href="../../index.html" class="site-sidebar__link"><span class="site-sidebar__icon">🏠</span> Inicio</a></li>
+        <li><a href="../dax.html" class="site-sidebar__link"><span class="site-sidebar__icon">⚡</span> Funciones DAX</a></li>
+        <li><a href="../power-query.html" class="site-sidebar__link"><span class="site-sidebar__icon">🔄</span> Power Query</a></li>
+        <li><a href="../lenguaje-m.html" class="site-sidebar__link"><span class="site-sidebar__icon">〽️</span> Lenguaje M</a></li>
+        <li><a href="../modelado.html" class="site-sidebar__link"><span class="site-sidebar__icon">🗄️</span> Modelado</a></li>
+        <li><a href="../conceptos-powerbi.html" class="site-sidebar__link"><span class="site-sidebar__icon">📊</span> Conceptos Power BI</a></li>
+        <li><a href="../fabric.html" class="site-sidebar__link"><span class="site-sidebar__icon">🧵</span> Microsoft Fabric</a></li>
+        <li><a href="../tmdl.html" class="site-sidebar__link"><span class="site-sidebar__icon">📝</span> TMDL</a></li>
+        <li><a href="../diseno-ux.html" class="site-sidebar__link"><span class="site-sidebar__icon">🎨</span> Diseño y UX</a></li>
+        <li><a href="../gobernanza.html" class="site-sidebar__link is-active"><span class="site-sidebar__icon">🔒</span> Gobernanza</a></li>
+      </ul>
+    </nav>
+    <div class="site-sidebar__divider"></div>
+    <div class="site-sidebar__footer">
+      <a href="../../quien-soy.html" class="site-sidebar__link site-sidebar__link--highlight"><span class="site-sidebar__icon">👩‍💻</span> ¿Quién soy?</a>
+      <div class="site-sidebar__social">
+        <a href="https://www.linkedin.com/in/saralozanomarti" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><img src="../../assets/images/logo linkedIN.png" alt="LinkedIn" class="site-sidebar__social-icon"></a>
+        <a href="https://www.youtube.com/@KawaiiPowerBI" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><img src="../../assets/images/logo youtube.png" alt="YouTube" class="site-sidebar__social-icon"></a>
+        <a href="https://github.com/KawaiiBI" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><img src="../../assets/images/logo github.png" alt="GitHub" class="site-sidebar__social-icon"></a>
+      </div>
+      <div class="site-sidebar__logo-bottom"><img src="../../assets/images/Logo Kawaii.jpg" alt="Kawaii BI" class="site-sidebar__logo-img"></div>
+      <p class="site-sidebar__copyright">Power BI Guide 🌸<br>© 2026 Kawaii BI</p>
+    </div>
+  </aside>
+
+  <div class="page-wrapper">
+    <main class="main-content">
+      <div class="topic-page">
+
+        <nav class="breadcrumb" aria-label="Ruta de navegación">
+          <span class="breadcrumb__item"><a href="../../index.html">🏠 Inicio</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item"><a href="../gobernanza.html">Gobernanza</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item">Fundamentos</span>
+        </nav>
+
+        <header class="topic-header">
+          <span class="topic-header__icon">🏛️</span>
+          <h1 class="topic-header__title">Fundamentos de Gobernanza</h1>
+          <p class="topic-header__subtitle">Qué significa gobernar datos en Power BI y Fabric, los pilares que la sostienen y los roles que la hacen posible en el mundo real.</p>
+          <div class="topic-header__levels">
+            <span class="badge badge--beginner">Principiante</span>
+          </div>
+        </header>
+
+        <nav class="toc" aria-label="Índice de contenidos">
+          <p class="toc__title">📌 En esta página:</p>
+          <ul class="toc__list">
+            <li><a href="#que-es">¿Qué es la gobernanza?</a></li>
+            <li><a href="#pilares">Los 4 pilares</a></li>
+            <li><a href="#modelos">Modelos de gobernanza</a></li>
+            <li><a href="#roles">Roles clave</a></li>
+            <li><a href="#anti-patrones">Anti-patrones</a></li>
+          </ul>
+        </nav>
+
+        <div class="category-header" id="que-es">
+          <span class="category-header__icon">💭</span>
+          <h2 class="category-header__title">¿Qué es la gobernanza de datos?</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>Una definición útil (sin tecnicismos)</h3>
+          <p>La <strong>gobernanza de datos</strong> es el conjunto de personas, procesos y políticas que garantizan que los datos de tu organización sean <em>fiables, seguros, accesibles y útiles</em>. En Power BI y Fabric, gobernar significa decidir:</p>
+          <ul>
+            <li><strong>Quién</strong> puede ver, crear, modificar y publicar cada tipo de contenido</li>
+            <li><strong>Qué</strong> calidad y nivel de confianza tiene cada informe o dataset</li>
+            <li><strong>Cómo</strong> se libera contenido a producción y se audita su uso</li>
+            <li><strong>Dónde</strong> vive cada cosa (workspace, capacidad, dominio)</li>
+          </ul>
+          <p>No es un proyecto que termine: es una práctica continua. Y no se trata de poner muros, sino de tender caminos seguros para que la gente trabaje con confianza. 🌸</p>
+        </article>
+
+        <article class="concept-card">
+          <h3>¿Por qué importa tanto en Power BI?</h3>
+          <p>Power BI es una herramienta <em>self-service</em>. Cualquiera con licencia Pro puede publicar contenido. Esa libertad es maravillosa para la adopción, pero sin gobernanza acaba creando:</p>
+          <ul>
+            <li>Cinco informes distintos con cinco cifras de ventas distintas 🤯</li>
+            <li>Datasets que nadie sabe quién mantiene</li>
+            <li>Permisos heredados que exponen datos sensibles por accidente</li>
+            <li>Workspaces huérfanos cuando alguien deja la empresa</li>
+          </ul>
+          <p>La gobernanza no <em>frena</em> el self-service: lo hace sostenible.</p>
+        </article>
+
+        <div class="note note--tip">
+          💡 <strong>Tip kawaii:</strong> Si en tu organización conviven "el informe oficial" y "el informe de verdad que todos usamos", tienes un problema de gobernanza. La buena noticia: tiene solución. 🌸
+        </div>
+
+        <div class="category-header" id="pilares">
+          <span class="category-header__icon">🏛️</span>
+          <h2 class="category-header__title">Los 4 pilares de la gobernanza</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>1. Seguridad y privacidad</h3>
+          <p>Proteger los datos sensibles de accesos no autorizados, fugas y mal uso. Incluye:</p>
+          <ul>
+            <li><strong><a href="rls.html">RLS</a></strong> y <strong><a href="ols.html">OLS</a></strong> para filtrar filas y columnas por usuario</li>
+            <li><strong><a href="sensitivity-labels.html">Sensitivity labels</a></strong> de Microsoft Purview que viajan con el dato</li>
+            <li><strong><a href="dlp.html">DLP</a></strong> para detectar y bloquear exposiciones</li>
+            <li>Cifrado en tránsito y en reposo (lo provee Microsoft, pero hay que configurarlo bien)</li>
+          </ul>
+        </article>
+
+        <article class="concept-card">
+          <h3>2. Calidad y confianza</h3>
+          <p>Que la gente pueda saber, de un vistazo, si puede confiar en un informe. Aquí entra la <strong><a href="certificacion.html">certificación y promoción</a></strong>: cualquiera puede publicar, pero solo el contenido revisado lleva el sello oficial.</p>
+          <p>También incluye documentación, definiciones de métricas compartidas y un proceso claro para reportar errores.</p>
+        </article>
+
+        <article class="concept-card">
+          <h3>3. Ciclo de vida y cambios</h3>
+          <p>Cómo pasa el contenido de "lo estoy probando" a "está en producción" sin romper nada. Las <strong><a href="deployment-pipelines.html">deployment pipelines</a></strong>, el control de versiones con Git en Fabric y el <strong><a href="linaje.html">análisis de impacto</a></strong> antes de cambios son las piezas clave.</p>
+        </article>
+
+        <article class="concept-card">
+          <h3>4. Adopción y cultura</h3>
+          <p>Sin gente que use bien la plataforma, todo lo demás sobra. Aquí entran la formación, la comunidad interna, el <strong><a href="coe-adopcion.html">Centro de Excelencia</a></strong> y la medición de uso real con la <strong><a href="auditoria.html">auditoría</a></strong>.</p>
+        </article>
+
+        <div class="note note--practice">
+          📌 <strong>Buena práctica:</strong> Empieza pequeño. Una organización que arranca con gobernanza no necesita cubrir los 4 pilares a la vez. Prioriza seguridad y workspaces primero; el resto va detrás.
+        </div>
+
+        <div class="category-header" id="modelos">
+          <span class="category-header__icon">⚖️</span>
+          <h2 class="category-header__title">Modelos de gobernanza</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>Tres formas de gobernar (con sus pros y contras)</h3>
+          <p>No hay un modelo único. Microsoft documenta tres patrones principales en el <em>Power BI Adoption Roadmap</em>:</p>
+
+          <h4>🏢 Centralizado (Bismarck)</h4>
+          <ul>
+            <li>Un equipo central de BI publica todo el contenido</li>
+            <li>Máxima consistencia, mínima velocidad</li>
+            <li>Funciona en organizaciones pequeñas o muy reguladas</li>
+          </ul>
+
+          <h4>🌱 Descentralizado / Self-service total</h4>
+          <ul>
+            <li>Cada departamento crea sus informes sin intervención central</li>
+            <li>Máxima velocidad, mínima consistencia</li>
+            <li>Tiende al caos sin un mínimo de reglas comunes</li>
+          </ul>
+
+          <h4>🤝 Híbrido / Federado (recomendado)</h4>
+          <ul>
+            <li>Un CoE central define plantillas, datasets certificados y normas</li>
+            <li>Los departamentos crean su propio contenido encima de esos cimientos</li>
+            <li>Equilibrio entre velocidad y control — el modelo dominante en empresas medianas y grandes</li>
+          </ul>
+        </article>
+
+        <div class="category-header" id="roles">
+          <span class="category-header__icon">👥</span>
+          <h2 class="category-header__title">Roles clave</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>¿Quién hace qué en una plataforma gobernada?</h3>
+          <div class="comparison-grid">
+            <div class="comparison-col">
+              <h4>Roles de plataforma</h4>
+              <ul>
+                <li><strong>Power BI Service Admin:</strong> configura el tenant</li>
+                <li><strong>Capacity Admin:</strong> gestiona capacidades Premium/Fabric</li>
+                <li><strong>Workspace Admin:</strong> dueño funcional del workspace</li>
+                <li><strong>Data Steward:</strong> custodia la calidad y semántica del dato</li>
+              </ul>
+            </div>
+            <div class="comparison-col">
+              <h4>Roles de contenido</h4>
+              <ul>
+                <li><strong>Dataset Owner:</strong> mantiene un modelo semántico</li>
+                <li><strong>Report Author:</strong> diseña los informes</li>
+                <li><strong>Content Consumer:</strong> lector final</li>
+                <li><strong>Champion:</strong> referente del equipo en buenas prácticas</li>
+              </ul>
+            </div>
+          </div>
+        </article>
+
+        <div class="note note--tip">
+          💡 <strong>Tip kawaii:</strong> En equipos pequeños una misma persona viste muchos sombreros. Eso está bien — lo importante es saber qué sombrero llevas en cada momento. 🎩
+        </div>
+
+        <div class="category-header" id="anti-patrones">
+          <span class="category-header__icon">⚠️</span>
+          <h2 class="category-header__title">Anti-patrones frecuentes</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>Cosas que parecen buena idea pero no lo son</h3>
+          <ul>
+            <li><strong>Bloquearlo todo "por seguridad":</strong> la gente acaba descargando datos a Excel — peor remedio que enfermedad.</li>
+            <li><strong>Gobernanza solo en documentos PDF:</strong> si la regla no está embebida en la plataforma (RLS, sensitivity labels, pipelines), no existe.</li>
+            <li><strong>Un único workspace gigante "BI" para todo:</strong> imposible de auditar, imposible de gestionar permisos finos.</li>
+            <li><strong>Certificar contenido sin proceso:</strong> sello sin revisión = sello sin valor.</li>
+            <li><strong>Auditoría que nadie mira:</strong> activar el activity log y olvidarse es como tener cámaras apagadas.</li>
+          </ul>
+        </article>
+
+        <div class="note note--next" style="margin-top: 2rem;">
+          🚀 <strong>¡Ya tienes el mapa!</strong> El siguiente paso natural es organizar el contenido. Sigue por <a href="workspaces.html">Workspaces y Roles</a> — la unidad base de organización en Power BI — y después <a href="rls.html">RLS</a> para empezar a proteger filas.
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <button id="back-to-top" class="back-to-top" aria-label="Volver arriba" title="Volver arriba">↑</button>
+
+  <script src="https://cdn.jsdelivr.net/npm/i18next@23/dist/umd/i18next.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1/prism.min.js"></script>
+  <script src="../../assets/js/theme.js"></script>
+  <script src="../../assets/js/main.js"></script>
+  <script src="../../assets/js/cursor.js"></script>
+</body>
+</html>

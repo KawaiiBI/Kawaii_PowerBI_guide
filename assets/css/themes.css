@@ -1,0 +1,96 @@
+/* ===================================================================
+   THEMES.CSS — Power BI Guide 🌸
+   Sistema de temas claro/oscuro
+   El tema oscuro se activa añadiendo la clase "dark-theme" al <html>
+   =================================================================== */
+
+/* === VARIABLES TEMA OSCURO === */
+/* Sobrescritura de variables CSS cuando el tema oscuro está activo */
+[data-theme="dark"],
+html.dark-theme {
+  --color-blush: #1A1520;
+  --color-rose: #221C2A;
+  --color-mauve: #3D3447;
+  --color-dark: #F0ECF5;
+  --color-slate: #A89BB5;
+  --color-white: #2A2035;
+  --color-code-bg: #110D18;
+}
+
+/* === TRANSICIONES SUAVES AL CAMBIAR TEMA === */
+/* Animación fluida de 0.3s en elementos principales al alternar tema */
+body,
+header,
+nav,
+aside,
+.topic-card,
+.search-input {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+/* === ESTILOS ESPECÍFICOS TEMA OSCURO === */
+
+/* Header en modo oscuro */
+html.dark-theme #main-header,
+[data-theme="dark"] #main-header {
+  background: #1A1520;
+  border-bottom: 1px solid #3D3447;
+}
+
+/* Cards de topics en modo oscuro */
+html.dark-theme .topic-card,
+[data-theme="dark"] .topic-card {
+  background: #221C2A;
+  border-color: #3D3447;
+}
+
+/* Input de búsqueda en modo oscuro */
+html.dark-theme .search-input,
+[data-theme="dark"] .search-input {
+  background: #221C2A;
+  color: var(--color-dark);
+  border-color: #3D3447;
+}
+
+/* Notas y callouts en modo oscuro con fondos semitransparentes */
+html.dark-theme .note--tip,
+[data-theme="dark"] .note--tip {
+  background: rgba(242, 201, 75, 0.08);
+}
+
+html.dark-theme .note--warning,
+[data-theme="dark"] .note--warning {
+  background: rgba(249, 165, 139, 0.08);
+}
+
+html.dark-theme .note--best-practice,
+[data-theme="dark"] .note--best-practice {
+  background: rgba(91, 173, 146, 0.08);
+}
+
+/* === BOTÓN TOGGLE DE TEMA === */
+/* Botón para alternar entre tema claro y oscuro */
+#theme-toggle {
+  background: transparent;
+  border: 1.5px solid var(--color-mauve);
+  border-radius: var(--border-radius-sm);
+  padding: 0.375rem 0.75rem;
+  cursor: pointer;
+  font-size: 0.875rem;
+  color: var(--color-dark);
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-family: var(--font-main);
+}
+
+#theme-toggle:hover {
+  border-color: var(--color-coral);
+  color: var(--color-coral);
+}
+
+#theme-toggle:focus {
+  outline: 2px solid var(--color-coral);
+  outline-offset: 2px;
+}

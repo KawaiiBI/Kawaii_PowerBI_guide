@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Estrategia de color para dashboards Power BI: la Regla 1-1-1, armonía cromática, colores semánticos, Coolors.com, fondos neutros y errores comunes de color en informes.">
+  <title>Estrategia de Color — Diseño y UX | Power BI Guide by Kawaii BI</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+
+  <!-- Estilos CSS -->
+  <link rel="stylesheet" href="../../assets/css/main.css">
+  <link rel="stylesheet" href="../../assets/css/themes.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/layout.css">
+
+  <style>
+    /* ── Cabecera centrada ──────────────────────────────── */
+    .topic-header {
+      text-align: center;
+      padding: 2.5rem 0 2rem;
+      border-bottom: 2px solid var(--color-mauve);
+      margin-bottom: 2.5rem;
+    }
+    .topic-header__icon { font-size: 4rem; margin-bottom: 0.75rem; display: block; }
+    .topic-header__title { font-size: clamp(1.875rem, 4vw, 2.5rem); font-weight: 800; color: var(--color-dark); margin-bottom: 0.625rem; line-height: 1.2; }
+    .topic-header__subtitle { font-size: 1.0625rem; color: var(--color-slate); margin-bottom: 1.25rem; line-height: 1.5; max-width: 620px; margin-left: auto; margin-right: auto; }
+    .topic-header__levels { display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap; }
+
+    /* ── TOC ────────────────────────────────────────────── */
+    .toc { background: var(--color-rose); border-radius: var(--border-radius); padding: 1.25rem 1.5rem; margin-bottom: 2rem; border: 1.5px solid var(--color-mauve); }
+    .toc__title { font-size: 1rem; font-weight: 700; margin: 0 0 0.75rem; }
+    .toc__list { display: flex; flex-wrap: wrap; gap: 0.5rem; list-style: none; padding: 0; margin: 0; }
+    .toc__list a { font-size: 0.8125rem; color: var(--color-coral); text-decoration: none; padding: 0.25rem 0.625rem; background: var(--color-white); border-radius: 999px; border: 1px solid var(--color-mauve); transition: background 0.15s, color 0.15s; }
+    .toc__list a:hover { background: var(--color-coral); color: white; }
+
+    /* ── Sección header ─────────────────────────────────── */
+    .category-header { display: flex; align-items: center; gap: 0.75rem; margin: 2.5rem 0 1.25rem; padding: 0.875rem 1.25rem; background: var(--color-rose); border-radius: var(--border-radius-sm); border-left: 4px solid var(--color-coral); }
+    .category-header__icon { font-size: 1.5rem; }
+    .category-header__title { font-size: 1.25rem; font-weight: 700; margin: 0; }
+
+    /* ── Concept card ───────────────────────────────────── */
+    .concept-card { background: var(--color-white); border: 1.5px solid var(--color-mauve); border-radius: var(--border-radius); padding: 1.75rem; margin-bottom: 1.5rem; scroll-margin-top: 80px; transition: border-color 0.2s; }
+    .concept-card:hover { border-color: var(--color-coral); }
+    .concept-card h3 { font-size: 1.25rem; font-weight: 700; color: var(--color-coral); margin-bottom: 0.75rem; }
+    .concept-card h4 { font-size: 0.9375rem; font-weight: 700; color: var(--color-dark); margin: 1.25rem 0 0.5rem; }
+    .concept-card p { font-size: 0.9375rem; line-height: 1.7; color: var(--color-dark); margin-bottom: 0.75rem; }
+    .concept-card p:last-child { margin-bottom: 0; }
+    .concept-card ul, .concept-card ol { padding-left: 1.25rem; font-size: 0.9375rem; line-height: 1.8; color: var(--color-dark); margin-bottom: 0.75rem; }
+
+    /* ── Cita destacada ─────────────────────────────────── */
+    .quote-block { background: linear-gradient(135deg, var(--color-rose) 0%, var(--color-blush) 100%); border-left: 4px solid var(--color-coral); border-radius: var(--border-radius); padding: 1.5rem 1.75rem; margin: 1.5rem 0; }
+    .quote-block__text { font-size: 1.125rem; font-weight: 600; color: var(--color-dark); line-height: 1.5; font-style: italic; margin: 0 0 0.375rem; }
+    .quote-block__author { font-size: 0.8125rem; color: var(--color-slate); margin: 0; }
+
+    /* ── Demo Regla 1-1-1 ──────────────────────────────── */
+    .rule-111 {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1.5rem;
+      margin: 1.5rem 0;
+      flex-wrap: wrap;
+    }
+    .rule-111__item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .rule-111__swatch {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      border: 3px solid var(--color-white);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+    }
+    .rule-111__label {
+      font-size: 0.8125rem;
+      font-weight: 700;
+      color: var(--color-dark);
+    }
+    .rule-111__plus {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: var(--color-mauve);
+    }
+
+    /* ── Demo paleta armónica ──────────────────────────── */
+    .palette-demo {
+      display: flex;
+      gap: 0;
+      border-radius: var(--border-radius);
+      overflow: hidden;
+      border: 1.5px solid var(--color-mauve);
+      margin: 1.25rem 0;
+      height: 64px;
+    }
+    .palette-demo__color {
+      flex: 1;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      padding-bottom: 6px;
+      font-size: 0.625rem;
+      font-weight: 700;
+      color: rgba(255,255,255,0.9);
+      text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+    }
+
+    /* ── Tabla de colores semánticos ────────────────────── */
+    .semantic-table { width: 100%; border-collapse: collapse; font-size: 0.875rem; margin: 1rem 0; }
+    .semantic-table th { background: var(--color-rose); padding: 0.625rem 0.875rem; text-align: left; font-weight: 700; border: 1px solid var(--color-mauve); }
+    .semantic-table td { padding: 0.625rem 0.875rem; border: 1px solid var(--color-mauve); line-height: 1.5; vertical-align: top; }
+    .semantic-table tr:nth-child(even) td { background: var(--color-blush); }
+    .semantic-swatch {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border-radius: 3px;
+      vertical-align: middle;
+      margin-right: 6px;
+      border: 1px solid rgba(0,0,0,0.1);
+    }
+
+    /* ── Grid comparativo bien/mal ─────────────────────── */
+    .comparison-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1rem 0; }
+    .comparison-col { border-radius: var(--border-radius-sm); padding: 1.25rem; border: 1.5px solid var(--color-mauve); }
+    .comparison-col--bad { background: #fff5f5; border-color: #f5c6c6; }
+    .comparison-col--good { background: #f0faf5; border-color: #b8dfc9; }
+    .comparison-col__label { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.625rem; }
+    .comparison-col--bad .comparison-col__label { color: #c0392b; }
+    .comparison-col--good .comparison-col__label { color: #27ae60; }
+    .comparison-col ul { font-size: 0.875rem; padding-left: 1.1rem; margin: 0; line-height: 1.7; color: var(--color-dark); }
+    @media (max-width: 600px) { .comparison-grid { grid-template-columns: 1fr; } }
+
+    /* ── Demo de fondos ────────────────────────────────── */
+    .bg-demo {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin: 1.25rem 0;
+    }
+    .bg-demo__panel {
+      border-radius: var(--border-radius-sm);
+      padding: 1.25rem;
+      border: 1.5px solid var(--color-mauve);
+      text-align: center;
+    }
+    .bg-demo__label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.75rem;
+    }
+    .bg-demo__mock-kpi {
+      font-size: 1.5rem;
+      font-weight: 800;
+      margin-bottom: 0.25rem;
+    }
+    .bg-demo__mock-label {
+      font-size: 0.75rem;
+      color: var(--color-slate);
+    }
+    @media (max-width: 600px) { .bg-demo { grid-template-columns: 1fr; } }
+
+    /* ── Herramientas grid ─────────────────────────────── */
+    .tools-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 1rem;
+      margin: 1.25rem 0;
+    }
+    .tool-card {
+      background: var(--color-white);
+      border: 1.5px solid var(--color-mauve);
+      border-radius: var(--border-radius);
+      padding: 1.25rem;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+    .tool-card:hover { border-color: var(--color-coral); transform: translateY(-2px); }
+    .tool-card__name { font-size: 0.9375rem; font-weight: 700; color: var(--color-dark); margin-bottom: 0.375rem; }
+    .tool-card__url { font-size: 0.75rem; color: var(--color-coral); font-weight: 600; margin-bottom: 0.5rem; }
+    .tool-card__desc { font-size: 0.8125rem; color: var(--color-slate); line-height: 1.5; }
+  </style>
+</head>
+<body>
+
+  <!-- SIDEBAR -->
+  <aside class="site-sidebar">
+    <div class="site-sidebar__profile">
+      <img src="../../assets/images/avatar Sara.png" alt="Sara Lozano Martí" class="site-sidebar__avatar">
+      <p class="site-sidebar__name">Sara Lozano Martí</p>
+      <p class="site-sidebar__subtitle">Power BI Expert</p>
+    </div>
+    <nav class="site-sidebar__nav" aria-label="Navegación principal">
+      <ul>
+        <li><a href="../../index.html" class="site-sidebar__link"><span class="site-sidebar__icon">🏠</span> Inicio</a></li>
+        <li><a href="../dax.html" class="site-sidebar__link"><span class="site-sidebar__icon">⚡</span> Funciones DAX</a></li>
+        <li><a href="../power-query.html" class="site-sidebar__link"><span class="site-sidebar__icon">🔄</span> Power Query</a></li>
+        <li><a href="../lenguaje-m.html" class="site-sidebar__link"><span class="site-sidebar__icon">〽️</span> Lenguaje M</a></li>
+        <li><a href="../modelado.html" class="site-sidebar__link"><span class="site-sidebar__icon">🗄️</span> Modelado</a></li>
+        <li><a href="../conceptos-powerbi.html" class="site-sidebar__link"><span class="site-sidebar__icon">📊</span> Conceptos Power BI</a></li>
+        <li><a href="../fabric.html" class="site-sidebar__link"><span class="site-sidebar__icon">🧵</span> Microsoft Fabric</a></li>
+        <li><a href="../tmdl.html" class="site-sidebar__link"><span class="site-sidebar__icon">📝</span> TMDL</a></li>
+        <li><a href="../diseno-ux.html" class="site-sidebar__link is-active"><span class="site-sidebar__icon">🎨</span> Diseño y UX</a></li>
+        <li><a href="../gobernanza.html" class="site-sidebar__link"><span class="site-sidebar__icon">🔒</span> Gobernanza</a></li>
+      </ul>
+    </nav>
+    <div class="site-sidebar__divider"></div>
+    <div class="site-sidebar__footer">
+      <a href="../../quien-soy.html" class="site-sidebar__link site-sidebar__link--highlight"><span class="site-sidebar__icon">👩‍💻</span> ¿Quién soy?</a>
+      <div class="site-sidebar__social">
+        <a href="https://www.linkedin.com/in/saralozanomarti" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><img src="../../assets/images/logo linkedIN.png" alt="LinkedIn" class="site-sidebar__social-icon"></a>
+        <a href="https://www.youtube.com/@KawaiiPowerBI" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><img src="../../assets/images/logo youtube.png" alt="YouTube" class="site-sidebar__social-icon"></a>
+        <a href="https://github.com/KawaiiBI" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><img src="../../assets/images/logo github.png" alt="GitHub" class="site-sidebar__social-icon"></a>
+      </div>
+      <div class="site-sidebar__logo-bottom"><img src="../../assets/images/Logo Kawaii.jpg" alt="Kawaii BI" class="site-sidebar__logo-img"></div>
+      <p class="site-sidebar__copyright">Power BI Guide 🌸<br>© 2026 Kawaii BI</p>
+    </div>
+  </aside>
+
+  <!-- CONTENIDO PRINCIPAL -->
+  <div class="page-wrapper">
+    <main class="main-content">
+      <div class="topic-page">
+
+        <!-- Breadcrumb -->
+        <nav class="breadcrumb" aria-label="Ruta de navegación">
+          <span class="breadcrumb__item"><a href="../../index.html">🏠 Inicio</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item"><a href="../diseno-ux.html">Diseño y UX</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item">Estrategia de Color</span>
+        </nav>
+
+        <!-- Cabecera -->
+        <header class="topic-header">
+          <span class="topic-header__icon">🎨</span>
+          <h1 class="topic-header__title">Estrategia de Color</h1>
+          <p class="topic-header__subtitle">"El color es para comunicar datos, no para decorar." La Regla 1-1-1, armonía cromática, colores semánticos, fondos neutros y las herramientas que necesitas para no fallar nunca con la paleta</p>
+          <div class="topic-header__levels">
+            <span class="badge badge--beginner">Principiante</span>
+            <span class="badge badge--intermediate">Intermedio</span>
+          </div>
+        </header>
+
+        <!-- TOC -->
+        <nav class="toc" aria-label="Contenido de esta página">
+          <p class="toc__title">📋 En esta página</p>
+          <ul class="toc__list">
+            <li><a href="#principio">El color comunica, no decora</a></li>
+            <li><a href="#regla-111">La Regla 1-1-1</a></li>
+            <li><a href="#armonia">Armonía cromática</a></li>
+            <li><a href="#semanticos">Colores semánticos</a></li>
+            <li><a href="#fondos">Fondos: menos es más</a></li>
+            <li><a href="#negro-blanco">Negro y blanco puros</a></li>
+            <li><a href="#errores">Errores comunes</a></li>
+            <li><a href="#herramientas">Herramientas de color</a></li>
+            <li><a href="#en-power-bi">Aplicado en Power BI</a></li>
+          </ul>
+        </nav>
+
+        <!-- ─────────────────────────────────────────── -->
+        <!-- 1. El color comunica, no decora              -->
+        <!-- ─────────────────────────────────────────── -->
+        <div class="category-header" id="principio">
+          <span class="category-header__icon">💬</span>
+          <h2 class="category-header__title">El color comunica, no decora</h2>
+        </div>
+
+        <div class="concept-card">
+          <h3>Cada color que añades tiene un coste cognitivo</h3>
+          <p>
+            En un dashboard, el color es una de las herramientas visuales más potentes que existen.
+            También es la más mal utilizada. Cada color distinto que aparece en pantalla obliga al
+            cerebro a preguntarse: <em>"¿Qué significa este color? ¿Es diferente del anterior por
+            algún motivo?"</em> Si la respuesta es "no, es solo decoración", has consumido atención
+            del usuario a cambio de nada.
+          </p>
+
+          <div class="quote-block">
+            <p class="quote-block__text">"El color es para comunicar datos, no para decorar."</p>
+            <p class="quote-block__author">— Estrategia de color, Kawaii BI</p>
+          </div>
+
+          <p>
+            El principio fundamental es sencillo: <strong>el color en un dashboard solo debe usarse
+            cuando transmite información</strong>. Si un color no dice nada que el usuario necesite
+            saber, está robando atención a los colores que sí comunican.
+          </p>
+
+          <div class="note note--tip">
+            💡 <strong>Tip kawaii:</strong> Haz esta prueba mental: si pusieras todo tu dashboard en escala de grises y solo coloreases <em>una cosa</em>, ¿qué colorearías? Eso es lo que debería tener color. Todo lo demás puede funcionar en gris.
+          </div>
+        </div>
+
+        <!-- ─────────────────────────────────────────── -->
+        <!-- 2. La Regla 1-1-1                           -->
+        <!-- ─────────────────────────────────────────── -->
+        <div class="category-header" id="regla-111">
+          <span class="category-header__icon">🎯</span>
+          <h2 class="category-header__title">La Regla 1-1-1</h2>
+        </div>
+
+        <div class="concept-card">
+          <h3>1 principal + 1 secundario + 1 alerta</h3>
+          <p>
+            La regla más práctica y efectiva para elegir la paleta de un dashboard. No necesitas
+            12 colores. Necesitas exactamente tres roles cromáticos:
+          </p>
+
+          <div class="rule-111" role="img" aria-label="Regla 1-1-1: un color principal, uno secundario, uno de alerta">
+            <div class="rule-111__item">
+              <div class="rule-111__swatch" style="background: #2C5F8A;"></div>
+              <span class="rule-111__label">Principal</span>
+            </div>
+            <span class="rule-111__plus">+</span>
+            <div class="rule-111__item">
+              <div class="rule-111__swatch" style="background: #A8C4DA;"></div>
+              <span class="rule-111__label">Secundario</span>
+            </div>
+            <span class="rule-111__plus">+</span>
+            <div class="rule-111__item">
+              <div class="rule-111__swatch" style="background: #E74E37;"></div>
+              <span class="rule-111__label">Alerta</span>
+            </div>
+          </div>
+
+          <h4>Cómo funciona cada rol</h4>
+          <ul>
+            <li>
+              <strong>Color principal (1):</strong> El color de tu marca o el color dominante del informe.
+              Se usa para la serie de datos más importante, los KPIs principales, los enlaces y la
+              navegación activa. Es el color que el usuario asocia con "esto es lo que importa".
+            </li>
+            <li>
+              <strong>Color secundario (1):</strong> Una versión más clara o desaturada del principal, o un
+              color complementario suave. Se usa para series de datos secundarias, fondos de tarjeta,
+              bordes de visual y elementos de soporte que no deben competir con el principal.
+            </li>
+            <li>
+              <strong>Color de alerta (1):</strong> Un color de alto contraste reservado exclusivamente
+              para excepciones, alertas, valores fuera de rango o indicadores negativos. Normalmente
+              rojo o un tono cálido intenso. Si se usa para todo, pierde todo su poder.
+            </li>
+          </ul>
+
+          <p>
+            Todo lo demás — textos, ejes, leyendas, bordes, fondos — se resuelve con la familia
+            de <strong>grises</strong>: gris oscuro para texto (#333), gris medio para etiquetas (#666),
+            gris claro para bordes (#DDD) y gris muy claro o blanco para fondos.
+          </p>
+
+          <div class="note note--practice">
+            📌 <strong>Buena práctica:</strong> Si tu organización tiene un color corporativo (ej: el azul de Telefónica, el verde de Iberdrola), ese es tu color principal. No hace falta inventar nada — tu paleta empieza y termina en la marca.
+          </div>
+        </div>
+
+        <!-- ─────────────────────────────────────────── -->
+        <!-- 3. Armonía cromática                        -->
+        <!-- ─────────────────────────────────────────── -->
+        <div class="category-header" id="armonia">
+          <span class="category-header__icon">🌈</span>
+          <h2 class="category-header__title">Armonía cromática: que los colores no peleen entre sí</h2>
+        </div>
+
+        <div class="concept-card">
+          <h3>Paletas armónicas — cuando los colores "suenan bien" juntos</h3>
+          <p>
+            La armonía cromática es la relación entre colores que genera una sensación de equilibrio
+            y coherencia visual. Los colores armónicos no compiten entre sí ni generan tensión
+            visual — conviven de forma natural.
+          </p>
+
+          <h4>Ejemplo de paleta armónica</h4>
+          <div class="palette-demo" role="img" aria-label="Ejemplo de paleta armónica de 5 colores">
+            <div class="palette-demo__color" style="background: #5B8DB8;">#5B8DB8</div>
+            <div class="palette-demo__color" style="background: #7EC8A0;">#7EC8A0</div>
+            <div class="palette-demo__color" style="background: #F2DCC2;">#F2DCC2</div>
+            <div class="palette-demo__color" style="background: #F0B4B4;">#F0B4B4</div>
+            <div class="palette-demo__color" style="background: #C3A6D6;">#C3A6D6</div>
+          </div>
+
+          <h4>Tipos de armonía que funcionan en dashboards</h4>
+          <ul>
+            <li>
+              <strong>Monocromática:</strong> Variaciones de un solo tono (azul oscuro, medio, claro).
+              Es la más segura y la que mejor funciona para series de datos ordenadas (ej: de más a menos).
+            </li>
+            <li>
+              <strong>Análoga:</strong> Colores vecinos en la rueda cromática (azul, azul-verde, verde).
+              Genera armonía suave sin monotonía. Buena para 3-4 series de datos relacionadas.
+            </li>
+            <li>
+              <strong>Complementaria:</strong> Dos colores opuestos en la rueda (azul y naranja).
+              Alto contraste. Perfecta para comparaciones binarias: real vs. objetivo, este año vs. anterior.
+            </li>
+          </ul>
+
+          <div class="note note--warning">
+            ⚠️ <strong>Ojo con esto:</strong> Evita combinaciones disonantes — colores que "vibran" al estar juntos (rojo puro + verde puro, azul eléctrico + amarillo chillón). Si miras la paleta y te molesta a la vista, a tu audiencia también le molestará.
+          </div>
+        </div>
+
+        <!-- ─────────────────────────────────────────── -->
+        <!-- 4. Colores semánticos                       -->
+        <!-- ─────────────────────────────────────────── -->
+        <div class="category-header" id="semanticos">
+          <span class="category-header__icon">🚦</span>
+          <h2 class="category-header__title">Colores semánticos: qué significan los colores para tu audiencia</h2>
+        </div>
+
+        <div class="concept-card">
+          <h3>El color tiene significado cultural — respétalo</h3>
+          <p>
+            Los colores semánticos son aquellos que tienen un significado universalmente aceptado
+            en el contexto empresarial. Si tu audiencia ve rojo, piensa "malo" o "urgente". Si
+            ve verde, piensa "bueno" o "en objetivo". Ir en contra de esos significados genera
+            confusión inmediata.
+          </p>
+
+          <table class="semantic-table" aria-label="Colores semánticos en dashboards">
+            <thead>
+              <tr>
+                <th>Color</th>
+                <th>Significado habitual</th>
+                <th>Uso en Power BI</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="semantic-swatch" style="background:#27ae60;"></span> <strong>Verde</strong></td>
+                <td>Positivo, objetivo cumplido, crecimiento</td>
+                <td>Formato condicional en KPIs que cumplen objetivo, tendencias positivas</td>
+              </tr>
+              <tr>
+                <td><span class="semantic-swatch" style="background:#e74c3c;"></span> <strong>Rojo</strong></td>
+                <td>Negativo, alerta, descenso, urgente</td>
+                <td>KPIs por debajo de objetivo, valores atípicos que requieren atención</td>
+              </tr>
+              <tr>
+                <td><span class="semantic-swatch" style="background:#f39c12;"></span> <strong>Amarillo/Ámbar</strong></td>
+                <td>Precaución, cerca del límite, en riesgo</td>
+                <td>Valores que se acercan al umbral pero aún no lo superan</td>
+              </tr>
+              <tr>
+                <td><span class="semantic-swatch" style="background:#7f8c8d;"></span> <strong>Gris</strong></td>
+                <td>Neutro, sin valoración, referencia</td>
+                <td>Datos de contexto, períodos anteriores, benchmarks, series secundarias</td>
+              </tr>
+              <tr>
+                <td><span class="semantic-swatch" style="background:#2c5f8a;"></span> <strong>Azul</strong></td>
+                <td>Informativo, neutro-profesional, confianza</td>
+                <td>Color principal de la serie de datos cuando no hay valoración buena/mala</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="note note--warning">
+            ⚠️ <strong>Señales mixtas — el error más peligroso:</strong> Nunca mezcles el significado de un color. Si verde es "bueno" en la página 1, no puede ser "categoría Norte" en la página 3. Y jamás pongas texto "Cerrado" en verde o "Aprobado" en rojo — texto y color deben coincidir siempre.
+          </div>
+        </div>
+
+        <!-- ─────────────────────────────────────────── -->
+        <!-- 5. Fondos                                   -->
+        <!-- ─────────────────────────────────────────── -->
+        <div class="category-header" id="fondos">
+          <span class="category-header__icon">🖼️</span>
+          <h2 class="category-header__title">Fondos: menos es más</h2>
+        </div>
+
+        <div class="concept-card">
+          <h3>Evita fondos brillantes o "shiny" — distraen del dato</h3>
+          <p>
+            El fondo del dashboard es el lienzo sobre el que se pintan los datos. Si el lienzo
+            llama la atención, compite con la pintura. Un fondo neutro y uniforme permite que los
+            colores de los datos destaquen al máximo.
+          </p>
+
+          <div class="bg-demo" aria-label="Comparación de fondos: brillante vs neutro">
+            <div class="bg-demo__panel" style="background: linear-gradient(135deg, #3498db 0%, #9b59b6 50%, #e74c3c 100%);">
+              <p class="bg-demo__label" style="color: rgba(255,255,255,0.8);">❌ Fondo brillante</p>
+              <p class="bg-demo__mock-kpi" style="color: #fff;">€ 1.284.390</p>
+              <p class="bg-demo__mock-label" style="color: rgba(255,255,255,0.7);">Ventas Totales</p>
+            </div>
+            <div class="bg-demo__panel" style="background: #F5F5F5;">
+              <p class="bg-demo__label" style="color: #27ae60;">✅ Fondo neutro</p>
+              <p class="bg-demo__mock-kpi" style="color: #2C2C2C;">€ 1.284.390</p>
+              <p class="bg-demo__mock-label">Ventas Totales</p>
+            </div>
+          </div>
+
+          <h4>Reglas para fondos en Power BI</h4>
+          <ul>
+            <li><strong>Fondo del canvas:</strong> Un solo color neutro — blanco (#FFFFFF), gris muy claro (#F5F5F5, #F8F8F8) o el tono más suave de tu paleta de marca</li>
+            <li><strong>Fondo de tarjetas/cards:</strong> Blanco (#FFFFFF) sobre el fondo del canvas, con un borde suave o sin borde para delimitarlas por contraste</li>
+            <li><strong>Sin degradados en el fondo:</strong> Los degradados crean zonas de distinto contraste que dificultan la legibilidad del texto dependiendo de dónde esté</li>
+            <li><strong>Sin imágenes de fondo:</strong> Una foto o patrón compite con los datos y genera problemas de contraste y accesibilidad</li>
+          </ul>
+
+          <div class="note note--tip">
+            💡 <strong>Tip kawaii:</strong> En Power BI Desktop → Format page → Canvas settings → Color, cambia a un gris muy claro (#F5F5F5) y deja los visuals con fondo blanco. El sutil contraste entre fondo y cards es suficiente para delimitar los visuals sin necesidad de bordes.
+          </div>
+        </div>
+
+        <!-- ─────────────────────────────────────────── -->
+        <!-- 6. Negro y blanco puros                     -->
+        <!-- ─────────────────────────────────────────── -->
+        <div class="category-header" id="negro-blanco">
+          <span class="category-header__icon">⚫</span>
+          <h2 class="category-header__title">No uses negro puro ni blanco puro</h2>
+        </div>
+
+        <div class="concept-card">
+          <h3>Fatiga visual: el contraste extremo cansa</h3>
+          <p>
+            El negro puro (#000000) sobre blanco puro (#FFFFFF) genera el contraste máximo posible
+            en pantalla. Esto suena bien, pero en la práctica produce <strong>fatiga visual</strong>
+            — el ojo se cansa más rápido porque tiene que ajustarse constantemente entre los dos
+            extremos del espectro luminoso.
+          </p>
+
+          <h4>Qué usar en su lugar</h4>
+          <ul>
+            <li><strong>En lugar de negro puro (#000000):</strong> Usa un gris muy oscuro como #2C2C2C o #333333 para texto principal. Mantiene la legibilidad con mucha menos fatiga</li>
+            <li><strong>En lugar de blanco puro (#FFFFFF):</strong> Usa un gris muy claro como #F8F8F8 o #FAFAFA para fondos grandes. Para cards pequeñas sobre un fondo ya gris, el blanco puro sí funciona porque la superficie es pequeña</li>
+          </ul>
+
+          <div class="note note--practice">
+            📌 <strong>Buena práctica:</strong> En tu tema JSON de Power BI, define el color de texto por defecto como #2C2C2C y el color de fondo del canvas como #F5F5F5. Así cada visual nuevo que añadas hereda automáticamente estos tonos suaves y nunca llegas a usar negro o blanco puros en superficies grandes.
+          </div>
+        </div>
+
+        <!-- ─────────────────────────────────────────── -->
+        <!-- 7. Errores comunes                          -->
+        <!-- ─────────────────────────────────────────── -->
+        <div class="category-header" id="errores">
+          <span class="category-header__icon">🐛</span>
+          <h2 class="category-header__title">Errores comunes de color en dashboards</h2>
+        </div>
+
+        <div class="concept-card">
+          <h3>Los que veo con más frecuencia en auditorías de informes</h3>
+
+          <div class="comparison-grid">
+            <div class="comparison-col comparison-col--bad">
+              <p class="comparison-col__label">❌ Errores frecuentes</p>
+              <ul>
+                <li>7+ colores distintos en un solo gráfico de barras</li>
+                <li>Rojo para una categoría de producto y también para "alerta"</li>
+                <li>Fondo degradado azul-violeta en el canvas</li>
+                <li>Cada página del informe tiene una paleta de colores diferente</li>
+                <li>Formato condicional rojo/verde sin iconos (excluye a personas daltónicas)</li>
+                <li>Texto negro puro (#000) sobre fondo blanco puro (#FFF) en toda la página</li>
+                <li>Color de las barras igual al color del fondo del visual</li>
+              </ul>
+            </div>
+            <div class="comparison-col comparison-col--good">
+              <p class="comparison-col__label">✅ Alternativas correctas</p>
+              <ul>
+                <li>1 color principal + gris para el resto de barras, con leyenda clara</li>
+                <li>Rojo reservado exclusivamente para alertas, categorías en la paleta principal</li>
+                <li>Fondo uniforme #F5F5F5, datos en color</li>
+                <li>Un solo tema JSON aplicado a todo el informe</li>
+                <li>Rojo/verde + iconos (✗ / ✓) o formas para accesibilidad</li>
+                <li>Texto #333, fondo #F8F8F8 — contraste alto pero sin fatiga</li>
+                <li>Contraste mínimo de 3:1 entre datos y fondo del visual</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- ─────────────────────────────────────────── -->
+        <!-- 8. Herramientas                             -->
+        <!-- ─────────────────────────────────────────── -->
+        <div class="category-header" id="herramientas">
+          <span class="category-header__icon">🧰</span>
+          <h2 class="category-header__title">Herramientas de color para diseñar tu paleta</h2>
+        </div>
+
+        <div class="concept-card">
+          <h3>No inventes colores — usa herramientas que garanticen la armonía</h3>
+
+          <div class="tools-grid">
+            <div class="tool-card">
+              <p class="tool-card__name">Coolors.co</p>
+              <p class="tool-card__url">coolors.co</p>
+              <p class="tool-card__desc">Generador de paletas armónicas. Pulsa la barra espaciadora para generar combinaciones. Puedes bloquear colores y generar variaciones. La herramienta que más recomiendo.</p>
+            </div>
+            <div class="tool-card">
+              <p class="tool-card__name">Color Hunt</p>
+              <p class="tool-card__url">colorhunt.co</p>
+              <p class="tool-card__desc">Colección de paletas curadas por la comunidad. Filtro por tonalidad (warm, cool, pastel, dark). Ideal para inspiración rápida.</p>
+            </div>
+            <div class="tool-card">
+              <p class="tool-card__name">Adobe Color</p>
+              <p class="tool-card__url">color.adobe.com</p>
+              <p class="tool-card__desc">Rueda cromática interactiva con modos de armonía (análogo, complementario, triádico). Permite extraer paleta de una imagen.</p>
+            </div>
+            <div class="tool-card">
+              <p class="tool-card__name">Contrast Checker (WebAIM)</p>
+              <p class="tool-card__url">webaim.org/resources/contrastchecker</p>
+              <p class="tool-card__desc">Verifica el contraste WCAG entre texto y fondo. Imprescindible para accesibilidad — asegura que el texto es legible para todas las personas.</p>
+            </div>
+          </div>
+
+          <div class="note note--tip">
+            💡 <strong>Tip kawaii:</strong> Mi flujo de trabajo es: 1) Parto del color corporativo del cliente → 2) Lo introduzco en Coolors.co → 3) Genero una paleta armónica de 5 colores → 4) Verifico el contraste en WebAIM → 5) Lo paso a un tema JSON de Power BI. En 10 minutos tienes una paleta profesional, accesible y que no falla.
+          </div>
+        </div>
+
+        <!-- ─────────────────────────────────────────── -->
+        <!-- 9. Aplicado en Power BI                     -->
+        <!-- ─────────────────────────────────────────── -->
+        <div class="category-header" id="en-power-bi">
+          <span class="category-header__icon">⚡</span>
+          <h2 class="category-header__title">Dónde configurar el color en Power BI</h2>
+        </div>
+
+        <div class="concept-card">
+          <h3>Los 5 puntos donde se decide el color de tu informe</h3>
+
+          <ol>
+            <li>
+              <strong>Tema JSON global</strong> — View → Themes → Customize current theme o importar JSON.
+              Define la paleta por defecto de todos los visuals nuevos. Es el punto más importante
+              porque automatiza la consistencia.
+            </li>
+            <li>
+              <strong>Canvas background</strong> — Format page → Canvas settings → Color.
+              El color de fondo de cada página. Debe ser el mismo en todas las páginas.
+            </li>
+            <li>
+              <strong>Data colors</strong> — Format visual → Visual → Colors.
+              El color de cada serie de datos dentro de un visual específico.
+              Úsalo solo para sobreescribir el tema cuando una serie concreta necesita un color semántico.
+            </li>
+            <li>
+              <strong>Conditional formatting</strong> — Format visual → Visual → Fx (botón condicional).
+              Formato condicional basado en reglas o escalas de color.
+              Mantén siempre la misma escala (rojo-ámbar-verde) y añade iconos para accesibilidad.
+            </li>
+            <li>
+              <strong>Font color</strong> — Format visual → General → Title / Callout value.
+              El color del texto en títulos, etiquetas y valores. Debe ser consistente en todo el informe (#2C2C2C para texto principal, #666 para secundario).
+            </li>
+          </ol>
+
+          <div class="note note--next">
+            🚀 <strong>¡Lo estás haciendo genial!</strong> El color es de las decisiones más visibles que tomas al diseñar un dashboard — y con la Regla 1-1-1 y una herramienta como Coolors.co, tienes todo lo necesario para no equivocarte nunca. Recuerda: si algo puede ser gris y no pierde significado, déjalo en gris. Los datos que importan se ganarán el color. 🌸
+          </div>
+        </div>
+
+        <!-- Navegación entre páginas -->
+        <nav aria-label="Páginas relacionadas" style="margin-top: 2.5rem; display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap;">
+          <a href="consistencia.html" style="display: inline-flex; align-items: center; gap: 0.5rem; color: var(--color-coral); text-decoration: none; font-weight: 600; font-size: 0.9375rem;">
+            ← Consistencia y Tipografía
+          </a>
+          <a href="accesibilidad.html" style="display: inline-flex; align-items: center; gap: 0.5rem; color: var(--color-coral); text-decoration: none; font-weight: 600; font-size: 0.9375rem;">
+            Accesibilidad e Inclusividad →
+          </a>
+        </nav>
+
+      </div><!-- /topic-page -->
+    </main>
+  </div><!-- /page-wrapper -->
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script>
+  <script src="../../assets/js/theme.js"></script>
+  <script src="../../assets/js/main.js"></script>
+  <script src="../../assets/js/cursor.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,902 @@
+<!DOCTYPE html>
+
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta content="Funciones Financieras en DAX — RATE, NPV, IRR, PMT, FV, PV, amortización, bonos y todos los instrumentos financieros disponibles" name="description"/>
+<title>Funciones Financieras — Funciones DAX | Power BI Guide</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Fira+Code:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<!-- Prism.js para syntax highlighting -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet"/>
+<!-- i18next para traducciones -->
+<script src="https://cdn.jsdelivr.net/npm/i18next@23.7.6/i18next.min.js"></script>
+<!-- CSS del proyecto -->
+<link href="../../assets/css/main.css" rel="stylesheet"/>
+<link href="../../assets/css/themes.css" rel="stylesheet"/>
+<link href="../../assets/css/components.css" rel="stylesheet"/>
+<link href="../../assets/css/layout.css" rel="stylesheet"/>
+<link href="../../assets/css/dax-search.css" rel="stylesheet"/>
+<style>
+    /* === ESTILOS ESPECÍFICOS PARA PÁGINAS DE TOPICS === */
+
+    /* Topic header con icono grande */
+    .topic-header {
+      text-align: center;
+      padding: 2.5rem 0 2rem;
+      border-bottom: 2px solid var(--color-mauve);
+      margin-bottom: 2.5rem;
+    }
+
+    .topic-header__icon {
+      font-size: 4rem;
+      margin-bottom: 0.75rem;
+      display: block;
+    }
+
+    .topic-header__title {
+      font-size: clamp(1.875rem, 4vw, 2.5rem);
+      font-weight: 800;
+      color: var(--color-dark);
+      margin-bottom: 0.625rem;
+      line-height: 1.2;
+    }
+
+    .topic-header__subtitle {
+      font-size: 1.0625rem;
+      color: var(--color-slate);
+      margin-bottom: 1.25rem;
+      line-height: 1.5;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .topic-header__levels {
+      display: flex;
+      gap: 0.5rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    /* TOC — Table of contents */
+    .toc {
+      background: var(--color-rose);
+      border: 1.5px solid var(--color-mauve);
+      border-radius: var(--border-radius);
+      padding: 1.5rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .toc__title {
+      font-size: 0.875rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--color-slate);
+      margin-bottom: 1rem;
+    }
+
+    .toc__list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .toc__link {
+      color: var(--color-dark);
+      text-decoration: none;
+      font-size: 0.9375rem;
+      transition: var(--transition);
+      display: inline-block;
+    }
+
+    .toc__link:hover {
+      color: var(--color-coral);
+      text-decoration: underline;
+    }
+
+    /* Category header — separadores entre categorías */
+    .category-header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin: 3rem 0 1.5rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 2px solid var(--color-mauve);
+    }
+
+    .category-header__icon {
+      font-size: 1.75rem;
+    }
+
+    .category-header__title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--color-dark);
+      margin: 0;
+    }
+
+    /* Function card — tarjeta individual para cada función */
+    .function-card {
+      background: var(--color-white);
+      border: 1.5px solid var(--color-mauve);
+      border-radius: var(--border-radius);
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .function-card__name {
+      font-family: var(--font-code);
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: var(--color-coral);
+      margin-bottom: 0.75rem;
+    }
+
+    .function-card__description {
+      font-size: 0.9375rem;
+      color: var(--color-dark);
+      margin-bottom: 1rem;
+      line-height: 1.6;
+    }
+
+    .function-card__level {
+      display: inline-block;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      padding: 0.25rem 0.625rem;
+      border-radius: var(--border-radius-sm);
+      background: var(--color-blush);
+      color: var(--color-slate);
+      margin-bottom: 1rem;
+    }
+
+    /* Function table — tabla compacta con ejemplos */
+    .function-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.5rem 0;
+      font-size: 0.875rem;
+    }
+
+    .function-table th {
+      background: var(--color-rose);
+      color: var(--color-dark);
+      font-weight: 700;
+      text-align: left;
+      padding: 0.75rem 1rem;
+      border: 1px solid var(--color-mauve);
+    }
+
+    .function-table td {
+      padding: 0.75rem 1rem;
+      border: 1px solid var(--color-mauve);
+      color: var(--color-dark);
+    }
+
+    .function-table tr:nth-child(even) {
+      background: var(--color-blush);
+    }
+
+    /* Code block wrapper */
+    .code-block {
+      position: relative;
+      margin: 1.25rem 0;
+    }
+
+    .code-block pre {
+      margin: 0;
+      border-radius: var(--border-radius);
+      border: 1.5px solid var(--color-mauve);
+    }
+
+    .code-block__copy {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.5rem;
+      padding: 0.375rem 0.75rem;
+      font-size: 0.75rem;
+      background: var(--color-coral);
+      color: var(--color-white);
+      border: none;
+      border-radius: var(--border-radius-sm);
+      cursor: pointer;
+      font-family: var(--font-main);
+      font-weight: 600;
+      transition: var(--transition);
+    }
+
+    .code-block__copy:hover {
+      background: var(--color-peach);
+    }
+  </style>
+</head>
+<body>
+<!-- SIDEBAR: Navegación principal -->
+<aside class="site-sidebar">
+<!-- Avatar y nombre -->
+<div class="site-sidebar__profile">
+<img alt="Sara Lozano Martí" class="site-sidebar__avatar" src="../../assets/images/avatar Sara.png"/>
+<p class="site-sidebar__name">Sara Lozano Martí</p>
+<p class="site-sidebar__subtitle">Power BI Expert</p>
+</div>
+<!-- Navegación principal -->
+<nav aria-label="Navegación principal" class="site-sidebar__nav">
+<ul>
+<li><a class="site-sidebar__link" href="../../index.html">
+<span class="site-sidebar__icon">🏠</span> Inicio
+        </a></li>
+<li><a class="site-sidebar__link is-active" href="../dax.html">
+<span class="site-sidebar__icon">⚡</span> Funciones DAX
+        </a></li>
+<li><a class="site-sidebar__link" href="../power-query.html">
+<span class="site-sidebar__icon">🔄</span> Power Query
+        </a></li>
+<li><a class="site-sidebar__link" href="../lenguaje-m.html">
+<span class="site-sidebar__icon">〽️</span> Lenguaje M
+        </a></li>
+<li><a class="site-sidebar__link" href="../modelado.html">
+<span class="site-sidebar__icon">🗄️</span> Modelado
+        </a></li>
+<li><a class="site-sidebar__link" href="../conceptos-powerbi.html">
+<span class="site-sidebar__icon">📊</span> Conceptos Power BI
+        </a></li>
+<li><a class="site-sidebar__link" href="../fabric.html">
+<span class="site-sidebar__icon">🧵</span> Microsoft Fabric
+        </a></li>
+<li><a class="site-sidebar__link" href="../tmdl.html">
+<span class="site-sidebar__icon">📝</span> TMDL
+        </a></li>
+<li><a class="site-sidebar__link" href="../diseno-ux.html">
+<span class="site-sidebar__icon">🎨</span> Diseño y UX
+        </a></li>
+<li><a class="site-sidebar__link" href="../gobernanza.html">
+<span class="site-sidebar__icon">🔒</span> Gobernanza
+        </a></li>
+</ul>
+</nav>
+<!-- Separador -->
+<div class="site-sidebar__divider"></div>
+<!-- Footer del sidebar -->
+<div class="site-sidebar__footer">
+<!-- Enlace a quien soy -->
+<a class="site-sidebar__link site-sidebar__link--highlight" href="../../quien-soy.html">
+<span class="site-sidebar__icon">👩‍💻</span> ¿Quién soy?
+      </a>
+<!-- Iconos sociales -->
+<div class="site-sidebar__social">
+<a aria-label="LinkedIn" href="https://www.linkedin.com/in/saralozanomarti" rel="noopener noreferrer" target="_blank">
+<img alt="LinkedIn" class="site-sidebar__social-icon" src="../../assets/images/logo linkedIN.png"/>
+</a>
+<a aria-label="YouTube" href="https://www.youtube.com/@KawaiiPowerBI" rel="noopener noreferrer" target="_blank">
+<img alt="YouTube" class="site-sidebar__social-icon" src="../../assets/images/logo youtube.png"/>
+</a>
+<a aria-label="GitHub" href="https://github.com/KawaiiBI" rel="noopener noreferrer" target="_blank">
+<img alt="GitHub" class="site-sidebar__social-icon" src="../../assets/images/logo github.png"/>
+</a>
+</div>
+<!-- Logo Kawaii BI -->
+<div class="site-sidebar__logo-bottom">
+<img alt="Kawaii BI" class="site-sidebar__logo-img" src="../../assets/images/Logo Kawaii.jpg"/>
+</div>
+<!-- Copyright -->
+<p class="site-sidebar__copyright">
+        Power BI Guide 🌸<br/>
+        © 2026 Kawaii BI
+      </p>
+</div>
+</aside>
+<!-- PAGE WRAPPER -->
+<div class="page-wrapper">
+<!-- Main content -->
+<main id="main-content">
+<div class="topic-page">
+        <nav aria-label="breadcrumb" class="breadcrumb">
+<a class="breadcrumb__link" href="../../index.html">Inicio</a>
+<span class="breadcrumb__separator">›</span>
+<a class="breadcrumb__link" href="../dax.html">Funciones DAX</a>
+<span class="breadcrumb__separator">›</span>
+<span class="breadcrumb__current">Funciones Financieras</span>
+</nav>
+
+        <header class="topic-header">
+<span class="topic-header__icon">💰</span>
+<h1 class="topic-header__title">Funciones Financieras</h1>
+<p class="topic-header__subtitle">RATE, NPV, IRR, PMT, FV, PV, amortización, bonos y todos los instrumentos financieros disponibles en DAX</p>
+<div class="topic-header__levels">
+<span class="badge badge--advanced">Avanzado</span>
+</div>
+</header>
+
+        <div class="dax-search-compact-bar">
+<div class="dax-search-wrapper dax-search-compact" data-dax-search="true">
+<span class="dax-search-icon">🔍</span>
+<input aria-label="Buscar función DAX" autocomplete="off" class="dax-search-input" placeholder="Buscar otra función DAX..." spellcheck="false" type="text"/>
+<button aria-label="Limpiar" class="dax-search-clear" hidden="">✕</button>
+<div class="dax-search-results" role="listbox"></div>
+</div>
+</div>
+
+        <nav class="toc">
+<h2 class="toc__title">📑 En esta página</h2>
+<ul class="toc__list">
+<li><a class="toc__link" href="#intro">Para quién son estas funciones</a></li>
+<li><a class="toc__link" href="#basicas">Valor del dinero en el tiempo: PV, FV, NPV, XNPV</a></li>
+<li><a class="toc__link" href="#tasas">Tasas y rendimientos: RATE, IRR, XIRR</a></li>
+<li><a class="toc__link" href="#pagos">Pagos y préstamos: PMT, IPMT, PPMT, NPER</a></li>
+<li><a class="toc__link" href="#depreciacion">Depreciación: SLN, SYD, DB, DDB, VDB</a></li>
+<li><a class="toc__link" href="#bonos">Bonos y letras del Tesoro</a></li>
+<li><a class="toc__link" href="#copon">Cupones de bonos</a></li>
+<li><a class="toc__link" href="#precio-rendimiento">Precio y rendimiento</a></li>
+<li><a class="toc__link" href="#conversiones">Conversiones de tasa: EFFECT, NOMINAL</a></li>
+<li><a class="toc__link" href="#patrones">Casos de uso reales en Power BI</a></li>
+</ul>
+</nav>
+
+        <!-- Breadcrumb --><!-- Buscador compacto DAX --><!-- Header del topic --><!-- TOC --><!-- SECCIÓN 0: Intro --><section id="intro">
+<div class="category-header">
+<span class="category-header__icon">🎯</span>
+<h2 class="category-header__title">Para quién son estas funciones</h2>
+</div>
+<p>Las funciones financieras de DAX son básicamente las mismas que tiene Excel desde hace décadas — si trabajas en banca, gestión de inversiones, contabilidad o análisis financiero y ya las conoces de Excel, <strong>en DAX funcionan exactamente igual</strong>. Si no tienes ese background, estas funciones son muy específicas y probablemente no las necesites para dashboards operativos. ¡Pero aquí están todas por si las necesitas! 💰</p>
+<h3>Clasificación de las 50 funciones por uso:</h3>
+<ul>
+<li><strong>DINERO EN EL TIEMPO</strong> (valor actual, valor futuro, VPN, TIR) — para inversiones y proyectos</li>
+<li><strong>PRÉSTAMOS Y PAGOS</strong> (cuota, interés, principal, plazo) — para hipotecas y financiación</li>
+<li><strong>DEPRECIACIÓN</strong> (amortización de activos) — para contabilidad</li>
+<li><strong>BONOS Y RENTA FIJA</strong> (precio, rendimiento, cupón, accrual) — para tesorería y mercados</li>
+</ul>
+<div class="note note--tip">
+<strong>💡 Equivalencia con Excel</strong><br/>
+            Todas estas funciones tienen equivalente exacto en Excel con el mismo nombre. Si ya sabes usarlas en Excel, en DAX son idénticas. La única diferencia es que en DAX las usas como medidas o columnas calculadas del modelo, no en celdas de hoja.
+          </div>
+</section><!-- SECCIÓN 1: Valor del dinero en el tiempo --><section id="basicas">
+<div class="category-header">
+<span class="category-header__icon">📈</span>
+<h2 class="category-header__title">Valor del dinero en el tiempo</h2>
+</div>
+<p><strong>El concepto fundamental:</strong> ¿cuánto vale hoy el dinero del futuro?</p>
+<p>El concepto central de las finanzas: 1.000 € hoy valen más que 1.000 € en el futuro, porque hoy podrías invertirlos y ganar intereses. Estas funciones calculan esas equivalencias.</p>
+<!-- PV -->
+<div class="function-card">
+<div class="function-card__name">PV(&lt;tasa&gt;, &lt;nper&gt;, &lt;pmt&gt;, [&lt;fv&gt;], [&lt;tipo&gt;])</div>
+<div class="function-card__level">Avanzado</div>
+<div class="function-card__description">
+              Calcula el <strong>VALOR PRESENTE</strong> (hoy) de una serie de pagos futuros regulares. Responde a: "¿Cuánto valen hoy esos pagos futuros?"
+              <ul style="margin-top: 1rem;">
+<li><strong>tasa</strong> — tasa de interés por período</li>
+<li><strong>nper</strong> — número de períodos</li>
+<li><strong>pmt</strong> — pago por período (negativo si es salida de dinero)</li>
+<li><strong>fv</strong> — valor futuro al final (opcional, por defecto 0)</li>
+<li><strong>tipo</strong> — 0=pago al final del período, 1=al inicio</li>
+</ul>
+</div>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// ¿Cuánto vale hoy recibir 1.000€ al mes durante 5 años con una tasa del 5% anual?
+VP Pagos = PV(0.05/12, 60, -1000)
+// Tasa mensual: 5%/12, Períodos: 60 meses, Pago: 1.000€/mes
+// Resultado: aprox. 52.991€ (lo que deberías invertir hoy para recibir eso)
+
+// Valor presente de una sola cantidad futura:
+VP Unico = PV(0.08, 10, 0, -1000000)
+// ¿Cuánto vale hoy 1.000.000€ en 10 años con 8% de rendimiento anual?
+// Resultado: aprox. 463.193€</code></pre>
+</div>
+</div>
+<!-- FV -->
+<div class="function-card">
+<div class="function-card__name">FV(&lt;tasa&gt;, &lt;nper&gt;, &lt;pmt&gt;, [&lt;va&gt;], [&lt;tipo&gt;])</div>
+<div class="function-card__level">Avanzado</div>
+<div class="function-card__description">
+              Calcula el <strong>VALOR FUTURO</strong> de una inversión con pagos periódicos constantes. "Si ahorro X€ al mes durante N años con una tasa Y%, ¿cuánto tendré?"
+            </div>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Ahorro 500€/mes durante 20 años con rentabilidad del 7% anual:
+Ahorro Final = FV(0.07/12, 240, -500)
+// Resultado: aprox. 262.481€
+
+// Plan de pensiones — valor al jubilarse:
+Pensión Final =
+FV(
+    'PlanPensión'[TasaAnual]/12,
+    'PlanPensión'[Meses],
+    -'PlanPensión'[AportaciónMensual]
+)</code></pre>
+</div>
+</div>
+<!-- NPV -->
+<div class="function-card">
+<div class="function-card__name">NPV(&lt;tasa&gt;, &lt;valor1&gt;, &lt;valor2&gt;, ...)</div>
+<div class="function-card__level">Avanzado</div>
+<div class="function-card__description">
+              Calcula el <strong>Valor Presente Neto</strong> de una inversión con flujos de caja que ocurren en períodos regulares. Un NPV &gt; 0 indica que el proyecto crea valor.
+            </div>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Inversión inicial: -100.000€
+// Flujos anuales: año 1=20.000, año 2=30.000, año 3=40.000, año 4=50.000
+// Tasa de descuento: 10%
+VPN Proyecto = NPV(0.10, 20000, 30000, 40000, 50000) - 100000
+// Resultado positivo = proyecto viable, negativo = destruye valor</code></pre>
+</div>
+</div>
+<!-- XNPV -->
+<div class="function-card">
+<div class="function-card__name">XNPV(&lt;tasa&gt;, &lt;valores&gt;, &lt;fechas&gt;)</div>
+<div class="function-card__level">Avanzado</div>
+<div class="function-card__description">
+              Como NPV pero con fechas irregulares — los flujos de caja no ocurren necesariamente en períodos regulares. <strong>Más realista para proyectos reales.</strong>
+</div>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Tabla 'FlujosProyecto' con columnas Fecha e Importe:
+VPN Real =
+XNPV(
+    0.10,  -- tasa de descuento
+    'FlujosProyecto'[Importe],
+    'FlujosProyecto'[Fecha]
+)</code></pre>
+</div>
+</div>
+</section><!-- SECCIÓN 2: Tasas --><section id="tasas">
+<div class="category-header">
+<span class="category-header__icon">📊</span>
+<h2 class="category-header__title">Tasas y rendimientos</h2>
+</div>
+<!-- RATE -->
+<div class="function-card">
+<div class="function-card__name">RATE(&lt;nper&gt;, &lt;pmt&gt;, &lt;va&gt;, [&lt;vf&gt;], [&lt;tipo&gt;], [&lt;estimar&gt;])</div>
+<div class="function-card__level">Avanzado</div>
+<div class="function-card__description">
+              Calcula la tasa de interés por período dada una serie de pagos. Responde a: "Si me ofrecen un préstamo con estas condiciones, ¿cuál es la tasa real?"
+            </div>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Préstamo de 10.000€ a pagar en 36 cuotas de 320€:
+Tasa Mensual = RATE(36, -320, 10000)
+Tasa Anual = RATE(36, -320, 10000) * 12
+// Resultado: aprox. 1.07% mensual = 12.84% anual (TAE aproximada)</code></pre>
+</div>
+</div>
+<!-- IRR y XIRR -->
+<div class="function-card">
+<div class="function-card__name">IRR(&lt;valores&gt;, [&lt;estimar&gt;])<br/>
+XIRR(&lt;valores&gt;, &lt;fechas&gt;, [&lt;estimar&gt;])</div>
+<div class="function-card__level">Avanzado</div>
+<div class="function-card__description">
+<strong>IRR:</strong> Tasa Interna de Retorno para flujos en períodos regulares<br/>
+<strong>XIRR:</strong> TIR para flujos con fechas irregulares<br/>
+              Una inversión es atractiva cuando TIR &gt; tasa de descuento (coste del capital).
+            </div>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// TIR de un proyecto con flujos anuales:
+// Año 0: -50.000 (inversión inicial)
+// Años 1-5: +15.000, +20.000, +25.000, +20.000, +15.000
+TIR Proyecto = IRR({-50000, 15000, 20000, 25000, 20000, 15000})
+// Si TIR &gt; coste del capital → proyecto viable
+
+// TIR con fechas reales:
+TIR Real = XIRR('Flujos'[Importe], 'Flujos'[Fecha])</code></pre>
+</div>
+</div>
+<p><strong>Otras funciones de rendimiento:</strong></p>
+<ul>
+<li><code>YIELDDISC</code> — rendimiento de un bono con descuento (letra del tesoro)</li>
+<li><code>YIELDMAT</code> — rendimiento a vencimiento con interés en vencimiento</li>
+</ul>
+</section><!-- SECCIÓN 3: Pagos --><section id="pagos">
+<div class="category-header">
+<span class="category-header__icon">🏠</span>
+<h2 class="category-header__title">Préstamos y pagos — Hipotecas y financiación</h2>
+</div>
+<!-- PMT -->
+<div class="function-card">
+<div class="function-card__name">PMT(&lt;tasa&gt;, &lt;nper&gt;, &lt;va&gt;, [&lt;vf&gt;], [&lt;tipo&gt;])</div>
+<div class="function-card__level">Avanzado</div>
+<div class="function-card__description">
+              Calcula la <strong>CUOTA</strong> (pago periódico) de un préstamo. <strong>La función más usada del grupo</strong> — cualquier tabla de amortización empieza aquí.
+            </div>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Hipoteca de 200.000€ a 30 años al 3.5% anual:
+Cuota Mensual = ABS(PMT(0.035/12, 360, 200000))
+// ABS porque PMT devuelve valor negativo (es un pago)
+// Resultado: aprox. 897€/mes
+
+// Cuota dinámica (con parámetros del modelo):
+Cuota Hipoteca =
+ABS(PMT(
+    'Hipoteca'[TasaAnual] / 12,  -- tasa mensual
+    'Hipoteca'[Años] * 12,        -- número de cuotas
+    'Hipoteca'[Capital]           -- capital prestado
+))</code></pre>
+</div>
+</div>
+<!-- IPMT y PPMT -->
+<div class="function-card">
+<div class="function-card__name">IPMT(&lt;tasa&gt;, &lt;período&gt;, &lt;nper&gt;, &lt;va&gt;)<br/>
+PPMT(&lt;tasa&gt;, &lt;período&gt;, &lt;nper&gt;, &lt;va&gt;)</div>
+<div class="function-card__level">Avanzado</div>
+<div class="function-card__description">
+<strong>IPMT:</strong> la parte de INTERÉS de una cuota específica<br/>
+<strong>PPMT:</strong> la parte de CAPITAL (principal) de una cuota específica<br/>
+              Juntas permiten construir una tabla de amortización completa.
+            </div>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Para el mes número N de la hipoteca:
+Intereses Cuota N = ABS(IPMT(0.035/12, [NúmeroCuota], 360, 200000))
+Principal Cuota N = ABS(PPMT(0.035/12, [NúmeroCuota], 360, 200000))
+// Cuota N = Intereses N + Principal N (siempre igual a PMT)
+
+// Tabla de amortización completa (tabla calculada):
+Amortización =
+ADDCOLUMNS(
+    GENERATESERIES(1, 360, 1),  -- 360 meses
+    "Cuota Total", ABS(PMT(0.035/12, 360, 200000)),
+    "Interés", ABS(IPMT(0.035/12, [Value], 360, 200000)),
+    "Principal", ABS(PPMT(0.035/12, [Value], 360, 200000))
+)</code></pre>
+</div>
+</div>
+<h3>Otras funciones de préstamos:</h3>
+<ul>
+<li><code>NPER(&lt;tasa&gt;, &lt;pmt&gt;, &lt;va&gt;)</code> — calcula el número de períodos necesarios para pagar un préstamo</li>
+<li><code>CUMIPMT(&lt;tasa&gt;, &lt;nper&gt;, &lt;va&gt;, &lt;inicio&gt;, &lt;fin&gt;, &lt;tipo&gt;)</code> — intereses acumulados entre dos períodos</li>
+<li><code>CUMPRINC(&lt;tasa&gt;, &lt;nper&gt;, &lt;va&gt;, &lt;inicio&gt;, &lt;fin&gt;, &lt;tipo&gt;)</code> — principal amortizado entre dos períodos</li>
+</ul>
+</section><!-- SECCIÓN 4: Depreciación --><section id="depreciacion">
+<div class="category-header">
+<span class="category-header__icon">🏭</span>
+<h2 class="category-header__title">Depreciación y amortización de activos</h2>
+</div>
+<table class="function-table">
+<thead>
+<tr>
+<th>FUNCIÓN</th>
+<th>MÉTODO</th>
+<th>DESCRIPCIÓN</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>SLN</code></td>
+<td>Línea recta</td>
+<td>Deprecia igual cada año</td>
+</tr>
+<tr>
+<td><code>SYD</code></td>
+<td>Suma de dígitos</td>
+<td>Más depreciación al inicio</td>
+</tr>
+<tr>
+<td><code>DB</code></td>
+<td>Saldo decreciente fijo</td>
+<td>% fijo sobre valor residual</td>
+</tr>
+<tr>
+<td><code>DDB</code></td>
+<td>Doble saldo decreciente</td>
+<td>Como DB pero el doble de rápido</td>
+</tr>
+<tr>
+<td><code>VDB</code></td>
+<td>Saldo decreciente variable</td>
+<td>El más flexible, permite cambiar métodos</td>
+</tr>
+</tbody>
+</table>
+<!-- SLN -->
+<div class="function-card">
+<div class="function-card__name">SLN(&lt;costo&gt;, &lt;valor_residual&gt;, &lt;vida&gt;)</div>
+<div class="function-card__level">Avanzado</div>
+<div class="function-card__description">
+              Depreciación en línea recta — el mismo importe cada año.
+            </div>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Maquinaria: 50.000€, valor residual 5.000€, vida útil 10 años:
+Depreciación Anual = SLN(50000, 5000, 10)
+// (50.000 - 5.000) / 10 = 4.500€ por año</code></pre>
+</div>
+</div>
+<!-- DB -->
+<div class="function-card">
+<div class="function-card__name">DB(&lt;costo&gt;, &lt;valor_residual&gt;, &lt;vida&gt;, &lt;período&gt;, [&lt;mes&gt;])</div>
+<div class="function-card__level">Avanzado</div>
+<div class="function-card__description">
+              Depreciación por saldo decreciente — mayor al inicio, menor al final. Usa un porcentaje fijo aplicado al valor en libros.
+            </div>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Mismo activo, depreciación del primer año:
+Dep Año 1 = DB(50000, 5000, 10, 1)</code></pre>
+</div>
+</div>
+<!-- VDB -->
+<div class="function-card">
+<div class="function-card__name">VDB(&lt;costo&gt;, &lt;valor_residual&gt;, &lt;vida&gt;, &lt;inicio&gt;, &lt;fin&gt;, [&lt;factor&gt;], [&lt;sin_cambio&gt;])</div>
+<div class="function-card__level">Avanzado</div>
+<div class="function-card__description">
+              Depreciación en doble saldo decreciente con posibilidad de cambiar a línea recta. El más completo y el que usan los sistemas contables profesionales.
+            </div>
+</div>
+</section><!-- SECCIÓN 5: Bonos --><section id="bonos">
+<div class="category-header">
+<span class="category-header__icon">📜</span>
+<h2 class="category-header__title">Bonos y letras del Tesoro — Renta fija</h2>
+</div>
+<p>Estas funciones son específicas para análisis de renta fija — bonos, letras del tesoro, pagarés. Si trabajas en tesorería corporativa, gestión de activos o análisis de deuda pública, estas son tus funciones. Si tu ámbito es BI empresarial operativo, probablemente no las necesites.</p>
+<table class="function-table">
+<thead>
+<tr>
+<th>FUNCIÓN</th>
+<th>DESCRIPCIÓN</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ACCRINT</code></td>
+<td>Interés acumulado de un valor con pagos de interés periódicos</td>
+</tr>
+<tr>
+<td><code>ACCRINTM</code></td>
+<td>Interés acumulado de un valor que paga interés al vencimiento</td>
+</tr>
+<tr>
+<td><code>RECEIVED</code></td>
+<td>Importe recibido al vencimiento de un valor totalmente invertido</td>
+</tr>
+<tr>
+<td><code>DISC</code></td>
+<td>Tasa de descuento de un valor</td>
+</tr>
+<tr>
+<td><code>INTRATE</code></td>
+<td>Tipo de interés para un valor totalmente invertido</td>
+</tr>
+</tbody>
+</table>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Ejemplo ACCRINT — interés acumulado de un bono:
+// Bono: emitido el 1/1/2024, primer cupón el 1/7/2024
+// Liquidación: 31/3/2024, tasa 5%, valor nominal 1.000€, semestral
+Interés Acumulado =
+ACCRINT(
+    DATE(2024,1,1),   -- emisión
+    DATE(2024,7,1),   -- primer interés
+    DATE(2024,3,31),  -- liquidación (hoy)
+    0.05,             -- tasa del 5%
+    1000,             -- valor nominal
+    2                 -- frecuencia semestral
+)
+// Resultado: interés acumulado desde emisión hasta liquidación</code></pre>
+</div>
+</section><!-- SECCIÓN 6: Cupones --><section id="copon">
+<div class="category-header">
+<span class="category-header__icon">🎫</span>
+<h2 class="category-header__title">Cupones de bonos</h2>
+</div>
+<table class="function-table">
+<thead>
+<tr>
+<th>FUNCIÓN</th>
+<th>DESCRIPCIÓN</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>COUPDAYBS</code></td>
+<td>Días desde inicio del período de cupón hasta liquidación</td>
+</tr>
+<tr>
+<td><code>COUPDAYS</code></td>
+<td>Días en el período del cupón actual</td>
+</tr>
+<tr>
+<td><code>COUPDAYSNC</code></td>
+<td>Días desde liquidación hasta el próximo cupón</td>
+</tr>
+<tr>
+<td><code>COUPNCD</code></td>
+<td>Fecha del próximo cupón después de la liquidación</td>
+</tr>
+<tr>
+<td><code>COUPNUM</code></td>
+<td>Número de cupones pendientes entre liquidación y vencimiento</td>
+</tr>
+<tr>
+<td><code>COUPPCD</code></td>
+<td>Fecha del último cupón antes de la liquidación</td>
+</tr>
+</tbody>
+</table>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Ejemplo COUPNUM — cuántos cupones quedan:
+Cupones Restantes = COUPNUM(TODAY(), DATE(2030,1,1), 2)
+// Bono con vencimiento 1/1/2030, semestral: cuántos cupones quedan hasta hoy</code></pre>
+</div>
+</section><!-- SECCIÓN 7: Precio y rendimiento --><section id="precio-rendimiento">
+<div class="category-header">
+<span class="category-header__icon">💵</span>
+<h2 class="category-header__title">Precio y rendimiento</h2>
+</div>
+<table class="function-table">
+<thead>
+<tr>
+<th>FUNCIÓN</th>
+<th>DESCRIPCIÓN</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>PRICE</code></td>
+<td>Precio por 100€ de valor nominal de un bono con pagos periódicos</td>
+</tr>
+<tr>
+<td><code>PRICEDISC</code></td>
+<td>Precio de un valor con descuento (sin cupones)</td>
+</tr>
+<tr>
+<td><code>PRICEMAT</code></td>
+<td>Precio de un valor que paga interés al vencimiento</td>
+</tr>
+<tr>
+<td><code>YIELD</code></td>
+<td>Rendimiento de un bono con pagos periódicos</td>
+</tr>
+</tbody>
+</table>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Ejemplo PRICE — precio de un bono:
+// Bono al 6% anual con pagos semestrales, rendimiento de mercado 7%, 5 años
+Precio Bono =
+PRICE(
+    TODAY(),          -- liquidación
+    DATE(2029,1,1),   -- vencimiento
+    0.06,             -- tasa del cupón
+    0.07,             -- rendimiento de mercado
+    100,              -- valor de rescate
+    2                 -- frecuencia semestral
+)
+// Precio &lt; 100 porque el rendimiento de mercado (7%) &gt; tasa del cupón (6%)</code></pre>
+</div>
+</section><!-- SECCIÓN 8: Conversiones --><section id="conversiones">
+<div class="category-header">
+<span class="category-header__icon">🔄</span>
+<h2 class="category-header__title">Conversiones de tasa</h2>
+</div>
+<!-- EFFECT y NOMINAL -->
+<div class="function-card">
+<div class="function-card__name">EFFECT(&lt;tasa_nominal&gt;, &lt;npery&gt;)<br/>
+NOMINAL(&lt;tasa_efectiva&gt;, &lt;npery&gt;)</div>
+<div class="function-card__level">Avanzado</div>
+<div class="function-card__description">
+<strong>EFFECT:</strong> Convierte tasa nominal a tasa efectiva anual (TEA/TAE)<br/>
+<strong>NOMINAL:</strong> La inversa — de tasa efectiva a nominal
+            </div>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Un depósito al 5% nominal capitalizado mensualmente:
+TAE = EFFECT(0.05, 12)
+// Resultado: 5.116% (la rentabilidad real incluyendo el efecto de la capitalización compuesta)
+
+// Si la TAE es 5.116%, ¿cuál es la tasa nominal mensualizada?
+Tasa Nominal = NOMINAL(0.05116, 12)
+// Resultado: 5% (la tasa nominal original)</code></pre>
+</div>
+</div>
+<!-- DOLLARDE y DOLLARFR -->
+<div class="function-card">
+<div class="function-card__name">DOLLARDE(&lt;precio_fraccionario&gt;, &lt;fracción&gt;)<br/>
+DOLLARFR(&lt;precio_decimal&gt;, &lt;fracción&gt;)</div>
+<div class="function-card__level">Avanzado</div>
+<div class="function-card__description">
+              Convierten precios entre formato fraccionario (usado en mercados de bonos de EE.UU.) y decimal.<br/>
+<strong>DOLLARDE:</strong> fraccionario a decimal<br/>
+<strong>DOLLARFR:</strong> decimal a fraccionario
+            </div>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// En mercados de bonos USA, los precios se cotizan en 32avos:
+// "100 y 16/32" se escribe como 100.16 en ese formato
+DOLLARDE(100.16, 32)   -- 100.5 (el decimal real: 100 + 16/32 = 100.5)
+DOLLARFR(100.5, 32)    -- 100.16 (de vuelta a formato de bonos)</code></pre>
+</div>
+</div>
+</section><!-- SECCIÓN 9: Patrones --><section id="patrones">
+<div class="category-header">
+<span class="category-header__icon">🏆</span>
+<h2 class="category-header__title">Casos de uso reales en Power BI</h2>
+</div>
+<h3>Patrón 1 — Dashboard de hipoteca interactivo</h3>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Con parámetros What-If para capital, tasa y plazo:
+Cuota Mensual =
+ABS(PMT('Tasa'[Valor]/12, 'Plazo'[Valor]*12, 'Capital'[Valor]))
+
+Total Intereses =
+([Cuota Mensual] * 'Plazo'[Valor] * 12) - 'Capital'[Valor]
+
+Coste Total Hipoteca = 'Capital'[Valor] + [Total Intereses]</code></pre>
+</div>
+<h3>Patrón 2 — Análisis de inversión</h3>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">VAN = XNPV('TasaDescuento'[Valor], 'Flujos'[Importe], 'Flujos'[Fecha])
+
+TIR = XIRR('Flujos'[Importe], 'Flujos'[Fecha])
+
+Decisión =
+IF(
+    [VAN] &gt; 0 &amp;&amp; [TIR] &gt; 'TasaDescuento'[Valor],
+    "✅ Inversión viable",
+    "❌ No viable"
+)</code></pre>
+</div>
+<h3>Patrón 3 — Tabla de amortización dinámica</h3>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Tabla calculada con toda la amortización de una hipoteca:
+Plan Amortización =
+VAR Capital = 200000
+VAR Tasa = 0.035/12
+VAR NPer = 360
+VAR Cuota = ABS(PMT(Tasa, NPer, Capital))
+RETURN
+ADDCOLUMNS(
+    GENERATESERIES(1, NPer, 1),
+    "Mes", [Value],
+    "Cuota", Cuota,
+    "Interés", ABS(IPMT(Tasa, [Value], NPer, Capital)),
+    "Principal", ABS(PPMT(Tasa, [Value], NPer, Capital))
+)</code></pre>
+</div>
+<div class="note note--next">
+<strong>🚀 Siguiente paso</strong><br/>
+            ¡Las finanzas cuantitativas de DAX ya son tuyas! Cerramos la guía DAX con la categoría más especializada: las <strong>funciones Padre-Hijo</strong> para jerarquías irregulares como organigramas o estructuras de cuentas contables. 🚀
+          </div>
+</section>
+
+      </div>
+</main>
+</div>
+<!-- Footer (cargado dinámicamente) -->
+<div id="main-footer"></div>
+<!-- Botón volver arriba -->
+<button aria-label="Volver arriba" class="btn-back-to-top" id="back-to-top">↑</button>
+<!-- Scripts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+<script src="../../assets/js/theme.js"></script>
+<script src="../../assets/js/main.js"></script>
+<!-- Buscador DAX -->
+<script src="../../assets/js/dax-search.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Auto-inicializar todos los widgets con data-dax-search="true"
+      if (window.daxSearch) {
+        window.daxSearch.initAll({
+          baseUrl: '../'  // estamos en topics/dax/, las URLs deben ir a topics/dax/...
+        });
+      }
+    });
+  </script>
+<script src="../../assets/js/cursor.js"></script>
+</body>
+</html>

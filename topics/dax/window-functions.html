@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Window Functions en DAX — WINDOW, OFFSET, INDEX, RANK, ROWNUMBER y el poder de SQL en DAX">
+  <title>Window Functions — Funciones DAX | Power BI Guide</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+
+  <!-- Prism.js para syntax highlighting -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+
+  <!-- i18next para traducciones -->
+  <script src="https://cdn.jsdelivr.net/npm/i18next@23.7.6/i18next.min.js"></script>
+
+  <!-- CSS del proyecto -->
+  <link rel="stylesheet" href="../../assets/css/main.css">
+  <link rel="stylesheet" href="../../assets/css/themes.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/layout.css">
+  <link rel="stylesheet" href="../../assets/css/dax-search.css">
+
+  <style>
+    /* === ESTILOS ESPECÍFICOS PARA PÁGINAS DE TOPICS === */
+
+    /* Topic header con icono grande */
+    .topic-header {
+      text-align: center;
+      padding: 2.5rem 0 2rem;
+      border-bottom: 2px solid var(--color-mauve);
+      margin-bottom: 2.5rem;
+    }
+
+    .topic-header__icon {
+      font-size: 4rem;
+      margin-bottom: 0.75rem;
+      display: block;
+    }
+
+    .topic-header__title {
+      font-size: clamp(1.875rem, 4vw, 2.5rem);
+      font-weight: 800;
+      color: var(--color-dark);
+      margin-bottom: 0.625rem;
+      line-height: 1.2;
+    }
+
+    .topic-header__subtitle {
+      font-size: 1.0625rem;
+      color: var(--color-slate);
+      margin-bottom: 1.25rem;
+      line-height: 1.5;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .topic-header__levels {
+      display: flex;
+      gap: 0.5rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    /* Badge especial "Nuevo" */
+    .category-card__new {
+      display: inline-block;
+      padding: 0.25rem 0.75rem;
+      background: linear-gradient(135deg, var(--color-peach) 0%, var(--color-coral) 100%);
+      color: var(--color-white);
+      font-size: 0.75rem;
+      font-weight: 700;
+      border-radius: var(--border-radius-sm);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-left: 0.5rem;
+    }
+
+    /* TOC — Table of contents */
+    .toc {
+      background: var(--color-rose);
+      border: 1.5px solid var(--color-mauve);
+      border-radius: var(--border-radius);
+      padding: 1.5rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .toc__title {
+      font-size: 0.875rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--color-slate);
+      margin-bottom: 1rem;
+    }
+
+    .toc__list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .toc__link {
+      color: var(--color-dark);
+      text-decoration: none;
+      font-size: 0.9375rem;
+      transition: var(--transition);
+      display: inline-block;
+    }
+
+    .toc__link:hover {
+      color: var(--color-coral);
+      text-decoration: underline;
+    }
+
+    /* Category header — separadores entre categorías */
+    .category-header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin: 3rem 0 1.5rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 2px solid var(--color-mauve);
+    }
+
+    .category-header__icon {
+      font-size: 1.75rem;
+    }
+
+    .category-header__title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--color-dark);
+      margin: 0;
+    }
+
+    /* Function card — tarjeta individual para cada función */
+    .function-card {
+      background: var(--color-white);
+      border: 1.5px solid var(--color-mauve);
+      border-radius: var(--border-radius);
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .function-card__name {
+      font-family: var(--font-code);
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: var(--color-coral);
+      margin-bottom: 0.75rem;
+    }
+
+    .function-card__description {
+      font-size: 0.9375rem;
+      color: var(--color-dark);
+      margin-bottom: 1rem;
+      line-height: 1.6;
+    }
+
+    .function-card__level {
+      display: inline-block;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      padding: 0.25rem 0.625rem;
+      border-radius: var(--border-radius-sm);
+      background: var(--color-blush);
+      color: var(--color-slate);
+      margin-bottom: 1rem;
+    }
+
+    /* Function table — tabla compacta con ejemplos */
+    .function-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.5rem 0;
+      font-size: 0.875rem;
+    }
+
+    .function-table th {
+      background: var(--color-rose);
+      color: var(--color-dark);
+      font-weight: 700;
+      text-align: left;
+      padding: 0.75rem 1rem;
+      border: 1px solid var(--color-mauve);
+    }
+
+    .function-table td {
+      padding: 0.75rem 1rem;
+      border: 1px solid var(--color-mauve);
+      color: var(--color-dark);
+    }
+
+    .function-table tr:nth-child(even) {
+      background: var(--color-blush);
+    }
+
+    /* Code block wrapper */
+    .code-block {
+      position: relative;
+      margin: 1.25rem 0;
+    }
+
+    .code-block pre {
+      margin: 0;
+      border-radius: var(--border-radius);
+      border: 1.5px solid var(--color-mauve);
+    }
+
+    .code-block__copy {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.5rem;
+      padding: 0.375rem 0.75rem;
+      font-size: 0.75rem;
+      background: var(--color-coral);
+      color: var(--color-white);
+      border: none;
+      border-radius: var(--border-radius-sm);
+      cursor: pointer;
+      font-family: var(--font-main);
+      font-weight: 600;
+      transition: var(--transition);
+    }
+
+    .code-block__copy:hover {
+      background: var(--color-peach);
+    }
+  </style>
+</head>
+
+<body>
+
+    <!-- SIDEBAR: Navegación principal -->
+  <aside class="site-sidebar">
+
+    <!-- Avatar y nombre -->
+    <div class="site-sidebar__profile">
+      <img src="../../assets/images/avatar Sara.png" alt="Sara Lozano Martí" class="site-sidebar__avatar" />
+      <p class="site-sidebar__name">Sara Lozano Martí</p>
+      <p class="site-sidebar__subtitle">Power BI Expert</p>
+    </div>
+
+    <!-- Navegación principal -->
+    <nav class="site-sidebar__nav" aria-label="Navegación principal">
+      <ul>
+        <li><a href="../../index.html" class="site-sidebar__link">
+          <span class="site-sidebar__icon">🏠</span> Inicio
+        </a></li>
+
+        <li><a href="../dax.html" class="site-sidebar__link is-active">
+          <span class="site-sidebar__icon">⚡</span> Funciones DAX
+        </a></li>
+
+        <li><a href="../power-query.html" class="site-sidebar__link">
+          <span class="site-sidebar__icon">🔄</span> Power Query
+        </a></li>
+
+        <li><a href="../lenguaje-m.html" class="site-sidebar__link">
+          <span class="site-sidebar__icon">〽️</span> Lenguaje M
+        </a></li>
+
+        <li><a href="../modelado.html" class="site-sidebar__link">
+          <span class="site-sidebar__icon">🗄️</span> Modelado
+        </a></li>
+
+        <li><a href="../conceptos-powerbi.html" class="site-sidebar__link">
+          <span class="site-sidebar__icon">📊</span> Conceptos Power BI
+        </a></li>
+
+        <li><a href="../fabric.html" class="site-sidebar__link">
+          <span class="site-sidebar__icon">🧵</span> Microsoft Fabric
+        </a></li>
+
+        <li><a href="../tmdl.html" class="site-sidebar__link">
+          <span class="site-sidebar__icon">📝</span> TMDL
+        </a></li>
+
+        <li><a href="../diseno-ux.html" class="site-sidebar__link">
+          <span class="site-sidebar__icon">🎨</span> Diseño y UX
+        </a></li>
+
+        <li><a href="../gobernanza.html" class="site-sidebar__link">
+          <span class="site-sidebar__icon">🔒</span> Gobernanza
+        </a></li>
+      </ul>
+    </nav>
+
+    <!-- Separador -->
+    <div class="site-sidebar__divider"></div>
+
+    <!-- Footer del sidebar -->
+    <div class="site-sidebar__footer">
+      <!-- Enlace a quien soy -->
+      <a href="../../quien-soy.html" class="site-sidebar__link site-sidebar__link--highlight">
+        <span class="site-sidebar__icon">👩‍💻</span> ¿Quién soy?
+      </a>
+
+      <!-- Iconos sociales -->
+      <div class="site-sidebar__social">
+        <a href="https://www.linkedin.com/in/saralozanomarti" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+          <img src="../../assets/images/logo linkedIN.png" alt="LinkedIn" class="site-sidebar__social-icon" />
+        </a>
+        <a href="https://www.youtube.com/@KawaiiPowerBI" target="_blank" rel="noopener noreferrer" aria-label="YouTube">
+          <img src="../../assets/images/logo youtube.png" alt="YouTube" class="site-sidebar__social-icon" />
+        </a>
+        <a href="https://github.com/KawaiiBI" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
+          <img src="../../assets/images/logo github.png" alt="GitHub" class="site-sidebar__social-icon" />
+        </a>
+      </div>
+
+      <!-- Logo Kawaii BI -->
+      <div class="site-sidebar__logo-bottom">
+        <img src="../../assets/images/Logo Kawaii.jpg" alt="Kawaii BI" class="site-sidebar__logo-img" />
+      </div>
+
+      <!-- Copyright -->
+      <p class="site-sidebar__copyright">
+        Power BI Guide 🌸<br>
+        © 2026 Kawaii BI
+      </p>
+    </div>
+
+  </aside>
+
+  <!-- PAGE WRAPPER -->
+  <div class="page-wrapper">
+    <!-- Main content -->
+    <main id="main-content">
+      <div class="topic-page">
+        <!-- Breadcrumb -->
+        <nav class="breadcrumb" aria-label="breadcrumb">
+          <a href="../../index.html" class="breadcrumb__link">Inicio</a>
+          <span class="breadcrumb__separator">›</span>
+          <a href="../dax.html" class="breadcrumb__link">Funciones DAX</a>
+          <span class="breadcrumb__separator">›</span>
+          <span class="breadcrumb__current">Window Functions</span>
+        </nav>
+
+        <!-- Header del topic -->
+        <header class="topic-header">
+          <span class="topic-header__icon">🪟</span>
+          <h1 class="topic-header__title">
+            Window Functions
+            <span class="category-card__new">Nuevo</span>
+          </h1>
+          <p class="topic-header__subtitle">WINDOW, OFFSET, INDEX, RANK, ROWNUMBER y sus funciones auxiliares — el poder de SQL en DAX</p>
+          <div class="topic-header__levels">
+            <span class="badge badge--advanced">Avanzado</span>
+          </div>
+        </header>
+
+        <!-- Buscador compacto DAX -->
+        <div class="dax-search-compact-bar">
+          <div class="dax-search-wrapper dax-search-compact" data-dax-search="true">
+            <span class="dax-search-icon">🔍</span>
+            <input
+              type="text"
+              class="dax-search-input"
+              placeholder="Buscar otra función DAX..."
+              autocomplete="off"
+              spellcheck="false"
+              aria-label="Buscar función DAX"
+            />
+            <button class="dax-search-clear" aria-label="Limpiar" hidden>✕</button>
+            <div class="dax-search-results" role="listbox"></div>
+          </div>
+        </div>
+
+        <!-- TOC -->
+        <nav class="toc">
+          <h2 class="toc__title">📑 En esta página</h2>
+          <ul class="toc__list">
+            <li><a href="#que-son" class="toc__link">¿Qué son las Window Functions?</a></li>
+            <li><a href="#window" class="toc__link">WINDOW — La función base</a></li>
+            <li><a href="#offset" class="toc__link">OFFSET — Acceso relativo a filas</a></li>
+            <li><a href="#index" class="toc__link">INDEX — Acceso absoluto a filas</a></li>
+            <li><a href="#rank" class="toc__link">RANK y ROWNUMBER — Numeración y ranking</a></li>
+            <li><a href="#auxiliares" class="toc__link">ORDERBY, PARTITIONBY, MATCHBY</a></li>
+            <li><a href="#patrones" class="toc__link">Patrones de uso más comunes</a></li>
+          </ul>
+        </nav>
+
+        <!-- SECCIÓN 0: ¿Qué son? -->
+        <section id="que-son">
+          <h2 class="category-header__title">¿Qué son las Window Functions? 🤔</h2>
+
+          <div class="note note--tip">
+            <strong>Para quienes vienen de SQL 💡</strong><br>
+            Si vienes del mundo SQL, las Window Functions de DAX son exactamente lo mismo que las funciones de ventana de SQL (ROW_NUMBER, RANK, LAG, LEAD, SUM OVER PARTITION BY...). Si no vienes de SQL, no te preocupes — te lo explicamos desde cero con ejemplos de Power BI. 😊
+          </div>
+
+          <p><strong>Concepto clave:</strong> Las Window Functions operan sobre un conjunto ordenado de filas (una 'ventana') y pueden acceder a filas específicas de esa ventana. A diferencia de CALCULATE que modifica filtros, estas funciones trabajan con la posición de las filas.</p>
+
+          <h3>¿Cuándo las necesitas?</h3>
+          <ul>
+            <li>Calcular un <strong>ranking dentro de grupos</strong> (top ventas por región)</li>
+            <li>Acceder al valor de la <strong>fila anterior/siguiente en el modelo</strong> (no solo en el visual)</li>
+            <li>Implementar <strong>acumulados sin inteligencia de tiempo</strong></li>
+            <li>Añadir <strong>números de fila únicos</strong> a una tabla calculada</li>
+            <li>Crear tablas calculadas con lógica de ventana compleja</li>
+          </ul>
+
+          <div class="note note--warning">
+            <strong>⚠️ Nivel avanzado</strong><br>
+            Las Window Functions son de nivel avanzado. Requieren entender bien el contexto de filtro y cómo DAX ordena las tablas. Si acabas de empezar con DAX, te recomendamos que primero domines CALCULATE, ALL y las funciones de Filtro antes de entrar aquí. Pero si ya tienes esa base... ¡vamos allá! 🚀
+          </div>
+        </section>
+
+        <!-- SECCIÓN 1: WINDOW -->
+        <section id="window">
+          <div class="category-header">
+            <span class="category-header__icon">🪟</span>
+            <h2 class="category-header__title">WINDOW — La función base</h2>
+          </div>
+
+          <div class="function-card">
+            <div class="function-card__name">WINDOW(&lt;desde&gt;, &lt;tipo_desde&gt;, &lt;hasta&gt;, &lt;tipo_hasta&gt;, &lt;relación&gt;, [&lt;ordenar_por&gt;], [&lt;relleno&gt;])</div>
+            <div class="function-card__level">Avanzado</div>
+            <div class="function-card__description">
+              Devuelve un subconjunto de filas de una relación (tabla), definido por posiciones absolutas o relativas. Es la función más potente y más compleja de las Window Functions. Las otras (OFFSET, INDEX, RANK...) son casos especiales de WINDOW.
+            </div>
+
+            <h4>Parámetros explicados:</h4>
+            <ul>
+              <li><strong>desde/hasta:</strong> definen el inicio y fin de la ventana</li>
+              <li><strong>tipo:</strong> ABS (posición absoluta desde el inicio) o REL (posición relativa a la fila actual)</li>
+              <li><strong>relación:</strong> la tabla sobre la que opera (normalmente ALLSELECTED o VALUES)</li>
+              <li><strong>ordenar_por:</strong> cómo ordenar las filas (clave para que los cálculos sean correctos)</li>
+            </ul>
+
+            <h4>Ejemplo 1 — Total acumulado (implementado con WINDOW):</h4>
+            <div class="code-block">
+              <button class="code-block__copy">Copiar</button>
+              <pre><code class="language-javascript">// Ventas acumuladas desde la primera fila hasta la actual
+Ventas Acumuladas =
+SUMX(
+    WINDOW(
+        1, ABS,           -- desde la fila 1 (inicio absoluto)
+        0, REL,           -- hasta la fila actual (0 relativo = actual)
+        ALLSELECTED('Calendario'[Mes]),
+        ORDERBY('Calendario'[Fecha], ASC)  -- ordenado por fecha ascendente
+    ),
+    [Total Ventas]        -- suma las ventas de cada fila en la ventana
+)</code></pre>
+            </div>
+
+            <h4>Ejemplo 2 — Media móvil de 3 períodos (implementado con WINDOW):</h4>
+            <div class="code-block">
+              <button class="code-block__copy">Copiar</button>
+              <pre><code class="language-javascript">// Media de las 2 filas anteriores + la actual
+Media Móvil 3M =
+AVERAGEX(
+    WINDOW(
+        -2, REL,           -- desde 2 filas antes
+        0, REL,            -- hasta la fila actual
+        ALLSELECTED('Calendario'[Mes]),
+        ORDERBY('Calendario'[Fecha], ASC)
+    ),
+    [Total Ventas]
+)</code></pre>
+            </div>
+
+            <div class="note note--tip">
+              <strong>💡 Cuándo usar WINDOW vs Visual Calculations</strong><br>
+              WINDOW es muy potente pero verbosa. Para casos simples como acumulados o medias móviles dentro de un visual, considera usar Visual Calculations (RUNNINGSUM, MOVINGAVERAGE) que son mucho más concisas. Usa WINDOW cuando necesites el cálculo en el modelo, no solo en un visual.
+            </div>
+          </div>
+        </section>
+
+        <!-- SECCIÓN 2: OFFSET -->
+        <section id="offset">
+          <div class="category-header">
+            <span class="category-header__icon">↕️</span>
+            <h2 class="category-header__title">OFFSET — Acceso relativo a filas</h2>
+          </div>
+
+          <div class="function-card">
+            <div class="function-card__name">OFFSET(&lt;delta&gt;, &lt;relación&gt;, [&lt;ordenar_por&gt;], [&lt;relleno&gt;], [&lt;matchby&gt;], [&lt;partitionby&gt;])</div>
+            <div class="function-card__level">Avanzado</div>
+            <div class="function-card__description">
+              Devuelve UNA fila de la tabla, desplazada N posiciones respecto a la fila actual. Similar a la función LAG/LEAD de SQL. Muy útil para comparaciones período a período desde el modelo.
+            </div>
+
+            <h4>Parámetros clave:</h4>
+            <ul>
+              <li><strong>delta:</strong> número de filas a desplazar (+1 = siguiente, -1 = anterior, -2 = hace dos filas)</li>
+              <li><strong>relación:</strong> la tabla base (ALLSELECTED, VALUES, etc.)</li>
+              <li><strong>orderby:</strong> cómo ordenar para saber qué es "anterior" y "siguiente"</li>
+              <li><strong>partitionby:</strong> reiniciar el offset para cada grupo (como PARTITION BY en SQL)</li>
+            </ul>
+
+            <h4>Ejemplo 1 — Variación vs mes anterior (desde el modelo):</h4>
+            <div class="code-block">
+              <button class="code-block__copy">Copiar</button>
+              <pre><code class="language-javascript">// En una medida normal (no Visual Calculation) — reutilizable en cualquier visual
+Ventas Mes Anterior =
+CALCULATE(
+    [Total Ventas],
+    OFFSET(
+        -1,                              -- 1 fila atrás
+        ALLSELECTED('Calendario'[Mes]),  -- sobre todos los meses visibles
+        ORDERBY('Calendario'[Fecha], ASC) -- ordenado por fecha
+    )
+)
+
+Variación MoM = [Total Ventas] - [Ventas Mes Anterior]
+Variación MoM % = DIVIDE([Variación MoM], [Ventas Mes Anterior], BLANK())</code></pre>
+            </div>
+
+            <h4>Ejemplo 2 — OFFSET con PARTITIONBY (variación dentro de cada región):</h4>
+            <div class="code-block">
+              <button class="code-block__copy">Copiar</button>
+              <pre><code class="language-javascript">// Variación vs mes anterior, reiniciando por región
+Ventas Mes Anterior Regional =
+CALCULATE(
+    [Total Ventas],
+    OFFSET(
+        -1,
+        ALLSELECTED('Calendario'[Mes]),
+        ORDERBY('Calendario'[Fecha], ASC),
+        BLANK(),                              -- relleno si no hay fila anterior
+        MATCHBY('Calendario'[Mes]),           -- cómo identificar la fila actual
+        PARTITIONBY('Clientes'[Región])       -- reiniciar para cada región
+    )
+)</code></pre>
+            </div>
+
+            <h4>Comparativa OFFSET vs inteligencia de tiempo:</h4>
+            <table class="function-table">
+              <thead>
+                <tr>
+                  <th>FUNCIÓN</th>
+                  <th>CUÁNDO USARLA</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>OFFSET(-1, ..., ORDERBY(Fecha))</code></td>
+                  <td>Cuando ordenas por cualquier dimensión, no solo fechas</td>
+                </tr>
+                <tr>
+                  <td><code>SAMEPERIODLASTYEAR</code></td>
+                  <td>Cuando comparas exactamente año anterior por fecha</td>
+                </tr>
+                <tr>
+                  <td><code>PREVIOUSMONTH</code></td>
+                  <td>Cuando comparas el mes anterior completo del calendario</td>
+                </tr>
+                <tr>
+                  <td><code>OFFSET</code> con fechas</td>
+                  <td>Cuando necesitas flexibilidad en el período de comparación</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- SECCIÓN 3: INDEX -->
+        <section id="index">
+          <div class="category-header">
+            <span class="category-header__icon">🔢</span>
+            <h2 class="category-header__title">INDEX — Acceso absoluto a filas</h2>
+          </div>
+
+          <div class="function-card">
+            <div class="function-card__name">INDEX(&lt;posición&gt;, &lt;relación&gt;, [&lt;ordenar_por&gt;], [&lt;relleno&gt;], [&lt;matchby&gt;], [&lt;partitionby&gt;])</div>
+            <div class="function-card__level">Avanzado</div>
+            <div class="function-card__description">
+              Como OFFSET pero con posición ABSOLUTA en vez de relativa. INDEX(1) siempre devuelve la primera fila. INDEX(-1) devuelve la última. Ideal cuando necesitas comparar con un valor fijo de referencia.
+            </div>
+
+            <h4>Ejemplo 1 — Comparar cada mes con el primer mes del período:</h4>
+            <div class="code-block">
+              <button class="code-block__copy">Copiar</button>
+              <pre><code class="language-javascript">// Ventas del primer mes visible (referencia fija)
+Ventas Primer Período =
+CALCULATE(
+    [Total Ventas],
+    INDEX(
+        1,                               -- posición 1 = primer elemento
+        ALLSELECTED('Calendario'[Mes]),
+        ORDERBY('Calendario'[Fecha], ASC)
+    )
+)
+
+// Índice base 100 (el primer mes = 100, el resto en proporción)
+Índice Base 100 =
+DIVIDE([Total Ventas], [Ventas Primer Período]) * 100</code></pre>
+            </div>
+
+            <h4>Ejemplo 2 — Comparar con el último valor conocido:</h4>
+            <div class="code-block">
+              <button class="code-block__copy">Copiar</button>
+              <pre><code class="language-javascript">// Ventas del último mes con datos
+Ventas Último Mes =
+CALCULATE(
+    [Total Ventas],
+    INDEX(
+        -1,                              -- -1 = último elemento
+        ALLSELECTED('Calendario'[Mes]),
+        ORDERBY('Calendario'[Fecha], ASC)
+    )
+)</code></pre>
+            </div>
+          </div>
+        </section>
+
+        <!-- SECCIÓN 4: RANK y ROWNUMBER -->
+        <section id="rank">
+          <div class="category-header">
+            <span class="category-header__icon">🏅</span>
+            <h2 class="category-header__title">RANK y ROWNUMBER — Numeración y rankings</h2>
+          </div>
+
+          <div class="function-card">
+            <div class="function-card__name">RANK([ties], &lt;relación&gt;, [&lt;ordenar_por&gt;], [&lt;partitionby&gt;])</div>
+            <div class="function-card__level">Avanzado</div>
+            <div class="function-card__description">
+              Calcula el ranking de la fila actual dentro de una tabla ordenada. A diferencia de RANKX (que es un iterador), RANK trabaja directamente con la posición en la tabla. Disponible desde 2023.
+            </div>
+
+            <h4>Diferencia clave con RANKX:</h4>
+            <table class="function-table">
+              <thead>
+                <tr>
+                  <th>FUNCIÓN</th>
+                  <th>CÓMO FUNCIONA</th>
+                  <th>CUÁNDO USARLA</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>RANKX</strong></td>
+                  <td>Iterador — evalúa una expresión para cada fila de una tabla</td>
+                  <td>En medidas, para rankings dinámicos en cualquier visual</td>
+                </tr>
+                <tr>
+                  <td><strong>RANK</strong></td>
+                  <td>Window Function — trabaja con la posición en la tabla base</td>
+                  <td>En tablas calculadas, para rankings más eficientes y SQL-like</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <h4>Ejemplo RANK:</h4>
+            <div class="code-block">
+              <button class="code-block__copy">Copiar</button>
+              <pre><code class="language-javascript">// Ranking de productos por ventas (en tabla calculada)
+Tabla Rankings =
+ADDCOLUMNS(
+    SUMMARIZE('Ventas', 'Productos'[Nombre]),
+    "Total Ventas", [Total Ventas],
+    "Posición", RANK(
+        DENSE,                                    -- sin saltos en empates
+        ALLSELECTED('Productos'[Nombre]),
+        ORDERBY([Total Ventas], DESC)             -- el más vendido = posición 1
+    )
+)</code></pre>
+            </div>
+          </div>
+
+          <div class="function-card">
+            <div class="function-card__name">ROWNUMBER(&lt;relación&gt;, [&lt;ordenar_por&gt;], [&lt;matchby&gt;], [&lt;partitionby&gt;])</div>
+            <div class="function-card__level">Avanzado</div>
+            <div class="function-card__description">
+              Asigna un número de fila único a cada fila. A diferencia de RANK, no hay empates — cada fila tiene un número distinto aunque los valores sean iguales.
+            </div>
+
+            <h4>Ejemplo ROWNUMBER:</h4>
+            <div class="code-block">
+              <button class="code-block__copy">Copiar</button>
+              <pre><code class="language-javascript">// Añadir número de fila secuencial a una tabla
+Productos Numerados =
+ADDCOLUMNS(
+    'Productos',
+    "Nº", ROWNUMBER(
+        ALL('Productos'),
+        ORDERBY('Productos'[Nombre], ASC)     -- ordenado alfabéticamente
+    )
+)
+// Resultado: Nº=1 para el primero, 2 para el segundo, etc.
+
+// Usar ROWNUMBER como clave única en tablas calculadas sin ID natural
+Clave Única =
+ROWNUMBER(
+    ALL('MiTablaCalculada'),
+    ORDERBY('MiTablaCalculada'[Fecha], ASC, 'MiTablaCalculada'[ID], ASC)
+)</code></pre>
+            </div>
+          </div>
+        </section>
+
+        <!-- SECCIÓN 5: Funciones auxiliares -->
+        <section id="auxiliares">
+          <div class="category-header">
+            <span class="category-header__icon">⚙️</span>
+            <h2 class="category-header__title">Funciones auxiliares de las Window Functions</h2>
+          </div>
+
+          <p>Estas funciones no se usan solas — solo tienen sentido como argumentos dentro de WINDOW, OFFSET, INDEX, RANK o ROWNUMBER.</p>
+
+          <div class="function-card">
+            <div class="function-card__name">ORDERBY(&lt;expresión&gt;, [&lt;orden&gt;], &lt;expresión2&gt;, [&lt;orden2&gt;], ...)</div>
+            <div class="function-card__level">Avanzado</div>
+            <div class="function-card__description">
+              Define el criterio de ordenación para las Window Functions. El orden es crucial — determina qué es "anterior" y "posterior". Puedes ordenar por múltiples columnas.
+            </div>
+
+            <h4>Ejemplos:</h4>
+            <div class="code-block">
+              <button class="code-block__copy">Copiar</button>
+              <pre><code class="language-javascript">// Ordenar por fecha ascendente, desempatar por ID
+ORDERBY('Calendario'[Fecha], ASC, 'Ventas'[ID], ASC)
+
+// Ordenar por ventas descendente
+ORDERBY([Total Ventas], DESC)</code></pre>
+            </div>
+          </div>
+
+          <div class="function-card">
+            <div class="function-card__name">PARTITIONBY(&lt;columna1&gt;, &lt;columna2&gt;, ...)</div>
+            <div class="function-card__level">Avanzado</div>
+            <div class="function-card__description">
+              Divide la tabla en grupos independientes (particiones). La Window Function reinicia para cada grupo. Equivalente al PARTITION BY de SQL.
+            </div>
+
+            <h4>Ejemplos:</h4>
+            <div class="code-block">
+              <button class="code-block__copy">Copiar</button>
+              <pre><code class="language-javascript">// Acumulado que reinicia para cada región
+PARTITIONBY('Clientes'[Región])
+
+// Ranking independiente por país y categoría
+PARTITIONBY('Clientes'[País], 'Productos'[Categoría])</code></pre>
+            </div>
+          </div>
+
+          <div class="function-card">
+            <div class="function-card__name">MATCHBY(&lt;columna1&gt;, &lt;columna2&gt;, ...)</div>
+            <div class="function-card__level">Avanzado</div>
+            <div class="function-card__description">
+              Define qué columnas identifican de forma única la fila actual. Necesario cuando la tabla tiene filas que podrían ser ambiguas en el contexto de la Window Function.
+            </div>
+
+            <h4>Ejemplo:</h4>
+            <div class="code-block">
+              <button class="code-block__copy">Copiar</button>
+              <pre><code class="language-javascript">// Identificar la fila actual por mes y año (para OFFSET)
+MATCHBY('Calendario'[Mes], 'Calendario'[Año])</code></pre>
+            </div>
+          </div>
+        </section>
+
+        <!-- SECCIÓN 6: Patrones comunes -->
+        <section id="patrones">
+          <div class="category-header">
+            <span class="category-header__icon">🛠️</span>
+            <h2 class="category-header__title">Patrones más usados con Window Functions</h2>
+          </div>
+
+          <h3>Patrón 1 — Acumulado genérico (por cualquier dimensión):</h3>
+          <div class="code-block">
+            <button class="code-block__copy">Copiar</button>
+            <pre><code class="language-javascript">// Acumulado de ventas por número de cliente (no por fecha)
+Ventas Acum por Cliente =
+SUMX(
+    WINDOW(1, ABS, 0, REL,
+        ALLSELECTED('Clientes'[ID]),
+        ORDERBY('Clientes'[ID], ASC)
+    ),
+    [Total Ventas]
+)</code></pre>
+          </div>
+
+          <h3>Patrón 2 — Variación respecto al período anterior (reutilizable):</h3>
+          <div class="code-block">
+            <button class="code-block__copy">Copiar</button>
+            <pre><code class="language-javascript">// Diferencia con el mes anterior — funciona en cualquier visual con meses
+Variación Mes =
+VAR VentasActual = [Total Ventas]
+VAR VentasAnterior =
+    CALCULATE([Total Ventas],
+        OFFSET(-1, ALLSELECTED('Calendario'[Mes]),
+               ORDERBY('Calendario'[Fecha], ASC)))
+RETURN DIVIDE(VentasActual - VentasAnterior, VentasAnterior, BLANK())</code></pre>
+          </div>
+
+          <h3>Patrón 3 — Ranking dentro de grupo:</h3>
+          <div class="code-block">
+            <button class="code-block__copy">Copiar</button>
+            <pre><code class="language-javascript">// Ranking de vendedores dentro de su equipo
+Ranking en Equipo =
+RANK(DENSE,
+    ALLSELECTED('Vendedores'[Nombre]),
+    ORDERBY([Total Ventas], DESC),
+    PARTITIONBY('Vendedores'[Equipo])
+)</code></pre>
+          </div>
+
+          <div class="note note--best-practice">
+            <strong>🏆 Best Practice</strong><br>
+            Las Window Functions son potentísimas pero pueden ser lentas en modelos muy grandes. Úsalas cuando realmente las necesites (ranking persistente, acceso a filas vecinas desde el modelo). Para cálculos visuales simples, Visual Calculations suelen ser más eficientes.
+          </div>
+
+          <div class="note note--next">
+            <strong>🚀 Siguiente paso</strong><br>
+            ¡Las Window Functions son de lo más potente que existe en DAX! Ahora que las entiendes, el siguiente paso son los Grupos de Cálculo — que te permitirán hacer que las medidas sean completamente dinámicas y reutilizables.
+          </div>
+        </section>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- Footer (cargado dinámicamente) -->
+  <div id="main-footer"></div>
+
+  <!-- Botón volver arriba -->
+  <button id="back-to-top" class="btn-back-to-top" aria-label="Volver arriba">↑</button>
+
+  <!-- Scripts -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+  <script src="../../assets/js/theme.js"></script>
+  <script src="../../assets/js/main.js"></script>
+
+  <!-- Buscador DAX -->
+  <script src="../../assets/js/dax-search.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Auto-inicializar todos los widgets con data-dax-search="true"
+      if (window.daxSearch) {
+        window.daxSearch.initAll({
+          baseUrl: '../'  // estamos en topics/dax/, las URLs deben ir a topics/dax/...
+        });
+      }
+    });
+  </script>
+  <script src="../../assets/js/cursor.js"></script>
+</body>
+</html>

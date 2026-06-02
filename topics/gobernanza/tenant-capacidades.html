@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Tenant settings y capacidades en Power BI / Fabric: SKUs Pro / PPU / Premium / F, workloads, asignación de workspaces y configuración del Admin Portal.">
+  <title>Tenant Settings y Capacidades — Gobernanza | Power BI Guide by Kawaii BI</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/prismjs@1/themes/prism-okaidia.min.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="../../assets/css/main.css">
+  <link rel="stylesheet" href="../../assets/css/themes.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/layout.css">
+
+  <style>
+    .topic-header { text-align: center; padding: 2.5rem 0 2rem; border-bottom: 2px solid var(--color-mauve); margin-bottom: 2.5rem; }
+    .topic-header__icon { font-size: 4rem; margin-bottom: 0.75rem; display: block; }
+    .topic-header__title { font-size: clamp(1.875rem, 4vw, 2.5rem); font-weight: 800; color: var(--color-dark); margin-bottom: 0.625rem; line-height: 1.2; }
+    .topic-header__subtitle { font-size: 1.0625rem; color: var(--color-slate); margin-bottom: 1.25rem; line-height: 1.5; max-width: 600px; margin-left: auto; margin-right: auto; }
+    .topic-header__levels { display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap; align-items: center; }
+    .category-header { display: flex; align-items: center; gap: 0.75rem; margin: 2.5rem 0 1.25rem; padding: 0.875rem 1.25rem; background: var(--color-rose); border-radius: var(--border-radius-sm); border-left: 4px solid var(--color-coral); }
+    .category-header__icon { font-size: 1.5rem; }
+    .category-header__title { font-size: 1.25rem; font-weight: 700; margin: 0; }
+    .concept-card { background: var(--color-white); border: 1.5px solid var(--color-mauve); border-radius: var(--border-radius); padding: 1.75rem; margin-bottom: 1.5rem; scroll-margin-top: 80px; transition: border-color 0.2s; }
+    .concept-card:hover { border-color: var(--color-coral); }
+    .concept-card h3 { font-size: 1.25rem; font-weight: 700; color: var(--color-coral); margin-bottom: 0.75rem; }
+    .concept-card h4 { font-size: 0.9375rem; font-weight: 700; color: var(--color-dark); margin: 1.25rem 0 0.5rem; }
+    .concept-card p { font-size: 0.9375rem; line-height: 1.7; color: var(--color-dark); margin-bottom: 0.75rem; }
+    .concept-card ul { padding-left: 1.25rem; font-size: 0.9375rem; line-height: 1.8; color: var(--color-dark); }
+    .concept-card code { background: var(--color-blush); padding: 0.1em 0.4em; border-radius: 4px; font-family: 'Fira Code', monospace; font-size: 0.85em; color: var(--color-coral); }
+    .sku-table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.875rem; }
+    .sku-table th, .sku-table td { padding: 0.5rem 0.75rem; border: 1px solid var(--color-mauve); text-align: left; vertical-align: top; }
+    .sku-table th { background: var(--color-rose); font-weight: 700; }
+    .toc { background: var(--color-rose); border-radius: var(--border-radius); padding: 1.25rem 1.5rem; margin-bottom: 2rem; border: 1.5px solid var(--color-mauve); }
+    .toc__title { font-size: 1rem; font-weight: 700; margin: 0 0 0.75rem; }
+    .toc__list { display: flex; flex-wrap: wrap; gap: 0.5rem; list-style: none; padding: 0; margin: 0; }
+    .toc__list a { font-size: 0.8125rem; color: var(--color-coral); text-decoration: none; padding: 0.25rem 0.625rem; background: var(--color-white); border-radius: 999px; border: 1px solid var(--color-mauve); transition: background 0.15s, color 0.15s; }
+    .toc__list a:hover { background: var(--color-coral); color: white; }
+  </style>
+</head>
+<body>
+
+  <aside class="site-sidebar">
+    <div class="site-sidebar__profile">
+      <img src="../../assets/images/avatar Sara.png" alt="Sara Lozano Martí" class="site-sidebar__avatar">
+      <p class="site-sidebar__name">Sara Lozano Martí</p>
+      <p class="site-sidebar__subtitle">Power BI Expert</p>
+    </div>
+    <nav class="site-sidebar__nav" aria-label="Navegación principal">
+      <ul>
+        <li><a href="../../index.html" class="site-sidebar__link"><span class="site-sidebar__icon">🏠</span> Inicio</a></li>
+        <li><a href="../dax.html" class="site-sidebar__link"><span class="site-sidebar__icon">⚡</span> Funciones DAX</a></li>
+        <li><a href="../power-query.html" class="site-sidebar__link"><span class="site-sidebar__icon">🔄</span> Power Query</a></li>
+        <li><a href="../lenguaje-m.html" class="site-sidebar__link"><span class="site-sidebar__icon">〽️</span> Lenguaje M</a></li>
+        <li><a href="../modelado.html" class="site-sidebar__link"><span class="site-sidebar__icon">🗄️</span> Modelado</a></li>
+        <li><a href="../conceptos-powerbi.html" class="site-sidebar__link"><span class="site-sidebar__icon">📊</span> Conceptos Power BI</a></li>
+        <li><a href="../fabric.html" class="site-sidebar__link"><span class="site-sidebar__icon">🧵</span> Microsoft Fabric</a></li>
+        <li><a href="../tmdl.html" class="site-sidebar__link"><span class="site-sidebar__icon">📝</span> TMDL</a></li>
+        <li><a href="../diseno-ux.html" class="site-sidebar__link"><span class="site-sidebar__icon">🎨</span> Diseño y UX</a></li>
+        <li><a href="../gobernanza.html" class="site-sidebar__link is-active"><span class="site-sidebar__icon">🔒</span> Gobernanza</a></li>
+      </ul>
+    </nav>
+    <div class="site-sidebar__divider"></div>
+    <div class="site-sidebar__footer">
+      <a href="../../quien-soy.html" class="site-sidebar__link site-sidebar__link--highlight"><span class="site-sidebar__icon">👩‍💻</span> ¿Quién soy?</a>
+      <div class="site-sidebar__social">
+        <a href="https://www.linkedin.com/in/saralozanomarti" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><img src="../../assets/images/logo linkedIN.png" alt="LinkedIn" class="site-sidebar__social-icon"></a>
+        <a href="https://www.youtube.com/@KawaiiPowerBI" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><img src="../../assets/images/logo youtube.png" alt="YouTube" class="site-sidebar__social-icon"></a>
+        <a href="https://github.com/KawaiiBI" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><img src="../../assets/images/logo github.png" alt="GitHub" class="site-sidebar__social-icon"></a>
+      </div>
+      <div class="site-sidebar__logo-bottom"><img src="../../assets/images/Logo Kawaii.jpg" alt="Kawaii BI" class="site-sidebar__logo-img"></div>
+      <p class="site-sidebar__copyright">Power BI Guide 🌸<br>© 2026 Kawaii BI</p>
+    </div>
+  </aside>
+
+  <div class="page-wrapper">
+    <main class="main-content">
+      <div class="topic-page">
+
+        <nav class="breadcrumb" aria-label="Ruta de navegación">
+          <span class="breadcrumb__item"><a href="../../index.html">🏠 Inicio</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item"><a href="../gobernanza.html">Gobernanza</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item">Tenant Settings y Capacidades</span>
+        </nav>
+
+        <header class="topic-header">
+          <span class="topic-header__icon">🏗️</span>
+          <h1 class="topic-header__title">Tenant Settings y Capacidades</h1>
+          <p class="topic-header__subtitle">El Admin Portal, los tipos de capacidad (Pro / PPU / Premium / Fabric F SKU) y cómo asignar workspaces a capacidades sin disparar la factura.</p>
+          <div class="topic-header__levels">
+            <span class="badge badge--advanced">Avanzado</span>
+          </div>
+        </header>
+
+        <nav class="toc" aria-label="Índice de contenidos">
+          <p class="toc__title">📌 En esta página:</p>
+          <ul class="toc__list">
+            <li><a href="#admin-portal">Admin Portal</a></li>
+            <li><a href="#skus">SKUs de capacidad</a></li>
+            <li><a href="#asignacion">Asignación de workspaces</a></li>
+            <li><a href="#tenant-settings">Tenant settings clave</a></li>
+            <li><a href="#capacity-metrics">Monitorización</a></li>
+          </ul>
+        </nav>
+
+        <div class="category-header" id="admin-portal">
+          <span class="category-header__icon">⚙️</span>
+          <h2 class="category-header__title">Admin Portal: el panel de control del tenant</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>Quién lo abre y dónde</h3>
+          <p>El <strong>Power BI Admin Portal</strong> (ahora integrado en el Fabric Admin Portal) reúne en un solo sitio la configuración global del tenant. Solo accede quien sea <em>Microsoft 365 Global Administrator</em>, <em>Fabric Administrator</em> o <em>Power BI Service Administrator</em>.</p>
+
+          <h4>Secciones principales</h4>
+          <ul>
+            <li><strong>Tenant settings:</strong> ~100 switches que controlan qué pueden hacer los usuarios (publicar Apps, exportar, usar AI features, etc.)</li>
+            <li><strong>Capacity settings:</strong> capacidades Premium / Fabric, su asignación a workspaces, workloads habilitados</li>
+            <li><strong>Workspaces:</strong> lista global de todos los workspaces del tenant — útil para auditar huérfanos</li>
+            <li><strong>Usage metrics y Audit logs:</strong> acceso al activity log y métricas</li>
+            <li><strong>Embed codes y organizational visuals:</strong> control de qué se publica externamente</li>
+            <li><strong>Information protection:</strong> activación de sensitivity labels y DLP</li>
+          </ul>
+        </article>
+
+        <div class="category-header" id="skus">
+          <span class="category-header__icon">💎</span>
+          <h2 class="category-header__title">SKUs de capacidad: Pro, PPU, Premium, Fabric F</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>El zoo de licencias en una tabla</h3>
+          <table class="sku-table">
+            <thead>
+              <tr>
+                <th>SKU</th>
+                <th>Modelo</th>
+                <th>Para qué</th>
+                <th>Funcionalidades clave</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Power BI Pro</strong></td>
+                <td>Por usuario</td>
+                <td>Autores y consumidores estándar</td>
+                <td>Publicar, compartir y consumir. Sin capacidad dedicada.</td>
+              </tr>
+              <tr>
+                <td><strong>Premium per User (PPU)</strong></td>
+                <td>Por usuario</td>
+                <td>Equipos pequeños que necesitan features Premium</td>
+                <td>Deployment pipelines, datasets grandes, paginated reports, AI features</td>
+              </tr>
+              <tr>
+                <td><strong>Premium per Capacity (P SKU)</strong></td>
+                <td>Por capacidad (legacy)</td>
+                <td>Empresas grandes (siendo reemplazado por F SKU)</td>
+                <td>Capacidad dedicada, consumidores Free, embed externo</td>
+              </tr>
+              <tr>
+                <td><strong>Fabric (F SKU)</strong></td>
+                <td>Por capacidad, pay-as-you-go</td>
+                <td>Nueva arquitectura unificada Fabric + Power BI</td>
+                <td>OneLake, Data Engineering, Data Science, Pipelines, BI. Pausable.</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h4>Apuntes prácticos</h4>
+          <ul>
+            <li>F SKU es ya el camino estándar — los P SKU están en transición</li>
+            <li>F64 es la SKU mínima para consumidores Power BI Free (equivalente a P1 en consumo de visualización)</li>
+            <li>F SKU se pueden <strong>pausar</strong> fuera de horas laborales para reducir coste — esto no se puede con P SKU</li>
+            <li>PPU es la mejor opción de "Premium económico" para equipos &lt; 20 usuarios</li>
+          </ul>
+        </article>
+
+        <div class="note note--tip">
+          💡 <strong>Tip kawaii:</strong> Para arrancar Fabric en una organización mediana sin sobre-comprometerse: una capacidad F SKU pequeña (F4 / F8) reservada al CoE como sandbox, y autores en PPU. Escalas cuando los workloads lo justifiquen. 🌸
+        </div>
+
+        <div class="category-header" id="asignacion">
+          <span class="category-header__icon">🎯</span>
+          <h2 class="category-header__title">Asignación de workspaces a capacidades</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>Quién decide qué va en qué capacidad</h3>
+          <p>El admin asigna un workspace a una capacidad desde:</p>
+          <ul>
+            <li>Workspace settings → <em>Premium / Fabric capacity</em></li>
+            <li>Admin portal → <em>Capacity settings</em> → <em>Workspaces assigned to this capacity</em></li>
+            <li>API REST: <code>POST /admin/capacities/{capacityId}/workspaces</code></li>
+          </ul>
+
+          <h4>Decisiones típicas de gobernanza</h4>
+          <ul>
+            <li><strong>Capacidad por dominio:</strong> Finance, Sales, Ops — facilita capacity throttling fino por área</li>
+            <li><strong>Capacidad por entorno:</strong> Dev, Test, Prod separados — Dev pausable fuera de horas</li>
+            <li><strong>Capacidad CoE compartida:</strong> datasets certificados que sirven a múltiples áreas</li>
+          </ul>
+
+          <h4>Reglas de oro</h4>
+          <ul>
+            <li>No mezcles workloads heavy (lakehouse + spark + pipeline) con consumo BI en la misma capacidad si puedes evitarlo — la noisy neighbor te puede arruinar el rendimiento de los informes</li>
+            <li>Asegura que el admin del workspace tenga al menos un permiso sobre la capacidad para reasignar si fuera necesario</li>
+            <li>Documenta qué workspace vive en qué capacidad y por qué</li>
+          </ul>
+        </article>
+
+        <div class="category-header" id="tenant-settings">
+          <span class="category-header__icon">🎚️</span>
+          <h2 class="category-header__title">Tenant settings que marcan la diferencia</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>Las que más impacto tienen en gobernanza</h3>
+          <ul>
+            <li><strong>Allow specific users to turn on external data sharing</strong> — restringir compartir fuera del tenant a un grupo concreto</li>
+            <li><strong>Block public Internet access</strong> — fuerza el acceso vía red privada (relevante en sectores regulados)</li>
+            <li><strong>Allow users to apply sensitivity labels for content</strong> — habilita las MIP labels</li>
+            <li><strong>Make certified content discoverable</strong> — clave para que el Data Hub funcione</li>
+            <li><strong>Export to Excel / CSV / PDF</strong> — cada export tiene su switch independiente</li>
+            <li><strong>Print dashboards and reports</strong> — sí, esto es un switch separado</li>
+            <li><strong>Publish to web</strong> — DESACTIVADO POR DEFAULT — gobierna explícitamente quién puede publicar contenido al internet abierto</li>
+            <li><strong>Allow service principals to use Power BI APIs</strong> — necesario para automatizaciones, restringir a un grupo</li>
+            <li><strong>Tenant-level audit log</strong> — siempre ON</li>
+          </ul>
+
+          <h4>Patrón recomendado</h4>
+          <p>La mayoría de tenant settings deberían estar <strong>"Enabled for specific security groups"</strong> en vez de "Enabled for entire organization". Esto convierte el tenant en granular y auditable.</p>
+        </article>
+
+        <div class="note note--warning">
+          ⚠️ <strong>Ojo:</strong> "Publish to web" expone contenido al internet abierto sin autenticación. En el 99% de organizaciones esta opción debe estar OFF o restringida a un grupo de "communications" muy pequeño. Compruébala al onboardear un tenant nuevo.
+        </div>
+
+        <div class="category-header" id="capacity-metrics">
+          <span class="category-header__icon">📊</span>
+          <h2 class="category-header__title">Monitorización de capacidades</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>Capacity Metrics App (Power BI / Fabric)</h3>
+          <p>Microsoft publica la <strong>Fabric Capacity Metrics App</strong> (antes Power BI Premium Metrics App), disponible gratis desde AppSource. Permite ver:</p>
+          <ul>
+            <li>Consumo de CU (Capacity Units) por workload, dataset, usuario</li>
+            <li>Picos de uso y momento exacto de throttling</li>
+            <li>Operaciones background vs interactive</li>
+            <li>Tendencias diarias y mensuales</li>
+            <li>Top operations causantes de carga</li>
+          </ul>
+
+          <h4>Alertas que merecen automatización</h4>
+          <ul>
+            <li>Capacity overload &gt; X minutos consecutivos</li>
+            <li>Throttling activo</li>
+            <li>Dataset que consume &gt; 30% de la capacidad regularmente — candidato a optimización</li>
+          </ul>
+        </article>
+
+        <div class="note note--practice">
+          📌 <strong>Buena práctica:</strong> Asigna ownership claro a cada capacidad. Mínimo un capacity admin titular + un suplente, los dos en grupos de Entra. Sin ownership, las capacidades se llenan, fallan y nadie sabe a quién llamar.
+        </div>
+
+        <div class="note note--next" style="margin-top: 2rem;">
+          🚀 <strong>Siguiente paso:</strong> Cierra la sección con <a href="coe-adopcion.html">CoE y Adopción</a> — la pieza humana que pone en marcha todo lo técnico que acabas de ver.
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <button id="back-to-top" class="back-to-top" aria-label="Volver arriba" title="Volver arriba">↑</button>
+
+  <script src="https://cdn.jsdelivr.net/npm/i18next@23/dist/umd/i18next.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1/prism.min.js"></script>
+  <script src="../../assets/js/theme.js"></script>
+  <script src="../../assets/js/main.js"></script>
+  <script src="../../assets/js/cursor.js"></script>
+</body>
+</html>

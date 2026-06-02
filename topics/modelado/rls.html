@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Row-Level Security (RLS) en Power BI: seguridad a nivel de fila estática y dinámica, roles DAX, USERNAME(), USERPRINCIPALNAME() y cómo probar RLS correctamente.">
+  <title>Seguridad a Nivel de Fila (RLS) — Modelado de Datos | Power BI Guide by Kawaii BI</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/prismjs@1/themes/prism-okaidia.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="../../assets/css/main.css">
+  <link rel="stylesheet" href="../../assets/css/themes.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/layout.css">
+
+  <style>
+    .topic-header { text-align: center; padding: 2.5rem 0 2rem; border-bottom: 2px solid var(--color-mauve); margin-bottom: 2.5rem; }
+    .topic-header__icon { font-size: 4rem; margin-bottom: 0.75rem; display: block; }
+    .topic-header__title { font-size: clamp(1.875rem, 4vw, 2.5rem); font-weight: 800; color: var(--color-dark); margin-bottom: 0.625rem; line-height: 1.2; }
+    .topic-header__subtitle { font-size: 1.0625rem; color: var(--color-slate); margin-bottom: 1.25rem; line-height: 1.5; max-width: 600px; margin-left: auto; margin-right: auto; }
+    .topic-header__levels { display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap; align-items: center; }
+    .category-header { display: flex; align-items: center; gap: 0.75rem; margin: 2.5rem 0 1.25rem; padding: 0.875rem 1.25rem; background: var(--color-rose); border-radius: var(--border-radius-sm); border-left: 4px solid var(--color-coral); }
+    .category-header__icon { font-size: 1.5rem; }
+    .category-header__title { font-size: 1.25rem; font-weight: 700; margin: 0; }
+    .concept-card { background: var(--color-white); border: 1.5px solid var(--color-mauve); border-radius: var(--border-radius); padding: 1.75rem; margin-bottom: 1.5rem; scroll-margin-top: 80px; transition: border-color 0.2s; }
+    .concept-card:hover { border-color: var(--color-coral); }
+    .concept-card h3 { font-size: 1.25rem; font-weight: 700; color: var(--color-coral); margin-bottom: 0.75rem; }
+    .concept-card h4 { font-size: 0.9375rem; font-weight: 700; color: var(--color-dark); margin: 1.25rem 0 0.5rem; }
+    .concept-card p { font-size: 0.9375rem; line-height: 1.7; color: var(--color-dark); margin-bottom: 0.75rem; }
+    .concept-card ul { padding-left: 1.25rem; font-size: 0.9375rem; line-height: 1.8; color: var(--color-dark); }
+    .concept-card code { background: var(--color-blush); padding: 0.1em 0.4em; border-radius: 4px; font-family: 'Fira Code', monospace; font-size: 0.85em; color: var(--color-coral); }
+    .toc { background: var(--color-rose); border-radius: var(--border-radius); padding: 1.25rem 1.5rem; margin-bottom: 2rem; border: 1.5px solid var(--color-mauve); }
+    .toc__title { font-size: 1rem; font-weight: 700; margin: 0 0 0.75rem; }
+    .toc__list { display: flex; flex-wrap: wrap; gap: 0.5rem; list-style: none; padding: 0; margin: 0; }
+    .toc__list a { font-size: 0.8125rem; color: var(--color-coral); text-decoration: none; padding: 0.25rem 0.625rem; background: var(--color-white); border-radius: 999px; border: 1px solid var(--color-mauve); transition: background 0.15s, color 0.15s; }
+    .toc__list a:hover { background: var(--color-coral); color: white; }
+  </style>
+</head>
+<body>
+
+  <aside class="site-sidebar">
+    <div class="site-sidebar__profile">
+      <img src="../../assets/images/avatar Sara.png" alt="Sara Lozano Martí" class="site-sidebar__avatar">
+      <p class="site-sidebar__name">Sara Lozano Martí</p>
+      <p class="site-sidebar__subtitle">Power BI Expert</p>
+    </div>
+    <nav class="site-sidebar__nav" aria-label="Navegación principal">
+      <ul>
+        <li><a href="../../index.html" class="site-sidebar__link"><span class="site-sidebar__icon">🏠</span> Inicio</a></li>
+        <li><a href="../dax.html" class="site-sidebar__link"><span class="site-sidebar__icon">⚡</span> Funciones DAX</a></li>
+        <li><a href="../power-query.html" class="site-sidebar__link"><span class="site-sidebar__icon">🔄</span> Power Query</a></li>
+        <li><a href="../lenguaje-m.html" class="site-sidebar__link"><span class="site-sidebar__icon">〽️</span> Lenguaje M</a></li>
+        <li><a href="../modelado.html" class="site-sidebar__link is-active"><span class="site-sidebar__icon">🗄️</span> Modelado</a></li>
+        <li><a href="../conceptos-powerbi.html" class="site-sidebar__link"><span class="site-sidebar__icon">📊</span> Conceptos Power BI</a></li>
+        <li><a href="../fabric.html" class="site-sidebar__link"><span class="site-sidebar__icon">🧵</span> Microsoft Fabric</a></li>
+        <li><a href="../tmdl.html" class="site-sidebar__link"><span class="site-sidebar__icon">📝</span> TMDL</a></li>
+        <li><a href="../diseno-ux.html" class="site-sidebar__link"><span class="site-sidebar__icon">🎨</span> Diseño y UX</a></li>
+        <li><a href="../gobernanza.html" class="site-sidebar__link"><span class="site-sidebar__icon">🔒</span> Gobernanza</a></li>
+      </ul>
+    </nav>
+    <div class="site-sidebar__divider"></div>
+    <div class="site-sidebar__footer">
+      <a href="../../quien-soy.html" class="site-sidebar__link site-sidebar__link--highlight"><span class="site-sidebar__icon">👩‍💻</span> ¿Quién soy?</a>
+      <div class="site-sidebar__social">
+        <a href="https://www.linkedin.com/in/saralozanomarti" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><img src="../../assets/images/logo linkedIN.png" alt="LinkedIn" class="site-sidebar__social-icon"></a>
+        <a href="https://www.youtube.com/@KawaiiPowerBI" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><img src="../../assets/images/logo youtube.png" alt="YouTube" class="site-sidebar__social-icon"></a>
+        <a href="https://github.com/KawaiiBI" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><img src="../../assets/images/logo github.png" alt="GitHub" class="site-sidebar__social-icon"></a>
+      </div>
+      <div class="site-sidebar__logo-bottom"><img src="../../assets/images/Logo Kawaii.jpg" alt="Kawaii BI" class="site-sidebar__logo-img"></div>
+      <p class="site-sidebar__copyright">Power BI Guide 🌸<br>© 2026 Kawaii BI</p>
+    </div>
+  </aside>
+
+  <div class="page-wrapper">
+    <main class="main-content">
+      <div class="topic-page">
+
+        <nav class="breadcrumb" aria-label="Ruta de navegación">
+          <span class="breadcrumb__item"><a href="../../index.html">🏠 Inicio</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item"><a href="../modelado.html">Modelado de Datos</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item">Seguridad a Nivel de Fila (RLS)</span>
+        </nav>
+
+        <header class="topic-header">
+          <span class="topic-header__icon">🔒</span>
+          <h1 class="topic-header__title">Seguridad a Nivel de Fila (RLS)</h1>
+          <p class="topic-header__subtitle">Controla qué datos ve cada usuario con Row-Level Security: desde el RLS estático más sencillo hasta patrones dinámicos escalables para grandes organizaciones</p>
+          <div class="topic-header__levels">
+            <span class="badge badge--intermediate">Intermedio</span>
+            <span class="badge badge--advanced">Avanzado</span>
+          </div>
+        </header>
+
+        <nav class="toc" aria-label="Índice de contenidos">
+          <p class="toc__title">📌 En esta página:</p>
+          <ul class="toc__list">
+            <li><a href="#que-es">¿Qué es RLS?</a></li>
+            <li><a href="#estatico">RLS estático</a></li>
+            <li><a href="#dinamico">RLS dinámico</a></li>
+            <li><a href="#username">USERNAME vs USERPRINCIPALNAME</a></li>
+            <li><a href="#probar">Cómo probar RLS</a></li>
+            <li><a href="#consideraciones">Consideraciones avanzadas</a></li>
+          </ul>
+        </nav>
+
+        <div class="category-header" id="que-es">
+          <span class="category-header__icon">🛡️</span>
+          <h2 class="category-header__title">¿Qué es RLS?</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>Seguridad a nivel de fila en Power BI</h3>
+          <p><strong>Row-Level Security (RLS)</strong> es el mecanismo de Power BI que permite restringir qué filas de datos ve cada usuario. A diferencia de restringir el acceso a páginas del informe (que es solo visual), RLS opera a nivel del modelo de datos: el motor solo evalúa las filas que el usuario tiene permiso para ver.</p>
+
+          <h4>Cómo funciona internamente:</h4>
+          <ul>
+            <li>Se definen <strong>roles</strong> con filtros DAX que determinan qué filas son visibles</li>
+            <li>Cada usuario (o grupo) se asigna a uno o más roles en el Power BI Service</li>
+            <li>Cuando el usuario abre el informe, el motor aplica los filtros del rol como contexto de filtro inicial</li>
+            <li>Todas las medidas DAX se evalúan respetando esos filtros — el usuario no puede ver datos que no le corresponden</li>
+          </ul>
+
+          <div class="note note--warning">
+            ⚠️ <strong>Ojo con esto:</strong> RLS solo funciona cuando el informe está publicado en Power BI Service y los usuarios acceden con sus cuentas. En Power BI Desktop, el creador del informe siempre ve todos los datos (a menos que use "Ver como rol" para probar).
+          </div>
+        </article>
+
+        <div class="category-header" id="estatico">
+          <span class="category-header__icon">🔐</span>
+          <h2 class="category-header__title">RLS Estático</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>Roles con filtros hardcodeados</h3>
+          <p>En el RLS estático, el filtro DAX está <em>codificado directamente</em> en el rol. Cada rol permite ver solo ciertos valores de una columna específica. Es sencillo de implementar pero difícil de mantener si tienes muchos usuarios o si los grupos de datos cambian con frecuencia.</p>
+
+          <h4>Cómo crear roles en Power BI Desktop:</h4>
+          <ul>
+            <li>Ve a la pestaña "Modelado" → "Administrar roles"</li>
+            <li>Haz clic en "Crear"</li>
+            <li>Asigna un nombre al rol (ej: "Ventas España")</li>
+            <li>Selecciona la tabla a filtrar</li>
+            <li>Escribe la expresión DAX del filtro</li>
+          </ul>
+
+          <pre><code class="language-javascript">// Rol "Ventas España": solo ve ventas de España
+// Filtro DAX en la tabla DimTienda:
+[Pais] = "España"
+
+// Rol "Región Norte": solo ve tiendas de Asturias, Cantabria y País Vasco
+// Filtro DAX en DimTienda:
+[Comunidad] IN {"Asturias", "Cantabria", "País Vasco"}
+
+// Rol "Categoría Electrónica": solo ve productos de electrónica
+// Filtro DAX en DimProducto:
+[Categoria] = "Electrónica"</code></pre>
+
+          <h4>Cuándo usar RLS estático:</h4>
+          <ul>
+            <li>Pocas regiones o departamentos (menos de 10-15)</li>
+            <li>Los grupos de datos no cambian frecuentemente</li>
+            <li>Cada usuario pertenece a un solo grupo</li>
+            <li>Prototipado rápido de seguridad</li>
+          </ul>
+        </article>
+
+        <div class="category-header" id="dinamico">
+          <span class="category-header__icon">⚡</span>
+          <h2 class="category-header__title">RLS Dinámico</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>Un solo rol para todos los usuarios</h3>
+          <p>El RLS dinámico usa las funciones <code>USERNAME()</code> o <code>USERPRINCIPALNAME()</code> para identificar al usuario activo y filtrar datos basándose en una tabla de seguridad del modelo. Un único rol sirve para todos los usuarios — la tabla de seguridad determina qué ve cada uno.</p>
+
+          <h4>Paso 1: Crea una tabla de seguridad</h4>
+          <pre><code class="language-javascript">// Tabla cargada desde Excel/SharePoint con los permisos:
+TablaSeguridad:
+| Email                      | Region     |
+|----------------------------|------------|
+| ana@empresa.com            | Norte      |
+| carlos@empresa.com         | Sur        |
+| carlos@empresa.com         | Centro     |  ← Carlos ve dos regiones
+| admin@empresa.com          | Norte      |
+| admin@empresa.com          | Sur        |
+| admin@empresa.com          | Centro     |
+| admin@empresa.com          | Este       |
+| admin@empresa.com          | Oeste      |  ← Admin ve todo</code></pre>
+
+          <h4>Paso 2: Relaciona con tu dimensión</h4>
+          <p>Crea una relación entre <code>TablaSeguridad[Region]</code> y <code>DimTienda[Region]</code>. Esta puede ser una relación inactiva si ya tienes otra relación activa.</p>
+
+          <h4>Paso 3: Crea el rol dinámico</h4>
+          <pre><code class="language-javascript">// Rol "RLS Dinamico" — filtro en TablaSeguridad:
+[Email] = USERPRINCIPALNAME()
+
+// Cuando Ana inicia sesión:
+//   → USERPRINCIPALNAME() = "ana@empresa.com"
+//   → TablaSeguridad filtra su fila
+//   → La relación propaga el filtro a DimTienda
+//   → FactVentas solo muestra la región Norte</code></pre>
+
+          <div class="note note--tip">
+            💡 <strong>Tip kawaii:</strong> El patrón de RLS dinámico con tabla de seguridad es el más escalable. Para añadir o cambiar permisos, solo actualizas el Excel — sin tocar el modelo ni republicar. Ideal para organizaciones con muchos usuarios o permisos que cambian frecuentemente. 🌸
+          </div>
+        </article>
+
+        <div class="category-header" id="username">
+          <span class="category-header__icon">👤</span>
+          <h2 class="category-header__title">USERNAME() vs USERPRINCIPALNAME()</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>¿Cuál usar?</h3>
+
+          <pre><code class="language-javascript">// USERNAME() — devuelve el nombre de usuario en formato DOMINIO\usuario
+USERNAME() = "EMPRESA\ana.garcia"
+
+// USERPRINCIPALNAME() — devuelve el email UPN del usuario de Azure AD
+USERPRINCIPALNAME() = "ana.garcia@empresa.com"</code></pre>
+
+          <h4>Diferencias clave:</h4>
+          <ul>
+            <li><code>USERNAME()</code>: formato DOMAIN\username (Active Directory clásico). En Power BI Service con cuentas Microsoft 365 devuelve el mismo valor que UPN.</li>
+            <li><code>USERPRINCIPALNAME()</code>: formato email (Azure AD / Microsoft 365). Es la recomendación actual de Microsoft para RLS en Power BI Service.</li>
+            <li>En Power BI Desktop: ambas devuelven el usuario de Windows que ejecuta Desktop — útil para probar.</li>
+          </ul>
+
+          <div class="note note--practice">
+            📌 <strong>Buena práctica:</strong> Usa siempre <code>USERPRINCIPALNAME()</code> para RLS dinámico en Power BI Service. El UPN es el identificador estándar de las cuentas Microsoft 365 y Azure AD, y es el que los administradores usan para asignar usuarios a roles.
+          </div>
+        </article>
+
+        <div class="category-header" id="probar">
+          <span class="category-header__icon">🧪</span>
+          <h2 class="category-header__title">Cómo Probar RLS</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>En Power BI Desktop: "Ver como rol"</h3>
+          <p>Sin necesidad de publicar, puedes probar cómo se ve el informe desde la perspectiva de un rol:</p>
+          <ul>
+            <li>Pestaña "Modelado" → "Ver como" (o "Ver como roles")</li>
+            <li>Selecciona el rol que quieres probar</li>
+            <li>Opcionalmente introduce un email para simular un usuario específico (para RLS dinámico)</li>
+            <li>El informe mostrará solo los datos que ese rol/usuario puede ver</li>
+            <li>Un banner amarillo en la parte superior confirma que estás en modo "Ver como"</li>
+          </ul>
+
+          <h4>En Power BI Service: "Probar como rol"</h4>
+          <ul>
+            <li>Ve al dataset en el servicio → Menú de los tres puntos → "Seguridad"</li>
+            <li>Selecciona un rol y haz clic en "Probar como rol"</li>
+            <li>Se abre el informe con los datos filtrados para ese rol</li>
+          </ul>
+
+          <div class="note note--warning">
+            ⚠️ <strong>Ojo con esto:</strong> Los propietarios y administradores del workspace siempre ven todos los datos, independientemente del RLS. RLS solo se aplica a los usuarios con rol "Espectador" o "Colaborador" (no Administrador ni Miembro del workspace). Prueba siempre con una cuenta de usuario final, no con el admin.
+          </div>
+        </article>
+
+        <div class="category-header" id="consideraciones">
+          <span class="category-header__icon">🎯</span>
+          <h2 class="category-header__title">Consideraciones Avanzadas</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>RLS y rendimiento</h3>
+          <p>El RLS añade filtros al contexto de cada consulta, lo que puede impactar el rendimiento. Para modelos grandes:</p>
+          <ul>
+            <li>Los filtros RLS se evalúan para cada consulta — asegúrate de que la tabla de seguridad es pequeña y la relación es eficiente</li>
+            <li>Evita lógica RLS compleja con múltiples CALCULATE y FILTER anidados</li>
+            <li>Si tienes RLS en múltiples tablas, verifica que los filtros no se propagan de formas inesperadas</li>
+          </ul>
+
+          <h3 style="margin-top: 1.25rem;">OLS: Object-Level Security</h3>
+          <p>Además de RLS (que oculta filas), Power BI también ofrece <strong>OLS (Object-Level Security)</strong> para ocultar columnas o tablas completas a ciertos usuarios. Si un usuario no tiene acceso a una columna con OLS, cualquier medida que la referencie devolverá un error. OLS requiere XMLA endpoint (Premium o Premium Per User).</p>
+        </article>
+
+        <div class="note note--next" style="margin-top: 2rem;">
+          🚀 <strong>¡Modelo seguro!</strong> Para una visión completa de la gobernanza y seguridad en Power BI (más allá del RLS en el modelo), visita la sección de <a href="../gobernanza.html">Gobernanza</a>. Si quieres profundizar en patrones de RLS más complejos con jerarquías, revisa los <a href="patrones-avanzados.html">Patrones Avanzados</a>.
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <button id="back-to-top" class="back-to-top" aria-label="Volver arriba" title="Volver arriba">↑</button>
+
+  <script src="https://cdn.jsdelivr.net/npm/i18next@23/dist/umd/i18next.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1/prism.min.js"></script>
+  <script src="../../assets/js/theme.js"></script>
+  <script src="../../assets/js/main.js"></script>
+  <script src="../../assets/js/cursor.js"></script>
+</body>
+</html>

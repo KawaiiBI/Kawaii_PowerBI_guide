@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta content="Funciones de Relaciones en DAX — RELATED, RELATEDTABLE, USERELATIONSHIP y CROSSFILTER" name="description"/>
+<title>Relaciones — Funciones DAX | Power BI Guide</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Fira+Code:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<!-- Prism.js para syntax highlighting -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet"/>
+<!-- i18next para traducciones -->
+<script src="https://cdn.jsdelivr.net/npm/i18next@23.7.6/i18next.min.js"></script>
+<!-- CSS del proyecto -->
+<link href="../../assets/css/main.css" rel="stylesheet"/>
+<link href="../../assets/css/themes.css" rel="stylesheet"/>
+<link href="../../assets/css/components.css" rel="stylesheet"/>
+<link href="../../assets/css/layout.css" rel="stylesheet"/>
+<link href="../../assets/css/dax-search.css" rel="stylesheet"/>
+<style>
+    /* === ESTILOS ESPECÍFICOS PARA PÁGINAS DE TOPICS === */
+
+    /* Topic header con icono grande */
+    .topic-header {
+      text-align: center;
+      padding: 2.5rem 0 2rem;
+      border-bottom: 2px solid var(--color-mauve);
+      margin-bottom: 2.5rem;
+    }
+
+    .topic-header__icon {
+      font-size: 4rem;
+      margin-bottom: 0.75rem;
+      display: block;
+    }
+
+    .topic-header__title {
+      font-size: clamp(1.875rem, 4vw, 2.5rem);
+      font-weight: 800;
+      color: var(--color-dark);
+      margin-bottom: 0.625rem;
+      line-height: 1.2;
+    }
+
+    .topic-header__subtitle {
+      font-size: 1.0625rem;
+      color: var(--color-slate);
+      margin-bottom: 1.25rem;
+      line-height: 1.5;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .topic-header__levels {
+      display: flex;
+      gap: 0.5rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    /* TOC — Table of contents */
+    .toc {
+      background: var(--color-rose);
+      border: 1.5px solid var(--color-mauve);
+      border-radius: var(--border-radius);
+      padding: 1.5rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .toc__title {
+      font-size: 0.875rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--color-slate);
+      margin-bottom: 1rem;
+    }
+
+    .toc__list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .toc__link {
+      color: var(--color-dark);
+      text-decoration: none;
+      font-size: 0.9375rem;
+      transition: var(--transition);
+      display: inline-block;
+    }
+
+    .toc__link:hover {
+      color: var(--color-coral);
+      text-decoration: underline;
+    }
+
+    /* Category header — separadores entre categorías */
+    .category-header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin: 3rem 0 1.5rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 2px solid var(--color-mauve);
+    }
+
+    .category-header__icon {
+      font-size: 1.75rem;
+    }
+
+    .category-header__title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--color-dark);
+      margin: 0;
+    }
+
+    /* Function card — tarjeta individual para cada función */
+    .function-card {
+      background: var(--color-white);
+      border: 1.5px solid var(--color-mauve);
+      border-radius: var(--border-radius);
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .function-card__name {
+      font-family: var(--font-code);
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: var(--color-coral);
+      margin-bottom: 0.75rem;
+    }
+
+    .function-card__description {
+      font-size: 0.9375rem;
+      color: var(--color-dark);
+      margin-bottom: 1rem;
+      line-height: 1.6;
+    }
+
+    .function-card__level {
+      display: inline-block;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      padding: 0.25rem 0.625rem;
+      border-radius: var(--border-radius-sm);
+      background: var(--color-blush);
+      color: var(--color-slate);
+      margin-bottom: 1rem;
+    }
+
+    /* Function table — tabla compacta con ejemplos */
+    .function-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.5rem 0;
+      font-size: 0.875rem;
+    }
+
+    .function-table th {
+      background: var(--color-rose);
+      color: var(--color-dark);
+      font-weight: 700;
+      text-align: left;
+      padding: 0.75rem 1rem;
+      border: 1px solid var(--color-mauve);
+    }
+
+    .function-table td {
+      padding: 0.75rem 1rem;
+      border: 1px solid var(--color-mauve);
+      color: var(--color-dark);
+    }
+
+    .function-table tr:nth-child(even) {
+      background: var(--color-blush);
+    }
+
+    /* Code block wrapper */
+    .code-block {
+      position: relative;
+      margin: 1.25rem 0;
+    }
+
+    .code-block pre {
+      margin: 0;
+      border-radius: var(--border-radius);
+      border: 1.5px solid var(--color-mauve);
+    }
+
+    .code-block__copy {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.5rem;
+      padding: 0.375rem 0.75rem;
+      font-size: 0.75rem;
+      background: var(--color-coral);
+      color: var(--color-white);
+      border: none;
+      border-radius: var(--border-radius-sm);
+      cursor: pointer;
+      font-family: var(--font-main);
+      font-weight: 600;
+      transition: var(--transition);
+    }
+
+    .code-block__copy:hover {
+      background: var(--color-peach);
+    }
+
+    /* Diagram specific styles */
+    .diagram {
+      background: #1e1e1e;
+      color: #00ff00;
+      padding: 2rem;
+      border-radius: var(--border-radius);
+      font-family: var(--font-code);
+      font-size: 0.9rem;
+      line-height: 1.4;
+      margin: 2rem 0;
+      overflow-x: auto;
+      border: 1.5px solid var(--color-mauve);
+    }
+
+    .diagram pre {
+      margin: 0;
+      white-space: pre;
+      color: #00ff00;
+    }
+  </style>
+</head>
+<body>
+<!-- SIDEBAR: Navegación principal -->
+<aside class="site-sidebar">
+<!-- Avatar y nombre -->
+<div class="site-sidebar__profile">
+<img alt="Sara Lozano Martí" class="site-sidebar__avatar" src="../../assets/images/avatar Sara.png"/>
+<p class="site-sidebar__name">Sara Lozano Martí</p>
+<p class="site-sidebar__subtitle">Power BI Expert</p>
+</div>
+<!-- Navegación principal -->
+<nav aria-label="Navegación principal" class="site-sidebar__nav">
+<ul>
+<li><a class="site-sidebar__link" href="../../index.html">
+<span class="site-sidebar__icon">🏠</span> Inicio
+        </a></li>
+<li><a class="site-sidebar__link is-active" href="../dax.html">
+<span class="site-sidebar__icon">⚡</span> Funciones DAX
+        </a></li>
+<li><a class="site-sidebar__link" href="../power-query.html">
+<span class="site-sidebar__icon">🔄</span> Power Query
+        </a></li>
+<li><a class="site-sidebar__link" href="../lenguaje-m.html">
+<span class="site-sidebar__icon">〽️</span> Lenguaje M
+        </a></li>
+<li><a class="site-sidebar__link" href="../modelado.html">
+<span class="site-sidebar__icon">🗄️</span> Modelado
+        </a></li>
+<li><a class="site-sidebar__link" href="../conceptos-powerbi.html">
+<span class="site-sidebar__icon">📊</span> Conceptos Power BI
+        </a></li>
+<li><a class="site-sidebar__link" href="../fabric.html">
+<span class="site-sidebar__icon">🧵</span> Microsoft Fabric
+        </a></li>
+<li><a class="site-sidebar__link" href="../tmdl.html">
+<span class="site-sidebar__icon">📝</span> TMDL
+        </a></li>
+<li><a class="site-sidebar__link" href="../diseno-ux.html">
+<span class="site-sidebar__icon">🎨</span> Diseño y UX
+        </a></li>
+<li><a class="site-sidebar__link" href="../gobernanza.html">
+<span class="site-sidebar__icon">🔒</span> Gobernanza
+        </a></li>
+</ul>
+</nav>
+<!-- Separador -->
+<div class="site-sidebar__divider"></div>
+<!-- Footer del sidebar -->
+<div class="site-sidebar__footer">
+<!-- Enlace a quien soy -->
+<a class="site-sidebar__link site-sidebar__link--highlight" href="../../quien-soy.html">
+<span class="site-sidebar__icon">👩‍💻</span> ¿Quién soy?
+      </a>
+<!-- Iconos sociales -->
+<div class="site-sidebar__social">
+<a aria-label="LinkedIn" href="https://www.linkedin.com/in/saralozanomarti" rel="noopener noreferrer" target="_blank">
+<img alt="LinkedIn" class="site-sidebar__social-icon" src="../../assets/images/logo linkedIN.png"/>
+</a>
+<a aria-label="YouTube" href="https://www.youtube.com/@KawaiiPowerBI" rel="noopener noreferrer" target="_blank">
+<img alt="YouTube" class="site-sidebar__social-icon" src="../../assets/images/logo youtube.png"/>
+</a>
+<a aria-label="GitHub" href="https://github.com/KawaiiBI" rel="noopener noreferrer" target="_blank">
+<img alt="GitHub" class="site-sidebar__social-icon" src="../../assets/images/logo github.png"/>
+</a>
+</div>
+<!-- Logo Kawaii BI -->
+<div class="site-sidebar__logo-bottom">
+<img alt="Kawaii BI" class="site-sidebar__logo-img" src="../../assets/images/Logo Kawaii.jpg"/>
+</div>
+<!-- Copyright -->
+<p class="site-sidebar__copyright">
+        Power BI Guide 🌸<br/>
+        © 2026 Kawaii BI
+      </p>
+</div>
+</aside>
+<!-- PAGE WRAPPER -->
+<div class="page-wrapper">
+<!-- Main content -->
+<main id="main-content">
+<div class="topic-page">
+        <nav aria-label="breadcrumb" class="breadcrumb">
+<a class="breadcrumb__link" href="../../index.html">Inicio</a>
+<span class="breadcrumb__separator">›</span>
+<a class="breadcrumb__link" href="../dax.html">Funciones DAX</a>
+<span class="breadcrumb__separator">›</span>
+<span class="breadcrumb__current">Relaciones</span>
+</nav>
+
+        <header class="topic-header">
+<span class="topic-header__icon">🔗</span>
+<h1 class="topic-header__title">Funciones de Relaciones</h1>
+<p class="topic-header__subtitle">RELATED, RELATEDTABLE, USERELATIONSHIP, CROSSFILTER — controla cómo fluye el contexto entre tablas</p>
+<div class="topic-header__levels">
+<span class="badge badge--intermediate">Intermedio</span>
+<span class="badge badge--advanced">Avanzado</span>
+</div>
+</header>
+
+        <div class="dax-search-compact-bar">
+<div class="dax-search-wrapper dax-search-compact" data-dax-search="true">
+<span class="dax-search-icon">🔍</span>
+<input aria-label="Buscar función DAX" autocomplete="off" class="dax-search-input" placeholder="Buscar otra función DAX..." spellcheck="false" type="text"/>
+<button aria-label="Limpiar" class="dax-search-clear" hidden="">✕</button>
+<div class="dax-search-results" role="listbox"></div>
+</div>
+</div>
+
+        <nav class="toc">
+<h2 class="toc__title">📑 En esta página</h2>
+<ul class="toc__list">
+<li><a class="toc__link" href="#intro">Cómo funcionan las relaciones en DAX</a></li>
+<li><a class="toc__link" href="#related">RELATED — navegar de muchos a uno</a></li>
+<li><a class="toc__link" href="#relatedtable">RELATEDTABLE — navegar de uno a muchos</a></li>
+<li><a class="toc__link" href="#userelationship">USERELATIONSHIP — activar relaciones inactivas</a></li>
+<li><a class="toc__link" href="#crossfilter">CROSSFILTER — cambiar la dirección de filtrado</a></li>
+<li><a class="toc__link" href="#patrones">Patrones avanzados con relaciones</a></li>
+</ul>
+</nav>
+
+        <!-- Breadcrumb --><!-- Buscador compacto DAX --><!-- Header del topic --><!-- TOC --><!-- SECCIÓN 0: Intro --><section id="intro">
+<h2 class="category-header__title">Cómo funcionan las relaciones en DAX 🤔</h2>
+<p>En Power BI, las relaciones conectan las tablas de tu modelo de datos. Entender cómo navegar por estas relaciones es fundamental para escribir DAX avanzado.</p>
+<h3>Modelo estrella típico</h3>
+<div class="diagram">
+<pre>
+      'Clientes'          'Productos'         'Calendario'
+          │                    │                    │
+          │ (uno)              │ (uno)              │ (uno)
+          │                    │                    │
+          └────────────────────┼────────────────────┘
+                               │
+                          'Ventas' (muchos)
+                    [IDCliente, IDProducto, Fecha, Importe]
+            </pre>
+</div>
+<h3>Características de las relaciones en Power BI</h3>
+<ul>
+<li><strong>Dirección de filtro:</strong> De la tabla "uno" hacia la tabla "muchos" (por defecto). Los filtros aplicados a Clientes, Productos o Calendario fluyen automáticamente a Ventas.</li>
+<li><strong>Cardinalidad:</strong>
+<ul>
+<li>Uno a muchos (1:N) — la más común</li>
+<li>Muchos a muchos (N:M) — requiere configuración especial</li>
+<li>Uno a uno (1:1) — poco común</li>
+</ul>
+</li>
+<li><strong>Estado:</strong>
+<ul>
+<li>Activa — solo puede haber UNA relación activa entre dos tablas</li>
+<li>Inactiva — relaciones adicionales que deben activarse con USERELATIONSHIP</li>
+</ul>
+</li>
+</ul>
+<h3>Las 4 funciones de relaciones en DAX</h3>
+<ul>
+<li><strong>RELATED</strong> — navega "río arriba" (de la tabla muchos a la tabla uno)</li>
+<li><strong>RELATEDTABLE</strong> — navega "río abajo" (de la tabla uno a la tabla muchos)</li>
+<li><strong>USERELATIONSHIP</strong> — activa una relación inactiva temporalmente</li>
+<li><strong>CROSSFILTER</strong> — cambia la dirección de filtrado o desactiva el filtrado cruzado</li>
+</ul>
+<div class="note note--tip">
+<strong>Analogía kawaii 🌸</strong><br/>
+            Piensa en las relaciones como <strong>canales de agua</strong>:
+            <ul style="margin-top: 0.5rem;">
+<li>El agua (los filtros) fluye desde la montaña (tabla "uno") hacia el río (tabla "muchos")</li>
+<li><strong>RELATED</strong> es como nadar río arriba — vas desde Ventas hacia Productos/Clientes</li>
+<li><strong>RELATEDTABLE</strong> es como dejarse llevar río abajo — vas desde Productos/Clientes hacia Ventas</li>
+<li><strong>USERELATIONSHIP</strong> abre una compuerta secundaria</li>
+<li><strong>CROSSFILTER</strong> cambia la dirección del canal</li>
+</ul>
+</div>
+</section><!-- SECCIÓN 1: RELATED --><section id="related">
+<div class="category-header">
+<span class="category-header__icon">⬆️</span>
+<h2 class="category-header__title">RELATED — navegar de muchos a uno</h2>
+</div>
+<div class="function-card">
+<div class="function-card__name">RELATED(&lt;columna&gt;)</div>
+<div class="function-card__level">Intermedio</div>
+<div class="function-card__description">
+              Accede a una columna de una tabla relacionada navegando "hacia el lado uno" de la relación. Solo funciona en contexto de fila (columnas calculadas o iteradores). <strong>Es el equivalente DAX de un VLOOKUP o JOIN en SQL.</strong>
+</div>
+<h4>Cuándo usarla</h4>
+<p>En una <strong>COLUMNA CALCULADA</strong> de la tabla de hechos, cuando quieres traer información de una tabla de dimensión relacionada. También dentro de iteradores como SUMX, AVERAGEX, FILTER...</p>
+<h4>Ejemplo básico — columna calculada en tabla de hechos</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// En la tabla Ventas, añadir la categoría del producto:
+'Ventas'[Categoría] = RELATED('Productos'[Categoría])
+// Para cada fila de Ventas, navega a Productos (por IDProducto)
+// y trae el valor de la columna Categoría
+
+// Traer el país del cliente:
+'Ventas'[País Cliente] = RELATED('Clientes'[País])
+
+// Traer el precio de tarifa (para calcular el descuento):
+'Ventas'[Precio Tarifa] = RELATED('Productos'[PrecioTarifa])
+'Ventas'[Descuento Aplicado] =
+DIVIDE(
+    'Ventas'[Precio Tarifa] - 'Ventas'[PrecioReal],
+    'Ventas'[Precio Tarifa]
+)</code></pre>
+</div>
+<h4>Ejemplo en iterador (FILTER con RELATED)</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Ventas de solo productos de la categoría "Electrónica":
+Ventas Electrónica =
+SUMX(
+    FILTER('Ventas', RELATED('Productos'[Categoría]) = "Electrónica"),
+    'Ventas'[Importe]
+)
+// RELATED funciona aquí porque FILTER itera Ventas (contexto de fila)
+
+// ✅ Equivalente más eficiente con CALCULATE:
+Ventas Electrónica v2 =
+CALCULATE([Total Ventas], 'Productos'[Categoría] = "Electrónica")</code></pre>
+</div>
+<div class="note note--warning">
+<strong>⚠️ Advertencia importante</strong><br/>
+<strong>RELATED SOLO funciona cuando estás en contexto de fila</strong> (dentro de un iterador o en una columna calculada). En una medida normal sin iterador, no tienes contexto de fila y RELATED dará error.<br/><br/>
+              En medidas, usa CALCULATE con filtros directos en lugar de RELATED.
+            </div>
+<h4>RELATED con relaciones en cadena (navegación multi-salto)</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Si Ventas → Pedidos → Clientes (dos saltos de relación):
+// Puedes hacer:
+'Ventas'[Segmento Cliente] = RELATED('Clientes'[Segmento])
+
+// DAX navega Ventas → Pedidos → Clientes automáticamente
+// siempre que las relaciones estén definidas en el modelo</code></pre>
+</div>
+</div>
+</section><!-- SECCIÓN 2: RELATEDTABLE --><section id="relatedtable">
+<div class="category-header">
+<span class="category-header__icon">⬇️</span>
+<h2 class="category-header__title">RELATEDTABLE — navegar de uno a muchos</h2>
+</div>
+<div class="function-card">
+<div class="function-card__name">RELATEDTABLE(&lt;tabla&gt;)</div>
+<div class="function-card__level">Intermedio — Avanzado</div>
+<div class="function-card__description">
+              Devuelve la tabla relacionada navegando "hacia el lado muchos" de la relación. Desde una tabla de dimensión, obtiene todas las filas de la tabla de hechos que están relacionadas con la fila actual. <strong>Equivalente al INNER JOIN en sentido inverso.</strong>
+</div>
+<h4>Ejemplo en columna calculada de dimensión</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// En la tabla Productos, contar cuántas ventas tiene cada producto:
+'Productos'[Nº Ventas] = COUNTROWS(RELATEDTABLE('Ventas'))
+// Para cada producto, devuelve las filas de Ventas relacionadas con ese producto
+// y cuenta cuántas hay
+
+// Total vendido de cada producto (en columna calculada de la dimensión):
+'Productos'[Total Vendido] =
+SUMX(RELATEDTABLE('Ventas'), 'Ventas'[Importe])
+
+// Ticket máximo de cada cliente:
+'Clientes'[Ticket Máximo] =
+MAXX(RELATEDTABLE('Ventas'), 'Ventas'[Importe])
+
+// Fecha del último pedido de cada cliente:
+'Clientes'[Última Compra] =
+MAXX(RELATEDTABLE('Ventas'), 'Ventas'[Fecha])
+
+// ¿El producto se vendió alguna vez con descuento?
+'Productos'[Alguna Vez con Descuento] =
+IF(
+    COUNTROWS(
+        FILTER(RELATEDTABLE('Ventas'), 'Ventas'[Descuento] &gt; 0)
+    ) &gt; 0,
+    TRUE,
+    FALSE
+)</code></pre>
+</div>
+<h4>Diferencia RELATEDTABLE vs CALCULATETABLE</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// RELATEDTABLE: solo funciona en contexto de fila, navega por relación existente
+'Productos'[Total] = SUMX(RELATEDTABLE('Ventas'), 'Ventas'[Importe])
+
+// CALCULATETABLE: más flexible, funciona en medidas, puede añadir filtros adicionales
+Total Ventas Producto X =
+SUMX(
+    CALCULATETABLE('Ventas', 'Productos'[ID] = "P001"),
+    'Ventas'[Importe]
+)</code></pre>
+</div>
+</div>
+</section><!-- SECCIÓN 3: USERELATIONSHIP --><section id="userelationship">
+<div class="category-header">
+<span class="category-header__icon">🔄</span>
+<h2 class="category-header__title">USERELATIONSHIP — activar relaciones inactivas</h2>
+</div>
+<div class="function-card">
+<div class="function-card__name">USERELATIONSHIP(&lt;columna1&gt;, &lt;columna2&gt;)</div>
+<div class="function-card__level">Avanzado</div>
+<div class="function-card__description">
+              Modificador de CALCULATE que activa una relación INACTIVA para la duración del cálculo. Power BI solo permite una relación activa entre dos tablas — si necesitas filtrar por una segunda relación, debes marcarla como inactiva en el modelo y activarla temporalmente con USERELATIONSHIP.
+            </div>
+<h4>Caso de uso típico — múltiples relaciones fecha</h4>
+<p><strong>Escenario muy común:</strong> tabla Ventas con dos columnas de fecha:</p>
+<ul>
+<li><strong>FechaPedido</strong> — fecha en que se realizó el pedido</li>
+<li><strong>FechaEntrega</strong> — fecha en que se entregó</li>
+</ul>
+<p>Solo UNA puede ser la relación activa con el Calendario. La otra debe ser inactiva y se activa con USERELATIONSHIP cuando la necesitas.</p>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// En el modelo:
+// Activa:   Ventas[FechaPedido] → Calendario[Date]
+// Inactiva: Ventas[FechaEntrega] → Calendario[Date] (marcada como inactiva)
+
+// Medida usando la relación activa (FechaPedido):
+Pedidos por Fecha = COUNTROWS('Ventas')
+// Esto filtra por FechaPedido automáticamente
+
+// Medida usando la relación INACTIVA (FechaEntrega):
+Entregas por Fecha =
+CALCULATE(
+    COUNTROWS('Ventas'),
+    USERELATIONSHIP('Ventas'[FechaEntrega], 'Calendario'[Date])
+)
+// USERELATIONSHIP activa temporalmente la relación de FechaEntrega
+// para este cálculo específico
+
+// Ambas en el mismo informe con el mismo slicer de fecha:
+// El slicer filtra la fecha, USERELATIONSHIP determina cuál columna se usa</code></pre>
+</div>
+<h4>Ejemplo 2 — tabla de roles en RRHH</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Tabla Empleados con:
+// ManagerID → relación inactiva con Empleados[EmpleadoID]
+// para la jerarquía de reporting
+
+Nombre Manager =
+CALCULATE(
+    MAX('Empleados'[Nombre]),
+    USERELATIONSHIP('Empleados'[ManagerID], 'Empleados'[EmpleadoID])
+)</code></pre>
+</div>
+<div class="note note--warning">
+<strong>⚠️ Limitaciones de USERELATIONSHIP</strong><br/>
+<strong>USERELATIONSHIP solo puede activar relaciones que ya existen en el modelo</strong> (aunque sean inactivas). No puede crear relaciones nuevas en tiempo de ejecución — para eso existe TREATAS.<br/><br/>
+              Además, USERELATIONSHIP suspende la relación activa entre esas dos tablas mientras dura el cálculo.
+            </div>
+</div>
+</section><!-- SECCIÓN 4: CROSSFILTER --><section id="crossfilter">
+<div class="category-header">
+<span class="category-header__icon">↔️</span>
+<h2 class="category-header__title">CROSSFILTER — cambiar la dirección de filtrado</h2>
+</div>
+<div class="function-card">
+<div class="function-card__name">CROSSFILTER(&lt;columna1&gt;, &lt;columna2&gt;, &lt;dirección&gt;)</div>
+<div class="function-card__level">Avanzado</div>
+<div class="function-card__description">
+              Modificador de CALCULATE que cambia la dirección de filtrado cruzado de una relación para la duración del cálculo. Los valores posibles de dirección son:
+            </div>
+<ul style="margin-top: 1rem;">
+<li><strong>NONE</strong> — desactiva el filtrado por esta relación</li>
+<li><strong>ONEWAY</strong> — filtra solo en la dirección "uno → muchos" (comportamiento normal)</li>
+<li><strong>BOTH</strong> — filtra en ambas direcciones (bidireccional)</li>
+</ul>
+<h4>Por qué es importante</h4>
+<p>Por defecto, los filtros fluyen de la tabla "uno" a la tabla "muchos". A veces necesitas que el filtro fluya en la dirección contraria.</p>
+<p>En lugar de cambiar el modelo permanentemente (lo cual puede crear ambigüedad), usa CROSSFILTER para activar la bidireccionalidad solo cuando la necesitas.</p>
+<h4>Ejemplo — contar clientes que compraron un producto específico</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Sin CROSSFILTER, el filtro de Productos no llega a Clientes
+// (el filtro va Productos → Ventas, pero no Ventas → Clientes de vuelta)
+
+// ❌ Puede no funcionar según el modelo:
+Clientes que compraron Laptop =
+CALCULATE(
+    DISTINCTCOUNT('Ventas'[IDCliente]),
+    'Productos'[Nombre] = "Laptop Pro"
+)
+
+// ✅ Con CROSSFILTER (el filtro fluye Productos → Ventas → Clientes):
+Clientes que compraron Laptop v2 =
+CALCULATE(
+    DISTINCTCOUNT('Clientes'[ID]),
+    CROSSFILTER('Ventas'[IDProducto], 'Productos'[ID], BOTH),
+    'Productos'[Nombre] = "Laptop Pro"
+)</code></pre>
+</div>
+<h4>Ejemplo — desactivar una relación temporalmente</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Calcular el total sin que una relación filtre:
+Total Sin Filtro Region =
+CALCULATE(
+    [Total Ventas],
+    CROSSFILTER('Ventas'[IDRegion], 'Regiones'[ID], NONE)
+)</code></pre>
+</div>
+<div class="note note--best-practice">
+<strong>🏆 Best practice: bidireccionalidad selectiva</strong><br/>
+              La bidireccionalidad permanente en el modelo puede crear ambigüedad y reducir el rendimiento (especialmente en modelos complejos).<br/><br/>
+<strong>El patrón recomendado por SQLBI:</strong> mantener las relaciones unidireccionales en el modelo y usar CROSSFILTER(BOTH) solo cuando sea estrictamente necesario en una medida concreta.
+            </div>
+</div>
+</section><!-- SECCIÓN 5: Patrones avanzados --><section id="patrones">
+<div class="category-header">
+<span class="category-header__icon">🏆</span>
+<h2 class="category-header__title">Patrones avanzados con relaciones</h2>
+</div>
+<h3>Patrón 1 — Ventas del mes de entrega (relación inactiva)</h3>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">Ventas por Entrega =
+CALCULATE(
+    SUM('Ventas'[Importe]),
+    USERELATIONSHIP('Ventas'[FechaEntrega], 'Calendario'[Date])
+)</code></pre>
+</div>
+<h3>Patrón 2 — Contar clientes únicos que compraron una categoría</h3>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">Clientes por Categoría =
+CALCULATE(
+    DISTINCTCOUNT('Clientes'[ID]),
+    CROSSFILTER('Ventas'[IDCliente], 'Clientes'[ID], BOTH)
+)</code></pre>
+</div>
+<h3>Patrón 3 — Segmentación de clientes en columna calculada</h3>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Añadir el segmento de cliente a cada venta (para análisis rápido):
+'Ventas'[Segmento] = RELATED('Clientes'[Segmento])
+'Ventas'[País] = RELATED('Clientes'[País])
+'Ventas'[Categoría Producto] = RELATED('Productos'[Categoría])</code></pre>
+</div>
+<h3>Patrón 4 — Tabla de hechos enriquecida para análisis</h3>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">Ventas Enriquecidas =
+ADDCOLUMNS(
+    'Ventas',
+    "País Cliente", RELATED('Clientes'[País]),
+    "Segmento", RELATED('Clientes'[Segmento]),
+    "Categoría", RELATED('Productos'[Categoría]),
+    "Año", RELATED('Calendario'[Año]),
+    "Trimestre", RELATED('Calendario'[Trimestre])
+)</code></pre>
+</div>
+<div class="note note--next">
+<strong>🚀 Siguiente paso</strong><br/>
+            Controlas el flujo de datos entre tablas — eso es manejar DAX a nivel avanzado. A continuación, las <strong>funciones de Información</strong> — el grupo IS... que te ayuda a entender en qué contexto está evaluándose tu medida.
+          </div>
+</section>
+
+      </div>
+</main>
+</div>
+<!-- Footer (cargado dinámicamente) -->
+<div id="main-footer"></div>
+<!-- Botón volver arriba -->
+<button aria-label="Volver arriba" class="btn-back-to-top" id="back-to-top">↑</button>
+<!-- Scripts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+<script src="../../assets/js/theme.js"></script>
+<script src="../../assets/js/main.js"></script>
+<!-- Buscador DAX -->
+<script src="../../assets/js/dax-search.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Auto-inicializar todos los widgets con data-dax-search="true"
+      if (window.daxSearch) {
+        window.daxSearch.initAll({
+          baseUrl: '../'  // estamos en topics/dax/, las URLs deben ir a topics/dax/...
+        });
+      }
+    });
+  </script>
+<script src="../../assets/js/cursor.js"></script>
+</body>
+</html>

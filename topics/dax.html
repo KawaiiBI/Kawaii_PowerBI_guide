@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Guía completa de funciones DAX para Power BI: más de 300 funciones organizadas en 16 categorías">
+  <title>Guía Completa de Funciones DAX — Power BI Guide 🌸</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+
+  <!-- Prism.js para syntax highlighting -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1/themes/prism-okaidia.min.css">
+
+  <!-- Estilos CSS en orden -->
+  <link rel="stylesheet" href="../assets/css/main.css">
+  <link rel="stylesheet" href="../assets/css/themes.css">
+  <link rel="stylesheet" href="../assets/css/components.css">
+  <link rel="stylesheet" href="../assets/css/layout.css">
+  <link rel="stylesheet" href="../assets/css/dax-search.css">
+
+  <!-- Estilos específicos del topic -->
+  <style>
+    .topic-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 1.25rem;
+      margin-bottom: 2rem;
+      padding: 1.75rem;
+      background: var(--color-rose);
+      border-radius: var(--border-radius);
+      border: 1.5px solid var(--color-mauve);
+    }
+
+    .topic-header__icon {
+      font-size: 3rem;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+
+    .topic-header__title {
+      font-size: 1.875rem;
+      font-weight: 700;
+      margin-bottom: 0.25rem;
+    }
+
+    .topic-header__subtitle {
+      color: var(--color-slate);
+      font-size: 0.9375rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .topic-header__levels {
+      display: flex;
+      gap: 0.375rem;
+      flex-wrap: wrap;
+    }
+
+    /* Estilos para el hub DAX */
+    .dax-intro {
+      background: linear-gradient(135deg, var(--color-rose) 0%, var(--color-blush) 100%);
+      border-radius: var(--border-radius);
+      padding: 2rem;
+      margin-bottom: 2.5rem;
+      border: 1.5px solid var(--color-mauve);
+    }
+
+    .dax-intro__title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    .dax-intro__text {
+      color: var(--color-slate);
+      font-size: 0.9375rem;
+      line-height: 1.7;
+    }
+
+    .dax-intro__stats {
+      display: flex;
+      gap: 1.5rem;
+      margin-top: 1.25rem;
+      flex-wrap: wrap;
+    }
+
+    .dax-intro__stat {
+      background: var(--color-white);
+      border-radius: var(--border-radius-sm);
+      padding: 0.625rem 1rem;
+      border: 1px solid var(--color-mauve);
+      font-size: 0.875rem;
+    }
+
+    .dax-intro__stat strong {
+      color: var(--color-coral);
+      font-size: 1.125rem;
+      display: block;
+    }
+
+    .category-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.25rem;
+      margin-top: 1.5rem;
+    }
+
+    .category-card {
+      background: var(--color-white);
+      border: 1.5px solid var(--color-mauve);
+      border-radius: var(--border-radius);
+      padding: 1.25rem 1.5rem;
+      text-decoration: none;
+      color: inherit;
+      transition: var(--transition);
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .category-card:hover {
+      border-color: var(--color-coral);
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-md);
+      text-decoration: none;
+    }
+
+    .category-card__header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .category-card__icon {
+      font-size: 1.75rem;
+      line-height: 1;
+    }
+
+    .category-card__name {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--color-dark);
+    }
+
+    .category-card__count {
+      font-size: 0.75rem;
+      color: var(--color-slate);
+      background: var(--color-rose);
+      border-radius: 999px;
+      padding: 0.15rem 0.5rem;
+      margin-left: auto;
+    }
+
+    .category-card__desc {
+      font-size: 0.8125rem;
+      color: var(--color-slate);
+      line-height: 1.5;
+    }
+
+    .category-card__levels {
+      display: flex;
+      gap: 0.375rem;
+      margin-top: 0.25rem;
+    }
+
+    .category-card__new {
+      font-size: 0.65rem;
+      font-weight: 700;
+      background: var(--color-coral);
+      color: white;
+      padding: 0.1rem 0.4rem;
+      border-radius: 999px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* Estilos tema oscuro */
+    .dark-theme .topic-header {
+      background: var(--color-rose);
+      border-color: var(--color-mauve);
+    }
+
+    .dark-theme .category-card {
+      background: var(--color-white);
+      border-color: var(--color-mauve);
+    }
+
+    .dark-theme .dax-intro {
+      background: linear-gradient(135deg, var(--color-rose) 0%, var(--color-blush) 100%);
+      border-color: var(--color-mauve);
+    }
+
+    .dark-theme .dax-intro__stat {
+      background: var(--color-white);
+      border-color: var(--color-mauve);
+    }
+
+  </style>
+</head>
+<body>
+
+  <!-- SIDEBAR: Navegación principal -->
+  <aside class="site-sidebar">
+
+    <!-- Avatar y nombre -->
+    <div class="site-sidebar__profile">
+      <img src="../assets/images/avatar Sara.png" alt="Sara Lozano Martí" class="site-sidebar__avatar" />
+      <p class="site-sidebar__name">Sara Lozano Martí</p>
+      <p class="site-sidebar__subtitle">Power BI Expert</p>
+    </div>
+
+    <!-- Navegación principal -->
+    <nav class="site-sidebar__nav" aria-label="Navegación principal">
+      <ul>
+        <li><a href="../index.html" class="site-sidebar__link">
+          <span class="site-sidebar__icon">🏠</span> Inicio
+        </a></li>
+
+        <li><a href="dax.html" class="site-sidebar__link is-active">
+          <span class="site-sidebar__icon">⚡</span> Funciones DAX
+        </a></li>
+
+        <li><a href="power-query.html" class="site-sidebar__link">
+          <span class="site-sidebar__icon">🔄</span> Power Query
+        </a></li>
+
+        <li><a href="lenguaje-m.html" class="site-sidebar__link">
+          <span class="site-sidebar__icon">〽️</span> Lenguaje M
+        </a></li>
+
+        <li><a href="modelado.html" class="site-sidebar__link">
+          <span class="site-sidebar__icon">🗄️</span> Modelado
+        </a></li>
+
+        <li><a href="conceptos-powerbi.html" class="site-sidebar__link">
+          <span class="site-sidebar__icon">📊</span> Conceptos Power BI
+        </a></li>
+
+        <li><a href="fabric.html" class="site-sidebar__link">
+          <span class="site-sidebar__icon">🧵</span> Microsoft Fabric
+        </a></li>
+
+        <li><a href="tmdl.html" class="site-sidebar__link">
+          <span class="site-sidebar__icon">📝</span> TMDL
+        </a></li>
+
+        <li><a href="diseno-ux.html" class="site-sidebar__link">
+          <span class="site-sidebar__icon">🎨</span> Diseño y UX
+        </a></li>
+
+        <li><a href="gobernanza.html" class="site-sidebar__link">
+          <span class="site-sidebar__icon">🔒</span> Gobernanza
+        </a></li>
+      </ul>
+    </nav>
+
+    <!-- Separador -->
+    <div class="site-sidebar__divider"></div>
+
+    <!-- Footer del sidebar -->
+    <div class="site-sidebar__footer">
+      <!-- Enlace a quien soy -->
+      <a href="../quien-soy.html" class="site-sidebar__link site-sidebar__link--highlight">
+        <span class="site-sidebar__icon">👩‍💻</span> ¿Quién soy?
+      </a>
+
+      <!-- Iconos sociales -->
+      <div class="site-sidebar__social">
+        <a href="https://www.linkedin.com/in/saralozanomarti" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+          <img src="../assets/images/logo linkedIN.png" alt="LinkedIn" class="site-sidebar__social-icon" />
+        </a>
+        <a href="https://www.youtube.com/@KawaiiPowerBI" target="_blank" rel="noopener noreferrer" aria-label="YouTube">
+          <img src="../assets/images/logo youtube.png" alt="YouTube" class="site-sidebar__social-icon" />
+        </a>
+        <a href="https://github.com/KawaiiBI" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
+          <img src="../assets/images/logo github.png" alt="GitHub" class="site-sidebar__social-icon" />
+        </a>
+      </div>
+
+      <!-- Logo Kawaii BI -->
+      <div class="site-sidebar__logo-bottom">
+        <img src="../assets/images/Logo Kawaii.jpg" alt="Kawaii BI" class="site-sidebar__logo-img" />
+      </div>
+
+      <!-- Copyright -->
+      <p class="site-sidebar__copyright">
+        Power BI Guide 🌸<br>
+        © 2026 Kawaii BI
+      </p>
+    </div>
+
+  </aside>
+
+  <!-- CONTENEDOR DEL CONTENIDO -->
+  <div class="page-wrapper">
+    <main class="main-content">
+      <div class="topic-page">
+        <!-- Breadcrumb -->
+        <nav class="breadcrumb" aria-label="Ruta de navegación">
+          <span class="breadcrumb__item"><a href="../index.html">🏠 Inicio</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item">Funciones DAX</span>
+        </nav>
+
+        <!-- Cabecera del topic -->
+        <div class="topic-header">
+          <div class="topic-header__icon">⚡</div>
+          <div>
+            <h1 class="topic-header__title">Guía Completa de Funciones DAX</h1>
+            <p class="topic-header__subtitle">La referencia más completa en español de todas las funciones DAX — más de 300 funciones organizadas por categoría</p>
+            <div class="topic-header__levels">
+              <span class="badge badge--beginner">Principiante</span>
+              <span class="badge badge--intermediate">Intermedio</span>
+              <span class="badge badge--advanced">Avanzado</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Introducción -->
+        <div class="dax-intro">
+          <h2 class="dax-intro__title">¿Por dónde empezamos? 🌸</h2>
+          <p class="dax-intro__text">
+            DAX (Data Analysis Expressions) es el lenguaje de fórmulas que da superpoderes a Power BI,
+            Analysis Services y Power Pivot. Con más de 300 funciones organizadas en 16 categorías,
+            esta guía cubre absolutamente todo — desde las funciones básicas de agregación hasta las
+            nuevas Visual Calculations de 2024 que todavía poca gente conoce. 🚀
+          </p>
+          <p class="dax-intro__text" style="margin-top: 0.75rem;">
+            Cada categoría tiene su propia página con explicaciones didácticas, ejemplos reales comentados
+            línea a línea y notas de nivel para que sepas exactamente cuándo aprender cada cosa.
+            Usa las cards de abajo para ir directamente a lo que necesitas.
+          </p>
+          <div class="dax-intro__stats">
+            <div class="dax-intro__stat"><strong>300+</strong>funciones documentadas</div>
+            <div class="dax-intro__stat"><strong>16</strong>categorías</div>
+            <div class="dax-intro__stat"><strong>3</strong>niveles de dificultad</div>
+            <div class="dax-intro__stat"><strong>100+</strong>ejemplos reales</div>
+          </div>
+        </div>
+
+        <!-- Buscador de funciones DAX -->
+        <section class="dax-search-hero">
+          <h2 class="dax-search-hero-title">🔍 Busca cualquier función DAX</h2>
+          <p class="dax-search-hero-subtitle">Escribe el nombre de la función y te llevo directamente a su explicación</p>
+          <div class="dax-search-wrapper" data-dax-search="true">
+            <div class="dax-search-input-group">
+              <span class="dax-search-icon">🔍</span>
+              <input
+                type="text"
+                id="dax-search-main"
+                class="dax-search-input"
+                placeholder="Ej: CALCULATE, SUMX, SAMEPERIODLASTYEAR..."
+                autocomplete="off"
+                spellcheck="false"
+                aria-label="Buscar función DAX"
+                aria-autocomplete="list"
+                aria-controls="dax-search-results-main"
+                role="combobox"
+                aria-expanded="false"
+              />
+              <button class="dax-search-clear" id="dax-search-clear-main" aria-label="Limpiar búsqueda" hidden>✕</button>
+            </div>
+            <div
+              id="dax-search-results-main"
+              class="dax-search-results"
+              role="listbox"
+              aria-label="Resultados de búsqueda DAX"
+            ></div>
+          </div>
+          <p class="dax-search-stats">360+ funciones · 16 categorías · Busca por nombre o descripción</p>
+        </section>
+
+        <!-- Grid de categorías -->
+        <h2 class="section-title">Explora por categoría 📚</h2>
+        <div class="category-grid">
+
+          <a href="dax/agregacion.html" class="category-card">
+            <div class="category-card__header">
+              <span class="category-card__icon">📊</span>
+              <span class="category-card__name">Agregación</span>
+              <span class="category-card__count">22 funciones</span>
+            </div>
+            <p class="category-card__desc">SUM, COUNT, AVERAGE, MIN, MAX, DISTINCTCOUNT y todas sus variantes X e iteradoras.</p>
+            <div class="category-card__levels">
+              <span class="badge badge--beginner">Principiante</span>
+            </div>
+          </a>
+
+          <a href="dax/filtro.html" class="category-card">
+            <div class="category-card__header">
+              <span class="category-card__icon">🎯</span>
+              <span class="category-card__name">Filtro y Contexto</span>
+              <span class="category-card__count">28 funciones</span>
+            </div>
+            <p class="category-card__desc">CALCULATE, ALL, FILTER, KEEPFILTERS, SELECTEDVALUE, TREATAS y toda la familia de modificadores de contexto.</p>
+            <div class="category-card__levels">
+              <span class="badge badge--intermediate">Intermedio</span>
+              <span class="badge badge--advanced">Avanzado</span>
+            </div>
+          </a>
+
+          <a href="dax/fecha-hora.html" class="category-card">
+            <div class="category-card__header">
+              <span class="category-card__icon">📅</span>
+              <span class="category-card__name">Fecha y Hora</span>
+              <span class="category-card__count">24 funciones</span>
+            </div>
+            <p class="category-card__desc">DATE, DATEDIFF, EOMONTH, NETWORKDAYS, CALENDAR, CALENDARAUTO y todas las funciones de construcción de fechas.</p>
+            <div class="category-card__levels">
+              <span class="badge badge--beginner">Principiante</span>
+              <span class="badge badge--intermediate">Intermedio</span>
+            </div>
+          </a>
+
+          <a href="dax/logicas.html" class="category-card">
+            <div class="category-card__header">
+              <span class="category-card__icon">🔀</span>
+              <span class="category-card__name">Lógicas</span>
+              <span class="category-card__count">13 funciones</span>
+            </div>
+            <p class="category-card__desc">IF, SWITCH, AND, OR, NOT, IFERROR, COALESCE, IF.EAGER y operadores de bits BITAND/BITOR/BITXOR.</p>
+            <div class="category-card__levels">
+              <span class="badge badge--beginner">Principiante</span>
+              <span class="badge badge--intermediate">Intermedio</span>
+            </div>
+          </a>
+
+          <a href="dax/matematicas.html" class="category-card">
+            <div class="category-card__header">
+              <span class="category-card__icon">🔢</span>
+              <span class="category-card__name">Matemáticas y Trig</span>
+              <span class="category-card__count">47 funciones</span>
+            </div>
+            <p class="category-card__desc">DIVIDE, ROUND, ABS, SQRT, MOD, INT, las funciones trigonométricas completas y funciones de conversión.</p>
+            <div class="category-card__levels">
+              <span class="badge badge--beginner">Principiante</span>
+              <span class="badge badge--intermediate">Intermedio</span>
+            </div>
+          </a>
+
+          <a href="dax/estadisticas.html" class="category-card">
+            <div class="category-card__header">
+              <span class="category-card__icon">📈</span>
+              <span class="category-card__name">Estadísticas</span>
+              <span class="category-card__count">35 funciones</span>
+            </div>
+            <p class="category-card__desc">MEDIAN, STDEV, VAR, PERCENTILE, distribuciones NORM/CHISQ/T/BETA, RANKX, LINEST y regresión lineal.</p>
+            <div class="category-card__levels">
+              <span class="badge badge--intermediate">Intermedio</span>
+              <span class="badge badge--advanced">Avanzado</span>
+            </div>
+          </a>
+
+          <a href="dax/texto.html" class="category-card">
+            <div class="category-card__header">
+              <span class="category-card__icon">📝</span>
+              <span class="category-card__name">Texto</span>
+              <span class="category-card__count">23 funciones</span>
+            </div>
+            <p class="category-card__desc">FORMAT, CONCATENATE, LEFT/RIGHT/MID, SUBSTITUTE, CONTAINSSTRING, TOCSV, TOJSON, UNICHAR y más.</p>
+            <div class="category-card__levels">
+              <span class="badge badge--beginner">Principiante</span>
+              <span class="badge badge--intermediate">Intermedio</span>
+            </div>
+          </a>
+
+          <a href="dax/tablas.html" class="category-card">
+            <div class="category-card__header">
+              <span class="category-card__icon">🗃️</span>
+              <span class="category-card__name">Manipulación de Tablas</span>
+              <span class="category-card__count">35 funciones</span>
+            </div>
+            <p class="category-card__desc">SUMMARIZECOLUMNS, ADDCOLUMNS, UNION, INTERSECT, TOPN, GENERATE, GROUPBY, TREATAS y operaciones de conjuntos.</p>
+            <div class="category-card__levels">
+              <span class="badge badge--intermediate">Intermedio</span>
+              <span class="badge badge--advanced">Avanzado</span>
+            </div>
+          </a>
+
+          <a href="dax/tiempo.html" class="category-card">
+            <div class="category-card__header">
+              <span class="category-card__icon">⏳</span>
+              <span class="category-card__name">Inteligencia de Tiempo</span>
+              <span class="category-card__count">40 funciones</span>
+            </div>
+            <p class="category-card__desc">TOTALYTD/QTD/MTD, SAMEPERIODLASTYEAR, DATEADD, DATESINPERIOD, OPENINGBALANCE, CLOSINGBALANCE y mucho más.</p>
+            <div class="category-card__levels">
+              <span class="badge badge--intermediate">Intermedio</span>
+              <span class="badge badge--advanced">Avanzado</span>
+            </div>
+          </a>
+
+          <a href="dax/relaciones.html" class="category-card">
+            <div class="category-card__header">
+              <span class="category-card__icon">🔗</span>
+              <span class="category-card__name">Relaciones</span>
+              <span class="category-card__count">4 funciones</span>
+            </div>
+            <p class="category-card__desc">RELATED, RELATEDTABLE, USERELATIONSHIP y CROSSFILTER para navegar y controlar relaciones entre tablas.</p>
+            <div class="category-card__levels">
+              <span class="badge badge--intermediate">Intermedio</span>
+              <span class="badge badge--advanced">Avanzado</span>
+            </div>
+          </a>
+
+          <a href="dax/informacion.html" class="category-card">
+            <div class="category-card__header">
+              <span class="category-card__icon">🔍</span>
+              <span class="category-card__name">Información (IS...)</span>
+              <span class="category-card__count">30 funciones</span>
+            </div>
+            <p class="category-card__desc">ISBLANK, ISERROR, ISFILTERED, ISINSCOPE, ISATLEVEL, CUSTOMDATA, CONTAINS, CONTAINSSTRING y todas las funciones IS.</p>
+            <div class="category-card__levels">
+              <span class="badge badge--beginner">Principiante</span>
+              <span class="badge badge--intermediate">Intermedio</span>
+              <span class="badge badge--advanced">Avanzado</span>
+            </div>
+          </a>
+
+          <a href="dax/financieras.html" class="category-card">
+            <div class="category-card__header">
+              <span class="category-card__icon">💰</span>
+              <span class="category-card__name">Financieras</span>
+              <span class="category-card__count">50 funciones</span>
+            </div>
+            <p class="category-card__desc">PMT, PV, FV, NPV, IRR, amortizaciones, bonos, letras del tesoro y todas las funciones financieras de Excel en DAX.</p>
+            <div class="category-card__levels">
+              <span class="badge badge--advanced">Avanzado</span>
+            </div>
+          </a>
+
+          <a href="dax/padre-hijo.html" class="category-card">
+            <div class="category-card__header">
+              <span class="category-card__icon">🌳</span>
+              <span class="category-card__name">Padre-Hijo</span>
+              <span class="category-card__count">5 funciones</span>
+            </div>
+            <p class="category-card__desc">PATH, PATHITEM, PATHITEMREVERSE, PATHLENGTH y PATHCONTAINS para jerarquías autorreferenciadas.</p>
+            <div class="category-card__levels">
+              <span class="badge badge--advanced">Avanzado</span>
+            </div>
+          </a>
+
+          <a href="dax/grupos-calculo.html" class="category-card">
+            <div class="category-card__header">
+              <span class="category-card__icon">⚗️</span>
+              <span class="category-card__name">Grupos de Cálculo</span>
+              <span class="category-card__count">6 funciones</span>
+            </div>
+            <p class="category-card__desc">SELECTEDMEASURE, SELECTEDMEASURENAME, SELECTEDMEASUREFORMATSTRING, ISSELECTEDMEASURE y NAMEOF para Calculation Groups.</p>
+            <div class="category-card__levels">
+              <span class="badge badge--advanced">Avanzado</span>
+            </div>
+          </a>
+
+          <a href="dax/window-functions.html" class="category-card">
+            <div class="category-card__header">
+              <span class="category-card__icon">🪟</span>
+              <span class="category-card__name">Window Functions</span>
+              <span class="category-card__count">8 funciones</span>
+              <span class="category-card__new">Nuevo</span>
+            </div>
+            <p class="category-card__desc">WINDOW, OFFSET, INDEX, RANK, ROWNUMBER, ORDERBY, PARTITIONBY y MATCHBY — las funciones de ventana de DAX.</p>
+            <div class="category-card__levels">
+              <span class="badge badge--advanced">Avanzado</span>
+            </div>
+          </a>
+
+          <a href="dax/visual-calcs.html" class="category-card" style="border-color: var(--color-coral);">
+            <div class="category-card__header">
+              <span class="category-card__icon">✨</span>
+              <span class="category-card__name">Visual Calculations</span>
+              <span class="category-card__count">11 funciones</span>
+              <span class="category-card__new">2024</span>
+            </div>
+            <p class="category-card__desc">RUNNINGSUM, MOVINGAVERAGE, FIRST, LAST, NEXT, PREVIOUS, COLLAPSE, EXPAND y RANGE — solo disponibles en visuals de Power BI.</p>
+            <div class="category-card__levels">
+              <span class="badge badge--intermediate">Intermedio</span>
+              <span class="badge badge--advanced">Avanzado</span>
+            </div>
+          </a>
+
+        </div>
+
+        <!-- Nota de uso -->
+        <div class="note note--tip" style="margin-top: 2rem;">
+          <strong>💡 Tip</strong>
+          <p>¿No sabes por dónde empezar? Si eres principiante, comienza por <a href="dax/agregacion.html">Agregación</a> y <a href="dax/logicas.html">Lógicas</a>. Si ya tienes base, el salto importante está en <a href="dax/filtro.html">Filtro y Contexto</a> con CALCULATE. Y si quieres ir al siguiente nivel, <a href="dax/visual-calcs.html">Visual Calculations</a> y <a href="dax/window-functions.html">Window Functions</a> son las novedades de 2024 que muy poca gente domina todavía. 🚀</p>
+        </div>
+
+        <!-- Nota de uso -->
+        <div class="note note--tip" style="margin-top: 2rem;">
+          <strong>💡 Tip</strong>
+          <p>¿No sabes por dónde empezar? Si eres principiante, comienza por <a href="dax/agregacion.html">Agregación</a> y <a href="dax/logicas.html">Lógicas</a>. Si ya tienes base, el salto importante está en <a href="dax/filtro.html">Filtro y Contexto</a> con CALCULATE. Y si quieres ir al siguiente nivel, <a href="dax/visual-calcs.html">Visual Calculations</a> y <a href="dax/window-functions.html">Window Functions</a> son las novedades de 2024 que muy poca gente domina todavía. 🚀</p>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- FOOTER -->
+  <footer id="main-footer" role="contentinfo">
+    <!-- se cargará con JS -->
+  </footer>
+
+  <!-- Botón volver arriba -->
+  <button id="back-to-top" class="back-to-top" aria-label="Volver arriba" title="Volver arriba">↑</button>
+
+  <!-- SCRIPTS -->
+  <!-- i18next desde CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/i18next@23/dist/umd/i18next.min.js"></script>
+
+  <!-- Prism.js para syntax highlighting -->
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1/prism.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1/components/prism-javascript.min.js"></script>
+
+  <!-- Scripts del proyecto -->
+  <script src="../assets/js/theme.js"></script>
+  <script src="../assets/js/i18n.js"></script>
+  <script src="../assets/js/search.js"></script>
+  <script src="../assets/js/main.js"></script>
+
+  <!-- Buscador DAX -->
+  <script src="../assets/js/dax-search.js"></script>
+  <script>
+    // Inicializar el buscador principal de DAX
+    document.addEventListener('DOMContentLoaded', function() {
+      const input = document.getElementById('dax-search-main');
+      const clearBtn = document.getElementById('dax-search-clear-main');
+      const resultsEl = document.getElementById('dax-search-results-main');
+
+      if (input && resultsEl && window.daxSearch) {
+        window.daxSearch.bindToInput(input, resultsEl, clearBtn, {
+          baseUrl: ''  // estamos en topics/, las URLs de las funciones son relativas a topics/
+        });
+      }
+    });
+  </script>
+  <script src="../assets/js/cursor.js"></script>
+</body>
+</html>

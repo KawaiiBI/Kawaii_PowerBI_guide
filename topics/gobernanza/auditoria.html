@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Auditoría en Power BI: Activity Log, Unified Audit Log de Microsoft 365, Purview audit y patrones para montar dashboards de uso y adopción.">
+  <title>Auditoría y Activity Log — Gobernanza | Power BI Guide by Kawaii BI</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/prismjs@1/themes/prism-okaidia.min.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="../../assets/css/main.css">
+  <link rel="stylesheet" href="../../assets/css/themes.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/layout.css">
+
+  <style>
+    .topic-header { text-align: center; padding: 2.5rem 0 2rem; border-bottom: 2px solid var(--color-mauve); margin-bottom: 2.5rem; }
+    .topic-header__icon { font-size: 4rem; margin-bottom: 0.75rem; display: block; }
+    .topic-header__title { font-size: clamp(1.875rem, 4vw, 2.5rem); font-weight: 800; color: var(--color-dark); margin-bottom: 0.625rem; line-height: 1.2; }
+    .topic-header__subtitle { font-size: 1.0625rem; color: var(--color-slate); margin-bottom: 1.25rem; line-height: 1.5; max-width: 600px; margin-left: auto; margin-right: auto; }
+    .topic-header__levels { display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap; align-items: center; }
+    .category-header { display: flex; align-items: center; gap: 0.75rem; margin: 2.5rem 0 1.25rem; padding: 0.875rem 1.25rem; background: var(--color-rose); border-radius: var(--border-radius-sm); border-left: 4px solid var(--color-coral); }
+    .category-header__icon { font-size: 1.5rem; }
+    .category-header__title { font-size: 1.25rem; font-weight: 700; margin: 0; }
+    .concept-card { background: var(--color-white); border: 1.5px solid var(--color-mauve); border-radius: var(--border-radius); padding: 1.75rem; margin-bottom: 1.5rem; scroll-margin-top: 80px; transition: border-color 0.2s; }
+    .concept-card:hover { border-color: var(--color-coral); }
+    .concept-card h3 { font-size: 1.25rem; font-weight: 700; color: var(--color-coral); margin-bottom: 0.75rem; }
+    .concept-card h4 { font-size: 0.9375rem; font-weight: 700; color: var(--color-dark); margin: 1.25rem 0 0.5rem; }
+    .concept-card p { font-size: 0.9375rem; line-height: 1.7; color: var(--color-dark); margin-bottom: 0.75rem; }
+    .concept-card ul { padding-left: 1.25rem; font-size: 0.9375rem; line-height: 1.8; color: var(--color-dark); }
+    .concept-card code { background: var(--color-blush); padding: 0.1em 0.4em; border-radius: 4px; font-family: 'Fira Code', monospace; font-size: 0.85em; color: var(--color-coral); }
+    .comparison-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1rem 0; }
+    .comparison-col { background: var(--color-rose); border-radius: var(--border-radius-sm); padding: 1rem; border: 1px solid var(--color-mauve); }
+    .comparison-col h4 { font-size: 0.9rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--color-dark); }
+    .comparison-col ul { font-size: 0.875rem; padding-left: 1rem; margin: 0; }
+    @media (max-width: 600px) { .comparison-grid { grid-template-columns: 1fr; } }
+    .toc { background: var(--color-rose); border-radius: var(--border-radius); padding: 1.25rem 1.5rem; margin-bottom: 2rem; border: 1.5px solid var(--color-mauve); }
+    .toc__title { font-size: 1rem; font-weight: 700; margin: 0 0 0.75rem; }
+    .toc__list { display: flex; flex-wrap: wrap; gap: 0.5rem; list-style: none; padding: 0; margin: 0; }
+    .toc__list a { font-size: 0.8125rem; color: var(--color-coral); text-decoration: none; padding: 0.25rem 0.625rem; background: var(--color-white); border-radius: 999px; border: 1px solid var(--color-mauve); transition: background 0.15s, color 0.15s; }
+    .toc__list a:hover { background: var(--color-coral); color: white; }
+  </style>
+</head>
+<body>
+
+  <aside class="site-sidebar">
+    <div class="site-sidebar__profile">
+      <img src="../../assets/images/avatar Sara.png" alt="Sara Lozano Martí" class="site-sidebar__avatar">
+      <p class="site-sidebar__name">Sara Lozano Martí</p>
+      <p class="site-sidebar__subtitle">Power BI Expert</p>
+    </div>
+    <nav class="site-sidebar__nav" aria-label="Navegación principal">
+      <ul>
+        <li><a href="../../index.html" class="site-sidebar__link"><span class="site-sidebar__icon">🏠</span> Inicio</a></li>
+        <li><a href="../dax.html" class="site-sidebar__link"><span class="site-sidebar__icon">⚡</span> Funciones DAX</a></li>
+        <li><a href="../power-query.html" class="site-sidebar__link"><span class="site-sidebar__icon">🔄</span> Power Query</a></li>
+        <li><a href="../lenguaje-m.html" class="site-sidebar__link"><span class="site-sidebar__icon">〽️</span> Lenguaje M</a></li>
+        <li><a href="../modelado.html" class="site-sidebar__link"><span class="site-sidebar__icon">🗄️</span> Modelado</a></li>
+        <li><a href="../conceptos-powerbi.html" class="site-sidebar__link"><span class="site-sidebar__icon">📊</span> Conceptos Power BI</a></li>
+        <li><a href="../fabric.html" class="site-sidebar__link"><span class="site-sidebar__icon">🧵</span> Microsoft Fabric</a></li>
+        <li><a href="../tmdl.html" class="site-sidebar__link"><span class="site-sidebar__icon">📝</span> TMDL</a></li>
+        <li><a href="../diseno-ux.html" class="site-sidebar__link"><span class="site-sidebar__icon">🎨</span> Diseño y UX</a></li>
+        <li><a href="../gobernanza.html" class="site-sidebar__link is-active"><span class="site-sidebar__icon">🔒</span> Gobernanza</a></li>
+      </ul>
+    </nav>
+    <div class="site-sidebar__divider"></div>
+    <div class="site-sidebar__footer">
+      <a href="../../quien-soy.html" class="site-sidebar__link site-sidebar__link--highlight"><span class="site-sidebar__icon">👩‍💻</span> ¿Quién soy?</a>
+      <div class="site-sidebar__social">
+        <a href="https://www.linkedin.com/in/saralozanomarti" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><img src="../../assets/images/logo linkedIN.png" alt="LinkedIn" class="site-sidebar__social-icon"></a>
+        <a href="https://www.youtube.com/@KawaiiPowerBI" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><img src="../../assets/images/logo youtube.png" alt="YouTube" class="site-sidebar__social-icon"></a>
+        <a href="https://github.com/KawaiiBI" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><img src="../../assets/images/logo github.png" alt="GitHub" class="site-sidebar__social-icon"></a>
+      </div>
+      <div class="site-sidebar__logo-bottom"><img src="../../assets/images/Logo Kawaii.jpg" alt="Kawaii BI" class="site-sidebar__logo-img"></div>
+      <p class="site-sidebar__copyright">Power BI Guide 🌸<br>© 2026 Kawaii BI</p>
+    </div>
+  </aside>
+
+  <div class="page-wrapper">
+    <main class="main-content">
+      <div class="topic-page">
+
+        <nav class="breadcrumb" aria-label="Ruta de navegación">
+          <span class="breadcrumb__item"><a href="../../index.html">🏠 Inicio</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item"><a href="../gobernanza.html">Gobernanza</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item">Auditoría y Activity Log</span>
+        </nav>
+
+        <header class="topic-header">
+          <span class="topic-header__icon">📋</span>
+          <h1 class="topic-header__title">Auditoría y Activity Log</h1>
+          <p class="topic-header__subtitle">Saber quién hace qué en tu tenant: Activity Log de Power BI, Unified Audit Log de Microsoft 365, Purview audit y patrones para montar dashboards de uso.</p>
+          <div class="topic-header__levels">
+            <span class="badge badge--advanced">Avanzado</span>
+          </div>
+        </header>
+
+        <nav class="toc" aria-label="Índice de contenidos">
+          <p class="toc__title">📌 En esta página:</p>
+          <ul class="toc__list">
+            <li><a href="#fuentes">3 fuentes de auditoría</a></li>
+            <li><a href="#activity-log">Activity Log</a></li>
+            <li><a href="#extraer">Cómo extraer los datos</a></li>
+            <li><a href="#dashboard">Dashboard de uso</a></li>
+            <li><a href="#retencion">Retención y normativa</a></li>
+          </ul>
+        </nav>
+
+        <div class="category-header" id="fuentes">
+          <span class="category-header__icon">🗂️</span>
+          <h2 class="category-header__title">Las 3 fuentes de auditoría</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>No es una, son tres (y se complementan)</h3>
+          <div class="comparison-grid">
+            <div class="comparison-col">
+              <h4>📊 Power BI Activity Log</h4>
+              <ul>
+                <li>Eventos específicos de Power BI / Fabric</li>
+                <li>Retención: 30 días</li>
+                <li>Acceso: admin del tenant, vía PowerShell / API</li>
+                <li>Granularidad alta (incluye ViewReport, ExportReport, ShareReport, CreateApp...)</li>
+              </ul>
+            </div>
+            <div class="comparison-col">
+              <h4>🌐 Unified Audit Log (M365)</h4>
+              <ul>
+                <li>Eventos de toda la suite Microsoft 365 (incluye Power BI)</li>
+                <li>Retención: 90 días por defecto (hasta 1 año/10 años con E5/add-ons)</li>
+                <li>Acceso: Microsoft 365 Compliance / Purview</li>
+                <li>Útil para compliance multi-producto</li>
+              </ul>
+            </div>
+          </div>
+          <p style="margin-top: 0.75rem;">Además, hay una tercera fuente complementaria: las <strong>Admin APIs</strong> (Scanner API, Workspaces, Users) que devuelven <em>metadatos</em> del tenant, no eventos. Sirven para inventario y permisos, no para "quién hizo qué".</p>
+        </article>
+
+        <div class="category-header" id="activity-log">
+          <span class="category-header__icon">📜</span>
+          <h2 class="category-header__title">Power BI Activity Log en detalle</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>Tipos de eventos más útiles</h3>
+          <ul>
+            <li><strong>ViewReport / ViewDashboard:</strong> consumo real, base de cualquier métrica de adopción</li>
+            <li><strong>ExportReport / ExportDataset:</strong> alertas de fuga potencial — sobre todo si la sensitivity label no debería permitirlo</li>
+            <li><strong>ShareReport / ShareDashboard:</strong> quién comparte qué con quién (incluyendo external sharing)</li>
+            <li><strong>CreateDataset / DeleteDataset / RepublishContent:</strong> ciclo de vida</li>
+            <li><strong>UpdateDataSources:</strong> cambios en orígenes (cruciales tras incidentes)</li>
+            <li><strong>RefreshSemanticModel:</strong> refresh manual o programado (éxito / fallo)</li>
+            <li><strong>TenantSettingChanged:</strong> cambios en configuración global — siempre vigilados</li>
+            <li><strong>AddedAdminAsMemberOfWorkspace:</strong> cambios de permisos sensibles</li>
+          </ul>
+        </article>
+
+        <div class="category-header" id="extraer">
+          <span class="category-header__icon">⚙️</span>
+          <h2 class="category-header__title">Cómo extraer los datos</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>Tres rutas, según madurez</h3>
+
+          <h4>1. Manual desde el portal (rápido y puntual)</h4>
+          <ul>
+            <li>Microsoft Purview / Compliance → <em>Audit</em> → Buscar por workload "PowerBI"</li>
+            <li>Exporta a CSV — bien para auditorías de un día concreto</li>
+            <li>Limitación: depende del retention configurado</li>
+          </ul>
+
+          <h4>2. PowerShell con MicrosoftPowerBIMgmt</h4>
+          <pre><code class="language-powershell">Connect-PowerBIServiceAccount
+
+Get-PowerBIActivityEvent `
+    -StartDateTime "2026-05-23T00:00:00" `
+    -EndDateTime "2026-05-23T23:59:59" `
+    | ConvertFrom-Json `
+    | Export-Csv "activity_log.csv" -NoTypeInformation</code></pre>
+          <p>Patrón típico: script que se lanza cada noche y guarda 1 día en un Storage Account / Lakehouse.</p>
+
+          <h4>3. API REST + automatización (madurez alta)</h4>
+          <ul>
+            <li>Endpoint: <code>GET /admin/activityevents</code></li>
+            <li>Limita a 1 día por petición y devuelve continuation tokens</li>
+            <li>Patrón profesional: pipeline de Fabric Data Factory que orquesta la extracción a un lakehouse, modela en Silver/Gold y alimenta un dashboard "Adoption & Governance"</li>
+          </ul>
+        </article>
+
+        <div class="note note--practice">
+          📌 <strong>Buena práctica:</strong> Activity Log retiene solo 30 días. Si no lo <em>copias</em> a un almacén propio cada noche, mañana no habrá historia. Considéralo el "log de seguridad" — necesitas archivo.
+        </div>
+
+        <div class="category-header" id="dashboard">
+          <span class="category-header__icon">📈</span>
+          <h2 class="category-header__title">Dashboard de gobernanza y adopción</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>Vistas que cualquier admin agradece</h3>
+
+          <h4>Adopción</h4>
+          <ul>
+            <li>Usuarios activos por mes (DAU / MAU)</li>
+            <li>Top 10 informes más vistos</li>
+            <li>Informes sin visualizaciones en 60 días — candidatos a archivar</li>
+            <li>Informes Certified vs no certificados (uso comparado)</li>
+          </ul>
+
+          <h4>Seguridad y compliance</h4>
+          <ul>
+            <li>Exports por sensitivity label (alertas en Highly Confidential)</li>
+            <li>External sharing — usuarios fuera del tenant que reciben contenido</li>
+            <li>Cambios en tenant settings (auditoría de configuración)</li>
+            <li>Refresh fallidos por workspace</li>
+          </ul>
+
+          <h4>Capacidades</h4>
+          <ul>
+            <li>Uso de CPU por capacidad (cruzado con Capacity Metrics App)</li>
+            <li>Workspaces en capacidades premium vs Pro</li>
+            <li>Datasets que más consumen recursos</li>
+          </ul>
+        </article>
+
+        <div class="note note--tip">
+          💡 <strong>Tip kawaii:</strong> El dashboard de gobernanza es el primero que tú misma deberías mirar cada lunes. Si tú no lo usas, no podrás convencer a nadie de que la gobernanza importa. 🌸
+        </div>
+
+        <div class="category-header" id="retencion">
+          <span class="category-header__icon">⏳</span>
+          <h2 class="category-header__title">Retención y normativa</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>Cuánto guardar y por qué</h3>
+          <ul>
+            <li><strong>30 días</strong> en Activity Log Power BI — fijo, no configurable</li>
+            <li><strong>90 días / 1 año / 10 años</strong> en Audit Log M365 según SKU y configuración</li>
+            <li>Para retención más allá, hay que <strong>archivar a un almacén propio</strong> (storage, lakehouse) y aplicar tu propia política</li>
+          </ul>
+
+          <h4>Consideraciones normativas</h4>
+          <ul>
+            <li>GDPR exige justificar la retención de logs con datos personales (UPN, emails)</li>
+            <li>Muchas organizaciones aplican 13 meses (cubre auditorías anuales)</li>
+            <li>Sectores regulados (banca, salud) suelen requerir 7+ años</li>
+          </ul>
+        </article>
+
+        <div class="note note--warning">
+          ⚠️ <strong>Ojo:</strong> Activar la auditoría no es opcional en ningún tenant serio. En M365, el Unified Audit Log puede estar <em>desactivado</em> por defecto en tenants antiguos. Comprueba en Purview que esté ON.
+        </div>
+
+        <div class="note note--next" style="margin-top: 2rem;">
+          🚀 <strong>Siguiente paso:</strong> Para complementar la detección con bloqueos automatizados, mira <a href="dlp.html">DLP</a>. Y para gestionar lo que el log te revela (workspaces huérfanos, capacidades sobrecargadas), pasa a <a href="tenant-capacidades.html">Tenant Settings y Capacidades</a>.
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <button id="back-to-top" class="back-to-top" aria-label="Volver arriba" title="Volver arriba">↑</button>
+
+  <script src="https://cdn.jsdelivr.net/npm/i18next@23/dist/umd/i18next.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1/prism.min.js"></script>
+  <script src="../../assets/js/theme.js"></script>
+  <script src="../../assets/js/main.js"></script>
+  <script src="../../assets/js/cursor.js"></script>
+</body>
+</html>

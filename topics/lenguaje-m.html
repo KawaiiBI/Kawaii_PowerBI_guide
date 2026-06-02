@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Guía completa del Lenguaje M (Power Query Formula Language) para Power BI: 200+ funciones organizadas en 12 categorías con ejemplos reales">
+  <title>Lenguaje M — Power Query Formula Language | Power BI Guide by Kawaii BI</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+
+  <!-- Prism.js -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1/themes/prism-okaidia.min.css">
+
+  <!-- Estilos CSS -->
+  <link rel="stylesheet" href="../assets/css/main.css">
+  <link rel="stylesheet" href="../assets/css/themes.css">
+  <link rel="stylesheet" href="../assets/css/components.css">
+  <link rel="stylesheet" href="../assets/css/layout.css">
+  <link rel="stylesheet" href="../assets/css/dax-search.css">
+
+  <style>
+    .topic-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 1.25rem;
+      margin-bottom: 2rem;
+      padding: 1.75rem;
+      background: var(--color-rose);
+      border-radius: var(--border-radius);
+      border: 1.5px solid var(--color-mauve);
+    }
+
+    .topic-header__icon { font-size: 3rem; line-height: 1; flex-shrink: 0; }
+    .topic-header__title { font-size: 1.875rem; font-weight: 700; margin-bottom: 0.25rem; }
+    .topic-header__subtitle { color: var(--color-slate); font-size: 0.9375rem; margin-bottom: 0.75rem; line-height: 1.6; }
+    .topic-header__levels { display: flex; gap: 0.375rem; flex-wrap: wrap; }
+
+    /* Intro */
+    .m-intro {
+      background: linear-gradient(135deg, var(--color-rose) 0%, var(--color-blush) 100%);
+      border-radius: var(--border-radius);
+      padding: 2rem;
+      margin-bottom: 2.5rem;
+      border: 1.5px solid var(--color-mauve);
+    }
+
+    .m-intro__title { font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem; }
+    .m-intro__text { color: var(--color-slate); font-size: 0.9375rem; line-height: 1.7; }
+    .m-intro__text + .m-intro__text { margin-top: 0.75rem; }
+
+    .m-intro__stats {
+      display: flex;
+      gap: 1.5rem;
+      margin-top: 1.25rem;
+      flex-wrap: wrap;
+    }
+
+    .m-intro__stat {
+      background: var(--color-white);
+      border-radius: var(--border-radius-sm);
+      padding: 0.625rem 1rem;
+      border: 1px solid var(--color-mauve);
+      font-size: 0.875rem;
+    }
+
+    .m-intro__stat strong {
+      color: var(--color-coral);
+      font-size: 1.125rem;
+      display: block;
+    }
+
+    /* Grid de categorías */
+    .category-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.25rem;
+      margin-top: 1.5rem;
+    }
+
+    .category-card {
+      background: var(--color-white);
+      border: 1.5px solid var(--color-mauve);
+      border-radius: var(--border-radius);
+      padding: 1.25rem 1.5rem;
+      text-decoration: none;
+      color: inherit;
+      transition: var(--transition);
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .category-card:hover {
+      border-color: var(--color-coral);
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-md);
+      text-decoration: none;
+    }
+
+    .category-card__header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .category-card__icon { font-size: 1.75rem; line-height: 1; }
+
+    .category-card__name {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--color-dark);
+    }
+
+    .category-card__count {
+      font-size: 0.75rem;
+      color: var(--color-slate);
+      background: var(--color-rose);
+      border-radius: 999px;
+      padding: 0.15rem 0.5rem;
+      margin-left: auto;
+    }
+
+    .category-card__desc {
+      font-size: 0.8125rem;
+      color: var(--color-slate);
+      line-height: 1.5;
+    }
+
+    .category-card__levels { display: flex; gap: 0.375rem; margin-top: 0.25rem; }
+
+    .dark-theme .topic-header { background: var(--color-rose); border-color: var(--color-mauve); }
+    .dark-theme .category-card { background: var(--color-white); border-color: var(--color-mauve); }
+    .dark-theme .m-intro { background: linear-gradient(135deg, var(--color-rose) 0%, var(--color-blush) 100%); border-color: var(--color-mauve); }
+    .dark-theme .m-intro__stat { background: var(--color-white); border-color: var(--color-mauve); }
+
+  </style>
+</head>
+<body>
+
+  <!-- SIDEBAR: Navegación principal -->
+  <aside class="site-sidebar">
+
+    <div class="site-sidebar__profile">
+      <img src="../assets/images/avatar Sara.png" alt="Sara Lozano Martí" class="site-sidebar__avatar" />
+      <p class="site-sidebar__name">Sara Lozano Martí</p>
+      <p class="site-sidebar__subtitle">Power BI Expert</p>
+    </div>
+
+    <nav class="site-sidebar__nav" aria-label="Navegación principal">
+      <ul>
+        <li><a href="../index.html" class="site-sidebar__link">
+          <span class="site-sidebar__icon">🏠</span> Inicio
+        </a></li>
+        <li><a href="dax.html" class="site-sidebar__link">
+          <span class="site-sidebar__icon">⚡</span> Funciones DAX
+        </a></li>
+        <li><a href="power-query.html" class="site-sidebar__link">
+          <span class="site-sidebar__icon">🔄</span> Power Query
+        </a></li>
+        <li><a href="lenguaje-m.html" class="site-sidebar__link is-active">
+          <span class="site-sidebar__icon">〽️</span> Lenguaje M
+        </a></li>
+        <li><a href="modelado.html" class="site-sidebar__link">
+          <span class="site-sidebar__icon">🗄️</span> Modelado
+        </a></li>
+        <li><a href="conceptos-powerbi.html" class="site-sidebar__link">
+          <span class="site-sidebar__icon">📊</span> Conceptos Power BI
+        </a></li>
+        <li><a href="fabric.html" class="site-sidebar__link">
+          <span class="site-sidebar__icon">🧵</span> Microsoft Fabric
+        </a></li>
+        <li><a href="tmdl.html" class="site-sidebar__link">
+          <span class="site-sidebar__icon">📝</span> TMDL
+        </a></li>
+        <li><a href="diseno-ux.html" class="site-sidebar__link">
+          <span class="site-sidebar__icon">🎨</span> Diseño y UX
+        </a></li>
+        <li><a href="gobernanza.html" class="site-sidebar__link">
+          <span class="site-sidebar__icon">🔒</span> Gobernanza
+        </a></li>
+      </ul>
+    </nav>
+
+    <div class="site-sidebar__divider"></div>
+
+    <div class="site-sidebar__footer">
+      <a href="../quien-soy.html" class="site-sidebar__link site-sidebar__link--highlight">
+        <span class="site-sidebar__icon">👩‍💻</span> ¿Quién soy?
+      </a>
+      <div class="site-sidebar__social">
+        <a href="https://www.linkedin.com/in/saralozanomarti" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+          <img src="../assets/images/logo linkedIN.png" alt="LinkedIn" class="site-sidebar__social-icon" />
+        </a>
+        <a href="https://www.youtube.com/@KawaiiPowerBI" target="_blank" rel="noopener noreferrer" aria-label="YouTube">
+          <img src="../assets/images/logo youtube.png" alt="YouTube" class="site-sidebar__social-icon" />
+        </a>
+        <a href="https://github.com/KawaiiBI" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
+          <img src="../assets/images/logo github.png" alt="GitHub" class="site-sidebar__social-icon" />
+        </a>
+      </div>
+      <div class="site-sidebar__logo-bottom">
+        <img src="../assets/images/Logo Kawaii.jpg" alt="Kawaii BI" class="site-sidebar__logo-img" />
+      </div>
+      <p class="site-sidebar__copyright">
+        Power BI Guide 🌸<br>
+        © 2026 Kawaii BI
+      </p>
+    </div>
+
+  </aside>
+
+  <!-- CONTENIDO PRINCIPAL -->
+  <div class="page-wrapper">
+    <main class="main-content">
+      <div class="topic-page">
+
+        <!-- Breadcrumb -->
+        <nav class="breadcrumb" aria-label="Ruta de navegación">
+          <span class="breadcrumb__item"><a href="../index.html">🏠 Inicio</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item">Lenguaje M</span>
+        </nav>
+
+        <!-- Cabecera -->
+        <div class="topic-header">
+          <div class="topic-header__icon">〽️</div>
+          <div>
+            <h1 class="topic-header__title">Guía Completa de Lenguaje M</h1>
+            <p class="topic-header__subtitle">
+              La referencia más completa en español del Power Query Formula Language. Más de 200 funciones
+              organizadas en 12 categorías con sintaxis comentada, ejemplos reales y patrones avanzados.
+            </p>
+            <div class="topic-header__levels">
+              <span class="badge badge--intermediate">Intermedio</span>
+              <span class="badge badge--advanced">Avanzado</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Buscador de funciones M -->
+        <section class="dax-search-hero">
+          <h2 class="dax-search-hero-title">🔍 Busca cualquier función M</h2>
+          <p class="dax-search-hero-subtitle">Escribe el nombre de la función y te llevo directamente a su explicación</p>
+          <div class="dax-search-wrapper" data-m-search="true">
+            <div class="dax-search-input-group">
+              <span class="dax-search-icon">🔍</span>
+              <input
+                type="text"
+                id="m-search-main"
+                class="dax-search-input"
+                placeholder="Ej: Text.Upper, Table.AddColumn, List.Sum..."
+                autocomplete="off"
+                spellcheck="false"
+                aria-label="Buscar función M"
+                aria-autocomplete="list"
+                aria-controls="m-search-results-main"
+                role="combobox"
+                aria-expanded="false"
+              />
+              <button class="dax-search-clear" id="m-search-clear-main" aria-label="Limpiar búsqueda" hidden>✕</button>
+            </div>
+            <div
+              id="m-search-results-main"
+              class="dax-search-results"
+              role="listbox"
+              aria-label="Resultados de búsqueda M"
+            ></div>
+          </div>
+          <p class="dax-search-stats">200+ funciones · 12 categorías · Busca por nombre o descripción</p>
+        </section>
+
+        <!-- Introducción -->
+        <div class="m-intro">
+          <h2 class="m-intro__title">¿Por dónde empezamos? 🌸</h2>
+          <p class="m-intro__text">
+            El <strong>Lenguaje M</strong> es el lenguaje de programación funcional que Power Query usa para
+            realizar transformaciones de datos. Cada clic que haces en el editor de Power Query genera
+            código M automáticamente en segundo plano — pero cuando lo dominas, puedes crear transformaciones
+            imposibles solo con botones. 🚀
+          </p>
+          <p class="m-intro__text">
+            A diferencia de DAX (que se evalúa en el modelo), M se ejecuta durante la carga de datos.
+            Esto lo hace ideal para limpiar, combinar y transformar datos antes de que lleguen al modelo.
+            Cada categoría tiene su propia página con ejemplos comentados línea a línea.
+          </p>
+          <div class="m-intro__stats">
+            <div class="m-intro__stat"><strong>200+</strong>funciones documentadas</div>
+            <div class="m-intro__stat"><strong>12</strong>categorías</div>
+            <div class="m-intro__stat"><strong>2</strong>niveles de dificultad</div>
+            <div class="m-intro__stat"><strong>80+</strong>ejemplos reales</div>
+          </div>
+        </div>
+
+        <!-- Grid de categorías -->
+        <h2 class="section-title">Explora por categoría 📚</h2>
+        <div class="category-grid">
+
+          <a href="lenguaje-m/tabla.html" class="category-card">
+            <div class="category-card__header">
+              <span class="category-card__icon">📊</span>
+              <span class="category-card__name">Funciones de Tabla</span>
+              <span class="category-card__count">50+ funciones</span>
+            </div>
+            <p class="category-card__desc">Table.AddColumn, Table.SelectRows, Table.Group, Table.Join, Table.Pivot, Table.Unpivot y el core de transformaciones.</p>
+            <div class="category-card__levels">
+              <span class="badge badge--intermediate">Intermedio</span>
+              <span class="badge badge--advanced">Avanzado</span>
+            </div>
+          </a>
+
+          <a href="lenguaje-m/lista.html" class="category-card">
+            <div class="category-card__header">
+              <span class="category-card__icon">📝</span>
+              <span class="category-card__name">Funciones de Lista</span>
+              <span class="category-card__count">40+ funciones</span>
+            </div>
+            <p class="category-card__desc">List.Sum, List.Transform, List.Select, List.Generate, List.Accumulate y manipulación de colecciones de valores.</p>
+            <div class="category-card__levels">
+              <span class="badge badge--intermediate">Intermedio</span>
+            </div>
+          </a>
+
+          <a href="lenguaje-m/texto.html" class="category-card">
+            <div class="category-card__header">
+              <span class="category-card__icon">🔤</span>
+              <span class="category-card__name">Funciones de Texto</span>
+              <span class="category-card__count">30+ funciones</span>
+            </div>
+            <p class="category-card__desc">Text.Upper, Text.Replace, Text.Split, Text.Combine, Text.Contains, Text.Trim y manipulación de cadenas.</p>
+            <div class="category-card__levels">
+              <span class="badge badge--beginner">Principiante</span>
+              <span class="badge badge--intermediate">Intermedio</span>
+            </div>
+          </a>
+
+          <a href="lenguaje-m/numero.html" class="category-card">
+            <div class="category-card__header">
+              <span class="category-card__icon">🔢</span>
+              <span class="category-card__name">Funciones de Número</span>
+              <span class="category-card__count">25+ funciones</span>
+            </div>
+            <p class="category-card__desc">Number.Round, Number.Abs, Number.Mod, Number.Power, Number.Sqrt, Number.Log y funciones matemáticas.</p>
+            <div class="category-card__levels">
+              <span class="badge badge--beginner">Principiante</span>
+            </div>
+          </a>
+
+          <a href="lenguaje-m/fecha-hora.html" class="category-card">
+            <div class="category-card__header">
+              <span class="category-card__icon">📅</span>
+              <span class="category-card__name">Fecha y Hora</span>
+              <span class="category-card__count">35+ funciones</span>
+            </div>
+            <p class="category-card__desc">Date.Year, Date.AddDays, DateTime.LocalNow, Duration.Days, DateTimeZone.From y manejo completo de fechas.</p>
+            <div class="category-card__levels">
+              <span class="badge badge--beginner">Principiante</span>
+              <span class="badge badge--intermediate">Intermedio</span>
+            </div>
+          </a>
+
+          <a href="lenguaje-m/logicas.html" class="category-card">
+            <div class="category-card__header">
+              <span class="category-card__icon">🎯</span>
+              <span class="category-card__name">Funciones Lógicas</span>
+              <span class="category-card__count">10+ funciones</span>
+            </div>
+            <p class="category-card__desc">if/then/else, and, or, not, try/otherwise y operadores de comparación para control de flujo en M.</p>
+            <div class="category-card__levels">
+              <span class="badge badge--beginner">Principiante</span>
+            </div>
+          </a>
+
+          <a href="lenguaje-m/record.html" class="category-card">
+            <div class="category-card__header">
+              <span class="category-card__icon">📋</span>
+              <span class="category-card__name">Funciones de Record</span>
+              <span class="category-card__count">15+ funciones</span>
+            </div>
+            <p class="category-card__desc">Record.Field, Record.AddField, Record.Combine, Record.FromList y operaciones sobre registros clave-valor.</p>
+            <div class="category-card__levels">
+              <span class="badge badge--intermediate">Intermedio</span>
+            </div>
+          </a>
+
+          <a href="lenguaje-m/transformacion.html" class="category-card">
+            <div class="category-card__header">
+              <span class="category-card__icon">🔄</span>
+              <span class="category-card__name">Transformaciones</span>
+              <span class="category-card__count">20+ funciones</span>
+            </div>
+            <p class="category-card__desc">Combiner, Comparer, Splitter, Replacer — funciones auxiliares que se usan como parámetros en otras funciones.</p>
+            <div class="category-card__levels">
+              <span class="badge badge--advanced">Avanzado</span>
+            </div>
+          </a>
+
+          <a href="lenguaje-m/tipo.html" class="category-card">
+            <div class="category-card__header">
+              <span class="category-card__icon">🏷️</span>
+              <span class="category-card__name">Funciones de Tipo</span>
+              <span class="category-card__count">15+ funciones</span>
+            </div>
+            <p class="category-card__desc">Type.Is, Value.Is, Value.Type, Value.As para sistema de tipos, conversiones seguras y metaprogramación.</p>
+            <div class="category-card__levels">
+              <span class="badge badge--advanced">Avanzado</span>
+            </div>
+          </a>
+
+          <a href="lenguaje-m/conectores.html" class="category-card">
+            <div class="category-card__header">
+              <span class="category-card__icon">🔌</span>
+              <span class="category-card__name">Conectores de Datos</span>
+              <span class="category-card__count">100+ conectores</span>
+            </div>
+            <p class="category-card__desc">Excel.Workbook, Csv.Document, Json.Document, Web.Contents, Sql.Database y más de 100 conectores nativos.</p>
+            <div class="category-card__levels">
+              <span class="badge badge--beginner">Principiante</span>
+              <span class="badge badge--intermediate">Intermedio</span>
+            </div>
+          </a>
+
+          <a href="lenguaje-m/binario.html" class="category-card">
+            <div class="category-card__header">
+              <span class="category-card__icon">💾</span>
+              <span class="category-card__name">Funciones de Binario</span>
+              <span class="category-card__count">10+ funciones</span>
+            </div>
+            <p class="category-card__desc">Binary.From, Binary.ToText, Binary.Compress, Binary.Decompress para datos binarios y archivos comprimidos.</p>
+            <div class="category-card__levels">
+              <span class="badge badge--advanced">Avanzado</span>
+            </div>
+          </a>
+
+          <a href="lenguaje-m/especiales.html" class="category-card">
+            <div class="category-card__header">
+              <span class="category-card__icon">⭐</span>
+              <span class="category-card__name">Funciones Especiales</span>
+              <span class="category-card__count">8+ funciones</span>
+            </div>
+            <p class="category-card__desc">#shared, #table, #sections, Expression.Evaluate, Function.Invoke y las funciones más avanzadas del sistema M.</p>
+            <div class="category-card__levels">
+              <span class="badge badge--advanced">Avanzado</span>
+            </div>
+          </a>
+
+        </div>
+
+        <!-- Tip final -->
+        <div class="note note--tip" style="margin-top: 2rem;">
+          <strong>💡 Tip</strong>
+          <p>¿Empiezas con M? Comienza por <a href="lenguaje-m/texto.html">Funciones de Texto</a> y
+          <a href="lenguaje-m/fecha-hora.html">Fecha y Hora</a> que son las más usadas en el día a día.
+          Una vez cómoda con ellas, <a href="lenguaje-m/tabla.html">Funciones de Tabla</a> te abrirá
+          un mundo de posibilidades. Las <a href="lenguaje-m/especiales.html">Funciones Especiales</a>
+          son el nivel máximo — para cuando ya domines todo lo demás. 🚀</p>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <button id="back-to-top" class="back-to-top" aria-label="Volver arriba" title="Volver arriba">↑</button>
+
+  <script src="https://cdn.jsdelivr.net/npm/i18next@23/dist/umd/i18next.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1/prism.min.js"></script>
+  <script src="../assets/js/theme.js"></script>
+  <script src="../assets/js/i18n.js"></script>
+  <script src="../assets/js/main.js"></script>
+  <script src="../assets/js/cursor.js"></script>
+  <script src="../assets/js/m-search.js"></script>
+</body>
+</html>

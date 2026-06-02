@@ -1,0 +1,1333 @@
+<!DOCTYPE html>
+
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta content="Funciones de Información en DAX — ISBLANK, ISERROR, ISNUMBER, ISINSCOPE, HASONEVALUE, CUSTOMDATA y todas las funciones que te cuentan en qué contexto está tu medida" name="description"/>
+<title>Información — Funciones DAX | Power BI Guide</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Fira+Code:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<!-- Prism.js para syntax highlighting -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet"/>
+<!-- i18next para traducciones -->
+<script src="https://cdn.jsdelivr.net/npm/i18next@23.7.6/i18next.min.js"></script>
+<!-- CSS del proyecto -->
+<link href="../../assets/css/main.css" rel="stylesheet"/>
+<link href="../../assets/css/themes.css" rel="stylesheet"/>
+<link href="../../assets/css/components.css" rel="stylesheet"/>
+<link href="../../assets/css/layout.css" rel="stylesheet"/>
+<link href="../../assets/css/dax-search.css" rel="stylesheet"/>
+<style>
+    /* === ESTILOS ESPECÍFICOS PARA PÁGINAS DE TOPICS === */
+
+    /* Topic header con icono grande */
+    .topic-header {
+      text-align: center;
+      padding: 2.5rem 0 2rem;
+      border-bottom: 2px solid var(--color-mauve);
+      margin-bottom: 2.5rem;
+    }
+
+    .topic-header__icon {
+      font-size: 4rem;
+      margin-bottom: 0.75rem;
+      display: block;
+    }
+
+    .topic-header__title {
+      font-size: clamp(1.875rem, 4vw, 2.5rem);
+      font-weight: 800;
+      color: var(--color-dark);
+      margin-bottom: 0.625rem;
+      line-height: 1.2;
+    }
+
+    .topic-header__subtitle {
+      font-size: 1.0625rem;
+      color: var(--color-slate);
+      margin-bottom: 1.25rem;
+      line-height: 1.5;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .topic-header__levels {
+      display: flex;
+      gap: 0.5rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    /* TOC — Table of contents */
+    .toc {
+      background: var(--color-rose);
+      border: 1.5px solid var(--color-mauve);
+      border-radius: var(--border-radius);
+      padding: 1.5rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .toc__title {
+      font-size: 0.875rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--color-slate);
+      margin-bottom: 1rem;
+    }
+
+    .toc__list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .toc__link {
+      color: var(--color-dark);
+      text-decoration: none;
+      font-size: 0.9375rem;
+      transition: var(--transition);
+      display: inline-block;
+    }
+
+    .toc__link:hover {
+      color: var(--color-coral);
+      text-decoration: underline;
+    }
+
+    /* Category header — separadores entre categorías */
+    .category-header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin: 3rem 0 1.5rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 2px solid var(--color-mauve);
+    }
+
+    .category-header__icon {
+      font-size: 1.75rem;
+    }
+
+    .category-header__title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--color-dark);
+      margin: 0;
+    }
+
+    /* Function card — tarjeta individual para cada función */
+    .function-card {
+      background: var(--color-white);
+      border: 1.5px solid var(--color-mauve);
+      border-radius: var(--border-radius);
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .function-card__name {
+      font-family: var(--font-code);
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: var(--color-coral);
+      margin-bottom: 0.75rem;
+    }
+
+    .function-card__description {
+      font-size: 0.9375rem;
+      color: var(--color-dark);
+      margin-bottom: 1rem;
+      line-height: 1.6;
+    }
+
+    .function-card__level {
+      display: inline-block;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      padding: 0.25rem 0.625rem;
+      border-radius: var(--border-radius-sm);
+      background: var(--color-blush);
+      color: var(--color-slate);
+      margin-bottom: 1rem;
+    }
+
+    /* Function table — tabla compacta con ejemplos */
+    .function-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.5rem 0;
+      font-size: 0.875rem;
+    }
+
+    .function-table th {
+      background: var(--color-rose);
+      color: var(--color-dark);
+      font-weight: 700;
+      text-align: left;
+      padding: 0.75rem 1rem;
+      border: 1px solid var(--color-mauve);
+    }
+
+    .function-table td {
+      padding: 0.75rem 1rem;
+      border: 1px solid var(--color-mauve);
+      color: var(--color-dark);
+    }
+
+    .function-table tr:nth-child(even) {
+      background: var(--color-blush);
+    }
+
+    /* Code block wrapper */
+    .code-block {
+      position: relative;
+      margin: 1.25rem 0;
+    }
+
+    .code-block pre {
+      margin: 0;
+      border-radius: var(--border-radius);
+      border: 1.5px solid var(--color-mauve);
+    }
+
+    .code-block__copy {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.5rem;
+      padding: 0.375rem 0.75rem;
+      font-size: 0.75rem;
+      background: var(--color-coral);
+      color: var(--color-white);
+      border: none;
+      border-radius: var(--border-radius-sm);
+      cursor: pointer;
+      font-family: var(--font-main);
+      font-weight: 600;
+      transition: var(--transition);
+    }
+
+    .code-block__copy:hover {
+      background: var(--color-peach);
+    }
+  </style>
+</head>
+<body>
+<!-- SIDEBAR: Navegación principal -->
+<aside class="site-sidebar">
+<!-- Avatar y nombre -->
+<div class="site-sidebar__profile">
+<img alt="Sara Lozano Martí" class="site-sidebar__avatar" src="../../assets/images/avatar Sara.png"/>
+<p class="site-sidebar__name">Sara Lozano Martí</p>
+<p class="site-sidebar__subtitle">Power BI Expert</p>
+</div>
+<!-- Navegación principal -->
+<nav aria-label="Navegación principal" class="site-sidebar__nav">
+<ul>
+<li><a class="site-sidebar__link" href="../../index.html">
+<span class="site-sidebar__icon">🏠</span> Inicio
+        </a></li>
+<li><a class="site-sidebar__link is-active" href="../dax.html">
+<span class="site-sidebar__icon">⚡</span> Funciones DAX
+        </a></li>
+<li><a class="site-sidebar__link" href="../power-query.html">
+<span class="site-sidebar__icon">🔄</span> Power Query
+        </a></li>
+<li><a class="site-sidebar__link" href="../lenguaje-m.html">
+<span class="site-sidebar__icon">〽️</span> Lenguaje M
+        </a></li>
+<li><a class="site-sidebar__link" href="../modelado.html">
+<span class="site-sidebar__icon">🗄️</span> Modelado
+        </a></li>
+<li><a class="site-sidebar__link" href="../conceptos-powerbi.html">
+<span class="site-sidebar__icon">📊</span> Conceptos Power BI
+        </a></li>
+<li><a class="site-sidebar__link" href="../fabric.html">
+<span class="site-sidebar__icon">🧵</span> Microsoft Fabric
+        </a></li>
+<li><a class="site-sidebar__link" href="../tmdl.html">
+<span class="site-sidebar__icon">📝</span> TMDL
+        </a></li>
+<li><a class="site-sidebar__link" href="../diseno-ux.html">
+<span class="site-sidebar__icon">🎨</span> Diseño y UX
+        </a></li>
+<li><a class="site-sidebar__link" href="../gobernanza.html">
+<span class="site-sidebar__icon">🔒</span> Gobernanza
+        </a></li>
+</ul>
+</nav>
+<!-- Separador -->
+<div class="site-sidebar__divider"></div>
+<!-- Footer del sidebar -->
+<div class="site-sidebar__footer">
+<!-- Enlace a quien soy -->
+<a class="site-sidebar__link site-sidebar__link--highlight" href="../../quien-soy.html">
+<span class="site-sidebar__icon">👩‍💻</span> ¿Quién soy?
+      </a>
+<!-- Iconos sociales -->
+<div class="site-sidebar__social">
+<a aria-label="LinkedIn" href="https://www.linkedin.com/in/saralozanomarti" rel="noopener noreferrer" target="_blank">
+<img alt="LinkedIn" class="site-sidebar__social-icon" src="../../assets/images/logo linkedIN.png"/>
+</a>
+<a aria-label="YouTube" href="https://www.youtube.com/@KawaiiPowerBI" rel="noopener noreferrer" target="_blank">
+<img alt="YouTube" class="site-sidebar__social-icon" src="../../assets/images/logo youtube.png"/>
+</a>
+<a aria-label="GitHub" href="https://github.com/KawaiiBI" rel="noopener noreferrer" target="_blank">
+<img alt="GitHub" class="site-sidebar__social-icon" src="../../assets/images/logo github.png"/>
+</a>
+</div>
+<!-- Logo Kawaii BI -->
+<div class="site-sidebar__logo-bottom">
+<img alt="Kawaii BI" class="site-sidebar__logo-img" src="../../assets/images/Logo Kawaii.jpg"/>
+</div>
+<!-- Copyright -->
+<p class="site-sidebar__copyright">
+        Power BI Guide 🌸<br/>
+        © 2026 Kawaii BI
+      </p>
+</div>
+</aside>
+<!-- PAGE WRAPPER -->
+<div class="page-wrapper">
+<!-- Main content -->
+<main id="main-content">
+<div class="topic-page">
+        <nav aria-label="breadcrumb" class="breadcrumb">
+<a class="breadcrumb__link" href="../../index.html">Inicio</a>
+<span class="breadcrumb__separator">›</span>
+<a class="breadcrumb__link" href="../dax.html">Funciones DAX</a>
+<span class="breadcrumb__separator">›</span>
+<span class="breadcrumb__current">Información</span>
+</nav>
+
+        <header class="topic-header">
+<span class="topic-header__icon">🔍</span>
+<h1 class="topic-header__title">Funciones de Información</h1>
+<p class="topic-header__subtitle">ISBLANK, ISERROR, ISNUMBER, ISINSCOPE, HASONEVALUE, CUSTOMDATA y todas las funciones que te cuentan en qué contexto está tu medida</p>
+<div class="topic-header__levels">
+<span class="badge badge--beginner">Principiante</span>
+<span class="badge badge--intermediate">Intermedio</span>
+<span class="badge badge--advanced">Avanzado</span>
+</div>
+</header>
+
+        <div class="dax-search-compact-bar">
+<div class="dax-search-wrapper dax-search-compact" data-dax-search="true">
+<span class="dax-search-icon">🔍</span>
+<input aria-label="Buscar función DAX" autocomplete="off" class="dax-search-input" placeholder="Buscar otra función DAX..." spellcheck="false" type="text"/>
+<button aria-label="Limpiar" class="dax-search-clear" hidden="">✕</button>
+<div class="dax-search-results" role="listbox"></div>
+</div>
+</div>
+
+        <nav class="toc">
+<h2 class="toc__title">📑 En esta página</h2>
+<ul class="toc__list">
+<li><a class="toc__link" href="#is-tipo">IS de tipo: ISNUMBER, ISTEXT, ISLOGICAL, ISDATE</a></li>
+<li><a class="toc__link" href="#is-valor">IS de valor: ISBLANK, ISERROR, ISEMPTY</a></li>
+<li><a class="toc__link" href="#is-contexto">IS de contexto: HASONEVALUE, ISFILTERED, ISCROSSFILTERED</a></li>
+<li><a class="toc__link" href="#is-scope">IS de scope: ISINSCOPE, ISATLEVEL</a></li>
+<li><a class="toc__link" href="#info-columna">Info de usuario: USERNAME, USERPRINCIPALNAME, CUSTOMDATA</a></li>
+<li><a class="toc__link" href="#containsrow">Búsqueda en tablas: CONTAINS, CONTAINSROW</a></li>
+<li><a class="toc__link" href="#info-view">INFO.VIEW — Metadatos del modelo</a></li>
+<li><a class="toc__link" href="#info-vs-infoview">INFO.VIEW vs INFO.* — ¿cuál usar?</a></li>
+<li><a class="toc__link" href="#patrones">Patrones de uso</a></li>
+</ul>
+</nav>
+
+        <!-- Breadcrumb --><!-- Buscador compacto DAX --><!-- Header del topic --><!-- TOC --><!-- SECCIÓN 1: IS de tipo --><section id="is-tipo">
+<div class="category-header">
+<span class="category-header__icon">🔢</span>
+<h2 class="category-header__title">IS de tipo — verificar el tipo de dato</h2>
+</div>
+<table class="function-table">
+<thead>
+<tr>
+<th>FUNCIÓN</th>
+<th>DEVUELVE TRUE CUANDO...</th>
+<th>EJEMPLO</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ISNUMBER(x)</code></td>
+<td>x es un número</td>
+<td><code>ISNUMBER(42) → TRUE</code></td>
+</tr>
+<tr>
+<td><code>ISTEXT(x)</code></td>
+<td>x es texto (string)</td>
+<td><code>ISTEXT("hola") → TRUE</code></td>
+</tr>
+<tr>
+<td><code>ISLOGICAL(x)</code></td>
+<td>x es TRUE o FALSE</td>
+<td><code>ISLOGICAL(TRUE) → TRUE</code></td>
+</tr>
+<tr>
+<td><code>ISDATE(x)</code></td>
+<td>x es una fecha/hora</td>
+<td><code>ISDATE(TODAY()) → TRUE</code></td>
+</tr>
+<tr>
+<td><code>ISNONE(x)</code></td>
+<td>x es NONE (tipo especial interno)</td>
+<td>Uso muy raro</td>
+</tr>
+</tbody>
+</table>
+<div class="function-card">
+<div class="function-card__name">ISNUMBER(&lt;valor&gt;) | ISTEXT(&lt;valor&gt;)</div>
+<div class="function-card__level">Principiante — Intermedio</div>
+<div class="function-card__description">
+              Validan el tipo de dato de una expresión. Muy útiles para limpiar datos donde una columna puede contener mezcla de tipos (común al importar desde Excel o CSV).
+            </div>
+<h4>Ejemplo — datos mixtos:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Columna 'Productos'[Precio] importada de Excel con algún texto ("N/A", "pendiente"):
+Precio Seguro =
+IF(
+    ISNUMBER('Productos'[Precio]),
+    'Productos'[Precio],
+    0
+)
+
+// Limpiar columna que debería ser número:
+Precio Limpio =
+IF(
+    ISNUMBER(VALUE('Productos'[Precio_texto])),
+    VALUE('Productos'[Precio_texto]),
+    BLANK()
+)
+
+// Detectar códigos que no son numéricos (posiblemente erróneos):
+'Productos'[Código Inválido] =
+IF(ISNUMBER(VALUE('Productos'[Código])), FALSE, TRUE)</code></pre>
+</div>
+</div>
+</section><!-- SECCIÓN 2: IS de valor --><section id="is-valor">
+<div class="category-header">
+<span class="category-header__icon">🔍</span>
+<h2 class="category-header__title">IS de valor — verificar el valor</h2>
+</div>
+<!-- ISBLANK -->
+<div class="function-card">
+<div class="function-card__name">ISBLANK(&lt;valor&gt;)</div>
+<div class="function-card__level">Principiante</div>
+<div class="function-card__description">
+              Devuelve TRUE si el valor es BLANK() — el valor nulo de DAX. <strong>Fundamental para controlar el comportamiento de medidas cuando no hay datos.</strong>
+</div>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Mostrar "Sin datos" cuando no hay ventas en el período:
+Ventas Display =
+IF(
+    ISBLANK([Total Ventas]),
+    "Sin datos en este período",
+    FORMAT([Total Ventas], "#,##0 €")
+)
+
+// Evitar calcular variaciones cuando no hay dato anterior:
+Variación YoY =
+VAR Anterior = CALCULATE([Total Ventas], SAMEPERIODLASTYEAR('Calendario'[Date]))
+RETURN
+IF(
+    ISBLANK(Anterior),
+    BLANK(),  -- no mostrar nada si no hay dato del año anterior
+    DIVIDE([Total Ventas] - Anterior, Anterior)
+)
+
+// ISBLANK vs = BLANK():
+ISBLANK([Ventas])   -- la forma correcta
+[Ventas] = BLANK()  -- también funciona pero menos idiomática</code></pre>
+</div>
+</div>
+<!-- ISEMPTY -->
+<div class="function-card">
+<div class="function-card__name">ISEMPTY(&lt;tabla&gt;)</div>
+<div class="function-card__level">Intermedio</div>
+<div class="function-card__description">
+              Devuelve TRUE si la tabla no tiene filas. <strong>Imprescindible para verificar si un filtro o una tabla calculada tiene resultados antes de operar con ella.</strong>
+</div>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// ¿El cliente tiene pedidos en el período seleccionado?
+Tiene Pedidos =
+IF(
+    ISEMPTY(RELATEDTABLE('Pedidos')),
+    "Sin pedidos",
+    "Activo: " &amp; COUNTROWS(RELATEDTABLE('Pedidos')) &amp; " pedidos"
+)
+
+// Evitar errores al procesar tablas vacías:
+Mejor Cliente =
+VAR TablaFiltrada = FILTER('Clientes', [Total Ventas] &gt; 10000)
+RETURN
+IF(
+    ISEMPTY(TablaFiltrada),
+    "Ningún cliente supera 10.000 €",
+    MAXX(TablaFiltrada, [Total Ventas])
+)</code></pre>
+</div>
+</div>
+<!-- ISONORAFTER -->
+<div class="function-card">
+<div class="function-card__name">ISONORAFTER(&lt;valor1&gt;, &lt;orden1&gt;, &lt;valor2&gt;, &lt;orden2&gt;, ...)</div>
+<div class="function-card__level">Avanzado (nicho)</div>
+<div class="function-card__description">
+              Devuelve TRUE si los valores especificados son posteriores o iguales a los valores de orden dado. Usada principalmente para paginación en queries DAX avanzadas (reemplaza TOPNSKIP en algunos patrones).
+            </div>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// ¿Es la fila actual posterior a (2024, "Electrónica") en orden ascendente?
+ISONORAFTER(
+    'Calendario'[Año], 2024, ASC,
+    'Productos'[Categoría], "Electrónica", ASC
+)
+// Útil para cursor-based pagination en API de DAX</code></pre>
+</div>
+</div>
+</section><!-- SECCIÓN 3: IS de contexto --><section id="is-contexto">
+<div class="category-header">
+<span class="category-header__icon">🎯</span>
+<h2 class="category-header__title">IS de contexto de filtro — ¿Qué hay filtrado?</h2>
+</div>
+<p><em>Las funciones más útiles para medidas dinámicas</em></p>
+<!-- HASONEVALUE -->
+<div class="function-card">
+<div class="function-card__name">HASONEVALUE(&lt;columna&gt;)</div>
+<div class="function-card__level">Intermedio</div>
+<div class="function-card__description">
+              Devuelve TRUE si hay exactamente UN VALOR visible en la columna dentro del contexto actual. <strong>Perfecto para verificar que un slicer tiene exactamente una selección antes de actuar sobre ella.</strong>
+</div>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Título del visual que muestra el país si hay uno seleccionado:
+Título País =
+IF(
+    HASONEVALUE('Clientes'[País]),
+    "Ventas en " &amp; VALUES('Clientes'[País]),
+    "Ventas por país"
+)
+
+// Actuar diferente según si hay uno o varios países:
+KPI País =
+IF(
+    HASONEVALUE('Clientes'[País]),
+    "País: " &amp; SELECTEDVALUE('Clientes'[País]) &amp; " — " &amp; FORMAT([Total Ventas], "#,##0 €"),
+    FORMAT([Total Ventas], "#,##0 €") &amp; " (múltiples países)"
+)</code></pre>
+</div>
+</div>
+<!-- HASONEFILTER -->
+<div class="function-card">
+<div class="function-card__name">HASONEFILTER(&lt;columna&gt;)</div>
+<div class="function-card__level">Avanzado</div>
+<div class="function-card__description">
+              Devuelve TRUE si hay exactamente UN FILTRO directo sobre la columna. <strong>Diferencia con HASONEVALUE:</strong> HASONEFILTER mira si hay un filtro activo, no si hay un único valor. Una columna puede tener un filtro que incluya varios valores (ej: IN {"España", "Francia"}).
+            </div>
+<h4>Diferencia HASONEVALUE vs HASONEFILTER:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Slicer con "España" seleccionado:
+HASONEVALUE('Clientes'[País])   → TRUE  (hay exactamente un valor visible)
+HASONEFILTER('Clientes'[País])  → TRUE  (hay exactamente un filtro directo)
+
+// Slicer con "España" y "Francia" seleccionados:
+HASONEVALUE('Clientes'[País])   → FALSE (hay dos valores visibles)
+HASONEFILTER('Clientes'[País])  → TRUE  (hay un filtro, que incluye dos valores)
+
+// Sin slicer (todos los países):
+HASONEVALUE('Clientes'[País])   → FALSE
+HASONEFILTER('Clientes'[País])  → FALSE</code></pre>
+</div>
+</div>
+<!-- ISFILTERED -->
+<div class="function-card">
+<div class="function-card__name">ISFILTERED(&lt;columna_o_tabla&gt;)</div>
+<div class="function-card__level">Avanzado</div>
+<div class="function-card__description">
+              Devuelve TRUE si la columna o tabla tiene algún filtro DIRECTO aplicado en el contexto actual. Distinto de ISCROSSFILTERED que incluye filtros indirectos también.
+            </div>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// ¿Hay algún filtro en el país?
+Hay Filtro País = ISFILTERED('Clientes'[País])
+// TRUE si hay un slicer de País activo con cualquier selección
+
+// Mensaje contextual:
+Contexto Filtro =
+SWITCH(
+    TRUE(),
+    ISFILTERED('Clientes'[País]) &amp;&amp; ISFILTERED('Productos'[Categoría]),
+    "Filtrado por País y Categoría",
+    ISFILTERED('Clientes'[País]),
+    "Filtrado por País: " &amp; SELECTEDVALUE('Clientes'[País], "varios"),
+    ISFILTERED('Productos'[Categoría]),
+    "Filtrado por Categoría: " &amp; SELECTEDVALUE('Productos'[Categoría], "varias"),
+    "Sin filtros activos"
+)</code></pre>
+</div>
+</div>
+<!-- ISCROSSFILTERED -->
+<div class="function-card">
+<div class="function-card__name">ISCROSSFILTERED(&lt;columna_o_tabla&gt;)</div>
+<div class="function-card__level">Avanzado</div>
+<div class="function-card__description">
+              Devuelve TRUE si la columna o tabla tiene filtros aplicados, ya sea directamente O a través de relaciones (filtrado cruzado). Más amplio que ISFILTERED.
+            </div>
+<h4>Diferencia ISFILTERED vs ISCROSSFILTERED:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Si tienes filtro en Productos[Categoría] y hay relación Productos → Ventas:
+ISFILTERED('Ventas'[Importe])        → FALSE (el filtro es indirecto)
+ISCROSSFILTERED('Ventas'[Importe])   → TRUE  (hay filtro a través de la relación)
+ISCROSSFILTERED('Ventas')            → TRUE  (la tabla está siendo filtrada por relación)</code></pre>
+</div>
+</div>
+</section><!-- SECCIÓN 4: IS de scope --><section id="is-scope">
+<div class="category-header">
+<span class="category-header__icon">📐</span>
+<h2 class="category-header__title">IS de scope — saber en qué nivel de jerarquía estás</h2>
+</div>
+<!-- ISINSCOPE -->
+<div class="function-card">
+<div class="function-card__name">ISINSCOPE(&lt;columna&gt;)</div>
+<div class="function-card__level">Avanzado</div>
+<div class="function-card__description">
+              Devuelve TRUE si la columna especificada está en el nivel actual de agrupación del visual. <strong>Esencial para escribir medidas que se comporten diferente en distintos niveles de una jerarquía</strong> (filas de detalle vs subtotales vs gran total).
+            </div>
+<h4>Por qué es tan importante:</h4>
+<p>Cuando tienes una matriz con jerarquías (País &gt; Región &gt; Ciudad), la misma medida se evalúa en diferentes contextos:</p>
+<ul>
+<li><strong>Fila de Ciudad:</strong> contexto de Ciudad (el más detallado)</li>
+<li><strong>Fila de Región:</strong> contexto de Región (subtotal)</li>
+<li><strong>Fila de País:</strong> contexto de País (subtotal mayor)</li>
+<li><strong>Gran total:</strong> sin contexto de ninguna columna de la jerarquía</li>
+</ul>
+<p><strong>ISINSCOPE te dice en qué nivel está evaluándose la medida en ese momento.</strong></p>
+<h4>Ejemplo básico — diferente cálculo por nivel:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// En una matriz País &gt; Región &gt; Ciudad:
+Métrica Inteligente =
+SWITCH(
+    TRUE(),
+    ISINSCOPE('Geografía'[Ciudad]),    [Total Ventas],    -- nivel Ciudad
+    ISINSCOPE('Geografía'[Región]),    [Total Ventas],    -- nivel Región
+    ISINSCOPE('Geografía'[País]),      [Total Ventas],    -- nivel País
+    [Total Ventas]                                         -- gran total
+)
+
+// Caso práctico — porcentaje solo en niveles de detalle:
+% Contribución =
+IF(
+    ISINSCOPE('Productos'[Producto]),  -- solo a nivel producto
+    DIVIDE(
+        [Total Ventas],
+        CALCULATE([Total Ventas], ALLEXCEPT('Productos', 'Productos'[Categoría]))
+    ),
+    BLANK()  -- en subtotales y total: no mostrar porcentaje
+)
+
+// Mostrar icono distinto según nivel:
+Indicador Nivel =
+SWITCH(
+    TRUE(),
+    ISINSCOPE('Geografía'[Ciudad]),  "📍 " &amp; [Total Ventas],
+    ISINSCOPE('Geografía'[Región]),  "🗺️ " &amp; [Total Ventas],
+    ISINSCOPE('Geografía'[País]),    "🌍 " &amp; [Total Ventas],
+    "🌐 Gran Total: " &amp; [Total Ventas]
+)
+
+// Mostrar margen % en detalle pero recuento en subtotales:
+KPI Adaptativo =
+IF(
+    ISINSCOPE('Productos'[SKU]),
+    FORMAT([Margen %], "0.0%"),      -- en filas de producto: margen
+    FORMAT([Nº Pedidos], "#,##0")    -- en subtotales: número de pedidos
+)</code></pre>
+</div>
+<div class="note note--best-practice">
+<strong>🏆 Best practice</strong><br/>
+<strong>ISINSCOPE es la solución correcta para medidas que deben mostrar cosas distintas en distintos niveles de jerarquía.</strong> Muchas personas intentan usar ISFILTERED o HASONEVALUE para esto con resultados inconsistentes — ISINSCOPE es la herramienta diseñada exactamente para este caso.
+            </div>
+</div>
+<!-- ISATLEVEL -->
+<div class="function-card">
+<div class="function-card__name">ISATLEVEL(&lt;columna&gt;)</div>
+<div class="function-card__level">Avanzado</div>
+<div class="function-card__description">
+              Devuelve TRUE si la columna está en el nivel de agrupación ACTUAL (no en un nivel padre). Similar a ISINSCOPE pero más estricto — <strong>ISINSCOPE devuelve TRUE en el nivel Y en todos los niveles inferiores de la jerarquía; ISATLEVEL solo en el nivel exacto.</strong>
+</div>
+<h4>Diferencia con ISINSCOPE:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Jerarquía: País &gt; Región &gt; Ciudad
+// Fila de "Madrid" (nivel Ciudad):
+
+ISINSCOPE('Geografía'[País])    → TRUE  (Madrid está dentro de un País)
+ISINSCOPE('Geografía'[Región])  → TRUE  (Madrid está dentro de una Región)
+ISINSCOPE('Geografía'[Ciudad])  → TRUE  (estamos en nivel Ciudad)
+
+ISATLEVEL('Geografía'[Ciudad])  → TRUE  (estamos EN el nivel Ciudad)
+ISATLEVEL('Geografía'[País])    → FALSE (no estamos en el nivel País)</code></pre>
+</div>
+</div>
+</section><!-- SECCIÓN 5: Info de usuario --><section id="info-columna">
+<div class="category-header">
+<span class="category-header__icon">👤</span>
+<h2 class="category-header__title">Información del usuario y entorno</h2>
+</div>
+<!-- USERNAME -->
+<div class="function-card">
+<div class="function-card__name">USERNAME()</div>
+<div class="function-card__level">Intermedio</div>
+<div class="function-card__description">
+              Devuelve el nombre del usuario actual en formato DOMINIO\usuario. Útil para personalizar informes y para auditoría.
+            </div>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Mostrar saludo personalizado:
+Saludo = "Hola, " &amp; USERNAME() &amp; " 👋"
+
+// Auditoría de quién está viendo qué:
+// (Guardar en tabla de log con Power Automate)</code></pre>
+</div>
+</div>
+<!-- USERPRINCIPALNAME -->
+<div class="function-card">
+<div class="function-card__name">USERPRINCIPALNAME()</div>
+<div class="function-card__level">Intermedio — Avanzado</div>
+<div class="function-card__description">
+              Devuelve el email del usuario en Power BI Service (formato usuario@empresa.com). <strong>Es la función clave para implementar Row-Level Security (RLS) dinámica.</strong>
+</div>
+<h4>Ejemplo — RLS dinámica:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Tabla de permisos: Email | Región
+// 'Permisos'[Email] = "maria@empresa.com", 'Permisos'[Región] = "Norte"
+
+// Rol de seguridad dinámico:
+// En la tabla Ventas, filtro de seguridad:
+[RegionVenta] IN
+    CALCULATETABLE(
+        VALUES('Permisos'[Región]),
+        'Permisos'[Email] = USERPRINCIPALNAME()
+    )
+// Cada usuario solo ve las ventas de su región asignada en la tabla Permisos</code></pre>
+</div>
+</div>
+<!-- CUSTOMDATA -->
+<div class="function-card">
+<div class="function-card__name">CUSTOMDATA()</div>
+<div class="function-card__level">Avanzado (nicho)</div>
+<div class="function-card__description">
+              Devuelve el valor de la propiedad CustomData de la cadena de conexión. Solo disponible cuando la conexión al modelo se establece con un valor CustomData personalizado (ej: desde una aplicación embebida con Power BI Embedded).
+            </div>
+<h4>Ejemplo — RLS multi-tenant con Power BI Embedded:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// La aplicación pasa el TenantID en CustomData al conectarse
+// La medida de seguridad usa ese valor:
+// [TenantID] = CUSTOMDATA()</code></pre>
+</div>
+</div>
+</section><!-- SECCIÓN 6: CONTAINS --><section id="containsrow">
+<div class="category-header">
+<span class="category-header__icon">🔎</span>
+<h2 class="category-header__title">Búsqueda en tablas — CONTAINS y CONTAINSROW</h2>
+</div>
+<!-- CONTAINS -->
+<div class="function-card">
+<div class="function-card__name">CONTAINS(&lt;tabla&gt;, &lt;columna&gt;, &lt;valor&gt;, ...)</div>
+<div class="function-card__level">Intermedio — Avanzado</div>
+<div class="function-card__description">
+              Devuelve TRUE si existe al menos una fila en la tabla donde las columnas indicadas tienen los valores especificados. <strong>Busca la existencia de una combinación de valores en una tabla.</strong>
+</div>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// ¿Hay alguna venta del producto P001 al cliente C123?
+Existe Combinación =
+CONTAINS(
+    'Ventas',
+    'Ventas'[IDProducto], "P001",
+    'Ventas'[IDCliente], "C123"
+)
+
+// ¿Vendemos en España Y Francia?
+Vendemos en Iberia =
+AND(
+    CONTAINS(ALL('Clientes'), 'Clientes'[País], "España"),
+    CONTAINS(ALL('Clientes'), 'Clientes'[País], "Francia")
+)</code></pre>
+</div>
+</div>
+<!-- CONTAINSROW -->
+<div class="function-card">
+<div class="function-card__name">CONTAINSROW(&lt;tabla&gt;, &lt;fila_como_tabla&gt;)</div>
+<div class="function-card__level">Avanzado</div>
+<div class="function-card__description">
+              Devuelve TRUE si la fila especificada (como tabla de una fila) existe en la tabla. Variante más moderna de CONTAINS para verificar filas completas.
+            </div>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// ¿Existe la combinación (2024, "Norte") en la tabla de datos?
+CONTAINSROW(
+    SUMMARIZE('Ventas', 'Calendario'[Año], 'Clientes'[Región]),
+    ROW("Año", 2024, "Región", "Norte")
+)</code></pre>
+</div>
+</div>
+</section><!-- SECCIÓN 7: INFO.VIEW --><section id="info-view">
+<div class="category-header">
+<span class="category-header__icon">🗂️</span>
+<h2 class="category-header__title">INFO.VIEW — Consulta los metadatos de tu propio modelo</h2>
+</div>
+<p>Las funciones INFO.VIEW son especiales dentro de DAX: en lugar de calcular datos de negocio, devuelven información sobre la estructura del propio modelo semántico. Son perfectas para crear documentación automática que se actualiza sola con cada refresh. Llegaron en octubre de 2024 y son una de las novedades más prácticas de los últimos tiempos. 🗂️</p>
+<div class="note note--warning">
+<strong>⚠️ Requisitos</strong><br/>
+            Estas funciones requieren permiso de escritura sobre el modelo semántico. No funcionan en Power BI Desktop en modo conexión en vivo (Live Connection). A diferencia de las funciones INFO.* sin VIEW (que solo funcionan en DAX Query View), las INFO.VIEW.* sí se pueden usar en tablas calculadas, columnas calculadas y medidas.
+          </div>
+<!-- INFO.VIEW.TABLES -->
+<div class="function-card">
+<div class="function-card__name">INFO.VIEW.TABLES()</div>
+<div class="function-card__level">Intermedio</div>
+<div class="function-card__description">
+              Devuelve una tabla con información sobre cada tabla del modelo semántico: nombre, descripción, modo de almacenamiento, si está oculta y si está marcada como tabla de fechas.
+            </div>
+<h4>Columnas principales que devuelve:</h4>
+<table class="function-table">
+<thead>
+<tr>
+<th>COLUMNA</th>
+<th>TIPO</th>
+<th>DESCRIPCIÓN</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>[Name]</td>
+<td>Texto</td>
+<td>Nombre de la tabla</td>
+</tr>
+<tr>
+<td>[Description]</td>
+<td>Texto</td>
+<td>Descripción (si está documentada)</td>
+</tr>
+<tr>
+<td>[StorageMode]</td>
+<td>Texto</td>
+<td>"Import", "DirectQuery", "Dual"</td>
+</tr>
+<tr>
+<td>[IsHidden]</td>
+<td>Booleano</td>
+<td>TRUE si está oculta en el panel de campos</td>
+</tr>
+<tr>
+<td>[IsDateTable]</td>
+<td>Booleano</td>
+<td>TRUE si está marcada como tabla de fechas</td>
+</tr>
+</tbody>
+</table>
+<h4>Ejemplos:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Ver todas las tablas del modelo
+EVALUATE INFO.VIEW.TABLES()
+
+// Solo tablas visibles
+EVALUATE
+FILTER(
+    INFO.VIEW.TABLES(),
+    NOT [IsHidden]
+)
+
+// Tabla calculada de documentación automática
+Doc_Tablas =
+SELECTCOLUMNS(
+    FILTER(INFO.VIEW.TABLES(), NOT [IsHidden]),
+    "Tabla",           [Name],
+    "Descripción",     [Description],
+    "Modo",            [StorageMode],
+    "Tabla de fechas", [IsDateTable]
+)</code></pre>
+</div>
+</div>
+<!-- INFO.VIEW.COLUMNS -->
+<div class="function-card">
+<div class="function-card__name">INFO.VIEW.COLUMNS()</div>
+<div class="function-card__level">Intermedio</div>
+<div class="function-card__description">
+              Devuelve una tabla con información sobre cada columna del modelo: nombre, tabla a la que pertenece, tipo de dato, si está oculta, formato y su expresión DAX si es columna calculada.
+            </div>
+<h4>Columnas principales que devuelve:</h4>
+<table class="function-table">
+<thead>
+<tr>
+<th>COLUMNA</th>
+<th>TIPO</th>
+<th>DESCRIPCIÓN</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>[TableName]</td>
+<td>Texto</td>
+<td>Nombre de la tabla que contiene la columna</td>
+</tr>
+<tr>
+<td>[Name]</td>
+<td>Texto</td>
+<td>Nombre de la columna</td>
+</tr>
+<tr>
+<td>[DataType]</td>
+<td>Texto</td>
+<td>"Integer", "Double", "String", "DateTime", "Boolean"</td>
+</tr>
+<tr>
+<td>[IsHidden]</td>
+<td>Booleano</td>
+<td>TRUE si está oculta</td>
+</tr>
+<tr>
+<td>[Description]</td>
+<td>Texto</td>
+<td>Descripción de la columna</td>
+</tr>
+<tr>
+<td>[FormatString]</td>
+<td>Texto</td>
+<td>Formato aplicado</td>
+</tr>
+<tr>
+<td>[Expression]</td>
+<td>Texto</td>
+<td>Si es columna calculada, su fórmula DAX</td>
+</tr>
+</tbody>
+</table>
+<h4>Ejemplos:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Diccionario de datos automático (tabla calculada)
+Diccionario_Datos =
+SELECTCOLUMNS(
+    FILTER(
+        INFO.VIEW.COLUMNS(),
+        NOT [IsHidden]
+    ),
+    "Tabla",       [TableName],
+    "Columna",     [Name],
+    "Tipo",        [DataType],
+    "Descripción", [Description],
+    "Formato",     [FormatString]
+)
+
+// Contar columnas de texto del modelo
+N Columnas Texto =
+COUNTROWS(
+    FILTER(INFO.VIEW.COLUMNS(), [DataType] = "String")
+)
+
+// Detectar columnas calculadas (tienen expresión DAX)
+Columnas_Calculadas =
+FILTER(
+    INFO.VIEW.COLUMNS(),
+    NOT ISBLANK([Expression])
+)</code></pre>
+</div>
+</div>
+<!-- INFO.VIEW.MEASURES -->
+<div class="function-card">
+<div class="function-card__name">INFO.VIEW.MEASURES()</div>
+<div class="function-card__level">Intermedio</div>
+<div class="function-card__description">
+              Devuelve una tabla con información sobre cada medida: nombre, tabla de inicio, expresión DAX completa, formato, descripción, si está oculta y su estado de validación. Perfecta para auditorías de calidad del modelo.
+            </div>
+<h4>Columnas principales que devuelve:</h4>
+<table class="function-table">
+<thead>
+<tr>
+<th>COLUMNA</th>
+<th>TIPO</th>
+<th>DESCRIPCIÓN</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>[Table]</td>
+<td>Texto</td>
+<td>Tabla donde está definida la medida</td>
+</tr>
+<tr>
+<td>[Name]</td>
+<td>Texto</td>
+<td>Nombre de la medida</td>
+</tr>
+<tr>
+<td>[Expression]</td>
+<td>Texto</td>
+<td>Fórmula DAX completa</td>
+</tr>
+<tr>
+<td>[FormatString]</td>
+<td>Texto</td>
+<td>Formato (ej: "#,##0.00 €", "0.00%")</td>
+</tr>
+<tr>
+<td>[Description]</td>
+<td>Texto</td>
+<td>Descripción de la medida</td>
+</tr>
+<tr>
+<td>[IsHidden]</td>
+<td>Booleano</td>
+<td>TRUE si está oculta</td>
+</tr>
+<tr>
+<td>[State]</td>
+<td>Texto</td>
+<td>"Ready" si es válida, o mensaje de error</td>
+</tr>
+</tbody>
+</table>
+<h4>Ejemplos:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Todas las medidas con su fórmula
+EVALUATE INFO.VIEW.MEASURES()
+
+// Medidas con errores (auditoría de calidad)
+EVALUATE
+FILTER(
+    INFO.VIEW.MEASURES(),
+    [State] &lt;&gt; "Ready"
+)
+
+// Medidas sin descripción — ¡a documentar!
+Medidas Sin Documentar =
+COUNTROWS(
+    FILTER(
+        INFO.VIEW.MEASURES(),
+        ISBLANK([Description])
+    )
+)
+
+// Exportar toda la documentación de medidas
+Doc_Medidas =
+SELECTCOLUMNS(
+    INFO.VIEW.MEASURES(),
+    "Tabla",       [Table],
+    "Medida",      [Name],
+    "Descripción", [Description],
+    "Fórmula DAX", [Expression],
+    "Formato",     [FormatString],
+    "Estado",      [State]
+)</code></pre>
+</div>
+</div>
+<div class="note note--tip">
+<strong>💡 Tip</strong><br/>
+            La columna [State] = 'Ready' indica que la medida es válida. Cualquier otro valor indica una medida con error — quizás una referencia rota que no sabías que existía. ¡INFO.VIEW.MEASURES es tu mejor aliada para hacer auditorías de calidad del modelo!
+          </div>
+<!-- INFO.VIEW.RELATIONSHIPS -->
+<div class="function-card">
+<div class="function-card__name">INFO.VIEW.RELATIONSHIPS()</div>
+<div class="function-card__level">Intermedio</div>
+<div class="function-card__description">
+              Devuelve una tabla con información sobre cada relación del modelo: tablas y columnas que conecta, cardinalidad, dirección de filtro y si está activa o inactiva.
+            </div>
+<h4>Columnas principales que devuelve:</h4>
+<table class="function-table">
+<thead>
+<tr>
+<th>COLUMNA</th>
+<th>TIPO</th>
+<th>DESCRIPCIÓN</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>[FromTableName]</td>
+<td>Texto</td>
+<td>Tabla del lado "muchos"</td>
+</tr>
+<tr>
+<td>[FromColumnName]</td>
+<td>Texto</td>
+<td>Columna de la tabla muchos</td>
+</tr>
+<tr>
+<td>[ToTableName]</td>
+<td>Texto</td>
+<td>Tabla del lado "uno"</td>
+</tr>
+<tr>
+<td>[ToColumnName]</td>
+<td>Texto</td>
+<td>Columna de la tabla uno</td>
+</tr>
+<tr>
+<td>[CrossFilteringBehavior]</td>
+<td>Texto</td>
+<td>"OneDirection", "BothDirections"</td>
+</tr>
+<tr>
+<td>[IsActive]</td>
+<td>Booleano</td>
+<td>TRUE si la relación está activa</td>
+</tr>
+<tr>
+<td>[Cardinality]</td>
+<td>Texto</td>
+<td>"ManyToOne", "OneToOne", "ManyToMany"</td>
+</tr>
+</tbody>
+</table>
+<h4>Ejemplos:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Diagrama de relaciones en texto (tabla calculada)
+Doc_Relaciones =
+ADDCOLUMNS(
+    INFO.VIEW.RELATIONSHIPS(),
+    "Relación",
+        [FromTableName] &amp; "[" &amp; [FromColumnName] &amp; "] → "
+        &amp; [ToTableName] &amp; "[" &amp; [ToColumnName] &amp; "]",
+    "Estado", IF([IsActive], "✅ Activa", "⚠️ Inactiva")
+)
+
+// Detectar relaciones bidireccionales (alerta de rendimiento)
+Relaciones_Bidireccionales =
+FILTER(
+    INFO.VIEW.RELATIONSHIPS(),
+    [CrossFilteringBehavior] = "BothDirections"
+)
+
+// Contar relaciones inactivas
+Relaciones Inactivas =
+COUNTROWS(
+    FILTER(INFO.VIEW.RELATIONSHIPS(), NOT [IsActive])
+)</code></pre>
+</div>
+</div>
+<div class="note note--warning">
+<strong>⚠️ Alerta de rendimiento</strong><br/>
+            Si tienes muchas relaciones con BothDirections puedes estar afectando el rendimiento del modelo. INFO.VIEW.RELATIONSHIPS te permite detectarlas todas de un vistazo.
+          </div>
+<div class="note note--best-practice">
+<strong>📌 Patrón de auto-documentación completa</strong><br/>
+            Combina las 4 funciones en un dashboard de calidad del modelo:<br/><br/>
+<code>Total Tablas = COUNTROWS(INFO.VIEW.TABLES())</code><br/>
+<code>Total Columnas = COUNTROWS(INFO.VIEW.COLUMNS())</code><br/>
+<code>Total Medidas = COUNTROWS(INFO.VIEW.MEASURES())</code><br/>
+<code>Total Relaciones = COUNTROWS(INFO.VIEW.RELATIONSHIPS())</code><br/><br/>
+<code>% Medidas documentadas = DIVIDE(COUNTROWS(FILTER(INFO.VIEW.MEASURES(), NOT ISBLANK([Description]))), COUNTROWS(INFO.VIEW.MEASURES()))</code><br/><br/>
+            Con estas 5 medidas en un visual de tarjeta tienes un scorecard del estado de documentación de tu modelo.
+          </div>
+</section><!-- SECCIÓN 8: INFO.VIEW vs INFO.* --><section id="info-vs-infoview">
+<div class="category-header">
+<span class="category-header__icon">⚙️</span>
+<h2 class="category-header__title">INFO.VIEW.* vs INFO.* — ¿cuál usar?</h2>
+</div>
+<p>Además de las 4 funciones INFO.VIEW, DAX tiene más de 50 funciones INFO.* (sin VIEW) disponibles desde diciembre de 2023. Son los equivalentes exactos de los DMVs de Analysis Services. Aquí tienes la diferencia clave:</p>
+<table class="function-table">
+<thead>
+<tr>
+<th>CARACTERÍSTICA</th>
+<th>INFO.VIEW.*</th>
+<th>INFO.*</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Disponible desde</td>
+<td>Octubre 2024</td>
+<td>Diciembre 2023</td>
+</tr>
+<tr>
+<td>Tablas calculadas y medidas</td>
+<td>✅ Sí</td>
+<td>❌ No</td>
+</tr>
+<tr>
+<td>Nombres amigables</td>
+<td>✅ Sí</td>
+<td>⚠️ Usa IDs numéricos</td>
+</tr>
+<tr>
+<td>Número de funciones</td>
+<td>4</td>
+<td>50+</td>
+</tr>
+<tr>
+<td>Para quién</td>
+<td>Cualquier dev</td>
+<td>Admins y power users</td>
+</tr>
+<tr>
+<td>Dónde funciona</td>
+<td>En todo el modelo</td>
+<td>Solo DAX Query View</td>
+</tr>
+</tbody>
+</table>
+<p>Las INFO.* sin VIEW usan IDs numéricos en lugar de nombres — por ejemplo, INFO.MEASURES() muestra un TableID en vez del nombre de la tabla, así que necesitas hacer un JOIN con INFO.TABLES() para obtener el nombre legible. Las INFO.VIEW.* ya resuelven eso por ti.</p>
+<h3>Ejemplo comparativo:</h3>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// ❌ INFO.MEASURES — solo en DAX Query View, devuelve TableID
+EVALUATE INFO.MEASURES()
+// Para ver el nombre de la tabla tienes que hacer:
+EVALUATE
+NATURALLEFTOUTERJOIN(
+    INFO.MEASURES(),
+    SELECTCOLUMNS(INFO.TABLES(), "TableID", [ID], "Tabla", [Name])
+)
+
+// ✅ INFO.VIEW.MEASURES — funciona en tablas calculadas, ya
+//    incluye el nombre de la tabla directamente
+EVALUATE INFO.VIEW.MEASURES()</code></pre>
+</div>
+<h3>Las INFO.* más útiles en DAX Query View (para admins):</h3>
+<ul>
+<li><code>INFO.MEASURES()</code> → medidas (con TableID)</li>
+<li><code>INFO.COLUMNS()</code> → columnas</li>
+<li><code>INFO.TABLES()</code> → tablas</li>
+<li><code>INFO.RELATIONSHIPS()</code> → relaciones</li>
+<li><code>INFO.PARTITIONS()</code> → particiones del modelo</li>
+<li><code>INFO.HIERARCHIES()</code> → jerarquías</li>
+<li><code>INFO.CALCULATIONGROUPS()</code> → grupos de cálculo</li>
+<li><code>INFO.CALCULATIONITEMS()</code> → ítems de cálculo</li>
+<li><code>INFO.ROLES()</code> → roles de seguridad RLS</li>
+<li><code>INFO.KPIS()</code> → KPIs definidos en el modelo</li>
+<li><code>INFO.FUNCTIONS()</code> → todas las funciones DAX disponibles</li>
+</ul>
+<div class="note note--tip">
+<strong>💡 Consejo</strong><br/>
+            Para el trabajo del día a día usa INFO.VIEW.* — son más simples y funcionan en cualquier contexto del modelo. Reserva INFO.* para consultas administrativas avanzadas en DAX Query View o DAX Studio.
+          </div>
+</section><!-- SECCIÓN 9: Patrones --><section id="patrones">
+<div class="category-header">
+<span class="category-header__icon">🏆</span>
+<h2 class="category-header__title">Patrones de uso</h2>
+</div>
+<h3>Patrón 1 — Medida robusta con validación completa:</h3>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">Métrica Robusta =
+VAR Denominador = [Total Pedidos]
+VAR Resultado = DIVIDE([Total Ventas], Denominador)
+RETURN
+SWITCH(
+    TRUE(),
+    ISBLANK([Total Ventas]), "—",
+    NOT ISNUMBER(Resultado), "Error",
+    ISFILTERED('Clientes'[País]),
+        "🌍 " &amp; SELECTEDVALUE('Clientes'[País], "Varios") &amp; ": " &amp;
+        FORMAT(Resultado, "#,##0.00"),
+    FORMAT(Resultado, "#,##0.00")
+)</code></pre>
+</div>
+<h3>Patrón 2 — Título dinámico con contexto:</h3>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">Título Completo =
+VAR Año =
+    IF(HASONEVALUE('Calendario'[Año]), SELECTEDVALUE('Calendario'[Año]), "Todos los años")
+VAR País =
+    IF(HASONEVALUE('Clientes'[País]), SELECTEDVALUE('Clientes'[País]), "Global")
+VAR Nivel = SWITCH(
+    TRUE(),
+    ISINSCOPE('Productos'[SKU]), "Detalle de producto",
+    ISINSCOPE('Productos'[Categoría]), "Por categoría",
+    "Resumen global"
+)
+RETURN País &amp; " | " &amp; Año &amp; " | " &amp; Nivel</code></pre>
+</div>
+<h3>Patrón 3 — RLS dinámica completa:</h3>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Tabla de Permisos: Email, Región, Categoría
+// Cada usuario ve solo sus filas autorizadas
+// Filtro de seguridad en la tabla Ventas:
+
+CALCULATE(
+    COUNTROWS('Ventas'),
+    TREATAS(
+        CALCULATETABLE(
+            SELECTCOLUMNS('Permisos', "Reg", 'Permisos'[Región]),
+            'Permisos'[Email] = USERPRINCIPALNAME()
+        ),
+        'Clientes'[Región]
+    )
+) &gt; 0</code></pre>
+</div>
+<h3>Patrón 4 — Dashboard de calidad del modelo con INFO.VIEW:</h3>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// 5 medidas para un scorecard de documentación del modelo:
+Total Tablas =
+    COUNTROWS(INFO.VIEW.TABLES())
+
+Total Medidas =
+    COUNTROWS(INFO.VIEW.MEASURES())
+
+Medidas con error =
+    COUNTROWS(FILTER(INFO.VIEW.MEASURES(), [State] &lt;&gt; "Ready"))
+
+Medidas sin documentar =
+    COUNTROWS(FILTER(INFO.VIEW.MEASURES(), ISBLANK([Description])))
+
+% Documentación completa =
+    DIVIDE(
+        COUNTROWS(FILTER(INFO.VIEW.MEASURES(), NOT ISBLANK([Description]))),
+        COUNTROWS(INFO.VIEW.MEASURES())
+    )</code></pre>
+</div>
+<div class="note note--next">
+<strong>🚀 Siguiente paso</strong><br/>
+            ¡Las funciones de información ya son tuyas — ahora tus medidas son mucho más inteligentes y adaptativas! A continuación las <strong>Funciones Financieras</strong> — las más numerosas de DAX con sus 50 funciones para análisis de inversiones, préstamos y bonos.
+          </div>
+</section>
+
+      </div>
+</main>
+</div>
+<!-- Footer (cargado dinámicamente) -->
+<div id="main-footer"></div>
+<!-- Botón volver arriba -->
+<button aria-label="Volver arriba" class="btn-back-to-top" id="back-to-top">↑</button>
+<!-- Scripts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+<script src="../../assets/js/theme.js"></script>
+<script src="../../assets/js/main.js"></script>
+<!-- Buscador DAX -->
+<script src="../../assets/js/dax-search.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Auto-inicializar todos los widgets con data-dax-search="true"
+      if (window.daxSearch) {
+        window.daxSearch.initAll({
+          baseUrl: '../'  // estamos en topics/dax/, las URLs deben ir a topics/dax/...
+        });
+      }
+    });
+  </script>
+<script src="../../assets/js/cursor.js"></script>
+</body>
+</html>

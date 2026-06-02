@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Aprende a usar Power Query en Power BI: interfaz, botones esenciales, pasos aplicados, tipos de datos y flujos de transformación">
+  <title>Power Query — Interfaz y Herramientas | Power BI Guide by Kawaii BI</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+
+  <!-- Prism.js para syntax highlighting -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1/themes/prism-okaidia.min.css">
+
+  <!-- Estilos CSS en orden -->
+  <link rel="stylesheet" href="../assets/css/main.css">
+  <link rel="stylesheet" href="../assets/css/themes.css">
+  <link rel="stylesheet" href="../assets/css/components.css">
+  <link rel="stylesheet" href="../assets/css/layout.css">
+
+  <style>
+    /* ==============================
+       ESTILOS ESPECÍFICOS DE POWER QUERY
+    ============================== */
+
+    /* Cabecera del topic */
+    .topic-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 1.25rem;
+      margin-bottom: 2rem;
+      padding: 1.75rem;
+      background: var(--color-rose);
+      border-radius: var(--border-radius);
+      border: 1.5px solid var(--color-mauve);
+    }
+
+    .topic-header__icon {
+      font-size: 3rem;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+
+    .topic-header__title {
+      font-size: 1.875rem;
+      font-weight: 700;
+      margin-bottom: 0.25rem;
+    }
+
+    .topic-header__subtitle {
+      color: var(--color-slate);
+      font-size: 0.9375rem;
+      line-height: 1.6;
+      margin-bottom: 0.75rem;
+    }
+
+    .topic-header__levels {
+      display: flex;
+      gap: 0.375rem;
+      flex-wrap: wrap;
+    }
+
+    /* Secciones de contenido */
+    .content-section {
+      margin: 48px 0;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 24px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid var(--color-mauve);
+    }
+
+    .section-icon {
+      font-size: 28px;
+      line-height: 1;
+    }
+
+    .section-header h2 {
+      font-size: 26px;
+      font-weight: 800;
+      color: var(--color-dark);
+      margin: 0;
+    }
+
+    /* Imágenes de contenido */
+    .content-image {
+      margin: 32px 0;
+      text-align: center;
+    }
+
+    .content-image__img {
+      max-width: 100%;
+      border-radius: 12px;
+      border: 2px solid var(--color-mauve);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    }
+
+    .content-image__caption {
+      margin-top: 12px;
+      font-size: 14px;
+      color: var(--color-slate);
+      font-style: italic;
+    }
+
+    /* Grid de imágenes en fila */
+    .image-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 20px;
+      margin: 32px 0;
+    }
+
+    .image-row figure {
+      margin: 0;
+      text-align: center;
+    }
+
+    .image-row img {
+      width: 100%;
+      border-radius: 10px;
+      border: 2px solid var(--color-mauve);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.07);
+    }
+
+    .image-row figcaption {
+      margin-top: 8px;
+      font-size: 13px;
+      color: var(--color-slate);
+      font-style: italic;
+    }
+
+    /* Grid de características */
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 20px;
+      margin: 24px 0;
+    }
+
+    .feature-card {
+      background: var(--color-white);
+      border: 2px solid var(--color-mauve);
+      border-radius: 12px;
+      padding: 20px;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-2px);
+      border-color: var(--color-coral);
+    }
+
+    .feature-card__title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--color-dark);
+      margin: 0 0 8px;
+    }
+
+    .feature-card p {
+      font-size: 14px;
+      line-height: 1.6;
+      color: var(--color-dark);
+      margin: 0;
+    }
+
+    /* Showcase de botones con imagen */
+    .button-showcase {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      margin: 24px 0;
+    }
+
+    .button-item {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 24px;
+      padding: 20px;
+      background: var(--color-white);
+      border: 2px solid var(--color-mauve);
+      border-radius: 12px;
+      align-items: start;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .button-item:hover {
+      border-color: var(--color-coral);
+      box-shadow: 0 4px 16px rgba(231, 78, 55, 0.08);
+    }
+
+    .button-item__visual img {
+      width: 100%;
+      border-radius: 8px;
+      border: 1.5px solid var(--color-mauve);
+    }
+
+    .button-item__desc h4 {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--color-coral);
+      margin: 0 0 10px;
+    }
+
+    .button-item__desc p {
+      font-size: 14px;
+      line-height: 1.7;
+      color: var(--color-dark);
+      margin: 0;
+    }
+
+    /* Subsección header */
+    .subsection-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--color-dark);
+      margin: 40px 0 16px;
+      padding: 10px 16px;
+      background: var(--color-blush);
+      border-left: 4px solid var(--color-coral);
+      border-radius: 0 8px 8px 0;
+    }
+
+    /* Tabla de tipos de datos */
+    .data-types-table {
+      margin: 24px 0;
+      overflow-x: auto;
+    }
+
+    .data-types-table table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--color-white);
+      border-radius: 12px;
+      overflow: hidden;
+      border: 2px solid var(--color-mauve);
+    }
+
+    .data-types-table th {
+      background: var(--color-rose);
+      color: var(--color-dark);
+      font-weight: 700;
+      padding: 14px 16px;
+      text-align: left;
+      font-size: 14px;
+    }
+
+    .data-types-table td {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--color-mauve);
+      font-size: 14px;
+      color: var(--color-dark);
+    }
+
+    .data-types-table td:first-child {
+      font-family: 'Fira Code', monospace;
+      font-weight: 600;
+      color: var(--color-coral);
+      white-space: nowrap;
+    }
+
+    .data-types-table tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    .data-types-table tbody tr:hover {
+      background: var(--color-blush);
+    }
+
+    /* Modo oscuro */
+    .dark-theme .topic-header {
+      background: var(--color-rose);
+      border-color: var(--color-mauve);
+    }
+
+    .dark-theme .feature-card,
+    .dark-theme .button-item {
+      background: var(--color-white);
+      border-color: var(--color-mauve);
+    }
+
+    .dark-theme .data-types-table table {
+      background: var(--color-white);
+    }
+
+    .dark-theme .data-types-table th {
+      background: var(--color-rose);
+    }
+
+    .dark-theme .shortcut-item {
+      background: var(--color-white);
+    }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .button-item {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .feature-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .shortcuts-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .image-row {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- SIDEBAR: Navegación principal -->
+  <aside class="site-sidebar">
+
+    <!-- Avatar y nombre -->
+    <div class="site-sidebar__profile">
+      <img src="../assets/images/avatar Sara.png" alt="Sara Lozano Martí" class="site-sidebar__avatar" />
+      <p class="site-sidebar__name">Sara Lozano Martí</p>
+      <p class="site-sidebar__subtitle">Power BI Expert</p>
+    </div>
+
+    <!-- Navegación principal -->
+    <nav class="site-sidebar__nav" aria-label="Navegación principal">
+      <ul>
+        <li><a href="../index.html" class="site-sidebar__link">
+          <span class="site-sidebar__icon">🏠</span> Inicio
+        </a></li>
+
+        <li><a href="dax.html" class="site-sidebar__link">
+          <span class="site-sidebar__icon">⚡</span> Funciones DAX
+        </a></li>
+
+        <li><a href="power-query.html" class="site-sidebar__link is-active">
+          <span class="site-sidebar__icon">🔄</span> Power Query
+        </a></li>
+
+        <li><a href="lenguaje-m.html" class="site-sidebar__link">
+          <span class="site-sidebar__icon">〽️</span> Lenguaje M
+        </a></li>
+
+        <li><a href="modelado.html" class="site-sidebar__link">
+          <span class="site-sidebar__icon">🗄️</span> Modelado
+        </a></li>
+
+        <li><a href="conceptos-powerbi.html" class="site-sidebar__link">
+          <span class="site-sidebar__icon">📊</span> Conceptos Power BI
+        </a></li>
+
+        <li><a href="fabric.html" class="site-sidebar__link">
+          <span class="site-sidebar__icon">🧵</span> Microsoft Fabric
+        </a></li>
+
+        <li><a href="tmdl.html" class="site-sidebar__link">
+          <span class="site-sidebar__icon">📝</span> TMDL
+        </a></li>
+
+        <li><a href="diseno-ux.html" class="site-sidebar__link">
+          <span class="site-sidebar__icon">🎨</span> Diseño y UX
+        </a></li>
+
+        <li><a href="gobernanza.html" class="site-sidebar__link">
+          <span class="site-sidebar__icon">🔒</span> Gobernanza
+        </a></li>
+      </ul>
+    </nav>
+
+    <!-- Separador -->
+    <div class="site-sidebar__divider"></div>
+
+    <!-- Footer del sidebar -->
+    <div class="site-sidebar__footer">
+      <!-- Enlace a quien soy -->
+      <a href="../quien-soy.html" class="site-sidebar__link site-sidebar__link--highlight">
+        <span class="site-sidebar__icon">👩‍💻</span> ¿Quién soy?
+      </a>
+
+      <!-- Iconos sociales -->
+      <div class="site-sidebar__social">
+        <a href="https://www.linkedin.com/in/saralozanomarti" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+          <img src="../assets/images/logo linkedIN.png" alt="LinkedIn" class="site-sidebar__social-icon" />
+        </a>
+        <a href="https://www.youtube.com/@KawaiiPowerBI" target="_blank" rel="noopener noreferrer" aria-label="YouTube">
+          <img src="../assets/images/logo youtube.png" alt="YouTube" class="site-sidebar__social-icon" />
+        </a>
+        <a href="https://github.com/KawaiiBI" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
+          <img src="../assets/images/logo github.png" alt="GitHub" class="site-sidebar__social-icon" />
+        </a>
+      </div>
+
+      <!-- Logo Kawaii BI -->
+      <div class="site-sidebar__logo-bottom">
+        <img src="../assets/images/Logo Kawaii.jpg" alt="Kawaii BI" class="site-sidebar__logo-img" />
+      </div>
+
+      <!-- Copyright -->
+      <p class="site-sidebar__copyright">
+        Power BI Guide 🌸<br>
+        © 2026 Kawaii BI
+      </p>
+    </div>
+
+  </aside>
+
+  <!-- CONTENIDO PRINCIPAL -->
+  <div class="page-wrapper">
+    <main class="main-content">
+      <div class="topic-page">
+
+        <!-- Breadcrumb -->
+        <nav class="breadcrumb" aria-label="Ruta de navegación">
+          <span class="breadcrumb__item"><a href="../index.html">🏠 Inicio</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item">Power Query</span>
+        </nav>
+
+        <!-- Cabecera del topic -->
+        <div class="topic-header">
+          <div class="topic-header__icon">🔄</div>
+          <div>
+            <h1 class="topic-header__title">Power Query</h1>
+            <p class="topic-header__subtitle">
+              Domina la herramienta de transformación de datos de Power BI. Aprende a conectarte a tus fuentes,
+              navegar por la interfaz, usar las transformaciones más importantes y optimizar tus flujos de ETL
+              — todo sin escribir una línea de código.
+            </p>
+            <div class="topic-header__levels">
+              <span class="badge badge--beginner">Principiante</span>
+              <span class="badge badge--intermediate">Intermedio</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- ============================================
+             SECCIÓN 1: ¿Qué es Power Query?
+        ============================================= -->
+        <section class="content-section" id="introduccion">
+          <div class="section-header">
+            <span class="section-icon">🌸</span>
+            <h2>¿Qué es Power Query?</h2>
+          </div>
+
+          <p>Power Query es el motor de <strong>transformación y preparación de datos</strong> de Power BI.
+          Es la herramienta que te permite conectar, limpiar, transformar y dar forma a tus datos
+          antes de cargarlos en el modelo semántico.</p>
+
+          <p>Piensa en Power Query como tu <strong>cocina de datos</strong> 🍳: aquí es donde tomas
+          los ingredientes crudos (datos sin procesar) y los preparas para que estén listos para servir
+          en tus visualizaciones. Sin este paso, tus datos llegarían sucios, mal formateados o
+          desorganizados al modelo.</p>
+
+          <p>Lo mejor de todo: la mayoría de transformaciones se hacen <strong>con clics</strong>,
+          no con código. Power Query guarda internamente cada paso que haces en lenguaje M, pero
+          tú no tienes que escribirlo si no quieres.</p>
+
+          <div class="note note--tip">
+            💡 <strong>Tip kawaii:</strong> Power Query se llama oficialmente "Editor de Power Query"
+            y usa el lenguaje M por debajo. Si quieres ir más allá de los clics y escribir transformaciones
+            personalizadas, echa un vistazo a la
+            <a href="lenguaje-m.html">sección de Lenguaje M →</a>
+          </div>
+        </section>
+
+        <!-- ============================================
+             SECCIÓN 2: La interfaz principal
+        ============================================= -->
+        <section class="content-section" id="interfaz">
+          <div class="section-header">
+            <span class="section-icon">🖥️</span>
+            <h2>La interfaz de Power Query</h2>
+          </div>
+
+          <p>Cuando abres el Editor de Power Query en Power BI Desktop
+          (desde <em>Inicio → Transformar datos</em>), verás esta interfaz dividida en zonas clave:</p>
+
+          <figure class="content-image">
+            <img src="../assets/images/Power query/menu principal.png"
+                 alt="Interfaz principal del Editor de Power Query"
+                 class="content-image__img" />
+            <figcaption class="content-image__caption">
+              Vista general del Editor de Power Query con sus zonas principales
+            </figcaption>
+          </figure>
+
+          <div class="feature-grid">
+            <div class="feature-card">
+              <h3 class="feature-card__title">📋 Panel Consultas (izquierda)</h3>
+              <p>Lista todas tus consultas (tablas). Cada consulta representa una fuente de datos
+              o una transformación. Puedes organizarlas en grupos para mantener el orden.</p>
+            </div>
+
+            <div class="feature-card">
+              <h3 class="feature-card__title">🔍 Vista Previa (centro)</h3>
+              <p>Muestra las primeras 1.000 filas de la consulta seleccionada. Aquí ves el resultado
+              de cada transformación en tiempo real mientras trabajas.</p>
+            </div>
+
+            <div class="feature-card">
+              <h3 class="feature-card__title">⚙️ Configuración de Consulta (derecha)</h3>
+              <p>Nombre de la consulta y la lista de <strong>Pasos aplicados</strong>: cada
+              transformación que has hecho, en orden cronológico.</p>
+            </div>
+
+            <div class="feature-card">
+              <h3 class="feature-card__title">🎛️ Cinta de opciones (arriba)</h3>
+              <p>Todas las transformaciones organizadas en pestañas:
+              <em>Inicio</em>, <em>Transformar</em>, <em>Agregar columna</em> y <em>Vista</em>.</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============================================
+             SECCIÓN 3: Conectar datos
+        ============================================= -->
+        <section class="content-section" id="conectar-datos">
+          <div class="section-header">
+            <span class="section-icon">🔌</span>
+            <h2>Conectar a fuentes de datos</h2>
+          </div>
+
+          <p>El primer paso siempre es conectarte a tus datos. Power BI tiene más de <strong>100 conectores</strong>
+          nativos: Excel, SQL Server, SharePoint, web, carpetas, APIs REST y muchos más.</p>
+
+          <figure class="content-image">
+            <img src="../assets/images/Power query/como conectar datos.png"
+                 alt="Pantalla de conexión a datos en Power Query"
+                 class="content-image__img" />
+            <figcaption class="content-image__caption">
+              Panel principal para elegir la fuente de datos
+            </figcaption>
+          </figure>
+
+          <p>Una vez elegida la fuente, si es una base de datos aparece un menú para
+          indicar el servidor y la base de datos:</p>
+
+          <div class="image-row">
+            <figure>
+              <img src="../assets/images/Power query/menú conectarse a BBDD.png"
+                   alt="Menú para conectarse a una base de datos" />
+              <figcaption>Conexión a base de datos SQL</figcaption>
+            </figure>
+            <figure>
+              <img src="../assets/images/Power query/menú que muestra las tablas disponibles.png"
+                   alt="Menú con las tablas disponibles de la base de datos" />
+              <figcaption>Selección de tablas disponibles</figcaption>
+            </figure>
+          </div>
+
+          <div class="note note--tip">
+            💡 <strong>Consejo:</strong> Cuando conectes a una base de datos SQL, intenta hacer el
+            filtrado y selección de columnas en el <em>origen</em> (mediante una vista o consulta SQL)
+            en lugar de cargar toda la tabla y filtrar después. Esto se llama <strong>query folding</strong>
+            y mejora enormemente el rendimiento.
+          </div>
+        </section>
+
+        <!-- ============================================
+             SECCIÓN 4: Transformaciones esenciales
+        ============================================= -->
+        <section class="content-section" id="transformaciones">
+          <div class="section-header">
+            <span class="section-icon">🎯</span>
+            <h2>Transformaciones esenciales</h2>
+          </div>
+
+          <p>Estas son las transformaciones que usarás en el 90% de tus proyectos.
+          Están disponibles desde la cinta de opciones con un clic:</p>
+
+          <!-- Subsección: Trabajar con columnas -->
+          <p class="subsection-title">Trabajar con columnas</p>
+
+          <div class="button-showcase">
+
+            <div class="button-item">
+              <div class="button-item__visual">
+                <img src="../assets/images/Power query/elegir columnas.jpg"
+                     alt="Elegir columnas en Power Query" />
+              </div>
+              <div class="button-item__desc">
+                <h4>Elegir Columnas</h4>
+                <p>Selecciona exactamente qué columnas quieres mantener en la consulta. Más rápido
+                que quitar columnas una a una cuando tienes muchas. Reduce el tamaño del modelo
+                y mejora el rendimiento desde el primer paso.</p>
+                <p style="margin-top: 8px;"><strong>Dónde:</strong> Pestaña <em>Inicio → Administrar columnas → Elegir columnas</em></p>
+              </div>
+            </div>
+
+            <div class="button-item">
+              <div class="button-item__visual">
+                <img src="../assets/images/Power query/usar la primera fila como encabezado.jpg"
+                     alt="Usar la primera fila como encabezado" />
+              </div>
+              <div class="button-item__desc">
+                <h4>Usar la Primera Fila como Encabezado</h4>
+                <p>Cuando importas archivos Excel o CSV mal formateados, los nombres de columna
+                a veces aparecen como datos en la primera fila. Este botón los convierte en
+                encabezados de columna correctos.</p>
+                <p style="margin-top: 8px;"><strong>Dónde:</strong> Pestaña <em>Inicio → Transformar → Usar la primera fila como encabezado</em></p>
+              </div>
+            </div>
+
+            <div class="button-item">
+              <div class="button-item__visual">
+                <img src="../assets/images/Power query/Dividir columna por delimitador .jpg"
+                     alt="Dividir columna por delimitador" />
+              </div>
+              <div class="button-item__desc">
+                <h4>Dividir Columna por Delimitador</h4>
+                <p>Separa el contenido de una columna en varias según un carácter separador
+                (coma, punto y coma, espacio, etc.). Ejemplo clásico: "Apellido, Nombre"
+                en dos columnas separadas.</p>
+                <p style="margin-top: 8px;"><strong>Dónde:</strong> Pestaña <em>Transformar → Columna de texto → Dividir columna</em></p>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Subsección: Trabajar con filas -->
+          <p class="subsection-title">Trabajar con filas</p>
+
+          <div class="button-showcase">
+
+            <div class="button-item">
+              <div class="button-item__visual">
+                <img src="../assets/images/Power query/Conservar filas superiores.jpg"
+                     alt="Conservar filas superiores" />
+              </div>
+              <div class="button-item__desc">
+                <h4>Conservar / Quitar Filas</h4>
+                <p>Mantén solo las primeras N filas, las últimas, un rango, o elimina las filas
+                vacías, duplicadas y con errores. Fundamental para limpiar datos antes de cualquier
+                otra transformación.</p>
+                <p style="margin-top: 8px;"><strong>Dónde:</strong> Pestaña <em>Inicio → Reducir filas</em></p>
+              </div>
+            </div>
+
+            <div class="button-item">
+              <div class="button-item__visual">
+                <img src="../assets/images/Power query/Filtrar filas.jpg"
+                     alt="Filtrar filas en Power Query" />
+              </div>
+              <div class="button-item__desc">
+                <h4>Filtrar Filas</h4>
+                <p>Filtra las filas de la consulta usando condiciones sobre cualquier columna.
+                Similar al filtro de Excel pero aplicado de forma permanente como un paso
+                en tu flujo de transformación.</p>
+                <p style="margin-top: 8px;"><strong>Dónde:</strong> Haz clic en la flecha de cualquier encabezado de columna</p>
+              </div>
+            </div>
+
+            <div class="button-item">
+              <div class="button-item__visual">
+                <img src="../assets/images/Power query/quitar duplicados.jpg"
+                     alt="Quitar duplicados en Power Query" />
+              </div>
+              <div class="button-item__desc">
+                <h4>Quitar Duplicados</h4>
+                <p>Elimina filas duplicadas basándose en la columna o columnas seleccionadas.
+                Esencial para garantizar la unicidad en tablas de dimensión y evitar dobles
+                conteos en el modelo.</p>
+                <p style="margin-top: 8px;"><strong>Dónde:</strong> Clic derecho en columna → <em>Quitar duplicados</em></p>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Subsección: Editar valores -->
+          <p class="subsection-title">Editar valores</p>
+
+          <div class="button-showcase">
+
+            <div class="button-item">
+              <div class="button-item__visual">
+                <img src="../assets/images/Power query/reemplazar los valores.jpg"
+                     alt="Reemplazar valores en Power Query" />
+              </div>
+              <div class="button-item__desc">
+                <h4>Reemplazar Valores</h4>
+                <p>Sustituye valores específicos por otros en una columna. Perfecto para corregir
+                errores tipográficos, estandarizar categorías ("SI" → "Sí", "NO" → "No") o
+                rellenar valores nulos con un texto predeterminado.</p>
+                <p style="margin-top: 8px;"><strong>Dónde:</strong> Pestaña <em>Transformar → Cualquier columna → Reemplazar valores</em></p>
+              </div>
+            </div>
+
+            <div class="button-item">
+              <div class="button-item__visual">
+                <img src="../assets/images/Power query/columna condicional.jpg"
+                     alt="Columna condicional en Power Query" />
+              </div>
+              <div class="button-item__desc">
+                <h4>Columna Condicional</h4>
+                <p>Crea una nueva columna usando lógica IF/THEN/ELSE con interfaz gráfica,
+                sin necesidad de escribir código. Ideal para clasificar rangos, crear categorías
+                o asignar etiquetas según condiciones.</p>
+                <p style="margin-top: 8px;"><strong>Dónde:</strong> Pestaña <em>Agregar columna → General → Columna condicional</em></p>
+              </div>
+            </div>
+
+          </div>
+
+          <div class="note note--practice">
+            📌 <strong>Buena práctica:</strong> Nombra bien tus pasos en el panel de pasos aplicados.
+            En lugar de "Columna personalizada", escribe algo como "Crear columna Segmento Cliente".
+            Tu yo del futuro (y tu equipo) te lo agradecerán.
+          </div>
+        </section>
+
+        <!-- ============================================
+             SECCIÓN 5: Panel de Pasos Aplicados
+        ============================================= -->
+        <section class="content-section" id="pasos-aplicados">
+          <div class="section-header">
+            <span class="section-icon">📜</span>
+            <h2>Panel de Pasos Aplicados</h2>
+          </div>
+
+          <p>El panel <strong>Pasos aplicados</strong> (en la columna derecha) es el registro
+          completo de todo lo que has hecho sobre la consulta, en orden cronológico. Es una de
+          las características más poderosas de Power Query.</p>
+
+          <figure class="content-image">
+            <img src="../assets/images/Power query/rellenar descripción pasos.jpg"
+                 alt="Panel de Pasos Aplicados en Power Query con descripción"
+                 class="content-image__img" />
+            <figcaption class="content-image__caption">
+              Cada paso tiene nombre, y puedes añadir una descripción para documentar qué hace
+            </figcaption>
+          </figure>
+
+          <div class="feature-grid">
+            <div class="feature-card">
+              <h3 class="feature-card__title">🔎 Navegar en el tiempo</h3>
+              <p>Haz clic en cualquier paso para ver cómo estaban los datos en ese momento exacto.
+              Perfecto para debuggear y entender qué paso introdujo un error.</p>
+            </div>
+
+            <div class="feature-card">
+              <h3 class="feature-card__title">✏️ Renombrar pasos</h3>
+              <p>Doble clic sobre el nombre del paso para renombrarlo. Usa nombres descriptivos
+              como "Quitar columnas auxiliares" en lugar del genérico que genera Power Query.</p>
+            </div>
+
+            <div class="feature-card">
+              <h3 class="feature-card__title">📝 Añadir descripción</h3>
+              <p>Clic derecho → <em>Propiedades</em> para añadir una descripción larga al paso.
+              Ideal para dejar contexto sobre decisiones de negocio o reglas especiales.</p>
+            </div>
+
+            <div class="feature-card">
+              <h3 class="feature-card__title">⚙️ Ver el código M</h3>
+              <p>Haz clic en el icono de engranaje ⚙️ junto a cualquier paso para ver y editar
+              el código M que lo genera. Así puedes aprender M poco a poco.</p>
+            </div>
+          </div>
+
+          <div class="note note--warning">
+            ⚠️ <strong>Ojo con esto:</strong> Power Query ejecuta los pasos en orden, de arriba a
+            abajo. Si eliminas un paso intermedio del que dependen otros pasos posteriores, obtendrás
+            un error. Siempre verifica las dependencias antes de borrar.
+          </div>
+        </section>
+
+        <!-- ============================================
+             SECCIÓN 6: Tipos de Datos
+        ============================================= -->
+        <section class="content-section" id="tipos-datos">
+          <div class="section-header">
+            <span class="section-icon">🏷️</span>
+            <h2>Tipos de Datos</h2>
+          </div>
+
+          <p>Cada columna en Power Query tiene un <strong>tipo de dato</strong> representado por un
+          icono en el encabezado. Esto determina cómo se almacenan, ordenan y calculan los valores.
+          Un tipo incorrecto puede arruinar tus cálculos DAX.</p>
+
+          <figure class="content-image">
+            <img src="../assets/images/Power query/tipos de datos.jpg"
+                 alt="Iconos de tipos de datos en Power Query"
+                 class="content-image__img" />
+            <figcaption class="content-image__caption">
+              Los iconos en los encabezados de columna indican el tipo de dato asignado
+            </figcaption>
+          </figure>
+
+          <div class="data-types-table">
+            <table>
+              <thead>
+                <tr>
+                  <th>Icono</th>
+                  <th>Tipo de dato</th>
+                  <th>Cuándo usarlo</th>
+                  <th>Ejemplo</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>123</td>
+                  <td>Número entero</td>
+                  <td>Cantidades sin decimales, IDs, años</td>
+                  <td>2024, 150, 3</td>
+                </tr>
+                <tr>
+                  <td>1.2</td>
+                  <td>Número decimal</td>
+                  <td>Precios, ratios, métricas con decimales</td>
+                  <td>19.99, 0.75, 1234.50</td>
+                </tr>
+                <tr>
+                  <td>$</td>
+                  <td>Número decimal fijo</td>
+                  <td>Importes monetarios (más preciso)</td>
+                  <td>€1.234,56</td>
+                </tr>
+                <tr>
+                  <td>%</td>
+                  <td>Porcentaje</td>
+                  <td>Tasas, variaciones porcentuales</td>
+                  <td>0.15 (=15%)</td>
+                </tr>
+                <tr>
+                  <td>ABC</td>
+                  <td>Texto</td>
+                  <td>Nombres, descripciones, categorías</td>
+                  <td>Madrid, Juan García</td>
+                </tr>
+                <tr>
+                  <td>✓</td>
+                  <td>Verdadero/Falso</td>
+                  <td>Flags, estados binarios, condiciones</td>
+                  <td>TRUE, FALSE</td>
+                </tr>
+                <tr>
+                  <td>📅</td>
+                  <td>Fecha</td>
+                  <td>Fechas sin hora (para tablas de fechas)</td>
+                  <td>01/01/2024</td>
+                </tr>
+                <tr>
+                  <td>🕐</td>
+                  <td>Fecha/Hora</td>
+                  <td>Timestamps con hora exacta</td>
+                  <td>01/01/2024 14:30:00</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="note note--tip">
+            💡 <strong>Consejo kawaii:</strong> Power Query intenta detectar los tipos automáticamente,
+            pero no siempre acierta (especialmente con columnas de ID numéricas que no deberían sumarse).
+            Revisa <strong>siempre</strong> los tipos de dato al principio de tus consultas.
+            Cambia el tipo haciendo clic en el icono del encabezado de columna.
+          </div>
+        </section>
+
+        <!-- ============================================
+             NOTA FINAL: Siguiente paso
+        ============================================= -->
+        <div class="note note--next" style="margin-top: 48px;">
+          🚀 <strong>¡Lo estás haciendo genial!</strong> Ya conoces la interfaz de Power Query y las
+          transformaciones más importantes. El siguiente nivel es aprender el <strong>Lenguaje M</strong>
+          para crear transformaciones personalizadas que no están disponibles con los botones.
+          <a href="lenguaje-m.html">Ir a Lenguaje M →</a>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- Botón volver arriba -->
+  <button id="back-to-top" class="back-to-top" aria-label="Volver arriba" title="Volver arriba">↑</button>
+
+  <!-- ============================================
+       SCRIPTS
+  ============================================= -->
+  <!-- i18next desde CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/i18next@23/dist/umd/i18next.min.js"></script>
+
+  <!-- Prism.js para syntax highlighting -->
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1/prism.min.js"></script>
+
+  <!-- Scripts del proyecto -->
+  <script src="../assets/js/theme.js"></script>
+  <script src="../assets/js/i18n.js"></script>
+  <script src="../assets/js/main.js"></script>
+  <script src="../assets/js/cursor.js"></script>
+
+</body>
+</html>

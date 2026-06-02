@@ -1,0 +1,965 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Funciones INFO.VIEW en DAX — INFO.VIEW.TABLES, INFO.VIEW.COLUMNS, INFO.VIEW.MEASURES, INFO.VIEW.RELATIONSHIPS para auto-documentar tu modelo semántico">
+  <title>INFO.VIEW — Funciones DAX | Power BI Guide</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+
+  <!-- Prism.js para syntax highlighting -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+
+  <!-- i18next para traducciones -->
+  <script src="https://cdn.jsdelivr.net/npm/i18next@23.7.6/i18next.min.js"></script>
+
+  <!-- CSS del proyecto -->
+  <link rel="stylesheet" href="../../assets/css/main.css">
+  <link rel="stylesheet" href="../../assets/css/themes.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/layout.css">
+  <link rel="stylesheet" href="../../assets/css/dax-search.css">
+
+  <style>
+    /* === ESTILOS ESPECÍFICOS PARA PÁGINAS DE TOPICS === */
+
+    /* Topic header con icono grande */
+    .topic-header {
+      text-align: center;
+      padding: 2.5rem 0 2rem;
+      border-bottom: 2px solid var(--color-mauve);
+      margin-bottom: 2.5rem;
+    }
+
+    .topic-header__icon {
+      font-size: 4rem;
+      margin-bottom: 0.75rem;
+      display: block;
+    }
+
+    .topic-header__title {
+      font-size: clamp(1.875rem, 4vw, 2.5rem);
+      font-weight: 800;
+      color: var(--color-dark);
+      margin-bottom: 0.625rem;
+      line-height: 1.2;
+    }
+
+    .topic-header__subtitle {
+      font-size: 1.0625rem;
+      color: var(--color-slate);
+      margin-bottom: 1.25rem;
+      line-height: 1.5;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .topic-header__levels {
+      display: flex;
+      gap: 0.5rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    /* TOC — Table of contents */
+    .toc {
+      background: var(--color-rose);
+      border: 1.5px solid var(--color-mauve);
+      border-radius: var(--border-radius);
+      padding: 1.5rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .toc__title {
+      font-size: 0.875rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--color-slate);
+      margin-bottom: 1rem;
+    }
+
+    .toc__list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .toc__link {
+      color: var(--color-dark);
+      text-decoration: none;
+      font-size: 0.9375rem;
+      transition: var(--transition);
+      display: inline-block;
+    }
+
+    .toc__link:hover {
+      color: var(--color-coral);
+      text-decoration: underline;
+    }
+
+    /* Category header — separadores entre categorías */
+    .category-header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin: 3rem 0 1.5rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 2px solid var(--color-mauve);
+    }
+
+    .category-header__icon {
+      font-size: 1.75rem;
+    }
+
+    .category-header__title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--color-dark);
+      margin: 0;
+    }
+
+    /* Function card — tarjeta individual para cada función */
+    .function-card {
+      background: var(--color-white);
+      border: 1.5px solid var(--color-mauve);
+      border-radius: var(--border-radius);
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .function-card__name {
+      font-family: var(--font-code);
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: var(--color-coral);
+      margin-bottom: 0.75rem;
+    }
+
+    .function-card__description {
+      font-size: 0.9375rem;
+      color: var(--color-dark);
+      margin-bottom: 1rem;
+      line-height: 1.6;
+    }
+
+    .function-card__level {
+      display: inline-block;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      padding: 0.25rem 0.625rem;
+      border-radius: var(--border-radius-sm);
+      background: var(--color-blush);
+      color: var(--color-slate);
+      margin-bottom: 1rem;
+    }
+
+    /* Function table — tabla compacta con ejemplos */
+    .function-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.5rem 0;
+      font-size: 0.875rem;
+    }
+
+    .function-table th {
+      background: var(--color-rose);
+      color: var(--color-dark);
+      font-weight: 700;
+      text-align: left;
+      padding: 0.75rem 1rem;
+      border: 1px solid var(--color-mauve);
+    }
+
+    .function-table td {
+      padding: 0.75rem 1rem;
+      border: 1px solid var(--color-mauve);
+      color: var(--color-dark);
+    }
+
+    .function-table tr:nth-child(even) {
+      background: var(--color-blush);
+    }
+
+    /* Code block wrapper */
+    .code-block {
+      position: relative;
+      margin: 1.25rem 0;
+    }
+
+    .code-block pre {
+      margin: 0;
+      border-radius: var(--border-radius);
+      border: 1.5px solid var(--color-mauve);
+    }
+
+    .code-block__copy {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.5rem;
+      padding: 0.375rem 0.75rem;
+      font-size: 0.75rem;
+      background: var(--color-coral);
+      color: var(--color-white);
+      border: none;
+      border-radius: var(--border-radius-sm);
+      cursor: pointer;
+      font-family: var(--font-main);
+      font-weight: 600;
+      transition: var(--transition);
+    }
+
+    .code-block__copy:hover {
+      background: var(--color-peach);
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Header (cargado dinámicamente) -->
+  <div id="main-header"></div>
+
+  <!-- Layout wrapper con sidebar + main -->
+  <div class="layout-wrapper">
+    <!-- Sidebar (cargado dinámicamente) -->
+    <aside id="sidebar"></aside>
+
+    <!-- Main content -->
+    <main id="main-content">
+      <div class="topic-page">
+        <!-- Breadcrumb -->
+        <nav class="breadcrumb" aria-label="breadcrumb">
+          <a href="../../index.html" class="breadcrumb__link">Inicio</a>
+          <span class="breadcrumb__separator">›</span>
+          <a href="../dax.html" class="breadcrumb__link">Funciones DAX</a>
+          <span class="breadcrumb__separator">›</span>
+          <span class="breadcrumb__current">INFO.VIEW</span>
+        </nav>
+
+        <!-- Buscador compacto DAX -->
+        <div class="dax-search-compact-bar">
+          <div class="dax-search-wrapper dax-search-compact" data-dax-search="true">
+            <span class="dax-search-icon">🔍</span>
+            <input
+              type="text"
+              class="dax-search-input"
+              placeholder="Buscar otra función DAX..."
+              autocomplete="off"
+              spellcheck="false"
+              aria-label="Buscar función DAX"
+            />
+            <button class="dax-search-clear" aria-label="Limpiar" hidden>✕</button>
+            <div class="dax-search-results" role="listbox"></div>
+          </div>
+        </div>
+
+        <!-- Header del topic -->
+        <header class="topic-header">
+          <span class="topic-header__icon">🗂️</span>
+          <h1 class="topic-header__title">Funciones INFO.VIEW</h1>
+          <p class="topic-header__subtitle">INFO.VIEW.TABLES, INFO.VIEW.COLUMNS, INFO.VIEW.MEASURES, INFO.VIEW.RELATIONSHIPS — auto-documenta tu modelo semántico directamente desde DAX</p>
+          <div class="topic-header__levels">
+            <span class="badge badge--intermediate">Intermedio</span>
+            <span class="badge badge--advanced">Avanzado</span>
+          </div>
+        </header>
+
+        <!-- TOC -->
+        <nav class="toc">
+          <h2 class="toc__title">📑 En esta página</h2>
+          <ul class="toc__list">
+            <li><a href="#intro" class="toc__link">¿Qué son las funciones INFO.VIEW?</a></li>
+            <li><a href="#info-view-tables" class="toc__link">INFO.VIEW.TABLES</a></li>
+            <li><a href="#info-view-columns" class="toc__link">INFO.VIEW.COLUMNS</a></li>
+            <li><a href="#info-view-measures" class="toc__link">INFO.VIEW.MEASURES</a></li>
+            <li><a href="#info-view-relationships" class="toc__link">INFO.VIEW.RELATIONSHIPS</a></li>
+            <li><a href="#info-vs-infoview" class="toc__link">INFO.* vs INFO.VIEW.* — ¿cuál usar?</a></li>
+            <li><a href="#patrones" class="toc__link">Patrones: auto-documentación del modelo</a></li>
+          </ul>
+        </nav>
+
+        <!-- SECCIÓN 0: Intro -->
+        <section id="intro">
+          <div class="category-header">
+            <span class="category-header__icon">🗂️</span>
+            <h2 class="category-header__title">El modelo que se documenta a sí mismo</h2>
+          </div>
+
+          <p>¿Alguna vez has llegado a un modelo de Power BI heredado y no sabías qué medidas había, qué significaban las columnas o cómo estaban relacionadas las tablas? Las funciones INFO.VIEW llegaron en octubre de 2024 para resolver exactamente eso: devuelven una tabla con metadatos de tu propio modelo — y lo mejor es que se actualizan solas cada vez que haces un refresh. 🙌</p>
+
+          <div class="note note--best-practice">
+            <strong>🏆 Qué tienen de especial</strong><br>
+            Las funciones INFO.VIEW son únicas en DAX porque:<br>
+            ✅ Se pueden usar en tablas calculadas, columnas calculadas y medidas<br>
+            ✅ Se actualizan automáticamente al refrescar el modelo<br>
+            ✅ Usan nombres amigables (nombre de tabla, no TableID numérico)<br>
+            ✅ Se pueden combinar con FILTER, SELECTCOLUMNS, ADDCOLUMNS...<br>
+            ✅ Sirven para crear páginas de documentación automática en el propio informe
+          </div>
+
+          <div class="note note--warning">
+            <strong>⚠️ Requisitos</strong><br>
+            Requieren permiso de escritura sobre el modelo semántico. No funcionan en Power BI Desktop en modo de conexión en vivo (Live Connection).
+          </div>
+
+          <h3>Dónde se pueden usar</h3>
+
+          <table class="function-table">
+            <thead>
+              <tr>
+                <th>CONTEXTO</th>
+                <th>INFO.VIEW.*</th>
+                <th>INFO.* (sin VIEW)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Tabla calculada</td>
+                <td>✅</td>
+                <td>❌</td>
+              </tr>
+              <tr>
+                <td>Columna calculada</td>
+                <td>✅</td>
+                <td>❌</td>
+              </tr>
+              <tr>
+                <td>Medida</td>
+                <td>✅</td>
+                <td>❌</td>
+              </tr>
+              <tr>
+                <td>DAX Query View</td>
+                <td>✅</td>
+                <td>✅</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <p>Las funciones INFO.* sin VIEW (más de 50) solo funcionan en DAX Query View — son los equivalentes a los DMVs de Analysis Services y están pensadas para administradores avanzados. En esta página nos centramos en las 4 funciones INFO.VIEW que cualquier desarrolladora puede usar en su modelo.</p>
+        </section>
+
+        <!-- SECCIÓN 1: INFO.VIEW.TABLES -->
+        <section id="info-view-tables">
+          <div class="category-header">
+            <span class="category-header__icon">📋</span>
+            <h2 class="category-header__title">INFO.VIEW.TABLES — todas las tablas del modelo</h2>
+          </div>
+
+          <div class="function-card">
+            <div class="function-card__name">INFO.VIEW.TABLES()</div>
+            <div class="function-card__level">Intermedio</div>
+            <div class="function-card__description">
+              Devuelve una tabla con información sobre cada tabla del modelo semántico: nombre, descripción, modo de almacenamiento (Import, DirectQuery, Dual), si está oculta y si es una tabla de fechas marcada.
+            </div>
+
+            <h4>Columnas que devuelve:</h4>
+            <table class="function-table">
+              <thead>
+                <tr>
+                  <th>COLUMNA</th>
+                  <th>TIPO</th>
+                  <th>DESCRIPCIÓN</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>[Name]</td>
+                  <td>Texto</td>
+                  <td>Nombre de la tabla</td>
+                </tr>
+                <tr>
+                  <td>[Description]</td>
+                  <td>Texto</td>
+                  <td>Descripción (si la has añadido en el modelo)</td>
+                </tr>
+                <tr>
+                  <td>[StorageMode]</td>
+                  <td>Texto</td>
+                  <td>"Import", "DirectQuery", "Dual", "Push"</td>
+                </tr>
+                <tr>
+                  <td>[IsHidden]</td>
+                  <td>Booleano</td>
+                  <td>TRUE si la tabla está oculta en el panel de campos</td>
+                </tr>
+                <tr>
+                  <td>[IsDateTable]</td>
+                  <td>Booleano</td>
+                  <td>TRUE si está marcada como tabla de fechas</td>
+                </tr>
+                <tr>
+                  <td>[SystemFlags]</td>
+                  <td>Entero</td>
+                  <td>Flags internos del sistema</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <h4>Ejemplos:</h4>
+            <div class="code-block">
+              <button class="code-block__copy">Copiar</button>
+              <pre><code class="language-dax">// Ver todas las tablas del modelo:
+EVALUATE INFO.VIEW.TABLES()
+
+// Solo las tablas visibles (no ocultas):
+EVALUATE
+FILTER(
+    INFO.VIEW.TABLES(),
+    NOT [IsHidden]
+)
+
+// Tabla calculada para documentación automática:
+Doc_Tablas =
+SELECTCOLUMNS(
+    FILTER(INFO.VIEW.TABLES(), NOT [IsHidden]),
+    "Tabla", [Name],
+    "Descripción", [Description],
+    "Modo", [StorageMode],
+    "Es tabla de fechas", [IsDateTable]
+)
+
+// Contar tablas de cada tipo de almacenamiento:
+Tablas Import =
+COUNTROWS(
+    FILTER(INFO.VIEW.TABLES(), [StorageMode] = "Import")
+)</code></pre>
+            </div>
+          </div>
+
+          <div class="note note--tip">
+            <strong>💡 Tip</strong><br>
+            Si añades descripciones a tus tablas en el modelo (en la vista de modelo, panel de propiedades), INFO.VIEW.TABLES las muestra en la columna [Description]. ¡Es la base de una documentación automática de calidad!
+          </div>
+        </section>
+
+        <!-- SECCIÓN 2: INFO.VIEW.COLUMNS -->
+        <section id="info-view-columns">
+          <div class="category-header">
+            <span class="category-header__icon">🔢</span>
+            <h2 class="category-header__title">INFO.VIEW.COLUMNS — todas las columnas del modelo</h2>
+          </div>
+
+          <div class="function-card">
+            <div class="function-card__name">INFO.VIEW.COLUMNS()</div>
+            <div class="function-card__level">Intermedio</div>
+            <div class="function-card__description">
+              Devuelve una tabla con información sobre cada columna del modelo: nombre, tabla a la que pertenece, tipo de dato, si está oculta, formato y descripción.
+            </div>
+
+            <h4>Columnas que devuelve:</h4>
+            <table class="function-table">
+              <thead>
+                <tr>
+                  <th>COLUMNA</th>
+                  <th>TIPO</th>
+                  <th>DESCRIPCIÓN</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>[TableName]</td>
+                  <td>Texto</td>
+                  <td>Nombre de la tabla que contiene la columna</td>
+                </tr>
+                <tr>
+                  <td>[Name]</td>
+                  <td>Texto</td>
+                  <td>Nombre de la columna</td>
+                </tr>
+                <tr>
+                  <td>[DataType]</td>
+                  <td>Texto</td>
+                  <td>"Integer", "Double", "String", "DateTime", "Boolean", "Currency"</td>
+                </tr>
+                <tr>
+                  <td>[IsHidden]</td>
+                  <td>Booleano</td>
+                  <td>TRUE si la columna está oculta</td>
+                </tr>
+                <tr>
+                  <td>[Description]</td>
+                  <td>Texto</td>
+                  <td>Descripción de la columna</td>
+                </tr>
+                <tr>
+                  <td>[FormatString]</td>
+                  <td>Texto</td>
+                  <td>Formato aplicado a la columna</td>
+                </tr>
+                <tr>
+                  <td>[IsNullable]</td>
+                  <td>Booleano</td>
+                  <td>TRUE si puede contener valores nulos</td>
+                </tr>
+                <tr>
+                  <td>[Expression]</td>
+                  <td>Texto</td>
+                  <td>Si es columna calculada, la expresión DAX (si no, BLANK)</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <h4>Ejemplos:</h4>
+            <div class="code-block">
+              <button class="code-block__copy">Copiar</button>
+              <pre><code class="language-dax">// Todas las columnas del modelo:
+EVALUATE INFO.VIEW.COLUMNS()
+
+// Solo columnas de tipo fecha:
+EVALUATE
+FILTER(
+    INFO.VIEW.COLUMNS(),
+    [DataType] = "DateTime"
+)
+
+// Diccionario de datos automático (tabla calculada):
+Diccionario_Datos =
+SELECTCOLUMNS(
+    FILTER(
+        INFO.VIEW.COLUMNS(),
+        NOT [IsHidden]
+    ),
+    "Tabla", [TableName],
+    "Columna", [Name],
+    "Tipo", [DataType],
+    "Descripción", [Description],
+    "Formato", [FormatString]
+)
+
+// Contar columnas de texto (útil para saber qué hay en el modelo):
+N° Columnas Texto =
+COUNTROWS(
+    FILTER(INFO.VIEW.COLUMNS(), [DataType] = "String")
+)
+
+// Detectar columnas calculadas (tienen expresión DAX):
+Columnas_Calculadas =
+FILTER(
+    INFO.VIEW.COLUMNS(),
+    NOT ISBLANK([Expression])
+)</code></pre>
+            </div>
+          </div>
+
+          <div class="note note--best-practice">
+            <strong>🏆 Best Practice</strong><br>
+            Combina INFO.VIEW.COLUMNS con INFO.VIEW.TABLES para crear un diccionario de datos completo con tabla + columna + descripción + tipo. Úsalo en una página dedicada dentro de tu informe para que cualquier persona que lo use entienda qué significa cada campo.
+          </div>
+        </section>
+
+        <!-- SECCIÓN 3: INFO.VIEW.MEASURES -->
+        <section id="info-view-measures">
+          <div class="category-header">
+            <span class="category-header__icon">📐</span>
+            <h2 class="category-header__title">INFO.VIEW.MEASURES — todas las medidas del modelo</h2>
+          </div>
+
+          <div class="function-card">
+            <div class="function-card__name">INFO.VIEW.MEASURES()</div>
+            <div class="function-card__level">Intermedio</div>
+            <div class="function-card__description">
+              Devuelve una tabla con información sobre cada medida: nombre, expresión DAX, tabla de inicio, formato, si está oculta y su estado de validación.
+            </div>
+
+            <h4>Columnas que devuelve:</h4>
+            <table class="function-table">
+              <thead>
+                <tr>
+                  <th>COLUMNA</th>
+                  <th>TIPO</th>
+                  <th>DESCRIPCIÓN</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>[Table]</td>
+                  <td>Texto</td>
+                  <td>Tabla donde está definida la medida</td>
+                </tr>
+                <tr>
+                  <td>[Name]</td>
+                  <td>Texto</td>
+                  <td>Nombre de la medida</td>
+                </tr>
+                <tr>
+                  <td>[Expression]</td>
+                  <td>Texto</td>
+                  <td>La fórmula DAX completa de la medida</td>
+                </tr>
+                <tr>
+                  <td>[FormatString]</td>
+                  <td>Texto</td>
+                  <td>Formato (ej: "#,##0.00 €", "0.00%")</td>
+                </tr>
+                <tr>
+                  <td>[Description]</td>
+                  <td>Texto</td>
+                  <td>Descripción de la medida</td>
+                </tr>
+                <tr>
+                  <td>[IsHidden]</td>
+                  <td>Booleano</td>
+                  <td>TRUE si la medida está oculta</td>
+                </tr>
+                <tr>
+                  <td>[State]</td>
+                  <td>Texto</td>
+                  <td>Estado: "Ready" (válida) o error</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <h4>Ejemplos:</h4>
+            <div class="code-block">
+              <button class="code-block__copy">Copiar</button>
+              <pre><code class="language-dax">// Ver todas las medidas con su fórmula:
+EVALUATE INFO.VIEW.MEASURES()
+
+// Medidas con errores en la fórmula:
+EVALUATE
+FILTER(
+    INFO.VIEW.MEASURES(),
+    [State] <> "Ready"
+)
+
+// Tabla calculada para documentar todas las medidas:
+Doc_Medidas =
+SELECTCOLUMNS(
+    INFO.VIEW.MEASURES(),
+    "Tabla", [Table],
+    "Medida", [Name],
+    "Descripción", [Description],
+    "Fórmula DAX", [Expression],
+    "Formato", [FormatString],
+    "Estado", [State]
+)
+
+// Contar medidas del modelo:
+Total Medidas = COUNTROWS(INFO.VIEW.MEASURES())
+
+// Medidas sin descripción (para recordarte añadirlas):
+Medidas Sin Documentar =
+COUNTROWS(
+    FILTER(
+        INFO.VIEW.MEASURES(),
+        ISBLANK([Description])
+    )
+)
+
+// Buscar medidas que usan CALCULATE:
+Medidas_con_CALCULATE =
+FILTER(
+    INFO.VIEW.MEASURES(),
+    CONTAINSSTRING([Expression], "CALCULATE")
+)</code></pre>
+            </div>
+          </div>
+
+          <div class="note note--tip">
+            <strong>💡 Tip</strong><br>
+            La columna [State] = 'Ready' indica que la medida es válida y está compilada correctamente. Si ves alguna con otro estado, ¡tienes una medida rota en tu modelo que quizás no sabías que existía! INFO.VIEW.MEASURES es fantástica para hacer auditorías de calidad.
+          </div>
+        </section>
+
+        <!-- SECCIÓN 4: INFO.VIEW.RELATIONSHIPS -->
+        <section id="info-view-relationships">
+          <div class="category-header">
+            <span class="category-header__icon">🔗</span>
+            <h2 class="category-header__title">INFO.VIEW.RELATIONSHIPS — todas las relaciones del modelo</h2>
+          </div>
+
+          <div class="function-card">
+            <div class="function-card__name">INFO.VIEW.RELATIONSHIPS()</div>
+            <div class="function-card__level">Intermedio</div>
+            <div class="function-card__description">
+              Devuelve una tabla con información sobre cada relación del modelo: tablas y columnas que conecta, cardinalidad, dirección de filtro cruzado y si está activa.
+            </div>
+
+            <h4>Columnas que devuelve:</h4>
+            <table class="function-table">
+              <thead>
+                <tr>
+                  <th>COLUMNA</th>
+                  <th>TIPO</th>
+                  <th>DESCRIPCIÓN</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>[FromTableName]</td>
+                  <td>Texto</td>
+                  <td>Tabla del lado "muchos" (tabla de hechos)</td>
+                </tr>
+                <tr>
+                  <td>[FromColumnName]</td>
+                  <td>Texto</td>
+                  <td>Columna de la tabla muchos</td>
+                </tr>
+                <tr>
+                  <td>[ToTableName]</td>
+                  <td>Texto</td>
+                  <td>Tabla del lado "uno" (tabla de dimensión)</td>
+                </tr>
+                <tr>
+                  <td>[ToColumnName]</td>
+                  <td>Texto</td>
+                  <td>Columna de la tabla uno</td>
+                </tr>
+                <tr>
+                  <td>[CrossFilteringBehavior]</td>
+                  <td>Texto</td>
+                  <td>"OneDirection", "BothDirections", "Automatic"</td>
+                </tr>
+                <tr>
+                  <td>[IsActive]</td>
+                  <td>Booleano</td>
+                  <td>TRUE si la relación está activa</td>
+                </tr>
+                <tr>
+                  <td>[Cardinality]</td>
+                  <td>Texto</td>
+                  <td>"ManyToOne", "OneToOne", "ManyToMany"</td>
+                </tr>
+                <tr>
+                  <td>[RelyOnReferentialIntegrity]</td>
+                  <td>Booleano</td>
+                  <td>TRUE si asume integridad referencial</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <h4>Ejemplos:</h4>
+            <div class="code-block">
+              <button class="code-block__copy">Copiar</button>
+              <pre><code class="language-dax">// Ver todas las relaciones del modelo:
+EVALUATE INFO.VIEW.RELATIONSHIPS()
+
+// Solo relaciones activas:
+EVALUATE
+FILTER(
+    INFO.VIEW.RELATIONSHIPS(),
+    [IsActive] = TRUE
+)
+
+// Tabla calculada con el diagrama de relaciones en texto:
+Doc_Relaciones =
+ADDCOLUMNS(
+    INFO.VIEW.RELATIONSHIPS(),
+    "Relación", [FromTableName] & "[" & [FromColumnName] & "] → "
+              & [ToTableName] & "[" & [ToColumnName] & "]",
+    "Tipo", [Cardinality],
+    "Filtro", [CrossFilteringBehavior],
+    "Activa", IF([IsActive], "✅", "⚠️ Inactiva")
+)
+
+// Detectar relaciones bidireccionales (que pueden afectar rendimiento):
+Relaciones_Bidireccionales =
+FILTER(
+    INFO.VIEW.RELATIONSHIPS(),
+    [CrossFilteringBehavior] = "BothDirections"
+)</code></pre>
+            </div>
+          </div>
+
+          <div class="note note--warning">
+            <strong>⚠️ Alerta de rendimiento</strong><br>
+            Si tienes muchas relaciones con CrossFilteringBehavior = 'BothDirections', puede ser una señal de alerta de rendimiento. INFO.VIEW.RELATIONSHIPS te permite detectarlas todas de un vistazo y documentarlas.
+          </div>
+        </section>
+
+        <!-- SECCIÓN 5: INFO.* vs INFO.VIEW.* -->
+        <section id="info-vs-infoview">
+          <div class="category-header">
+            <span class="category-header__icon">⚙️</span>
+            <h2 class="category-header__title">La familia completa: INFO.VIEW.* vs INFO.*</h2>
+          </div>
+
+          <p>Además de las 4 funciones INFO.VIEW, DAX tiene más de 50 funciones INFO.* (sin VIEW) introducidas en diciembre de 2023. Estas son los equivalentes exactos de los DMVs (Dynamic Management Views) de Analysis Services, ahora disponibles como funciones DAX.</p>
+
+          <h3>Diferencias clave:</h3>
+          <table class="function-table">
+            <thead>
+              <tr>
+                <th>CARACTERÍSTICA</th>
+                <th>INFO.VIEW.*</th>
+                <th>INFO.*</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Disponible desde</td>
+                <td>Octubre 2024</td>
+                <td>Diciembre 2023</td>
+              </tr>
+              <tr>
+                <td>Uso en tablas calculadas</td>
+                <td>✅ Sí</td>
+                <td>❌ Solo DAX Query View</td>
+              </tr>
+              <tr>
+                <td>Nombres amigables</td>
+                <td>✅ Sí (TableName)</td>
+                <td>⚠️ A veces usa IDs</td>
+              </tr>
+              <tr>
+                <td>Funciones disponibles</td>
+                <td>4</td>
+                <td>50+</td>
+              </tr>
+              <tr>
+                <td>Para quién</td>
+                <td>Cualquier dev</td>
+                <td>Admins y power users</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h3>Las INFO.* más útiles para DAX Query View:</h3>
+          <div class="code-block">
+            <button class="code-block__copy">Copiar</button>
+            <pre><code class="language-dax">// Ver medidas (versión INFO sin VIEW — solo en DAX Query View):
+EVALUATE INFO.MEASURES()
+// Diferencia con INFO.VIEW.MEASURES(): usa TableID en lugar de
+// TableName — tienes que hacer un JOIN con INFO.TABLES() para obtener
+// el nombre legible
+
+// Las más usadas en DAX Query View:
+INFO.MEASURES()          -- medidas (con TableID, no nombre)
+INFO.COLUMNS()           -- columnas
+INFO.TABLES()            -- tablas
+INFO.RELATIONSHIPS()     -- relaciones
+INFO.PARTITIONS()        -- particiones
+INFO.HIERARCHIES()       -- jerarquías
+INFO.CALCULATIONGROUPS() -- grupos de cálculo
+INFO.CALCULATIONITEMS()  -- ítems de cálculo
+INFO.ROLES()             -- roles de seguridad RLS
+INFO.KPIS()              -- KPIs definidos en el modelo</code></pre>
+          </div>
+
+          <div class="note note--tip">
+            <strong>💡 Consejo</strong><br>
+            Para el trabajo del día a día, usa INFO.VIEW.* — son más simples y funcionan en tablas calculadas. Reserva INFO.* para consultas administrativas avanzadas en DAX Query View o DAX Studio.
+          </div>
+        </section>
+
+        <!-- SECCIÓN 6: Patrones -->
+        <section id="patrones">
+          <div class="category-header">
+            <span class="category-header__icon">🏆</span>
+            <h2 class="category-header__title">Patrones: auto-documentación del modelo</h2>
+          </div>
+
+          <h3>Patrón 1 — Página de documentación automática completa</h3>
+          <p>Crea una tabla calculada que combine las 4 funciones para tener una documentación automática del modelo completo.</p>
+
+          <div class="code-block">
+            <button class="code-block__copy">Copiar</button>
+            <pre><code class="language-dax">// Tabla calculada: diccionario completo de columnas con tipo
+Diccionario_Modelo =
+SELECTCOLUMNS(
+    FILTER(
+        INFO.VIEW.COLUMNS(),
+        NOT [IsHidden]
+    ),
+    "Tabla", [TableName],
+    "Campo", [Name],
+    "Tipo de dato", [DataType],
+    "Descripción", [Description],
+    "Es calculada", IF(NOT ISBLANK([Expression]), "Sí ⚙️", "No")
+)</code></pre>
+          </div>
+
+          <h3>Patrón 2 — Dashboard de calidad del modelo</h3>
+          <p>Estas medidas en un visual tipo scorecard dan una visión rápida del estado de documentación del modelo:</p>
+
+          <div class="code-block">
+            <button class="code-block__copy">Copiar</button>
+            <pre><code class="language-dax">Total Tablas = COUNTROWS(INFO.VIEW.TABLES())
+Total Columnas = COUNTROWS(INFO.VIEW.COLUMNS())
+Total Medidas = COUNTROWS(INFO.VIEW.MEASURES())
+Total Relaciones = COUNTROWS(INFO.VIEW.RELATIONSHIPS())
+
+Tablas sin descripción =
+COUNTROWS(FILTER(INFO.VIEW.TABLES(), ISBLANK([Description])))
+
+Medidas sin descripción =
+COUNTROWS(FILTER(INFO.VIEW.MEASURES(), ISBLANK([Description])))
+
+% Medidas documentadas =
+DIVIDE(
+    COUNTROWS(FILTER(INFO.VIEW.MEASURES(), NOT ISBLANK([Description]))),
+    [Total Medidas]
+)
+
+Medidas con error =
+COUNTROWS(FILTER(INFO.VIEW.MEASURES(), [State] <> "Ready"))</code></pre>
+          </div>
+
+          <h3>Patrón 3 — Exportar documentación a Excel</h3>
+          <p>En DAX Query View, puedes ejecutar esta query y copiar los resultados directamente a Excel con el botón Copiar:</p>
+
+          <div class="code-block">
+            <button class="code-block__copy">Copiar</button>
+            <pre><code class="language-dax">EVALUATE
+ADDCOLUMNS(
+    SELECTCOLUMNS(
+        INFO.VIEW.MEASURES(),
+        "Tabla", [Table],
+        "Medida", [Name],
+        "Descripción", [Description],
+        "Fórmula", [Expression],
+        "Formato", [FormatString]
+    ),
+    "Modelo", "Mi Modelo Power BI",
+    "Fecha exportación", FORMAT(NOW(), "DD/MM/YYYY HH:MM")
+)
+ORDER BY [Tabla], [Medida]</code></pre>
+          </div>
+
+          <div class="note note--next">
+            <strong>🚀 Siguiente paso</strong><br>
+            ¡Con INFO.VIEW ya puedes crear modelos que se documentan solos! Es una de las funcionalidades más prácticas de DAX para proyectos en equipo. Añade descripciones a tus tablas, columnas y medidas desde hoy — futuras tú y tu equipo os lo agradeceréis. 🌸🚀
+          </div>
+        </section>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- Footer (cargado dinámicamente) -->
+  <div id="main-footer"></div>
+
+  <!-- Botón volver arriba -->
+  <button id="back-to-top" class="btn-back-to-top" aria-label="Volver arriba">↑</button>
+
+  <!-- Scripts -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+  <script src="../../assets/js/theme.js"></script>
+  <script src="../../assets/js/main.js"></script>
+
+  <!-- Buscador DAX -->
+  <script src="../../assets/js/dax-search.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Auto-inicializar todos los widgets con data-dax-search="true"
+      if (window.daxSearch) {
+        window.daxSearch.initAll({
+          baseUrl: '../'  // estamos en topics/dax/, las URLs deben ir a topics/dax/...
+        });
+      }
+    });
+  </script>
+  <script src="../../assets/js/cursor.js"></script>
+</body>
+</html>

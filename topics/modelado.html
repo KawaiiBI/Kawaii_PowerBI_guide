@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Guía completa de modelado de datos en Power BI: esquema estrella, relaciones, tablas de fechas, RLS, optimización de rendimiento y patrones avanzados">
+  <title>Modelado de Datos — Fundamentos y Mejores Prácticas | Power BI Guide by Kawaii BI</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+
+  <!-- Estilos CSS -->
+  <link rel="stylesheet" href="../assets/css/main.css">
+  <link rel="stylesheet" href="../assets/css/themes.css">
+  <link rel="stylesheet" href="../assets/css/components.css">
+  <link rel="stylesheet" href="../assets/css/layout.css">
+
+  <style>
+    /* Topic header — estilo caja (igual que dax.html y lenguaje-m.html) */
+    .topic-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 1.25rem;
+      margin-bottom: 2rem;
+      padding: 1.75rem;
+      background: var(--color-rose);
+      border-radius: var(--border-radius);
+      border: 1.5px solid var(--color-mauve);
+    }
+
+    .topic-header__icon {
+      font-size: 3rem;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+
+    .topic-header__title {
+      font-size: 1.875rem;
+      font-weight: 700;
+      margin-bottom: 0.25rem;
+    }
+
+    .topic-header__subtitle {
+      color: var(--color-slate);
+      font-size: 0.9375rem;
+      margin-bottom: 0.75rem;
+      line-height: 1.6;
+    }
+
+    .topic-header__levels {
+      display: flex;
+      gap: 0.375rem;
+      flex-wrap: wrap;
+    }
+
+    /* Sección intro con gradiente (igual que .dax-intro y .m-intro) */
+    .modelado-intro {
+      background: linear-gradient(135deg, var(--color-rose) 0%, var(--color-blush) 100%);
+      border-radius: var(--border-radius);
+      padding: 2rem;
+      margin-bottom: 2.5rem;
+      border: 1.5px solid var(--color-mauve);
+    }
+
+    .modelado-intro__title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    .modelado-intro__text {
+      color: var(--color-slate);
+      font-size: 0.9375rem;
+      line-height: 1.7;
+    }
+
+    .modelado-intro__stats {
+      display: flex;
+      gap: 1.5rem;
+      margin-top: 1.25rem;
+      flex-wrap: wrap;
+    }
+
+    .modelado-intro__stat {
+      background: var(--color-white);
+      border-radius: var(--border-radius-sm);
+      padding: 0.625rem 1rem;
+      border: 1px solid var(--color-mauve);
+      font-size: 0.875rem;
+    }
+
+    .modelado-intro__stat strong {
+      color: var(--color-coral);
+      font-size: 1.125rem;
+      display: block;
+    }
+
+    /* Grid de categorías (igual que dax.html) */
+    .category-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.25rem;
+      margin-top: 1.5rem;
+    }
+
+    .category-card {
+      background: var(--color-white);
+      border: 1.5px solid var(--color-mauve);
+      border-radius: var(--border-radius);
+      padding: 1.25rem 1.5rem;
+      text-decoration: none;
+      color: inherit;
+      transition: var(--transition);
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .category-card:hover {
+      border-color: var(--color-coral);
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-md);
+      text-decoration: none;
+    }
+
+    .category-card__header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .category-card__icon {
+      font-size: 1.75rem;
+      line-height: 1;
+    }
+
+    .category-card__name {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--color-dark);
+    }
+
+    .category-card__desc {
+      font-size: 0.8125rem;
+      color: var(--color-slate);
+      line-height: 1.5;
+    }
+
+    .category-card__levels {
+      display: flex;
+      gap: 0.375rem;
+      margin-top: 0.25rem;
+    }
+
+    /* Tema oscuro */
+    .dark-theme .topic-header,
+    .dark-theme .modelado-intro {
+      background: var(--color-rose);
+      border-color: var(--color-mauve);
+    }
+
+    .dark-theme .modelado-intro {
+      background: linear-gradient(135deg, var(--color-rose) 0%, var(--color-blush) 100%);
+    }
+
+    .dark-theme .category-card {
+      background: var(--color-white);
+      border-color: var(--color-mauve);
+    }
+
+    .dark-theme .modelado-intro__stat {
+      background: var(--color-white);
+      border-color: var(--color-mauve);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- SIDEBAR: Navegación principal -->
+  <aside class="site-sidebar">
+
+    <!-- Avatar y nombre -->
+    <div class="site-sidebar__profile">
+      <img src="../assets/images/avatar Sara.png" alt="Sara Lozano Martí" class="site-sidebar__avatar" />
+      <p class="site-sidebar__name">Sara Lozano Martí</p>
+      <p class="site-sidebar__subtitle">Power BI Expert</p>
+    </div>
+
+    <!-- Navegación principal -->
+    <nav class="site-sidebar__nav" aria-label="Navegación principal">
+      <ul>
+        <li><a href="../index.html" class="site-sidebar__link">
+          <span class="site-sidebar__icon">🏠</span> Inicio
+        </a></li>
+
+        <li><a href="dax.html" class="site-sidebar__link">
+          <span class="site-sidebar__icon">⚡</span> Funciones DAX
+        </a></li>
+
+        <li><a href="power-query.html" class="site-sidebar__link">
+          <span class="site-sidebar__icon">🔄</span> Power Query
+        </a></li>
+
+        <li><a href="lenguaje-m.html" class="site-sidebar__link">
+          <span class="site-sidebar__icon">〽️</span> Lenguaje M
+        </a></li>
+
+        <li><a href="modelado.html" class="site-sidebar__link is-active">
+          <span class="site-sidebar__icon">🗄️</span> Modelado
+        </a></li>
+
+        <li><a href="conceptos-powerbi.html" class="site-sidebar__link">
+          <span class="site-sidebar__icon">📊</span> Conceptos Power BI
+        </a></li>
+
+        <li><a href="fabric.html" class="site-sidebar__link">
+          <span class="site-sidebar__icon">🧵</span> Microsoft Fabric
+        </a></li>
+
+        <li><a href="tmdl.html" class="site-sidebar__link">
+          <span class="site-sidebar__icon">📝</span> TMDL
+        </a></li>
+
+        <li><a href="diseno-ux.html" class="site-sidebar__link">
+          <span class="site-sidebar__icon">🎨</span> Diseño y UX
+        </a></li>
+
+        <li><a href="gobernanza.html" class="site-sidebar__link">
+          <span class="site-sidebar__icon">🔒</span> Gobernanza
+        </a></li>
+      </ul>
+    </nav>
+
+    <!-- Separador -->
+    <div class="site-sidebar__divider"></div>
+
+    <!-- Footer del sidebar -->
+    <div class="site-sidebar__footer">
+      <a href="../quien-soy.html" class="site-sidebar__link site-sidebar__link--highlight">
+        <span class="site-sidebar__icon">👩‍💻</span> ¿Quién soy?
+      </a>
+
+      <div class="site-sidebar__social">
+        <a href="https://www.linkedin.com/in/saralozanomarti" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+          <img src="../assets/images/logo linkedIN.png" alt="LinkedIn" class="site-sidebar__social-icon" />
+        </a>
+        <a href="https://www.youtube.com/@KawaiiPowerBI" target="_blank" rel="noopener noreferrer" aria-label="YouTube">
+          <img src="../assets/images/logo youtube.png" alt="YouTube" class="site-sidebar__social-icon" />
+        </a>
+        <a href="https://github.com/KawaiiBI" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
+          <img src="../assets/images/logo github.png" alt="GitHub" class="site-sidebar__social-icon" />
+        </a>
+      </div>
+
+      <div class="site-sidebar__logo-bottom">
+        <img src="../assets/images/Logo Kawaii.jpg" alt="Kawaii BI" class="site-sidebar__logo-img" />
+      </div>
+
+      <p class="site-sidebar__copyright">
+        Power BI Guide 🌸<br>
+        © 2026 Kawaii BI
+      </p>
+    </div>
+
+  </aside>
+
+  <!-- CONTENEDOR DEL CONTENIDO -->
+  <div class="page-wrapper">
+    <main class="main-content">
+      <div class="topic-page">
+
+        <!-- Breadcrumb -->
+        <nav class="breadcrumb" aria-label="Ruta de navegación">
+          <span class="breadcrumb__item"><a href="../index.html">🏠 Inicio</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item">Modelado de Datos</span>
+        </nav>
+
+        <!-- Cabecera del topic -->
+        <div class="topic-header">
+          <div class="topic-header__icon">🏗️</div>
+          <div>
+            <h1 class="topic-header__title">Modelado de Datos en Power BI</h1>
+            <p class="topic-header__subtitle">Aprende a crear modelos de datos eficientes, escalables y mantenibles — desde esquemas estrella hasta relaciones avanzadas, RLS y optimización de rendimiento</p>
+            <div class="topic-header__levels">
+              <span class="badge badge--beginner">Principiante</span>
+              <span class="badge badge--intermediate">Intermedio</span>
+              <span class="badge badge--advanced">Avanzado</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Introducción -->
+        <div class="modelado-intro">
+          <h2 class="modelado-intro__title">¿Por dónde empezamos? 🌸</h2>
+          <p class="modelado-intro__text">
+            El <strong>modelado de datos</strong> es el corazón de cualquier solución Power BI. Un buen modelo
+            determina el rendimiento, la escalabilidad y la facilidad de mantenimiento de tus informes.
+            Piensa en él como los cimientos de una casa 🏠: si son sólidos, todo lo demás (DAX, visuals,
+            interactividad) funciona perfectamente. Si están mal, nada más importa.
+          </p>
+          <p class="modelado-intro__text" style="margin-top: 0.75rem;">
+            El 80% de los problemas de rendimiento en Power BI vienen de un modelo mal diseñado, no de
+            DAX complejo ni de visuals pesados. Cada tema de esta guía incluye explicaciones paso a paso,
+            ejemplos reales y las mejores prácticas del mundo profesional. 🚀
+          </p>
+          <div class="modelado-intro__stats">
+            <div class="modelado-intro__stat"><strong>16</strong>temas cubiertos</div>
+            <div class="modelado-intro__stat"><strong>3</strong>niveles de dificultad</div>
+            <div class="modelado-intro__stat"><strong>⭐</strong>Esquema estrella</div>
+            <div class="modelado-intro__stat"><strong>🔒</strong>RLS incluido</div>
+          </div>
+        </div>
+
+        <!-- Grid de categorías -->
+        <h2 class="section-title">Explora por tema 📚</h2>
+        <div class="category-grid">
+
+          <!-- 1. Fundamentos del Modelado -->
+          <a href="modelado/fundamentos.html" class="category-card">
+            <div class="category-card__header">
+              <span class="category-card__icon">📐</span>
+              <span class="category-card__name">Fundamentos del Modelado</span>
+            </div>
+            <p class="category-card__desc">Tablas de hechos y dimensiones, cardinalidad, granularidad, normalización y los conceptos que todo profesional Power BI debe dominar.</p>
+            <div class="category-card__levels">
+              <span class="badge badge--beginner">Principiante</span>
+            </div>
+          </a>
+
+          <!-- 2. Relaciones entre Tablas -->
+          <a href="modelado/relaciones.html" class="category-card">
+            <div class="category-card__header">
+              <span class="category-card__icon">🔗</span>
+              <span class="category-card__name">Relaciones entre Tablas</span>
+            </div>
+            <p class="category-card__desc">Tipos de relaciones (1:N, 1:1, N:N), dirección de filtro, bidireccionalidad, relaciones activas e inactivas y cuándo usar cada una.</p>
+            <div class="category-card__levels">
+              <span class="badge badge--beginner">Principiante</span>
+              <span class="badge badge--intermediate">Intermedio</span>
+            </div>
+          </a>
+
+          <!-- 3. Tablas de Fechas -->
+          <a href="modelado/tablas-fechas.html" class="category-card">
+            <div class="category-card__header">
+              <span class="category-card__icon">📅</span>
+              <span class="category-card__name">Tablas de Fechas</span>
+            </div>
+            <p class="category-card__desc">Cómo crear y optimizar tablas calendario, inteligencia de tiempo, calendarios fiscales vs naturales y múltiples calendarios en el mismo modelo.</p>
+            <div class="category-card__levels">
+              <span class="badge badge--beginner">Principiante</span>
+              <span class="badge badge--intermediate">Intermedio</span>
+            </div>
+          </a>
+
+          <!-- 4. Esquema Estrella -->
+          <a href="modelado/esquema-estrella.html" class="category-card">
+            <div class="category-card__header">
+              <span class="category-card__icon">⭐</span>
+              <span class="category-card__name">Esquema Estrella</span>
+            </div>
+            <p class="category-card__desc">El patrón gold standard para Power BI. Cuándo usarlo, cómo implementarlo y por qué es superior al esquema copo de nieve en la mayoría de casos.</p>
+            <div class="category-card__levels">
+              <span class="badge badge--intermediate">Intermedio</span>
+            </div>
+          </a>
+
+          <!-- 5. Esquema Copo de Nieve -->
+          <a href="modelado/snowflake-schema.html" class="category-card">
+            <div class="category-card__header">
+              <span class="category-card__icon">❄️</span>
+              <span class="category-card__name">Esquema Copo de Nieve (Snowflake Schema)</span>
+            </div>
+            <p class="category-card__desc">Star schema normalizado. Dimensiones divididas en sub-dimensiones. Por qué raramente lo usarás en Power BI y cuándo tiene sentido considerarlo.</p>
+            <div class="category-card__levels">
+              <span class="badge badge--intermediate">Intermedio</span>
+            </div>
+          </a>
+
+          <!-- 6. Bus Matrix de Kimball -->
+          <a href="modelado/kimball-bus-matrix.html" class="category-card">
+            <div class="category-card__header">
+              <span class="category-card__icon">🚌</span>
+              <span class="category-card__name">Bus Matrix de Kimball</span>
+            </div>
+            <p class="category-card__desc">La herramienta de planificación de Ralph Kimball para Data Warehouses. Dimensiones conformadas, procesos de negocio, y cómo planificar un DW escalable.</p>
+            <div class="category-card__levels">
+              <span class="badge badge--advanced">Avanzado</span>
+            </div>
+          </a>
+
+          <!-- 7. Tablas Calculadas -->
+          <a href="modelado/tablas-calculadas.html" class="category-card">
+            <div class="category-card__header">
+              <span class="category-card__icon">🧮</span>
+              <span class="category-card__name">Tablas Calculadas</span>
+            </div>
+            <p class="category-card__desc">Cuándo crear tablas con DAX, patrones comunes (tablas de desconexión, parámetros what-if) y cuándo evitarlas por impacto en rendimiento.</p>
+            <div class="category-card__levels">
+              <span class="badge badge--intermediate">Intermedio</span>
+              <span class="badge badge--advanced">Avanzado</span>
+            </div>
+          </a>
+
+          <!-- 6. Columnas Calculadas vs Medidas -->
+          <a href="modelado/columnas-vs-medidas.html" class="category-card">
+            <div class="category-card__header">
+              <span class="category-card__icon">⚖️</span>
+              <span class="category-card__name">Columnas Calculadas vs Medidas</span>
+            </div>
+            <p class="category-card__desc">Diferencias fundamentales entre columnas calculadas y medidas DAX, impacto en rendimiento y memoria, y los errores más frecuentes de principiantes.</p>
+            <div class="category-card__levels">
+              <span class="badge badge--beginner">Principiante</span>
+            </div>
+          </a>
+
+          <!-- 9. Normalización vs Desnormalización -->
+          <a href="modelado/normalizacion.html" class="category-card">
+            <div class="category-card__header">
+              <span class="category-card__icon">⚖️</span>
+              <span class="category-card__name">Normalización vs Desnormalización</span>
+            </div>
+            <p class="category-card__desc">Cuándo normalizar (Data Warehouse) vs desnormalizar (BI). Trade-offs entre almacenamiento, rendimiento y simplicidad. Guía práctica para decidir.</p>
+            <div class="category-card__levels">
+              <span class="badge badge--intermediate">Intermedio</span>
+            </div>
+          </a>
+
+          <!-- 10. Optimización de Rendimiento -->
+          <a href="modelado/optimizacion.html" class="category-card">
+            <div class="category-card__header">
+              <span class="category-card__icon">⚡</span>
+              <span class="category-card__name">Optimización de Rendimiento</span>
+            </div>
+            <p class="category-card__desc">Técnicas para modelos más rápidos: reducción de cardinalidad, desnormalización estratégica, columnas innecesarias y análisis con Performance Analyzer.</p>
+            <div class="category-card__levels">
+              <span class="badge badge--advanced">Avanzado</span>
+            </div>
+          </a>
+
+          <!-- 8. Agregaciones -->
+          <a href="modelado/agregaciones.html" class="category-card">
+            <div class="category-card__header">
+              <span class="category-card__icon">📈</span>
+              <span class="category-card__name">Agregaciones</span>
+            </div>
+            <p class="category-card__desc">Tablas de agregación para modelos con millones de filas, configuración de precedencia de consultas y mejoras masivas de rendimiento en DirectQuery.</p>
+            <div class="category-card__levels">
+              <span class="badge badge--advanced">Avanzado</span>
+            </div>
+          </a>
+
+          <!-- 9. Modelos Compuestos -->
+          <a href="modelado/modelos-compuestos.html" class="category-card">
+            <div class="category-card__header">
+              <span class="category-card__icon">🔀</span>
+              <span class="category-card__name">Modelos Compuestos</span>
+            </div>
+            <p class="category-card__desc">Combinar DirectQuery + Import, modos de almacenamiento mixtos, islas de datos y cuándo necesitas esta arquitectura avanzada en proyectos reales.</p>
+            <div class="category-card__levels">
+              <span class="badge badge--advanced">Avanzado</span>
+            </div>
+          </a>
+
+          <!-- 13. Tablas Puente -->
+          <a href="modelado/tablas-puente.html" class="category-card">
+            <div class="category-card__header">
+              <span class="category-card__icon">🌉</span>
+              <span class="category-card__name">Tablas Puente (Bridge Tables)</span>
+            </div>
+            <p class="category-card__desc">Resolver relaciones muchos a muchos correctamente. Tablas puente entre dimensiones y hechos. Casos de uso: productos multi-categoría, empleados multi-rol.</p>
+            <div class="category-card__levels">
+              <span class="badge badge--advanced">Avanzado</span>
+            </div>
+          </a>
+
+          <!-- 14. Seguridad a Nivel de Fila (RLS) -->
+          <a href="modelado/rls.html" class="category-card">
+            <div class="category-card__header">
+              <span class="category-card__icon">🔒</span>
+              <span class="category-card__name">Seguridad a Nivel de Fila (RLS)</span>
+            </div>
+            <p class="category-card__desc">Implementar Row-Level Security estático y dinámico, roles DAX, patrones con USERNAME() y USERPRINCIPALNAME(), y cómo probarlo antes de publicar.</p>
+            <div class="category-card__levels">
+              <span class="badge badge--intermediate">Intermedio</span>
+              <span class="badge badge--advanced">Avanzado</span>
+            </div>
+          </a>
+
+          <!-- 11. Patrones Avanzados -->
+          <a href="modelado/patrones-avanzados.html" class="category-card">
+            <div class="category-card__header">
+              <span class="category-card__icon">🎯</span>
+              <span class="category-card__name">Patrones Avanzados</span>
+            </div>
+            <p class="category-card__desc">Role-playing dimensions, slowly changing dimensions (SCD), snapshots, factless fact tables, Many-to-Many con bridge tables y otros patrones profesionales.</p>
+            <div class="category-card__levels">
+              <span class="badge badge--advanced">Avanzado</span>
+            </div>
+          </a>
+
+          <!-- 12. Errores Comunes -->
+          <a href="modelado/errores-comunes.html" class="category-card">
+            <div class="category-card__header">
+              <span class="category-card__icon">⚠️</span>
+              <span class="category-card__name">Errores Comunes</span>
+            </div>
+            <p class="category-card__desc">Los 10 errores más frecuentes en modelado Power BI: relaciones bidireccionales innecesarias, cardinalidad alta, tablas desnormalizadas y más.</p>
+            <div class="category-card__levels">
+              <span class="badge badge--beginner">Principiante</span>
+              <span class="badge badge--intermediate">Intermedio</span>
+            </div>
+          </a>
+
+        </div>
+
+        <!-- Nota de uso -->
+        <div class="note note--tip" style="margin-top: 2rem;">
+          <strong>💡 ¿Por dónde empezar?</strong>
+          <p>Si eres nueva en modelado, comienza por <a href="modelado/fundamentos.html">Fundamentos</a> y <a href="modelado/columnas-vs-medidas.html">Columnas vs Medidas</a>. El siguiente paso fundamental es entender el <a href="modelado/esquema-estrella.html">Esquema Estrella</a> — el patrón que usarás en el 90% de tus proyectos. Para proyectos profesionales, domina <a href="modelado/rls.html">RLS</a> y <a href="modelado/optimizacion.html">Optimización de Rendimiento</a>. 🚀</p>
+        </div>
+
+        <!-- Nota enlace a DAX -->
+        <div class="note note--next" style="margin-top: 1.5rem;">
+          <strong>🚀 Siguiente nivel</strong>
+          <p>Después de dominar el modelado, las <a href="dax.html">funciones DAX</a> cobran todo su sentido — porque un buen DAX <em>solo funciona bien</em> sobre un modelo bien diseñado.</p>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- Botón volver arriba -->
+  <button id="back-to-top" class="back-to-top" aria-label="Volver arriba" title="Volver arriba">↑</button>
+
+  <!-- SCRIPTS -->
+  <script src="https://cdn.jsdelivr.net/npm/i18next@23/dist/umd/i18next.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1/prism.min.js"></script>
+
+  <script src="../assets/js/theme.js"></script>
+  <script src="../assets/js/main.js"></script>
+  <script src="../assets/js/cursor.js"></script>
+</body>
+</html>

@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Patrones avanzados de modelado en Power BI: role-playing dimensions, slowly changing dimensions (SCD), snapshots, factless fact tables y bridge tables para Many-to-Many.">
+  <title>Patrones Avanzados — Modelado de Datos | Power BI Guide by Kawaii BI</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/prismjs@1/themes/prism-okaidia.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="../../assets/css/main.css">
+  <link rel="stylesheet" href="../../assets/css/themes.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/layout.css">
+
+  <style>
+    .topic-header { text-align: center; padding: 2.5rem 0 2rem; border-bottom: 2px solid var(--color-mauve); margin-bottom: 2.5rem; }
+    .topic-header__icon { font-size: 4rem; margin-bottom: 0.75rem; display: block; }
+    .topic-header__title { font-size: clamp(1.875rem, 4vw, 2.5rem); font-weight: 800; color: var(--color-dark); margin-bottom: 0.625rem; line-height: 1.2; }
+    .topic-header__subtitle { font-size: 1.0625rem; color: var(--color-slate); margin-bottom: 1.25rem; line-height: 1.5; max-width: 600px; margin-left: auto; margin-right: auto; }
+    .topic-header__levels { display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap; align-items: center; }
+    .category-header { display: flex; align-items: center; gap: 0.75rem; margin: 2.5rem 0 1.25rem; padding: 0.875rem 1.25rem; background: var(--color-rose); border-radius: var(--border-radius-sm); border-left: 4px solid var(--color-coral); }
+    .category-header__icon { font-size: 1.5rem; }
+    .category-header__title { font-size: 1.25rem; font-weight: 700; margin: 0; }
+    .concept-card { background: var(--color-white); border: 1.5px solid var(--color-mauve); border-radius: var(--border-radius); padding: 1.75rem; margin-bottom: 1.5rem; scroll-margin-top: 80px; transition: border-color 0.2s; }
+    .concept-card:hover { border-color: var(--color-coral); }
+    .concept-card h3 { font-size: 1.25rem; font-weight: 700; color: var(--color-coral); margin-bottom: 0.75rem; }
+    .concept-card h4 { font-size: 0.9375rem; font-weight: 700; color: var(--color-dark); margin: 1.25rem 0 0.5rem; }
+    .concept-card p { font-size: 0.9375rem; line-height: 1.7; color: var(--color-dark); margin-bottom: 0.75rem; }
+    .concept-card ul { padding-left: 1.25rem; font-size: 0.9375rem; line-height: 1.8; color: var(--color-dark); }
+    .concept-card code { background: var(--color-blush); padding: 0.1em 0.4em; border-radius: 4px; font-family: 'Fira Code', monospace; font-size: 0.85em; color: var(--color-coral); }
+    .toc { background: var(--color-rose); border-radius: var(--border-radius); padding: 1.25rem 1.5rem; margin-bottom: 2rem; border: 1.5px solid var(--color-mauve); }
+    .toc__title { font-size: 1rem; font-weight: 700; margin: 0 0 0.75rem; }
+    .toc__list { display: flex; flex-wrap: wrap; gap: 0.5rem; list-style: none; padding: 0; margin: 0; }
+    .toc__list a { font-size: 0.8125rem; color: var(--color-coral); text-decoration: none; padding: 0.25rem 0.625rem; background: var(--color-white); border-radius: 999px; border: 1px solid var(--color-mauve); transition: background 0.15s, color 0.15s; }
+    .toc__list a:hover { background: var(--color-coral); color: white; }
+  </style>
+</head>
+<body>
+
+  <aside class="site-sidebar">
+    <div class="site-sidebar__profile">
+      <img src="../../assets/images/avatar Sara.png" alt="Sara Lozano Martí" class="site-sidebar__avatar">
+      <p class="site-sidebar__name">Sara Lozano Martí</p>
+      <p class="site-sidebar__subtitle">Power BI Expert</p>
+    </div>
+    <nav class="site-sidebar__nav" aria-label="Navegación principal">
+      <ul>
+        <li><a href="../../index.html" class="site-sidebar__link"><span class="site-sidebar__icon">🏠</span> Inicio</a></li>
+        <li><a href="../dax.html" class="site-sidebar__link"><span class="site-sidebar__icon">⚡</span> Funciones DAX</a></li>
+        <li><a href="../power-query.html" class="site-sidebar__link"><span class="site-sidebar__icon">🔄</span> Power Query</a></li>
+        <li><a href="../lenguaje-m.html" class="site-sidebar__link"><span class="site-sidebar__icon">〽️</span> Lenguaje M</a></li>
+        <li><a href="../modelado.html" class="site-sidebar__link is-active"><span class="site-sidebar__icon">🗄️</span> Modelado</a></li>
+        <li><a href="../conceptos-powerbi.html" class="site-sidebar__link"><span class="site-sidebar__icon">📊</span> Conceptos Power BI</a></li>
+        <li><a href="../fabric.html" class="site-sidebar__link"><span class="site-sidebar__icon">🧵</span> Microsoft Fabric</a></li>
+        <li><a href="../tmdl.html" class="site-sidebar__link"><span class="site-sidebar__icon">📝</span> TMDL</a></li>
+        <li><a href="../diseno-ux.html" class="site-sidebar__link"><span class="site-sidebar__icon">🎨</span> Diseño y UX</a></li>
+        <li><a href="../gobernanza.html" class="site-sidebar__link"><span class="site-sidebar__icon">🔒</span> Gobernanza</a></li>
+      </ul>
+    </nav>
+    <div class="site-sidebar__divider"></div>
+    <div class="site-sidebar__footer">
+      <a href="../../quien-soy.html" class="site-sidebar__link site-sidebar__link--highlight"><span class="site-sidebar__icon">👩‍💻</span> ¿Quién soy?</a>
+      <div class="site-sidebar__social">
+        <a href="https://www.linkedin.com/in/saralozanomarti" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><img src="../../assets/images/logo linkedIN.png" alt="LinkedIn" class="site-sidebar__social-icon"></a>
+        <a href="https://www.youtube.com/@KawaiiPowerBI" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><img src="../../assets/images/logo youtube.png" alt="YouTube" class="site-sidebar__social-icon"></a>
+        <a href="https://github.com/KawaiiBI" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><img src="../../assets/images/logo github.png" alt="GitHub" class="site-sidebar__social-icon"></a>
+      </div>
+      <div class="site-sidebar__logo-bottom"><img src="../../assets/images/Logo Kawaii.jpg" alt="Kawaii BI" class="site-sidebar__logo-img"></div>
+      <p class="site-sidebar__copyright">Power BI Guide 🌸<br>© 2026 Kawaii BI</p>
+    </div>
+  </aside>
+
+  <div class="page-wrapper">
+    <main class="main-content">
+      <div class="topic-page">
+
+        <nav class="breadcrumb" aria-label="Ruta de navegación">
+          <span class="breadcrumb__item"><a href="../../index.html">🏠 Inicio</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item"><a href="../modelado.html">Modelado de Datos</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item">Patrones Avanzados</span>
+        </nav>
+
+        <header class="topic-header">
+          <span class="topic-header__icon">🎯</span>
+          <h1 class="topic-header__title">Patrones Avanzados de Modelado</h1>
+          <p class="topic-header__subtitle">Role-playing dimensions, SCD, snapshots, factless fact tables y bridge tables — los patrones que marcan la diferencia en proyectos Power BI empresariales</p>
+          <div class="topic-header__levels">
+            <span class="badge badge--advanced">Avanzado</span>
+          </div>
+        </header>
+
+        <nav class="toc" aria-label="Índice de contenidos">
+          <p class="toc__title">📌 En esta página:</p>
+          <ul class="toc__list">
+            <li><a href="#role-playing">Role-Playing Dimensions</a></li>
+            <li><a href="#scd">Slowly Changing Dimensions</a></li>
+            <li><a href="#snapshots">Snapshots</a></li>
+            <li><a href="#factless">Factless Fact Tables</a></li>
+            <li><a href="#bridge">Bridge Tables (M:N)</a></li>
+          </ul>
+        </nav>
+
+        <div class="category-header" id="role-playing">
+          <span class="category-header__icon">🎭</span>
+          <h2 class="category-header__title">Role-Playing Dimensions</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>Una dimensión usada en múltiples contextos</h3>
+          <p>Una <strong>role-playing dimension</strong> es cuando la misma tabla de dimensión se usa múltiples veces en el modelo, cada vez en un "rol" diferente. El caso más común es <code>DimFecha</code> relacionada con múltiples columnas de fecha de una tabla de hechos.</p>
+
+          <h4>Ejemplo: tres fechas en FactVentas</h4>
+          <pre><code class="language-javascript">// FactVentas tiene tres columnas de fecha:
+FactVentas[FechaPedido]   → DimFecha (relación ACTIVA)
+FactVentas[FechaEnvio]    → DimFecha (relación inactiva)
+FactVentas[FechaEntrega]  → DimFecha (relación inactiva)
+
+// Solo UNA relación puede estar activa por par de tablas.
+// Las otras se activan con USERELATIONSHIP en DAX:
+
+Ventas por Fecha Envio =
+CALCULATE(
+    SUM(FactVentas[Importe]),
+    USERELATIONSHIP(FactVentas[FechaEnvio], DimFecha[Fecha])
+)
+
+Ventas por Fecha Entrega =
+CALCULATE(
+    SUM(FactVentas[Importe]),
+    USERELATIONSHIP(FactVentas[FechaEntrega], DimFecha[Fecha])
+)</code></pre>
+
+          <h4>Alternativa: copias de DimFecha</h4>
+          <p>En lugar de relaciones inactivas, puedes crear copias de DimFecha con nombres distintos (DimFechaPedido, DimFechaEnvio, DimFechaEntrega) — cada una con una relación activa. Ventaja: DAX más simple, sin USERELATIONSHIP. Desventaja: el modelo ocupa más memoria con tablas duplicadas.</p>
+        </article>
+
+        <div class="category-header" id="scd">
+          <span class="category-header__icon">⏳</span>
+          <h2 class="category-header__title">Slowly Changing Dimensions (SCD)</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>¿Qué pasa cuando los atributos de una dimensión cambian?</h3>
+          <p>Los <strong>Slowly Changing Dimensions (SCD)</strong> son dimensiones cuyos atributos cambian con el tiempo. Ejemplo: un cliente cambia de región, un producto cambia de categoría, un empleado cambia de departamento. ¿Cómo tratas el histórico?</p>
+
+          <h4>SCD Tipo 1 — Sobreescribir (el más simple)</h4>
+          <pre><code class="language-javascript">// Simplemente actualizas el valor actual.
+// No hay histórico — solo el estado actual.
+DimCliente:
+IDCliente | Nombre | Region
+1042      | Ana    | Sur    ← era "Norte", ahora es "Sur"
+
+// Útil cuando no importa el histórico.
+// Ejemplo: corrección de errores de datos, cambios sin impacto analítico.</code></pre>
+
+          <h4>SCD Tipo 2 — Histórico completo (el más usado)</h4>
+          <pre><code class="language-javascript">// Añades una nueva fila por cada cambio.
+// La fila anterior cierra su vigencia y la nueva la abre.
+DimCliente:
+IDCliente | NaturalKey | Nombre | Region | FechaInicio | FechaFin   | EsActual
+1         | 1042       | Ana    | Norte  | 2020-01-01  | 2024-03-14 | FALSE
+2         | 1042       | Ana    | Sur    | 2024-03-15  | NULL       | TRUE
+
+// Ventaja: análisis histórico correcto — las ventas de 2022 muestran
+// "Ana de la región Norte" aunque ahora esté en "Sur".
+// Desventaja: más complejo de cargar y mantener.</code></pre>
+
+          <h4>SCD Tipo 3 — Columna histórica</h4>
+          <pre><code class="language-javascript">// Añades columnas para el valor actual y el anterior.
+// Solo guarda UN nivel de histórico.
+DimCliente:
+IDCliente | Nombre | RegionActual | RegionAnterior
+1042      | Ana    | Sur          | Norte
+
+// Simple pero limita el histórico a un solo período anterior.</code></pre>
+        </article>
+
+        <div class="category-header" id="snapshots">
+          <span class="category-header__icon">📸</span>
+          <h2 class="category-header__title">Tablas de Snapshot</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>Foto del estado en un momento del tiempo</h3>
+          <p>Un <strong>snapshot</strong> (instantánea periódica) es una tabla de hechos que registra el estado de algo en un momento específico — no un evento, sino un estado. Ejemplos: inventario a final de día, saldo de cuenta a fin de mes, pipeline de ventas semanal.</p>
+
+          <pre><code class="language-javascript">// FactInventarioSnapshot — estado del inventario cada día
+IDFecha | IDProducto | IDAlmacen | UnidadesStock | ValorStock
+
+// Diferente a FactMovimientosInventario (tabla de eventos):
+// FactMovimientos registra CUÁNDO cambió el stock (evento)
+// FactInventario registra CUÁNTO stock hay cada día (estado)
+
+// Para analizar inventario "de hoy":
+Stock Actual = CALCULATE(
+    SUM(FactInventarioSnapshot[UnidadesStock]),
+    LASTDATE(DimFecha[Fecha])  // solo el snapshot más reciente
+)
+
+// Para analizar inventario "a fin de mes":
+Stock Fin Mes = CALCULATE(
+    SUM(FactInventarioSnapshot[UnidadesStock]),
+    LASTNONBLANK(DimFecha[Fecha], SUM(FactInventarioSnapshot[UnidadesStock]))
+)</code></pre>
+
+          <div class="note note--warning">
+            ⚠️ <strong>Ojo con esto:</strong> Las tablas de snapshot crecen rápido — si tienes 10.000 productos en 500 almacenes y haces snapshot diario, son 5M de filas por día. A un año serán 1.825M de filas. Evalúa la granularidad (diaria, semanal, mensual) según tus necesidades de análisis.
+          </div>
+        </article>
+
+        <div class="category-header" id="factless">
+          <span class="category-header__icon">🔲</span>
+          <h2 class="category-header__title">Factless Fact Tables</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>Tablas de hechos sin métricas numéricas</h3>
+          <p>Una <strong>factless fact table</strong> (tabla de hechos sin métricas) registra la ocurrencia de un evento sin ningún valor numérico. Solo tiene claves foráneas que documentan QUÉ ocurrió, CUÁNDO, QUIÉN y DÓNDE — sin un "cuánto".</p>
+
+          <h4>Ejemplos de factless fact tables:</h4>
+          <ul>
+            <li><strong>Asistencia a clase:</strong> IDFecha, IDEstudiante, IDClase — "el estudiante asistió"</li>
+            <li><strong>Cobertura de producto:</strong> IDFecha, IDProducto, IDTienda — "el producto estaba disponible en la tienda"</li>
+            <li><strong>Interacciones de cliente:</strong> IDFecha, IDCliente, IDCanal, IDTipoInteraccion</li>
+          </ul>
+
+          <pre><code class="language-javascript">// Tabla de hechos de asistencia (sin métricas numéricas)
+FactAsistencia:
+IDFecha | IDEstudiante | IDClase | IDProfeSor
+
+// Medida: contar eventos (la métrica se deriva del conteo)
+Total Asistencias = COUNTROWS(FactAsistencia)
+
+Tasa Asistencia =
+DIVIDE(
+    COUNTROWS(FactAsistencia),
+    [Total Alumnos Matriculados],
+    0
+)</code></pre>
+        </article>
+
+        <div class="category-header" id="bridge">
+          <span class="category-header__icon">🌉</span>
+          <h2 class="category-header__title">Bridge Tables (Many-to-Many)</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>Resolución de relaciones N:N con tabla puente</h3>
+          <p>Cuando tienes una relación genuinamente Many-to-Many entre dos tablas (un cliente puede pertenecer a varios segmentos, un producto puede estar en varias categorías), la solución clásica es una <strong>tabla puente (bridge table)</strong> que descompone la relación N:N en dos relaciones 1:N.</p>
+
+          <pre><code class="language-javascript">// Problema: un cliente puede pertenecer a múltiples segmentos
+DimCliente: IDCliente, Nombre
+DimSegmento: IDSegmento, NombreSegmento
+
+// Relación N:N: cliente ↔ segmento (sin tabla puente → no se puede modelar con 1:N)
+
+// Solución: tabla puente
+FactClienteSegmento:
+IDCliente | IDSegmento
+1042      | 1          ← Ana pertenece a "Premium"
+1042      | 3          ← Ana también pertenece a "Fidelizado"
+1058      | 1          ← Carlos pertenece a "Premium"
+
+// Relaciones en el modelo:
+DimCliente (1) ──► FactClienteSegmento (N)
+DimSegmento (1) ──► FactClienteSegmento (N)
+
+// DAX para contar clientes únicos por segmento (cuidado con el doble conteo)
+Clientes por Segmento =
+CALCULATE(
+    DISTINCTCOUNT(FactClienteSegmento[IDCliente]),
+    CROSSFILTER(DimCliente[IDCliente], FactClienteSegmento[IDCliente], BOTH)
+)</code></pre>
+
+          <div class="note note--tip">
+            💡 <strong>Tip kawaii:</strong> Power BI también permite relaciones N:N directas (sin tabla puente) desde la versión 2018. Sin embargo, las tablas puente ofrecen más control sobre el comportamiento del filtro y son más predecibles en DAX. Para la mayoría de los casos empresariales, la tabla puente sigue siendo la práctica recomendada. 🌸
+          </div>
+        </article>
+
+        <div class="note note--next" style="margin-top: 2rem;">
+          🚀 <strong>¡Patrones avanzados dominados!</strong> Con estos patrones en tu arsenal, estás equipado para abordar cualquier desafío de modelado empresarial. Para complementar esta sección, revisa los <a href="errores-comunes.html">Errores Comunes en Modelado</a> — conocer los errores te ahorrará horas de depuración.
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <button id="back-to-top" class="back-to-top" aria-label="Volver arriba" title="Volver arriba">↑</button>
+
+  <script src="https://cdn.jsdelivr.net/npm/i18next@23/dist/umd/i18next.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1/prism.min.js"></script>
+  <script src="../../assets/js/theme.js"></script>
+  <script src="../../assets/js/main.js"></script>
+  <script src="../../assets/js/cursor.js"></script>
+</body>
+</html>

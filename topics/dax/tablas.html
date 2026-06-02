@@ -1,0 +1,1768 @@
+<!DOCTYPE html>
+
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta content="Funciones de Manipulación de Tablas en DAX - SUMMARIZECOLUMNS, ADDCOLUMNS, UNION, TOPN, GENERATE, TREATAS en Power BI" name="description"/>
+<title>Manipulación de Tablas — Funciones DAX | Power BI Guide</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Fira+Code:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<!-- Prism.js para syntax highlighting -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet"/>
+<!-- i18next para traducciones -->
+<script src="https://cdn.jsdelivr.net/npm/i18next@23.7.6/i18next.min.js"></script>
+<!-- CSS del proyecto -->
+<link href="../../assets/css/main.css" rel="stylesheet"/>
+<link href="../../assets/css/themes.css" rel="stylesheet"/>
+<link href="../../assets/css/components.css" rel="stylesheet"/>
+<link href="../../assets/css/layout.css" rel="stylesheet"/>
+<link href="../../assets/css/dax-search.css" rel="stylesheet"/>
+<style>
+    /* === ESTILOS ESPECÍFICOS PARA PÁGINAS DE TOPICS === */
+
+    /* Topic header con icono grande */
+    .topic-header {
+      text-align: center;
+      padding: 2.5rem 0 2rem;
+      border-bottom: 2px solid var(--color-mauve);
+      margin-bottom: 2.5rem;
+    }
+
+    .topic-header__icon {
+      font-size: 4rem;
+      margin-bottom: 0.75rem;
+      display: block;
+    }
+
+    .topic-header__title {
+      font-size: clamp(1.875rem, 4vw, 2.5rem);
+      font-weight: 800;
+      color: var(--color-dark);
+      margin-bottom: 0.625rem;
+      line-height: 1.2;
+    }
+
+    .topic-header__subtitle {
+      font-size: 1.0625rem;
+      color: var(--color-slate);
+      margin-bottom: 1.25rem;
+      line-height: 1.5;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .topic-header__levels {
+      display: flex;
+      gap: 0.5rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    /* TOC — Table of contents */
+    .toc {
+      background: var(--color-rose);
+      border: 1.5px solid var(--color-mauve);
+      border-radius: var(--border-radius);
+      padding: 1.5rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .toc__title {
+      font-size: 0.875rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--color-slate);
+      margin-bottom: 1rem;
+    }
+
+    .toc__list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .toc__link {
+      color: var(--color-dark);
+      text-decoration: none;
+      font-size: 0.9375rem;
+      transition: var(--transition);
+      display: inline-block;
+    }
+
+    .toc__link:hover {
+      color: var(--color-coral);
+      text-decoration: underline;
+    }
+
+    /* Category header — separadores entre categorías */
+    .category-header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin: 3rem 0 1.5rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 2px solid var(--color-mauve);
+    }
+
+    .category-header__icon {
+      font-size: 1.75rem;
+    }
+
+    .category-header__title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--color-dark);
+      margin: 0;
+    }
+
+    /* Function card — tarjeta individual para cada función */
+    .function-card {
+      background: var(--color-white);
+      border: 1.5px solid var(--color-mauve);
+      border-radius: var(--border-radius);
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .function-card__name {
+      font-family: var(--font-code);
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: var(--color-coral);
+      margin-bottom: 0.75rem;
+    }
+
+    .function-card__description {
+      font-size: 0.9375rem;
+      color: var(--color-dark);
+      margin-bottom: 1rem;
+      line-height: 1.6;
+    }
+
+    .function-card__level {
+      display: inline-block;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      padding: 0.25rem 0.625rem;
+      border-radius: var(--border-radius-sm);
+      background: var(--color-blush);
+      color: var(--color-slate);
+      margin-bottom: 1rem;
+    }
+
+    /* Function table — tabla compacta con ejemplos */
+    .function-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.5rem 0;
+      font-size: 0.875rem;
+    }
+
+    .function-table th {
+      background: var(--color-rose);
+      color: var(--color-dark);
+      font-weight: 700;
+      text-align: left;
+      padding: 0.75rem 1rem;
+      border: 1px solid var(--color-mauve);
+    }
+
+    .function-table td {
+      padding: 0.75rem 1rem;
+      border: 1px solid var(--color-mauve);
+      color: var(--color-dark);
+    }
+
+    .function-table tr:nth-child(even) {
+      background: var(--color-blush);
+    }
+
+    /* Code block wrapper */
+    .code-block {
+      position: relative;
+      margin: 1.25rem 0;
+    }
+
+    .code-block pre {
+      margin: 0;
+      border-radius: var(--border-radius);
+      border: 1.5px solid var(--color-mauve);
+    }
+
+    .code-block__copy {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.5rem;
+      padding: 0.375rem 0.75rem;
+      font-size: 0.75rem;
+      background: var(--color-coral);
+      color: var(--color-white);
+      border: none;
+      border-radius: var(--border-radius-sm);
+      cursor: pointer;
+      font-family: var(--font-main);
+      font-weight: 600;
+      transition: var(--transition);
+    }
+
+    .code-block__copy:hover {
+      background: var(--color-peach);
+    }
+  </style>
+</head>
+<body>
+<!-- SIDEBAR: Navegación principal -->
+<aside class="site-sidebar">
+<!-- Avatar y nombre -->
+<div class="site-sidebar__profile">
+<img alt="Sara Lozano Martí" class="site-sidebar__avatar" src="../../assets/images/avatar Sara.png"/>
+<p class="site-sidebar__name">Sara Lozano Martí</p>
+<p class="site-sidebar__subtitle">Power BI Expert</p>
+</div>
+<!-- Navegación principal -->
+<nav aria-label="Navegación principal" class="site-sidebar__nav">
+<ul>
+<li><a class="site-sidebar__link" href="../../index.html">
+<span class="site-sidebar__icon">🏠</span> Inicio
+        </a></li>
+<li><a class="site-sidebar__link is-active" href="../dax.html">
+<span class="site-sidebar__icon">⚡</span> Funciones DAX
+        </a></li>
+<li><a class="site-sidebar__link" href="../power-query.html">
+<span class="site-sidebar__icon">🔄</span> Power Query
+        </a></li>
+<li><a class="site-sidebar__link" href="../lenguaje-m.html">
+<span class="site-sidebar__icon">〽️</span> Lenguaje M
+        </a></li>
+<li><a class="site-sidebar__link" href="../modelado.html">
+<span class="site-sidebar__icon">🗄️</span> Modelado
+        </a></li>
+<li><a class="site-sidebar__link" href="../conceptos-powerbi.html">
+<span class="site-sidebar__icon">📊</span> Conceptos Power BI
+        </a></li>
+<li><a class="site-sidebar__link" href="../fabric.html">
+<span class="site-sidebar__icon">🧵</span> Microsoft Fabric
+        </a></li>
+<li><a class="site-sidebar__link" href="../tmdl.html">
+<span class="site-sidebar__icon">📝</span> TMDL
+        </a></li>
+<li><a class="site-sidebar__link" href="../diseno-ux.html">
+<span class="site-sidebar__icon">🎨</span> Diseño y UX
+        </a></li>
+<li><a class="site-sidebar__link" href="../gobernanza.html">
+<span class="site-sidebar__icon">🔒</span> Gobernanza
+        </a></li>
+</ul>
+</nav>
+<!-- Separador -->
+<div class="site-sidebar__divider"></div>
+<!-- Footer del sidebar -->
+<div class="site-sidebar__footer">
+<!-- Enlace a quien soy -->
+<a class="site-sidebar__link site-sidebar__link--highlight" href="../../quien-soy.html">
+<span class="site-sidebar__icon">👩‍💻</span> ¿Quién soy?
+      </a>
+<!-- Iconos sociales -->
+<div class="site-sidebar__social">
+<a aria-label="LinkedIn" href="https://www.linkedin.com/in/saralozanomarti" rel="noopener noreferrer" target="_blank">
+<img alt="LinkedIn" class="site-sidebar__social-icon" src="../../assets/images/logo linkedIN.png"/>
+</a>
+<a aria-label="YouTube" href="https://www.youtube.com/@KawaiiPowerBI" rel="noopener noreferrer" target="_blank">
+<img alt="YouTube" class="site-sidebar__social-icon" src="../../assets/images/logo youtube.png"/>
+</a>
+<a aria-label="GitHub" href="https://github.com/KawaiiBI" rel="noopener noreferrer" target="_blank">
+<img alt="GitHub" class="site-sidebar__social-icon" src="../../assets/images/logo github.png"/>
+</a>
+</div>
+<!-- Logo Kawaii BI -->
+<div class="site-sidebar__logo-bottom">
+<img alt="Kawaii BI" class="site-sidebar__logo-img" src="../../assets/images/Logo Kawaii.jpg"/>
+</div>
+<!-- Copyright -->
+<p class="site-sidebar__copyright">
+        Power BI Guide 🌸<br/>
+        © 2026 Kawaii BI
+      </p>
+</div>
+</aside>
+<!-- PAGE WRAPPER -->
+<div class="page-wrapper">
+<!-- Main content -->
+<main id="main-content">
+<div class="topic-page">
+        <nav aria-label="breadcrumb" class="breadcrumb">
+<a class="breadcrumb__link" href="../../index.html">Inicio</a>
+<span class="breadcrumb__separator">›</span>
+<a class="breadcrumb__link" href="../dax.html">Funciones DAX</a>
+<span class="breadcrumb__separator">›</span>
+<span class="breadcrumb__current">Manipulación de Tablas</span>
+</nav>
+
+        <header class="topic-header">
+<span class="topic-header__icon">🗃️</span>
+<h1 class="topic-header__title">Manipulación de Tablas</h1>
+<p class="topic-header__subtitle">SUMMARIZECOLUMNS, ADDCOLUMNS, UNION, TOPN, GENERATE, TREATAS — construye y transforma tablas con todo el poder de DAX</p>
+<div class="topic-header__levels">
+<span class="badge badge--intermediate">Intermedio</span>
+<span class="badge badge--advanced">Avanzado</span>
+</div>
+</header>
+
+        <div class="dax-search-compact-bar">
+<div class="dax-search-wrapper dax-search-compact" data-dax-search="true">
+<span class="dax-search-icon">🔍</span>
+<input aria-label="Buscar función DAX" autocomplete="off" class="dax-search-input" placeholder="Buscar otra función DAX..." spellcheck="false" type="text"/>
+<button aria-label="Limpiar" class="dax-search-clear" hidden="">✕</button>
+<div class="dax-search-results" role="listbox"></div>
+</div>
+</div>
+
+        <nav class="toc">
+<h2 class="toc__title">📑 En esta página</h2>
+<ul class="toc__list">
+<li><a class="toc__link" href="#intro">¿Cuándo necesitas tablas calculadas?</a></li>
+<li><a class="toc__link" href="#creacion">Crear tablas: DATATABLE, ROW, GENERATESERIES</a></li>
+<li><a class="toc__link" href="#modificar">Modificar tablas: ADDCOLUMNS, SELECTCOLUMNS</a></li>
+<li><a class="toc__link" href="#resumen">Resumir: SUMMARIZE, SUMMARIZECOLUMNS</a></li>
+<li><a class="toc__link" href="#conjuntos">Conjuntos: UNION, INTERSECT, EXCEPT</a></li>
+<li><a class="toc__link" href="#joins">Joins: NATURALINNERJOIN, CROSSJOIN</a></li>
+<li><a class="toc__link" href="#filtrado">Filtrado: TOPN, TOPNPERLEVEL</a></li>
+<li><a class="toc__link" href="#generate">Generación: GENERATE, GENERATEALL</a></li>
+<li><a class="toc__link" href="#rollup">RollUp y subtotales</a></li>
+<li><a class="toc__link" href="#treatas">Relaciones virtuales: TREATAS</a></li>
+<li><a class="toc__link" href="#patrones">Patrones avanzados de tablas</a></li>
+</ul>
+</nav>
+
+        <!-- Breadcrumb --><!-- Buscador compacto DAX --><!-- Header del topic --><!-- TOC --><!-- SECCIÓN 0: Intro --><section id="intro">
+<h2 class="category-header__title">¿Cuándo necesitas tablas calculadas?</h2>
+<p>
+            Las funciones de manipulación de tablas son el territorio de las DAX avanzadas. Con ellas puedes construir cualquier estructura de datos que necesites
+            directamente en el modelo, sin tocar la fuente de datos ni Power Query. Son especialmente útiles para crear tablas auxiliares, parámetros dinámicos,
+            rankings complejos y transformaciones que serían imposibles en el modelo de datos de Power BI.
+          </p>
+<h3>¿Cuándo usar tablas calculadas?</h3>
+<ul style="line-height: 1.8; color: var(--color-slate); margin-left: 2rem;">
+<li>Cuando necesitas una tabla que no existe en los datos pero puedes derivarla (ej: tabla de calendario)</li>
+<li>Para crear parámetros What-If personalizados</li>
+<li>Para pre-calcular rankings o clasificaciones complejas</li>
+<li>Para generar tablas de unión o puente entre tablas sin relación</li>
+<li>Para crear tablas de referencia estáticas sin necesidad de importarlas</li>
+</ul>
+<div class="note note--warning">
+<strong>⚠️ Performance de tablas calculadas</strong><br/>
+            Las tablas calculadas se calculan en el momento del refresh del modelo y se almacenan en memoria.
+            Para tablas muy grandes, considera si es mejor hacerlo en Power Query. Pero para tablas medianas (&lt; 1M filas),
+            las tablas calculadas son perfectas.
+          </div>
+</section><!-- SECCIÓN 1: Creación --><section id="creacion">
+<div class="category-header">
+<span class="category-header__icon">🏗️</span>
+<h2 class="category-header__title">Crear tablas desde cero</h2>
+</div>
+<div class="function-card">
+<div class="function-card__name">DATATABLE</div>
+<div class="function-card__level">Intermedio</div>
+<div class="function-card__description">
+              Crea una tabla estática con datos definidos directamente en DAX. Perfecta para tablas de referencia pequeñas,
+              listas de valores fijos, tablas de configuración y parámetros.
+            </div>
+<p style="color: var(--color-slate); margin-bottom: 1rem;">
+<strong>Tipos de datos válidos:</strong> STRING, INTEGER, DOUBLE, DATETIME, BOOLEAN, CURRENCY
+            </p>
+<h4>Tabla de configuración de KPIs:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">KPI Config =
+DATATABLE(
+    "KPI", STRING,
+    "Umbral Verde", DOUBLE,
+    "Umbral Naranja", DOUBLE,
+    "Descripción", STRING,
+    {
+        {"Ticket Medio", 500, 300, "Importe medio por pedido"},
+        {"% Conversión", 0.05, 0.03, "Ratio de conversión de leads"},
+        {"NPS", 50, 30, "Net Promoter Score"},
+        {"Margen %", 0.25, 0.15, "Margen bruto sobre ventas"}
+    }
+)</code></pre>
+</div>
+<h4>Tabla de selector de período:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">Selector Período =
+DATATABLE(
+    "Período", STRING,
+    "Días", INTEGER,
+    {
+        {"Últimos 7 días", 7},
+        {"Últimos 30 días", 30},
+        {"Últimos 90 días", 90},
+        {"Último año", 365}
+    }
+)</code></pre>
+</div>
+<h4>Tabla de meses con nombre:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">Meses =
+DATATABLE(
+    "NumMes", INTEGER,
+    "NombreMes", STRING,
+    "Abreviatura", STRING,
+    {
+        {1, "Enero", "Ene"},   {2, "Febrero", "Feb"},   {3, "Marzo", "Mar"},
+        {4, "Abril", "Abr"},   {5, "Mayo", "May"},      {6, "Junio", "Jun"},
+        {7, "Julio", "Jul"},   {8, "Agosto", "Ago"},    {9, "Septiembre", "Sep"},
+        {10, "Octubre", "Oct"}, {11, "Noviembre", "Nov"}, {12, "Diciembre", "Dic"}
+    }
+)</code></pre>
+</div>
+</div>
+<div class="function-card">
+<div class="function-card__name">ROW</div>
+<div class="function-card__level">Intermedio</div>
+<div class="function-card__description">
+              Crea una tabla de UNA SOLA FILA con las columnas y valores especificados.
+              Útil para devolver múltiples valores escalares como si fueran una fila de tabla.
+            </div>
+<h4>Fila de resumen:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Tabla con una fila de resumen (para usar en UNION o como referencia)
+Resumen Actual =
+ROW(
+    "Total Ventas", [Total Ventas],
+    "Nº Pedidos", [Nº Pedidos],
+    "Ticket Medio", [Ticket Medio],
+    "Fecha Calculo", NOW()
+)</code></pre>
+</div>
+<h4>Uso en medidas para devolver múltiples valores:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// ROW es útil cuando necesitas devolver una estructura temporal
+Metricas Principales =
+VAR TablaMetricas = ROW(
+    "Ventas", [Total Ventas],
+    "Coste", [Total Coste],
+    "Margen", [Margen Bruto]
+)
+RETURN
+    TablaMetricas</code></pre>
+</div>
+</div>
+<div class="function-card">
+<div class="function-card__name">GENERATESERIES</div>
+<div class="function-card__level">Intermedio</div>
+<div class="function-card__description">
+              Genera una tabla de una columna ([Value]) con una serie numérica o de fechas.
+              Perfecta para crear ejes personalizados, rangos de valores y tablas de parámetros.
+            </div>
+<h4>Series numéricas y de fechas:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Serie numérica de 1 a 100
+Numeros = GENERATESERIES(1, 100, 1)
+
+// Percentiles para análisis (0%, 5%, 10%...100%)
+Percentiles = GENERATESERIES(0, 1, 0.05)
+
+// Serie de fechas (una fecha por fila)
+Fechas 2024 = GENERATESERIES(DATE(2024,1,1), DATE(2024,12,31), 1)
+// Devuelve 366 filas, una por cada día de 2024
+
+// Parámetro What-If personalizado (tasa de descuento 0%-30%)
+Descuento Param =
+ADDCOLUMNS(
+    GENERATESERIES(0, 0.30, 0.01),
+    "Descuento Label", FORMAT([Value], "0%")
+)</code></pre>
+</div>
+<h4>Tabla de calendario simple:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Generar calendario desde primera a última fecha de ventas
+Calendario =
+VAR MinFecha = MIN('Ventas'[Fecha])
+VAR MaxFecha = MAX('Ventas'[Fecha])
+RETURN
+ADDCOLUMNS(
+    GENERATESERIES(MinFecha, MaxFecha, 1),
+    "Fecha", [Value],
+    "Año", YEAR([Value]),
+    "Mes", MONTH([Value]),
+    "Día", DAY([Value]),
+    "NombreMes", FORMAT([Value], "MMMM"),
+    "Día Semana", FORMAT([Value], "DDDD")
+)</code></pre>
+</div>
+</div>
+</section><!-- SECCIÓN 2: Modificar --><section id="modificar">
+<div class="category-header">
+<span class="category-header__icon">🔧</span>
+<h2 class="category-header__title">Modificar tablas: agregar y seleccionar columnas</h2>
+</div>
+<div class="function-card">
+<div class="function-card__name">ADDCOLUMNS</div>
+<div class="function-card__level">Intermedio</div>
+<div class="function-card__description">
+              Toma una tabla base y agrega nuevas columnas calculadas. La tabla resultante tiene todas las columnas originales MÁS las nuevas.
+              Una de las funciones más usadas en DAX avanzado para construir estructuras complejas.
+            </div>
+<h4>Sintaxis:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">ADDCOLUMNS(
+    <tabla_base>,
+    "NombreColumna1", <expresión1>,
+    "NombreColumna2", <expresión2>,
+    ...
+)</expresión2></expresión1></tabla_base></code></pre>
+</div>
+<h4>Ejemplo básico - Agregar columnas calculadas a una tabla:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Tabla de productos con métricas adicionales
+Productos Enriquecidos =
+ADDCOLUMNS(
+    'Productos',
+    "Total Vendido", [Total Ventas],
+    "Unidades Vendidas", [Unidades],
+    "Precio Medio", DIVIDE([Total Ventas], [Unidades]),
+    "Ranking", RANKX(ALL('Productos'), [Total Ventas], , DESC)
+)</code></pre>
+</div>
+<h4>Ejemplo avanzado - Dashboard de KPIs:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Tabla resumen por categoría con múltiples métricas
+Resumen Categorias =
+ADDCOLUMNS(
+    VALUES('Productos'[Categoria]),
+    "Ventas", [Total Ventas],
+    "Ventas AA", [Total Ventas AA],
+    "Variacion", [Variacion YoY],
+    "% Variacion", DIVIDE([Variacion YoY], [Total Ventas AA]),
+    "Nº Productos", DISTINCTCOUNT('Productos'[ID_Producto]),
+    "Margen %", DIVIDE([Margen Bruto], [Total Ventas])
+)</code></pre>
+</div>
+<h4>Pattern: ADDCOLUMNS con SUMMARIZE para resúmenes complejos:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Top productos por región con métricas
+Top Productos Region =
+ADDCOLUMNS(
+    SUMMARIZE('Ventas', 'Productos'[Nombre], 'Clientes'[Region]),
+    "Ventas", [Total Ventas],
+    "Margen", [Margen Bruto],
+    "Clientes", DISTINCTCOUNT('Ventas'[ID_Cliente])
+)</code></pre>
+</div>
+<div class="note note--tip">
+<strong>💡 Tip profesional</strong><br/>
+              ADDCOLUMNS respeta el contexto de fila automáticamente — puedes usar columnas de la tabla base directamente en las expresiones.
+              Cada expresión se evalúa fila por fila con el contexto de esa fila.
+            </div>
+</div>
+<div class="function-card">
+<div class="function-card__name">SELECTCOLUMNS</div>
+<div class="function-card__level">Intermedio</div>
+<div class="function-card__description">
+              Crea una nueva tabla seleccionando SOLO las columnas especificadas (y opcionalmente renombrándolas).
+              A diferencia de ADDCOLUMNS, SELECTCOLUMNS NO preserva las columnas originales — solo devuelve las que especifiques.
+            </div>
+<h4>Sintaxis:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">SELECTCOLUMNS(
+    <tabla>,
+    "NuevoNombre1", <expresion_o_columna1>,
+    "NuevoNombre2", <expresion_o_columna2>,
+    ...
+)</expresion_o_columna2></expresion_o_columna1></tabla></code></pre>
+</div>
+<h4>Ejemplo básico - Seleccionar y renombrar columnas:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Tabla simplificada de productos
+Productos Simple =
+SELECTCOLUMNS(
+    'Productos',
+    "ID", 'Productos'[ID_Producto],
+    "Nombre", 'Productos'[NombreProducto],
+    "Categoría", 'Productos'[Categoria],
+    "Precio", 'Productos'[PrecioUnitario]
+)</code></pre>
+</div>
+<h4>Ejemplo avanzado - Normalizar formato de fechas:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Extraer solo fecha y cliente de ventas
+Ventas Normalizado =
+SELECTCOLUMNS(
+    'Ventas',
+    "Fecha", DATE(YEAR('Ventas'[Fecha]), MONTH('Ventas'[Fecha]), DAY('Ventas'[Fecha])),
+    "Cliente ID", 'Ventas'[ID_Cliente],
+    "Importe Neto", 'Ventas'[Precio] * 'Ventas'[Cantidad] * (1 - 'Ventas'[Descuento])
+)</code></pre>
+</div>
+<h4>Pattern: SELECTCOLUMNS para listas únicas con formato:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Lista de clientes con formato para dropdown
+Lista Clientes =
+SELECTCOLUMNS(
+    DISTINCT('Clientes'[ID_Cliente]),
+    "ID", 'Clientes'[ID_Cliente],
+    "Display", 'Clientes'[Nombre] &amp; " (" &amp; 'Clientes'[Ciudad] &amp; ")"
+)</code></pre>
+</div>
+<div class="note note--best-practice">
+<strong>🏆 ¿Cuándo usar ADDCOLUMNS vs SELECTCOLUMNS?</strong><br/>
+              - ADDCOLUMNS: cuando quieres AGREGAR columnas sin eliminar las originales<br/>
+              - SELECTCOLUMNS: cuando quieres PROYECTAR solo ciertas columnas (como SELECT en SQL)<br/>
+              - Puedes combinarlos: SELECTCOLUMNS(ADDCOLUMNS(...)) para agregar primero y luego filtrar
+            </div>
+</div>
+<div class="function-card">
+<div class="function-card__name">REMOVECOLUMNS</div>
+<div class="function-card__level">Intermedio</div>
+<div class="function-card__description">
+              Elimina columnas específicas de una tabla. Lo opuesto a SELECTCOLUMNS: en lugar de especificar qué mantener, especificas qué eliminar.
+            </div>
+<h4>Ejemplo:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Tabla sin columnas sensibles
+Productos Sin Coste =
+REMOVECOLUMNS(
+    'Productos',
+    'Productos'[CosteUnitario],
+    'Productos'[Proveedor]
+)</code></pre>
+</div>
+</div>
+<div class="function-card">
+<div class="function-card__name">RENAMECOLUMNS</div>
+<div class="function-card__level">Intermedio</div>
+<div class="function-card__description">
+              Renombra columnas de una tabla sin modificar el contenido. Útil para normalizar nombres antes de hacer UNION o joins.
+            </div>
+<h4>Ejemplo:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Normalizar nombres de columnas
+Ventas Normalizado =
+RENAMECOLUMNS(
+    'Ventas',
+    "ID_Pedido", "PedidoID",
+    "Fecha_Venta", "Fecha"
+)</code></pre>
+</div>
+</div>
+</section><!-- SECCIÓN 3: Resumir --><section id="resumen">
+<div class="category-header">
+<span class="category-header__icon">📊</span>
+<h2 class="category-header__title">Resumir datos: SUMMARIZE y SUMMARIZECOLUMNS</h2>
+</div>
+<div class="function-card">
+<div class="function-card__name">SUMMARIZE</div>
+<div class="function-card__level">Avanzado</div>
+<div class="function-card__description">
+              Agrupa filas por las columnas especificadas (como GROUP BY en SQL) y opcionalmente agrega columnas calculadas.
+              Es la función clásica para crear tablas de resumen, aunque SUMMARIZECOLUMNS suele ser mejor opción en medidas.
+            </div>
+<h4>Sintaxis:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">SUMMARIZE(
+    <tabla>,
+    <columna_grupo1>,
+    <columna_grupo2>,
+    ...
+    ["NombreColumnaCalc", <expresión>],
+    ...
+)</expresión></columna_grupo2></columna_grupo1></tabla></code></pre>
+</div>
+<h4>Ejemplo básico - Ventas por categoría:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Tabla resumen por categoría
+Ventas por Categoria =
+SUMMARIZE(
+    'Ventas',
+    'Productos'[Categoria]
+)</code></pre>
+</div>
+<h4>Ejemplo con múltiples niveles:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Resumen por categoría y subcategoría
+Jerarquia Productos =
+SUMMARIZE(
+    'Ventas',
+    'Productos'[Categoria],
+    'Productos'[Subcategoria]
+)</code></pre>
+</div>
+<h4>Ejemplo con columnas calculadas (⚠️ limitaciones):</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// SUMMARIZE con columnas agregadas (NO recomendado)
+Ventas por Mes =
+SUMMARIZE(
+    'Ventas',
+    'Calendario'[Año],
+    'Calendario'[Mes],
+    "Total", SUM('Ventas'[Importe])  // ⚠️ Puede dar resultados incorrectos
+)
+
+// MEJOR: usar ADDCOLUMNS + SUMMARIZE
+Ventas por Mes CORRECTO =
+ADDCOLUMNS(
+    SUMMARIZE('Ventas', 'Calendario'[Año], 'Calendario'[Mes]),
+    "Total", [Total Ventas]
+)</code></pre>
+</div>
+<div class="note note--warning">
+<strong>⚠️ Advertencia importante</strong><br/>
+              Microsoft recomienda NO usar agregaciones directas dentro de SUMMARIZE (como SUM, COUNT, etc.).
+              En su lugar, usa ADDCOLUMNS(SUMMARIZE(...), "Columna", [Medida]). Esto evita comportamientos inesperados
+              con el contexto de filtro.
+            </div>
+</div>
+<div class="function-card">
+<div class="function-card__name">SUMMARIZECOLUMNS</div>
+<div class="function-card__level">Avanzado</div>
+<div class="function-card__description">
+              La evolución moderna de SUMMARIZE. Más potente, más rápida y con mejor manejo del contexto de filtro.
+              Es la función recomendada para crear tablas de resumen en medidas y para reemplazar consultas complejas.
+              <strong>Es la base del motor de consultas de Power BI.</strong>
+</div>
+<h4>Sintaxis:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">SUMMARIZECOLUMNS(
+    <columna_grupo1>,
+    <columna_grupo2>,
+    ...
+    [<tabla_filtro>],
+    ["NombreMedida1", <medida1>],
+    ["NombreMedida2", <medida2>],
+    ...
+)</medida2></medida1></tabla_filtro></columna_grupo2></columna_grupo1></code></pre>
+</div>
+<h4>Ejemplo básico - Resumen con medidas:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Ventas y margen por categoría
+Resumen Categorias =
+SUMMARIZECOLUMNS(
+    'Productos'[Categoria],
+    "Ventas", [Total Ventas],
+    "Margen", [Margen Bruto],
+    "Margen %", [Margen Porcentaje]
+)</code></pre>
+</div>
+<h4>Ejemplo con múltiples dimensiones:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Análisis multidimensional: Año x Región x Categoría
+Cubo Ventas =
+SUMMARIZECOLUMNS(
+    'Calendario'[Año],
+    'Clientes'[Region],
+    'Productos'[Categoria],
+    "Ventas", [Total Ventas],
+    "Ventas AA", [Total Ventas AA],
+    "Variacion", [Variacion YoY],
+    "Clientes", [Clientes Unicos]
+)</code></pre>
+</div>
+<h4>Ejemplo con filtros explícitos:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Resumen solo para productos activos en 2024
+Ventas Activos 2024 =
+SUMMARIZECOLUMNS(
+    'Productos'[Categoria],
+    FILTER('Productos', 'Productos'[Estado] = "Activo"),
+    FILTER('Calendario', 'Calendario'[Año] = 2024),
+    "Ventas", [Total Ventas],
+    "Unidades", [Unidades Vendidas]
+)</code></pre>
+</div>
+<h4>Pattern avanzado - Top N por categoría:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Top 3 productos por categoría
+Top 3 por Categoria =
+GENERATE(
+    VALUES('Productos'[Categoria]),
+    VAR CategoriaActual = 'Productos'[Categoria]
+    RETURN
+        TOPN(
+            3,
+            SUMMARIZECOLUMNS(
+                'Productos'[NombreProducto],
+                FILTER('Productos', 'Productos'[Categoria] = CategoriaActual),
+                "Ventas", [Total Ventas]
+            ),
+            [Ventas], DESC
+        )
+)</code></pre>
+</div>
+<div class="note note--best-practice">
+<strong>🏆 SUMMARIZECOLUMNS vs SUMMARIZE</strong><br/>
+              - SUMMARIZECOLUMNS: mejor rendimiento, manejo correcto de contexto, sintaxis más clara<br/>
+              - SUMMARIZE: útil en tablas calculadas, más simple para agrupaciones básicas sin medidas<br/>
+              - Regla general: usa SUMMARIZECOLUMNS en medidas, SUMMARIZE en tablas calculadas simples
+            </div>
+</div>
+<div class="function-card">
+<div class="function-card__name">GROUPBY</div>
+<div class="function-card__level">Avanzado</div>
+<div class="function-card__description">
+              Agrupa filas y aplica agregaciones usando iteradores X. Similar a SUMMARIZE pero con agregaciones explícitas usando CURRENTGROUP().
+              Útil cuando necesitas control total sobre la agregación.
+            </div>
+<h4>Sintaxis:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">GROUPBY(
+    <tabla>,
+    <columna_grupo1>,
+    <columna_grupo2>,
+    ...
+    "NombreAgregacion", <función_x>(CURRENTGROUP(), <expresión>)
+)</expresión></función_x></columna_grupo2></columna_grupo1></tabla></code></pre>
+</div>
+<h4>Ejemplo - Agregaciones personalizadas:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Ventas por categoría con agregaciones custom
+Ventas Agregadas =
+GROUPBY(
+    'Ventas',
+    'Productos'[Categoria],
+    "Total Ventas", SUMX(CURRENTGROUP(), 'Ventas'[Importe]),
+    "Nº Pedidos", COUNTROWS(CURRENTGROUP()),
+    "Ticket Medio", AVERAGEX(CURRENTGROUP(), 'Ventas'[Importe])
+)</code></pre>
+</div>
+<h4>Ejemplo con agregaciones complejas:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Métricas avanzadas por región
+Analisis Regiones =
+GROUPBY(
+    'Ventas',
+    'Clientes'[Region],
+    "Total Ventas", SUMX(CURRENTGROUP(), 'Ventas'[Precio] * 'Ventas'[Cantidad]),
+    "Pedidos &gt;1000", COUNTX(
+        FILTER(CURRENTGROUP(), 'Ventas'[Precio] * 'Ventas'[Cantidad] &gt; 1000),
+        'Ventas'[ID_Pedido]
+    ),
+    "Valor Max Pedido", MAXX(CURRENTGROUP(), 'Ventas'[Precio] * 'Ventas'[Cantidad])
+)</code></pre>
+</div>
+</div>
+</section><!-- SECCIÓN 4: Conjuntos --><section id="conjuntos">
+<div class="category-header">
+<span class="category-header__icon">🔗</span>
+<h2 class="category-header__title">Operaciones de conjuntos: UNION, INTERSECT, EXCEPT</h2>
+</div>
+<div class="function-card">
+<div class="function-card__name">UNION</div>
+<div class="function-card__level">Intermedio</div>
+<div class="function-card__description">
+              Combina múltiples tablas verticalmente (una debajo de otra). Las tablas deben tener el mismo número de columnas
+              y tipos compatibles. No elimina duplicados automáticamente — conserva todas las filas.
+            </div>
+<h4>Sintaxis:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">UNION(
+    <tabla1>,
+    <tabla2>,
+    <tabla3>,
+    ...
+)</tabla3></tabla2></tabla1></code></pre>
+</div>
+<h4>Ejemplo básico - Combinar ventas de dos años:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Unir ventas 2023 y 2024
+Ventas Combinadas =
+UNION(
+    SELECTCOLUMNS(
+        FILTER('Ventas', YEAR('Ventas'[Fecha]) = 2023),
+        "Año", 2023,
+        "Mes", MONTH('Ventas'[Fecha]),
+        "Importe", 'Ventas'[Importe]
+    ),
+    SELECTCOLUMNS(
+        FILTER('Ventas', YEAR('Ventas'[Fecha]) = 2024),
+        "Año", 2024,
+        "Mes", MONTH('Ventas'[Fecha]),
+        "Importe", 'Ventas'[Importe]
+    )
+)</code></pre>
+</div>
+<h4>Ejemplo - Tabla de escenarios (Real vs Presupuesto):</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Combinar datos reales con presupuesto
+Real vs Presupuesto =
+UNION(
+    ADDCOLUMNS(
+        'Ventas',
+        "Tipo", "Real",
+        "Importe", 'Ventas'[ImporteVenta]
+    ),
+    ADDCOLUMNS(
+        'Presupuesto',
+        "Tipo", "Presupuesto",
+        "Importe", 'Presupuesto'[ImportePresupuesto]
+    )
+)</code></pre>
+</div>
+<h4>Pattern - Tabla de métricas verticales:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Crear tabla de KPIs para visual vertical
+Tabla KPIs =
+UNION(
+    ROW("Métrica", "Ventas", "Valor", [Total Ventas]),
+    ROW("Métrica", "Coste", "Valor", [Total Coste]),
+    ROW("Métrica", "Margen", "Valor", [Margen Bruto]),
+    ROW("Métrica", "Margen %", "Valor", [Margen Porcentaje]),
+    ROW("Métrica", "Nº Pedidos", "Valor", [Numero Pedidos]),
+    ROW("Métrica", "Ticket Medio", "Valor", [Ticket Medio])
+)</code></pre>
+</div>
+<div class="note note--tip">
+<strong>💡 UNION vs APPEND en Power Query</strong><br/>
+              UNION es para operaciones dinámicas en DAX (se recalcula en cada consulta). Si necesitas combinar tablas
+              estáticas de forma permanente, es más eficiente hacerlo en Power Query con Append.
+            </div>
+</div>
+<div class="function-card">
+<div class="function-card__name">INTERSECT</div>
+<div class="function-card__level">Intermedio</div>
+<div class="function-card__description">
+              Devuelve solo las filas que existen en AMBAS tablas (intersección). Las tablas deben tener el mismo número
+              de columnas y tipos compatibles. Muy útil para encontrar elementos comunes.
+            </div>
+<h4>Ejemplo - Clientes que compraron en ambos períodos:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Clientes que compraron en 2023 Y en 2024
+Clientes Recurrentes =
+INTERSECT(
+    DISTINCT(
+        SELECTCOLUMNS(
+            FILTER('Ventas', YEAR('Ventas'[Fecha]) = 2023),
+            "ClienteID", 'Ventas'[ID_Cliente]
+        )
+    ),
+    DISTINCT(
+        SELECTCOLUMNS(
+            FILTER('Ventas', YEAR('Ventas'[Fecha]) = 2024),
+            "ClienteID", 'Ventas'[ID_Cliente]
+        )
+    )
+)</code></pre>
+</div>
+<h4>Medida - Tasa de retención:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// % de clientes del año anterior que volvieron este año
+Tasa Retencion =
+VAR ClientesAA = DISTINCT(
+    SELECTCOLUMNS(
+        CALCULATETABLE('Ventas', YEAR('Ventas'[Fecha]) = YEAR(TODAY()) - 1),
+        "ID", 'Ventas'[ID_Cliente]
+    )
+)
+VAR ClientesActual = DISTINCT(
+    SELECTCOLUMNS(
+        CALCULATETABLE('Ventas', YEAR('Ventas'[Fecha]) = YEAR(TODAY())),
+        "ID", 'Ventas'[ID_Cliente]
+    )
+)
+VAR ClientesRetenidos = INTERSECT(ClientesAA, ClientesActual)
+RETURN
+    DIVIDE(COUNTROWS(ClientesRetenidos), COUNTROWS(ClientesAA))</code></pre>
+</div>
+</div>
+<div class="function-card">
+<div class="function-card__name">EXCEPT</div>
+<div class="function-card__level">Intermedio</div>
+<div class="function-card__description">
+              Devuelve las filas de la primera tabla que NO están en la segunda tabla (diferencia de conjuntos).
+              Ideal para encontrar elementos faltantes o exclusivos.
+            </div>
+<h4>Ejemplo - Productos sin ventas:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Productos que no se han vendido en el período actual
+Productos Sin Ventas =
+EXCEPT(
+    DISTINCT(SELECTCOLUMNS('Productos', "ID", 'Productos'[ID_Producto])),
+    DISTINCT(SELECTCOLUMNS('Ventas', "ID", 'Ventas'[ID_Producto]))
+)</code></pre>
+</div>
+<h4>Ejemplo - Clientes perdidos (churn):</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Clientes que compraron el año pasado pero NO este año
+Clientes Perdidos =
+EXCEPT(
+    DISTINCT(
+        SELECTCOLUMNS(
+            FILTER('Ventas', YEAR('Ventas'[Fecha]) = YEAR(TODAY()) - 1),
+            "ID", 'Ventas'[ID_Cliente]
+        )
+    ),
+    DISTINCT(
+        SELECTCOLUMNS(
+            FILTER('Ventas', YEAR('Ventas'[Fecha]) = YEAR(TODAY())),
+            "ID", 'Ventas'[ID_Cliente]
+        )
+    )
+)
+
+// Medida de tasa de churn
+Tasa Churn =
+VAR ClientesAA = COUNTROWS(
+    DISTINCT(
+        SELECTCOLUMNS(
+            CALCULATETABLE('Ventas', YEAR('Ventas'[Fecha]) = YEAR(TODAY()) - 1),
+            "ID", 'Ventas'[ID_Cliente]
+        )
+    )
+)
+VAR ClientesPerdidos = COUNTROWS([Clientes Perdidos])
+RETURN
+    DIVIDE(ClientesPerdidos, ClientesAA)</code></pre>
+</div>
+<div class="note note--best-practice">
+<strong>🏆 Memoria de conjuntos</strong><br/>
+              UNION, INTERSECT y EXCEPT: las tres operaciones clásicas de teoría de conjuntos, ahora en DAX.<br/>
+              - UNION: todo de A + todo de B (A ∪ B)<br/>
+              - INTERSECT: solo lo común de A y B (A ∩ B)<br/>
+              - EXCEPT: lo que está en A pero no en B (A - B)
+            </div>
+</div>
+</section><!-- SECCIÓN 5: Joins --><section id="joins">
+<div class="category-header">
+<span class="category-header__icon">🔀</span>
+<h2 class="category-header__title">Joins: combinar tablas horizontalmente</h2>
+</div>
+<div class="function-card">
+<div class="function-card__name">NATURALINNERJOIN</div>
+<div class="function-card__level">Avanzado</div>
+<div class="function-card__description">
+              Realiza un INNER JOIN entre dos tablas usando las columnas con el mismo nombre como claves.
+              Combina horizontalmente solo las filas donde hay coincidencia en ambas tablas.
+            </div>
+<h4>Ejemplo - Combinar productos con categorías:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Unir productos con información de categorías
+Productos con Categoria =
+NATURALINNERJOIN(
+    SELECTCOLUMNS('Productos', "CategoriaID", 'Productos'[ID_Categoria], "Producto", 'Productos'[Nombre]),
+    SELECTCOLUMNS('Categorias', "CategoriaID", 'Categorias'[ID], "Categoria", 'Categorias'[Nombre])
+)
+// Resultado: solo productos que tienen categoría asignada</code></pre>
+</div>
+<div class="note note--warning">
+<strong>⚠️ Limitación importante</strong><br/>
+              NATURALINNERJOIN hace join automáticamente por columnas con el MISMO NOMBRE. Si tus columnas se llaman
+              diferente, necesitas usar SELECTCOLUMNS primero para renombrarlas, o usar NATURALLEFTOUTERJOIN.
+            </div>
+</div>
+<div class="function-card">
+<div class="function-card__name">NATURALLEFTOUTERJOIN</div>
+<div class="function-card__level">Avanzado</div>
+<div class="function-card__description">
+              Como NATURALINNERJOIN pero tipo LEFT JOIN — conserva TODAS las filas de la primera tabla,
+              aunque no tengan coincidencia en la segunda.
+            </div>
+<h4>Ejemplo - Productos con categorías (incluyendo sin categoría):</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// LEFT JOIN: todos los productos, con o sin categoría
+Productos con Categoria Completo =
+NATURALLEFTOUTERJOIN(
+    SELECTCOLUMNS('Productos', "ID", 'Productos'[ID_Categoria], "Producto", 'Productos'[Nombre]),
+    SELECTCOLUMNS('Categorias', "ID", 'Categorias'[ID], "Categoria", 'Categorias'[Nombre])
+)
+// Las columnas de Categorias serán BLANK() para productos sin categoría</code></pre>
+</div>
+</div>
+<div class="function-card">
+<div class="function-card__name">CROSSJOIN</div>
+<div class="function-card__level">Avanzado</div>
+<div class="function-card__description">
+              Crea el producto cartesiano de dos o más tablas — cada fila de la primera con cada fila de la segunda.
+              ⚠️ Genera una tabla enorme (filas1 × filas2). Úsalo con cuidado y solo con tablas pequeñas.
+            </div>
+<h4>Ejemplo - Matriz de todos los productos × regiones:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Todas las combinaciones posibles de producto y región
+Matriz Producto Region =
+CROSSJOIN(
+    VALUES('Productos'[Nombre]),
+    VALUES('Clientes'[Region])
+)</code></pre>
+</div>
+<h4>Uso típico - Tabla de parámetros multidimensional:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Todas las combinaciones de categoría y período para análisis what-if
+Escenarios =
+CROSSJOIN(
+    VALUES('Productos'[Categoria]),
+    DATATABLE(
+        "Periodo", STRING,
+        {{"Actual"}, {"Presupuesto"}, {"Forecast"}}
+    )
+)</code></pre>
+</div>
+<div class="note note--warning">
+<strong>⚠️ Cuidado con CROSSJOIN</strong><br/>
+              Si tienes 1000 productos y 50 regiones, CROSSJOIN genera 50,000 filas. Para tablas grandes, esto puede
+              explotar en memoria. Usa filtros después del CROSSJOIN para reducir el resultado.
+            </div>
+</div>
+</section><!-- SECCIÓN 6: Filtrado --><section id="filtrado">
+<div class="category-header">
+<span class="category-header__icon">🏆</span>
+<h2 class="category-header__title">Filtrado avanzado: TOPN y TOPNPERLEVEL</h2>
+</div>
+<div class="function-card">
+<div class="function-card__name">TOPN</div>
+<div class="function-card__level">Intermedio</div>
+<div class="function-card__description">
+              Devuelve las N primeras filas de una tabla ordenadas por una expresión. Imprescindible para rankings,
+              top clientes, productos más vendidos, etc. Mucho más eficiente que usar RANKX con filtro.
+            </div>
+<h4>Sintaxis:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">TOPN(
+    <n>,
+    <tabla>,
+    <expresion_orden>,
+    [DESC o ASC]
+)</expresion_orden></tabla></n></code></pre>
+</div>
+<h4>Ejemplo básico - Top 10 productos:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Los 10 productos más vendidos
+Top 10 Productos =
+TOPN(
+    10,
+    ADDCOLUMNS(
+        VALUES('Productos'[Nombre]),
+        "Ventas", [Total Ventas]
+    ),
+    [Ventas], DESC
+)</code></pre>
+</div>
+<h4>Ejemplo dinámico - Top N variable:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Top N basado en parámetro de usuario
+Top N Dinamico =
+VAR TopN_Param = SELECTEDVALUE('Parametros'[Top N], 10)
+RETURN
+TOPN(
+    TopN_Param,
+    ADDCOLUMNS(
+        VALUES('Productos'[Nombre]),
+        "Ventas", [Total Ventas],
+        "Margen", [Margen Bruto]
+    ),
+    [Ventas], DESC
+)</code></pre>
+</div>
+<h4>Pattern - Top N con "Otros":</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Top 5 + categoría "Otros" con el resto
+Top 5 Mas Otros =
+VAR Top5 = TOPN(
+    5,
+    ADDCOLUMNS(VALUES('Productos'[Categoria]), "Ventas", [Total Ventas]),
+    [Ventas], DESC
+)
+VAR VentasTop5 = SUMX(Top5, [Ventas])
+VAR VentasOtros = [Total Ventas] - VentasTop5
+RETURN
+UNION(
+    Top5,
+    ROW("Categoria", "Otros", "Ventas", VentasOtros)
+)</code></pre>
+</div>
+<h4>Medida - Suma del Top 10:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Ventas de los 10 mejores clientes
+Ventas Top 10 Clientes =
+SUMX(
+    TOPN(
+        10,
+        ADDCOLUMNS(VALUES('Clientes'[Nombre]), "Ventas", [Total Ventas]),
+        [Ventas], DESC
+    ),
+    [Ventas]
+)</code></pre>
+</div>
+<div class="note note--tip">
+<strong>💡 TOPN vs FILTER con RANKX</strong><br/>
+              TOPN es mucho más eficiente que calcular RANKX para toda la tabla y luego filtrar. Si solo necesitas
+              los N primeros, siempre usa TOPN — es más rápido y usa menos memoria.
+            </div>
+</div>
+<div class="function-card">
+<div class="function-card__name">TOPNPERLEVEL</div>
+<div class="function-card__level">Avanzado</div>
+<div class="function-card__description">
+              Como TOPN pero aplicado por cada nivel de una jerarquía o agrupación. Devuelve los N mejores elementos
+              POR CADA grupo. Perfecta para "top 3 productos por categoría", "mejores vendedores por región", etc.
+            </div>
+<h4>Sintaxis:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">TOPNPERLEVEL(
+    <n>,
+    <columna_nivel1>,
+    [<columna_nivel2>, ...],
+    <expresion_orden>,
+    [DESC o ASC]
+)</expresion_orden></columna_nivel2></columna_nivel1></n></code></pre>
+</div>
+<h4>Ejemplo - Top 3 productos por categoría:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Los 3 mejores productos de cada categoría
+Top 3 por Categoria =
+ADDCOLUMNS(
+    TOPNPERLEVEL(
+        3,
+        'Productos'[Categoria],
+        'Productos'[Nombre],
+        [Total Ventas], DESC
+    ),
+    "Ventas", [Total Ventas]
+)</code></pre>
+</div>
+<h4>Ejemplo - Top vendedores por región y año:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Top 5 vendedores por región y año
+Top Vendedores Region Año =
+ADDCOLUMNS(
+    TOPNPERLEVEL(
+        5,
+        'Calendario'[Año],
+        'Vendedores'[Region],
+        'Vendedores'[Nombre],
+        [Total Ventas], DESC
+    ),
+    "Ventas", [Total Ventas],
+    "Ranking", RANKX(
+        FILTER(
+            ALL('Vendedores'[Nombre]),
+            'Vendedores'[Region] = EARLIER('Vendedores'[Region])
+        ),
+        [Total Ventas], , DESC
+    )
+)</code></pre>
+</div>
+</div>
+</section><!-- SECCIÓN 7: GENERATE --><section id="generate">
+<div class="category-header">
+<span class="category-header__icon">⚡</span>
+<h2 class="category-header__title">GENERATE y GENERATEALL — iteración avanzada</h2>
+</div>
+<div class="function-card">
+<div class="function-card__name">GENERATE</div>
+<div class="function-card__level">Avanzado</div>
+<div class="function-card__description">
+              Itera cada fila de la primera tabla y para cada una evalúa la segunda expresión (que devuelve una tabla).
+              El resultado es el CROSS JOIN de ambas con contexto de fila. Es como un bucle FOR en programación.
+              Solo devuelve filas donde la segunda tabla NO está vacía (comportamiento INNER JOIN).
+            </div>
+<h4>Sintaxis:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">GENERATE(
+    <tabla1>,
+    <expresion_tabla2>  // evaluada por cada fila de tabla1
+)</expresion_tabla2></tabla1></code></pre>
+</div>
+<h4>Ejemplo básico - Expandir jerarquía:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Para cada categoría, listar sus productos
+Categorias con Productos =
+GENERATE(
+    VALUES('Productos'[Categoria]),
+    CALCULATETABLE(
+        VALUES('Productos'[Nombre]),
+        'Productos'[Categoria] = EARLIER('Productos'[Categoria])
+    )
+)</code></pre>
+</div>
+<h4>Pattern avanzado - Top N por grupo:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Top 3 productos por cada categoría (alternativa a TOPNPERLEVEL)
+Top 3 por Categoria v2 =
+GENERATE(
+    VALUES('Productos'[Categoria]),
+    VAR CategoriaActual = 'Productos'[Categoria]
+    RETURN
+        TOPN(
+            3,
+            CALCULATETABLE(
+                ADDCOLUMNS(
+                    VALUES('Productos'[Nombre]),
+                    "Ventas", [Total Ventas]
+                ),
+                'Productos'[Categoria] = CategoriaActual
+            ),
+            [Ventas], DESC
+        )
+)</code></pre>
+</div>
+<h4>Ejemplo - Calendario de ventas real:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Para cada cliente, generar las fechas en las que compró
+Compras por Cliente =
+GENERATE(
+    VALUES('Clientes'[Nombre]),
+    VAR ClienteActual = 'Clientes'[Nombre]
+    RETURN
+        CALCULATETABLE(
+            ADDCOLUMNS(
+                VALUES('Ventas'[Fecha]),
+                "Importe", [Total Ventas]
+            ),
+            'Clientes'[Nombre] = ClienteActual
+        )
+)</code></pre>
+</div>
+<div class="note note--tip">
+<strong>💡 GENERATE como bucle FOR</strong><br/>
+              Piensa en GENERATE como:<br/>
+              FOR cada fila en tabla1:<br/>
+                calcula tabla2 con el contexto de esa fila<br/>
+                agrega las filas de tabla2 al resultado<br/>
+              Es la forma de hacer iteraciones anidadas en DAX.
+            </div>
+</div>
+<div class="function-card">
+<div class="function-card__name">GENERATEALL</div>
+<div class="function-card__level">Avanzado</div>
+<div class="function-card__description">
+              Como GENERATE pero con comportamiento LEFT OUTER JOIN — conserva TODAS las filas de la primera tabla
+              aunque la segunda expresión devuelva una tabla vacía. Las columnas de la segunda tabla serán BLANK().
+            </div>
+<h4>Ejemplo - Todas las categorías con sus productos (incluso sin ventas):</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Incluir categorías sin productos vendidos
+Todas Categorias con Productos =
+GENERATEALL(
+    VALUES('Productos'[Categoria]),
+    VAR CategoriaActual = 'Productos'[Categoria]
+    RETURN
+        CALCULATETABLE(
+            ADDCOLUMNS(
+                VALUES('Productos'[Nombre]),
+                "Ventas", [Total Ventas]
+            ),
+            'Productos'[Categoria] = CategoriaActual,
+            [Total Ventas] &gt; 0  // solo productos con ventas
+        )
+)
+// Si una categoría no tiene productos con ventas, aparecerá con columnas vacías</code></pre>
+</div>
+<div class="note note--best-practice">
+<strong>🏆 GENERATE vs GENERATEALL</strong><br/>
+              - GENERATE: solo filas donde ambas tablas tienen datos (INNER JOIN)<br/>
+              - GENERATEALL: todas las filas de la primera tabla, rellena con BLANK si la segunda está vacía (LEFT JOIN)<br/>
+              Elige según si quieres excluir o conservar grupos sin datos.
+            </div>
+</div>
+</section><!-- SECCIÓN 8: RollUp --><section id="rollup">
+<div class="category-header">
+<span class="category-header__icon">📈</span>
+<h2 class="category-header__title">ROLLUP y ROLLUPGROUP — subtotales automáticos</h2>
+</div>
+<div class="function-card">
+<div class="function-card__name">ROLLUP / ROLLUPGROUP</div>
+<div class="function-card__level">Avanzado</div>
+<div class="function-card__description">
+              Se usan dentro de SUMMARIZECOLUMNS para generar automáticamente filas de subtotales y totales.
+              Equivalente a GROUP BY ... WITH ROLLUP en SQL. Muy útil para crear tablas de resumen con niveles agregados.
+            </div>
+<h4>Ejemplo básico - Ventas por categoría con subtotal:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Ventas por categoría + fila de total general
+Ventas con Total =
+SUMMARIZECOLUMNS(
+    ROLLUPGROUP('Productos'[Categoria]),
+    "Ventas", [Total Ventas],
+    "Margen", [Margen Bruto]
+)
+// Genera filas por cada categoría + una fila final con Categoria = BLANK (total)</code></pre>
+</div>
+<h4>Ejemplo con múltiples niveles:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Ventas con subtotales por año y región
+Ventas con Subtotales =
+SUMMARIZECOLUMNS(
+    ROLLUPGROUP('Calendario'[Año], 'Clientes'[Region]),
+    "Ventas", [Total Ventas],
+    "Clientes", [Clientes Unicos]
+)
+// Genera:
+// - Filas por año + región
+// - Filas subtotal por año (región = BLANK)
+// - Fila de total general (año = BLANK, región = BLANK)</code></pre>
+</div>
+<h4>Pattern - Detectar niveles de subtotal:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Tabla con indicador del nivel de agregación
+Ventas Jerarquia =
+ADDCOLUMNS(
+    SUMMARIZECOLUMNS(
+        ROLLUPGROUP('Productos'[Categoria], 'Productos'[Subcategoria]),
+        "Ventas", [Total Ventas]
+    ),
+    "Nivel",
+        IF(
+            ISBLANK('Productos'[Categoria]),
+            "Total General",
+            IF(
+                ISBLANK('Productos'[Subcategoria]),
+                "Subtotal Categoría",
+                "Detalle"
+            )
+        )
+)</code></pre>
+</div>
+<div class="note note--warning">
+<strong>⚠️ ROLLUP solo en SUMMARIZECOLUMNS</strong><br/>
+              ROLLUP y ROLLUPGROUP solo funcionan dentro de SUMMARIZECOLUMNS. No se pueden usar con SUMMARIZE.
+              Si necesitas subtotales en otras funciones, usa UNION para agregar filas de total manualmente.
+            </div>
+</div>
+</section><!-- SECCIÓN 9: TREATAS --><section id="treatas">
+<div class="category-header">
+<span class="category-header__icon">🔗</span>
+<h2 class="category-header__title">TREATAS — relaciones virtuales</h2>
+</div>
+<div class="function-card">
+<div class="function-card__name">TREATAS</div>
+<div class="function-card__level">Avanzado</div>
+<div class="function-card__description">
+              Aplica las columnas de una tabla como si fueran columnas de otra tabla, creando una "relación virtual" temporal.
+              Permite propagar filtros entre tablas sin relación directa. Es como decirle a DAX "trata esta columna como si fuera esta otra".
+              <strong>Fundamental para patrones de modelo complejos y relaciones many-to-many custom.</strong>
+</div>
+<h4>Sintaxis:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">TREATAS(
+    <tabla_con_valores>,
+    <columna_destino1>,
+    [<columna_destino2>, ...]
+)</columna_destino2></columna_destino1></tabla_con_valores></code></pre>
+</div>
+<h4>Caso de uso típico - Filtrar por tabla intermedia:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Problema: Ventas no tiene relación directa con Campañas
+// Solución: usar TREATAS para propagar filtro a través de tabla puente
+
+Ventas de Campaña =
+CALCULATE(
+    [Total Ventas],
+    TREATAS(
+        VALUES('Campañas'[ID_Producto]),  // IDs de productos de la campaña seleccionada
+        'Productos'[ID_Producto]          // aplicar como filtro en Productos
+    )
+)
+// Ahora el filtro de Campañas se propaga a Ventas a través de Productos</code></pre>
+</div>
+<h4>Pattern - Relación many-to-many virtual:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Escenario: tabla TablaPuente conecta Clientes con Segmentos (many-to-many)
+// Calcular ventas por segmento sin relación física
+
+Ventas por Segmento =
+CALCULATE(
+    [Total Ventas],
+    TREATAS(
+        SUMMARIZE('TablaPuente', 'TablaPuente'[ID_Cliente]),
+        'Ventas'[ID_Cliente]
+    )
+)</code></pre>
+</div>
+<h4>Ejemplo - Aplicar filtro de año a tabla sin fechas:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Presupuesto tiene [Año] y [Mes] como números, no fechas
+// Aplicar filtro de Calendario (que sí tiene relación con Ventas)
+
+Presupuesto Filtrado =
+CALCULATE(
+    SUM('Presupuesto'[Importe]),
+    TREATAS(
+        VALUES('Calendario'[Año]),
+        'Presupuesto'[Año]
+    ),
+    TREATAS(
+        VALUES('Calendario'[NumMes]),
+        'Presupuesto'[Mes]
+    )
+)
+// Ahora el slicer de Calendario también filtra Presupuesto</code></pre>
+</div>
+<h4>Pattern avanzado - TREATAS con múltiples columnas:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Aplicar filtro compuesto (año + región)
+Ventas Filtro Compuesto =
+CALCULATE(
+    [Total Ventas],
+    TREATAS(
+        SUMMARIZE('OtraTabla', 'OtraTabla'[Año], 'OtraTabla'[Region]),
+        'Calendario'[Año],
+        'Clientes'[Region]
+    )
+)</code></pre>
+</div>
+<div class="note note--tip">
+<strong>💡 ¿Cuándo usar TREATAS?</strong><br/>
+              - Cuando tienes tablas sin relación directa pero con columnas comunes<br/>
+              - Para implementar relaciones many-to-many personalizadas sin tabla puente física<br/>
+              - Para aplicar filtros de una dimensión temporal a tablas con años/meses como números<br/>
+              - Para modelos con múltiples tablas de hechos sin tabla de calendario común
+            </div>
+<div class="note note--warning">
+<strong>⚠️ Limitaciones de TREATAS</strong><br/>
+              - Las columnas deben tener el mismo tipo de datos<br/>
+              - Es una relación "virtual" — no aprovecha las optimizaciones del motor de relaciones físicas<br/>
+              - Puede ser más lenta que una relación real — úsala solo cuando sea necesario<br/>
+              - No funciona con bidireccionalidad como las relaciones físicas
+            </div>
+</div>
+</section><!-- SECCIÓN 10: Patrones --><section id="patrones">
+<div class="category-header">
+<span class="category-header__icon">🎯</span>
+<h2 class="category-header__title">Patrones avanzados de tablas</h2>
+</div>
+<div class="note note--best-practice">
+<strong>🏆 Patrón 1: Tabla de resumen multinivel con ADDCOLUMNS + SUMMARIZE</strong><br/>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Dashboard completo en una tabla
+Dashboard Ventas =
+ADDCOLUMNS(
+    SUMMARIZE(
+        'Ventas',
+        'Calendario'[Año],
+        'Clientes'[Region],
+        'Productos'[Categoria]
+    ),
+    "Ventas", [Total Ventas],
+    "Ventas AA", [Total Ventas AA],
+    "Variacion", [Variacion YoY],
+    "% Variacion", [% Variacion YoY],
+    "Margen", [Margen Bruto],
+    "% Margen", [Margen Porcentaje],
+    "Clientes", [Clientes Unicos],
+    "Pedidos", [Numero Pedidos],
+    "Ticket Medio", [Ticket Medio]
+)</code></pre>
+</div>
+</div>
+<div class="note note--best-practice">
+<strong>🏆 Patrón 2: Top N con categoría "Otros"</strong><br/>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Top 10 productos + fila "Otros" con el resto
+Top 10 Productos Completo =
+VAR TopN_Value = 10
+VAR TablaCompleta = ADDCOLUMNS(
+    VALUES('Productos'[Nombre]),
+    "Ventas", [Total Ventas]
+)
+VAR Top10 = TOPN(TopN_Value, TablaCompleta, [Ventas], DESC)
+VAR VentasTop10 = SUMX(Top10, [Ventas])
+VAR VentasTotal = SUMX(TablaCompleta, [Ventas])
+VAR VentasOtros = VentasTotal - VentasTop10
+RETURN
+UNION(
+    Top10,
+    ROW("Nombre", "📦 Otros productos", "Ventas", VentasOtros)
+)</code></pre>
+</div>
+</div>
+<div class="note note--best-practice">
+<strong>🏆 Patrón 3: Tabla de escenarios (Real vs Budget vs Forecast)</strong><br/>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Combinar tres fuentes en una tabla unificada
+Escenarios Unificados =
+VAR Real = ADDCOLUMNS(
+    SUMMARIZE('Ventas', 'Calendario'[Fecha], 'Productos'[Categoria]),
+    "Tipo", "Real",
+    "Importe", [Total Ventas]
+)
+VAR Budget = ADDCOLUMNS(
+    SUMMARIZE('Presupuesto', 'Presupuesto'[Fecha], 'Presupuesto'[Categoria]),
+    "Tipo", "Presupuesto",
+    "Importe", SUM('Presupuesto'[Importe])
+)
+VAR Forecast = ADDCOLUMNS(
+    SUMMARIZE('Forecast', 'Forecast'[Fecha], 'Forecast'[Categoria]),
+    "Tipo", "Forecast",
+    "Importe", SUM('Forecast'[Importe])
+)
+RETURN
+UNION(Real, Budget, Forecast)</code></pre>
+</div>
+</div>
+<div class="note note--best-practice">
+<strong>🏆 Patrón 4: Análisis de cohortes con GENERATE</strong><br/>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Cohorte de clientes por mes de primera compra
+Cohorte Clientes =
+GENERATE(
+    SUMMARIZE('Calendario', 'Calendario'[Año-Mes]),
+    VAR MesCohorte = 'Calendario'[Año-Mes]
+    VAR ClientesNuevos = CALCULATETABLE(
+        VALUES('Clientes'[ID_Cliente]),
+        'Calendario'[Año-Mes] = MesCohorte,
+        FILTER(
+            ALL('Calendario'),
+            'Calendario'[Fecha] &lt;= MIN('Ventas'[Fecha])
+        )
+    )
+    RETURN
+        ADDCOLUMNS(
+            GENERATESERIES(0, 12, 1),  // meses desde cohorte
+            "Mes Cohorte", MesCohorte,
+            "Mes +N", [Value],
+            "Clientes Activos", CALCULATE(
+                COUNTROWS(INTERSECT(ClientesNuevos, VALUES('Ventas'[ID_Cliente]))),
+                DATEADD('Calendario'[Fecha], [Value], MONTH)
+            )
+        )
+)</code></pre>
+</div>
+</div>
+<div class="note note--best-practice">
+<strong>🏆 Patrón 5: Tabla de calendario completa desde cero</strong><br/>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Calendario completo con todas las columnas útiles
+Calendario Completo =
+VAR MinDate = DATE(2020, 1, 1)
+VAR MaxDate = DATE(2030, 12, 31)
+RETURN
+ADDCOLUMNS(
+    GENERATESERIES(MinDate, MaxDate, 1),
+    "Fecha", [Value],
+    "Año", YEAR([Value]),
+    "Mes", MONTH([Value]),
+    "Día", DAY([Value]),
+    "Año-Mes", FORMAT([Value], "YYYY-MM"),
+    "Trimestre", "T" &amp; QUARTER([Value]),
+    "Año-Trimestre", YEAR([Value]) &amp; "-T" &amp; QUARTER([Value]),
+    "NombreMes", FORMAT([Value], "MMMM"),
+    "NombreMesCorto", FORMAT([Value], "MMM"),
+    "DiaSemana", WEEKDAY([Value], 2),
+    "NombreDia", FORMAT([Value], "DDDD"),
+    "NombreDiaCorto", FORMAT([Value], "DDD"),
+    "NumSemana", WEEKNUM([Value], 2),
+    "EsFinSemana", WEEKDAY([Value], 2) &gt;= 6,
+    "DiaAño", DATEDIFF(DATE(YEAR([Value]), 1, 1), [Value], DAY) + 1,
+    "Mes Relativo", DATEDIFF(DATE(YEAR(TODAY()), MONTH(TODAY()), 1), DATE(YEAR([Value]), MONTH([Value]), 1), MONTH),
+    "Año Relativo", YEAR([Value]) - YEAR(TODAY())
+)</code></pre>
+</div>
+</div>
+<div class="note note--tip">
+<strong>💡 Tips finales para tablas calculadas</strong><br/>
+            1. Usa VAR para descomponer expresiones complejas — mejora legibilidad y a veces performance<br/>
+            2. ADDCOLUMNS(SUMMARIZE(...)) es mejor que SUMMARIZE con agregaciones directas<br/>
+            3. Para Top N por grupo: GENERATE + TOPN es más flexible que TOPNPERLEVEL<br/>
+            4. UNION no elimina duplicados — si necesitas valores únicos, usa DISTINCT después<br/>
+            5. TREATAS es poderoso pero lento — úsalo solo cuando no puedas crear relación física<br/>
+            6. Para tablas grandes, considera si Power Query es mejor opción que tabla calculada
+          </div>
+</section><div class="note note--next">
+<strong>🚀 Siguiente paso</strong><br/>
+          ¡Las tablas calculadas ya no tienen secretos para ti! Con SUMMARIZECOLUMNS, GENERATE, UNION, INTERSECT y TREATAS puedes construir
+          prácticamente cualquier estructura de datos que necesites. El siguiente paso es la
+          <strong><a href="inteligencia-tiempo.html">Inteligencia de Tiempo</a></strong>
+          — el conjunto de funciones que más preguntas genera en la comunidad DAX.
+        </div>
+
+      </div>
+</main>
+</div>
+<!-- Footer (cargado dinámicamente) -->
+<div id="main-footer"></div>
+<!-- Botón volver arriba -->
+<button aria-label="Volver arriba" class="btn-back-to-top" id="back-to-top">↑</button>
+<!-- Scripts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+<script src="../../assets/js/theme.js"></script>
+<script src="../../assets/js/main.js"></script>
+<!-- Buscador DAX -->
+<script src="../../assets/js/dax-search.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Auto-inicializar todos los widgets con data-dax-search="true"
+      if (window.daxSearch) {
+        window.daxSearch.initAll({
+          baseUrl: '../'  // estamos en topics/dax/, las URLs deben ir a topics/dax/...
+        });
+      }
+    });
+  </script>
+<script src="../../assets/js/cursor.js"></script>
+</body>
+</html>

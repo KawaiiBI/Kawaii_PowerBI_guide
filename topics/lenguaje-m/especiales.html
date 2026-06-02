@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta content="#shared, #table, Expression.Evaluate, Character.* y las características más avanzadas del Lenguaje M." name="description"/>
+<title>Funciones Especiales — Lenguaje M | Power BI Guide by Kawaii BI</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Fira+Code:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<!-- Prism.js -->
+<link href="https://cdn.jsdelivr.net/npm/prismjs@1/themes/prism-okaidia.min.css" rel="stylesheet"/>
+<!-- Estilos CSS -->
+<link href="../../assets/css/main.css" rel="stylesheet"/>
+<link href="../../assets/css/themes.css" rel="stylesheet"/>
+<link href="../../assets/css/components.css" rel="stylesheet"/>
+<link href="../../assets/css/layout.css" rel="stylesheet"/>
+<link href="../../assets/css/dax-search.css" rel="stylesheet"/>
+<style>
+        /* Topic header con icono grande */
+    .topic-header {
+      text-align: center;
+      padding: 2.5rem 0 2rem;
+      border-bottom: 2px solid var(--color-mauve);
+      margin-bottom: 2.5rem;
+    }
+
+    .topic-header__icon {
+      font-size: 4rem;
+      margin-bottom: 0.75rem;
+      display: block;
+    }
+
+    .topic-header__title {
+      font-size: clamp(1.875rem, 4vw, 2.5rem);
+      font-weight: 800;
+      color: var(--color-dark);
+      margin-bottom: 0.625rem;
+      line-height: 1.2;
+    }
+
+    .topic-header__subtitle {
+      font-size: 1.0625rem;
+      color: var(--color-slate);
+      margin-bottom: 1.25rem;
+      line-height: 1.5;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .topic-header__levels {
+      display: flex;
+      gap: 0.5rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    /* Category header */
+    .category-header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin: 2.5rem 0 1.25rem;
+      padding: 0.875rem 1.25rem;
+      background: var(--color-rose);
+      border-radius: var(--border-radius-sm);
+      border-left: 4px solid var(--color-coral);
+    }
+    .category-header__icon { font-size: 1.5rem; }
+    .category-header__title { font-size: 1.25rem; font-weight: 700; margin: 0; }
+
+    /* Function cards */
+    .function-card {
+      background: var(--color-white);
+      border: 1.5px solid var(--color-mauve);
+      border-radius: var(--border-radius);
+      padding: 1.75rem;
+      margin-bottom: 1.5rem;
+      scroll-margin-top: 80px;
+      transition: border-color 0.2s;
+    }
+    .function-card:hover { border-color: var(--color-coral); }
+
+    .function-card__header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.25rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 2px solid var(--color-blush);
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .function-card__title {
+      font-size: 1.375rem;
+      font-weight: 800;
+      color: var(--color-coral);
+      margin: 0;
+      font-family: 'Fira Code', monospace;
+    }
+
+    .function-card h4 {
+      font-size: 0.9375rem;
+      font-weight: 700;
+      color: var(--color-dark);
+      margin: 1.25rem 0 0.625rem;
+    }
+
+    .function-card p { font-size: 0.9375rem; line-height: 1.7; color: var(--color-dark); }
+
+    .function-card__params ul { list-style: none; padding: 0; margin: 0; }
+    .function-card__params li {
+      padding: 0.5rem 0 0.5rem 1.5rem;
+      position: relative;
+      line-height: 1.6;
+      font-size: 0.9rem;
+      border-bottom: 1px solid var(--color-blush);
+    }
+    .function-card__params li:last-child { border-bottom: none; }
+    .function-card__params li::before {
+      content: "→";
+      position: absolute;
+      left: 0;
+      color: var(--color-coral);
+      font-weight: 700;
+    }
+    .function-card__params code {
+      background: var(--color-blush);
+      padding: 0.1em 0.4em;
+      border-radius: 4px;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.85em;
+      color: var(--color-coral);
+    }
+
+    /* TOC */
+    .toc {
+      background: var(--color-rose);
+      border-radius: var(--border-radius);
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 2rem;
+      border: 1.5px solid var(--color-mauve);
+    }
+    .toc__title { font-size: 1rem; font-weight: 700; margin: 0 0 0.75rem; }
+    .toc__list { display: flex; flex-wrap: wrap; gap: 0.5rem; list-style: none; padding: 0; margin: 0; }
+    .toc__list a {
+      font-size: 0.8125rem;
+      color: var(--color-coral);
+      text-decoration: none;
+      padding: 0.25rem 0.625rem;
+      background: var(--color-white);
+      border-radius: 999px;
+      border: 1px solid var(--color-mauve);
+      transition: background 0.15s, color 0.15s;
+      font-family: 'Fira Code', monospace;
+    }
+    .toc__list a:hover { background: var(--color-coral); color: white; }
+
+    /* Table (tipo.html) */
+    .type-table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.9rem; }
+    .type-table th { background: var(--color-rose); color: var(--color-dark); font-weight: 600; padding: 0.6rem 1rem; text-align: left; }
+    .type-table td { padding: 0.55rem 1rem; border-bottom: 1px solid var(--color-mauve); }
+    .type-table tr:last-child td { border-bottom: none; }
+    .type-table code { font-family: 'Fira Code', monospace; font-size: 0.85em; }
+  </style>
+</head>
+<body>
+<!-- SIDEBAR: Navegación principal -->
+<aside class="site-sidebar">
+<div class="site-sidebar__profile">
+<img alt="Sara Lozano Martí" class="site-sidebar__avatar" src="../../assets/images/avatar Sara.png"/>
+<p class="site-sidebar__name">Sara Lozano Martí</p>
+<p class="site-sidebar__subtitle">Power BI Expert</p>
+</div>
+<nav aria-label="Navegación principal" class="site-sidebar__nav">
+<ul>
+<li><a class="site-sidebar__link" href="../../index.html">
+<span class="site-sidebar__icon">🏠</span> Inicio
+        </a></li>
+<li><a class="site-sidebar__link" href="../dax.html">
+<span class="site-sidebar__icon">⚡</span> Funciones DAX
+        </a></li>
+<li><a class="site-sidebar__link" href="../power-query.html">
+<span class="site-sidebar__icon">🔄</span> Power Query
+        </a></li>
+<li><a class="site-sidebar__link is-active" href="../lenguaje-m.html">
+<span class="site-sidebar__icon">〽️</span> Lenguaje M
+        </a></li>
+<li><a class="site-sidebar__link" href="../modelado.html">
+<span class="site-sidebar__icon">🗄️</span> Modelado
+        </a></li>
+<li><a class="site-sidebar__link" href="../conceptos-powerbi.html">
+<span class="site-sidebar__icon">📊</span> Conceptos Power BI
+        </a></li>
+<li><a class="site-sidebar__link" href="../fabric.html">
+<span class="site-sidebar__icon">🧵</span> Microsoft Fabric
+        </a></li>
+<li><a class="site-sidebar__link" href="../tmdl.html">
+<span class="site-sidebar__icon">📝</span> TMDL
+        </a></li>
+<li><a class="site-sidebar__link" href="../diseno-ux.html">
+<span class="site-sidebar__icon">🎨</span> Diseño y UX
+        </a></li>
+<li><a class="site-sidebar__link" href="../gobernanza.html">
+<span class="site-sidebar__icon">🔒</span> Gobernanza
+        </a></li>
+</ul>
+</nav>
+<div class="site-sidebar__divider"></div>
+<div class="site-sidebar__footer">
+<a class="site-sidebar__link site-sidebar__link--highlight" href="../../quien-soy.html">
+<span class="site-sidebar__icon">👩‍💻</span> ¿Quién soy?
+      </a>
+<div class="site-sidebar__social">
+<a aria-label="LinkedIn" href="https://www.linkedin.com/in/saralozanomarti" rel="noopener noreferrer" target="_blank">
+<img alt="LinkedIn" class="site-sidebar__social-icon" src="../../assets/images/logo linkedIN.png"/>
+</a>
+<a aria-label="YouTube" href="https://www.youtube.com/@KawaiiPowerBI" rel="noopener noreferrer" target="_blank">
+<img alt="YouTube" class="site-sidebar__social-icon" src="../../assets/images/logo youtube.png"/>
+</a>
+<a aria-label="GitHub" href="https://github.com/KawaiiBI" rel="noopener noreferrer" target="_blank">
+<img alt="GitHub" class="site-sidebar__social-icon" src="../../assets/images/logo github.png"/>
+</a>
+</div>
+<div class="site-sidebar__logo-bottom">
+<img alt="Kawaii BI" class="site-sidebar__logo-img" src="../../assets/images/Logo Kawaii.jpg"/>
+</div>
+<p class="site-sidebar__copyright">
+        Power BI Guide 🌸<br/>
+        © 2026 Kawaii BI
+      </p>
+</div>
+</aside>
+<!-- CONTENIDO PRINCIPAL -->
+<div class="page-wrapper">
+<main class="main-content">
+<div class="topic-page">
+<nav aria-label="Ruta de navegación" class="breadcrumb">
+<span class="breadcrumb__item"><a href="../../index.html">🏠 Inicio</a></span>
+<span aria-hidden="true" class="breadcrumb__separator">›</span>
+<span class="breadcrumb__item"><a href="../lenguaje-m.html">Lenguaje M</a></span>
+<span aria-hidden="true" class="breadcrumb__separator">›</span>
+<span class="breadcrumb__item">Funciones Especiales</span>
+</nav>
+<header class="topic-header">
+          <span class="topic-header__icon">✨</span>
+          <h1 class="topic-header__title">Funciones Especiales</h1>
+          <p class="topic-header__subtitle">Las características más avanzadas de M: #shared, Expression.Evaluate, #table, Character.* y patrones expertos.</p>
+          <div class="topic-header__levels">
+<span class="badge--intermediate">Intermedio</span>
+<span class="badge--advanced">Avanzado</span>
+</div>
+        </header>
+<div class="dax-search-wrapper dax-search-wrapper--compact" data-m-search="true">
+<div class="dax-search-input-row">
+<span aria-hidden="true" class="dax-search-icon">🔍</span>
+<input aria-autocomplete="list" aria-expanded="false" aria-label="Buscar funciones del Lenguaje M" autocomplete="off" class="dax-search-input" placeholder="Buscar otra función M..." spellcheck="false" type="search"/>
+<button aria-label="Limpiar búsqueda" class="dax-search-clear" hidden="">✕</button>
+</div>
+<div aria-label="Resultados de búsqueda" class="dax-search-results" role="listbox"></div>
+</div>
+<nav aria-label="Índice de funciones" class="toc">
+<p class="toc__title">📌 Funciones en esta página:</p>
+<ul class="toc__list">
+<li><a href="#shared">#shared</a></li>
+<li><a href="#table">#table</a></li>
+<li><a href="#expression">Expression.Evaluate</a></li>
+<li><a href="#character">Character.*</a></li>
+<li><a href="#environment">Entorno</a></li>
+<li><a href="#diagnostics">Diagnóstico</a></li>
+</ul>
+</nav>
+<!-- Breadcrumb --><!-- Buscador compacto de funciones M --><!-- Cabecera --><div class="category-header" id="shared">
+<span class="category-header__icon">🌐</span>
+<h2 class="category-header__title">#shared — El entorno global de M</h2>
+</div><article class="function-card" id="shared-fn">
+<header class="function-card__header">
+<h3 class="function-card__title">#shared</h3>
+<span class="badge badge--advanced">Avanzado</span>
+</header>
+<div class="function-card__syntax"><h4>Sintaxis</h4>
+<pre><code class="language-javascript">#shared as record</code></pre>
+</div>
+<div class="function-card__description"><h4>¿Qué hace?</h4>
+<p><code>#shared</code> devuelve un record con todas las funciones y valores disponibles en el entorno M actual. Es la forma de hacer introspección del lenguaje: ver qué funciones existen, explorar su documentación interna y hacer lookup dinámico de funciones por nombre.</p>
+</div>
+<div class="function-card__example"><h4>Ejemplo</h4>
+<pre><code class="language-javascript">// Ver todas las funciones disponibles
+let
+    todas = #shared,
+    // Filtrar sólo funciones de texto
+    deTexto = Record.SelectFields(
+        todas,
+        List.Select(Record.FieldNames(todas), each Text.StartsWith(_, "Text."))
+    )
+in deTexto
+
+// Obtener documentación de una función
+let
+    doc = Value.Metadata(#shared[Text.Upper])
+in doc   // Record con Summary, Category, etc.
+
+// Llamar función por nombre (dinámico)
+let
+    nombreFn = "Text.Upper",
+    fn       = Record.Field(#shared, nombreFn)
+in fn("hola kawaii")   // "HOLA KAWAII"</code></pre>
+</div>
+<div class="note note--tip">
+            💡 <strong>Tip kawaii:</strong> En el Editor Avanzado de Power Query, escribe <code>#shared</code> como única expresión y ejecútalo. Verás una tabla con todas las funciones del lenguaje con su documentación — ¡es como la referencia oficial integrada!
+          </div>
+</article><div class="category-header" id="table">
+<span class="category-header__icon">🆕</span>
+<h2 class="category-header__title">#table — Crear tablas literales</h2>
+</div><article class="function-card" id="table-literal">
+<header class="function-card__header">
+<h3 class="function-card__title">#table</h3>
+<span class="badge badge--intermediate">Intermedio</span>
+</header>
+<div class="function-card__syntax"><h4>Sintaxis</h4>
+<pre><code class="language-javascript">#table(columns as list, rows as list) as table
+// columns: lista de nombres de columna (o un tipo de tabla)
+// rows: lista de listas (cada sublista es una fila)</code></pre>
+</div>
+<div class="function-card__description"><h4>¿Qué hace?</h4>
+<p>Crea una tabla directamente desde datos en M, sin necesidad de una fuente de datos externa. Ideal para tablas de parámetros, tablas de referencia, datos de prueba y configuración embebida.</p>
+</div>
+<div class="function-card__example"><h4>Ejemplo</h4>
+<pre><code class="language-javascript">// Tabla simple
+#table(
+    {"Mes", "Nombre", "Trimestre"},
+    {
+        {1, "Enero",   1}, {2, "Febrero",  1}, {3, "Marzo",    1},
+        {4, "Abril",   2}, {5, "Mayo",     2}, {6, "Junio",    2},
+        {7, "Julio",   3}, {8, "Agosto",   3}, {9, "Septiembre",3},
+        {10,"Octubre", 4}, {11,"Noviembre",4}, {12,"Diciembre",4}
+    }
+)
+
+// Con tipos explícitos (más eficiente)
+#table(
+    type table [#"Código" = text, #"Valor" = number, #"Activo" = logical],
+    {
+        {"A01", 100.5, true},
+        {"A02", 200.0, false},
+        {"A03", 150.75, true}
+    }
+)
+
+// Tabla de parámetros de configuración
+let
+    Parametros = #table(
+        {"Nombre", "Valor"},
+        {
+            {"Servidor",    "prodserver"},
+            {"BaseDatos",   "ventas_2024"},
+            {"Anyo",        "2024"},
+            {"MaxRegistros", "50000"}
+        }
+    ),
+    Config = Record.FromTable(Parametros)
+in Config[Servidor]  // "prodserver"</code></pre>
+</div>
+<div class="note note--practice">
+            📌 <strong>Buena práctica:</strong> Usa <code>#table</code> con tipos explícitos para tablas que sabes que nunca cambiarán de estructura (tablas de meses, días de la semana, mapas de códigos). Mejora el rendimiento al evitar la inferencia de tipos.
+          </div>
+</article><div class="category-header" id="expression">
+<span class="category-header__icon">🧪</span>
+<h2 class="category-header__title">Expression.Evaluate — Evaluación dinámica</h2>
+</div><article class="function-card" id="expression-eval">
+<header class="function-card__header">
+<h3 class="function-card__title">Expression.Evaluate</h3>
+<span class="badge badge--advanced">Avanzado</span>
+</header>
+<div class="function-card__syntax"><h4>Sintaxis</h4>
+<pre><code class="language-javascript">Expression.Evaluate(document as text, optional environment as nullable record) as any</code></pre>
+</div>
+<div class="function-card__description"><h4>¿Qué hace?</h4>
+<p>Evalúa una expresión M escrita como texto en tiempo de ejecución. El parámetro <code>environment</code> permite pasar un record con los nombres disponibles en la expresión (normalmente <code>#shared</code> para tener todas las funciones).</p>
+</div>
+<div class="function-card__example"><h4>Ejemplo</h4>
+<pre><code class="language-javascript">// Evaluación básica
+Expression.Evaluate("1 + 1")   // 2
+
+// Con funciones del entorno
+Expression.Evaluate(
+    "Text.Upper(""hola kawaii"")",
+    #shared
+)
+// "HOLA KAWAII"
+
+// Caso de uso real: fórmula almacenada en tabla
+let
+    tablaFormulas = #table({"Campo", "Formula"}, {
+        {"NombreCompleto", """[Nombre] &amp; "" "" &amp; [Apellido]"""},
+        {"Importe_IVA",    "[Importe] * 1.21"}
+    }),
+    // Aplicar fórmula dinámica a cada fila de datos
+    formula = tablaFormulas{0}[Formula],
+    fnDinamica = Expression.Evaluate(
+        "(fila) =&gt; " &amp; formula,
+        #shared
+    )
+in Table.AddColumn(datos, "NombreCompleto", fnDinamica)</code></pre>
+</div>
+<div class="note note--warning">
+            ⚠️ <strong>Ojo con esto:</strong> <code>Expression.Evaluate</code> puede ejecutar cualquier código M, incluido código malicioso si la expresión viene de una fuente no confiable. Úsalo sólo con expresiones que controles completamente. En Power BI Service, puede estar deshabilitado por políticas de seguridad.
+          </div>
+</article><article class="function-card" id="expression-constant">
+<header class="function-card__header">
+<h3 class="function-card__title">Expression.Constant / Expression.Identifier</h3>
+<span class="badge badge--advanced">Avanzado</span>
+</header>
+<div class="function-card__syntax"><h4>Sintaxis</h4>
+<pre><code class="language-javascript">Expression.Constant(value as any) as text
+Expression.Identifier(name as text) as text</code></pre>
+</div>
+<div class="function-card__description"><h4>¿Qué hace?</h4>
+<p><code>Expression.Constant</code> serializa un valor M a su representación como texto M (el inverso de <code>Expression.Evaluate</code>). <code>Expression.Identifier</code> genera el texto correcto para un identificador M, incluyendo las comillas necesarias para nombres con espacios.</p>
+</div>
+<div class="function-card__example"><h4>Ejemplo</h4>
+<pre><code class="language-javascript">Expression.Constant(42)           // "42"
+Expression.Constant("hola")       // """hola"""
+Expression.Constant(#date(2024,1,1))  // "#date(2024, 1, 1)"
+Expression.Constant({1,2,3})      // "{1, 2, 3}"
+
+Expression.Identifier("Nombre")           // "Nombre"
+Expression.Identifier("Mi Campo Especial")  // "#""Mi Campo Especial"""
+Expression.Identifier("Año Fiscal")        // "#""Año Fiscal"""</code></pre>
+</div>
+</article><div class="category-header" id="character">
+<span class="category-header__icon">🔤</span>
+<h2 class="category-header__title">Character.* — Caracteres Unicode</h2>
+</div><article class="function-card" id="character-fn">
+<header class="function-card__header">
+<h3 class="function-card__title">Character.FromNumber / Character.ToNumber</h3>
+<span class="badge badge--intermediate">Intermedio</span>
+</header>
+<div class="function-card__syntax"><h4>Sintaxis</h4>
+<pre><code class="language-javascript">Character.FromNumber(number as number) as text
+Character.ToNumber(character as text) as number</code></pre>
+</div>
+<div class="function-card__description"><h4>¿Qué hace?</h4>
+<p>Convierte entre caracteres Unicode y sus códigos de punto de código. Útil para generar caracteres especiales, emojis y procesar textos con caracteres de control.</p>
+</div>
+<div class="function-card__example"><h4>Ejemplo</h4>
+<pre><code class="language-javascript">Character.FromNumber(65)      // "A"
+Character.FromNumber(9)       // "\t" (tabulador)
+Character.FromNumber(10)      // salto de línea LF
+Character.FromNumber(128512)  // "😀" (emoji cara sonriente)
+
+Character.ToNumber("A")   // 65
+Character.ToNumber("ñ")   // 241
+
+// Insertar salto de línea en texto
+"Primera línea" &amp; Character.FromNumber(10) &amp; "Segunda línea"
+
+// Alternativa con literales de escape en M
+"Primera línea" &amp; "#(lf)" &amp; "Segunda línea"</code></pre>
+</div>
+<div class="note note--tip">
+            💡 <strong>Tip kawaii:</strong> M tiene literales de escape especiales: <code>#(lf)</code> = salto de línea, <code>#(cr)</code> = retorno de carro, <code>#(tab)</code> = tabulador, <code>#(null)</code> = carácter nulo. Son equivalentes a <code>Character.FromNumber</code> con los códigos correspondientes.
+          </div>
+</article><div class="category-header" id="environment">
+<span class="category-header__icon">⚙️</span>
+<h2 class="category-header__title">Información del Entorno</h2>
+</div><article class="function-card" id="environment-fn">
+<header class="function-card__header">
+<h3 class="function-card__title">Environment.UserName / Environment.MachineName</h3>
+<span class="badge badge--intermediate">Intermedio</span>
+</header>
+<div class="function-card__syntax"><h4>Sintaxis</h4>
+<pre><code class="language-javascript">Environment.UserName() as text
+Environment.MachineName() as text
+Environment.UserDomainName() as text</code></pre>
+</div>
+<div class="function-card__description"><h4>¿Qué hace?</h4>
+<p>Devuelve información del entorno de ejecución: nombre de usuario Windows, nombre de máquina y dominio. Útil para logs, auditoría y personalización de conexiones por usuario.</p>
+</div>
+<div class="function-card__example"><h4>Ejemplo</h4>
+<pre><code class="language-javascript">// Log de auditoría
+Table.AddColumn(tabla, "CargadoPor",
+    each Environment.UserName() &amp; " en " &amp;
+         DateTime.ToText(DateTime.LocalNow(), "yyyy-MM-dd HH:mm"))
+
+// Ruta personalizada por usuario
+let
+    usuario = Environment.UserName(),
+    ruta    = "C:\Users\" &amp; usuario &amp; "\Documents\PowerBI\datos.xlsx"
+in File.Contents(ruta)</code></pre>
+</div>
+<div class="note note--warning">
+            ⚠️ <strong>Ojo con esto:</strong> <code>Environment.UserName</code> devuelve el usuario del servidor de actualización en Power BI Service, no el usuario del informe. Para RLS por usuario, usa el contexto de seguridad de Power BI (USERNAME() en DAX), no esta función.
+          </div>
+</article><div class="category-header" id="diagnostics">
+<span class="category-header__icon">🔭</span>
+<h2 class="category-header__title">Diagnóstico y Depuración</h2>
+</div><article class="function-card" id="diagnostics-fn">
+<header class="function-card__header">
+<h3 class="function-card__title">Diagnostics.Trace / DiagnosticsExtensions</h3>
+<span class="badge badge--advanced">Avanzado</span>
+</header>
+<div class="function-card__syntax"><h4>Sintaxis</h4>
+<pre><code class="language-javascript">Diagnostics.Trace(traceLevel as number, message as text, value as any, optional delayed as nullable logical) as any</code></pre>
+</div>
+<div class="function-card__description"><h4>¿Qué hace?</h4>
+<p>Emite un mensaje de traza al sistema de diagnósticos y devuelve el valor <code>value</code> sin modificarlo. Útil para depurar consultas complejas sin alterar el resultado. Los mensajes aparecen en el log de diagnósticos de Power Query.</p>
+</div>
+<div class="function-card__example"><h4>Ejemplo</h4>
+<pre><code class="language-javascript">// Trazar un valor intermedio sin cambiar el resultado
+let
+    paso1 = some_complex_calculation(),
+    traced = Diagnostics.Trace(
+        TraceLevel.Information,
+        "Paso 1 completado: " &amp; Text.From(Table.RowCount(paso1)) &amp; " filas",
+        paso1
+    ),
+    paso2 = Table.SelectRows(traced, each [Importe] &gt; 0)
+in paso2</code></pre>
+</div>
+</article><article class="function-card" id="table-view">
+<header class="function-card__header">
+<h3 class="function-card__title">Table.View — Query Folding manual</h3>
+<span class="badge badge--advanced">Avanzado</span>
+</header>
+<div class="function-card__syntax"><h4>Sintaxis</h4>
+<pre><code class="language-javascript">Table.View(table as nullable table, handlers as record) as table</code></pre>
+</div>
+<div class="function-card__description"><h4>¿Qué hace?</h4>
+<p><code>Table.View</code> permite implementar query folding personalizado para conectores custom. Define handlers que se llaman cuando Power Query intenta "plegar" operaciones al origen de datos. Es la base del sistema de conectores de M.</p>
+</div>
+<div class="function-card__example"><h4>Ejemplo</h4>
+<pre><code class="language-javascript">// Table.View básico con handlers de GetRows y OnSelectRows
+Table.View(null, [
+    GetType = () =&gt; type table [ID = number, Nombre = text],
+    GetRows = () =&gt; #table({"ID","Nombre"}, {{1,"Ana"},{2,"Sara"}}),
+    OnSelectRows = (selector) =&gt;
+        Table.View(null, [
+            GetType = () =&gt; type table [ID = number, Nombre = text],
+            GetRows = () =&gt; Table.SelectRows(#table({"ID","Nombre"}, {{1,"Ana"},{2,"Sara"}}), selector)
+        ])
+])</code></pre>
+</div>
+<div class="note note--practice">
+            📌 <strong>Buena práctica:</strong> <code>Table.View</code> es para desarrollo de conectores personalizados (Custom Connectors), no para consultas cotidianas. Si necesitas entender query folding en conectores estándar, usa el diagnóstico de Power Query Desktop (View → Query Diagnostics).
+          </div>
+</article><article class="function-card" id="json-from-value">
+<header class="function-card__header">
+<h3 class="function-card__title">Json.FromValue — Serializar a JSON</h3>
+<span class="badge badge--intermediate">Intermedio</span>
+</header>
+<div class="function-card__syntax"><h4>Sintaxis</h4>
+<pre><code class="language-javascript">Json.FromValue(value as any, optional encoding as nullable number) as binary</code></pre>
+</div>
+<div class="function-card__description"><h4>¿Qué hace?</h4>
+<p>Serializa cualquier valor M a JSON (como binario). Útil para enviar datos a APIs REST mediante POST, construir payloads dinámicos y depurar estructuras complejas.</p>
+</div>
+<div class="function-card__example"><h4>Ejemplo</h4>
+<pre><code class="language-javascript">// Serializar record a JSON para POST
+let
+    payload = [
+        usuario = "kawaii_user",
+        filtros = [
+            anyo    = 2024,
+            region  = "ES",
+            activos = true
+        ]
+    ],
+    jsonBinario = Json.FromValue(payload),
+    respuesta   = Web.Contents("https://api.ejemplo.com/datos",
+        [Content  = jsonBinario,
+         Headers  = [#"Content-Type" = "application/json"]])
+in Json.Document(respuesta)
+
+// Convertir a texto para depuración
+Binary.ToText(Json.FromValue([A = 1, B = "dos"]), TextEncoding.Utf8)
+// {"A":1,"B":"dos"}</code></pre>
+</div>
+</article><div class="note note--next">
+        🌸 <strong>¡Has completado el recorrido por el Lenguaje M!</strong> Desde las funciones más básicas hasta las características más avanzadas del lenguaje. Ahora tienes todas las herramientas para transformar cualquier fuente de datos con Power Query. ¡A por ello! 🚀
+        <br/><br>
+        Vuelve al <a href="../lenguaje-m.html">índice de Lenguaje M</a> o explora <a href="../dax.html">Funciones DAX</a> para completar tu dominio de Power BI.
+      </br></div>
+</div>
+</main>
+</div>
+<button aria-label="Volver arriba" class="back-to-top" id="back-to-top" title="Volver arriba">↑</button>
+<script src="https://cdn.jsdelivr.net/npm/i18next@23/dist/umd/i18next.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1/prism.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1/components/prism-javascript.min.js"></script>
+<script src="../../assets/js/theme.js"></script>
+<script src="../../assets/js/i18n.js"></script>
+<script src="../../assets/js/main.js"></script>
+<script src="../../assets/js/cursor.js"></script>
+<script src="../../assets/js/m-search.js"></script>
+</body>
+</html>

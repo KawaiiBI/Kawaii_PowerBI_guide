@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Guía completa de gobernanza en Power BI y Microsoft Fabric: RLS, OLS, workspaces, sensitivity labels, deployment pipelines, auditoría, linaje y Centro de Excelencia.">
+  <title>Gobernanza — Seguridad, Adopción y Ciclo de Vida | Power BI Guide by Kawaii BI</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+
+  <!-- Estilos CSS -->
+  <link rel="stylesheet" href="../assets/css/main.css">
+  <link rel="stylesheet" href="../assets/css/themes.css">
+  <link rel="stylesheet" href="../assets/css/components.css">
+  <link rel="stylesheet" href="../assets/css/layout.css">
+
+  <style>
+    .topic-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 1.25rem;
+      margin-bottom: 2rem;
+      padding: 1.75rem;
+      background: var(--color-rose);
+      border-radius: var(--border-radius);
+      border: 1.5px solid var(--color-mauve);
+    }
+    .topic-header__icon { font-size: 3rem; line-height: 1; flex-shrink: 0; }
+    .topic-header__title { font-size: 1.875rem; font-weight: 700; margin-bottom: 0.25rem; }
+    .topic-header__subtitle { color: var(--color-slate); font-size: 0.9375rem; margin-bottom: 0.75rem; line-height: 1.6; }
+    .topic-header__levels { display: flex; gap: 0.375rem; flex-wrap: wrap; }
+
+    .gob-intro {
+      background: linear-gradient(135deg, var(--color-rose) 0%, var(--color-blush) 100%);
+      border-radius: var(--border-radius);
+      padding: 2rem;
+      margin-bottom: 2.5rem;
+      border: 1.5px solid var(--color-mauve);
+    }
+    .gob-intro__title { font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem; }
+    .gob-intro__text { color: var(--color-slate); font-size: 0.9375rem; line-height: 1.7; }
+    .gob-intro__stats { display: flex; gap: 1.5rem; margin-top: 1.25rem; flex-wrap: wrap; }
+    .gob-intro__stat { background: var(--color-white); border-radius: var(--border-radius-sm); padding: 0.625rem 1rem; border: 1px solid var(--color-mauve); font-size: 0.875rem; }
+    .gob-intro__stat strong { color: var(--color-coral); font-size: 1.125rem; display: block; }
+
+    .category-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.25rem;
+      margin-top: 1.5rem;
+    }
+    .category-card {
+      background: var(--color-white);
+      border: 1.5px solid var(--color-mauve);
+      border-radius: var(--border-radius);
+      padding: 1.25rem 1.5rem;
+      text-decoration: none;
+      color: inherit;
+      transition: var(--transition);
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .category-card:hover { border-color: var(--color-coral); transform: translateY(-3px); box-shadow: var(--shadow-md); text-decoration: none; }
+    .category-card__header { display: flex; align-items: center; gap: 0.75rem; }
+    .category-card__icon { font-size: 1.75rem; line-height: 1; }
+    .category-card__name { font-size: 1rem; font-weight: 600; color: var(--color-dark); }
+    .category-card__desc { font-size: 0.8125rem; color: var(--color-slate); line-height: 1.5; }
+    .category-card__levels { display: flex; gap: 0.375rem; margin-top: 0.25rem; }
+
+    .dark-theme .topic-header,
+    .dark-theme .gob-intro { background: var(--color-rose); border-color: var(--color-mauve); }
+    .dark-theme .gob-intro { background: linear-gradient(135deg, var(--color-rose) 0%, var(--color-blush) 100%); }
+    .dark-theme .category-card { background: var(--color-white); border-color: var(--color-mauve); }
+    .dark-theme .gob-intro__stat { background: var(--color-white); border-color: var(--color-mauve); }
+  </style>
+</head>
+<body>
+
+  <!-- SIDEBAR -->
+  <aside class="site-sidebar">
+    <div class="site-sidebar__profile">
+      <img src="../assets/images/avatar Sara.png" alt="Sara Lozano Martí" class="site-sidebar__avatar" />
+      <p class="site-sidebar__name">Sara Lozano Martí</p>
+      <p class="site-sidebar__subtitle">Power BI Expert</p>
+    </div>
+    <nav class="site-sidebar__nav" aria-label="Navegación principal">
+      <ul>
+        <li><a href="../index.html" class="site-sidebar__link"><span class="site-sidebar__icon">🏠</span> Inicio</a></li>
+        <li><a href="dax.html" class="site-sidebar__link"><span class="site-sidebar__icon">⚡</span> Funciones DAX</a></li>
+        <li><a href="power-query.html" class="site-sidebar__link"><span class="site-sidebar__icon">🔄</span> Power Query</a></li>
+        <li><a href="lenguaje-m.html" class="site-sidebar__link"><span class="site-sidebar__icon">〽️</span> Lenguaje M</a></li>
+        <li><a href="modelado.html" class="site-sidebar__link"><span class="site-sidebar__icon">🗄️</span> Modelado</a></li>
+        <li><a href="conceptos-powerbi.html" class="site-sidebar__link"><span class="site-sidebar__icon">📊</span> Conceptos Power BI</a></li>
+        <li><a href="fabric.html" class="site-sidebar__link"><span class="site-sidebar__icon">🧵</span> Microsoft Fabric</a></li>
+        <li><a href="tmdl.html" class="site-sidebar__link"><span class="site-sidebar__icon">📝</span> TMDL</a></li>
+        <li><a href="diseno-ux.html" class="site-sidebar__link"><span class="site-sidebar__icon">🎨</span> Diseño y UX</a></li>
+        <li><a href="gobernanza.html" class="site-sidebar__link is-active"><span class="site-sidebar__icon">🔒</span> Gobernanza</a></li>
+      </ul>
+    </nav>
+    <div class="site-sidebar__divider"></div>
+    <div class="site-sidebar__footer">
+      <a href="../quien-soy.html" class="site-sidebar__link site-sidebar__link--highlight"><span class="site-sidebar__icon">👩‍💻</span> ¿Quién soy?</a>
+      <div class="site-sidebar__social">
+        <a href="https://www.linkedin.com/in/saralozanomarti" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><img src="../assets/images/logo linkedIN.png" alt="LinkedIn" class="site-sidebar__social-icon" /></a>
+        <a href="https://www.youtube.com/@KawaiiPowerBI" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><img src="../assets/images/logo youtube.png" alt="YouTube" class="site-sidebar__social-icon" /></a>
+        <a href="https://github.com/KawaiiBI" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><img src="../assets/images/logo github.png" alt="GitHub" class="site-sidebar__social-icon" /></a>
+      </div>
+      <div class="site-sidebar__logo-bottom"><img src="../assets/images/Logo Kawaii.jpg" alt="Kawaii BI" class="site-sidebar__logo-img" /></div>
+      <p class="site-sidebar__copyright">Power BI Guide 🌸<br>© 2026 Kawaii BI</p>
+    </div>
+  </aside>
+
+  <!-- CONTENIDO -->
+  <div class="page-wrapper">
+    <main class="main-content">
+      <div class="topic-page">
+
+        <!-- Breadcrumb -->
+        <nav class="breadcrumb" aria-label="Ruta de navegación">
+          <span class="breadcrumb__item"><a href="../index.html">🏠 Inicio</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item">Gobernanza</span>
+        </nav>
+
+        <!-- Cabecera del topic -->
+        <div class="topic-header">
+          <div class="topic-header__icon">🔒</div>
+          <div>
+            <h1 class="topic-header__title">Gobernanza en Power BI y Fabric</h1>
+            <p class="topic-header__subtitle">Diseña una plataforma de datos segura, escalable y sostenible — desde RLS y sensitivity labels hasta deployment pipelines, auditoría, linaje y Centro de Excelencia (CoE).</p>
+            <div class="topic-header__levels">
+              <span class="badge badge--beginner">Principiante</span>
+              <span class="badge badge--intermediate">Intermedio</span>
+              <span class="badge badge--advanced">Avanzado</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Introducción -->
+        <div class="gob-intro">
+          <h2 class="gob-intro__title">¿Por dónde empezamos? 🌸</h2>
+          <p class="gob-intro__text">
+            La <strong>gobernanza</strong> es lo que diferencia un proyecto Power BI que crece sano de uno
+            que se convierte en un caos de informes duplicados, datos descontrolados y permisos imposibles
+            de auditar. Piensa en ella como las normas de convivencia de tu plataforma de datos 🏛️:
+            sin reglas no hay confianza, y sin confianza nadie usa los informes.
+          </p>
+          <p class="gob-intro__text" style="margin-top: 0.75rem;">
+            En esta sección verás cómo proteger los datos con <strong>RLS y OLS</strong>, organizar
+            <strong>workspaces y roles</strong>, aplicar <strong>sensitivity labels</strong>, certificar
+            contenido de confianza, gestionar el <strong>ciclo de vida</strong> con deployment pipelines
+            y montar un <strong>Centro de Excelencia</strong> que escale buenas prácticas. 🚀
+          </p>
+          <div class="gob-intro__stats">
+            <div class="gob-intro__stat"><strong>12</strong>temas cubiertos</div>
+            <div class="gob-intro__stat"><strong>3</strong>niveles de dificultad</div>
+            <div class="gob-intro__stat"><strong>🔐</strong>Seguridad</div>
+            <div class="gob-intro__stat"><strong>🤝</strong>Adopción</div>
+          </div>
+        </div>
+
+        <!-- Grid -->
+        <h2 class="section-title">Explora por tema 📚</h2>
+        <div class="category-grid">
+
+          <a href="gobernanza/fundamentos.html" class="category-card">
+            <div class="category-card__header">
+              <span class="category-card__icon">🏛️</span>
+              <span class="category-card__name">Fundamentos de Gobernanza</span>
+            </div>
+            <p class="category-card__desc">Qué es la gobernanza de datos, los pilares (seguridad, calidad, adopción, ciclo de vida) y los roles clave en una plataforma Power BI sana.</p>
+            <div class="category-card__levels">
+              <span class="badge badge--beginner">Principiante</span>
+            </div>
+          </a>
+
+          <a href="gobernanza/rls.html" class="category-card">
+            <div class="category-card__header">
+              <span class="category-card__icon">🔐</span>
+              <span class="category-card__name">Row-Level Security (RLS)</span>
+            </div>
+            <p class="category-card__desc">Filtra filas por usuario con RLS estático y dinámico, USERNAME() / USERPRINCIPALNAME() y patrones de seguridad jerárquica con PATH.</p>
+            <div class="category-card__levels">
+              <span class="badge badge--intermediate">Intermedio</span>
+              <span class="badge badge--advanced">Avanzado</span>
+            </div>
+          </a>
+
+          <a href="gobernanza/ols.html" class="category-card">
+            <div class="category-card__header">
+              <span class="category-card__icon">🎯</span>
+              <span class="category-card__name">Object-Level Security (OLS)</span>
+            </div>
+            <p class="category-card__desc">Oculta tablas y columnas sensibles a usuarios sin permisos. Configuración con Tabular Editor, casos de uso y limitaciones reales.</p>
+            <div class="category-card__levels">
+              <span class="badge badge--advanced">Avanzado</span>
+            </div>
+          </a>
+
+          <a href="gobernanza/workspaces.html" class="category-card">
+            <div class="category-card__header">
+              <span class="category-card__icon">👥</span>
+              <span class="category-card__name">Workspaces y Roles</span>
+            </div>
+            <p class="category-card__desc">Tipos de workspace, los 4 roles (Admin, Member, Contributor, Viewer), permisos efectivos y cómo estructurar tu tenant sin caos.</p>
+            <div class="category-card__levels">
+              <span class="badge badge--beginner">Principiante</span>
+              <span class="badge badge--intermediate">Intermedio</span>
+            </div>
+          </a>
+
+          <a href="gobernanza/sensitivity-labels.html" class="category-card">
+            <div class="category-card__header">
+              <span class="category-card__icon">🛡️</span>
+              <span class="category-card__name">Sensitivity Labels (MIP)</span>
+            </div>
+            <p class="category-card__desc">Etiquetas de confidencialidad de Microsoft Purview: herencia desde el origen, protección al exportar y cómo aplicarlas en masa.</p>
+            <div class="category-card__levels">
+              <span class="badge badge--intermediate">Intermedio</span>
+            </div>
+          </a>
+
+          <a href="gobernanza/certificacion.html" class="category-card">
+            <div class="category-card__header">
+              <span class="category-card__icon">✅</span>
+              <span class="category-card__name">Certificación y Promoción</span>
+            </div>
+            <p class="category-card__desc">Endorsement de datasets, informes y dataflows: cuándo promocionar, cuándo certificar y cómo construir un proceso de revisión.</p>
+            <div class="category-card__levels">
+              <span class="badge badge--intermediate">Intermedio</span>
+            </div>
+          </a>
+
+          <a href="gobernanza/linaje.html" class="category-card">
+            <div class="category-card__header">
+              <span class="category-card__icon">🌐</span>
+              <span class="category-card__name">Linaje e Impact Analysis</span>
+            </div>
+            <p class="category-card__desc">Vista de linaje del workspace, análisis de impacto antes de cambiar un dataset y dependencias entre orígenes, modelos e informes.</p>
+            <div class="category-card__levels">
+              <span class="badge badge--intermediate">Intermedio</span>
+            </div>
+          </a>
+
+          <a href="gobernanza/auditoria.html" class="category-card">
+            <div class="category-card__header">
+              <span class="category-card__icon">📋</span>
+              <span class="category-card__name">Auditoría y Activity Log</span>
+            </div>
+            <p class="category-card__desc">Activity log de Power BI, Unified Audit Log de M365 y Purview: quién ve qué, quién publica y cómo construir dashboards de uso.</p>
+            <div class="category-card__levels">
+              <span class="badge badge--advanced">Avanzado</span>
+            </div>
+          </a>
+
+          <a href="gobernanza/deployment-pipelines.html" class="category-card">
+            <div class="category-card__header">
+              <span class="category-card__icon">🚀</span>
+              <span class="category-card__name">Deployment Pipelines</span>
+            </div>
+            <p class="category-card__desc">Ciclo de vida Dev → Test → Prod nativo en Power BI: reglas, parámetros de dataset, comparación entre etapas y buenas prácticas de despliegue.</p>
+            <div class="category-card__levels">
+              <span class="badge badge--intermediate">Intermedio</span>
+              <span class="badge badge--advanced">Avanzado</span>
+            </div>
+          </a>
+
+          <a href="gobernanza/dlp.html" class="category-card">
+            <div class="category-card__header">
+              <span class="category-card__icon">🛑</span>
+              <span class="category-card__name">DLP y Protección de Datos</span>
+            </div>
+            <p class="category-card__desc">Políticas Data Loss Prevention para Power BI: detección de info sensible, alertas, bloqueo de exportación y configuración paso a paso.</p>
+            <div class="category-card__levels">
+              <span class="badge badge--advanced">Avanzado</span>
+            </div>
+          </a>
+
+          <a href="gobernanza/tenant-capacidades.html" class="category-card">
+            <div class="category-card__header">
+              <span class="category-card__icon">🏗️</span>
+              <span class="category-card__name">Tenant Settings y Capacidades</span>
+            </div>
+            <p class="category-card__desc">Configuración del tenant, capacidades Pro / PPU / Premium / Fabric (F SKUs), workloads y cómo asignar workspaces a capacidades.</p>
+            <div class="category-card__levels">
+              <span class="badge badge--advanced">Avanzado</span>
+            </div>
+          </a>
+
+          <a href="gobernanza/coe-adopcion.html" class="category-card">
+            <div class="category-card__header">
+              <span class="category-card__icon">🤝</span>
+              <span class="category-card__name">CoE y Adopción</span>
+            </div>
+            <p class="category-card__desc">Centro de Excelencia (CoE), Power BI Adoption Roadmap de Microsoft, niveles de madurez y cómo escalar buenas prácticas en la organización.</p>
+            <div class="category-card__levels">
+              <span class="badge badge--intermediate">Intermedio</span>
+            </div>
+          </a>
+
+        </div>
+
+        <!-- Notas -->
+        <div class="note note--tip" style="margin-top: 2rem;">
+          <strong>💡 ¿Por dónde empezar?</strong>
+          <p>Si te estrenas en gobernanza, lee primero <a href="gobernanza/fundamentos.html">Fundamentos</a> y <a href="gobernanza/workspaces.html">Workspaces y Roles</a> — la base de todo. Después salta a <a href="gobernanza/rls.html">RLS</a> y <a href="gobernanza/sensitivity-labels.html">Sensitivity Labels</a> para proteger datos. Si gestionas un tenant, <a href="gobernanza/tenant-capacidades.html">Tenant Settings</a> y <a href="gobernanza/auditoria.html">Auditoría</a> son imprescindibles. 🚀</p>
+        </div>
+
+        <div class="note note--next" style="margin-top: 1.5rem;">
+          <strong>🚀 Siguiente nivel</strong>
+          <p>La gobernanza se apoya en un buen <a href="modelado.html">modelado de datos</a> y un <a href="diseno-ux.html">diseño UX cuidado</a>: sin esos cimientos, ningún proceso de gobierno aguanta el día a día.</p>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <button id="back-to-top" class="back-to-top" aria-label="Volver arriba" title="Volver arriba">↑</button>
+
+  <script src="https://cdn.jsdelivr.net/npm/i18next@23/dist/umd/i18next.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1/prism.min.js"></script>
+  <script src="../assets/js/theme.js"></script>
+  <script src="../assets/js/main.js"></script>
+  <script src="../assets/js/cursor.js"></script>
+</body>
+</html>

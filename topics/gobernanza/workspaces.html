@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Workspaces y roles en Power BI: tipos de workspace, los 4 roles (Admin, Member, Contributor, Viewer), permisos efectivos y cómo estructurar un tenant.">
+  <title>Workspaces y Roles — Gobernanza | Power BI Guide by Kawaii BI</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/prismjs@1/themes/prism-okaidia.min.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="../../assets/css/main.css">
+  <link rel="stylesheet" href="../../assets/css/themes.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/layout.css">
+
+  <style>
+    .topic-header { text-align: center; padding: 2.5rem 0 2rem; border-bottom: 2px solid var(--color-mauve); margin-bottom: 2.5rem; }
+    .topic-header__icon { font-size: 4rem; margin-bottom: 0.75rem; display: block; }
+    .topic-header__title { font-size: clamp(1.875rem, 4vw, 2.5rem); font-weight: 800; color: var(--color-dark); margin-bottom: 0.625rem; line-height: 1.2; }
+    .topic-header__subtitle { font-size: 1.0625rem; color: var(--color-slate); margin-bottom: 1.25rem; line-height: 1.5; max-width: 600px; margin-left: auto; margin-right: auto; }
+    .topic-header__levels { display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap; align-items: center; }
+    .category-header { display: flex; align-items: center; gap: 0.75rem; margin: 2.5rem 0 1.25rem; padding: 0.875rem 1.25rem; background: var(--color-rose); border-radius: var(--border-radius-sm); border-left: 4px solid var(--color-coral); }
+    .category-header__icon { font-size: 1.5rem; }
+    .category-header__title { font-size: 1.25rem; font-weight: 700; margin: 0; }
+    .concept-card { background: var(--color-white); border: 1.5px solid var(--color-mauve); border-radius: var(--border-radius); padding: 1.75rem; margin-bottom: 1.5rem; scroll-margin-top: 80px; transition: border-color 0.2s; }
+    .concept-card:hover { border-color: var(--color-coral); }
+    .concept-card h3 { font-size: 1.25rem; font-weight: 700; color: var(--color-coral); margin-bottom: 0.75rem; }
+    .concept-card h4 { font-size: 0.9375rem; font-weight: 700; color: var(--color-dark); margin: 1.25rem 0 0.5rem; }
+    .concept-card p { font-size: 0.9375rem; line-height: 1.7; color: var(--color-dark); margin-bottom: 0.75rem; }
+    .concept-card ul { padding-left: 1.25rem; font-size: 0.9375rem; line-height: 1.8; color: var(--color-dark); }
+    .concept-card code { background: var(--color-blush); padding: 0.1em 0.4em; border-radius: 4px; font-family: 'Fira Code', monospace; font-size: 0.85em; color: var(--color-coral); }
+    .roles-table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.875rem; }
+    .roles-table th, .roles-table td { padding: 0.5rem 0.75rem; border: 1px solid var(--color-mauve); text-align: left; }
+    .roles-table th { background: var(--color-rose); font-weight: 700; }
+    .roles-table td.ok { color: var(--color-success); text-align: center; font-weight: 700; }
+    .roles-table td.no { color: var(--color-slate); text-align: center; }
+    .toc { background: var(--color-rose); border-radius: var(--border-radius); padding: 1.25rem 1.5rem; margin-bottom: 2rem; border: 1.5px solid var(--color-mauve); }
+    .toc__title { font-size: 1rem; font-weight: 700; margin: 0 0 0.75rem; }
+    .toc__list { display: flex; flex-wrap: wrap; gap: 0.5rem; list-style: none; padding: 0; margin: 0; }
+    .toc__list a { font-size: 0.8125rem; color: var(--color-coral); text-decoration: none; padding: 0.25rem 0.625rem; background: var(--color-white); border-radius: 999px; border: 1px solid var(--color-mauve); transition: background 0.15s, color 0.15s; }
+    .toc__list a:hover { background: var(--color-coral); color: white; }
+  </style>
+</head>
+<body>
+
+  <aside class="site-sidebar">
+    <div class="site-sidebar__profile">
+      <img src="../../assets/images/avatar Sara.png" alt="Sara Lozano Martí" class="site-sidebar__avatar">
+      <p class="site-sidebar__name">Sara Lozano Martí</p>
+      <p class="site-sidebar__subtitle">Power BI Expert</p>
+    </div>
+    <nav class="site-sidebar__nav" aria-label="Navegación principal">
+      <ul>
+        <li><a href="../../index.html" class="site-sidebar__link"><span class="site-sidebar__icon">🏠</span> Inicio</a></li>
+        <li><a href="../dax.html" class="site-sidebar__link"><span class="site-sidebar__icon">⚡</span> Funciones DAX</a></li>
+        <li><a href="../power-query.html" class="site-sidebar__link"><span class="site-sidebar__icon">🔄</span> Power Query</a></li>
+        <li><a href="../lenguaje-m.html" class="site-sidebar__link"><span class="site-sidebar__icon">〽️</span> Lenguaje M</a></li>
+        <li><a href="../modelado.html" class="site-sidebar__link"><span class="site-sidebar__icon">🗄️</span> Modelado</a></li>
+        <li><a href="../conceptos-powerbi.html" class="site-sidebar__link"><span class="site-sidebar__icon">📊</span> Conceptos Power BI</a></li>
+        <li><a href="../fabric.html" class="site-sidebar__link"><span class="site-sidebar__icon">🧵</span> Microsoft Fabric</a></li>
+        <li><a href="../tmdl.html" class="site-sidebar__link"><span class="site-sidebar__icon">📝</span> TMDL</a></li>
+        <li><a href="../diseno-ux.html" class="site-sidebar__link"><span class="site-sidebar__icon">🎨</span> Diseño y UX</a></li>
+        <li><a href="../gobernanza.html" class="site-sidebar__link is-active"><span class="site-sidebar__icon">🔒</span> Gobernanza</a></li>
+      </ul>
+    </nav>
+    <div class="site-sidebar__divider"></div>
+    <div class="site-sidebar__footer">
+      <a href="../../quien-soy.html" class="site-sidebar__link site-sidebar__link--highlight"><span class="site-sidebar__icon">👩‍💻</span> ¿Quién soy?</a>
+      <div class="site-sidebar__social">
+        <a href="https://www.linkedin.com/in/saralozanomarti" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><img src="../../assets/images/logo linkedIN.png" alt="LinkedIn" class="site-sidebar__social-icon"></a>
+        <a href="https://www.youtube.com/@KawaiiPowerBI" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><img src="../../assets/images/logo youtube.png" alt="YouTube" class="site-sidebar__social-icon"></a>
+        <a href="https://github.com/KawaiiBI" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><img src="../../assets/images/logo github.png" alt="GitHub" class="site-sidebar__social-icon"></a>
+      </div>
+      <div class="site-sidebar__logo-bottom"><img src="../../assets/images/Logo Kawaii.jpg" alt="Kawaii BI" class="site-sidebar__logo-img"></div>
+      <p class="site-sidebar__copyright">Power BI Guide 🌸<br>© 2026 Kawaii BI</p>
+    </div>
+  </aside>
+
+  <div class="page-wrapper">
+    <main class="main-content">
+      <div class="topic-page">
+
+        <nav class="breadcrumb" aria-label="Ruta de navegación">
+          <span class="breadcrumb__item"><a href="../../index.html">🏠 Inicio</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item"><a href="../gobernanza.html">Gobernanza</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item">Workspaces y Roles</span>
+        </nav>
+
+        <header class="topic-header">
+          <span class="topic-header__icon">👥</span>
+          <h1 class="topic-header__title">Workspaces y Roles</h1>
+          <p class="topic-header__subtitle">La unidad básica de organización en Power BI. Tipos de workspace, los 4 roles, permisos efectivos y cómo estructurar un tenant que no se convierta en caos.</p>
+          <div class="topic-header__levels">
+            <span class="badge badge--beginner">Principiante</span>
+            <span class="badge badge--intermediate">Intermedio</span>
+          </div>
+        </header>
+
+        <nav class="toc" aria-label="Índice de contenidos">
+          <p class="toc__title">📌 En esta página:</p>
+          <ul class="toc__list">
+            <li><a href="#que-es">¿Qué es un workspace?</a></li>
+            <li><a href="#tipos">Tipos de workspace</a></li>
+            <li><a href="#roles">Los 4 roles</a></li>
+            <li><a href="#apps">Apps y consumo</a></li>
+            <li><a href="#estructura">Cómo estructurar el tenant</a></li>
+          </ul>
+        </nav>
+
+        <div class="category-header" id="que-es">
+          <span class="category-header__icon">📦</span>
+          <h2 class="category-header__title">¿Qué es un workspace?</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>Un contenedor con permisos comunes</h3>
+          <p>Un <strong>workspace</strong> es el contenedor donde viven datasets, informes, dashboards, dataflows, lakehouses, notebooks y demás artefactos. Es la unidad mínima de organización y de permisos en Power BI / Fabric.</p>
+          <p>Todo lo que está dentro de un workspace comparte los permisos del workspace. No puedes dar acceso a "solo este informe" desde el workspace — para eso existen otras vías (Apps, sharing directo, certificación).</p>
+
+          <h4>Cada workspace tiene:</h4>
+          <ul>
+            <li>Un <strong>nombre</strong> (único en el tenant) y una descripción</li>
+            <li>Una <strong>capacidad asignada</strong>: Shared (Pro), PPU, Premium o Fabric (F SKU)</li>
+            <li>Una lista de <strong>miembros con roles</strong></li>
+            <li>Opcionalmente, una <strong>App</strong> publicada y un <strong>Deployment Pipeline</strong></li>
+          </ul>
+        </article>
+
+        <div class="category-header" id="tipos">
+          <span class="category-header__icon">🏢</span>
+          <h2 class="category-header__title">Tipos de workspace</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>My Workspace (personal)</h3>
+          <p>Cada usuario tiene uno. Es <strong>privado, no colaborativo y no gobernable</strong>. Útil para borradores y pruebas; nunca para contenido compartido. Una gobernanza sana <em>desincentiva</em> publicar nada importante aquí.</p>
+
+          <h3>Workspaces V2 (los actuales)</h3>
+          <p>Los que se crean desde el Service o vía API. Sustituyeron a los antiguos V1 basados en grupos de Microsoft 365. Soportan:</p>
+          <ul>
+            <li>4 roles asignables a usuarios o grupos de Microsoft Entra</li>
+            <li>Asignación a una capacidad (Pro / PPU / Premium / Fabric)</li>
+            <li>Publicación de Apps y uso con Deployment Pipelines</li>
+            <li>Vista de linaje y soporte para Git en workspaces Fabric</li>
+          </ul>
+        </article>
+
+        <div class="category-header" id="roles">
+          <span class="category-header__icon">🎭</span>
+          <h2 class="category-header__title">Los 4 roles del workspace</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>Admin → Member → Contributor → Viewer</h3>
+          <p>Los roles son <strong>jerárquicos: cada nivel hereda los permisos del inferior</strong> y añade más. Esta es la tabla cruzada de permisos efectivos:</p>
+
+          <table class="roles-table">
+            <thead>
+              <tr>
+                <th>Acción</th>
+                <th>Viewer</th>
+                <th>Contributor</th>
+                <th>Member</th>
+                <th>Admin</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>Ver informes y dashboards</td><td class="ok">✓</td><td class="ok">✓</td><td class="ok">✓</td><td class="ok">✓</td></tr>
+              <tr><td>Leer datos (Build con permisos)</td><td class="no">—</td><td class="ok">✓</td><td class="ok">✓</td><td class="ok">✓</td></tr>
+              <tr><td>Publicar / editar contenido</td><td class="no">—</td><td class="ok">✓</td><td class="ok">✓</td><td class="ok">✓</td></tr>
+              <tr><td>Programar actualizaciones</td><td class="no">—</td><td class="ok">✓</td><td class="ok">✓</td><td class="ok">✓</td></tr>
+              <tr><td>Publicar / actualizar la App</td><td class="no">—</td><td class="no">—</td><td class="ok">✓</td><td class="ok">✓</td></tr>
+              <tr><td>Compartir contenido / dataset</td><td class="no">—</td><td class="no">—</td><td class="ok">✓</td><td class="ok">✓</td></tr>
+              <tr><td>Añadir miembros (excepto admins)</td><td class="no">—</td><td class="no">—</td><td class="ok">✓</td><td class="ok">✓</td></tr>
+              <tr><td>Añadir admins, eliminar workspace</td><td class="no">—</td><td class="no">—</td><td class="no">—</td><td class="ok">✓</td></tr>
+            </tbody>
+          </table>
+
+          <h4>Reglas prácticas:</h4>
+          <ul>
+            <li>Asigna roles a <strong>grupos de Entra</strong>, no a usuarios sueltos</li>
+            <li>Mínimo 2 admins por workspace para evitar bloqueos si alguien se va</li>
+            <li>Viewer + permiso Build sobre dataset = puede crear sus propios informes conectados a tu modelo</li>
+          </ul>
+        </article>
+
+        <div class="note note--practice">
+          📌 <strong>Buena práctica:</strong> Los <em>Viewers</em> normalmente no necesitan estar en el workspace si vas a usar Apps. Publica una App y comparte con los consumidores ahí. Mantén el workspace solo para autores.
+        </div>
+
+        <div class="category-header" id="apps">
+          <span class="category-header__icon">📱</span>
+          <h2 class="category-header__title">Apps: la capa de distribución</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>Separar autoría y consumo</h3>
+          <p>Una <strong>App</strong> es la "vitrina" pública de un workspace. Empaqueta un subconjunto curado de informes y dashboards y los expone a los consumidores con permisos finos, navegación propia, branding y audiences.</p>
+          <ul>
+            <li><strong>Audiences:</strong> diferentes grupos de usuarios ven diferentes subconjuntos de la misma App</li>
+            <li><strong>Versionado natural:</strong> los autores trabajan en el workspace; los consumidores ven solo la última versión publicada</li>
+            <li><strong>Sin acceso al workspace:</strong> los usuarios de la App no necesitan estar en el workspace</li>
+          </ul>
+          <p>Es el patrón estándar para distribuir contenido a gran escala: autoría privada → revisión → App pública.</p>
+        </article>
+
+        <div class="category-header" id="estructura">
+          <span class="category-header__icon">🗺️</span>
+          <h2 class="category-header__title">Cómo estructurar workspaces en un tenant</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>Patrones recomendados</h3>
+
+          <h4>Por dominio funcional (el más común)</h4>
+          <ul>
+            <li><code>WS_Finance_Dev</code> / <code>WS_Finance_Prod</code></li>
+            <li><code>WS_Sales_Dev</code> / <code>WS_Sales_Prod</code></li>
+            <li><code>WS_HR_Prod</code></li>
+            <li><code>WS_DataPlatform</code> (datasets / dataflows / lakehouses compartidos por el CoE)</li>
+          </ul>
+
+          <h4>Convenciones de nombres</h4>
+          <ul>
+            <li>Prefijo <code>WS_</code> para distinguirlos en listas mezcladas</li>
+            <li>Indicar dominio y, opcionalmente, etapa (Dev/Test/Prod)</li>
+            <li>Sin abreviaturas crípticas — el nombre lo lee todo el mundo</li>
+          </ul>
+
+          <h4>Para Deployment Pipelines</h4>
+          <p>Si vas a usar pipelines, necesitas <strong>tres workspaces (Dev, Test, Prod)</strong> por iniciativa, conectados a la misma pipeline. Más detalle en <a href="deployment-pipelines.html">Deployment Pipelines</a>.</p>
+        </article>
+
+        <div class="note note--warning">
+          ⚠️ <strong>Errores típicos:</strong> un único workspace "BI" donde cae todo, mezclar Dev y Prod en el mismo workspace, dar Admin a todo el mundo "por comodidad", o no tener documentado quién es el propietario funcional de cada workspace.
+        </div>
+
+        <div class="note note--next" style="margin-top: 2rem;">
+          🚀 <strong>Siguiente paso:</strong> Con los workspaces organizados, ya puedes proteger los datos dentro: empieza por <a href="rls.html">RLS</a> y, en paralelo, etiqueta el contenido con <a href="sensitivity-labels.html">Sensitivity Labels</a>.
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <button id="back-to-top" class="back-to-top" aria-label="Volver arriba" title="Volver arriba">↑</button>
+
+  <script src="https://cdn.jsdelivr.net/npm/i18next@23/dist/umd/i18next.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1/prism.min.js"></script>
+  <script src="../../assets/js/theme.js"></script>
+  <script src="../../assets/js/main.js"></script>
+  <script src="../../assets/js/cursor.js"></script>
+</body>
+</html>

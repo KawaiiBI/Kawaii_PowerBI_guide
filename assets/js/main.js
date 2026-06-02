@@ -210,14 +210,6 @@ function generateTopicsGrid() {
       url: 'topics/tmdl.html'
     },
     {
-      id: 'mejores-practicas',
-      icon: '✅',
-      title: 'Mejores Prácticas',
-      description: 'Convenciones de nomenclatura, organización de medidas y estándares de calidad profesional.',
-      levels: ['beginner', 'intermediate', 'advanced'],
-      url: 'topics/mejores-practicas.html'
-    },
-    {
       id: 'diseno-ux',
       icon: '🎨',
       title: 'Diseño y UX',

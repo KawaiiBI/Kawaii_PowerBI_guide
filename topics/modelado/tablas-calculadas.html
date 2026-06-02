@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Tablas calculadas en Power BI con DAX: cuándo usarlas, patrones de tablas de desconexión, parámetros what-if y cuándo evitarlas por impacto en rendimiento.">
+  <title>Tablas Calculadas — Modelado de Datos | Power BI Guide by Kawaii BI</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/prismjs@1/themes/prism-okaidia.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="../../assets/css/main.css">
+  <link rel="stylesheet" href="../../assets/css/themes.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/layout.css">
+
+  <style>
+    .topic-header { text-align: center; padding: 2.5rem 0 2rem; border-bottom: 2px solid var(--color-mauve); margin-bottom: 2.5rem; }
+    .topic-header__icon { font-size: 4rem; margin-bottom: 0.75rem; display: block; }
+    .topic-header__title { font-size: clamp(1.875rem, 4vw, 2.5rem); font-weight: 800; color: var(--color-dark); margin-bottom: 0.625rem; line-height: 1.2; }
+    .topic-header__subtitle { font-size: 1.0625rem; color: var(--color-slate); margin-bottom: 1.25rem; line-height: 1.5; max-width: 600px; margin-left: auto; margin-right: auto; }
+    .topic-header__levels { display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap; align-items: center; }
+    .category-header { display: flex; align-items: center; gap: 0.75rem; margin: 2.5rem 0 1.25rem; padding: 0.875rem 1.25rem; background: var(--color-rose); border-radius: var(--border-radius-sm); border-left: 4px solid var(--color-coral); }
+    .category-header__icon { font-size: 1.5rem; }
+    .category-header__title { font-size: 1.25rem; font-weight: 700; margin: 0; }
+    .concept-card { background: var(--color-white); border: 1.5px solid var(--color-mauve); border-radius: var(--border-radius); padding: 1.75rem; margin-bottom: 1.5rem; scroll-margin-top: 80px; transition: border-color 0.2s; }
+    .concept-card:hover { border-color: var(--color-coral); }
+    .concept-card h3 { font-size: 1.25rem; font-weight: 700; color: var(--color-coral); margin-bottom: 0.75rem; }
+    .concept-card h4 { font-size: 0.9375rem; font-weight: 700; color: var(--color-dark); margin: 1.25rem 0 0.5rem; }
+    .concept-card p { font-size: 0.9375rem; line-height: 1.7; color: var(--color-dark); margin-bottom: 0.75rem; }
+    .concept-card ul { padding-left: 1.25rem; font-size: 0.9375rem; line-height: 1.8; color: var(--color-dark); }
+    .concept-card code { background: var(--color-blush); padding: 0.1em 0.4em; border-radius: 4px; font-family: 'Fira Code', monospace; font-size: 0.85em; color: var(--color-coral); }
+    .toc { background: var(--color-rose); border-radius: var(--border-radius); padding: 1.25rem 1.5rem; margin-bottom: 2rem; border: 1.5px solid var(--color-mauve); }
+    .toc__title { font-size: 1rem; font-weight: 700; margin: 0 0 0.75rem; }
+    .toc__list { display: flex; flex-wrap: wrap; gap: 0.5rem; list-style: none; padding: 0; margin: 0; }
+    .toc__list a { font-size: 0.8125rem; color: var(--color-coral); text-decoration: none; padding: 0.25rem 0.625rem; background: var(--color-white); border-radius: 999px; border: 1px solid var(--color-mauve); transition: background 0.15s, color 0.15s; }
+    .toc__list a:hover { background: var(--color-coral); color: white; }
+  </style>
+</head>
+<body>
+
+  <aside class="site-sidebar">
+    <div class="site-sidebar__profile">
+      <img src="../../assets/images/avatar Sara.png" alt="Sara Lozano Martí" class="site-sidebar__avatar">
+      <p class="site-sidebar__name">Sara Lozano Martí</p>
+      <p class="site-sidebar__subtitle">Power BI Expert</p>
+    </div>
+    <nav class="site-sidebar__nav" aria-label="Navegación principal">
+      <ul>
+        <li><a href="../../index.html" class="site-sidebar__link"><span class="site-sidebar__icon">🏠</span> Inicio</a></li>
+        <li><a href="../dax.html" class="site-sidebar__link"><span class="site-sidebar__icon">⚡</span> Funciones DAX</a></li>
+        <li><a href="../power-query.html" class="site-sidebar__link"><span class="site-sidebar__icon">🔄</span> Power Query</a></li>
+        <li><a href="../lenguaje-m.html" class="site-sidebar__link"><span class="site-sidebar__icon">〽️</span> Lenguaje M</a></li>
+        <li><a href="../modelado.html" class="site-sidebar__link is-active"><span class="site-sidebar__icon">🗄️</span> Modelado</a></li>
+        <li><a href="../conceptos-powerbi.html" class="site-sidebar__link"><span class="site-sidebar__icon">📊</span> Conceptos Power BI</a></li>
+        <li><a href="../fabric.html" class="site-sidebar__link"><span class="site-sidebar__icon">🧵</span> Microsoft Fabric</a></li>
+        <li><a href="../tmdl.html" class="site-sidebar__link"><span class="site-sidebar__icon">📝</span> TMDL</a></li>
+        <li><a href="../diseno-ux.html" class="site-sidebar__link"><span class="site-sidebar__icon">🎨</span> Diseño y UX</a></li>
+        <li><a href="../gobernanza.html" class="site-sidebar__link"><span class="site-sidebar__icon">🔒</span> Gobernanza</a></li>
+      </ul>
+    </nav>
+    <div class="site-sidebar__divider"></div>
+    <div class="site-sidebar__footer">
+      <a href="../../quien-soy.html" class="site-sidebar__link site-sidebar__link--highlight"><span class="site-sidebar__icon">👩‍💻</span> ¿Quién soy?</a>
+      <div class="site-sidebar__social">
+        <a href="https://www.linkedin.com/in/saralozanomarti" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><img src="../../assets/images/logo linkedIN.png" alt="LinkedIn" class="site-sidebar__social-icon"></a>
+        <a href="https://www.youtube.com/@KawaiiPowerBI" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><img src="../../assets/images/logo youtube.png" alt="YouTube" class="site-sidebar__social-icon"></a>
+        <a href="https://github.com/KawaiiBI" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><img src="../../assets/images/logo github.png" alt="GitHub" class="site-sidebar__social-icon"></a>
+      </div>
+      <div class="site-sidebar__logo-bottom"><img src="../../assets/images/Logo Kawaii.jpg" alt="Kawaii BI" class="site-sidebar__logo-img"></div>
+      <p class="site-sidebar__copyright">Power BI Guide 🌸<br>© 2026 Kawaii BI</p>
+    </div>
+  </aside>
+
+  <div class="page-wrapper">
+    <main class="main-content">
+      <div class="topic-page">
+
+        <nav class="breadcrumb" aria-label="Ruta de navegación">
+          <span class="breadcrumb__item"><a href="../../index.html">🏠 Inicio</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item"><a href="../modelado.html">Modelado de Datos</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item">Tablas Calculadas</span>
+        </nav>
+
+        <header class="topic-header">
+          <span class="topic-header__icon">🧮</span>
+          <h1 class="topic-header__title">Tablas Calculadas</h1>
+          <p class="topic-header__subtitle">Tablas creadas con fórmulas DAX directamente en el modelo. Aprende sus casos de uso, los patrones más útiles y cuándo es mejor evitarlas</p>
+          <div class="topic-header__levels">
+            <span class="badge badge--intermediate">Intermedio</span>
+            <span class="badge badge--advanced">Avanzado</span>
+          </div>
+        </header>
+
+        <nav class="toc" aria-label="Índice de contenidos">
+          <p class="toc__title">📌 En esta página:</p>
+          <ul class="toc__list">
+            <li><a href="#que-son">¿Qué son?</a></li>
+            <li><a href="#sintaxis">Sintaxis básica</a></li>
+            <li><a href="#desconexion">Tablas de desconexión</a></li>
+            <li><a href="#what-if">Parámetros what-if</a></li>
+            <li><a href="#cuando-evitar">Cuándo evitarlas</a></li>
+          </ul>
+        </nav>
+
+        <div class="category-header" id="que-son">
+          <span class="category-header__icon">🔍</span>
+          <h2 class="category-header__title">¿Qué son las Tablas Calculadas?</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>Tablas definidas con DAX en lugar de Power Query</h3>
+          <p>Una <strong>tabla calculada</strong> es una tabla que creas directamente en el modelo de datos usando una fórmula DAX, sin necesidad de cargar datos desde un origen externo. Se calcula durante la actualización del modelo y el resultado se almacena en memoria, como cualquier otra tabla.</p>
+
+          <h4>Diferencias con tablas cargadas desde Power Query:</h4>
+          <ul>
+            <li>Se definen con DAX en la vista de datos o mediante el menú "Nueva tabla"</li>
+            <li>No tienen conexión con el origen de datos — se calculan a partir del modelo</li>
+            <li>Pueden referenciar otras tablas del modelo en su definición</li>
+            <li>Se recalculan en cada actualización del modelo</li>
+            <li>Aparecen con un icono especial (calculadora) en el panel de campos</li>
+          </ul>
+
+          <div class="note note--tip">
+            💡 <strong>¿Para qué sirven?</strong> Las tablas calculadas son útiles para crear tablas de soporte que no vienen del origen de datos: listas de opciones para slicers, tablas de parámetros, dimensiones derivadas de otras tablas, tablas auxiliares para RLS, etc.
+          </div>
+        </article>
+
+        <div class="category-header" id="sintaxis">
+          <span class="category-header__icon">💻</span>
+          <h2 class="category-header__title">Sintaxis Básica</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>Formas de crear tablas calculadas</h3>
+
+          <pre><code class="language-javascript">// 1. Tabla con datos fijos (DATATABLE)
+TablaMeses =
+DATATABLE(
+    "NumeroMes", INTEGER,
+    "NombreMes", STRING,
+    {
+        {1, "Enero"}, {2, "Febrero"}, {3, "Marzo"},
+        {4, "Abril"}, {5, "Mayo"}, {6, "Junio"},
+        {7, "Julio"}, {8, "Agosto"}, {9, "Septiembre"},
+        {10, "Octubre"}, {11, "Noviembre"}, {12, "Diciembre"}
+    }
+)
+
+// 2. Tabla derivada de otra tabla (SUMMARIZE)
+ResumenCategorias =
+SUMMARIZE(
+    DimProducto,
+    DimProducto[Categoria],
+    DimProducto[Subcategoria]
+)
+
+// 3. Tabla con todas las combinaciones posibles
+ProductosXTienda =
+CROSSJOIN(
+    SELECTCOLUMNS(DimProducto, "Producto", DimProducto[Nombre]),
+    SELECTCOLUMNS(DimTienda, "Tienda", DimTienda[Nombre])
+)
+
+// 4. Tabla que copia valores únicos (útil para slicers sin conexión)
+TablaKPIs =
+UNION(
+    ROW("KPI", "Ventas"),
+    ROW("KPI", "Margen"),
+    ROW("KPI", "Unidades"),
+    ROW("KPI", "Clientes Nuevos")
+)</code></pre>
+        </article>
+
+        <div class="category-header" id="desconexion">
+          <span class="category-header__icon">🔌</span>
+          <h2 class="category-header__title">Tablas de Desconexión (Disconnected Tables)</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>El patrón más potente para slicers dinámicos</h3>
+          <p>Una <strong>tabla de desconexión</strong> es una tabla calculada que <em>no tiene ninguna relación</em> con el resto del modelo. Se usa para crear slicers con opciones que el usuario puede seleccionar y que luego las medidas DAX leen con <code>SELECTEDVALUE</code> o <code>ISFILTERED</code>.</p>
+
+          <h4>Ejemplo: slicer para seleccionar la métrica a mostrar</h4>
+          <pre><code class="language-javascript">// 1. Crear la tabla de desconexión (sin relaciones)
+SeleccionMetrica =
+DATATABLE(
+    "ID", INTEGER,
+    "Metrica", STRING,
+    {
+        {1, "Ventas"},
+        {2, "Unidades"},
+        {3, "Margen"},
+        {4, "Ticket Medio"}
+    }
+)
+
+// 2. Medida que lee la selección del slicer
+Metrica Seleccionada =
+SWITCH(
+    SELECTEDVALUE(SeleccionMetrica[Metrica], "Ventas"),
+    "Ventas",      [Ventas Totales],
+    "Unidades",    [Unidades Totales],
+    "Margen",      [Margen Total],
+    "Ticket Medio",[Ticket Medio],
+    [Ventas Totales]  -- valor por defecto
+)
+
+// 3. En el visual, usa [Metrica Seleccionada] como valor
+//    y el slicer con SeleccionMetrica[Metrica]
+//    El usuario elige la métrica y el gráfico se actualiza solo</code></pre>
+
+          <p>Este patrón es muy usado en dashboards ejecutivos donde el usuario quiere cambiar la métrica principal sin navegar a otra página.</p>
+        </article>
+
+        <div class="category-header" id="what-if">
+          <span class="category-header__icon">🎲</span>
+          <h2 class="category-header__title">Parámetros What-If</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>Tablas calculadas para análisis de escenarios</h3>
+          <p>Power BI tiene la función "Parámetros what-if" (en la cinta Modelado) que automáticamente crea una tabla calculada con un rango de valores numéricos para simular escenarios.</p>
+
+          <pre><code class="language-javascript">// Lo que Power BI crea automáticamente al definir un parámetro what-if
+// Parámetro: "Tasa de Descuento" del 0% al 30%, incremento 1%
+
+Tasa Descuento =
+GENERATESERIES(0, 0.30, 0.01)  // Genera 0, 0.01, 0.02... 0.30
+
+// Y crea automáticamente esta medida:
+Valor Tasa Descuento =
+SELECTEDVALUE('Tasa Descuento'[Tasa Descuento], 0)
+
+// Uso en tus medidas:
+Ventas con Descuento =
+[Ventas Totales] * (1 - [Valor Tasa Descuento])</code></pre>
+
+          <div class="note note--practice">
+            📌 <strong>Buena práctica:</strong> Puedes crear parámetros what-if manualmente con <code>GENERATESERIES</code> en lugar de usar el asistente — te da más control sobre el formato y el nombre. El asistente es útil para empezar rápido, pero el resultado es el mismo.
+          </div>
+        </article>
+
+        <div class="category-header" id="cuando-evitar">
+          <span class="category-header__icon">⚠️</span>
+          <h2 class="category-header__title">Cuándo Evitar las Tablas Calculadas</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>No son la solución para todo</h3>
+          <p>Las tablas calculadas son poderosas, pero tienen desventajas importantes que debes considerar:</p>
+
+          <h4>Situaciones donde NO usar tablas calculadas:</h4>
+          <ul>
+            <li><strong>Transformaciones de datos:</strong> Si puedes hacerlo en Power Query, hazlo ahí. Las transformaciones en PQ no consumen RAM del modelo ni ralentizan las actualizaciones.</li>
+            <li><strong>Tablas grandes derivadas de hechos:</strong> Una tabla calculada que resume millones de filas se almacena completa en memoria. Mejor usar agregaciones o hacer el resumen en la fuente.</li>
+            <li><strong>Datos que necesitan actualización frecuente:</strong> Las tablas calculadas se recalculan en cada actualización completa. Añaden tiempo al proceso.</li>
+            <li><strong>Datos estáticos que podrías importar:</strong> Si la tabla tiene datos fijos (listas de países, meses, etc.), impórtala directamente desde un Excel o CSV en lugar de crearla con DATATABLE.</li>
+          </ul>
+
+          <h4>Regla de decisión:</h4>
+          <ul>
+            <li>¿Puedes crearlo en Power Query? → Hazlo en Power Query</li>
+            <li>¿Viene de datos externos? → Impórtala como tabla normal</li>
+            <li>¿Es una tabla auxiliar o de parámetros sin origen? → Usa tabla calculada DAX</li>
+          </ul>
+
+          <div class="note note--warning">
+            ⚠️ <strong>Ojo con esto:</strong> Las tablas calculadas no pueden contener columnas de tipo texto libre muy largo (memorias, comentarios) de forma eficiente. VertiPaq gestiona mal columnas con alta cardinalidad de texto largo. En esos casos, es mejor dejar esos campos en Power Query o en la fuente.
+          </div>
+        </article>
+
+        <div class="note note--next" style="margin-top: 2rem;">
+          🚀 <strong>¡Siguiente nivel!</strong> Con las tablas calculadas dominas la capa de datos del modelo. El siguiente paso avanzado es aprender <a href="optimizacion.html">Optimización de Rendimiento</a> para asegurarte de que tu modelo escala bien. Para técnicas de análisis de escenarios más sofisticadas, explora los <a href="patrones-avanzados.html">Patrones Avanzados de Modelado</a>.
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <button id="back-to-top" class="back-to-top" aria-label="Volver arriba" title="Volver arriba">↑</button>
+
+  <script src="https://cdn.jsdelivr.net/npm/i18next@23/dist/umd/i18next.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1/prism.min.js"></script>
+  <script src="../../assets/js/theme.js"></script>
+  <script src="../../assets/js/main.js"></script>
+  <script src="../../assets/js/cursor.js"></script>
+</body>
+</html>

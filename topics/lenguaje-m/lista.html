@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta content="Funciones de Lista en Lenguaje M — List.Sum, List.Transform, List.Generate, List.Accumulate y 40+ funciones para trabajar con colecciones de valores en Power Query" name="description"/>
+<title>Funciones de Lista (List.*) — Lenguaje M | Power BI Guide by Kawaii BI</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Fira+Code:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/prismjs@1/themes/prism-okaidia.min.css" rel="stylesheet"/>
+<link href="../../assets/css/main.css" rel="stylesheet"/>
+<link href="../../assets/css/themes.css" rel="stylesheet"/>
+<link href="../../assets/css/components.css" rel="stylesheet"/>
+<link href="../../assets/css/layout.css" rel="stylesheet"/>
+<link href="../../assets/css/dax-search.css" rel="stylesheet"/>
+<style>
+        /* Topic header con icono grande */
+    .topic-header {
+      text-align: center;
+      padding: 2.5rem 0 2rem;
+      border-bottom: 2px solid var(--color-mauve);
+      margin-bottom: 2.5rem;
+    }
+
+    .topic-header__icon {
+      font-size: 4rem;
+      margin-bottom: 0.75rem;
+      display: block;
+    }
+
+    .topic-header__title {
+      font-size: clamp(1.875rem, 4vw, 2.5rem);
+      font-weight: 800;
+      color: var(--color-dark);
+      margin-bottom: 0.625rem;
+      line-height: 1.2;
+    }
+
+    .topic-header__subtitle {
+      font-size: 1.0625rem;
+      color: var(--color-slate);
+      margin-bottom: 1.25rem;
+      line-height: 1.5;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .topic-header__levels {
+      display: flex;
+      gap: 0.5rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .category-header{display:flex;align-items:center;gap:0.75rem;margin:2.5rem 0 1.25rem;padding:0.875rem 1.25rem;background:var(--color-rose);border-radius:var(--border-radius-sm);border-left:4px solid var(--color-coral);}
+    .category-header__icon{font-size:1.5rem;}
+    .category-header__title{font-size:1.25rem;font-weight:700;margin:0;}
+    .function-card{background:var(--color-white);border:1.5px solid var(--color-mauve);border-radius:var(--border-radius);padding:1.75rem;margin-bottom:1.5rem;scroll-margin-top:80px;transition:border-color 0.2s;}
+    .function-card:hover{border-color:var(--color-coral);}
+    .function-card__header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;padding-bottom:0.75rem;border-bottom:2px solid var(--color-blush);flex-wrap:wrap;gap:0.5rem;}
+    .function-card__title{font-size:1.375rem;font-weight:800;color:var(--color-coral);margin:0;font-family:'Fira Code',monospace;}
+    .function-card h4{font-size:0.9375rem;font-weight:700;color:var(--color-dark);margin:1.25rem 0 0.625rem;}
+    .function-card p{font-size:0.9375rem;line-height:1.7;color:var(--color-dark);}
+    .function-card__params ul{list-style:none;padding:0;margin:0;}
+    .function-card__params li{padding:0.5rem 0 0.5rem 1.5rem;position:relative;line-height:1.6;font-size:0.9rem;border-bottom:1px solid var(--color-blush);}
+    .function-card__params li:last-child{border-bottom:none;}
+    .function-card__params li::before{content:"→";position:absolute;left:0;color:var(--color-coral);font-weight:700;}
+    .function-card__params code{background:var(--color-blush);padding:0.1em 0.4em;border-radius:4px;font-family:'Fira Code',monospace;font-size:0.85em;color:var(--color-coral);}
+    .toc{background:var(--color-rose);border-radius:var(--border-radius);padding:1.25rem 1.5rem;margin-bottom:2rem;border:1.5px solid var(--color-mauve);}
+    .toc__title{font-size:1rem;font-weight:700;margin:0 0 0.75rem;}
+    .toc__list{display:flex;flex-wrap:wrap;gap:0.5rem;list-style:none;padding:0;margin:0;}
+    .toc__list a{font-size:0.8125rem;color:var(--color-coral);text-decoration:none;padding:0.25rem 0.625rem;background:var(--color-white);border-radius:999px;border:1px solid var(--color-mauve);font-family:'Fira Code',monospace;}
+    .toc__list a:hover{background:var(--color-coral);color:white;}
+  </style>
+</head>
+<body>
+<aside class="site-sidebar">
+<div class="site-sidebar__profile">
+<img alt="Sara Lozano Martí" class="site-sidebar__avatar" src="../../assets/images/avatar Sara.png"/>
+<p class="site-sidebar__name">Sara Lozano Martí</p>
+<p class="site-sidebar__subtitle">Power BI Expert</p>
+</div>
+<nav aria-label="Navegación principal" class="site-sidebar__nav">
+<ul>
+<li><a class="site-sidebar__link" href="../../index.html"><span class="site-sidebar__icon">🏠</span> Inicio</a></li>
+<li><a class="site-sidebar__link" href="../dax.html"><span class="site-sidebar__icon">⚡</span> Funciones DAX</a></li>
+<li><a class="site-sidebar__link" href="../power-query.html"><span class="site-sidebar__icon">🔄</span> Power Query</a></li>
+<li><a class="site-sidebar__link is-active" href="../lenguaje-m.html"><span class="site-sidebar__icon">〽️</span> Lenguaje M</a></li>
+<li><a class="site-sidebar__link" href="../modelado.html"><span class="site-sidebar__icon">🗄️</span> Modelado</a></li>
+<li><a class="site-sidebar__link" href="../conceptos-powerbi.html"><span class="site-sidebar__icon">📊</span> Conceptos Power BI</a></li>
+<li><a class="site-sidebar__link" href="../fabric.html"><span class="site-sidebar__icon">🧵</span> Microsoft Fabric</a></li>
+<li><a class="site-sidebar__link" href="../tmdl.html"><span class="site-sidebar__icon">📝</span> TMDL</a></li>
+<li><a class="site-sidebar__link" href="../diseno-ux.html"><span class="site-sidebar__icon">🎨</span> Diseño y UX</a></li>
+<li><a class="site-sidebar__link" href="../gobernanza.html"><span class="site-sidebar__icon">🔒</span> Gobernanza</a></li>
+</ul>
+</nav>
+<div class="site-sidebar__divider"></div>
+<div class="site-sidebar__footer">
+<a class="site-sidebar__link site-sidebar__link--highlight" href="../../quien-soy.html"><span class="site-sidebar__icon">👩‍💻</span> ¿Quién soy?</a>
+<div class="site-sidebar__social">
+<a aria-label="LinkedIn" href="https://www.linkedin.com/in/saralozanomarti" rel="noopener noreferrer" target="_blank"><img alt="LinkedIn" class="site-sidebar__social-icon" src="../../assets/images/logo linkedIN.png"/></a>
+<a aria-label="YouTube" href="https://www.youtube.com/@KawaiiPowerBI" rel="noopener noreferrer" target="_blank"><img alt="YouTube" class="site-sidebar__social-icon" src="../../assets/images/logo youtube.png"/></a>
+<a aria-label="GitHub" href="https://github.com/KawaiiBI" rel="noopener noreferrer" target="_blank"><img alt="GitHub" class="site-sidebar__social-icon" src="../../assets/images/logo github.png"/></a>
+</div>
+<div class="site-sidebar__logo-bottom"><img alt="Kawaii BI" class="site-sidebar__logo-img" src="../../assets/images/Logo Kawaii.jpg"/></div>
+<p class="site-sidebar__copyright">Power BI Guide 🌸<br/>© 2026 Kawaii BI</p>
+</div>
+</aside>
+<div class="page-wrapper">
+<main class="main-content">
+<div class="topic-page">
+<nav aria-label="Ruta de navegación" class="breadcrumb">
+<span class="breadcrumb__item"><a href="../../index.html">🏠 Inicio</a></span>
+<span aria-hidden="true" class="breadcrumb__separator">›</span>
+<span class="breadcrumb__item"><a href="../lenguaje-m.html">Lenguaje M</a></span>
+<span aria-hidden="true" class="breadcrumb__separator">›</span>
+<span class="breadcrumb__item">Funciones de Lista</span>
+</nav>
+<header class="topic-header">
+          <span class="topic-header__icon">📝</span>
+          <h1 class="topic-header__title">Funciones de Lista (List.*)</h1>
+          <p class="topic-header__subtitle">Las listas son colecciones ordenadas de valores en M. Son fundamentales porque aparecen constantemente como parámetros y resultados en las funciones de tabla. Dominar List.* es dominar M.</p>
+          <div class="topic-header__levels">
+<span class="badge badge--intermediate">Intermedio</span>
+</div>
+        </header>
+<!-- Buscador compacto M -->
+<div class="dax-search-wrapper dax-search-wrapper--compact" data-m-search="true">
+<div class="dax-search-input-row">
+<span aria-hidden="true" class="dax-search-icon">🔍</span>
+<input aria-autocomplete="list" aria-expanded="false" aria-label="Buscar funciones del Lenguaje M" autocomplete="off" class="dax-search-input" placeholder="Buscar otra función M..." spellcheck="false" type="search"/>
+<button aria-label="Limpiar búsqueda" class="dax-search-clear" hidden="">✕</button>
+</div>
+<div aria-label="Resultados de búsqueda" class="dax-search-results" role="listbox"></div>
+</div>
+<nav aria-label="Índice" class="toc">
+<p class="toc__title">📌 Funciones en esta página:</p>
+<ul class="toc__list">
+<li><a href="#sum">List.Sum</a></li>
+<li><a href="#average">List.Average</a></li>
+<li><a href="#count">List.Count</a></li>
+<li><a href="#min-max">List.Min / List.Max</a></li>
+<li><a href="#distinct">List.Distinct</a></li>
+<li><a href="#contains">List.Contains</a></li>
+<li><a href="#first-last">List.First / List.Last</a></li>
+<li><a href="#select">List.Select</a></li>
+<li><a href="#transform">List.Transform</a></li>
+<li><a href="#sort">List.Sort</a></li>
+<li><a href="#combine">List.Combine</a></li>
+<li><a href="#generate">List.Generate</a></li>
+<li><a href="#accumulate">List.Accumulate</a></li>
+</ul>
+</nav>
+<div class="category-header">
+<span class="category-header__icon">➕</span>
+<h2 class="category-header__title">Agregación de Listas</h2>
+</div><article class="function-card" id="sum">
+<header class="function-card__header">
+<h3 class="function-card__title">List.Sum</h3>
+<span class="badge badge--intermediate">Intermedio</span>
+</header>
+<div class="function-card__syntax"><h4>Sintaxis</h4>
+<pre><code class="language-javascript">List.Sum(lista as list, optional precision as nullable number) as any</code></pre>
+</div>
+<div class="function-card__description"><h4>¿Qué hace?</h4>
+<p>Suma todos los valores numéricos de una lista. Si la lista está vacía, devuelve 0. Si contiene null, los ignora.</p>
+</div>
+<div class="function-card__example"><h4>Ejemplo</h4>
+<pre><code class="language-javascript">List.Sum({1, 2, 3, 4, 5})          // → 15
+List.Sum({10, null, 20, null})     // → 30  (ignora nulls)
+List.Sum({})                       // → 0
+
+// Uso típico: sumar una columna de tabla
+List.Sum(Tabla[Importe])           // suma todos los valores de la columna Importe</code></pre>
+</div>
+</article><article class="function-card" id="average">
+<header class="function-card__header">
+<h3 class="function-card__title">List.Average</h3>
+<span class="badge badge--intermediate">Intermedio</span>
+</header>
+<div class="function-card__syntax"><h4>Sintaxis</h4>
+<pre><code class="language-javascript">List.Average(lista as list, optional precision as nullable number) as any</code></pre>
+</div>
+<div class="function-card__description"><h4>¿Qué hace?</h4>
+<p>Calcula la media aritmética de los valores de una lista, ignorando los nulls. Devuelve null si la lista está vacía o solo tiene nulls.</p>
+</div>
+<div class="function-card__example"><h4>Ejemplo</h4>
+<pre><code class="language-javascript">List.Average({10, 20, 30})         // → 20
+List.Average({10, null, 30})       // → 20  (ignora el null)
+List.Average({})                   // → null</code></pre>
+</div>
+</article><article class="function-card" id="count">
+<header class="function-card__header">
+<h3 class="function-card__title">List.Count</h3>
+<span class="badge badge--intermediate">Intermedio</span>
+</header>
+<div class="function-card__syntax"><h4>Sintaxis</h4>
+<pre><code class="language-javascript">List.Count(lista as list) as number</code></pre>
+</div>
+<div class="function-card__description"><h4>¿Qué hace?</h4>
+<p>Cuenta el número total de elementos de una lista, incluyendo los nulls.</p>
+</div>
+<div class="function-card__example"><h4>Ejemplo</h4>
+<pre><code class="language-javascript">List.Count({1, 2, 3})              // → 3
+List.Count({1, null, 3})           // → 3  (cuenta el null)
+List.Count({})                     // → 0</code></pre>
+</div>
+</article><article class="function-card" id="min-max">
+<header class="function-card__header">
+<h3 class="function-card__title">List.Min / List.Max</h3>
+<span class="badge badge--intermediate">Intermedio</span>
+</header>
+<div class="function-card__syntax"><h4>Sintaxis</h4>
+<pre><code class="language-javascript">List.Min(lista as list, optional default as any, optional comparer as nullable function) as any
+List.Max(lista as list, optional default as any, optional comparer as nullable function) as any</code></pre>
+</div>
+<div class="function-card__description"><h4>¿Qué hace?</h4>
+<p>Devuelve el valor mínimo o máximo de la lista. El parámetro <code>default</code> se devuelve si la lista está vacía.</p>
+</div>
+<div class="function-card__example"><h4>Ejemplo</h4>
+<pre><code class="language-javascript">List.Min({3, 1, 4, 1, 5})         // → 1
+List.Max({3, 1, 4, 1, 5})         // → 5
+List.Min({}, 0)                    // → 0  (valor por defecto si lista vacía)
+
+// Útil para obtener la fecha más antigua de una columna
+List.Min(Tabla[Fecha])             // → fecha mínima</code></pre>
+</div>
+</article><div class="category-header">
+<span class="category-header__icon">🔍</span>
+<h2 class="category-header__title">Filtrar y Buscar</h2>
+</div><article class="function-card" id="distinct">
+<header class="function-card__header">
+<h3 class="function-card__title">List.Distinct</h3>
+<span class="badge badge--intermediate">Intermedio</span>
+</header>
+<div class="function-card__syntax"><h4>Sintaxis</h4>
+<pre><code class="language-javascript">List.Distinct(lista as list, optional comparer as nullable function) as list</code></pre>
+</div>
+<div class="function-card__description"><h4>¿Qué hace?</h4>
+<p>Devuelve la lista sin duplicados, manteniendo el orden de primera aparición.</p>
+</div>
+<div class="function-card__example"><h4>Ejemplo</h4>
+<pre><code class="language-javascript">List.Distinct({1, 2, 2, 3, 1})         // → {1, 2, 3}
+List.Distinct({"A", "b", "A", "B"},
+    Comparer.OrdinalIgnoreCase)         // → {"A", "b"}  (ignora mayúsculas)</code></pre>
+</div>
+</article><article class="function-card" id="contains">
+<header class="function-card__header">
+<h3 class="function-card__title">List.Contains</h3>
+<span class="badge badge--intermediate">Intermedio</span>
+</header>
+<div class="function-card__syntax"><h4>Sintaxis</h4>
+<pre><code class="language-javascript">List.Contains(lista as list, valor as any, optional comparer as nullable function) as logical</code></pre>
+</div>
+<div class="function-card__description"><h4>¿Qué hace?</h4>
+<p>Comprueba si un valor está en la lista. Devuelve true o false. Muy útil en filtros de tabla.</p>
+</div>
+<div class="function-card__example"><h4>Ejemplo: Filtrar por lista de valores</h4>
+<pre><code class="language-javascript">List.Contains({1, 2, 3}, 2)            // → true
+List.Contains({"A", "B"}, "C")         // → false
+
+// Patrón clásico: filtrar tabla por lista de países
+let
+    PaisesPermitidos = {"España", "Francia", "Italia"},
+    Filtrado = Table.SelectRows(
+        Ventas,
+        each List.Contains(PaisesPermitidos, [Pais])
+    )
+in
+    Filtrado</code></pre>
+</div>
+<div class="note note--tip">
+            💡 <strong>Tip kawaii:</strong> <code>List.ContainsAll</code> comprueba si <em>todos</em> los valores están en la lista, y <code>List.ContainsAny</code> si <em>alguno</em> está.
+          </div>
+</article><article class="function-card" id="first-last">
+<header class="function-card__header">
+<h3 class="function-card__title">List.First / List.Last</h3>
+<span class="badge badge--intermediate">Intermedio</span>
+</header>
+<div class="function-card__syntax"><h4>Sintaxis</h4>
+<pre><code class="language-javascript">List.First(lista as list, optional default as any) as any
+List.Last(lista as list, optional default as any) as any</code></pre>
+</div>
+<div class="function-card__description"><h4>¿Qué hace?</h4>
+<p>Devuelve el primer o último elemento de la lista. Muy útil combinado con <code>Table.SelectRows</code> para hacer lookups de un único valor.</p>
+</div>
+<div class="function-card__example"><h4>Ejemplo: Lookup de valor único</h4>
+<pre><code class="language-javascript">// Obtener el nombre del cliente con ID 42
+List.First(
+    Table.SelectRows(Clientes, each [ID] = 42)[Nombre],
+    "Sin nombre"   // valor por defecto si no encuentra nada
+)</code></pre>
+</div>
+</article><article class="function-card" id="select">
+<header class="function-card__header">
+<h3 class="function-card__title">List.Select</h3>
+<span class="badge badge--intermediate">Intermedio</span>
+</header>
+<div class="function-card__syntax"><h4>Sintaxis</h4>
+<pre><code class="language-javascript">List.Select(lista as list, condicion as function) as list</code></pre>
+</div>
+<div class="function-card__description"><h4>¿Qué hace?</h4>
+<p>Filtra los elementos de una lista manteniendo solo los que cumplen la condición. Es el equivalente de <code>Table.SelectRows</code> pero para listas.</p>
+</div>
+<div class="function-card__example"><h4>Ejemplo</h4>
+<pre><code class="language-javascript">List.Select({1, 2, 3, 4, 5, 6}, each _ &gt; 3)     // → {4, 5, 6}
+List.Select({"Ana", "", "Luis", null}, each _ &lt;&gt; null and _ &lt;&gt; "")  // → {"Ana", "Luis"}</code></pre>
+</div>
+</article><div class="category-header">
+<span class="category-header__icon">🔄</span>
+<h2 class="category-header__title">Transformar Listas</h2>
+</div><article class="function-card" id="transform">
+<header class="function-card__header">
+<h3 class="function-card__title">List.Transform</h3>
+<span class="badge badge--intermediate">Intermedio</span>
+</header>
+<div class="function-card__syntax"><h4>Sintaxis</h4>
+<pre><code class="language-javascript">List.Transform(lista as list, funcion as function) as list</code></pre>
+</div>
+<div class="function-card__description"><h4>¿Qué hace?</h4>
+<p>Aplica una función a cada elemento de la lista y devuelve una nueva lista con los resultados. Es el <code>map</code> de M.</p>
+</div>
+<div class="function-card__example"><h4>Ejemplo</h4>
+<pre><code class="language-javascript">// Doblar cada número
+List.Transform({1, 2, 3, 4}, each _ * 2)         // → {2, 4, 6, 8}
+
+// Convertir textos a mayúsculas
+List.Transform({"hola", "mundo"}, Text.Upper)     // → {"HOLA", "MUNDO"}
+
+// Calcular el IVA de cada precio
+List.Transform({100, 200, 50}, each _ * 1.21)    // → {121, 242, 60.5}</code></pre>
+</div>
+</article><article class="function-card" id="sort">
+<header class="function-card__header">
+<h3 class="function-card__title">List.Sort</h3>
+<span class="badge badge--intermediate">Intermedio</span>
+</header>
+<div class="function-card__syntax"><h4>Sintaxis</h4>
+<pre><code class="language-javascript">List.Sort(lista as list, optional criterios as any) as list</code></pre>
+</div>
+<div class="function-card__example"><h4>Ejemplo</h4>
+<pre><code class="language-javascript">List.Sort({3, 1, 4, 1, 5})                        // → {1, 1, 3, 4, 5}  ascendente
+List.Sort({3, 1, 4, 1, 5}, Order.Descending)      // → {5, 4, 3, 1, 1}
+List.Sort({"Banana", "Manzana", "Pera"})          // → {"Banana", "Manzana", "Pera"}</code></pre>
+</div>
+</article><article class="function-card" id="combine">
+<header class="function-card__header">
+<h3 class="function-card__title">List.Combine</h3>
+<span class="badge badge--intermediate">Intermedio</span>
+</header>
+<div class="function-card__syntax"><h4>Sintaxis</h4>
+<pre><code class="language-javascript">List.Combine(listas as list) as list</code></pre>
+</div>
+<div class="function-card__description"><h4>¿Qué hace?</h4>
+<p>Une múltiples listas en una sola. Recibe una lista de listas.</p>
+</div>
+<div class="function-card__example"><h4>Ejemplo</h4>
+<pre><code class="language-javascript">List.Combine({{1, 2}, {3, 4}, {5, 6}})   // → {1, 2, 3, 4, 5, 6}
+
+// Combinar dos columnas de una tabla en una sola lista
+List.Combine({Tabla[Nombre], Tabla[Apellido]})</code></pre>
+</div>
+</article><div class="category-header">
+<span class="category-header__icon">⚡</span>
+<h2 class="category-header__title">Funciones Avanzadas</h2>
+</div><article class="function-card" id="generate">
+<header class="function-card__header">
+<h3 class="function-card__title">List.Generate</h3>
+<span class="badge badge--advanced">Avanzado</span>
+</header>
+<div class="function-card__syntax"><h4>Sintaxis</h4>
+<pre><code class="language-javascript">List.Generate(
+    inicial as function,
+    condicion as function,
+    siguiente as function,
+    optional selector as nullable function
+) as list</code></pre>
+</div>
+<div class="function-card__description"><h4>¿Qué hace?</h4>
+<p>Genera una lista dinámicamente mediante un bucle: empieza con un valor inicial, genera el siguiente mientras se cumpla la condición. Es el equivalente a un bucle <code>while</code> en M. Muy potente para paginación de APIs.</p>
+</div>
+<div class="function-card__params"><h4>Parámetros</h4>
+<ul>
+<li><strong>inicial:</strong> función que devuelve el valor inicial (sin argumentos)</li>
+<li><strong>condicion:</strong> función que recibe el estado actual y devuelve true/false para continuar</li>
+<li><strong>siguiente:</strong> función que recibe el estado actual y devuelve el siguiente</li>
+<li><strong>selector (opcional):</strong> función que transforma cada elemento antes de añadirlo a la lista</li>
+</ul>
+</div>
+<div class="function-card__example"><h4>Ejemplo 1: Generar números del 1 al 10</h4>
+<pre><code class="language-javascript">List.Generate(
+    () =&gt; 1,              // empieza en 1
+    each _ &lt;= 10,         // mientras sea &lt;= 10
+    each _ + 1            // incrementar en 1
+)
+// → {1, 2, 3, 4, 5, 6, 7, 8, 9, 10}</code></pre>
+</div>
+<div class="function-card__example"><h4>Ejemplo 2: Paginación de API REST</h4>
+<pre><code class="language-javascript">// Leer todas las páginas de una API hasta que devuelva vacío
+let
+    Paginas = List.Generate(
+        () =&gt; [pagina = 1, datos = Json.Document(Web.Contents("https://api.ejemplo.com/datos?page=1"))],
+        each List.Count([datos]) &gt; 0,
+        each [
+            pagina = [pagina] + 1,
+            datos = Json.Document(Web.Contents("https://api.ejemplo.com/datos?page=" &amp; Text.From([pagina] + 1)))
+        ],
+        each [datos]
+    ),
+    Combinado = Table.FromRecords(List.Combine(Paginas))
+in
+    Combinado</code></pre>
+</div>
+<div class="note note--tip">
+            💡 <strong>Tip kawaii:</strong> <code>List.Generate</code> es la función más poderosa para implementar lógica de bucle en M. Si necesitas repetir algo hasta que se cumpla una condición, es tu función.
+          </div>
+</article><article class="function-card" id="accumulate">
+<header class="function-card__header">
+<h3 class="function-card__title">List.Accumulate</h3>
+<span class="badge badge--advanced">Avanzado</span>
+</header>
+<div class="function-card__syntax"><h4>Sintaxis</h4>
+<pre><code class="language-javascript">List.Accumulate(
+    lista as list,
+    semilla as any,
+    acumulador as function
+) as any</code></pre>
+</div>
+<div class="function-card__description"><h4>¿Qué hace?</h4>
+<p>Recorre la lista acumulando un resultado: empieza con un valor inicial (semilla) y aplica la función acumuladora a cada elemento. Es el <code>reduce</code> de M.</p>
+</div>
+<div class="function-card__example"><h4>Ejemplo 1: Factorial con List.Accumulate</h4>
+<pre><code class="language-javascript">// 5! = 1 * 2 * 3 * 4 * 5
+List.Accumulate({1..5}, 1, (acumulado, elemento) =&gt; acumulado * elemento)
+// → 120</code></pre>
+</div>
+<div class="function-card__example"><h4>Ejemplo 2: Construir texto concatenando lista</h4>
+<pre><code class="language-javascript">List.Accumulate(
+    {"Ana", "Luis", "María"},
+    "",
+    (acumulado, nombre) =&gt; if acumulado = "" then nombre else acumulado &amp; ", " &amp; nombre
+)
+// → "Ana, Luis, María"</code></pre>
+</div>
+</article><div class="note note--next" style="margin-top:2.5rem;">
+          🚀 <strong>¡Lo estás haciendo genial!</strong> Las listas son fundamentales en M. El siguiente paso son las
+          <a href="texto.html">Funciones de Texto</a> — las más usadas en el día a día de cualquier proyecto.
+        </div>
+</div>
+</main>
+</div>
+<button aria-label="Volver arriba" class="back-to-top" id="back-to-top" title="Volver arriba">↑</button>
+<script src="https://cdn.jsdelivr.net/npm/i18next@23/dist/umd/i18next.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1/prism.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1/components/prism-javascript.min.js"></script>
+<script src="../../assets/js/theme.js"></script>
+<script src="../../assets/js/i18n.js"></script>
+<script src="../../assets/js/main.js"></script>
+<script src="../../assets/js/cursor.js"></script>
+<script src="../../assets/js/m-search.js"></script>
+</body>
+</html>

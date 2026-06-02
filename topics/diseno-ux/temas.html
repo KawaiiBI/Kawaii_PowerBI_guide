@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Temas en Power BI: estructura del JSON, paletas personalizadas, tipografías corporativas, estilos de visuals, cómo crear y distribuir un tema de marca consistente en toda la organización.">
+  <title>Temas en Power BI — Diseño y UX | Power BI Guide by Kawaii BI</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+
+  <!-- Prism.js para syntax highlighting del JSON -->
+  <link href="https://cdn.jsdelivr.net/npm/prismjs@1/themes/prism-okaidia.min.css" rel="stylesheet">
+
+  <!-- Estilos CSS -->
+  <link rel="stylesheet" href="../../assets/css/main.css">
+  <link rel="stylesheet" href="../../assets/css/themes.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/layout.css">
+
+  <style>
+    .topic-header { text-align: center; padding: 2.5rem 0 2rem; border-bottom: 2px solid var(--color-mauve); margin-bottom: 2.5rem; }
+    .topic-header__icon { font-size: 4rem; margin-bottom: 0.75rem; display: block; }
+    .topic-header__title { font-size: clamp(1.875rem, 4vw, 2.5rem); font-weight: 800; color: var(--color-dark); margin-bottom: 0.625rem; line-height: 1.2; }
+    .topic-header__subtitle { font-size: 1.0625rem; color: var(--color-slate); margin-bottom: 1.25rem; line-height: 1.5; max-width: 620px; margin-left: auto; margin-right: auto; }
+    .topic-header__levels { display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap; }
+
+    .toc { background: var(--color-rose); border-radius: var(--border-radius); padding: 1.25rem 1.5rem; margin-bottom: 2rem; border: 1.5px solid var(--color-mauve); }
+    .toc__title { font-size: 1rem; font-weight: 700; margin: 0 0 0.75rem; }
+    .toc__list { display: flex; flex-wrap: wrap; gap: 0.5rem; list-style: none; padding: 0; margin: 0; }
+    .toc__list a { font-size: 0.8125rem; color: var(--color-coral); text-decoration: none; padding: 0.25rem 0.625rem; background: var(--color-white); border-radius: 999px; border: 1px solid var(--color-mauve); transition: background 0.15s, color 0.15s; }
+    .toc__list a:hover { background: var(--color-coral); color: white; }
+
+    .category-header { display: flex; align-items: center; gap: 0.75rem; margin: 2.5rem 0 1.25rem; padding: 0.875rem 1.25rem; background: var(--color-rose); border-radius: var(--border-radius-sm); border-left: 4px solid var(--color-coral); }
+    .category-header__icon { font-size: 1.5rem; }
+    .category-header__title { font-size: 1.25rem; font-weight: 700; margin: 0; }
+
+    .concept-card { background: var(--color-white); border: 1.5px solid var(--color-mauve); border-radius: var(--border-radius); padding: 1.75rem; margin-bottom: 1.5rem; scroll-margin-top: 80px; transition: border-color 0.2s; }
+    .concept-card:hover { border-color: var(--color-coral); }
+    .concept-card h3 { font-size: 1.25rem; font-weight: 700; color: var(--color-coral); margin-bottom: 0.75rem; }
+    .concept-card h4 { font-size: 0.9375rem; font-weight: 700; color: var(--color-dark); margin: 1.25rem 0 0.5rem; }
+    .concept-card p { font-size: 0.9375rem; line-height: 1.7; color: var(--color-dark); margin-bottom: 0.75rem; }
+    .concept-card p:last-child { margin-bottom: 0; }
+    .concept-card ul, .concept-card ol { padding-left: 1.25rem; font-size: 0.9375rem; line-height: 1.8; color: var(--color-dark); margin-bottom: 0.75rem; }
+
+    .quote-block { background: linear-gradient(135deg, var(--color-rose) 0%, var(--color-blush) 100%); border-left: 4px solid var(--color-coral); border-radius: var(--border-radius); padding: 1.5rem 1.75rem; margin: 1.5rem 0; }
+    .quote-block__text { font-size: 1.125rem; font-weight: 600; color: var(--color-dark); line-height: 1.5; font-style: italic; margin: 0 0 0.375rem; }
+    .quote-block__author { font-size: 0.8125rem; color: var(--color-slate); margin: 0; }
+
+    /* ── Bloque de código ─────────────────────────────── */
+    .code-block { position: relative; margin: 1.25rem 0; border-radius: var(--border-radius); overflow: hidden; }
+    .code-block pre { margin: 0; padding: 1.25rem 1.5rem; font-size: 0.8125rem; line-height: 1.7; overflow-x: auto; }
+    .code-block__label {
+      position: absolute; top: 0; right: 0;
+      background: var(--color-coral); color: #fff;
+      font-size: 0.625rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em;
+      padding: 0.25rem 0.75rem; border-radius: 0 0 0 var(--border-radius-sm);
+    }
+
+    /* ── Tabla de propiedades JSON ─────────────────────── */
+    .json-table { width: 100%; border-collapse: collapse; font-size: 0.875rem; margin: 1rem 0; }
+    .json-table th { background: var(--color-rose); padding: 0.625rem 0.875rem; text-align: left; font-weight: 700; border: 1px solid var(--color-mauve); }
+    .json-table td { padding: 0.625rem 0.875rem; border: 1px solid var(--color-mauve); line-height: 1.5; vertical-align: top; }
+    .json-table tr:nth-child(even) td { background: var(--color-blush); }
+    .json-table code { background: var(--color-blush); padding: 0.1em 0.4em; border-radius: 4px; font-family: 'Fira Code', monospace; font-size: 0.8em; color: var(--color-coral); }
+
+    /* ── Flujo de trabajo ─────────────────────────────── */
+    .workflow {
+      counter-reset: wf-step;
+      list-style: none; padding: 0; margin: 1.25rem 0;
+      display: flex; flex-direction: column; gap: 0.75rem;
+    }
+    .workflow li {
+      counter-increment: wf-step;
+      display: flex; gap: 1rem; align-items: flex-start;
+      background: var(--color-white); border: 1.5px solid var(--color-mauve); border-radius: var(--border-radius-sm);
+      padding: 1rem 1.25rem; font-size: 0.9375rem; line-height: 1.6; color: var(--color-dark);
+      transition: border-color 0.2s;
+    }
+    .workflow li:hover { border-color: var(--color-coral); }
+    .workflow li::before {
+      content: counter(wf-step); min-width: 1.75rem; height: 1.75rem;
+      background: var(--color-coral); color: white; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: 0.8125rem; flex-shrink: 0; margin-top: 0.1rem;
+    }
+
+    /* ── Comparativo ──────────────────────────────────── */
+    .comparison-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1rem 0; }
+    .comparison-col { border-radius: var(--border-radius-sm); padding: 1.25rem; border: 1.5px solid var(--color-mauve); }
+    .comparison-col--bad { background: #fff5f5; border-color: #f5c6c6; }
+    .comparison-col--good { background: #f0faf5; border-color: #b8dfc9; }
+    .comparison-col__label { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.625rem; }
+    .comparison-col--bad .comparison-col__label { color: #c0392b; }
+    .comparison-col--good .comparison-col__label { color: #27ae60; }
+    .comparison-col ul { font-size: 0.875rem; padding-left: 1.1rem; margin: 0; line-height: 1.7; color: var(--color-dark); }
+    @media (max-width: 600px) { .comparison-grid { grid-template-columns: 1fr; } }
+
+    .checklist { list-style: none; padding: 0; margin: 1rem 0; }
+    .checklist li { display: flex; align-items: flex-start; gap: 0.75rem; padding: 0.625rem 0; border-bottom: 1px solid var(--color-blush); font-size: 0.9375rem; line-height: 1.6; color: var(--color-dark); }
+    .checklist li:last-child { border-bottom: none; }
+    .checklist li::before { content: "✅"; flex-shrink: 0; margin-top: 0.1rem; }
+  </style>
+</head>
+<body>
+
+  <!-- SIDEBAR -->
+  <aside class="site-sidebar">
+    <div class="site-sidebar__profile">
+      <img src="../../assets/images/avatar Sara.png" alt="Sara Lozano Martí" class="site-sidebar__avatar">
+      <p class="site-sidebar__name">Sara Lozano Martí</p>
+      <p class="site-sidebar__subtitle">Power BI Expert</p>
+    </div>
+    <nav class="site-sidebar__nav" aria-label="Navegación principal">
+      <ul>
+        <li><a href="../../index.html" class="site-sidebar__link"><span class="site-sidebar__icon">🏠</span> Inicio</a></li>
+        <li><a href="../dax.html" class="site-sidebar__link"><span class="site-sidebar__icon">⚡</span> Funciones DAX</a></li>
+        <li><a href="../power-query.html" class="site-sidebar__link"><span class="site-sidebar__icon">🔄</span> Power Query</a></li>
+        <li><a href="../lenguaje-m.html" class="site-sidebar__link"><span class="site-sidebar__icon">〽️</span> Lenguaje M</a></li>
+        <li><a href="../modelado.html" class="site-sidebar__link"><span class="site-sidebar__icon">🗄️</span> Modelado</a></li>
+        <li><a href="../conceptos-powerbi.html" class="site-sidebar__link"><span class="site-sidebar__icon">📊</span> Conceptos Power BI</a></li>
+        <li><a href="../fabric.html" class="site-sidebar__link"><span class="site-sidebar__icon">🧵</span> Microsoft Fabric</a></li>
+        <li><a href="../tmdl.html" class="site-sidebar__link"><span class="site-sidebar__icon">📝</span> TMDL</a></li>
+        <li><a href="../diseno-ux.html" class="site-sidebar__link is-active"><span class="site-sidebar__icon">🎨</span> Diseño y UX</a></li>
+        <li><a href="../gobernanza.html" class="site-sidebar__link"><span class="site-sidebar__icon">🔒</span> Gobernanza</a></li>
+      </ul>
+    </nav>
+    <div class="site-sidebar__divider"></div>
+    <div class="site-sidebar__footer">
+      <a href="../../quien-soy.html" class="site-sidebar__link site-sidebar__link--highlight"><span class="site-sidebar__icon">👩‍💻</span> ¿Quién soy?</a>
+      <div class="site-sidebar__social">
+        <a href="https://www.linkedin.com/in/saralozanomarti" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><img src="../../assets/images/logo linkedIN.png" alt="LinkedIn" class="site-sidebar__social-icon"></a>
+        <a href="https://www.youtube.com/@KawaiiPowerBI" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><img src="../../assets/images/logo youtube.png" alt="YouTube" class="site-sidebar__social-icon"></a>
+        <a href="https://github.com/KawaiiBI" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><img src="../../assets/images/logo github.png" alt="GitHub" class="site-sidebar__social-icon"></a>
+      </div>
+      <div class="site-sidebar__logo-bottom"><img src="../../assets/images/Logo Kawaii.jpg" alt="Kawaii BI" class="site-sidebar__logo-img"></div>
+      <p class="site-sidebar__copyright">Power BI Guide 🌸<br>© 2026 Kawaii BI</p>
+    </div>
+  </aside>
+
+  <!-- CONTENIDO PRINCIPAL -->
+  <div class="page-wrapper">
+    <main class="main-content">
+      <div class="topic-page">
+
+        <!-- Breadcrumb -->
+        <nav class="breadcrumb" aria-label="Ruta de navegación">
+          <span class="breadcrumb__item"><a href="../../index.html">🏠 Inicio</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item"><a href="../diseno-ux.html">Diseño y UX</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item">Temas en Power BI</span>
+        </nav>
+
+        <!-- Cabecera -->
+        <header class="topic-header">
+          <span class="topic-header__icon">🎭</span>
+          <h1 class="topic-header__title">Temas en Power BI</h1>
+          <p class="topic-header__subtitle">El tema JSON es tu arma secreta para la consistencia. Define colores, fuentes y estilos una vez — y todos los visuals de tu informe (y de tu organización) los heredan automáticamente</p>
+          <div class="topic-header__levels">
+            <span class="badge badge--intermediate">Intermedio</span>
+            <span class="badge badge--advanced">Avanzado</span>
+          </div>
+        </header>
+
+        <!-- TOC -->
+        <nav class="toc" aria-label="Contenido de esta página">
+          <p class="toc__title">📋 En esta página</p>
+          <ul class="toc__list">
+            <li><a href="#que-es">¿Qué es un tema en Power BI?</a></li>
+            <li><a href="#json">Estructura del JSON</a></li>
+            <li><a href="#plantilla">Plantilla base</a></li>
+            <li><a href="#propiedades">Propiedades principales</a></li>
+            <li><a href="#avanzado">Personalización avanzada</a></li>
+            <li><a href="#flujo">Flujo de trabajo</a></li>
+            <li><a href="#distribuir">Distribuir temas en la organización</a></li>
+            <li><a href="#checklist">Checklist de temas</a></li>
+          </ul>
+        </nav>
+
+        <!-- ─────────────────────────────────────────── -->
+        <!-- 1. ¿Qué es un tema?                        -->
+        <!-- ─────────────────────────────────────────── -->
+        <div class="category-header" id="que-es">
+          <span class="category-header__icon">🎨</span>
+          <h2 class="category-header__title">¿Qué es un tema en Power BI?</h2>
+        </div>
+
+        <div class="concept-card">
+          <h3>Un fichero JSON que controla el aspecto de todo tu informe</h3>
+          <p>
+            Un <strong>tema de Power BI</strong> es un archivo <code>.json</code> que define
+            los colores, fuentes y estilos predeterminados de todos los visuals de un informe.
+            Cuando lo aplicas, cada visual nuevo que añadas hereda automáticamente esos estilos
+            — sin que tengas que formatear nada manualmente.
+          </p>
+          <p>
+            Es la herramienta más potente para garantizar la <strong>consistencia visual</strong>
+            que vimos en la sección anterior. En lugar de formatear cada visual individualmente
+            (y arriesgarte a inconsistencias), defines las reglas una vez en el JSON y todo el
+            informe las sigue.
+          </p>
+
+          <h4>Dos formas de crear un tema</h4>
+          <ul>
+            <li><strong>Visual (sin código):</strong> View → Themes → Customize current theme. Un editor visual donde ajustas colores, fuentes y fondos. Genera el JSON automáticamente.</li>
+            <li><strong>JSON manual (control total):</strong> Creas o editas el archivo <code>.json</code> directamente. Más potente — permite personalizar propiedades de visuals específicos que el editor visual no cubre.</li>
+          </ul>
+
+          <div class="note note--tip">
+            💡 <strong>Tip kawaii:</strong> Mi recomendación: empieza con el editor visual para definir los colores y fuentes básicos, luego exporta el JSON (Customize current theme → guardar) y edítalo manualmente para ajustar los detalles finos.
+          </div>
+        </div>
+
+        <!-- ─────────────────────────────────────────── -->
+        <!-- 2. Estructura del JSON                      -->
+        <!-- ─────────────────────────────────────────── -->
+        <div class="category-header" id="json">
+          <span class="category-header__icon">📄</span>
+          <h2 class="category-header__title">Estructura del archivo JSON de temas</h2>
+        </div>
+
+        <div class="concept-card">
+          <h3>Anatomía de un tema Power BI</h3>
+          <p>
+            El JSON de un tema tiene varias secciones principales. No todas son obligatorias —
+            puedes empezar con solo <code>name</code> y <code>dataColors</code> y añadir más
+            propiedades según las necesites.
+          </p>
+
+          <table class="json-table" aria-label="Secciones principales del JSON de temas">
+            <thead>
+              <tr>
+                <th>Propiedad</th>
+                <th>Obligatoria</th>
+                <th>Qué controla</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>"name"</code></td>
+                <td>Sí</td>
+                <td>Nombre del tema (visible en el menú de temas)</td>
+              </tr>
+              <tr>
+                <td><code>"dataColors"</code></td>
+                <td>Recomendada</td>
+                <td>Paleta de colores para las series de datos (barras, líneas, sectores). Array de 8+ colores HEX</td>
+              </tr>
+              <tr>
+                <td><code>"foreground"</code></td>
+                <td>No</td>
+                <td>Color del texto principal de todo el informe</td>
+              </tr>
+              <tr>
+                <td><code>"background"</code></td>
+                <td>No</td>
+                <td>Color de fondo de las páginas del informe</td>
+              </tr>
+              <tr>
+                <td><code>"tableAccent"</code></td>
+                <td>No</td>
+                <td>Color de acento para tablas (encabezados, bordes, hover)</td>
+              </tr>
+              <tr>
+                <td><code>"textClasses"</code></td>
+                <td>No</td>
+                <td>Definición de familias y tamaños tipográficos por nivel (title, header, label, callout)</td>
+              </tr>
+              <tr>
+                <td><code>"visualStyles"</code></td>
+                <td>No</td>
+                <td>Estilos específicos por tipo de visual (barChart, lineChart, card…). Control granular avanzado</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- ─────────────────────────────────────────── -->
+        <!-- 3. Plantilla base                           -->
+        <!-- ─────────────────────────────────────────── -->
+        <div class="category-header" id="plantilla">
+          <span class="category-header__icon">📋</span>
+          <h2 class="category-header__title">Plantilla base: tu primer tema JSON</h2>
+        </div>
+
+        <div class="concept-card">
+          <h3>Copia, personaliza los colores y aplica</h3>
+          <p>
+            Esta plantilla implementa todo lo que hemos visto en las secciones anteriores:
+            la Regla 1-1-1 de color, texto #2C2C2C en lugar de negro puro, fondo #F5F5F5,
+            Segoe UI como fuente y estilos coherentes para todos los visuals.
+          </p>
+
+          <div class="code-block">
+            <span class="code-block__label">JSON</span>
+            <pre><code class="language-json">{
+  "name": "Mi Tema Corporativo",
+
+  "dataColors": [
+    "#2C5F8A",
+    "#A8C4DA",
+    "#5BAD92",
+    "#F2B84B",
+    "#E74E37",
+    "#C3A6D6",
+    "#929C9C",
+    "#F9A58B"
+  ],
+
+  "foreground": "#2C2C2C",
+  "background": "#F5F5F5",
+  "tableAccent": "#2C5F8A",
+
+  "good": "#5BAD92",
+  "neutral": "#929C9C",
+  "bad": "#E74E37",
+
+  "textClasses": {
+    "callout": {
+      "fontSize": 28,
+      "fontFace": "Segoe UI Semibold"
+    },
+    "title": {
+      "fontSize": 14,
+      "fontFace": "Segoe UI Semibold"
+    },
+    "header": {
+      "fontSize": 12,
+      "fontFace": "Segoe UI"
+    },
+    "label": {
+      "fontSize": 10,
+      "fontFace": "Segoe UI"
+    }
+  }
+}</code></pre>
+          </div>
+
+          <h4>Cómo aplicarlo</h4>
+          <ol>
+            <li>Guarda el JSON como <code>mi-tema.json</code></li>
+            <li>En Power BI Desktop → View → Themes → Browse for themes</li>
+            <li>Selecciona tu archivo → Apply</li>
+            <li>Todos los visuals existentes y nuevos adoptan los estilos del tema</li>
+          </ol>
+
+          <div class="note note--practice">
+            📌 <strong>Buena práctica:</strong> Sustituye los colores <code>dataColors</code> por los de tu marca corporativa. El primer color del array es el más importante — es el que Power BI asigna por defecto a la primera serie de datos. Haz que sea tu color principal de marca.
+          </div>
+        </div>
+
+        <!-- ─────────────────────────────────────────── -->
+        <!-- 4. Propiedades principales                  -->
+        <!-- ─────────────────────────────────────────── -->
+        <div class="category-header" id="propiedades">
+          <span class="category-header__icon">⚙️</span>
+          <h2 class="category-header__title">Propiedades principales explicadas</h2>
+        </div>
+
+        <div class="concept-card">
+          <h3>dataColors — tu paleta de serie de datos</h3>
+          <p>
+            El array <code>dataColors</code> define los colores que Power BI asigna automáticamente
+            a las series de datos. El primer color se usa para la primera serie, el segundo para
+            la segunda, y así sucesivamente. Incluye al menos 8 colores para cubrir la mayoría
+            de escenarios.
+          </p>
+          <ul>
+            <li><strong>Posición 1:</strong> Color principal de marca — la serie más importante</li>
+            <li><strong>Posición 2:</strong> Color secundario — la serie de comparación</li>
+            <li><strong>Posiciones 3-5:</strong> Colores complementarios armónicos</li>
+            <li><strong>Posiciones 6-8:</strong> Colores de reserva — grises y tonos suaves</li>
+          </ul>
+
+          <h3 style="margin-top: 1.5rem;">textClasses — jerarquía tipográfica automatizada</h3>
+          <p>
+            Las <code>textClasses</code> definen 4 niveles de texto que Power BI aplica
+            automáticamente:
+          </p>
+          <ul>
+            <li><strong>callout:</strong> Valores grandes en cards y KPIs (28pt)</li>
+            <li><strong>title:</strong> Títulos de visuals (14pt Semibold)</li>
+            <li><strong>header:</strong> Encabezados de columna en tablas (12pt)</li>
+            <li><strong>label:</strong> Etiquetas de eje, leyendas, texto secundario (10pt)</li>
+          </ul>
+
+          <h3 style="margin-top: 1.5rem;">good / neutral / bad — colores semánticos</h3>
+          <p>
+            Estas tres propiedades definen los colores que Power BI usa en los visuals de KPI
+            y en el formato condicional por defecto. Mapeando directamente a la Regla 1-1-1:
+          </p>
+          <ul>
+            <li><code>"good"</code> → Cumple objetivo, positivo (#5BAD92 verde suave)</li>
+            <li><code>"neutral"</code> → Sin valoración, referencia (#929C9C gris)</li>
+            <li><code>"bad"</code> → Bajo objetivo, alerta (#E74E37 coral)</li>
+          </ul>
+        </div>
+
+        <!-- ─────────────────────────────────────────── -->
+        <!-- 5. Personalización avanzada                 -->
+        <!-- ─────────────────────────────────────────── -->
+        <div class="category-header" id="avanzado">
+          <span class="category-header__icon">🔧</span>
+          <h2 class="category-header__title">Personalización avanzada con visualStyles</h2>
+        </div>
+
+        <div class="concept-card">
+          <h3>Control granular por tipo de visual</h3>
+          <p>
+            La sección <code>visualStyles</code> permite definir estilos específicos para cada
+            tipo de visual de Power BI. Puedes cambiar el padding, los bordes, los títulos,
+            el fondo y prácticamente cualquier propiedad de formato — todo desde el JSON.
+          </p>
+
+          <div class="code-block">
+            <span class="code-block__label">JSON — visualStyles</span>
+            <pre><code class="language-json">{
+  "visualStyles": {
+    "*": {
+      "*": {
+        "background": [{
+          "color": { "solid": { "color": "#FFFFFF" } },
+          "transparency": 0
+        }],
+        "border": [{
+          "show": false
+        }],
+        "shadow": [{
+          "show": false
+        }],
+        "title": [{
+          "fontFamily": "Segoe UI Semibold",
+          "fontSize": 14,
+          "fontColor": { "solid": { "color": "#2C2C2C" } }
+        }]
+      }
+    }
+  }
+}</code></pre>
+          </div>
+
+          <h4>Qué significa cada parte</h4>
+          <ul>
+            <li><code>"*"</code> (primer nivel) → Aplica a todos los tipos de visual</li>
+            <li><code>"*"</code> (segundo nivel) → Aplica a todos los estados del visual</li>
+            <li><code>"background"</code> → Fondo blanco para todos los visuals</li>
+            <li><code>"border"</code> → Sin bordes (delimitar con whitespace)</li>
+            <li><code>"shadow"</code> → Sin sombras (la Regla del No Ruido)</li>
+            <li><code>"title"</code> → Segoe UI Semibold 14pt en gris oscuro para todos los títulos</li>
+          </ul>
+
+          <p>
+            También puedes dirigirte a visuals específicos sustituyendo el primer <code>"*"</code>
+            por el nombre interno del visual: <code>"barChart"</code>, <code>"lineChart"</code>,
+            <code>"card"</code>, <code>"tableEx"</code>, etc.
+          </p>
+
+          <div class="note note--warning">
+            ⚠️ <strong>Ojo con esto:</strong> La sección <code>visualStyles</code> es potente pero frágil. Un error de sintaxis en el JSON puede hacer que el tema no se aplique. Valida siempre tu JSON antes de importarlo (usa jsonlint.com o el validador de tu editor de código).
+          </div>
+        </div>
+
+        <!-- ─────────────────────────────────────────── -->
+        <!-- 6. Flujo de trabajo                         -->
+        <!-- ─────────────────────────────────────────── -->
+        <div class="category-header" id="flujo">
+          <span class="category-header__icon">🔄</span>
+          <h2 class="category-header__title">Flujo de trabajo para crear tu tema</h2>
+        </div>
+
+        <div class="concept-card">
+          <h3>De la marca corporativa al JSON en 6 pasos</h3>
+
+          <ol class="workflow">
+            <li><strong>Recoge los colores de marca</strong> del branding corporativo. Si no hay guía de marca, pide al equipo de diseño o marketing los HEX de los colores principales.</li>
+            <li><strong>Genera la paleta completa</strong> en Coolors.co: introduce el color principal, bloquéalo y genera 7 colores complementarios. Verifica el contraste de cada uno con WebAIM.</li>
+            <li><strong>Elige la tipografía.</strong> Si la organización tiene fuente corporativa, úsala. Si no, Segoe UI es la opción más segura en Power BI (viene preinstalada en Windows).</li>
+            <li><strong>Crea el JSON base</strong> con la plantilla de esta página. Sustituye los <code>dataColors</code>, ajusta <code>foreground</code>, <code>background</code> y <code>textClasses</code>.</li>
+            <li><strong>Aplica y prueba</strong> en un informe real con diferentes tipos de visuals (barras, líneas, cards, tablas, mapas). Ajusta los colores que no funcionen en contexto real.</li>
+            <li><strong>Versiona y distribuye.</strong> Guarda el JSON en un repositorio compartido (SharePoint, Git) con control de versiones. Documenta qué cambia en cada versión.</li>
+          </ol>
+
+          <div class="note note--tip">
+            💡 <strong>Tip kawaii:</strong> Crea dos versiones de tu tema: una "clara" (fondo gris claro) y una "oscura" (fondo gris oscuro) para cubrir diferentes contextos de presentación. La versión clara para uso diario, la oscura para presentaciones en pantalla grande con poca luz.
+          </div>
+        </div>
+
+        <!-- ─────────────────────────────────────────── -->
+        <!-- 7. Distribuir temas                         -->
+        <!-- ─────────────────────────────────────────── -->
+        <div class="category-header" id="distribuir">
+          <span class="category-header__icon">📦</span>
+          <h2 class="category-header__title">Distribuir temas en la organización</h2>
+        </div>
+
+        <div class="concept-card">
+          <h3>Que toda la organización use el mismo tema</h3>
+          <p>
+            Un tema no sirve de nada si solo lo usas tú. El verdadero valor aparece cuando
+            <strong>todos los informes de la organización</strong> comparten el mismo tema
+            — y cada dashboard tiene un aspecto consistente y profesional.
+          </p>
+
+          <h4>Opciones de distribución</h4>
+          <ul>
+            <li>
+              <strong>Tema organizacional en Power BI Service:</strong> Los administradores de tenant pueden definir un tema por defecto para toda la organización desde el Admin Portal → Tenant settings → Custom branding. Afecta al Service, no a Desktop.
+            </li>
+            <li>
+              <strong>Archivo JSON compartido:</strong> Guarda el <code>.json</code> en una carpeta de SharePoint o un repositorio Git accesible para todo el equipo de BI. Cada persona lo importa manualmente en sus informes.
+            </li>
+            <li>
+              <strong>Plantilla .pbit:</strong> Crea un archivo plantilla de Power BI (<code>.pbit</code>) con el tema ya aplicado, los fondos de página configurados y los estilos base. Cada informe nuevo parte de esta plantilla.
+            </li>
+            <li>
+              <strong>Deployment pipeline + Git:</strong> En entornos avanzados con Fabric o DevOps, incluye el tema como parte del repositorio del informe. Se versiona y despliega junto con los datos y las medidas.
+            </li>
+          </ul>
+
+          <div class="comparison-grid">
+            <div class="comparison-col comparison-col--bad">
+              <p class="comparison-col__label">❌ Sin tema compartido</p>
+              <ul>
+                <li>Cada informe tiene colores distintos</li>
+                <li>Nadie sabe cuál es "el azul correcto"</li>
+                <li>Los nuevos informes empiezan desde cero</li>
+                <li>Inconsistencia visual entre equipos</li>
+              </ul>
+            </div>
+            <div class="comparison-col comparison-col--good">
+              <p class="comparison-col__label">✅ Con tema compartido</p>
+              <ul>
+                <li>Todos los informes tienen el mismo aspecto</li>
+                <li>Los colores de marca están definidos en un JSON</li>
+                <li>Los nuevos informes heredan los estilos automáticamente</li>
+                <li>Imagen profesional coherente en toda la organización</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- ─────────────────────────────────────────── -->
+        <!-- 8. Checklist                                -->
+        <!-- ─────────────────────────────────────────── -->
+        <div class="category-header" id="checklist">
+          <span class="category-header__icon">✅</span>
+          <h2 class="category-header__title">Checklist de temas en Power BI</h2>
+        </div>
+
+        <div class="concept-card">
+          <h3>Antes de distribuir tu tema, verifica estos 10 puntos</h3>
+
+          <ul class="checklist">
+            <li>El JSON tiene al menos 8 colores en <code>dataColors</code> que incluyen el color principal de marca</li>
+            <li>El color <code>foreground</code> no es negro puro — usa #2C2C2C o similar</li>
+            <li>El color <code>background</code> no es blanco puro — usa #F5F5F5 o similar</li>
+            <li>Las <code>textClasses</code> definen los 4 niveles tipográficos (callout, title, header, label)</li>
+            <li>Los colores <code>good</code>, <code>neutral</code> y <code>bad</code> están definidos y tienen significado semántico claro</li>
+            <li>Todos los colores de la paleta pasan contraste WCAG AA contra el fondo del informe</li>
+            <li>El tema se ha probado con barras, líneas, cards, tablas y mapas en un informe real</li>
+            <li>El JSON es sintácticamente válido (verificado con jsonlint.com)</li>
+            <li>El tema está versionado y almacenado en un repositorio compartido accesible para el equipo</li>
+            <li>Existe documentación básica del tema: qué colores usar para qué, cuándo actualizar, quién es el responsable</li>
+          </ul>
+
+          <div class="note note--next">
+            🚀 <strong>¡Lo estás haciendo genial!</strong> El tema JSON es la forma más eficiente de aplicar todo lo que has aprendido en esta sección: colores, tipografía, whitespace, consistencia. Define las reglas una vez, aplícalas a todos los informes y olvídate de formatear visual por visual. Eso es trabajar con inteligencia. 🌸
+          </div>
+        </div>
+
+        <!-- Navegación entre páginas -->
+        <nav aria-label="Páginas relacionadas" style="margin-top: 2.5rem; display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap;">
+          <a href="preatentivos.html" style="display: inline-flex; align-items: center; gap: 0.5rem; color: var(--color-coral); text-decoration: none; font-weight: 600; font-size: 0.9375rem;">
+            ← Atributos Preatentivos
+          </a>
+          <a href="../diseno-ux.html" style="display: inline-flex; align-items: center; gap: 0.5rem; color: var(--color-coral); text-decoration: none; font-weight: 600; font-size: 0.9375rem;">
+            Volver a Diseño y UX →
+          </a>
+        </nav>
+
+      </div><!-- /topic-page -->
+    </main>
+  </div><!-- /page-wrapper -->
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-json.min.js"></script>
+  <script src="../../assets/js/theme.js"></script>
+  <script src="../../assets/js/main.js"></script>
+  <script src="../../assets/js/cursor.js"></script>
+
+</body>
+</html>

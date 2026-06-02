@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Los 10 errores más frecuentes en modelado Power BI: relaciones bidireccionales innecesarias, cardinalidad alta, tablas desnormalizadas y cómo evitarlos.">
+  <title>Errores Comunes en Modelado — Modelado de Datos | Power BI Guide by Kawaii BI</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/prismjs@1/themes/prism-okaidia.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="../../assets/css/main.css">
+  <link rel="stylesheet" href="../../assets/css/themes.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/layout.css">
+
+  <style>
+    .topic-header { text-align: center; padding: 2.5rem 0 2rem; border-bottom: 2px solid var(--color-mauve); margin-bottom: 2.5rem; }
+    .topic-header__icon { font-size: 4rem; margin-bottom: 0.75rem; display: block; }
+    .topic-header__title { font-size: clamp(1.875rem, 4vw, 2.5rem); font-weight: 800; color: var(--color-dark); margin-bottom: 0.625rem; line-height: 1.2; }
+    .topic-header__subtitle { font-size: 1.0625rem; color: var(--color-slate); margin-bottom: 1.25rem; line-height: 1.5; max-width: 600px; margin-left: auto; margin-right: auto; }
+    .topic-header__levels { display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap; align-items: center; }
+    .category-header { display: flex; align-items: center; gap: 0.75rem; margin: 2.5rem 0 1.25rem; padding: 0.875rem 1.25rem; background: var(--color-rose); border-radius: var(--border-radius-sm); border-left: 4px solid var(--color-coral); }
+    .category-header__icon { font-size: 1.5rem; }
+    .category-header__title { font-size: 1.25rem; font-weight: 700; margin: 0; }
+
+    .error-card { background: var(--color-white); border: 1.5px solid var(--color-mauve); border-radius: var(--border-radius); padding: 1.5rem; margin-bottom: 1.25rem; scroll-margin-top: 80px; display: grid; grid-template-columns: 3.5rem 1fr; gap: 1rem; align-items: flex-start; transition: border-color 0.2s; }
+    .error-card:hover { border-color: var(--color-coral); }
+    .error-card__number { font-size: 2rem; font-weight: 800; color: var(--color-coral); font-family: 'Fira Code', monospace; line-height: 1.2; padding-top: 0.125rem; }
+    .error-card__content h3 { font-size: 1.125rem; font-weight: 700; color: var(--color-dark); margin-bottom: 0.5rem; }
+    .error-card__content p { font-size: 0.9375rem; line-height: 1.7; color: var(--color-dark); margin-bottom: 0.625rem; }
+    .error-card__content code { background: var(--color-blush); padding: 0.1em 0.4em; border-radius: 4px; font-family: 'Fira Code', monospace; font-size: 0.85em; color: var(--color-coral); }
+    .error-card__fix { background: var(--color-rose); border-radius: var(--border-radius-sm); padding: 0.75rem 1rem; font-size: 0.875rem; line-height: 1.6; border-left: 3px solid #5BAD92; }
+    .error-card__fix strong { color: #5BAD92; }
+
+    .concept-card { background: var(--color-white); border: 1.5px solid var(--color-mauve); border-radius: var(--border-radius); padding: 1.75rem; margin-bottom: 1.5rem; }
+    .concept-card h3 { font-size: 1.25rem; font-weight: 700; color: var(--color-coral); margin-bottom: 0.75rem; }
+    .concept-card p { font-size: 0.9375rem; line-height: 1.7; color: var(--color-dark); margin-bottom: 0.75rem; }
+    .concept-card code { background: var(--color-blush); padding: 0.1em 0.4em; border-radius: 4px; font-family: 'Fira Code', monospace; font-size: 0.85em; color: var(--color-coral); }
+
+    @media (max-width: 500px) { .error-card { grid-template-columns: 1fr; } .error-card__number { font-size: 1.5rem; } }
+    .toc { background: var(--color-rose); border-radius: var(--border-radius); padding: 1.25rem 1.5rem; margin-bottom: 2rem; border: 1.5px solid var(--color-mauve); }
+    .toc__title { font-size: 1rem; font-weight: 700; margin: 0 0 0.75rem; }
+    .toc__list { display: flex; flex-wrap: wrap; gap: 0.5rem; list-style: none; padding: 0; margin: 0; }
+    .toc__list a { font-size: 0.8125rem; color: var(--color-coral); text-decoration: none; padding: 0.25rem 0.625rem; background: var(--color-white); border-radius: 999px; border: 1px solid var(--color-mauve); transition: background 0.15s, color 0.15s; }
+    .toc__list a:hover { background: var(--color-coral); color: white; }
+  </style>
+</head>
+<body>
+
+  <aside class="site-sidebar">
+    <div class="site-sidebar__profile">
+      <img src="../../assets/images/avatar Sara.png" alt="Sara Lozano Martí" class="site-sidebar__avatar">
+      <p class="site-sidebar__name">Sara Lozano Martí</p>
+      <p class="site-sidebar__subtitle">Power BI Expert</p>
+    </div>
+    <nav class="site-sidebar__nav" aria-label="Navegación principal">
+      <ul>
+        <li><a href="../../index.html" class="site-sidebar__link"><span class="site-sidebar__icon">🏠</span> Inicio</a></li>
+        <li><a href="../dax.html" class="site-sidebar__link"><span class="site-sidebar__icon">⚡</span> Funciones DAX</a></li>
+        <li><a href="../power-query.html" class="site-sidebar__link"><span class="site-sidebar__icon">🔄</span> Power Query</a></li>
+        <li><a href="../lenguaje-m.html" class="site-sidebar__link"><span class="site-sidebar__icon">〽️</span> Lenguaje M</a></li>
+        <li><a href="../modelado.html" class="site-sidebar__link is-active"><span class="site-sidebar__icon">🗄️</span> Modelado</a></li>
+        <li><a href="../conceptos-powerbi.html" class="site-sidebar__link"><span class="site-sidebar__icon">📊</span> Conceptos Power BI</a></li>
+        <li><a href="../fabric.html" class="site-sidebar__link"><span class="site-sidebar__icon">🧵</span> Microsoft Fabric</a></li>
+        <li><a href="../tmdl.html" class="site-sidebar__link"><span class="site-sidebar__icon">📝</span> TMDL</a></li>
+        <li><a href="../diseno-ux.html" class="site-sidebar__link"><span class="site-sidebar__icon">🎨</span> Diseño y UX</a></li>
+        <li><a href="../gobernanza.html" class="site-sidebar__link"><span class="site-sidebar__icon">🔒</span> Gobernanza</a></li>
+      </ul>
+    </nav>
+    <div class="site-sidebar__divider"></div>
+    <div class="site-sidebar__footer">
+      <a href="../../quien-soy.html" class="site-sidebar__link site-sidebar__link--highlight"><span class="site-sidebar__icon">👩‍💻</span> ¿Quién soy?</a>
+      <div class="site-sidebar__social">
+        <a href="https://www.linkedin.com/in/saralozanomarti" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><img src="../../assets/images/logo linkedIN.png" alt="LinkedIn" class="site-sidebar__social-icon"></a>
+        <a href="https://www.youtube.com/@KawaiiPowerBI" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><img src="../../assets/images/logo youtube.png" alt="YouTube" class="site-sidebar__social-icon"></a>
+        <a href="https://github.com/KawaiiBI" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><img src="../../assets/images/logo github.png" alt="GitHub" class="site-sidebar__social-icon"></a>
+      </div>
+      <div class="site-sidebar__logo-bottom"><img src="../../assets/images/Logo Kawaii.jpg" alt="Kawaii BI" class="site-sidebar__logo-img"></div>
+      <p class="site-sidebar__copyright">Power BI Guide 🌸<br>© 2026 Kawaii BI</p>
+    </div>
+  </aside>
+
+  <div class="page-wrapper">
+    <main class="main-content">
+      <div class="topic-page">
+
+        <nav class="breadcrumb" aria-label="Ruta de navegación">
+          <span class="breadcrumb__item"><a href="../../index.html">🏠 Inicio</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item"><a href="../modelado.html">Modelado de Datos</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item">Errores Comunes en Modelado</span>
+        </nav>
+
+        <header class="topic-header">
+          <span class="topic-header__icon">⚠️</span>
+          <h1 class="topic-header__title">Errores Comunes en Modelado</h1>
+          <p class="topic-header__subtitle">Los 10 errores más frecuentes que hacen que un modelo Power BI sea lento, incorrecto o difícil de mantener — y cómo evitarlos desde el principio</p>
+          <div class="topic-header__levels">
+            <span class="badge badge--beginner">Principiante</span>
+            <span class="badge badge--intermediate">Intermedio</span>
+          </div>
+        </header>
+
+        <nav class="toc" aria-label="Índice de contenidos">
+          <p class="toc__title">📌 Los 10 errores:</p>
+          <ul class="toc__list">
+            <li><a href="#e1">1. Sin esquema estrella</a></li>
+            <li><a href="#e2">2. Sin tabla de fechas</a></li>
+            <li><a href="#e3">3. Bidireccional innecesario</a></li>
+            <li><a href="#e4">4. Todo en una tabla</a></li>
+            <li><a href="#e5">5. Columnas innecesarias</a></li>
+            <li><a href="#e6">6. Columnas calculadas por todo</a></li>
+            <li><a href="#e7">7. Alta cardinalidad en FK</a></li>
+            <li><a href="#e8">8. FechaHora sin separar</a></li>
+            <li><a href="#e9">9. Sin tabla de medidas</a></li>
+            <li><a href="#e10">10. Relaciones ambiguas</a></li>
+          </ul>
+        </nav>
+
+        <div class="category-header">
+          <span class="category-header__icon">🚨</span>
+          <h2 class="category-header__title">Los 10 Errores Más Frecuentes</h2>
+        </div>
+
+        <div class="error-card" id="e1">
+          <div class="error-card__number">#1</div>
+          <div class="error-card__content">
+            <h3>Modelo sin esquema estrella</h3>
+            <p>Cargar las tablas tal cual vienen del origen (modelo copo de nieve normalizado o peor, una única tabla gigante desnormalizada) sin diseñar el modelo analítico. Las consultas DAX se vuelven lentas y los cálculos son difíciles de escribir correctamente.</p>
+            <div class="error-card__fix"><strong>Solución:</strong> Diseña siempre el esquema estrella. Identifica tablas de hechos y dimensiones. Aplana las dimensiones en Power Query. La tabla de hechos solo debe tener claves foráneas (enteros) y métricas numéricas.</div>
+          </div>
+        </div>
+
+        <div class="error-card" id="e2">
+          <div class="error-card__number">#2</div>
+          <div class="error-card__content">
+            <h3>No tener tabla de fechas dedicada</h3>
+            <p>Usar directamente la columna de fecha de la tabla de hechos para análisis temporal. La inteligencia de tiempo (TOTALYTD, SAMEPERIODLASTYEAR, etc.) no funciona correctamente y no puedes añadir atributos personalizados como festivos o semanas fiscales.</p>
+            <div class="error-card__fix"><strong>Solución:</strong> Crea siempre una <a href="tablas-fechas.html">tabla de fechas dedicada</a> con <code>CALENDARAUTO()</code> o <code>CALENDAR()</code>, añade todas las columnas necesarias (año, mes, trimestre, etc.) y márcala como tabla de fechas.</div>
+          </div>
+        </div>
+
+        <div class="error-card" id="e3">
+          <div class="error-card__number">#3</div>
+          <div class="error-card__content">
+            <h3>Relaciones bidireccionales innecesarias</h3>
+            <p>Activar la dirección de filtro bidireccional en todas las relaciones "para que los slicers funcionen mejor". Esto puede causar resultados incorrectos en medidas DAX, bucles de filtro ambiguos y degradación del rendimiento.</p>
+            <div class="error-card__fix"><strong>Solución:</strong> Usa filtros unidireccionales (de dimensión a hechos) siempre que sea posible. La bidireccionalidad solo tiene sentido para relaciones N:N con bridge tables o ciertos patrones de RLS. Si crees que la necesitas, pregúntate primero si el problema puede resolverse de otra manera.</div>
+          </div>
+        </div>
+
+        <div class="error-card" id="e4">
+          <div class="error-card__number">#4</div>
+          <div class="error-card__content">
+            <h3>Todo en una sola tabla desnormalizada</h3>
+            <p>Cargar un Excel o CSV con todos los atributos y métricas en una sola tabla "plana" — cliente, producto, fecha, región y métricas todo mezclado. Esto produce alta cardinalidad en todas las columnas, mal rendimiento y DAX imposible de escribir.</p>
+            <div class="error-card__fix"><strong>Solución:</strong> Separa siempre hechos de dimensiones. Una tabla plana con todas las ventas incluyendo nombre de cliente, producto, categoría, etc. debe transformarse en Power Query en: FactVentas + DimCliente + DimProducto + DimFecha.</div>
+          </div>
+        </div>
+
+        <div class="error-card" id="e5">
+          <div class="error-card__number">#5</div>
+          <div class="error-card__content">
+            <h3>Cargar todas las columnas del origen</h3>
+            <p>Importar todas las columnas disponibles "por si acaso las necesito luego". Esto aumenta el tamaño del modelo, ralentiza las actualizaciones y puede incluir columnas de alta cardinalidad que degradan el rendimiento sin ningún beneficio.</p>
+            <div class="error-card__fix"><strong>Solución:</strong> En Power Query, usa "Elegir columnas" y selecciona solo las que realmente necesitas. Elimina explícitamente las columnas técnicas (audit columns, IDs internos, etc.). Esto es especialmente importante en tablas de hechos con muchas columnas.</div>
+          </div>
+        </div>
+
+        <div class="error-card" id="e6">
+          <div class="error-card__number">#6</div>
+          <div class="error-card__content">
+            <h3>Columnas calculadas donde deberían ser medidas</h3>
+            <p>Crear columnas calculadas para totales, ratios o cálculos que dependen del contexto del informe: <code>Total Ventas = SUM(FactVentas[Importe])</code> como columna calculada. El resultado no varía según los filtros del visual — siempre muestra el total global.</p>
+            <div class="error-card__fix"><strong>Solución:</strong> Usa medidas para cualquier cálculo que deba responder a filtros o slicers. Recuerda: si la fórmula termina en SUM, COUNT, AVERAGE u otra agregación → medida. Si describe un atributo fijo por fila → columna calculada o mejor hacerlo en Power Query.</div>
+          </div>
+        </div>
+
+        <div class="error-card" id="e7">
+          <div class="error-card__number">#7</div>
+          <div class="error-card__content">
+            <h3>Claves foráneas de texto en lugar de enteros</h3>
+            <p>Usar columnas de texto como claves de relación: <code>FactVentas[CodigoProducto] = "PROD-ESP-0507"</code>. Las comparaciones de texto son más lentas que las de enteros y las columnas de texto con valores únicos se comprimen peor en VertiPaq.</p>
+            <div class="error-card__fix"><strong>Solución:</strong> Usa siempre enteros (INT) como claves de relación. Si tu origen usa claves de texto, crea una clave entera sustituta (surrogate key) en Power Query. Guarda el código original como atributo descriptivo, no como clave de relación.</div>
+          </div>
+        </div>
+
+        <div class="error-card" id="e8">
+          <div class="error-card__number">#8</div>
+          <div class="error-card__content">
+            <h3>Columnas DateTime sin separar fecha y hora</h3>
+            <p>Mantener columnas de tipo DateTime (fecha + hora) cuando solo necesitas la fecha, o mantener la precisión de segundos cuando solo necesitas la hora. Cada valor único de DateTime cuenta para la cardinalidad — una columna con marcas de tiempo únicas puede tener millones de valores distintos.</p>
+            <div class="error-card__fix"><strong>Solución:</strong> En Power Query, divide la columna en dos: <code>Date.From([FechaHora])</code> para la fecha y <code>Time.Hour([FechaHora])</code> para la hora (o elimina la hora si no la necesitas). Luego elimina la columna DateTime original.</div>
+          </div>
+        </div>
+
+        <div class="error-card" id="e9">
+          <div class="error-card__number">#9</div>
+          <div class="error-card__content">
+            <h3>Medidas dispersas por todas las tablas</h3>
+            <p>Crear medidas directamente en las tablas de hechos o dimensiones sin organización. Con el tiempo, el modelo acumula medidas en diferentes tablas y es difícil saber dónde está cada una o si hay duplicados.</p>
+            <div class="error-card__fix"><strong>Solución:</strong> Crea una tabla vacía dedicada para medidas (en Power Query: <code>= #table({},{})</code> o <code>= Table.FromRows({})</code>). Nómbrala <code>_Medidas</code> (el guion bajo la pone al principio en el panel de campos). Organiza las medidas en subcarpetas.</div>
+          </div>
+        </div>
+
+        <div class="error-card" id="e10">
+          <div class="error-card__number">#10</div>
+          <div class="error-card__content">
+            <h3>Relaciones ambiguas o rutas de filtro conflictivas</h3>
+            <p>Crear múltiples caminos de relación entre las mismas tablas (por ejemplo, FactVentas relacionada con DimCliente directamente Y también indirectamente a través de DimPedido). Esto crea ambigüedad en el contexto de filtro y DAX puede producir resultados incorrectos o errores.</p>
+            <div class="error-card__fix"><strong>Solución:</strong> En un esquema estrella bien diseñado, las tablas de hechos y dimensiones se conectan directamente — sin caminos alternativos. Si necesitas filtrar una tabla de hechos por atributos de dos caminos posibles, diseña explícitamente cuál usar y aplica relaciones inactivas con USERELATIONSHIP cuando sea necesario.</div>
+          </div>
+        </div>
+
+        <div class="note note--tip" style="margin-top: 2rem;">
+          💡 <strong>Tip kawaii:</strong> Si heredas un modelo Power BI con problemas de rendimiento, empieza revisando estos 10 errores en orden. En el 80% de los casos, los primeros 5 (sin esquema estrella, sin tabla de fechas, bidireccional innecesario, todo en una tabla, columnas innecesarias) son la causa raíz del problema. ¡Diagnostica antes de optimizar! 🌸
+        </div>
+
+        <div class="note note--next" style="margin-top: 1.5rem;">
+          🚀 <strong>¡Errores identificados, modelo sano!</strong> Has completado toda la sección de Modelado de Datos. Para convertirte en un experto completo, el siguiente paso es dominar las <a href="../dax/filtro.html">funciones de filtro DAX</a> (CALCULATE, ALL, FILTER) que interactúan directamente con el modelo.
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <button id="back-to-top" class="back-to-top" aria-label="Volver arriba" title="Volver arriba">↑</button>
+
+  <script src="https://cdn.jsdelivr.net/npm/i18next@23/dist/umd/i18next.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1/prism.min.js"></script>
+  <script src="../../assets/js/theme.js"></script>
+  <script src="../../assets/js/main.js"></script>
+  <script src="../../assets/js/cursor.js"></script>
+</body>
+</html>

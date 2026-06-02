@@ -1,0 +1,1371 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Power BI Service: workspaces, suscripciones, alertas, Explore This Data, exportar, compartir, editar, artefactos y licencias.">
+  <title>Power BI Service — Guía Completa | Power BI Guide by Kawaii BI</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+
+  <!-- Prism.js -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1/themes/prism-okaidia.min.css">
+
+  <!-- Estilos CSS -->
+  <link rel="stylesheet" href="../../assets/css/main.css">
+  <link rel="stylesheet" href="../../assets/css/themes.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/layout.css">
+
+  <style>
+    /* ============================================================
+       ESTILOS ESPECÍFICOS — POWER BI SERVICE
+    ============================================================ */
+
+    .topic-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 1.25rem;
+      margin-bottom: 2rem;
+      padding: 1.75rem;
+      background: var(--color-rose);
+      border-radius: var(--border-radius);
+      border: 1.5px solid var(--color-mauve);
+    }
+    .topic-header__icon { font-size: 3rem; line-height: 1; flex-shrink: 0; }
+    .topic-header__title { font-size: 1.875rem; font-weight: 700; margin-bottom: 0.25rem; }
+    .topic-header__subtitle { color: var(--color-slate); font-size: 0.9375rem; line-height: 1.6; margin-bottom: 0.75rem; }
+    .topic-header__levels { display: flex; gap: 0.375rem; flex-wrap: wrap; }
+
+    /* TOC */
+    .toc {
+      background: var(--color-blush);
+      border: 1.5px solid var(--color-mauve);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 2.5rem;
+    }
+    .toc__title { font-size: 0.875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--color-slate); margin-bottom: 0.75rem; }
+    .toc__list { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 0.5rem 1.5rem; }
+    .toc__link { color: var(--color-coral); text-decoration: none; font-size: 0.9rem; font-weight: 500; }
+    .toc__link:hover { text-decoration: underline; }
+
+    /* Secciones */
+    .content-section { margin: 48px 0; }
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 24px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid var(--color-mauve);
+    }
+    .section-icon { font-size: 28px; line-height: 1; }
+    .section-header h2 { font-size: 26px; font-weight: 800; color: var(--color-dark); margin: 0; }
+
+    .subsection-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--color-dark);
+      margin: 40px 0 16px;
+      padding: 10px 16px;
+      background: var(--color-blush);
+      border-left: 4px solid var(--color-coral);
+      border-radius: 0 8px 8px 0;
+    }
+
+    .feature-image {
+      max-width: 700px;
+      width: 100%;
+      margin: 32px auto;
+      display: block;
+    }
+    .feature-image img {
+      width: 100%;
+      border-radius: 12px;
+      border: 2px solid var(--color-mauve);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+      display: block;
+    }
+    .feature-image figcaption {
+      text-align: center;
+      margin-top: 12px;
+      font-size: 14px;
+      color: var(--color-slate);
+      font-style: italic;
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 20px;
+      margin: 24px 0;
+    }
+    .feature-card {
+      background: var(--color-white);
+      border: 2px solid var(--color-mauve);
+      border-radius: 12px;
+      padding: 20px;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+    .feature-card:hover { transform: translateY(-2px); border-color: var(--color-coral); }
+    .feature-card__title { font-size: 16px; font-weight: 700; color: var(--color-dark); margin: 0 0 8px; }
+    .feature-card p { font-size: 14px; line-height: 1.6; color: var(--color-dark); margin: 0; }
+
+    /* Pasos numerados */
+    .steps-list {
+      counter-reset: step-counter;
+      list-style: none;
+      padding: 0;
+      margin: 20px 0 28px;
+    }
+    .steps-list li {
+      counter-increment: step-counter;
+      padding: 14px 12px 14px 60px;
+      position: relative;
+      line-height: 1.7;
+      font-size: 16px;
+      margin-bottom: 12px;
+      background: var(--color-blush);
+      border-radius: 10px;
+    }
+    .steps-list li::before {
+      content: counter(step-counter);
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: var(--color-coral);
+      color: white;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 16px;
+    }
+
+    /* Comparación Dataset / Informe / Dashboard */
+    .comparison-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      margin: 32px 0;
+    }
+    .comparison-item {
+      background: var(--color-white);
+      border: 2px solid var(--color-mauve);
+      border-radius: 14px;
+      padding: 24px;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+    .comparison-item:hover { border-color: var(--color-coral); transform: translateY(-3px); }
+    .comparison-item__img {
+      width: 72px;
+      height: 72px;
+      object-fit: contain;
+      margin-bottom: 14px;
+      border-radius: 8px;
+    }
+    .comparison-item__title { font-size: 18px; font-weight: 700; color: var(--color-coral); margin: 0 0 12px; }
+    .comparison-item p { font-size: 14px; line-height: 1.65; color: var(--color-dark); margin: 0 0 10px; }
+    .comparison-item__note { font-size: 13px; color: var(--color-slate); font-style: italic; }
+
+    /* Tarjetas de licencias */
+    .license-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 20px;
+      margin: 28px 0;
+    }
+
+    /* Código inline */
+    code {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.875em;
+      background: var(--color-rose);
+      color: var(--color-coral);
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .feature-grid,
+      .comparison-grid { grid-template-columns: 1fr !important; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- SIDEBAR -->
+  <aside class="site-sidebar">
+
+    <div class="site-sidebar__profile">
+      <img src="../../assets/images/avatar Sara.png" alt="Sara Lozano Martí" class="site-sidebar__avatar" />
+      <p class="site-sidebar__name">Sara Lozano Martí</p>
+      <p class="site-sidebar__subtitle">Power BI Expert</p>
+    </div>
+
+    <nav class="site-sidebar__nav" aria-label="Navegación principal">
+      <ul>
+        <li><a href="../../index.html" class="site-sidebar__link">
+          <span class="site-sidebar__icon">🏠</span> Inicio
+        </a></li>
+        <li><a href="../dax.html" class="site-sidebar__link">
+          <span class="site-sidebar__icon">⚡</span> Funciones DAX
+        </a></li>
+        <li><a href="../power-query.html" class="site-sidebar__link">
+          <span class="site-sidebar__icon">🔄</span> Power Query
+        </a></li>
+        <li><a href="../lenguaje-m.html" class="site-sidebar__link">
+          <span class="site-sidebar__icon">〽️</span> Lenguaje M
+        </a></li>
+        <li><a href="../modelado.html" class="site-sidebar__link">
+          <span class="site-sidebar__icon">🗄️</span> Modelado
+        </a></li>
+        <li><a href="../conceptos-powerbi.html" class="site-sidebar__link is-active">
+          <span class="site-sidebar__icon">📊</span> Conceptos Power BI
+        </a></li>
+        <li><a href="../fabric.html" class="site-sidebar__link">
+          <span class="site-sidebar__icon">🧵</span> Microsoft Fabric
+        </a></li>
+        <li><a href="../tmdl.html" class="site-sidebar__link">
+          <span class="site-sidebar__icon">📝</span> TMDL
+        </a></li>
+        <li><a href="../diseno-ux.html" class="site-sidebar__link">
+          <span class="site-sidebar__icon">🎨</span> Diseño y UX
+        </a></li>
+        <li><a href="../gobernanza.html" class="site-sidebar__link">
+          <span class="site-sidebar__icon">🔒</span> Gobernanza
+        </a></li>
+      </ul>
+    </nav>
+
+    <div class="site-sidebar__divider"></div>
+
+    <div class="site-sidebar__footer">
+      <a href="../../quien-soy.html" class="site-sidebar__link site-sidebar__link--highlight">
+        <span class="site-sidebar__icon">👩‍💻</span> ¿Quién soy?
+      </a>
+      <div class="site-sidebar__social">
+        <a href="https://www.linkedin.com/in/saralozanomarti" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+          <img src="../../assets/images/logo linkedIN.png" alt="LinkedIn" class="site-sidebar__social-icon" />
+        </a>
+        <a href="https://www.youtube.com/@KawaiiPowerBI" target="_blank" rel="noopener noreferrer" aria-label="YouTube">
+          <img src="../../assets/images/logo youtube.png" alt="YouTube" class="site-sidebar__social-icon" />
+        </a>
+        <a href="https://github.com/KawaiiBI" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
+          <img src="../../assets/images/logo github.png" alt="GitHub" class="site-sidebar__social-icon" />
+        </a>
+      </div>
+      <div class="site-sidebar__logo-bottom">
+        <img src="../../assets/images/Logo Kawaii.jpg" alt="Kawaii BI" class="site-sidebar__logo-img" />
+      </div>
+      <p class="site-sidebar__copyright">
+        Power BI Guide 🌸<br>
+        © 2026 Kawaii BI
+      </p>
+    </div>
+
+  </aside>
+
+  <!-- CONTENIDO PRINCIPAL -->
+  <div class="page-wrapper">
+    <main class="main-content">
+      <div class="topic-page">
+
+        <!-- Breadcrumb -->
+        <nav class="breadcrumb" aria-label="Ruta de navegación">
+          <span class="breadcrumb__item"><a href="../../index.html">🏠 Inicio</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item"><a href="../conceptos-powerbi.html">Conceptos Power BI</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item">Power BI Service</span>
+        </nav>
+
+        <!-- Cabecera -->
+        <div class="topic-header">
+          <div class="topic-header__icon">☁️</div>
+          <div>
+            <h1 class="topic-header__title">Power BI Service</h1>
+            <p class="topic-header__subtitle">
+              La plataforma en la nube donde tus informes cobran vida para toda la organización.
+              Workspaces, suscripciones, alertas, Explore This Data, exportar, compartir,
+              editar, artefactos y todo sobre licencias.
+            </p>
+            <div class="topic-header__levels">
+              <span class="badge badge--beginner">Principiante</span>
+              <span class="badge badge--intermediate">Intermedio</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tabla de contenidos -->
+        <nav class="toc" aria-label="Contenidos de esta página">
+          <p class="toc__title">En esta página</p>
+          <ul class="toc__list">
+            <li><a href="#service" class="toc__link">☁️ Power BI Service</a></li>
+            <li><a href="#workspaces" class="toc__link">📁 Workspaces</a></li>
+            <li><a href="#barra-superior" class="toc__link">🎛️ Barra Superior</a></li>
+            <li><a href="#explore-data" class="toc__link">🔍 Explore This Data</a></li>
+            <li><a href="#suscripciones" class="toc__link">📧 Suscripciones</a></li>
+            <li><a href="#comentarios" class="toc__link">💬 Comentarios</a></li>
+            <li><a href="#alertas" class="toc__link">🔔 Alertas</a></li>
+            <li><a href="#personalize-visuals" class="toc__link">🎨 Personalize Visuals</a></li>
+            <li><a href="#exportar" class="toc__link">📥 Exportar</a></li>
+            <li><a href="#tab-archivo" class="toc__link">📁 Tab Archivo</a></li>
+            <li><a href="#compartir" class="toc__link">🔗 Compartir</a></li>
+            <li><a href="#editar-service" class="toc__link">✏️ Editar</a></li>
+            <li><a href="#conceptos-clave" class="toc__link">🧩 Artefactos</a></li>
+            <li><a href="#licencias" class="toc__link">🎫 Licencias</a></li>
+          </ul>
+        </nav>
+
+        <!-- ================================================
+             SECCIÓN 1: POWER BI SERVICE (INTRO)
+        ================================================ -->
+        <section class="content-section" id="service">
+          <div class="section-header">
+            <span class="section-icon">☁️</span>
+            <h2>Power BI Service — La Plataforma en la Nube</h2>
+          </div>
+
+          <p style="font-size: 17px; line-height: 1.8; margin-bottom: 28px;">
+            Power BI Service (<strong>app.powerbi.com</strong>) es donde tus informes cobran vida para
+            toda la organización. Aquí ocurren la <strong>colaboración, distribución,
+            actualización automática y consumo</strong> de datos. Es el corazón del
+            ecosistema Power BI.
+          </p>
+
+          <figure class="feature-image">
+            <img src="../../assets/images/Power BI/Interfaz inicio Power bi service.jpg"
+                 alt="Página de inicio de Power BI Service mostrando el hub de contenido" />
+            <figcaption>La página de inicio de Power BI Service: tu hub de contenido, recientes, favoritos y recomendaciones</figcaption>
+          </figure>
+
+          <div class="feature-grid">
+            <div class="feature-card">
+              <h3 class="feature-card__title">📤 Publica desde Desktop</h3>
+              <p>Desde Power BI Desktop, un clic en "Publicar" sube tu .pbix al Service: el modelo de datos, el informe y la configuración base.</p>
+            </div>
+            <div class="feature-card">
+              <h3 class="feature-card__title">🔄 Actualización automática</h3>
+              <p>Configura actualizaciones programadas y el Service se conectará directamente a tus fuentes de datos sin que hagas nada.</p>
+            </div>
+            <div class="feature-card">
+              <h3 class="feature-card__title">👥 Colaboración en equipo</h3>
+              <p>Workspaces compartidos con roles de acceso. Todo el equipo ve los mismos datos, siempre actualizados.</p>
+            </div>
+            <div class="feature-card">
+              <h3 class="feature-card__title">📱 Acceso desde cualquier lugar</h3>
+              <p>Navegador, app móvil, Teams, SharePoint... tus informes disponibles donde los necesite cada persona.</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================================================
+             SECCIÓN 2: WORKSPACES
+        ================================================ -->
+        <section class="content-section" id="workspaces">
+          <div class="section-header">
+            <span class="section-icon">📁</span>
+            <h2>Espacios de Trabajo (Workspaces)</h2>
+          </div>
+
+          <p style="font-size: 17px; line-height: 1.8; margin-bottom: 28px;">
+            Los workspaces son los <strong>contenedores colaborativos</strong> donde
+            se organizan todos los artefactos de Power BI: datasets, informes,
+            dashboards y dataflows. Piensa en ellos como proyectos o áreas de trabajo
+            compartidas en la nube, con control de acceso granular.
+          </p>
+
+          <figure style="margin: 20px 0;">
+            <img src="../../assets/images/Power BI/Panel de areas de trabajo.jpg"
+                 alt="Panel lateral con la lista de áreas de trabajo disponibles"
+                 style="width: 100%; max-width: 800px; border-radius: 12px; border: 3px solid var(--color-mauve); box-shadow: 0 6px 20px rgba(0,0,0,0.1);" />
+            <figcaption style="text-align: center; margin-top: 12px; font-size: 14px; color: var(--color-slate); font-style: italic;">Panel lateral del Service: lista de todos tus workspaces</figcaption>
+          </figure>
+
+          <figure style="margin: 20px 0;">
+            <img src="../../assets/images/Power BI/area de trabajo.jpg"
+                 alt="Interior de un área de trabajo mostrando sus artefactos"
+                 style="width: 100%; max-width: 800px; border-radius: 12px; border: 3px solid var(--color-mauve); box-shadow: 0 6px 20px rgba(0,0,0,0.1);" />
+            <figcaption style="text-align: center; margin-top: 12px; font-size: 14px; color: var(--color-slate); font-style: italic;">Interior de un workspace con datasets, informes y dashboards</figcaption>
+          </figure>
+
+          <h3 class="subsection-title">Tipos de workspace</h3>
+          <div class="feature-grid">
+            <div class="feature-card">
+              <h3 class="feature-card__title">👤 Mi Workspace</h3>
+              <p>Espacio personal de cada usuario. Para desarrollo individual,
+              pruebas o contenido que no se comparte con el equipo.</p>
+            </div>
+            <div class="feature-card">
+              <h3 class="feature-card__title">👥 Workspace de equipo</h3>
+              <p>Compartido con otros miembros. Permite colaboración, roles
+              de acceso diferenciados y publicación de aplicaciones.</p>
+            </div>
+            <div class="feature-card">
+              <h3 class="feature-card__title">🚀 Workspace Premium / Fabric</h3>
+              <p>Como el de equipo pero con capacidad dedicada (Fabric).
+              Permite pipelines de despliegue, grandes datasets y más.</p>
+            </div>
+          </div>
+
+          <h3 class="subsection-title">Roles en un workspace</h3>
+          <div class="feature-grid">
+            <div class="feature-card">
+              <h3 class="feature-card__title">🔑 Admin</h3>
+              <p>Control total: añade/elimina miembros, cambia configuración,
+              elimina el workspace. Máximo nivel de acceso.</p>
+            </div>
+            <div class="feature-card">
+              <h3 class="feature-card__title">✏️ Miembro</h3>
+              <p>Puede publicar, editar y compartir contenido. También
+              puede añadir miembros con roles iguales o inferiores.</p>
+            </div>
+            <div class="feature-card">
+              <h3 class="feature-card__title">📝 Colaborador</h3>
+              <p>Puede publicar y editar contenido pero no gestionar
+              miembros del workspace.</p>
+            </div>
+            <div class="feature-card">
+              <h3 class="feature-card__title">👁️ Espectador</h3>
+              <p>Solo puede ver el contenido publicado. No puede editar
+              ni publicar nada.</p>
+            </div>
+          </div>
+
+          <h3 class="subsection-title">Cómo estructurar workspaces en una organización</h3>
+          <ul style="margin-left: 24px; line-height: 1.8; font-size: 16px;">
+            <li><strong>Por área de negocio:</strong> Un workspace para Ventas, otro para
+              Finanzas, otro para RRHH. Cada equipo gestiona su propio contenido de forma autónoma</li>
+            <li><strong>Por entorno (DevOps):</strong> Workspace de Desarrollo, de Pruebas y de
+              Producción. Con deployment pipelines automáticos entre ellos</li>
+            <li><strong>Por audiencia:</strong> Workspace "Dirección" para ejecutivos,
+              "Operaciones" para mandos intermedios, "Self-service" para analistas</li>
+            <li><strong>Datasets compartidos centralizados:</strong> Un workspace "Datos Certificados"
+              donde viven los datasets de referencia que todos los demás workspaces consumen</li>
+          </ul>
+
+          <div class="note note--practice">
+            <p><strong>📌 Separa datasets de informes</strong></p>
+            <p style="margin: 8px 0 0; line-height: 1.7;">
+              Un patrón muy recomendable: ten un workspace solo para datasets
+              certificados y otro (o varios) para los informes que los consumen.
+              Así varios equipos pueden reutilizar el mismo dataset sin conflictos,
+              y las actualizaciones del modelo no afectan a los permisos de los informes.
+            </p>
+          </div>
+        </section>
+
+        <!-- ================================================
+             SECCIÓN 3: BARRA SUPERIOR DEL INFORME
+        ================================================ -->
+        <section class="content-section" id="barra-superior">
+          <div class="section-header">
+            <span class="section-icon">🎛️</span>
+            <h2>La Barra Superior del Informe</h2>
+          </div>
+
+          <p style="font-size: 17px; line-height: 1.8; margin-bottom: 28px;">
+            Cuando abres un informe publicado en Power BI Service, verás una barra
+            superior con múltiples tabs y opciones para interactuar con el contenido.
+            Esta barra convierte Power BI en una herramienta de autoservicio real.
+          </p>
+
+          <figure style="margin: 20px 0;">
+            <img src="../../assets/images/Power BI/power bi service/tab superior informe en power bi.jpg"
+                 alt="Barra superior completa de un informe en Power BI Service"
+                 style="width: 100%; max-width: 800px; border-radius: 12px; border: 3px solid var(--color-mauve); box-shadow: 0 6px 20px rgba(0,0,0,0.1);" />
+            <figcaption style="text-align: center; margin-top: 12px; font-size: 14px; color: var(--color-slate); font-style: italic;">
+              Barra de herramientas del informe: Archivo, Exportar, Compartir, Suscribirse, Alertas y más
+            </figcaption>
+          </figure>
+
+          <ul style="margin-left: 24px; line-height: 1.8; font-size: 16px;">
+            <li><strong>📁 Archivo:</strong> descargar el .pbix, guardar una copia, gestionar configuración</li>
+            <li><strong>📥 Exportar:</strong> descargar datos a Excel, CSV o analizar en Excel con conexión live</li>
+            <li><strong>🔗 Compartir:</strong> distribuir el informe a otros usuarios o equipos</li>
+            <li><strong>📧 Suscribirse:</strong> recibir el informe por email automáticamente</li>
+            <li><strong>🔔 Establecer alertas:</strong> notificaciones cuando los datos cruzan umbrales</li>
+            <li><strong>🔍 Explore This Data:</strong> crear informes personalizados sin tocar el original</li>
+            <li><strong>🎨 Personalizar visual:</strong> ajustar gráficos sin editar el informe</li>
+            <li><strong>✏️ Editar:</strong> abrir el informe en modo edición directamente en el Service</li>
+          </ul>
+
+          <div class="note note--tip">
+            <p><strong>💡 Autoservicio para usuarios de negocio</strong></p>
+            <p>Esta barra convierte Power BI en una herramienta de autoservicio real: los usuarios pueden
+            explorar, exportar, personalizar y compartir sin necesitar permisos de edición ni conocimientos técnicos.</p>
+          </div>
+        </section>
+
+        <!-- ================================================
+             SECCIÓN 4: EXPLORE THIS DATA
+        ================================================ -->
+        <section class="content-section" id="explore-data">
+          <div class="section-header">
+            <span class="section-icon">🔍</span>
+            <h2>Explore This Data</h2>
+          </div>
+
+          <p style="font-size: 17px; line-height: 1.8; margin-bottom: 28px;">
+            Probablemente la funcionalidad más <strong>infrautilizada y revolucionaria</strong>
+            del Service. Permite que cualquier usuario cree sus propios informes
+            personalizados directamente desde un dataset publicado, sin tocar
+            el informe original, sin duplicar datos y sin pedir nada a IT.
+            Es el autoservicio de BI en su máxima expresión.
+          </p>
+
+          <figure style="margin: 20px 0;">
+            <img src="../../assets/images/Power BI/icono exploración.jpg"
+                 alt="Icono del artefacto de exploración en un workspace de Power BI Service"
+                 style="width: 80px; height: 80px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);" />
+            <figcaption style="text-align: center; margin-top: 12px; font-size: 14px; color: var(--color-slate); font-style: italic;">El artefacto de exploración aparece en el workspace junto al dataset</figcaption>
+          </figure>
+
+          <h3 class="subsection-title">¿Por qué es tan importante?</h3>
+          <p style="font-size: 16px; line-height: 1.7; margin: 16px 0;">En el modelo tradicional de BI, el ciclo era: (1) el usuario de negocio
+          necesita un análisis nuevo, (2) abre un ticket a IT, (3) espera días o semanas,
+          (4) IT lo construye o duplica el dataset, (5) el usuario lo valida y pide cambios,
+          (6) vuelve a empezar. Explore This Data <strong>elimina este ciclo</strong>:
+          el usuario hace su propio análisis en minutos, sin molestar a nadie.</p>
+
+          <h3 class="subsection-title">Cómo habilitarlo (como desarrolladora)</h3>
+          <ol class="steps-list">
+            <li>En Power BI Desktop, ve a <strong>Archivo → Opciones → Configuración del informe</strong></li>
+            <li>Activa <strong>"Permitir a los usuarios explorar el dataset mediante un informe personalizado"</strong></li>
+            <li>También puedes habilitarlo desde el Service en la configuración del dataset</li>
+            <li>Publica el informe o el dataset al Service</li>
+            <li>En el workspace aparecerá automáticamente un artefacto tipo "Exploración"</li>
+          </ol>
+
+          <h3 class="subsection-title">Cómo lo utilizan los usuarios finales</h3>
+          <ol class="steps-list">
+            <li>En el Service, acceden al workspace donde está el dataset</li>
+            <li>Hacen clic en el artefacto de exploración o en "Explore this data" desde el dataset</li>
+            <li>Se abre un lienzo en blanco conectado al dataset compartido</li>
+            <li>Arrastran campos, crean visuales y aplican filtros — igual que en Desktop pero en el navegador</li>
+            <li>Guardan su informe personalizado en su propio <em>Mi Workspace</em></li>
+            <li>El informe original sigue intacto. El dataset es compartido y queda como fuente única de verdad</li>
+          </ol>
+
+          <h3 class="subsection-title">Casos de uso donde Explore This Data brilla</h3>
+          <ul style="margin-left: 24px; line-height: 1.8; font-size: 16px;">
+            <li><strong>Análisis ad-hoc urgentes:</strong> El CFO necesita un cruce de datos específico
+              para una reunión en 30 minutos. En lugar de esperar, lo hace él mismo en 10 minutos</li>
+            <li><strong>Validación de hipótesis de negocio:</strong> Un analista quiere probar 8 teorías
+              diferentes sobre qué está causando la bajada de ventas. Crea 8 informes sin
+              afectar a nadie más</li>
+            <li><strong>Vistas personalizadas por gerente:</strong> Cada responsable de área crea su
+              dashboard personal con los KPIs que más le interesan, todos sobre el mismo
+              dataset certificado y actualizado</li>
+            <li><strong>Reducción de tickets a IT:</strong> El 70-80% de las peticiones del tipo
+              "necesito ver X agrupado por Y filtrado por Z" desaparecen porque los usuarios
+              lo hacen ellos mismos</li>
+          </ul>
+
+          <div class="note note--practice">
+            <p><strong>📌 Prepara bien tu dataset para que Explore sea una experiencia excelente</strong></p>
+            <p style="margin: 8px 0 0; line-height: 1.7;">
+              Un dataset bien preparado multiplica el valor de Explore This Data:
+              (1) Usa nombres de medidas y tablas claros y descriptivos,
+              (2) Organiza medidas en <em>carpetas de visualización</em> (Display Folders),
+              (3) Oculta columnas técnicas que el usuario no necesita ver,
+              (4) Añade descripciones a las medidas complejas,
+              (5) Certifica el dataset para que aparezca como fuente de confianza.
+            </p>
+          </div>
+        </section>
+
+        <!-- ================================================
+             SECCIÓN 5: SUSCRIPCIONES
+        ================================================ -->
+        <section class="content-section" id="suscripciones">
+          <div class="section-header">
+            <span class="section-icon">📧</span>
+            <h2>Suscripciones (Scheduled Email Reports)</h2>
+          </div>
+
+          <p style="font-size: 17px; line-height: 1.8; margin-bottom: 28px;">
+            Las suscripciones envían automáticamente capturas de tus informes o
+            dashboards por email con la frecuencia que configures. Son perfectas para
+            personas que necesitan ver los KPIs periódicamente pero no entran al
+            Service con regularidad.
+          </p>
+
+          <figure style="margin: 20px 0;">
+            <img src="../../assets/images/Power BI/power bi service/barra superior tab suscribirse a un informe .jpg"
+                 alt="Panel de configuración de suscripciones en Power BI Service"
+                 style="width: 100%; max-width: 800px; border-radius: 12px; border: 3px solid var(--color-mauve); box-shadow: 0 6px 20px rgba(0,0,0,0.1);" />
+            <figcaption style="text-align: center; margin-top: 12px; font-size: 14px; color: var(--color-slate); font-style: italic;">
+              Panel de configuración de suscripciones: frecuencia, destinatarios, páginas y horario de envío
+            </figcaption>
+          </figure>
+
+          <h3 class="subsection-title">Configurar una suscripción</h3>
+          <ol class="steps-list">
+            <li>Abre el informe o dashboard en el Service</li>
+            <li>Haz clic en el icono de <strong>Suscribirse</strong> (sobre) en la barra superior</li>
+            <li>Elige la <strong>frecuencia</strong>: diaria, semanal, mensual o tras cada actualización de datos</li>
+            <li>Selecciona la <strong>hora exacta</strong> de envío</li>
+            <li>Elige las <strong>páginas específicas</strong> que quieres incluir (no es necesario enviar todo)</li>
+            <li>Añade los <strong>destinatarios</strong>: puedes suscribirte a ti misma o a otras personas</li>
+            <li>Opcionalmente, configura el <strong>asunto</strong> del email y añade un mensaje personalizado</li>
+            <li>Guarda — el email se enviará automáticamente según el calendario configurado</li>
+          </ol>
+
+          <h3 class="subsection-title">Cuándo usar suscripciones</h3>
+          <ul style="margin-left: 24px; line-height: 1.8; font-size: 16px;">
+            <li><strong>Briefing ejecutivo matutino:</strong> El CEO recibe el dashboard de ventas cada día a las 7:00 AM
+              antes de la reunión de dirección, sin tener que abrir el Service</li>
+            <li><strong>KPIs semanales por equipo:</strong> Cada lunes los gerentes reciben el resumen de su área
+              en su bandeja de entrada de forma automática</li>
+            <li><strong>Reportes de cierre mensual:</strong> Finanzas recibe el informe de P&amp;L cada día 1 del
+              mes siguiente a primera hora, sin recordatorios manuales</li>
+            <li><strong>Stakeholders externos:</strong> Personas de fuera de la organización que necesitan
+              ver KPIs pero no tienen acceso al Service</li>
+          </ul>
+
+          <div class="note note--warning">
+            <p><strong>⚠️ Las suscripciones envían imágenes estáticas</strong></p>
+            <p style="margin: 8px 0 0; line-height: 1.7;">
+              Las capturas de las suscripciones no son interactivas — no se puede hacer
+              drill-down, aplicar filtros ni interactuar con los visuales. Si el usuario
+              necesita explorar los datos, incluye siempre en el email un enlace directo
+              al informe en el Service. Las suscripciones son para <em>consumo rápido</em>,
+              no para análisis profundo.
+            </p>
+          </div>
+        </section>
+
+        <!-- ================================================
+             SECCIÓN 6: COMENTARIOS
+        ================================================ -->
+        <section class="content-section" id="comentarios">
+          <div class="section-header">
+            <span class="section-icon">💬</span>
+            <h2>Comentarios en Informes</h2>
+          </div>
+
+          <p style="font-size: 17px; line-height: 1.8; margin-bottom: 28px;">
+            Los comentarios transforman tus informes en <strong>espacios de conversación</strong>.
+            Puedes añadir contexto sobre una anomalía, mencionar a un colega para que
+            lo revise, documentar decisiones tomadas basadas en el análisis, o simplemente
+            señalar algo importante directamente sobre los datos.
+          </p>
+
+          <h3 class="subsection-title">Cómo usar comentarios</h3>
+          <ol class="steps-list">
+            <li>Con el informe abierto en el Service, haz clic en el icono de <strong>Comentarios</strong>
+              (bocadillo) en la barra superior</li>
+            <li>Se abre un panel lateral de comentarios</li>
+            <li>Escribe tu comentario en el campo de texto</li>
+            <li>Menciona a compañeros con <strong>@nombre</strong> — recibirán una notificación</li>
+            <li>Opcionalmente, adjunta el estado actual de los filtros al comentario para que
+              el destinatario vea exactamente lo que tú ves</li>
+            <li>Haz clic en <strong>Publicar</strong></li>
+            <li>Los comentarios quedan visibles para todos los que tienen acceso al informe</li>
+          </ol>
+
+          <h3 class="subsection-title">Cuándo y cómo usar comentarios eficazmente</h3>
+          <ul style="margin-left: 24px; line-height: 1.8; font-size: 16px;">
+            <li><strong>Documentar anomalías:</strong> "Las ventas de la semana 12 están bajas porque
+              hubo un fallo en el sistema de registro el 22/03. Los datos son correctos a partir del 23."</li>
+            <li><strong>Solicitar validación:</strong> "@carlos ¿puedes revisar si este pico de
+              devoluciones en diciembre tiene sentido con lo que pasó en almacén?"</li>
+            <li><strong>Registrar decisiones:</strong> "En reunión del 15/01 se decidió mantener el
+              objetivo de margen en 32% para Q1."</li>
+            <li><strong>Asignación de tareas:</strong> "@ana @pedro, ¿podéis investigar por qué
+              la región Norte lleva 3 semanas por debajo del objetivo?"</li>
+          </ul>
+
+          <div class="note note--tip">
+            <p><strong>💡 Los comentarios se adjuntan a filtros</strong></p>
+            <p style="margin: 8px 0 0; line-height: 1.7;">
+              Al añadir un comentario, puedes marcar la opción de <strong>incluir el estado
+              actual de los filtros</strong>. Así cuando alguien lo lea y haga clic en
+              el comentario, el informe se posiciona exactamente en la misma vista que
+              tú tenías cuando escribiste el comentario. Muy útil para señalar algo específico.
+            </p>
+          </div>
+        </section>
+
+        <!-- ================================================
+             SECCIÓN 7: ALERTAS
+        ================================================ -->
+        <section class="content-section" id="alertas">
+          <div class="section-header">
+            <span class="section-icon">🔔</span>
+            <h2>Alertas de Datos</h2>
+          </div>
+
+          <p style="font-size: 17px; line-height: 1.8; margin-bottom: 28px;">
+            Las alertas te notifican <strong>automáticamente por email o notificación push</strong>
+            cuando un KPI cruza un umbral que tú defines. Ya no tienes que entrar al
+            dashboard a revisar si las ventas bajaron del objetivo — Power BI te avisa
+            cuando ocurre algo importante.
+          </p>
+
+          <figure style="margin: 20px 0;">
+            <img src="../../assets/images/Power BI/power bi service/barra superior tab establecer alertas.jpg"
+                 alt="Panel de configuración de alertas de datos en Power BI Service"
+                 style="width: 100%; max-width: 800px; border-radius: 12px; border: 3px solid var(--color-mauve); box-shadow: 0 6px 20px rgba(0,0,0,0.1);" />
+            <figcaption style="text-align: center; margin-top: 12px; font-size: 14px; color: var(--color-slate); font-style: italic;">
+              Panel de alertas: define el umbral, la condición y la frecuencia máxima de notificación
+            </figcaption>
+          </figure>
+
+          <h3 class="subsection-title">Cómo configurar una alerta</h3>
+          <ol class="steps-list">
+            <li>Abre un <strong>dashboard</strong> en el Service (las alertas solo funcionan en dashboards, no en informes)</li>
+            <li>Sitúa el cursor sobre un visual compatible y haz clic en los <strong>3 puntos (...)</strong></li>
+            <li>Selecciona <strong>Administrar alertas</strong></li>
+            <li>Haz clic en <strong>+ Agregar regla de alerta</strong></li>
+            <li>Define la <strong>condición</strong>: mayor que, menor que o igual a un valor</li>
+            <li>Establece el <strong>umbral numérico</strong></li>
+            <li>Elige la <strong>frecuencia máxima</strong> de notificación</li>
+            <li>Guarda — recibirás una notificación en el Service y opcionalmente por email</li>
+          </ol>
+
+          <h3 class="subsection-title">Visuales compatibles con alertas</h3>
+          <div class="feature-grid">
+            <div class="feature-card">
+              <h3 class="feature-card__title">🃏 Tarjetas (Cards)</h3>
+              <p>El tipo de visual más común para alertas. Alerta cuando el valor
+              de la tarjeta supera o baja del umbral definido.</p>
+            </div>
+            <div class="feature-card">
+              <h3 class="feature-card__title">📊 KPIs</h3>
+              <p>Visuales de KPI específicos donde puedes alertar sobre el valor
+              actual respecto al objetivo.</p>
+            </div>
+            <div class="feature-card">
+              <h3 class="feature-card__title">🌡️ Medidores (Gauges)</h3>
+              <p>Alertas cuando el puntero supera o baja de determinado
+              punto en la escala del medidor.</p>
+            </div>
+          </div>
+
+          <h3 class="subsection-title">Alertas que marcan la diferencia</h3>
+          <ul style="margin-left: 24px; line-height: 1.8; font-size: 16px;">
+            <li><strong>Alerta de ventas bajo objetivo:</strong> Notificación cuando las ventas acumuladas del mes caen por debajo del 80% del objetivo a mitad de mes</li>
+            <li><strong>Alerta de stock crítico:</strong> Aviso cuando el inventario de un producto cae por debajo del nivel de reorden establecido</li>
+            <li><strong>Alerta de SLA incumplido:</strong> Notificación cuando el tiempo medio de resolución de incidencias supera las 24 horas</li>
+            <li><strong>Alerta de coste desviado:</strong> Aviso cuando los costes operativos superan el 105% del presupuesto mensual</li>
+          </ul>
+
+          <div class="note note--warning">
+            <p><strong>⚠️ Las alertas no son en tiempo real</strong></p>
+            <p style="margin: 8px 0 0; line-height: 1.7;">
+              Las alertas se evalúan cuando el dataset se actualiza, no de forma continua.
+              Si tu dataset se actualiza cada hora, las alertas se evalúan cada hora.
+              Para alertas en tiempo real o instantáneas, necesitarás <strong>Power Automate</strong>
+              con flujos basados en datos de streaming, o usar Fabric Eventstream.
+            </p>
+          </div>
+        </section>
+
+        <!-- ================================================
+             SECCIÓN 8: PERSONALIZE VISUALS
+        ================================================ -->
+        <section class="content-section" id="personalize-visuals">
+          <div class="section-header">
+            <span class="section-icon">🎨</span>
+            <h2>Personalize Visuals</h2>
+          </div>
+
+          <p style="font-size: 17px; line-height: 1.8; margin-bottom: 28px;">
+            Personalize Visuals permite que cada usuario <strong>personalice cualquier
+            visual del informe a su gusto</strong>: cambiar el tipo de gráfico, añadir
+            o quitar campos, aplicar filtros diferentes, cambiar el eje... Y todo se
+            guarda solo para esa persona, sin afectar a la versión que ven los demás.
+          </p>
+
+          <h3 class="subsection-title">Cómo funciona el flujo</h3>
+          <ol class="steps-list">
+            <li>Tú (desarrolladora) activas la opción en Desktop: <strong>Archivo → Opciones →
+              Configuración del informe → Personalizar visuales</strong></li>
+            <li>Publicas el informe al Service normalmente</li>
+            <li>El usuario abre el informe en el Service y ve un pequeño icono de personalización
+              en la esquina superior de cada visual</li>
+            <li>Al hacer clic, se abre un panel donde puede cambiar campos, tipo de visual,
+              agregar leyendas, cambiar ejes, etc.</li>
+            <li>Los cambios <strong>solo afectan a esa persona</strong> — ningún otro usuario ve las modificaciones</li>
+            <li>El usuario puede guardar su vista personalizada como favorito para recuperarla</li>
+            <li>En cualquier momento puede hacer clic en <strong>"Restaurar al predeterminado"</strong>
+              para volver a la versión original</li>
+          </ol>
+
+          <h3 class="subsection-title">Situaciones donde Personalize Visuals es un game-changer</h3>
+          <ul style="margin-left: 24px; line-height: 1.8; font-size: 16px;">
+            <li><strong>Audiencias con necesidades distintas:</strong> El mismo informe de ventas sirve
+              al director comercial (que quiere ver por región) y al product manager (que quiere ver por producto),
+              cada uno personaliza su vista</li>
+            <li><strong>Exploración rápida sin crear nuevos informes:</strong> Un analista quiere ver el
+              mismo dato como tabla, luego como gráfico de barras, luego como dispersión — lo cambia
+              en segundos sin salir del informe</li>
+            <li><strong>Reducir número de informes:</strong> En lugar de crear 5 variaciones del mismo
+              informe para 5 equipos, publicas uno solo con Personalize activado</li>
+          </ul>
+
+          <div class="note note--tip">
+            <p><strong>💡 Personalize Visuals + Explore This Data = autoservicio completo</strong></p>
+            <p style="margin: 8px 0 0; line-height: 1.7;">
+              Combina ambas funcionalidades para el máximo nivel de autoservicio:
+              <strong>Personalize Visuals</strong> para ajustar visuals del informe existente,
+              <strong>Explore This Data</strong> para crear informes completamente nuevos.
+              Juntas eliminan la mayoría de peticiones de "necesito este informe pero
+              diferente" que llegan a los equipos de BI.
+            </p>
+          </div>
+        </section>
+
+        <!-- ================================================
+             SECCIÓN 9: EXPORTAR
+        ================================================ -->
+        <section class="content-section" id="exportar">
+          <div class="section-header">
+            <span class="section-icon">📥</span>
+            <h2>Exportar Datos</h2>
+          </div>
+
+          <p style="font-size: 17px; line-height: 1.8; margin-bottom: 28px;">
+            Desde cualquier informe publicado en el Service puedes exportar los datos
+            subyacentes a distintos formatos para análisis externo. Es una de las
+            funcionalidades más usadas por los usuarios de negocio que quieren
+            trabajar con los datos en Excel o compartirlos fuera de Power BI.
+          </p>
+
+          <figure style="margin: 20px 0;">
+            <img src="../../assets/images/Power BI/power bi service/barra superior tab exportar.jpg"
+                 alt="Opciones de exportación disponibles en la barra superior de un informe de Power BI Service"
+                 style="width: 100%; max-width: 800px; border-radius: 12px; border: 3px solid var(--color-mauve); box-shadow: 0 6px 20px rgba(0,0,0,0.1);" />
+            <figcaption style="text-align: center; margin-top: 12px; font-size: 14px; color: var(--color-slate); font-style: italic;">
+              Opciones del tab Exportar: Excel, CSV y Analizar en Excel
+            </figcaption>
+          </figure>
+
+          <h3 class="subsection-title">Opciones de exportación</h3>
+          <ul style="margin-left: 24px; line-height: 1.8; font-size: 16px;">
+            <li><strong>Exportar a Excel (.xlsx):</strong> descarga los datos del visual seleccionado. Puedes elegir entre los datos resumidos (lo que ves) o los datos subyacentes (todos los registros)</li>
+            <li><strong>Exportar a CSV:</strong> formato plano, ideal para importar en otras herramientas o sistemas</li>
+            <li><strong>Analizar en Excel:</strong> crea una conexión live entre Excel y el dataset del Service. Los datos se refrescan solos en Excel sin necesidad de exportar cada vez</li>
+          </ul>
+
+          <div class="note note--warning">
+            <p><strong>⚠️ El administrador puede restringir la exportación</strong></p>
+            <p style="margin: 8px 0 0; line-height: 1.7;">
+              Los administradores del tenant pueden deshabilitar la exportación a nivel de organización
+              o de workspace por motivos de gobernanza de datos. Si no ves las opciones de exportar,
+              consulta con tu equipo de IT.
+            </p>
+          </div>
+        </section>
+
+        <!-- ================================================
+             SECCIÓN 10: TAB ARCHIVO
+        ================================================ -->
+        <section class="content-section" id="tab-archivo">
+          <div class="section-header">
+            <span class="section-icon">📁</span>
+            <h2>Tab Archivo: Descargar y Gestionar el Informe</h2>
+          </div>
+
+          <p style="font-size: 17px; line-height: 1.8; margin-bottom: 28px;">
+            El tab <strong>Archivo</strong> de la barra superior agrupa las acciones de
+            gestión del informe como archivo: descargar el .pbix, guardar una copia
+            en OneDrive o SharePoint, imprimir y acceder a la configuración.
+          </p>
+
+          <figure style="margin: 20px 0;">
+            <img src="../../assets/images/Power BI/power bi service/Barra superior tab archivo.jpg"
+                 alt="Tab Archivo en la barra superior de un informe en Power BI Service"
+                 style="width: 100%; max-width: 800px; border-radius: 12px; border: 3px solid var(--color-mauve); box-shadow: 0 6px 20px rgba(0,0,0,0.1);" />
+            <figcaption style="text-align: center; margin-top: 12px; font-size: 14px; color: var(--color-slate); font-style: italic;">
+              Tab Archivo: acceso a descarga del .pbix, configuración del informe e integración con OneDrive
+            </figcaption>
+          </figure>
+
+          <h3 class="subsection-title">Opciones del tab Archivo</h3>
+          <ul style="margin-left: 24px; line-height: 1.8; font-size: 16px;">
+            <li><strong>Descargar este archivo:</strong> obtén el .pbix completo (requiere permisos de Build o superior)</li>
+            <li><strong>Guardar una copia:</strong> crea una copia del informe en otro workspace</li>
+            <li><strong>Imprimir:</strong> genera una versión imprimible del informe página a página</li>
+            <li><strong>Insertar informe:</strong> accede a opciones de embedding para SharePoint o web</li>
+            <li><strong>Configuración:</strong> gestiona la visibilidad, permisos y opciones del informe</li>
+          </ul>
+
+          <div class="note note--tip">
+            <p><strong>💡 Descargar el .pbix desde el Service</strong></p>
+            <p style="margin: 8px 0 0; line-height: 1.7;">
+              Si perdiste el .pbix original o necesitas la versión publicada más reciente,
+              puedes descargarlo directamente desde el Service con <em>Archivo → Descargar este archivo</em>.
+              Necesitas permisos de Build o de propietario en el workspace.
+            </p>
+          </div>
+        </section>
+
+        <!-- ================================================
+             SECCIÓN 11: COMPARTIR
+        ================================================ -->
+        <section class="content-section" id="compartir">
+          <div class="section-header">
+            <span class="section-icon">🔗</span>
+            <h2>Compartir Informes</h2>
+          </div>
+
+          <p style="font-size: 17px; line-height: 1.8; margin-bottom: 28px;">
+            Compartir es la forma más directa de dar acceso a un informe a otras personas.
+            Desde el tab <strong>Compartir</strong> puedes enviar un enlace, gestionar permisos
+            y controlar exactamente qué puede hacer cada persona con el informe.
+          </p>
+
+          <figure style="margin: 20px 0;">
+            <img src="../../assets/images/Power BI/power bi service/barra superior tab compartir.jpg"
+                 alt="Panel de opciones para compartir un informe en Power BI Service"
+                 style="width: 100%; max-width: 800px; border-radius: 12px; border: 3px solid var(--color-mauve); box-shadow: 0 6px 20px rgba(0,0,0,0.1);" />
+            <figcaption style="text-align: center; margin-top: 12px; font-size: 14px; color: var(--color-slate); font-style: italic;">
+              Opciones de compartición: enlace directo, permisos de visualización y configuración de acceso
+            </figcaption>
+          </figure>
+
+          <h3 class="subsection-title">Formas de compartir</h3>
+          <ul style="margin-left: 24px; line-height: 1.8; font-size: 16px;">
+            <li><strong>Compartir directamente:</strong> introduces el email de la persona y le llega un enlace. Requiere licencia Pro o PPU en el receptor (salvo que el workspace tenga capacidad Fabric)</li>
+            <li><strong>Copiar enlace:</strong> genera un enlace que puedes pegar en Teams, email o chat</li>
+            <li><strong>Insertar en SharePoint:</strong> embebe el informe en una página de SharePoint Online</li>
+            <li><strong>Publicar en web:</strong> crea un enlace público sin autenticación (usar con precaución en datos sensibles)</li>
+          </ul>
+
+          <div class="note note--warning">
+            <p><strong>⚠️ Compartir ≠ dar acceso al workspace</strong></p>
+            <p style="margin: 8px 0 0; line-height: 1.7;">
+              Cuando compartes un informe, la persona puede ver ese informe específico pero
+              <strong>no tiene acceso al workspace ni al dataset</strong> subyacente. Si necesitas
+              que también puedan explorar datos o crear sus propios informes, añádeles al workspace
+              con el rol adecuado.
+            </p>
+          </div>
+        </section>
+
+        <!-- ================================================
+             SECCIÓN 12: EDITAR DESDE SERVICE
+        ================================================ -->
+        <section class="content-section" id="editar-service">
+          <div class="section-header">
+            <span class="section-icon">✏️</span>
+            <h2>Editar Informes desde el Service</h2>
+          </div>
+
+          <p style="font-size: 17px; line-height: 1.8; margin-bottom: 28px;">
+            No siempre necesitas abrir Power BI Desktop para hacer cambios. El Service
+            incluye un <strong>editor de informes integrado en el navegador</strong> que te
+            permite modificar visuales, añadir páginas, cambiar filtros y ajustar el diseño
+            directamente desde el cloud.
+          </p>
+
+          <figure style="margin: 20px 0;">
+            <img src="../../assets/images/Power BI/power bi service/editar informe desde Power BI service.jpg"
+                 alt="Modo de edición de un informe en Power BI Service con el panel de visualizaciones activo"
+                 style="width: 100%; max-width: 800px; border-radius: 12px; border: 3px solid var(--color-mauve); box-shadow: 0 6px 20px rgba(0,0,0,0.1);" />
+            <figcaption style="text-align: center; margin-top: 12px; font-size: 14px; color: var(--color-slate); font-style: italic;">
+              El editor del Service muestra los paneles de Visualizaciones, Filtros y Campos — igual que Desktop pero en el navegador
+            </figcaption>
+          </figure>
+
+          <h3 class="subsection-title">¿Qué puedes hacer en el editor del Service?</h3>
+          <ul style="margin-left: 24px; line-height: 1.8; font-size: 16px;">
+            <li>✅ Añadir, mover y redimensionar visuales</li>
+            <li>✅ Cambiar el tipo de gráfico</li>
+            <li>✅ Añadir y eliminar páginas</li>
+            <li>✅ Configurar filtros de página y de informe</li>
+            <li>✅ Añadir segmentaciones (slicers)</li>
+            <li>✅ Modificar el formato de los visuales</li>
+            <li>❌ No puedes modificar el modelo de datos (tablas, relaciones, medidas DAX)</li>
+            <li>❌ No puedes modificar las transformaciones de Power Query</li>
+          </ul>
+
+          <div class="note note--tip">
+            <p><strong>💡 Ideal para cambios rápidos en producción</strong></p>
+            <p style="margin: 8px 0 0; line-height: 1.7;">
+              ¿Necesitas añadir un visual rápido o ajustar un filtro sin esperar a abrir Desktop?
+              El editor del Service es perfecto para eso. Para cambios en el modelo o en Power Query,
+              sí necesitas Desktop.
+            </p>
+          </div>
+        </section>
+
+        <!-- ================================================
+             SECCIÓN 13: DATASET, INFORME Y DASHBOARD
+        ================================================ -->
+        <section class="content-section" id="conceptos-clave">
+          <div class="section-header">
+            <span class="section-icon">🧩</span>
+            <h2>Dataset, Informe y Dashboard: las diferencias</h2>
+          </div>
+
+          <p style="font-size: 17px; line-height: 1.8; margin-bottom: 28px;">
+            Es una de las confusiones más frecuentes al empezar con Power BI. Los tres
+            son artefactos diferentes con propósitos distintos, y entender la diferencia
+            es clave para diseñar buenas soluciones.
+          </p>
+
+          <div class="comparison-grid">
+            <div class="comparison-item">
+              <img src="../../assets/images/Power BI/icono dataset.jpg"
+                   alt="Icono de dataset en Power BI" class="comparison-item__img" />
+              <h3 class="comparison-item__title">📦 Dataset (Modelo Semántico)</h3>
+              <p>Es el <strong>modelo de datos</strong>: tablas, relaciones entre ellas,
+              medidas DAX, columnas calculadas, jerarquías y seguridad a nivel de fila.
+              Es la "inteligencia" de negocio: las reglas de cálculo, las definiciones
+              de KPIs y la estructura del dato.</p>
+              <p>Se crea en Power BI Desktop (el archivo .pbix) y se publica al Service
+              donde queda disponible para que múltiples informes lo consulten.</p>
+              <p class="comparison-item__note">
+                Analogía: Los ingredientes preparados y la receta base del chef.
+                Cualquier plato puede usar esos ingredientes.
+              </p>
+            </div>
+
+            <div class="comparison-item">
+              <img src="../../assets/images/Power BI/icono report.jpg"
+                   alt="Icono de informe en Power BI" class="comparison-item__img" />
+              <h3 class="comparison-item__title">📄 Informe (Report)</h3>
+              <p>Son <strong>páginas con visualizaciones</strong> conectadas a un dataset.
+              Puede tener múltiples páginas, cada una con gráficos, tablas, mapas, filtros
+              y slicers. Es donde está el diseño, la interactividad y el storytelling
+              con datos.</p>
+              <p>Se crea en Desktop y se publica al Service. Varios informes pueden
+              conectarse al mismo dataset.</p>
+              <p class="comparison-item__note">
+                Analogía: El plato emplatado y presentado. Puede haber versiones
+                diferentes para diferentes comensales, usando los mismos ingredientes.
+              </p>
+            </div>
+
+            <div class="comparison-item">
+              <img src="../../assets/images/Power BI/icono dashboard.jpg"
+                   alt="Icono de dashboard en Power BI" class="comparison-item__img" />
+              <h3 class="comparison-item__title">📊 Dashboard</h3>
+              <p>Es <strong>una sola página</strong> compuesta de tiles (fichas) que
+              puedes anclar desde diferentes informes y datasets. Ideal para una vista
+              ejecutiva de alto nivel que combina los KPIs más importantes de
+              toda la organización en un solo vistazo.</p>
+              <p><strong>Solo se puede crear en el Service</strong>, no en Desktop.
+              Permite configurar alertas de datos en sus tiles.</p>
+              <p class="comparison-item__note">
+                Analogía: El menú del restaurante — un vistazo rápido a los platos
+                estrella de diferentes cocinas.
+              </p>
+            </div>
+          </div>
+
+          <div class="note note--practice">
+            <p><strong>📌 El patrón de oro: 1 Dataset → N Informes → N Dashboards</strong></p>
+            <p style="margin: 8px 0 0; line-height: 1.7;">
+              Crea <strong>un dataset bien diseñado</strong> y certificado que sea la
+              única fuente de verdad. Luego crea <strong>múltiples informes</strong> para
+              diferentes audiencias (dirección, operaciones, marketing...) todos conectados
+              al mismo dataset. Finalmente crea <strong>dashboards</strong> que anclen
+              los KPIs más importantes de diferentes informes.
+            </p>
+          </div>
+
+          <h3 class="subsection-title">Los Artefactos de Power BI Service</h3>
+          <p>En el workspace del Service verás estos tipos de artefactos, cada uno con su propio icono y propósito:</p>
+
+          <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin: 28px 0;">
+
+            <div style="background: white; border: 2px solid var(--color-mauve); border-radius: 12px; padding: 20px; text-align: center;">
+              <img src="../../assets/images/Power BI/icono dataset.jpg"
+                   alt="Icono de Dataset en Power BI Service"
+                   style="width: 100px; height: 100px; object-fit: contain; margin: 0 auto 12px; display: block; border-radius: 8px;" />
+              <div style="font-size: 22px; margin-bottom: 6px;">📦</div>
+              <h4 style="font-size: 16px; font-weight: 700; color: var(--color-coral); margin: 0 0 8px;">Dataset</h4>
+              <p style="font-size: 13px; line-height: 1.6; color: var(--color-slate); margin: 0;">El modelo de datos: tablas, relaciones, medidas DAX y columnas calculadas</p>
+            </div>
+
+            <div style="background: white; border: 2px solid var(--color-mauve); border-radius: 12px; padding: 20px; text-align: center;">
+              <img src="../../assets/images/Power BI/icono report.jpg"
+                   alt="Icono de Informe en Power BI Service"
+                   style="width: 100px; height: 100px; object-fit: contain; margin: 0 auto 12px; display: block; border-radius: 8px;" />
+              <div style="font-size: 22px; margin-bottom: 6px;">📄</div>
+              <h4 style="font-size: 16px; font-weight: 700; color: var(--color-coral); margin: 0 0 8px;">Informe</h4>
+              <p style="font-size: 13px; line-height: 1.6; color: var(--color-slate); margin: 0;">Páginas con visuales conectados a un dataset, con interactividad y drill-down</p>
+            </div>
+
+            <div style="background: white; border: 2px solid var(--color-mauve); border-radius: 12px; padding: 20px; text-align: center;">
+              <img src="../../assets/images/Power BI/icono dashboard.jpg"
+                   alt="Icono de Dashboard en Power BI Service"
+                   style="width: 100px; height: 100px; object-fit: contain; margin: 0 auto 12px; display: block; border-radius: 8px;" />
+              <div style="font-size: 22px; margin-bottom: 6px;">📊</div>
+              <h4 style="font-size: 16px; font-weight: 700; color: var(--color-coral); margin: 0 0 8px;">Dashboard</h4>
+              <p style="font-size: 13px; line-height: 1.6; color: var(--color-slate); margin: 0;">Una sola página con tiles de diferentes informes. Vista ejecutiva de alto nivel</p>
+            </div>
+
+            <div style="background: white; border: 2px solid var(--color-mauve); border-radius: 12px; padding: 20px; text-align: center;">
+              <img src="../../assets/images/Power BI/icono exploración.jpg"
+                   alt="Icono de Exploración de datos en Power BI Service"
+                   style="width: 100px; height: 100px; object-fit: contain; margin: 0 auto 12px; display: block; border-radius: 8px;" />
+              <div style="font-size: 22px; margin-bottom: 6px;">🔍</div>
+              <h4 style="font-size: 16px; font-weight: 700; color: var(--color-coral); margin: 0 0 8px;">Exploración de Datos</h4>
+              <p style="font-size: 13px; line-height: 1.6; color: var(--color-slate); margin: 0;">Informes personalizados creados por usuarios mediante "Explore This Data"</p>
+            </div>
+
+          </div>
+
+          <div class="note note--tip">
+            <p><strong>💡 ¿Qué es una Aplicación (App) de Power BI?</strong></p>
+            <p style="margin: 8px 0 0; line-height: 1.7;">
+              Las <strong>aplicaciones</strong> son paquetes de informes y dashboards
+              que publicas para usuarios finales. Es como empaquetar un workspace en
+              un producto listo para consumir, con navegación simplificada y sin
+              que los usuarios vean el workspace de desarrollo. Es la forma más profesional
+              de distribuir contenido de Power BI a gran escala.
+            </p>
+          </div>
+        </section>
+
+        <!-- ================================================
+             SECCIÓN 14: LICENCIAS
+        ================================================ -->
+        <section class="content-section" id="licencias">
+          <div class="section-header">
+            <span class="section-icon">🎫</span>
+            <h2>Licencias de Power BI</h2>
+          </div>
+
+          <p style="font-size: 17px; line-height: 1.8; margin-bottom: 28px;">
+            Power BI tiene tres tipos de licencia principales que determinan qué
+            puedes hacer en el servicio:
+          </p>
+
+          <!-- FREE -->
+          <div style="background: white; border-left: 4px solid var(--color-slate); padding: 24px; margin: 24px 0; border-radius: 8px;">
+            <h4 style="font-size: 20px; font-weight: 700; margin: 0 0 12px; color: var(--color-slate);">
+              🆓 Power BI Free
+            </h4>
+            <p style="font-size: 16px; line-height: 1.7; margin: 12px 0;"><strong>Precio:</strong> Gratis</p>
+            <p style="font-size: 16px; line-height: 1.7; margin: 12px 0;"><strong>¿Qué puedes hacer?</strong></p>
+            <ul style="margin-left: 24px; line-height: 1.8;">
+              <li>Usar Power BI Desktop (sin límites)</li>
+              <li>Publicar informes en "Mi área de trabajo" del Service</li>
+              <li>Ver tus propios informes</li>
+              <li>Consumir contenido compartido contigo en workspaces con capacidad Fabric</li>
+            </ul>
+            <p style="font-size: 16px; line-height: 1.7; margin: 12px 0;"><strong>Limitaciones:</strong></p>
+            <ul style="margin-left: 24px; line-height: 1.8;">
+              <li>❌ No puedes compartir informes con otros</li>
+              <li>❌ No puedes colaborar en workspaces de equipo</li>
+              <li>❌ No puedes crear dashboards compartidos</li>
+              <li>❌ No puedes configurar actualizaciones programadas</li>
+            </ul>
+          </div>
+
+          <!-- PRO -->
+          <div style="background: white; border-left: 4px solid #6264A7; padding: 24px; margin: 24px 0; border-radius: 8px;">
+            <h4 style="font-size: 20px; font-weight: 700; margin: 0 0 12px; color: #6264A7;">
+              💼 Power BI Pro
+            </h4>
+            <p style="font-size: 16px; line-height: 1.7; margin: 12px 0;"><strong>Precio:</strong> ~10 USD/usuario/mes (incluida en Microsoft 365 E3 y superiores)</p>
+            <p style="font-size: 16px; line-height: 1.7; margin: 12px 0;"><strong>¿Qué puedes hacer?</strong></p>
+            <ul style="margin-left: 24px; line-height: 1.8;">
+              <li>Todo lo de Free, más:</li>
+              <li>✅ Compartir informes y dashboards con otros usuarios Pro</li>
+              <li>✅ Colaborar en workspaces de equipo</li>
+              <li>✅ Configurar actualizaciones programadas (hasta 8 al día)</li>
+              <li>✅ Crear y distribuir aplicaciones</li>
+              <li>✅ Suscripciones por email</li>
+              <li>✅ Integración con Microsoft Teams</li>
+            </ul>
+            <p style="font-size: 16px; line-height: 1.7; margin: 12px 0;"><strong>Limitaciones:</strong></p>
+            <ul style="margin-left: 24px; line-height: 1.8;">
+              <li>Límite de 1 GB por dataset</li>
+              <li>Actualizaciones limitadas a 8/día</li>
+              <li>Sin deployment pipelines avanzados</li>
+            </ul>
+            <div class="note note--tip" style="margin-top: 16px;">
+              <p><strong>💡 La licencia más común</strong></p>
+              <p>Pro es la licencia estándar para equipos que necesitan colaborar
+              y compartir contenido. Es la más usada en empresas.</p>
+            </div>
+          </div>
+
+          <!-- PPU -->
+          <div style="background: white; border-left: 4px solid var(--color-coral); padding: 24px; margin: 24px 0; border-radius: 8px;">
+            <h4 style="font-size: 20px; font-weight: 700; margin: 0 0 12px; color: var(--color-coral);">
+              ⭐ Power BI Premium Per User (PPU)
+            </h4>
+            <p style="font-size: 16px; line-height: 1.7; margin: 12px 0;"><strong>Precio:</strong> ~20 USD/usuario/mes</p>
+            <p style="font-size: 16px; line-height: 1.7; margin: 12px 0;"><strong>¿Qué puedes hacer?</strong></p>
+            <ul style="margin-left: 24px; line-height: 1.8;">
+              <li>Todo lo de Pro, más:</li>
+              <li>✅ Datasets hasta 100 GB (vs 1 GB en Pro)</li>
+              <li>✅ Actualizaciones ilimitadas (vs 8/día en Pro)</li>
+              <li>✅ Deployment pipelines completos</li>
+              <li>✅ Modelos compuestos avanzados</li>
+              <li>✅ Análisis de impacto de datasets</li>
+              <li>✅ Informes paginados</li>
+              <li>✅ Configuración XMLA read/write</li>
+              <li>✅ Herramientas de terceros (Tabular Editor, DAX Studio vía endpoint)</li>
+            </ul>
+            <div class="note note--practice" style="margin-top: 16px;">
+              <p><strong>📌 ¿Cuándo usar PPU?</strong></p>
+              <p>PPU es ideal para equipos de BI y analistas avanzados que necesitan
+              datasets grandes, actualizaciones frecuentes y herramientas de
+              desarrollo profesionales.</p>
+            </div>
+          </div>
+
+          <!-- Capacidades y Fabric -->
+          <div style="background: var(--color-blush); border-radius: 12px; padding: 24px; margin: 32px 0;">
+            <h4 style="font-size: 20px; font-weight: 700; margin: 0 0 16px; color: var(--color-dark);">
+              🏢 Capacidades y Microsoft Fabric
+            </h4>
+            <p style="font-size: 16px; line-height: 1.7; margin: 12px 0;">
+              Las <strong>capacidades Premium</strong> (anteriormente Power BI Premium) ahora
+              forman parte de <strong>Microsoft Fabric</strong>. En lugar de licencias
+              por usuario, las organizaciones compran capacidad de procesamiento
+              (SKUs F2, F4, F8… hasta F2048).
+            </p>
+            <p style="font-size: 16px; line-height: 1.7; margin: 12px 0;"><strong>Ventajas de las capacidades Fabric:</strong></p>
+            <ul style="margin-left: 24px; line-height: 1.8;">
+              <li>Los usuarios Free pueden consumir contenido publicado en la capacidad</li>
+              <li>Datasets de hasta 400 GB (según SKU)</li>
+              <li>Actualizaciones ilimitadas</li>
+              <li>Recursos dedicados garantizados</li>
+              <li>Acceso a todas las cargas de trabajo de Fabric (Data Engineering, Data Science, etc.)</li>
+            </ul>
+            <div class="note note--tip" style="margin-top: 16px;">
+              <p><strong>💡 Modelo híbrido</strong></p>
+              <p>Muchas empresas combinan: capacidad Fabric para producción +
+              licencias Pro/PPU para desarrolladores y creadores de contenido.</p>
+            </div>
+          </div>
+
+          <!-- Tabla resumen -->
+          <h4 style="font-size: 20px; font-weight: 700; margin: 32px 0 16px; color: var(--color-dark);">
+            📊 Resumen rápido
+          </h4>
+          <div style="overflow-x: auto;">
+            <table style="width: 100%; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden; font-size: 15px;">
+              <thead>
+                <tr style="background: var(--color-coral); color: white;">
+                  <th style="padding: 12px 16px; text-align: left;">Característica</th>
+                  <th style="padding: 12px 16px; text-align: center;">Free</th>
+                  <th style="padding: 12px 16px; text-align: center;">Pro</th>
+                  <th style="padding: 12px 16px; text-align: center;">PPU</th>
+                  <th style="padding: 12px 16px; text-align: center;">Fabric</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr style="border-bottom: 1px solid var(--color-mauve);">
+                  <td style="padding: 12px 16px;">Precio/usuario/mes</td>
+                  <td style="padding: 12px 16px; text-align: center;">Gratis</td>
+                  <td style="padding: 12px 16px; text-align: center;">~10 USD</td>
+                  <td style="padding: 12px 16px; text-align: center;">~20 USD</td>
+                  <td style="padding: 12px 16px; text-align: center;">Por capacidad</td>
+                </tr>
+                <tr style="border-bottom: 1px solid var(--color-mauve); background: var(--color-rose);">
+                  <td style="padding: 12px 16px;">Compartir contenido</td>
+                  <td style="padding: 12px 16px; text-align: center;">❌</td>
+                  <td style="padding: 12px 16px; text-align: center;">✅</td>
+                  <td style="padding: 12px 16px; text-align: center;">✅</td>
+                  <td style="padding: 12px 16px; text-align: center;">✅</td>
+                </tr>
+                <tr style="border-bottom: 1px solid var(--color-mauve);">
+                  <td style="padding: 12px 16px;">Tamaño máximo dataset</td>
+                  <td style="padding: 12px 16px; text-align: center;">1 GB</td>
+                  <td style="padding: 12px 16px; text-align: center;">1 GB</td>
+                  <td style="padding: 12px 16px; text-align: center;">100 GB</td>
+                  <td style="padding: 12px 16px; text-align: center;">Hasta 400 GB</td>
+                </tr>
+                <tr style="border-bottom: 1px solid var(--color-mauve); background: var(--color-rose);">
+                  <td style="padding: 12px 16px;">Actualizaciones/día</td>
+                  <td style="padding: 12px 16px; text-align: center;">❌</td>
+                  <td style="padding: 12px 16px; text-align: center;">8</td>
+                  <td style="padding: 12px 16px; text-align: center;">Ilimitadas</td>
+                  <td style="padding: 12px 16px; text-align: center;">Ilimitadas</td>
+                </tr>
+                <tr style="border-bottom: 1px solid var(--color-mauve);">
+                  <td style="padding: 12px 16px;">Deployment Pipelines</td>
+                  <td style="padding: 12px 16px; text-align: center;">❌</td>
+                  <td style="padding: 12px 16px; text-align: center;">❌</td>
+                  <td style="padding: 12px 16px; text-align: center;">✅</td>
+                  <td style="padding: 12px 16px; text-align: center;">✅</td>
+                </tr>
+                <tr style="border-bottom: 1px solid var(--color-mauve); background: var(--color-rose);">
+                  <td style="padding: 12px 16px;">XMLA endpoint</td>
+                  <td style="padding: 12px 16px; text-align: center;">❌</td>
+                  <td style="padding: 12px 16px; text-align: center;">❌</td>
+                  <td style="padding: 12px 16px; text-align: center;">✅</td>
+                  <td style="padding: 12px 16px; text-align: center;">✅</td>
+                </tr>
+                <tr>
+                  <td style="padding: 12px 16px;">Consumidores sin Pro</td>
+                  <td style="padding: 12px 16px; text-align: center;">❌</td>
+                  <td style="padding: 12px 16px; text-align: center;">❌</td>
+                  <td style="padding: 12px 16px; text-align: center;">❌</td>
+                  <td style="padding: 12px 16px; text-align: center;">✅</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="note note--tip" style="margin-top: 32px;">
+            <p><strong>💡 Antes de comprar, comprueba lo que ya tienes</strong></p>
+            <p style="margin: 8px 0 0; line-height: 1.7;">
+              <strong>Microsoft 365 E3/E5</strong> y <strong>Office 365 E3/E5</strong> ya incluyen
+              Power BI Pro. Muchas organizaciones lo tienen sin saberlo. Pregunta a tu
+              equipo de IT qué licencias Microsoft tiene la organización antes de pagar por separado.
+            </p>
+          </div>
+
+          <div class="note note--warning">
+            <p><strong>⚠️ El error más común: olvidar los consumidores</strong></p>
+            <p style="margin: 8px 0 0; line-height: 1.7;">
+              Muchos proyectos se bloquean en producción porque se planificó la licencia
+              solo para el desarrollador (Pro) pero no para los usuarios que van a consumir
+              el informe. Sin capacidad Fabric, <strong>cada persona que vea el contenido
+              compartido necesita su propia licencia Pro o PPU</strong>.
+              Planifica el modelo de licencias desde el inicio del proyecto.
+            </p>
+          </div>
+        </section>
+
+        <!-- ================================================
+             SECCIÓN FINAL: Siguientes pasos
+        ================================================ -->
+        <section class="content-section" id="siguientes-pasos">
+          <div class="note note--next">
+            <p><strong>🚀 ¡Ya dominas Power BI Service de arriba a abajo!</strong></p>
+            <p style="margin: 8px 0 0; line-height: 1.75;">
+              Ahora que conoces el ecosistema completo, es hora de profundizar en áreas específicas.
+              Para construir modelos eficientes ve a <a href="../modelado.html">Modelado de Datos</a>.
+              Para crear cálculos potentes explora <a href="../dax.html">DAX</a>.
+              Para transformar y limpiar datos domina <a href="../power-query.html">Power Query</a>.
+              ¿Quieres el siguiente nivel? Descubre <a href="../fabric.html">Microsoft Fabric</a>. 🌸
+            </p>
+          </div>
+        </section>
+
+      </div><!-- .topic-page -->
+    </main>
+  </div><!-- .page-wrapper -->
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/i18next@23/dist/umd/i18next.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1/prism.min.js"></script>
+  <script src="../../assets/js/theme.js"></script>
+  <script src="../../assets/js/cursor.js"></script>
+
+</body>
+</html>

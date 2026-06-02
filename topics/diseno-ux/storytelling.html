@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Storytelling con datos en Power BI: estructura contexto-análisis-acción, jerarquía de mensajes, narrativa visual, títulos que cuentan historias y cómo guiar a la audiencia hacia decisiones concretas.">
+  <title>Storytelling con Datos — Diseño y UX | Power BI Guide by Kawaii BI</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+
+  <!-- Estilos CSS -->
+  <link rel="stylesheet" href="../../assets/css/main.css">
+  <link rel="stylesheet" href="../../assets/css/themes.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/layout.css">
+
+  <style>
+    .topic-header { text-align: center; padding: 2.5rem 0 2rem; border-bottom: 2px solid var(--color-mauve); margin-bottom: 2.5rem; }
+    .topic-header__icon { font-size: 4rem; margin-bottom: 0.75rem; display: block; }
+    .topic-header__title { font-size: clamp(1.875rem, 4vw, 2.5rem); font-weight: 800; color: var(--color-dark); margin-bottom: 0.625rem; line-height: 1.2; }
+    .topic-header__subtitle { font-size: 1.0625rem; color: var(--color-slate); margin-bottom: 1.25rem; line-height: 1.5; max-width: 620px; margin-left: auto; margin-right: auto; }
+    .topic-header__levels { display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap; }
+
+    .toc { background: var(--color-rose); border-radius: var(--border-radius); padding: 1.25rem 1.5rem; margin-bottom: 2rem; border: 1.5px solid var(--color-mauve); }
+    .toc__title { font-size: 1rem; font-weight: 700; margin: 0 0 0.75rem; }
+    .toc__list { display: flex; flex-wrap: wrap; gap: 0.5rem; list-style: none; padding: 0; margin: 0; }
+    .toc__list a { font-size: 0.8125rem; color: var(--color-coral); text-decoration: none; padding: 0.25rem 0.625rem; background: var(--color-white); border-radius: 999px; border: 1px solid var(--color-mauve); transition: background 0.15s, color 0.15s; }
+    .toc__list a:hover { background: var(--color-coral); color: white; }
+
+    .category-header { display: flex; align-items: center; gap: 0.75rem; margin: 2.5rem 0 1.25rem; padding: 0.875rem 1.25rem; background: var(--color-rose); border-radius: var(--border-radius-sm); border-left: 4px solid var(--color-coral); }
+    .category-header__icon { font-size: 1.5rem; }
+    .category-header__title { font-size: 1.25rem; font-weight: 700; margin: 0; }
+
+    .concept-card { background: var(--color-white); border: 1.5px solid var(--color-mauve); border-radius: var(--border-radius); padding: 1.75rem; margin-bottom: 1.5rem; scroll-margin-top: 80px; transition: border-color 0.2s; }
+    .concept-card:hover { border-color: var(--color-coral); }
+    .concept-card h3 { font-size: 1.25rem; font-weight: 700; color: var(--color-coral); margin-bottom: 0.75rem; }
+    .concept-card h4 { font-size: 0.9375rem; font-weight: 700; color: var(--color-dark); margin: 1.25rem 0 0.5rem; }
+    .concept-card p { font-size: 0.9375rem; line-height: 1.7; color: var(--color-dark); margin-bottom: 0.75rem; }
+    .concept-card p:last-child { margin-bottom: 0; }
+    .concept-card ul, .concept-card ol { padding-left: 1.25rem; font-size: 0.9375rem; line-height: 1.8; color: var(--color-dark); margin-bottom: 0.75rem; }
+
+    .quote-block { background: linear-gradient(135deg, var(--color-rose) 0%, var(--color-blush) 100%); border-left: 4px solid var(--color-coral); border-radius: var(--border-radius); padding: 1.5rem 1.75rem; margin: 1.5rem 0; }
+    .quote-block__text { font-size: 1.125rem; font-weight: 600; color: var(--color-dark); line-height: 1.5; font-style: italic; margin: 0 0 0.375rem; }
+    .quote-block__author { font-size: 0.8125rem; color: var(--color-slate); margin: 0; }
+
+    /* ── Flujo narrativo (3 fases) ─────────────────────── */
+    .story-flow {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0;
+      margin: 1.5rem 0;
+      border-radius: var(--border-radius);
+      overflow: hidden;
+      border: 1.5px solid var(--color-mauve);
+    }
+    .story-flow__phase {
+      padding: 1.5rem 1.25rem;
+      text-align: center;
+      position: relative;
+    }
+    .story-flow__phase:not(:last-child)::after {
+      content: "→";
+      position: absolute;
+      right: -0.75rem;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--color-coral);
+      z-index: 1;
+      background: var(--color-white);
+      width: 1.5rem;
+      height: 1.5rem;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1;
+    }
+    .story-flow__phase--context { background: #eef6fb; }
+    .story-flow__phase--analysis { background: #fef9ee; }
+    .story-flow__phase--action { background: #eefbf2; }
+    .story-flow__num { font-size: 0.6875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.375rem; }
+    .story-flow__phase--context .story-flow__num { color: #2c5f8a; }
+    .story-flow__phase--analysis .story-flow__num { color: #b8860b; }
+    .story-flow__phase--action .story-flow__num { color: #27ae60; }
+    .story-flow__icon { font-size: 2rem; display: block; margin-bottom: 0.5rem; }
+    .story-flow__name { font-size: 1rem; font-weight: 700; color: var(--color-dark); margin-bottom: 0.375rem; }
+    .story-flow__desc { font-size: 0.8125rem; color: var(--color-slate); line-height: 1.5; }
+    @media (max-width: 700px) {
+      .story-flow { grid-template-columns: 1fr; }
+      .story-flow__phase:not(:last-child)::after { content: "↓"; right: 50%; top: auto; bottom: -0.75rem; transform: translateX(50%); }
+    }
+
+    /* ── Demo títulos ──────────────────────────────────── */
+    .title-demo {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin: 1.25rem 0;
+    }
+    .title-demo__panel {
+      border-radius: var(--border-radius-sm);
+      padding: 1.25rem;
+      border: 1.5px solid var(--color-mauve);
+    }
+    .title-demo__panel--bad { background: #fff5f5; border-color: #f5c6c6; }
+    .title-demo__panel--good { background: #f0faf5; border-color: #b8dfc9; }
+    .title-demo__label { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.75rem; }
+    .title-demo__label--bad { color: #c0392b; }
+    .title-demo__label--good { color: #27ae60; }
+    .title-demo__title { font-size: 1rem; font-weight: 700; color: var(--color-dark); margin-bottom: 0.25rem; }
+    .title-demo__sub { font-size: 0.8125rem; color: var(--color-slate); line-height: 1.5; }
+    @media (max-width: 600px) { .title-demo { grid-template-columns: 1fr; } }
+
+    /* ── Grid comparativo ─────────────────────────────── */
+    .comparison-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1rem 0; }
+    .comparison-col { border-radius: var(--border-radius-sm); padding: 1.25rem; border: 1.5px solid var(--color-mauve); }
+    .comparison-col--bad { background: #fff5f5; border-color: #f5c6c6; }
+    .comparison-col--good { background: #f0faf5; border-color: #b8dfc9; }
+    .comparison-col__label { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.625rem; }
+    .comparison-col--bad .comparison-col__label { color: #c0392b; }
+    .comparison-col--good .comparison-col__label { color: #27ae60; }
+    .comparison-col ul { font-size: 0.875rem; padding-left: 1.1rem; margin: 0; line-height: 1.7; color: var(--color-dark); }
+    @media (max-width: 600px) { .comparison-grid { grid-template-columns: 1fr; } }
+
+    /* ── Estructura de páginas ─────────────────────────── */
+    .page-structure {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 1rem;
+      margin: 1.25rem 0;
+    }
+    .page-card {
+      background: var(--color-white);
+      border: 1.5px solid var(--color-mauve);
+      border-radius: var(--border-radius);
+      padding: 1.25rem;
+      text-align: center;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+    .page-card:hover { border-color: var(--color-coral); transform: translateY(-2px); }
+    .page-card__num { font-size: 0.6875rem; font-weight: 700; color: var(--color-coral); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.25rem; }
+    .page-card__icon { font-size: 1.75rem; display: block; margin-bottom: 0.5rem; }
+    .page-card__name { font-size: 0.9375rem; font-weight: 700; color: var(--color-dark); margin-bottom: 0.375rem; }
+    .page-card__desc { font-size: 0.8125rem; color: var(--color-slate); line-height: 1.5; }
+
+    /* ── Checklist ─────────────────────────────────────── */
+    .checklist { list-style: none; padding: 0; margin: 1rem 0; }
+    .checklist li { display: flex; align-items: flex-start; gap: 0.75rem; padding: 0.625rem 0; border-bottom: 1px solid var(--color-blush); font-size: 0.9375rem; line-height: 1.6; color: var(--color-dark); }
+    .checklist li:last-child { border-bottom: none; }
+    .checklist li::before { content: "✅"; flex-shrink: 0; margin-top: 0.1rem; }
+  </style>
+</head>
+<body>
+
+  <!-- SIDEBAR -->
+  <aside class="site-sidebar">
+    <div class="site-sidebar__profile">
+      <img src="../../assets/images/avatar Sara.png" alt="Sara Lozano Martí" class="site-sidebar__avatar">
+      <p class="site-sidebar__name">Sara Lozano Martí</p>
+      <p class="site-sidebar__subtitle">Power BI Expert</p>
+    </div>
+    <nav class="site-sidebar__nav" aria-label="Navegación principal">
+      <ul>
+        <li><a href="../../index.html" class="site-sidebar__link"><span class="site-sidebar__icon">🏠</span> Inicio</a></li>
+        <li><a href="../dax.html" class="site-sidebar__link"><span class="site-sidebar__icon">⚡</span> Funciones DAX</a></li>
+        <li><a href="../power-query.html" class="site-sidebar__link"><span class="site-sidebar__icon">🔄</span> Power Query</a></li>
+        <li><a href="../lenguaje-m.html" class="site-sidebar__link"><span class="site-sidebar__icon">〽️</span> Lenguaje M</a></li>
+        <li><a href="../modelado.html" class="site-sidebar__link"><span class="site-sidebar__icon">🗄️</span> Modelado</a></li>
+        <li><a href="../conceptos-powerbi.html" class="site-sidebar__link"><span class="site-sidebar__icon">📊</span> Conceptos Power BI</a></li>
+        <li><a href="../fabric.html" class="site-sidebar__link"><span class="site-sidebar__icon">🧵</span> Microsoft Fabric</a></li>
+        <li><a href="../tmdl.html" class="site-sidebar__link"><span class="site-sidebar__icon">📝</span> TMDL</a></li>
+        <li><a href="../diseno-ux.html" class="site-sidebar__link is-active"><span class="site-sidebar__icon">🎨</span> Diseño y UX</a></li>
+        <li><a href="../gobernanza.html" class="site-sidebar__link"><span class="site-sidebar__icon">🔒</span> Gobernanza</a></li>
+      </ul>
+    </nav>
+    <div class="site-sidebar__divider"></div>
+    <div class="site-sidebar__footer">
+      <a href="../../quien-soy.html" class="site-sidebar__link site-sidebar__link--highlight"><span class="site-sidebar__icon">👩‍💻</span> ¿Quién soy?</a>
+      <div class="site-sidebar__social">
+        <a href="https://www.linkedin.com/in/saralozanomarti" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><img src="../../assets/images/logo linkedIN.png" alt="LinkedIn" class="site-sidebar__social-icon"></a>
+        <a href="https://www.youtube.com/@KawaiiPowerBI" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><img src="../../assets/images/logo youtube.png" alt="YouTube" class="site-sidebar__social-icon"></a>
+        <a href="https://github.com/KawaiiBI" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><img src="../../assets/images/logo github.png" alt="GitHub" class="site-sidebar__social-icon"></a>
+      </div>
+      <div class="site-sidebar__logo-bottom"><img src="../../assets/images/Logo Kawaii.jpg" alt="Kawaii BI" class="site-sidebar__logo-img"></div>
+      <p class="site-sidebar__copyright">Power BI Guide 🌸<br>© 2026 Kawaii BI</p>
+    </div>
+  </aside>
+
+  <!-- CONTENIDO PRINCIPAL -->
+  <div class="page-wrapper">
+    <main class="main-content">
+      <div class="topic-page">
+
+        <!-- Breadcrumb -->
+        <nav class="breadcrumb" aria-label="Ruta de navegación">
+          <span class="breadcrumb__item"><a href="../../index.html">🏠 Inicio</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item"><a href="../diseno-ux.html">Diseño y UX</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item">Storytelling con Datos</span>
+        </nav>
+
+        <!-- Cabecera -->
+        <header class="topic-header">
+          <span class="topic-header__icon">📖</span>
+          <h1 class="topic-header__title">Storytelling con Datos</h1>
+          <p class="topic-header__subtitle">Un dashboard que no cuenta una historia es un repositorio de números. Aprende a estructurar tus informes Power BI con la narrativa contexto → análisis → acción para guiar a tu audiencia hacia decisiones concretas</p>
+          <div class="topic-header__levels">
+            <span class="badge badge--intermediate">Intermedio</span>
+          </div>
+        </header>
+
+        <!-- TOC -->
+        <nav class="toc" aria-label="Contenido de esta página">
+          <p class="toc__title">📋 En esta página</p>
+          <ul class="toc__list">
+            <li><a href="#que-es">¿Qué es el storytelling con datos?</a></li>
+            <li><a href="#estructura">Contexto → Análisis → Acción</a></li>
+            <li><a href="#paginas">Estructura de páginas de un informe</a></li>
+            <li><a href="#titulos">Títulos que cuentan historias</a></li>
+            <li><a href="#jerarquia">Jerarquía de mensajes dentro de una página</a></li>
+            <li><a href="#tecnicas">Técnicas narrativas en Power BI</a></li>
+            <li><a href="#errores">Errores comunes</a></li>
+            <li><a href="#checklist">Checklist de storytelling</a></li>
+          </ul>
+        </nav>
+
+        <!-- ─────────────────────────────────────────── -->
+        <!-- 1. ¿Qué es el storytelling con datos?       -->
+        <!-- ─────────────────────────────────────────── -->
+        <div class="category-header" id="que-es">
+          <span class="category-header__icon">📚</span>
+          <h2 class="category-header__title">¿Qué es el storytelling con datos?</h2>
+        </div>
+
+        <div class="concept-card">
+          <h3>No se trata de "decorar" — se trata de guiar</h3>
+          <p>
+            El storytelling con datos no es añadir narrativas literarias a un dashboard ni poner
+            frases motivacionales entre los gráficos. Es <strong>organizar la información de forma
+            que guíe a la persona que la lee hacia una comprensión clara y una acción concreta</strong>.
+          </p>
+          <p>
+            La diferencia entre un dashboard que "muestra datos" y uno que "cuenta una historia"
+            es la misma diferencia entre un diccionario y una novela: ambos contienen palabras,
+            pero solo uno te lleva de un punto a otro con propósito.
+          </p>
+
+          <div class="quote-block">
+            <p class="quote-block__text">"Haz que tus datos sean amigables."</p>
+            <p class="quote-block__author">— Kawaii BI</p>
+          </div>
+
+          <h4>¿Por qué importa en Power BI?</h4>
+          <ul>
+            <li>Tu audiencia tiene <strong>poco tiempo y mucha información</strong> — necesita llegar al insight rápido</li>
+            <li>Los datos sin contexto son ruido — <strong>el contexto crea significado</strong></li>
+            <li>Un dashboard sin narrativa requiere que el usuario invente su propia historia — y puede inventar la equivocada</li>
+            <li>Las decisiones se toman cuando hay un <strong>camino claro de comprensión a acción</strong></li>
+          </ul>
+        </div>
+
+        <!-- ─────────────────────────────────────────── -->
+        <!-- 2. Contexto → Análisis → Acción             -->
+        <!-- ─────────────────────────────────────────── -->
+        <div class="category-header" id="estructura">
+          <span class="category-header__icon">🎯</span>
+          <h2 class="category-header__title">La estructura narrativa: Contexto → Análisis → Acción</h2>
+        </div>
+
+        <div class="concept-card">
+          <h3>Las 3 fases de toda buena historia con datos</h3>
+          <p>
+            Toda historia, desde un cuento infantil hasta una presentación al comité directivo,
+            sigue una estructura de tres actos. En storytelling con datos, los tres actos son:
+          </p>
+
+          <div class="story-flow" role="img" aria-label="Flujo narrativo: Contexto, Análisis, Acción">
+            <div class="story-flow__phase story-flow__phase--context">
+              <p class="story-flow__num">Fase 1</p>
+              <span class="story-flow__icon">🌍</span>
+              <p class="story-flow__name">Contexto</p>
+              <p class="story-flow__desc">¿Dónde estamos? KPIs principales, período, situación actual vs. anterior o vs. objetivo.</p>
+            </div>
+            <div class="story-flow__phase story-flow__phase--analysis">
+              <p class="story-flow__num">Fase 2</p>
+              <span class="story-flow__icon">🔍</span>
+              <p class="story-flow__name">Análisis</p>
+              <p class="story-flow__desc">¿Por qué estamos aquí? Desglose por categoría, tendencias, outliers, causas raíz.</p>
+            </div>
+            <div class="story-flow__phase story-flow__phase--action">
+              <p class="story-flow__num">Fase 3</p>
+              <span class="story-flow__icon">🚀</span>
+              <p class="story-flow__name">Acción</p>
+              <p class="story-flow__desc">¿Qué hacemos? Recomendaciones, alertas, próximos pasos, drill-through a detalle.</p>
+            </div>
+          </div>
+
+          <h4>Ejemplo aplicado: informe de ventas</h4>
+          <ul>
+            <li><strong>Contexto (página 1):</strong> "Las ventas acumuladas son €1.28M, un +12% vs. año anterior. Estamos al 87% del objetivo anual."</li>
+            <li><strong>Análisis (página 2):</strong> "El crecimiento viene de la región Norte (+23%), mientras que Centro ha caído un -8%. El producto X explica el 60% del crecimiento."</li>
+            <li><strong>Acción (página 3 o drill-through):</strong> "La región Centro necesita atención: 3 de sus 5 comerciales están por debajo del 50% de objetivo. Detalle por comercial disponible aquí."</li>
+          </ul>
+
+          <div class="note note--tip">
+            💡 <strong>Tip kawaii:</strong> No todas las páginas del informe tienen que seguir las 3 fases literalmente. Pero sí debería haber un flujo general: las primeras páginas dan contexto, las intermedias profundizan y las finales (o los drill-through) llevan al detalle accionable.
+          </div>
+        </div>
+
+        <!-- ─────────────────────────────────────────── -->
+        <!-- 3. Estructura de páginas                    -->
+        <!-- ─────────────────────────────────────────── -->
+        <div class="category-header" id="paginas">
+          <span class="category-header__icon">📄</span>
+          <h2 class="category-header__title">Estructura de páginas de un informe narrativo</h2>
+        </div>
+
+        <div class="concept-card">
+          <h3>Cómo organizar las páginas para contar la historia</h3>
+          <p>
+            El orden de las páginas de tu informe es la columna vertebral de la narrativa.
+            Cada página debe tener un propósito claro y llevar al usuario a la siguiente
+            de forma lógica.
+          </p>
+
+          <div class="page-structure">
+            <div class="page-card">
+              <p class="page-card__num">Página 1</p>
+              <span class="page-card__icon">🏠</span>
+              <p class="page-card__name">Resumen ejecutivo</p>
+              <p class="page-card__desc">3-5 KPIs principales, estado general, período. El usuario entiende la situación en 5 segundos.</p>
+            </div>
+            <div class="page-card">
+              <p class="page-card__num">Página 2-3</p>
+              <span class="page-card__icon">📊</span>
+              <p class="page-card__name">Análisis por dimensión</p>
+              <p class="page-card__desc">Desglose por región, producto, canal, equipo. Una dimensión clave por página, con comparativas.</p>
+            </div>
+            <div class="page-card">
+              <p class="page-card__num">Página 4</p>
+              <span class="page-card__icon">📈</span>
+              <p class="page-card__name">Tendencias</p>
+              <p class="page-card__desc">Evolución temporal, estacionalidad, forecasting. El contexto temporal que responde al "¿hacia dónde vamos?".</p>
+            </div>
+            <div class="page-card">
+              <p class="page-card__num">Drill-through</p>
+              <span class="page-card__icon">🔍</span>
+              <p class="page-card__name">Detalle bajo demanda</p>
+              <p class="page-card__desc">Tablas detalladas, datos por registro, página de cliente/producto individual. Solo aparece cuando el usuario lo necesita.</p>
+            </div>
+          </div>
+
+          <div class="note note--practice">
+            📌 <strong>Buena práctica:</strong> Organiza las ideas antes de diseñar. Dibuja la estructura de páginas en papel primero (título + 3-4 visuals por página) y recórrela como si fueras tu usuario. Si no tiene sentido la secuencia en papel, tampoco lo tendrá en pantalla. Este es uno de los puntos del Chachi-Resumen.
+          </div>
+        </div>
+
+        <!-- ─────────────────────────────────────────── -->
+        <!-- 4. Títulos que cuentan historias             -->
+        <!-- ─────────────────────────────────────────── -->
+        <div class="category-header" id="titulos">
+          <span class="category-header__icon">📝</span>
+          <h2 class="category-header__title">Títulos que cuentan historias, no que describen gráficos</h2>
+        </div>
+
+        <div class="concept-card">
+          <h3>El título del visual es tu primera oportunidad narrativa</h3>
+          <p>
+            La mayoría de los títulos de visuals en Power BI son descriptivos: "Ventas por región",
+            "Margen por producto", "Evolución mensual". Describen <em>qué contiene</em> el visual,
+            pero no dicen <em>qué significa</em>. Un título narrativo transforma el visual de un
+            contenedor de datos en un mensaje.
+          </p>
+
+          <div class="title-demo" aria-label="Comparación de títulos descriptivos vs narrativos">
+            <div class="title-demo__panel title-demo__panel--bad">
+              <p class="title-demo__label title-demo__label--bad">❌ Descriptivo</p>
+              <p class="title-demo__title">Ventas por Región</p>
+              <p class="title-demo__sub">El usuario tiene que interpretar qué significa el gráfico por su cuenta.</p>
+            </div>
+            <div class="title-demo__panel title-demo__panel--good">
+              <p class="title-demo__label title-demo__label--good">✅ Narrativo</p>
+              <p class="title-demo__title">Norte lidera las ventas con un 42% del total</p>
+              <p class="title-demo__sub">El título ya comunica el insight — el gráfico lo respalda visualmente.</p>
+            </div>
+          </div>
+
+          <div class="title-demo">
+            <div class="title-demo__panel title-demo__panel--bad">
+              <p class="title-demo__label title-demo__label--bad">❌ Descriptivo</p>
+              <p class="title-demo__title">Evolución del Margen</p>
+              <p class="title-demo__sub">¿Ha subido? ¿Ha bajado? ¿Importa? El título no lo dice.</p>
+            </div>
+            <div class="title-demo__panel title-demo__panel--good">
+              <p class="title-demo__label title-demo__label--good">✅ Narrativo</p>
+              <p class="title-demo__title">El margen ha caído 5pp desde Q1 — nivel más bajo en 2 años</p>
+              <p class="title-demo__sub">El título genera urgencia y contexto. El gráfico muestra la evidencia.</p>
+            </div>
+          </div>
+
+          <h4>Títulos dinámicos con DAX</h4>
+          <p>
+            En Power BI puedes crear títulos que se actualizan automáticamente con los datos
+            usando medidas DAX como título del visual:
+          </p>
+          <ul>
+            <li>Crea una medida: <code style="background: var(--color-blush); padding: 0.15em 0.4em; border-radius: 4px; font-family: 'Fira Code', monospace; font-size: 0.85em; color: var(--color-coral);">_Titulo_Ventas = "Norte lidera con " &amp; FORMAT([% Norte], "0%") &amp; " del total"</code></li>
+            <li>En el visual → Format → Title → Fx → selecciona la medida como valor del título</li>
+            <li>El título se recalcula automáticamente cada vez que los datos cambian o se aplica un filtro</li>
+          </ul>
+
+          <div class="note note--tip">
+            💡 <strong>Tip kawaii:</strong> No todos los títulos necesitan ser narrativos. Los de visuals secundarios o de detalle pueden ser descriptivos. Pero los títulos de la página y los de los visuals principales (el primer gráfico que ve el ojo) siempre deberían contar algo.
+          </div>
+        </div>
+
+        <!-- ─────────────────────────────────────────── -->
+        <!-- 5. Jerarquía de mensajes                    -->
+        <!-- ─────────────────────────────────────────── -->
+        <div class="category-header" id="jerarquia">
+          <span class="category-header__icon">📐</span>
+          <h2 class="category-header__title">Jerarquía de mensajes dentro de una página</h2>
+        </div>
+
+        <div class="concept-card">
+          <h3>No todos los datos merecen la misma atención</h3>
+          <p>
+            Dentro de cada página, los datos deben estar organizados en una jerarquía clara
+            de importancia. El usuario debe poder hacer un escaneo de 5 segundos y llevarse
+            el mensaje principal. Si necesita profundizar, los visuals secundarios están ahí.
+          </p>
+
+          <h4>Los 3 niveles de jerarquía</h4>
+          <ol>
+            <li>
+              <strong>Nivel 1 — El mensaje principal:</strong> Lo que el usuario debe ver primero.
+              Cards de KPI en la parte superior, título de página narrativo, o un visual destacado
+              que ocupa el 40-50% de la página. Color de acento, tamaño grande, posición dominante.
+            </li>
+            <li>
+              <strong>Nivel 2 — El análisis de soporte:</strong> Los visuals que explican o contextualizan
+              el mensaje principal. Gráficos de barras, líneas, tablas comparativas. Tamaño mediano,
+              color principal pero no de acento, zona central de la página.
+            </li>
+            <li>
+              <strong>Nivel 3 — El detalle bajo demanda:</strong> Tablas de detalle, slicers, botones de
+              drill-through. Tamaño pequeño, colores neutros (gris), zona inferior o lateral.
+              Solo se consulta cuando el usuario necesita datos específicos.
+            </li>
+          </ol>
+
+          <div class="note note--practice">
+            📌 <strong>Buena práctica:</strong> Aplica la regla de los tercios: el nivel 1 ocupa un tercio superior de la página, el nivel 2 ocupa el tercio central y el nivel 3 el tercio inferior. Esto respeta el patrón F de lectura y garantiza que lo más importante se vea primero.
+          </div>
+        </div>
+
+        <!-- ─────────────────────────────────────────── -->
+        <!-- 6. Técnicas narrativas en Power BI          -->
+        <!-- ─────────────────────────────────────────── -->
+        <div class="category-header" id="tecnicas">
+          <span class="category-header__icon">🛠️</span>
+          <h2 class="category-header__title">Técnicas narrativas en Power BI</h2>
+        </div>
+
+        <div class="concept-card">
+          <h3>Herramientas de Power BI que refuerzan la narrativa</h3>
+
+          <h4>Smart Narrative (Narración inteligente)</h4>
+          <p>
+            El visual <strong>Smart Narrative</strong> genera automáticamente un párrafo de
+            texto que resume los datos de la página. No es perfecto, pero puede ser un buen
+            punto de partida para que el usuario entienda el contexto sin tener que interpretar
+            gráficos. Personalízalo editando el texto generado y añadiendo tus propias medidas.
+          </p>
+
+          <h4>Líneas de referencia y bandas</h4>
+          <p>
+            Añade líneas de referencia a tus gráficos para dar contexto: el objetivo, el valor
+            del año anterior, la media. Sin referencia, un dato es un número; con referencia,
+            es una historia de éxito o de alerta.
+          </p>
+          <ul>
+            <li>Analytics pane → Reference line (constante, media, percentil…)</li>
+            <li>Usa etiqueta descriptiva: "Objetivo: €1.5M" o "Media sector: 23%"</li>
+          </ul>
+
+          <h4>Formato condicional narrativo</h4>
+          <p>
+            Usa el color no solo para decorar sino para narrar: el color cuenta la historia de
+            "lo que va bien" (verde), "lo que necesita atención" (ámbar) y "lo que va mal" (rojo).
+            Combinado con iconos, el formato condicional se convierte en un idioma visual que el
+            usuario aprende una vez y usa siempre.
+          </p>
+
+          <h4>Anotaciones y callouts</h4>
+          <p>
+            Un cuadro de texto estratégico con un insight clave ("⚠️ Centro ha caído un 8% vs. Q2")
+            puede ser más efectivo que un visual entero. Úsalo con moderación — uno o dos por
+            página — y actualízalo con medidas DAX para que sea dinámico.
+          </p>
+
+          <div class="note note--tip">
+            💡 <strong>Tip kawaii:</strong> La técnica más infravalorada del storytelling en Power BI es el subtítulo del visual. El título dice "qué pasa" y el subtítulo dice "por qué importa" o "qué período cubre". Actívalo en Format → Title → Subtitle — son dos líneas de contexto gratuitas.
+          </div>
+        </div>
+
+        <!-- ─────────────────────────────────────────── -->
+        <!-- 7. Errores comunes                          -->
+        <!-- ─────────────────────────────────────────── -->
+        <div class="category-header" id="errores">
+          <span class="category-header__icon">🐛</span>
+          <h2 class="category-header__title">Errores comunes de storytelling en dashboards</h2>
+        </div>
+
+        <div class="concept-card">
+          <h3>Los que más veo en informes sin narrativa</h3>
+
+          <div class="comparison-grid">
+            <div class="comparison-col comparison-col--bad">
+              <p class="comparison-col__label">❌ Sin storytelling</p>
+              <ul>
+                <li>Páginas sin título o con título genérico ("Dashboard")</li>
+                <li>Todos los visuals del mismo tamaño — sin jerarquía</li>
+                <li>KPIs sin referencia (sin vs. anterior, sin vs. objetivo)</li>
+                <li>El usuario tiene que descubrir qué es importante</li>
+                <li>Títulos descriptivos: "Ventas por Región"</li>
+                <li>Datos sin fecha de referencia ni período</li>
+                <li>Todas las páginas independientes, sin flujo narrativo</li>
+              </ul>
+            </div>
+            <div class="comparison-col comparison-col--good">
+              <p class="comparison-col__label">✅ Con storytelling</p>
+              <ul>
+                <li>Cada página tiene un título narrativo que resume el mensaje</li>
+                <li>Un visual destaca, los demás dan soporte — jerarquía clara</li>
+                <li>KPIs con variación (%, pp) y línea de referencia</li>
+                <li>El insight principal salta a la vista en 5 segundos</li>
+                <li>Títulos narrativos: "Norte lidera con el 42%"</li>
+                <li>Período visible en cada página y cada visual principal</li>
+                <li>Flujo lógico: resumen → análisis → detalle → acción</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- ─────────────────────────────────────────── -->
+        <!-- 8. Checklist                                -->
+        <!-- ─────────────────────────────────────────── -->
+        <div class="category-header" id="checklist">
+          <span class="category-header__icon">✅</span>
+          <h2 class="category-header__title">Checklist de storytelling</h2>
+        </div>
+
+        <div class="concept-card">
+          <h3>Antes de publicar, verifica estos 10 puntos</h3>
+
+          <ul class="checklist">
+            <li>La primera página del informe permite entender la situación general en 5 segundos</li>
+            <li>Las páginas siguen un flujo lógico: contexto → análisis → detalle</li>
+            <li>Cada página tiene un título narrativo que comunica un insight, no solo una descripción</li>
+            <li>Los KPIs principales incluyen variación respecto a una referencia (objetivo, año anterior)</li>
+            <li>Dentro de cada página hay jerarquía visual clara (un visual destaca sobre los demás)</li>
+            <li>Los gráficos principales tienen líneas de referencia (objetivo, media, año anterior)</li>
+            <li>El período temporal es visible en cada página (fecha de actualización, rango de fechas)</li>
+            <li>Hay al menos un título dinámico con DAX que se actualiza con los datos filtrados</li>
+            <li>Los drill-through tienen botón de vuelta y están señalizados con indicadores de profundidad</li>
+            <li>He recorrido el informe como si fuera mi usuario y la historia tiene sentido de principio a fin</li>
+          </ul>
+
+          <div class="note note--next">
+            🚀 <strong>¡Lo estás haciendo genial!</strong> El storytelling con datos no es un talento artístico — es una estructura. Contexto → Análisis → Acción. Títulos que cuentan, no que describen. Jerarquía que guía el ojo. Cuando dominas estas tres cosas, tus dashboards dejan de ser repositorios de números y empiezan a ser herramientas de decisión. 🌸
+          </div>
+        </div>
+
+        <!-- Navegación entre páginas -->
+        <nav aria-label="Páginas relacionadas" style="margin-top: 2.5rem; display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap;">
+          <a href="graficos.html" style="display: inline-flex; align-items: center; gap: 0.5rem; color: var(--color-coral); text-decoration: none; font-weight: 600; font-size: 0.9375rem;">
+            ← Elección de Gráficos
+          </a>
+          <a href="preatentivos.html" style="display: inline-flex; align-items: center; gap: 0.5rem; color: var(--color-coral); text-decoration: none; font-weight: 600; font-size: 0.9375rem;">
+            Atributos Preatentivos →
+          </a>
+        </nav>
+
+      </div><!-- /topic-page -->
+    </main>
+  </div><!-- /page-wrapper -->
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script>
+  <script src="../../assets/js/theme.js"></script>
+  <script src="../../assets/js/main.js"></script>
+  <script src="../../assets/js/cursor.js"></script>
+
+</body>
+</html>

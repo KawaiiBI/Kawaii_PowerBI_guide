@@ -1,0 +1,1336 @@
+<!DOCTYPE html>
+
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta content="Inteligencia de Tiempo en DAX — TOTALYTD, SAMEPERIODLASTYEAR, DATESINPERIOD, PARALLELPERIOD y todas las funciones de Time Intelligence" name="description"/>
+<title>Inteligencia de Tiempo — Funciones DAX | Power BI Guide</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Fira+Code:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<!-- Prism.js para syntax highlighting -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet"/>
+<!-- i18next para traducciones -->
+<script src="https://cdn.jsdelivr.net/npm/i18next@23.7.6/i18next.min.js"></script>
+<!-- CSS del proyecto -->
+<link href="../../assets/css/main.css" rel="stylesheet"/>
+<link href="../../assets/css/themes.css" rel="stylesheet"/>
+<link href="../../assets/css/components.css" rel="stylesheet"/>
+<link href="../../assets/css/layout.css" rel="stylesheet"/>
+<link href="../../assets/css/dax-search.css" rel="stylesheet"/>
+<style>
+    /* === ESTILOS ESPECÍFICOS PARA PÁGINAS DE TOPICS === */
+
+    /* Topic header con icono grande */
+    .topic-header {
+      text-align: center;
+      padding: 2.5rem 0 2rem;
+      border-bottom: 2px solid var(--color-mauve);
+      margin-bottom: 2.5rem;
+    }
+
+    .topic-header__icon {
+      font-size: 4rem;
+      margin-bottom: 0.75rem;
+      display: block;
+    }
+
+    .topic-header__title {
+      font-size: clamp(1.875rem, 4vw, 2.5rem);
+      font-weight: 800;
+      color: var(--color-dark);
+      margin-bottom: 0.625rem;
+      line-height: 1.2;
+    }
+
+    .topic-header__subtitle {
+      font-size: 1.0625rem;
+      color: var(--color-slate);
+      margin-bottom: 1.25rem;
+      line-height: 1.5;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .topic-header__levels {
+      display: flex;
+      gap: 0.5rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    /* TOC — Table of contents */
+    .toc {
+      background: var(--color-rose);
+      border: 1.5px solid var(--color-mauve);
+      border-radius: var(--border-radius);
+      padding: 1.5rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .toc__title {
+      font-size: 0.875rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--color-slate);
+      margin-bottom: 1rem;
+    }
+
+    .toc__list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .toc__link {
+      color: var(--color-dark);
+      text-decoration: none;
+      font-size: 0.9375rem;
+      transition: var(--transition);
+      display: inline-block;
+    }
+
+    .toc__link:hover {
+      color: var(--color-coral);
+      text-decoration: underline;
+    }
+
+    /* Category header — separadores entre categorías */
+    .category-header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin: 3rem 0 1.5rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 2px solid var(--color-mauve);
+    }
+
+    .category-header__icon {
+      font-size: 1.75rem;
+    }
+
+    .category-header__title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--color-dark);
+      margin: 0;
+    }
+
+    /* Function card — tarjeta individual para cada función */
+    .function-card {
+      background: var(--color-white);
+      border: 1.5px solid var(--color-mauve);
+      border-radius: var(--border-radius);
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .function-card__name {
+      font-family: var(--font-code);
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: var(--color-coral);
+      margin-bottom: 0.75rem;
+    }
+
+    .function-card__description {
+      font-size: 0.9375rem;
+      color: var(--color-dark);
+      margin-bottom: 1rem;
+      line-height: 1.6;
+    }
+
+    .function-card__level {
+      display: inline-block;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      padding: 0.25rem 0.625rem;
+      border-radius: var(--border-radius-sm);
+      background: var(--color-blush);
+      color: var(--color-slate);
+      margin-bottom: 1rem;
+    }
+
+    /* Function table — tabla compacta con ejemplos */
+    .function-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.5rem 0;
+      font-size: 0.875rem;
+    }
+
+    .function-table th {
+      background: var(--color-rose);
+      color: var(--color-dark);
+      font-weight: 700;
+      text-align: left;
+      padding: 0.75rem 1rem;
+      border: 1px solid var(--color-mauve);
+    }
+
+    .function-table td {
+      padding: 0.75rem 1rem;
+      border: 1px solid var(--color-mauve);
+      color: var(--color-dark);
+    }
+
+    .function-table tr:nth-child(even) {
+      background: var(--color-blush);
+    }
+
+    /* Code block wrapper */
+    .code-block {
+      position: relative;
+      margin: 1.25rem 0;
+    }
+
+    .code-block pre {
+      margin: 0;
+      border-radius: var(--border-radius);
+      border: 1.5px solid var(--color-mauve);
+    }
+
+    .code-block__copy {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.5rem;
+      padding: 0.375rem 0.75rem;
+      font-size: 0.75rem;
+      background: var(--color-coral);
+      color: var(--color-white);
+      border: none;
+      border-radius: var(--border-radius-sm);
+      cursor: pointer;
+      font-family: var(--font-main);
+      font-weight: 600;
+      transition: var(--transition);
+    }
+
+    .code-block__copy:hover {
+      background: var(--color-peach);
+    }
+  </style>
+</head>
+<body>
+<!-- SIDEBAR: Navegación principal -->
+<aside class="site-sidebar">
+<!-- Avatar y nombre -->
+<div class="site-sidebar__profile">
+<img alt="Sara Lozano Martí" class="site-sidebar__avatar" src="../../assets/images/avatar Sara.png"/>
+<p class="site-sidebar__name">Sara Lozano Martí</p>
+<p class="site-sidebar__subtitle">Power BI Expert</p>
+</div>
+<!-- Navegación principal -->
+<nav aria-label="Navegación principal" class="site-sidebar__nav">
+<ul>
+<li><a class="site-sidebar__link" href="../../index.html">
+<span class="site-sidebar__icon">🏠</span> Inicio
+        </a></li>
+<li><a class="site-sidebar__link is-active" href="../dax.html">
+<span class="site-sidebar__icon">⚡</span> Funciones DAX
+        </a></li>
+<li><a class="site-sidebar__link" href="../power-query.html">
+<span class="site-sidebar__icon">🔄</span> Power Query
+        </a></li>
+<li><a class="site-sidebar__link" href="../lenguaje-m.html">
+<span class="site-sidebar__icon">〽️</span> Lenguaje M
+        </a></li>
+<li><a class="site-sidebar__link" href="../modelado.html">
+<span class="site-sidebar__icon">🗄️</span> Modelado
+        </a></li>
+<li><a class="site-sidebar__link" href="../conceptos-powerbi.html">
+<span class="site-sidebar__icon">📊</span> Conceptos Power BI
+        </a></li>
+<li><a class="site-sidebar__link" href="../fabric.html">
+<span class="site-sidebar__icon">🧵</span> Microsoft Fabric
+        </a></li>
+<li><a class="site-sidebar__link" href="../tmdl.html">
+<span class="site-sidebar__icon">📝</span> TMDL
+        </a></li>
+<li><a class="site-sidebar__link" href="../diseno-ux.html">
+<span class="site-sidebar__icon">🎨</span> Diseño y UX
+        </a></li>
+<li><a class="site-sidebar__link" href="../gobernanza.html">
+<span class="site-sidebar__icon">🔒</span> Gobernanza
+        </a></li>
+</ul>
+</nav>
+<!-- Separador -->
+<div class="site-sidebar__divider"></div>
+<!-- Footer del sidebar -->
+<div class="site-sidebar__footer">
+<!-- Enlace a quien soy -->
+<a class="site-sidebar__link site-sidebar__link--highlight" href="../../quien-soy.html">
+<span class="site-sidebar__icon">👩‍💻</span> ¿Quién soy?
+      </a>
+<!-- Iconos sociales -->
+<div class="site-sidebar__social">
+<a aria-label="LinkedIn" href="https://www.linkedin.com/in/saralozanomarti" rel="noopener noreferrer" target="_blank">
+<img alt="LinkedIn" class="site-sidebar__social-icon" src="../../assets/images/logo linkedIN.png"/>
+</a>
+<a aria-label="YouTube" href="https://www.youtube.com/@KawaiiPowerBI" rel="noopener noreferrer" target="_blank">
+<img alt="YouTube" class="site-sidebar__social-icon" src="../../assets/images/logo youtube.png"/>
+</a>
+<a aria-label="GitHub" href="https://github.com/KawaiiBI" rel="noopener noreferrer" target="_blank">
+<img alt="GitHub" class="site-sidebar__social-icon" src="../../assets/images/logo github.png"/>
+</a>
+</div>
+<!-- Logo Kawaii BI -->
+<div class="site-sidebar__logo-bottom">
+<img alt="Kawaii BI" class="site-sidebar__logo-img" src="../../assets/images/Logo Kawaii.jpg"/>
+</div>
+<!-- Copyright -->
+<p class="site-sidebar__copyright">
+        Power BI Guide 🌸<br/>
+        © 2026 Kawaii BI
+      </p>
+</div>
+</aside>
+<!-- PAGE WRAPPER -->
+<div class="page-wrapper">
+<!-- Main content -->
+<main id="main-content">
+<div class="topic-page">
+        <nav aria-label="breadcrumb" class="breadcrumb">
+<a class="breadcrumb__link" href="../../index.html">Inicio</a>
+<span class="breadcrumb__separator">›</span>
+<a class="breadcrumb__link" href="../dax.html">Funciones DAX</a>
+<span class="breadcrumb__separator">›</span>
+<span class="breadcrumb__current">Inteligencia de Tiempo</span>
+</nav>
+
+        <header class="topic-header">
+<span class="topic-header__icon">⏳</span>
+<h1 class="topic-header__title">Inteligencia de Tiempo</h1>
+<p class="topic-header__subtitle">TOTALYTD, SAMEPERIODLASTYEAR, DATESINPERIOD, PARALLELPERIOD y las 40 funciones para comparativas temporales — la categoría más poderosa de DAX</p>
+<div class="topic-header__levels">
+<span class="badge badge--intermediate">Intermedio</span>
+<span class="badge badge--advanced">Avanzado</span>
+</div>
+</header>
+
+        <div class="dax-search-compact-bar">
+<div class="dax-search-wrapper dax-search-compact" data-dax-search="true">
+<span class="dax-search-icon">🔍</span>
+<input aria-label="Buscar función DAX" autocomplete="off" class="dax-search-input" placeholder="Buscar otra función DAX..." spellcheck="false" type="text"/>
+<button aria-label="Limpiar" class="dax-search-clear" hidden="">✕</button>
+<div class="dax-search-results" role="listbox"></div>
+</div>
+</div>
+
+        <nav class="toc">
+<h2 class="toc__title">📑 En esta página</h2>
+<ul class="toc__list">
+<li><a class="toc__link" href="#prerequisitos">Prerrequisito: tabla de calendario marcada</a></li>
+<li><a class="toc__link" href="#acumulados">Totales acumulados: YTD, QTD, MTD</a></li>
+<li><a class="toc__link" href="#anterior">Períodos anteriores: SAMEPERIODLASTYEAR</a></li>
+<li><a class="toc__link" href="#siguiente">Períodos siguientes: NEXT...</a></li>
+<li><a class="toc__link" href="#dateadd">Desplazamientos: DATEADD, PARALLELPERIOD</a></li>
+<li><a class="toc__link" href="#openclose">Saldos apertura/cierre</a></li>
+<li><a class="toc__link" href="#firstlast">Primera y última fecha</a></li>
+<li><a class="toc__link" href="#allperiods">Todos los períodos</a></li>
+<li><a class="toc__link" href="#semana">Funciones de semana (WEEK)</a></li>
+<li><a class="toc__link" href="#startof">STARTOF — Primer día del período</a></li>
+<li><a class="toc__link" href="#patrones">Los 10 patrones más usados</a></li>
+</ul>
+</nav>
+
+        <!-- Breadcrumb --><!-- Buscador compacto DAX --><!-- Header del topic --><!-- TOC --><!-- SECCIÓN 0: Prerequisitos --><section id="prerequisitos">
+<div class="category-header">
+<span class="category-header__icon">⚠️</span>
+<h2 class="category-header__title">Antes de empezar: la tabla de calendario marcada</h2>
+</div>
+<p>
+            Este es el prerrequisito más importante de toda la inteligencia de tiempo. Sin él, nada funciona.
+          </p>
+<h3>Para que las funciones de inteligencia de tiempo funcionen, NECESITAS obligatoriamente:</h3>
+<div class="note note--warning">
+<strong>⚠️ Requisito 1: UNA TABLA DE CALENDARIO en tu modelo</strong><br/>
+<ul style="line-height: 1.8; margin-left: 2rem; margin-top: 0.5rem;">
+<li>Debe tener una columna de tipo fecha continua (sin huecos)</li>
+<li>Debe cubrir todo el rango de fechas de tus datos</li>
+<li>Debe tener UNA FILA por cada día</li>
+</ul>
+<div class="code-block" style="margin-top: 1rem;">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">Calendario =
+ADDCOLUMNS(
+    CALENDARAUTO(),
+    "Año", YEAR([Date]),
+    "Mes", MONTH([Date]),
+    "Trimestre", QUARTER([Date]),
+    "Año-Mes", FORMAT([Date], "YYYY-MM")
+)</code></pre>
+</div>
+</div>
+<div class="note note--warning">
+<strong>⚠️ Requisito 2: MARCARLA COMO TABLA DE FECHAS en Power BI</strong><br/>
+<ol style="line-height: 1.8; margin-left: 2rem; margin-top: 0.5rem;">
+<li>Seleccionar la tabla Calendario en el panel de campos</li>
+<li>Clic derecho → <strong>"Marcar como tabla de fechas"</strong></li>
+<li>Seleccionar la columna de fecha como columna de fecha única</li>
+<li>✅ Aparecerá un icono de calendario junto a la tabla</li>
+</ol>
+</div>
+<div class="note note--warning">
+<strong>⚠️ Requisito 3: UNA RELACIÓN entre tu tabla de hechos y el Calendario</strong><br/>
+<ul style="line-height: 1.8; margin-left: 2rem; margin-top: 0.5rem;">
+<li>La columna de fecha de tus ventas → columna Date del Calendario</li>
+<li>Relación de muchos a uno</li>
+<li>Dirección de filtro: de Calendario hacia Ventas</li>
+</ul>
+</div>
+<h3>¿Por qué es obligatorio?</h3>
+<p style="color: var(--color-slate); margin-top: 1rem;">
+            Cuando Power BI ve que una tabla está marcada como tabla de fechas:
+          </p>
+<ul style="line-height: 1.8; color: var(--color-slate); margin-left: 2rem;">
+<li>Desactiva la jerarquía de fechas automática</li>
+<li>Permite que las funciones de Time Intelligence usen esa tabla correctamente</li>
+<li>Garantiza que el contexto de filtro funcione bien con los períodos</li>
+</ul>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// ❌ Esta medida puede dar resultados incorrectos o BLANK
+Ventas YTD = TOTALYTD(SUM('Ventas'[Importe]), 'Ventas'[Fecha])
+// Usas la columna de fecha directamente de la tabla de hechos
+
+// ✅ Correcto:
+Ventas YTD = TOTALYTD(SUM('Ventas'[Importe]), 'Calendario'[Date])
+// Usas la tabla de calendario marcada</code></pre>
+</div>
+<div class="note note--warning">
+<strong>⚠️ Troubleshooting: Si tus medidas devuelven BLANK o resultados extraños</strong><br/>
+            El 90% de las veces es porque:
+            <ol style="line-height: 1.8; margin-left: 2rem; margin-top: 0.5rem;">
+<li>No tienes tabla de calendario marcada</li>
+<li>La relación entre Ventas y Calendario no existe o está inactiva</li>
+<li>El rango de fechas del calendario no cubre todas las fechas de los datos</li>
+</ol>
+            Revisa estos tres puntos antes de buscar el bug en la fórmula DAX.
+          </div>
+</section><!-- SECCIÓN 1: Acumulados --><section id="acumulados">
+<div class="category-header">
+<span class="category-header__icon">📊</span>
+<h2 class="category-header__title">Totales acumulados — Year-to-Date, Quarter-to-Date, Month-to-Date</h2>
+</div>
+<p>
+            YTD (Year-to-Date) significa "desde el inicio del año hasta hoy". QTD = desde el inicio del trimestre. MTD = desde el inicio del mes.
+            Son las métricas más usadas en cualquier cuadro de mando: "¿Cómo vamos en lo que llevamos del año?"
+          </p>
+<!-- TOTALYTD -->
+<div class="function-card">
+<div class="function-card__name">TOTALYTD(&lt;expresión&gt;, &lt;columna_fecha&gt;, [fin_año])</div>
+<div class="function-card__level">Intermedio</div>
+<div class="function-card__description">
+              Calcula la expresión acumulando desde el 1 de enero hasta la fecha máxima del contexto actual.
+              El parámetro fin_año permite definir el fin del año fiscal (ej: "3/31" para año fiscal que termina en marzo).
+            </div>
+<h4>Ejemplo básico:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// ✅ Ventas acumuladas en el año (desde 1 enero hasta la fecha del contexto)
+Ventas YTD = TOTALYTD([Total Ventas], 'Calendario'[Date])
+// En un visual de línea mes a mes:
+// Enero: ventas de enero
+// Febrero: ventas de enero + febrero
+// Marzo: ventas de enero + febrero + marzo
+// ... (siempre acumulando desde el 1 de enero)</code></pre>
+</div>
+<h4>Con año fiscal:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// ✅ Con año fiscal que termina el 31 de marzo
+Ventas YTD Fiscal = TOTALYTD([Total Ventas], 'Calendario'[Date], "3/31")
+// El "año" va del 1 de abril al 31 de marzo</code></pre>
+</div>
+<h4>Con filtro adicional:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// ✅ Con filtro adicional
+Ventas YTD Electrónica =
+TOTALYTD(
+    [Total Ventas],
+    'Calendario'[Date],
+    'Productos'[Categoría] = "Electrónica"
+)
+
+// ✅ Equivalente usando DATESYTD (más flexible)
+Ventas YTD v2 = CALCULATE([Total Ventas], DATESYTD('Calendario'[Date]))</code></pre>
+</div>
+</div>
+<!-- DATESYTD, DATESQTD, DATESMTD -->
+<div class="function-card">
+<div class="function-card__name">DATESYTD / DATESQTD / DATESMTD(&lt;columna_fecha&gt;, [fin_año])</div>
+<div class="function-card__level">Intermedio</div>
+<div class="function-card__description">
+              Devuelven una TABLA con las fechas desde el inicio del año/trimestre/mes hasta la fecha máxima del contexto.
+              Se usan dentro de CALCULATE para máxima flexibilidad.
+            </div>
+<h4>Diferencia entre TOTAL... y DATES...:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// TOTALYTD es un atajo para:
+CALCULATE([Total Ventas], DATESYTD('Calendario'[Date]))
+// Ambas dan el mismo resultado — elige la que prefieras leer
+
+// ✅ La ventaja de DATES... es que puedes combinarlo con otras cosas
+Margen YTD = CALCULATE([Total Margen], DATESYTD('Calendario'[Date]))
+Nº Clientes YTD = CALCULATE([Clientes Únicos], DATESYTD('Calendario'[Date]))
+// Reutilizas el mismo patrón para cualquier medida</code></pre>
+</div>
+</div>
+<!-- TOTALQTD y TOTALMTD -->
+<div class="function-card">
+<div class="function-card__name">TOTALQTD / TOTALMTD(&lt;expresión&gt;, &lt;columna_fecha&gt;)</div>
+<div class="function-card__level">Intermedio</div>
+<div class="function-card__description">
+              Como TOTALYTD pero acumulan desde el inicio del trimestre o del mes respectivamente.
+            </div>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// ✅ ¿Cómo vamos en lo que llevamos del trimestre?
+Ventas QTD = TOTALQTD([Total Ventas], 'Calendario'[Date])
+
+// ✅ ¿Cómo vamos en lo que llevamos del mes?
+Ventas MTD = TOTALMTD([Total Ventas], 'Calendario'[Date])
+
+// Tabla resumen de todos los acumulados:
+// Medida       | Ene | Feb | Mar | Q1 Total | Año Total
+// Ventas MTD   | 10K | 12K |  8K |          |
+// Ventas QTD   | 10K | 22K | 30K | 30K      |
+// Ventas YTD   | 10K | 22K | 30K | 30K      | (en Q1 es lo mismo que QTD)</code></pre>
+</div>
+</div>
+</section><!-- SECCIÓN 2: Períodos anteriores --><section id="anterior">
+<div class="category-header">
+<span class="category-header__icon">🔙</span>
+<h2 class="category-header__title">Comparar con el mismo período del año / trimestre / mes anterior</h2>
+</div>
+<!-- SAMEPERIODLASTYEAR -->
+<div class="function-card">
+<div class="function-card__name">SAMEPERIODLASTYEAR(&lt;columna_fecha&gt;)</div>
+<div class="function-card__level">Intermedio</div>
+<div class="function-card__description">
+              Devuelve una tabla con las mismas fechas que el contexto actual pero del año anterior.
+              <strong>Es la función más usada para comparativas YoY (Year-over-Year).</strong>
+</div>
+<h4>Ejemplos básicos:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// ✅ Ventas del mismo período del año anterior
+Ventas Año Anterior = CALCULATE([Total Ventas], SAMEPERIODLASTYEAR('Calendario'[Date]))
+
+// ✅ Variación absoluta vs año anterior
+Variación YoY = [Total Ventas] - [Ventas Año Anterior]
+
+// ✅ Variación porcentual vs año anterior
+Variación YoY % = DIVIDE([Total Ventas] - [Ventas Año Anterior], [Ventas Año Anterior])</code></pre>
+</div>
+<h4>KPI completo con formato:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// ✅ Con formato bonito para mostrar
+KPI YoY =
+VAR Actual = [Total Ventas]
+VAR Anterior = [Ventas Año Anterior]
+VAR Var = DIVIDE(Actual - Anterior, Anterior)
+RETURN
+    FORMAT(Actual, "#,##0 €") &amp; " (" &amp; FORMAT(Var, "+0.0%;-0.0%") &amp; " vs año ant.)"
+
+// ✅ Funciona también con YTD — comparativa YTD vs YTD año anterior
+Ventas YTD Año Anterior =
+CALCULATE(
+    [Total Ventas],
+    SAMEPERIODLASTYEAR(DATESYTD('Calendario'[Date]))
+)</code></pre>
+</div>
+</div>
+<!-- PREVIOUSMONTH, etc -->
+<div class="function-card">
+<div class="function-card__name">PREVIOUSMONTH / PREVIOUSQUARTER / PREVIOUSYEAR(&lt;columna_fecha&gt;)</div>
+<div class="function-card__level">Intermedio</div>
+<div class="function-card__description">
+              Devuelven las fechas del mes/trimestre/año anterior completo al contexto actual.
+              A diferencia de SAMEPERIODLASTYEAR, estas funciones devuelven el período INMEDIATAMENTE anterior.
+            </div>
+<h4>Diferencia clave SAMEPERIODLASTYEAR vs PREVIOUSYEAR:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Si el contexto es Q1 2024 (enero, febrero, marzo):
+SAMEPERIODLASTYEAR → Q1 2023 (mismo trimestre, año anterior)
+PREVIOUSYEAR       → todo 2023 (el año anterior completo)
+
+// Si el contexto es marzo 2024:
+PREVIOUSMONTH      → febrero 2024 (el mes anterior completo)
+SAMEPERIODLASTYEAR → marzo 2023 (el mismo mes, año anterior)</code></pre>
+</div>
+<h4>Ejemplos prácticos:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// ✅ Ventas del mes anterior (para comparativa MoM)
+Ventas Mes Anterior = CALCULATE([Total Ventas], PREVIOUSMONTH('Calendario'[Date]))
+
+// ✅ Variación MoM (Month-over-Month)
+Variación MoM = [Total Ventas] - [Ventas Mes Anterior]
+Variación MoM % = DIVIDE([Total Ventas] - [Ventas Mes Anterior], [Ventas Mes Anterior])
+
+// ✅ Ventas del trimestre anterior
+Ventas Q Anterior = CALCULATE([Total Ventas], PREVIOUSQUARTER('Calendario'[Date]))
+
+// ✅ Ventas del año anterior completo
+Ventas Año Anterior Completo = CALCULATE([Total Ventas], PREVIOUSYEAR('Calendario'[Date]))</code></pre>
+</div>
+</div>
+</section><!-- SECCIÓN 3: Períodos siguientes --><section id="siguiente">
+<div class="category-header">
+<span class="category-header__icon">🔜</span>
+<h2 class="category-header__title">Mirar al futuro: NEXT...</h2>
+</div>
+<div class="function-card">
+<div class="function-card__name">NEXTMONTH / NEXTQUARTER / NEXTYEAR(&lt;columna_fecha&gt;)</div>
+<div class="function-card__level">Intermedio</div>
+<div class="function-card__description">
+              Como las funciones PREVIOUS pero hacia adelante en el tiempo.
+              Útiles para mostrar proyecciones, presupuestos futuros y comparativas con datos de períodos próximos.
+            </div>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// ✅ ¿Cuál es el presupuesto del mes que viene?
+Presupuesto Mes Siguiente = CALCULATE(SUM('Presupuesto'[Importe]), NEXTMONTH('Calendario'[Date]))
+
+// ✅ Diferencia entre lo que llevamos del año y lo que viene el año próximo
+Gap vs Próximo Año = [Total Ventas] - CALCULATE([Total Ventas], NEXTYEAR('Calendario'[Date]))</code></pre>
+</div>
+<div class="note note--tip">
+<strong>💡 Cuándo usar NEXT...</strong><br/>
+              Las funciones NEXT... tienen sentido principalmente cuando tu tabla de datos incluye datos futuros (presupuestos, forecasts).
+              Si solo tienes datos históricos, NEXT... devolverá BLANK porque no hay datos en el futuro.
+            </div>
+</div>
+</section><!-- SECCIÓN 4: Desplazamientos --><section id="dateadd">
+<div class="category-header">
+<span class="category-header__icon">↔️</span>
+<h2 class="category-header__title">DATEADD y PARALLELPERIOD — mover el tiempo con precisión</h2>
+</div>
+<!-- DATEADD -->
+<div class="function-card">
+<div class="function-card__name">DATEADD(&lt;columna_fecha&gt;, &lt;numero_intervalos&gt;, &lt;intervalo&gt;)</div>
+<div class="function-card__level">Intermedio — Avanzado</div>
+<div class="function-card__description">
+              Desplaza las fechas del contexto actual en N intervalos (DAY, MONTH, QUARTER, YEAR).
+              Positivo = hacia el futuro, negativo = hacia el pasado.
+              <strong>Es la función más flexible para desplazamientos temporales.</strong>
+</div>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// ✅ Las mismas fechas de hace 1 año (equivalente a SAMEPERIODLASTYEAR)
+DATEADD('Calendario'[Date], -1, YEAR)
+
+// ✅ Las mismas fechas de hace 3 meses
+DATEADD('Calendario'[Date], -3, MONTH)
+
+// ✅ El mismo día de la semana anterior
+DATEADD('Calendario'[Date], -7, DAY)
+
+// ✅ Ventas hace 2 trimestres
+Ventas Hace 2Q = CALCULATE([Total Ventas], DATEADD('Calendario'[Date], -2, QUARTER))
+
+// ✅ Comparativa con hace N períodos (dinámico con slicer)
+Ventas Período Anterior =
+VAR N = SELECTEDVALUE('Selector Períodos'[Valor], 1)
+RETURN
+    CALCULATE([Total Ventas], DATEADD('Calendario'[Date], -N, MONTH))</code></pre>
+</div>
+</div>
+<!-- PARALLELPERIOD -->
+<div class="function-card">
+<div class="function-card__name">PARALLELPERIOD(&lt;columna_fecha&gt;, &lt;numero_intervalos&gt;, &lt;intervalo&gt;)</div>
+<div class="function-card__level">Avanzado</div>
+<div class="function-card__description">
+              Similar a DATEADD pero devuelve el período COMPLETO desplazado, no solo las fechas equivalentes.
+              La diferencia es sutil pero importante.
+            </div>
+<h4>Diferencia DATEADD vs PARALLELPERIOD:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Si el contexto es del 1 al 15 de marzo (media quincena):
+
+DATEADD('Calendario'[Date], -1, MONTH)
+→ del 1 al 15 de FEBRERO (mismas fechas, mes anterior)
+
+PARALLELPERIOD('Calendario'[Date], -1, MONTH)
+→ TODO FEBRERO (el mes completo anterior)
+
+// Cuándo usar cada una:
+// DATEADD: cuando quieres comparar exactamente el mismo período
+// PARALLELPERIOD: cuando quieres el período completo
+//   (ej: comparar con el mes anterior completo aunque el mes actual esté a medias)</code></pre>
+</div>
+<div class="note note--tip">
+<strong>💡 Uso práctico</strong><br/>
+              En un gráfico de líneas mes a mes, si el mes actual solo tiene 15 días:<br/>
+              • <strong>DATEADD</strong> → compara esos 15 días con los primeros 15 del mes anterior (justo)<br/>
+              • <strong>PARALLELPERIOD</strong> → compara esos 15 días con el mes anterior completo (puede ser engañoso)
+              <br/><br/>
+              Para cuadros de mando ejecutivos donde no quieres medias partidas, usa PARALLELPERIOD.<br/>
+              Para análisis precisos día a día, usa DATEADD.
+            </div>
+</div>
+<!-- DATESBETWEEN y DATESINPERIOD -->
+<div class="function-card">
+<div class="function-card__name">DATESBETWEEN / DATESINPERIOD</div>
+<div class="function-card__level">Intermedio — Avanzado</div>
+<div class="function-card__description">
+<strong>DATESBETWEEN:</strong> Devuelve las fechas entre dos fechas específicas (ambas inclusive).<br/>
+<strong>DATESINPERIOD:</strong> Devuelve fechas para un período de N intervalos a partir de una fecha de inicio. Perfecta para ventanas móviles (rolling windows).
+            </div>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// ✅ DATESBETWEEN — Ventas en un rango de fechas específico
+Ventas Q1 2024 =
+CALCULATE(
+    [Total Ventas],
+    DATESBETWEEN('Calendario'[Date], DATE(2024,1,1), DATE(2024,3,31))
+)
+
+// ✅ Ventas en los últimos 30 días exactos
+Ventas Últimos 30d =
+CALCULATE(
+    [Total Ventas],
+    DATESBETWEEN('Calendario'[Date], TODAY() - 30, TODAY())
+)
+
+// ✅ DATESINPERIOD — Últimos 12 meses desde la fecha máxima del contexto
+Ventas Últimos 12M =
+CALCULATE(
+    [Total Ventas],
+    DATESINPERIOD('Calendario'[Date], MAX('Calendario'[Date]), -12, MONTH)
+)
+
+// ✅ Media móvil de 3 meses (rolling average)
+Media Móvil 3M =
+CALCULATE(
+    AVERAGE('Ventas'[Importe]),
+    DATESINPERIOD('Calendario'[Date], MAX('Calendario'[Date]), -3, MONTH)
+)</code></pre>
+</div>
+</div>
+</section><!-- SECCIÓN 5: Apertura/Cierre --><section id="openclose">
+<div class="category-header">
+<span class="category-header__icon">💰</span>
+<h2 class="category-header__title">Saldos de apertura y cierre — para contabilidad y stock</h2>
+</div>
+<p>
+            Estas funciones son esenciales para análisis financieros y de inventario donde necesitas saber el valor al INICIO o al FINAL de un período,
+            no el total acumulado. Piensa en el saldo de una cuenta bancaria: no quieres la suma de todos los movimientos,
+            quieres el saldo al principio y al final del mes.
+          </p>
+<div class="function-card">
+<div class="function-card__name">OPENINGBALANCE... / CLOSINGBALANCE...</div>
+<div class="function-card__level">Avanzado</div>
+<div class="function-card__description">
+<strong>OPENINGBALANCE...:</strong> evalúa la expresión en el último día del período ANTERIOR (= el saldo de apertura del período actual)<br/>
+<strong>CLOSINGBALANCE...:</strong> evalúa la expresión en el último día del período ACTUAL (= el saldo de cierre)<br/>
+              Variantes: MONTH, QUARTER, YEAR
+            </div>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// ✅ Stock al inicio del mes (lo que había el último día del mes anterior)
+Stock Apertura Mes =
+OPENINGBALANCEMONTH(
+    LASTNONBLANK('Inventario'[Fecha], SUM('Inventario'[Stock])),
+    'Calendario'[Date]
+)
+
+// ✅ Stock al cierre del mes
+Stock Cierre Mes =
+CLOSINGBALANCEMONTH(
+    SUM('Inventario'[Stock]),
+    'Calendario'[Date]
+)
+
+// ✅ Saldo bancario al cierre del trimestre
+Saldo Cierre Q =
+CLOSINGBALANCEQUARTER(
+    SUM('Cuentas'[Saldo]),
+    'Calendario'[Date]
+)
+
+// ✅ Saldo al cierre del año fiscal (que termina en marzo)
+Saldo Cierre Año Fiscal =
+CLOSINGBALANCEYEAR(
+    SUM('Cuentas'[Saldo]),
+    'Calendario'[Date],
+    "3/31"
+)</code></pre>
+</div>
+<div class="note note--tip">
+<strong>💡 CLOSINGBALANCE vs MAX de fecha</strong><br/>
+              La diferencia entre CLOSINGBALANCE y un simple MAX de fecha es que CLOSING... entiende el concepto de "período".
+              Si el contexto es el trimestre Q1, CLOSINGBALANCEMONTH en marzo da el saldo del 31 de marzo,
+              no el máximo global de todo el modelo.
+            </div>
+</div>
+</section><!-- SECCIÓN 6: Primera/Última fecha --><section id="firstlast">
+<div class="category-header">
+<span class="category-header__icon">📌</span>
+<h2 class="category-header__title">FIRSTDATE, LASTDATE y variantes — encontrar fechas clave</h2>
+</div>
+<h3>Tabla comparativa</h3>
+<table class="function-table">
+<thead>
+<tr>
+<th>Función</th>
+<th>Qué devuelve</th>
+<th>Usa contexto</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>FIRSTDATE</code></td>
+<td>Tabla con la primera fecha del contexto</td>
+<td>Sí</td>
+</tr>
+<tr>
+<td><code>LASTDATE</code></td>
+<td>Tabla con la última fecha del contexto</td>
+<td>Sí</td>
+</tr>
+<tr>
+<td><code>FIRSTNONBLANK</code></td>
+<td>Primera fecha donde la expresión no es BLANK</td>
+<td>Sí</td>
+</tr>
+<tr>
+<td><code>LASTNONBLANK</code></td>
+<td>Última fecha donde la expresión no es BLANK</td>
+<td>Sí</td>
+</tr>
+<tr>
+<td><code>FIRSTNONBLANKVALUE</code></td>
+<td>Valor de la expresión en la primera fecha no BLANK</td>
+<td>Sí</td>
+</tr>
+<tr>
+<td><code>LASTNONBLANKVALUE</code></td>
+<td>Valor de la expresión en la última fecha no BLANK</td>
+<td>Sí</td>
+</tr>
+</tbody>
+</table>
+<div class="function-card">
+<div class="function-card__name">FIRSTDATE / LASTDATE(&lt;columna_fecha&gt;)</div>
+<div class="function-card__level">Intermedio</div>
+<div class="function-card__description">
+              Devuelven UNA TABLA con la primera o última fecha del contexto actual. Se usan principalmente dentro de CALCULATE.
+            </div>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// ✅ Saldo al último día del período visible
+Saldo Última Fecha = CALCULATE(SUM('Cuentas'[Saldo]), LASTDATE('Calendario'[Date]))
+
+// ✅ Valor al primer día del año actual
+Stock Inicio Año = CALCULATE(SUM('Inventario'[Stock]), FIRSTDATE(DATESYTD('Calendario'[Date])))</code></pre>
+</div>
+</div>
+<div class="function-card">
+<div class="function-card__name">LASTNONBLANK / LASTNONBLANKVALUE</div>
+<div class="function-card__level">Avanzado</div>
+<div class="function-card__description">
+              Primera/última fecha donde la expresión devuelve algo distinto de BLANK.
+              Útiles cuando no todos los días tienen datos y necesitas encontrar el primer/último día con dato real.
+            </div>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// ✅ Última fecha con ventas registradas (no el último día del calendario)
+Última Fecha con Ventas = LASTNONBLANK('Calendario'[Date], CALCULATE(COUNTROWS('Ventas')))
+
+// ✅ Último precio registrado de un producto
+Último Precio = LASTNONBLANKVALUE('Calendario'[Date], MAX('Precios'[Precio]))
+
+// ✅ Stock actual (el de la fecha más reciente con datos)
+Stock Actual = LASTNONBLANKVALUE('Calendario'[Date], SUM('Inventario'[Stock]))</code></pre>
+</div>
+</div>
+</section><!-- SECCIÓN 7: Todos los períodos --><section id="allperiods">
+<div class="category-header">
+<span class="category-header__icon">🌐</span>
+<h2 class="category-header__title">Todos los períodos</h2>
+</div>
+<div class="function-card">
+<div class="function-card__name">ALL con fechas</div>
+<div class="function-card__level">Intermedio</div>
+<div class="function-card__description">
+              A veces necesitas ignorar todos los filtros de fecha para mostrar el total general.
+              El patrón correcto es combinar CALCULATE con ALL sobre el calendario.
+            </div>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// ✅ Total de todos los años (sin filtro de fecha)
+Total Histórico = CALCULATE([Total Ventas], ALL('Calendario'))
+
+// ✅ Porcentaje sobre el total histórico
+% del Total Histórico = DIVIDE([Total Ventas], CALCULATE([Total Ventas], ALL('Calendario')))
+
+// ✅ Total del año completo (aunque el contexto sea un solo mes)
+Total Año Completo =
+CALCULATE(
+    [Total Ventas],
+    DATESYTD(LASTDATE('Calendario'[Date]))
+)</code></pre>
+</div>
+</div>
+</section><!-- SECCIÓN 8: Semana --><section id="semana">
+<div class="category-header">
+<span class="category-header__icon">📅</span>
+<h2 class="category-header__title">Funciones de semana (WEEK)</h2>
+</div>
+<p>
+  Las funciones de semana permiten comparar datos con la semana anterior, la siguiente, o acumular desde el inicio de la semana actual.
+  Menos usadas que mes y año, pero muy útiles en análisis operativos y logísticos donde la semana es la unidad natural de planificación.
+</p>
+<div class="note note--warning">
+<strong>⚠️ Ojo con esto:</strong> estas funciones necesitan que tu tabla Calendario tenga una columna de fecha contigua y sin huecos, y que esté marcada como tabla de fechas en Power BI. Sin eso, los resultados pueden ser incorrectos o dar error.
+</div>
+<!-- PREVIOUSWEEK -->
+<div class="function-card">
+<div class="function-card__name">PREVIOUSWEEK(&lt;columna_fechas&gt;)</div>
+<div class="function-card__level">Intermedio</div>
+<div class="function-card__description">
+  Devuelve una tabla con todas las fechas de la semana anterior a la semana visible en el contexto de filtro actual.
+  Equivalente a PREVIOUSMONTH pero para semanas. La semana empieza en domingo por defecto (el comportamiento ISO puede variar según la configuración regional del modelo).
+</div>
+<h4>Ventas de la semana anterior:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Ventas de la semana anterior:
+Ventas Semana Anterior =
+CALCULATE(
+    [Total Ventas],
+    PREVIOUSWEEK('Calendario'[Fecha])
+)</code></pre>
+</div>
+<h4>Diferencia semana actual vs anterior:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">Diferencia Semanal =
+VAR SemanaActual = [Total Ventas]
+VAR SemanaAnt    = CALCULATE([Total Ventas], PREVIOUSWEEK('Calendario'[Fecha]))
+RETURN
+    IF(
+        ISBLANK(SemanaAnt),
+        BLANK(),
+        SemanaActual - SemanaAnt
+    )</code></pre>
+</div>
+<div class="note note--tip">
+<strong>💡 PREVIOUSWEEK en operaciones:</strong> es especialmente útil en dashboards de operaciones y logística donde el equipo analiza rendimiento semana a semana.
+Combínala con un visual de línea para ver la evolución semanal de forma inmediata.
+</div>
+</div>
+<!-- NEXTWEEK -->
+<div class="function-card">
+<div class="function-card__name">NEXTWEEK(&lt;columna_fechas&gt;)</div>
+<div class="function-card__level">Intermedio</div>
+<div class="function-card__description">
+  Devuelve una tabla con todas las fechas de la semana siguiente a la semana visible en el contexto actual.
+  Útil para proyecciones a corto plazo o para comparar pedidos ya registrados para la próxima semana.
+</div>
+<h4>Pedidos registrados para la próxima semana:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Pedidos registrados para la próxima semana:
+Pedidos Próxima Semana =
+CALCULATE(
+    COUNTROWS(Pedidos),
+    NEXTWEEK('Calendario'[Fecha])
+)</code></pre>
+</div>
+<h4>% de variación previsto semana siguiente:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">Crecimiento Previsto Semanal =
+VAR VentasActual    = [Total Ventas]
+VAR VentasSiguiente = CALCULATE([Total Ventas], NEXTWEEK('Calendario'[Fecha]))
+RETURN
+    DIVIDE(VentasSiguiente - VentasActual, VentasActual)</code></pre>
+</div>
+</div>
+<!-- TOTALWTD -->
+<div class="function-card">
+<div class="function-card__name">TOTALWTD(&lt;expresión&gt;, &lt;columna_fechas&gt; [, &lt;filtro&gt;] [, &lt;fin_semana&gt;])</div>
+<div class="function-card__level">Intermedio</div>
+<div class="function-card__description">
+  Calcula el total acumulado desde el inicio de la semana hasta la fecha visible en el contexto (Week-To-Date).
+  Es el equivalente semanal de TOTALYTD y TOTALMTD. El parámetro opcional <code>fin_semana</code> indica qué día es el último de la semana
+  ("0" = sábado, "1" = domingo…).
+</div>
+<h4>Ventas acumuladas desde el inicio de la semana:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Ventas acumuladas desde el inicio de la semana actual:
+Ventas WTD =
+TOTALWTD(
+    [Total Ventas],
+    'Calendario'[Fecha]
+)
+
+// WTD con semana que termina el domingo (lunes a domingo):
+Ventas WTD (Lun-Dom) =
+TOTALWTD(
+    [Total Ventas],
+    'Calendario'[Fecha],
+    "0"
+)</code></pre>
+</div>
+<h4>Variación WTD vs WTD semana anterior:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">WTD vs WTD Anterior =
+VAR WTD_Actual   = [Ventas WTD]
+VAR WTD_Anterior = CALCULATE([Ventas WTD], PREVIOUSWEEK('Calendario'[Fecha]))
+RETURN DIVIDE(WTD_Actual - WTD_Anterior, WTD_Anterior)</code></pre>
+</div>
+<div class="note note--tip">
+<strong>💡 El parámetro fin_semana de TOTALWTD puede ser confuso.</strong> Prueba tu medida con datos conocidos antes de publicar — el día de inicio de semana varía según el país y la configuración regional del modelo. "0" = semana termina el sábado, "1" = termina el domingo.
+</div>
+</div>
+</section><!-- SECCIÓN 9: STARTOF --><section id="startof">
+<div class="category-header">
+<span class="category-header__icon">🚩</span>
+<h2 class="category-header__title">STARTOF — Primer día del período</h2>
+</div>
+<p>
+  Las funciones STARTOF devuelven el primer día del período que contiene la fecha del contexto actual.
+  Devuelven un <strong>valor escalar de tipo fecha</strong> (no una tabla), lo que las hace perfectas dentro de cálculos, columnas calculadas o como argumento de otras funciones DAX.
+</p>
+<div class="note note--tip">
+<strong>💡 STARTOF vs FIRSTDATE:</strong> a diferencia de FIRSTDATE (que devuelve la primera fecha <em>con datos</em> en el contexto), STARTOF devuelve siempre el primer día del período natural, aunque no haya datos ese día.
+Son sutilmente diferentes y cada una tiene su momento.
+</div>
+<!-- STARTOFWEEK -->
+<div class="function-card">
+<div class="function-card__name">STARTOFWEEK(&lt;columna_fechas&gt; [, &lt;fin_semana&gt;])</div>
+<div class="function-card__level">Intermedio</div>
+<div class="function-card__description">
+  Devuelve el primer día de la semana que contiene la fecha del contexto actual. Por defecto la semana empieza el domingo.
+  El parámetro opcional <code>fin_semana</code> permite ajustar qué día es el último (y por tanto cuál es el primero).
+</div>
+<h4>Primer día de la semana y usos habituales:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Primer día de la semana actual (valor escalar):
+Inicio Semana Actual =
+STARTOFWEEK('Calendario'[Fecha])
+
+// Columna calculada en la tabla Calendario
+// (útil para agrupar días por semana en visuales):
+'Calendario'[Inicio de Semana] =
+STARTOFWEEK('Calendario'[Fecha])
+
+// Ventas desde el inicio de la semana (WTD manual con control total):
+Ventas Desde Inicio Semana =
+CALCULATE(
+    [Total Ventas],
+    DATESBETWEEN(
+        'Calendario'[Fecha],
+        STARTOFWEEK('Calendario'[Fecha]),
+        LASTDATE('Calendario'[Fecha])
+    )
+)</code></pre>
+</div>
+</div>
+<!-- STARTOFMONTH -->
+<div class="function-card">
+<div class="function-card__name">STARTOFMONTH(&lt;columna_fechas&gt;)</div>
+<div class="function-card__level">Principiante / Intermedio</div>
+<div class="function-card__description">
+  Devuelve el primer día del mes que contiene la fecha del contexto actual. Muy usada para calcular rangos de fechas
+  dinámicos, comparar desde inicio de mes o construir períodos personalizados con DATESBETWEEN.
+</div>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Primer día del mes actual:
+Inicio Mes Actual =
+STARTOFMONTH('Calendario'[Fecha])
+
+// MTD manual con control total del rango:
+Ventas MTD Manual =
+CALCULATE(
+    [Total Ventas],
+    DATESBETWEEN(
+        'Calendario'[Fecha],
+        STARTOFMONTH(LASTDATE('Calendario'[Fecha])),
+        LASTDATE('Calendario'[Fecha])
+    )
+)
+
+// Días transcurridos desde inicio de mes:
+Días Transcurridos Mes =
+DATEDIFF(
+    STARTOFMONTH(TODAY()),
+    TODAY(),
+    DAY
+) + 1</code></pre>
+</div>
+<div class="note note--best-practice">
+<strong>📌 Usa STARTOFMONTH con DATESBETWEEN</strong> cuando necesites un MTD con lógica personalizada, como excluir fines de semana o aplicar calendarios de negocio propios. Te da control total sobre el rango, a diferencia de TOTALMTD.
+</div>
+</div>
+<!-- STARTOFQUARTER -->
+<div class="function-card">
+<div class="function-card__name">STARTOFQUARTER(&lt;columna_fechas&gt;)</div>
+<div class="function-card__level">Intermedio</div>
+<div class="function-card__description">
+  Devuelve el primer día del trimestre que contiene la fecha del contexto actual.
+  Por ejemplo, si estás en mayo (Q2), devuelve el 1 de abril.
+</div>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Primer día del trimestre actual:
+Inicio Trimestre Actual =
+STARTOFQUARTER('Calendario'[Fecha])
+
+// QTD manual:
+Ventas QTD Manual =
+CALCULATE(
+    [Total Ventas],
+    DATESBETWEEN(
+        'Calendario'[Fecha],
+        STARTOFQUARTER(LASTDATE('Calendario'[Fecha])),
+        LASTDATE('Calendario'[Fecha])
+    )
+)
+
+// Comparar trimestre actual vs mismo período año anterior:
+Ventas Mismo Período Q Año Anterior =
+VAR InicioQ    = STARTOFQUARTER(LASTDATE('Calendario'[Fecha]))
+VAR InicioQAnt = DATE(YEAR(InicioQ) - 1, MONTH(InicioQ), DAY(InicioQ))
+VAR FinQAnt    = LASTDATE(SAMEPERIODLASTYEAR('Calendario'[Fecha]))
+RETURN
+    CALCULATE(
+        [Total Ventas],
+        DATESBETWEEN('Calendario'[Fecha], InicioQAnt, FinQAnt)
+    )</code></pre>
+</div>
+</div>
+<!-- STARTOFYEAR -->
+<div class="function-card">
+<div class="function-card__name">STARTOFYEAR(&lt;columna_fechas&gt; [, &lt;fin_año&gt;])</div>
+<div class="function-card__level">Principiante / Intermedio</div>
+<div class="function-card__description">
+  Devuelve el primer día del año natural o fiscal que contiene la fecha del contexto.
+  El parámetro opcional <code>fin_año</code> define el último día del año fiscal (por ejemplo "06-30" si tu año fiscal termina el 30 de junio).
+  Sin parámetro, usa el año natural (1 de enero).
+</div>
+<h4>Año natural y YTD manual:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Primer día del año natural:
+Inicio Año Actual =
+STARTOFYEAR('Calendario'[Fecha])
+// → devuelve 01/01/[año actual]
+
+// YTD manual con control total:
+Ventas YTD Manual =
+CALCULATE(
+    [Total Ventas],
+    DATESBETWEEN(
+        'Calendario'[Fecha],
+        STARTOFYEAR(LASTDATE('Calendario'[Fecha])),
+        LASTDATE('Calendario'[Fecha])
+    )
+)</code></pre>
+</div>
+<h4>Con año fiscal y días transcurridos:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Con año fiscal que termina el 30 de junio:
+Inicio Año Fiscal =
+STARTOFYEAR('Calendario'[Fecha], "06-30")
+// Si estás en noviembre 2024 → devuelve 01/07/2024
+
+// Días del año transcurridos:
+Días del Año Transcurridos =
+DATEDIFF(
+    STARTOFYEAR(TODAY()),
+    TODAY(),
+    DAY
+) + 1</code></pre>
+</div>
+<div class="note note--tip">
+<strong>💡 El parámetro fin_año indica el ÚLTIMO día del año fiscal, no el primero.</strong>
+Si tu año fiscal empieza el 1 de julio, escribe "06-30" (30 de junio).
+¡Es contra-intuitivo pero es así! Siempre verifica con una fecha conocida antes de publicar.
+</div>
+</div>
+</section><!-- SECCIÓN 10: Patrones --><section id="patrones">
+<div class="category-header">
+<span class="category-header__icon">🏆</span>
+<h2 class="category-header__title">Los 10 patrones de Time Intelligence que usarás en casi todos los proyectos</h2>
+</div>
+<div class="note note--best-practice">
+<strong>🏆 Patrón 1: YoY (Year-over-Year) completo</strong>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">Ventas YoY =
+VAR Actual = [Total Ventas]
+VAR Anterior = CALCULATE([Total Ventas], SAMEPERIODLASTYEAR('Calendario'[Date]))
+VAR Variacion = DIVIDE(Actual - Anterior, Anterior)
+RETURN
+    IF(
+        NOT ISBLANK(Anterior),
+        FORMAT(Actual, "#,##0 €") &amp; " (" &amp; FORMAT(Variacion, "+0.0%;-0.0%") &amp; " vs AA)",
+        FORMAT(Actual, "#,##0 €") &amp; " (sin dato año anterior)"
+    )</code></pre>
+</div>
+</div>
+<div class="note note--best-practice">
+<strong>🏆 Patrón 2: YTD vs YTD año anterior</strong>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">Ventas YTD = TOTALYTD([Total Ventas], 'Calendario'[Date])
+Ventas YTD AA = CALCULATE([Ventas YTD], SAMEPERIODLASTYEAR('Calendario'[Date]))
+Crecimiento YTD = DIVIDE([Ventas YTD] - [Ventas YTD AA], [Ventas YTD AA])</code></pre>
+</div>
+</div>
+<div class="note note--best-practice">
+<strong>🏆 Patrón 3: Media móvil N meses (rolling average)</strong>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">Media Móvil 3M =
+CALCULATE(
+    AVERAGEX(
+        VALUES('Calendario'[Año-Mes]),
+        CALCULATE([Total Ventas])
+    ),
+    DATESINPERIOD('Calendario'[Date], LASTDATE('Calendario'[Date]), -3, MONTH)
+)</code></pre>
+</div>
+</div>
+<div class="note note--best-practice">
+<strong>🏆 Patrón 4: Comparativa MoM (Month-over-Month)</strong>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">Ventas MoM =
+VAR Actual = [Total Ventas]
+VAR MesAnterior = CALCULATE([Total Ventas], PREVIOUSMONTH('Calendario'[Date]))
+RETURN
+    DIVIDE(Actual - MesAnterior, MesAnterior)</code></pre>
+</div>
+</div>
+<div class="note note--best-practice">
+<strong>🏆 Patrón 5: Mejor período histórico</strong>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">Record Histórico =
+CALCULATE(
+    MAXX(VALUES('Calendario'[Año-Mes]), CALCULATE([Total Ventas])),
+    ALL('Calendario')
+)
+
+Es Record = IF([Total Ventas] &gt;= [Record Histórico], "🏆 RÉCORD", "")</code></pre>
+</div>
+</div>
+<div class="note note--best-practice">
+<strong>🏆 Patrón 6: Acumulado hasta hoy (YTD dinámico)</strong>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">Ventas YTD Hasta Hoy =
+CALCULATE(
+    [Total Ventas],
+    DATESYTD('Calendario'[Date]),
+    'Calendario'[Date] &lt;= TODAY()
+)</code></pre>
+</div>
+</div>
+<div class="note note--best-practice">
+<strong>🏆 Patrón 7: Semáforo de cumplimiento YTD</strong>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">Semáforo YTD =
+VAR CumplimientoYTD = DIVIDE([Ventas YTD], [Presupuesto YTD])
+RETURN
+    SWITCH(
+        TRUE(),
+        CumplimientoYTD &gt;= 1.00, "🟢 En objetivo",
+        CumplimientoYTD &gt;= 0.90, "🟡 Cerca del objetivo",
+        "🔴 Por debajo del objetivo"
+    )</code></pre>
+</div>
+</div>
+<div class="note note--best-practice">
+<strong>🏆 Patrón 8: Días transcurridos y restantes del año</strong>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">Días Transcurridos = DATEDIFF(DATE(YEAR(TODAY()), 1, 1), TODAY(), DAY)
+Días Restantes Año = DATEDIFF(TODAY(), DATE(YEAR(TODAY()), 12, 31), DAY)
+% Año Transcurrido = DIVIDE([Días Transcurridos], 365)</code></pre>
+</div>
+</div>
+<div class="note note--best-practice">
+<strong>🏆 Patrón 9: Forecast simple (extrapolación lineal)</strong>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">Forecast Mes =
+VAR TasaCrecimiento = DIVIDE([Ventas YoY], CALCULATE([Total Ventas], PREVIOUSYEAR('Calendario'[Date])))
+VAR BaseAnoAnterior = CALCULATE([Total Ventas], SAMEPERIODLASTYEAR('Calendario'[Date]))
+RETURN
+    IF(ISBLANK([Total Ventas]), BaseAnoAnterior * (1 + TasaCrecimiento), [Total Ventas])</code></pre>
+</div>
+</div>
+<div class="note note--best-practice">
+<strong>🏆 Patrón 10: Rolling 12 meses</strong>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">Rolling 12M =
+CALCULATE(
+    [Total Ventas],
+    DATESINPERIOD('Calendario'[Date], LASTDATE('Calendario'[Date]), -12, MONTH)
+)</code></pre>
+</div>
+</div>
+</section><div class="note note--next">
+<strong>🚀 Siguiente paso</strong><br/>
+          ¡La inteligencia de tiempo ya es tuya! Con estos 10 patrones puedes construir prácticamente cualquier análisis temporal
+          que un cuadro de mando ejecutivo pueda necesitar. Ahora vamos con las
+          <strong><a href="relaciones.html" style="color: var(--color-coral); text-decoration: underline;">funciones de Relaciones</a></strong>
+          — menos glamurosas pero absolutamente fundamentales para modelos de datos avanzados.
+        </div>
+
+      </div>
+</main>
+</div>
+<!-- Footer (cargado dinámicamente) -->
+<div id="main-footer"></div>
+<!-- Botón volver arriba -->
+<button aria-label="Volver arriba" class="btn-back-to-top" id="back-to-top">↑</button>
+<!-- Scripts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+<script src="../../assets/js/theme.js"></script>
+<script src="../../assets/js/main.js"></script>
+<!-- Buscador DAX -->
+<script src="../../assets/js/dax-search.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Auto-inicializar todos los widgets con data-dax-search="true"
+      if (window.daxSearch) {
+        window.daxSearch.initAll({
+          baseUrl: '../'  // estamos en topics/dax/, las URLs deben ir a topics/dax/...
+        });
+      }
+    });
+  </script>
+<script src="../../assets/js/cursor.js"></script>
+</body>
+</html>

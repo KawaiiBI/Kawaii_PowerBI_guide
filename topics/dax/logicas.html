@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta content="Funciones Lógicas en DAX — IF, SWITCH, AND, OR, COALESCE, IFERROR y operadores de bits" name="description"/>
+<title>Funciones Lógicas — Funciones DAX | Power BI Guide</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Fira+Code:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<!-- Prism.js para syntax highlighting -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet"/>
+<!-- i18next para traducciones -->
+<script src="https://cdn.jsdelivr.net/npm/i18next@23.7.6/i18next.min.js"></script>
+<!-- CSS del proyecto -->
+<link href="../../assets/css/main.css" rel="stylesheet"/>
+<link href="../../assets/css/themes.css" rel="stylesheet"/>
+<link href="../../assets/css/components.css" rel="stylesheet"/>
+<link href="../../assets/css/layout.css" rel="stylesheet"/>
+<link href="../../assets/css/dax-search.css" rel="stylesheet"/>
+<style>
+    /* === ESTILOS ESPECÍFICOS PARA PÁGINAS DE TOPICS === */
+
+    /* Topic header con icono grande */
+    .topic-header {
+      text-align: center;
+      padding: 2.5rem 0 2rem;
+      border-bottom: 2px solid var(--color-mauve);
+      margin-bottom: 2.5rem;
+    }
+
+    .topic-header__icon {
+      font-size: 4rem;
+      margin-bottom: 0.75rem;
+      display: block;
+    }
+
+    .topic-header__title {
+      font-size: clamp(1.875rem, 4vw, 2.5rem);
+      font-weight: 800;
+      color: var(--color-dark);
+      margin-bottom: 0.625rem;
+      line-height: 1.2;
+    }
+
+    .topic-header__subtitle {
+      font-size: 1.0625rem;
+      color: var(--color-slate);
+      margin-bottom: 1.25rem;
+      line-height: 1.5;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .topic-header__levels {
+      display: flex;
+      gap: 0.5rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    /* TOC — Table of contents */
+    .toc {
+      background: var(--color-rose);
+      border: 1.5px solid var(--color-mauve);
+      border-radius: var(--border-radius);
+      padding: 1.5rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .toc__title {
+      font-size: 0.875rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--color-slate);
+      margin-bottom: 1rem;
+    }
+
+    .toc__list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .toc__link {
+      color: var(--color-dark);
+      text-decoration: none;
+      font-size: 0.9375rem;
+      transition: var(--transition);
+      display: inline-block;
+    }
+
+    .toc__link:hover {
+      color: var(--color-coral);
+      text-decoration: underline;
+    }
+
+    /* Category header — separadores entre categorías */
+    .category-header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin: 3rem 0 1.5rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 2px solid var(--color-mauve);
+    }
+
+    .category-header__icon {
+      font-size: 1.75rem;
+    }
+
+    .category-header__title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--color-dark);
+      margin: 0;
+    }
+
+    /* Function card — tarjeta individual para cada función */
+    .function-card {
+      background: var(--color-white);
+      border: 1.5px solid var(--color-mauve);
+      border-radius: var(--border-radius);
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .function-card__name {
+      font-family: var(--font-code);
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: var(--color-coral);
+      margin-bottom: 0.75rem;
+    }
+
+    .function-card__description {
+      font-size: 0.9375rem;
+      color: var(--color-dark);
+      margin-bottom: 1rem;
+      line-height: 1.6;
+    }
+
+    .function-card__level {
+      display: inline-block;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      padding: 0.25rem 0.625rem;
+      border-radius: var(--border-radius-sm);
+      background: var(--color-blush);
+      color: var(--color-slate);
+      margin-bottom: 1rem;
+    }
+
+    /* Function table — tabla compacta con ejemplos */
+    .function-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.5rem 0;
+      font-size: 0.875rem;
+    }
+
+    .function-table th {
+      background: var(--color-rose);
+      color: var(--color-dark);
+      font-weight: 700;
+      text-align: left;
+      padding: 0.75rem 1rem;
+      border: 1px solid var(--color-mauve);
+    }
+
+    .function-table td {
+      padding: 0.75rem 1rem;
+      border: 1px solid var(--color-mauve);
+      color: var(--color-dark);
+    }
+
+    .function-table tr:nth-child(even) {
+      background: var(--color-blush);
+    }
+
+    /* Code block wrapper */
+    .code-block {
+      position: relative;
+      margin: 1.25rem 0;
+    }
+
+    .code-block pre {
+      margin: 0;
+      border-radius: var(--border-radius);
+      border: 1.5px solid var(--color-mauve);
+    }
+
+    .code-block__copy {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.5rem;
+      padding: 0.375rem 0.75rem;
+      font-size: 0.75rem;
+      background: var(--color-coral);
+      color: var(--color-white);
+      border: none;
+      border-radius: var(--border-radius-sm);
+      cursor: pointer;
+      font-family: var(--font-main);
+      font-weight: 600;
+      transition: var(--transition);
+    }
+
+    .code-block__copy:hover {
+      background: var(--color-peach);
+    }
+  </style>
+</head>
+<body>
+<!-- SIDEBAR: Navegación principal -->
+<aside class="site-sidebar">
+<!-- Avatar y nombre -->
+<div class="site-sidebar__profile">
+<img alt="Sara Lozano Martí" class="site-sidebar__avatar" src="../../assets/images/avatar Sara.png"/>
+<p class="site-sidebar__name">Sara Lozano Martí</p>
+<p class="site-sidebar__subtitle">Power BI Expert</p>
+</div>
+<!-- Navegación principal -->
+<nav aria-label="Navegación principal" class="site-sidebar__nav">
+<ul>
+<li><a class="site-sidebar__link" href="../../index.html">
+<span class="site-sidebar__icon">🏠</span> Inicio
+        </a></li>
+<li><a class="site-sidebar__link is-active" href="../dax.html">
+<span class="site-sidebar__icon">⚡</span> Funciones DAX
+        </a></li>
+<li><a class="site-sidebar__link" href="../power-query.html">
+<span class="site-sidebar__icon">🔄</span> Power Query
+        </a></li>
+<li><a class="site-sidebar__link" href="../lenguaje-m.html">
+<span class="site-sidebar__icon">〽️</span> Lenguaje M
+        </a></li>
+<li><a class="site-sidebar__link" href="../modelado.html">
+<span class="site-sidebar__icon">🗄️</span> Modelado
+        </a></li>
+<li><a class="site-sidebar__link" href="../conceptos-powerbi.html">
+<span class="site-sidebar__icon">📊</span> Conceptos Power BI
+        </a></li>
+<li><a class="site-sidebar__link" href="../fabric.html">
+<span class="site-sidebar__icon">🧵</span> Microsoft Fabric
+        </a></li>
+<li><a class="site-sidebar__link" href="../tmdl.html">
+<span class="site-sidebar__icon">📝</span> TMDL
+        </a></li>
+<li><a class="site-sidebar__link" href="../diseno-ux.html">
+<span class="site-sidebar__icon">🎨</span> Diseño y UX
+        </a></li>
+<li><a class="site-sidebar__link" href="../gobernanza.html">
+<span class="site-sidebar__icon">🔒</span> Gobernanza
+        </a></li>
+</ul>
+</nav>
+<!-- Separador -->
+<div class="site-sidebar__divider"></div>
+<!-- Footer del sidebar -->
+<div class="site-sidebar__footer">
+<!-- Enlace a quien soy -->
+<a class="site-sidebar__link site-sidebar__link--highlight" href="../../quien-soy.html">
+<span class="site-sidebar__icon">👩‍💻</span> ¿Quién soy?
+      </a>
+<!-- Iconos sociales -->
+<div class="site-sidebar__social">
+<a aria-label="LinkedIn" href="https://www.linkedin.com/in/saralozanomarti" rel="noopener noreferrer" target="_blank">
+<img alt="LinkedIn" class="site-sidebar__social-icon" src="../../assets/images/logo linkedIN.png"/>
+</a>
+<a aria-label="YouTube" href="https://www.youtube.com/@KawaiiPowerBI" rel="noopener noreferrer" target="_blank">
+<img alt="YouTube" class="site-sidebar__social-icon" src="../../assets/images/logo youtube.png"/>
+</a>
+<a aria-label="GitHub" href="https://github.com/KawaiiBI" rel="noopener noreferrer" target="_blank">
+<img alt="GitHub" class="site-sidebar__social-icon" src="../../assets/images/logo github.png"/>
+</a>
+</div>
+<!-- Logo Kawaii BI -->
+<div class="site-sidebar__logo-bottom">
+<img alt="Kawaii BI" class="site-sidebar__logo-img" src="../../assets/images/Logo Kawaii.jpg"/>
+</div>
+<!-- Copyright -->
+<p class="site-sidebar__copyright">
+        Power BI Guide 🌸<br/>
+        © 2026 Kawaii BI
+      </p>
+</div>
+</aside>
+<!-- PAGE WRAPPER -->
+<div class="page-wrapper">
+<!-- Main content -->
+<main id="main-content">
+<div class="topic-page">
+        <nav aria-label="breadcrumb" class="breadcrumb">
+<a class="breadcrumb__link" href="../../index.html">Inicio</a>
+<span class="breadcrumb__separator">›</span>
+<a class="breadcrumb__link" href="../dax.html">Funciones DAX</a>
+<span class="breadcrumb__separator">›</span>
+<span class="breadcrumb__current">Lógicas</span>
+</nav>
+
+        <header class="topic-header">
+<span class="topic-header__icon">🔀</span>
+<h1 class="topic-header__title">Funciones Lógicas</h1>
+<p class="topic-header__subtitle">IF, SWITCH, AND, OR, COALESCE, IFERROR y los operadores de bits — toda la lógica condicional de DAX</p>
+<div class="topic-header__levels">
+<span class="badge badge--beginner">Principiante</span>
+<span class="badge badge--intermediate">Intermedio</span>
+</div>
+</header>
+
+        <div class="dax-search-compact-bar">
+<div class="dax-search-wrapper dax-search-compact" data-dax-search="true">
+<span class="dax-search-icon">🔍</span>
+<input aria-label="Buscar función DAX" autocomplete="off" class="dax-search-input" placeholder="Buscar otra función DAX..." spellcheck="false" type="text"/>
+<button aria-label="Limpiar" class="dax-search-clear" hidden="">✕</button>
+<div class="dax-search-results" role="listbox"></div>
+</div>
+</div>
+
+        <nav class="toc">
+<h2 class="toc__title">📑 En esta página</h2>
+<ul class="toc__list">
+<li><a class="toc__link" href="#if">IF e IF.EAGER</a></li>
+<li><a class="toc__link" href="#switch">SWITCH — el IF múltiple</a></li>
+<li><a class="toc__link" href="#and-or">AND, OR, NOT y operadores &amp;&amp; ||</a></li>
+<li><a class="toc__link" href="#iferror">IFERROR e ISERROR</a></li>
+<li><a class="toc__link" href="#coalesce">COALESCE — la joya escondida</a></li>
+<li><a class="toc__link" href="#true-false">TRUE() y FALSE()</a></li>
+<li><a class="toc__link" href="#bits">BITAND, BITOR, BITXOR, BITLSHIFT, BITRSHIFT</a></li>
+<li><a class="toc__link" href="#patrones">Patrones de lógica condicional</a></li>
+</ul>
+</nav>
+
+        <!-- Breadcrumb --><!-- Buscador compacto DAX --><!-- Header del topic --><!-- TOC --><!-- SECCIÓN 1: IF e IF.EAGER --><section id="if">
+<div class="category-header">
+<span class="category-header__icon">❓</span>
+<h2 class="category-header__title">IF e IF.EAGER</h2>
+</div>
+<div class="function-card">
+<div class="function-card__name">IF(&lt;condición&gt;, &lt;valor_si_verdadero&gt;, [&lt;valor_si_falso&gt;])</div>
+<div class="function-card__level">Principiante</div>
+<div class="function-card__description">
+              La función condicional básica. Evalúa una condición y devuelve uno de dos valores. Si el valor_si_falso se omite, devuelve BLANK cuando la condición es FALSE.
+            </div>
+<h4>Comportamiento lazy (evaluación perezosa):</h4>
+<p>IF es <strong>LAZY</strong> — solo evalúa la rama que va a devolver. Si la condición es TRUE, no evalúa el valor_si_falso. Esto es importante para evitar errores y mejorar el rendimiento.</p>
+<h4>Ejemplo básico:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Clasificar ventas por importe
+Tamaño Venta =
+IF(
+    'Ventas'[Importe] &gt; 1000,
+    "Grande",
+    "Pequeña"
+)</code></pre>
+</div>
+<h4>Con BLANK en el else (valor omitido):</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Solo muestra algo cuando se cumple la condición
+Alerta Stock = IF('Productos'[Stock] &lt; 10, "⚠️ Stock bajo")
+// Cuando Stock &gt;= 10 → BLANK (la celda aparece vacía)</code></pre>
+</div>
+<h4>IF anidados (úsalos con moderación — SWITCH es mejor para múltiples condiciones):</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">Segmento =
+IF(
+    'Clientes'[Gasto Anual] &gt; 10000, "Premium",
+    IF(
+        'Clientes'[Gasto Anual] &gt; 3000, "Standard",
+        "Basic"
+    )
+)</code></pre>
+</div>
+<h4>Ejemplo con medidas (no columnas calculadas):</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// En una medida: mostrar margen o ventas según slicer
+Métrica =
+IF(
+    SELECTEDVALUE('KPI Selector'[Tipo]) = "Margen",
+    [Total Margen],
+    [Total Ventas]
+)</code></pre>
+</div>
+<div class="note note--warning">
+<strong>⚠️ Cuidado con IF dentro de iteradores</strong><br/>
+              Cuando usas IF en una expresión de SUMX o AVERAGEX, evalúa la condición para CADA FILA. Asegúrate de que la condición sea eficiente. Si la condición es compleja, considera moverla a una columna calculada.
+            </div>
+</div>
+<div class="function-card">
+<div class="function-card__name">IF.EAGER(&lt;condición&gt;, &lt;valor_si_verdadero&gt;, [&lt;valor_si_falso&gt;])</div>
+<div class="function-card__level">Avanzado</div>
+<div class="function-card__description">
+              Versión EAGER (ansiosa) de IF — evalúa AMBAS ramas siempre, independientemente de la condición. En algunos escenarios puede ser más eficiente que IF cuando ambas ramas necesitarían calcularse de todos modos.
+            </div>
+<h4>Cuándo usar IF.EAGER vs IF:</h4>
+<ul>
+<li><strong>IF es mejor cuando:</strong> una de las ramas es costosa de calcular o puede dar error</li>
+<li><strong>IF.EAGER es mejor cuando:</strong> ambas ramas son expresiones simples y el motor puede paralelizarlas</li>
+</ul>
+<h4>Ejemplo:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Uso típico en medidas con datos que raramente dan error
+Margen % = IF.EAGER(ISBLANK([Ventas]), BLANK(), DIVIDE([Margen], [Ventas]))
+// IF.EAGER evalúa DIVIDE aunque ISBLANK sea TRUE
+// Usarlo cuando sabes que DIVIDE no va a dar error en ninguna rama</code></pre>
+</div>
+</div>
+</section><!-- SECCIÓN 2: SWITCH --><section id="switch">
+<div class="category-header">
+<span class="category-header__icon">🔄</span>
+<h2 class="category-header__title">SWITCH — el IF múltiple</h2>
+</div>
+<div class="function-card">
+<div class="function-card__name">SWITCH(&lt;expresión&gt;, &lt;valor1&gt;, &lt;resultado1&gt;, &lt;valor2&gt;, &lt;resultado2&gt;, ..., [&lt;resultado_por_defecto&gt;])</div>
+<div class="function-card__level">Principiante — Intermedio</div>
+<div class="function-card__description">
+              Evalúa una expresión y devuelve el resultado correspondiente al primer valor que coincida. Mucho más legible que los IF anidados para múltiples condiciones. Existe en dos modos: coincidencia de valor y modo TRUE().
+            </div>
+<h4>Modo 1 — coincidencia de valor (como un switch/case):</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Nombre completo del mes según número
+Nombre Mes =
+SWITCH(
+    MONTH('Calendario'[Fecha]),
+    1, "Enero",    2, "Febrero",  3, "Marzo",
+    4, "Abril",    5, "Mayo",     6, "Junio",
+    7, "Julio",    8, "Agosto",   9, "Septiembre",
+    10, "Octubre", 11, "Noviembre", 12, "Diciembre",
+    "Mes desconocido"  -- valor por defecto
+)
+
+// Icono por estado del pedido:
+Icono Estado =
+SWITCH(
+    'Pedidos'[Estado],
+    "Pendiente",   "⏳",
+    "Procesando",  "🔄",
+    "Enviado",     "📦",
+    "Entregado",   "✅",
+    "Cancelado",   "❌",
+    "❓"
+)</code></pre>
+</div>
+<h4>Modo 2 — con TRUE() para rangos y condiciones (el más potente):</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// SWITCH(TRUE(), ...) evalúa cada condición en orden
+// y devuelve el resultado de la PRIMERA que sea verdadera
+Clasificación Importe =
+SWITCH(
+    TRUE(),
+    'Ventas'[Importe] &gt; 10000, "⭐⭐⭐ Premium",
+    'Ventas'[Importe] &gt; 5000,  "⭐⭐ Standard",
+    'Ventas'[Importe] &gt; 1000,  "⭐ Basic",
+    "Micro"
+)
+
+// Combinando condiciones:
+Alerta =
+SWITCH(
+    TRUE(),
+    'Productos'[Stock] = 0,           "🚨 SIN STOCK",
+    'Productos'[Stock] &lt; 5,           "⚠️ Stock crítico",
+    'Productos'[Stock] &lt; 'Productos'[StockMinimo], "⚡ Reponer",
+    "✅ OK"
+)</code></pre>
+</div>
+<div class="note note--best-practice">
+<strong>🏆 Best Practice</strong><br/>
+              SWITCH(TRUE(), ...) es el patrón más usado en DAX para clasificaciones. Es más legible que los IF anidados, más eficiente en muchos casos y más fácil de mantener. Úsalo siempre que tengas más de 2-3 condiciones.
+            </div>
+</div>
+</section><!-- SECCIÓN 3: AND, OR, NOT --><section id="and-or">
+<div class="category-header">
+<span class="category-header__icon">🧮</span>
+<h2 class="category-header__title">AND, OR, NOT y operadores lógicos</h2>
+</div>
+<h3>Tabla de equivalencias:</h3>
+<table class="function-table">
+<thead>
+<tr>
+<th>FUNCIÓN</th>
+<th>OPERADOR</th>
+<th>DESCRIPCIÓN</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>AND(a, b)</strong></td>
+<td><code>a &amp;&amp; b</code></td>
+<td>Verdadero si AMBAS condiciones son TRUE</td>
+</tr>
+<tr>
+<td><strong>OR(a, b)</strong></td>
+<td><code>a || b</code></td>
+<td>Verdadero si AL MENOS UNA es TRUE</td>
+</tr>
+<tr>
+<td><strong>NOT(a)</strong></td>
+<td>! (no existe como op. en DAX)</td>
+<td>Invierte el valor lógico</td>
+</tr>
+</tbody>
+</table>
+<h3>Ejemplos:</h3>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Cliente premium Y activo
+Premium Activo = AND('Clientes'[Segmento] = "Premium", 'Clientes'[Activo] = TRUE)
+// Equivalente con operador:
+Premium Activo = 'Clientes'[Segmento] = "Premium" &amp;&amp; 'Clientes'[Activo] = TRUE
+
+// Pedido de España O Francia:
+Iberia = OR('Clientes'[País] = "España", 'Clientes'[País] = "Francia")
+// Equivalente (más escalable):
+Iberia = 'Clientes'[País] IN {"España", "Francia"}
+
+// NOT:
+No Premium = NOT('Clientes'[Segmento] = "Premium")
+// Equivalente:
+No Premium = 'Clientes'[Segmento] &lt;&gt; "Premium"</code></pre>
+</div>
+<div class="note note--tip">
+<strong>💡 Tip</strong><br/>
+            Cuando necesitas combinar más de 2 condiciones con AND, usa los operadores &amp;&amp; encadenados: <code>condA &amp;&amp; condB &amp;&amp; condC</code>. La función AND() solo acepta exactamente 2 argumentos — para más condiciones necesitas anidar o usar &amp;&amp;.
+          </div>
+</section><!-- SECCIÓN 4: IFERROR e ISERROR --><section id="iferror">
+<div class="category-header">
+<span class="category-header__icon">🛡️</span>
+<h2 class="category-header__title">IFERROR e ISERROR</h2>
+</div>
+<div class="function-card">
+<div class="function-card__name">IFERROR(&lt;valor&gt;, &lt;valor_si_error&gt;)</div>
+<div class="function-card__level">Principiante — Intermedio</div>
+<div class="function-card__description">
+              Si la expresión produce un error, devuelve el valor alternativo. Si no hay error, devuelve el resultado normal. Esencial para manejar divisiones por cero, conversiones fallidas y referencias a valores inexistentes.
+            </div>
+<h4>Ejemplos:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Proteger una división (aunque DIVIDE es mejor para esto):
+Ratio = IFERROR('Ventas'[Importe] / 'Ventas'[Cantidad], 0)
+
+// Convertir texto a número con protección:
+Precio Limpio = IFERROR(VALUE('Productos'[PrecioTexto]), 0)
+
+// Proteger LOOKUPVALUE cuando no encuentra match:
+Categoría = IFERROR(
+    LOOKUPVALUE('Categorías'[Nombre], 'Categorías'[ID], 'Productos'[CatID]),
+    "Sin categoría"
+)</code></pre>
+</div>
+<div class="note note--warning">
+<strong>⚠️ IFERROR es EAGER</strong><br/>
+              IFERROR evalúa siempre AMBAS expresiones (es EAGER). Esto significa que si el valor_si_error es costoso de calcular, puede impactar el rendimiento incluso cuando no hay error. Para divisiones por cero, usa siempre DIVIDE() en lugar de IFERROR — es más eficiente y legible.
+            </div>
+</div>
+<div class="function-card">
+<div class="function-card__name">ISERROR(&lt;valor&gt;)</div>
+<div class="function-card__level">Intermedio</div>
+<div class="function-card__description">
+              Devuelve TRUE si la expresión produce un error, FALSE si no. Se usa dentro de IF para tomar decisiones basadas en si algo da error.
+            </div>
+<h4>Ejemplo:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Alternativa a IFERROR:
+Precio Limpio = IF(ISERROR(VALUE('Productos'[PrecioTexto])), 0, VALUE('Productos'[PrecioTexto]))
+// Nota: aquí IFERROR es más eficiente porque no evalúa VALUE() dos veces</code></pre>
+</div>
+</div>
+</section><!-- SECCIÓN 5: COALESCE --><section id="coalesce">
+<div class="category-header">
+<span class="category-header__icon">💎</span>
+<h2 class="category-header__title">COALESCE — la joya escondida</h2>
+</div>
+<div class="function-card">
+<div class="function-card__name">COALESCE(&lt;valor1&gt;, &lt;valor2&gt;, ..., &lt;valorN&gt;)</div>
+<div class="function-card__level">Intermedio</div>
+<div class="function-card__description">
+              Devuelve el PRIMER valor no-BLANK de la lista. Es el equivalente DAX del COALESCE de SQL. Perfecta para proporcionar valores por defecto cuando puede haber nulos en cadena.
+            </div>
+<h4>Por qué es tan útil:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// ❌ Sin COALESCE — verbose y difícil de leer:
+Precio Final =
+IF(NOT(ISBLANK('Productos'[PrecioOferta])),
+    'Productos'[PrecioOferta],
+    IF(NOT(ISBLANK('Productos'[PrecioEspecial])),
+        'Productos'[PrecioEspecial],
+        'Productos'[PrecioBásico]
+    )
+)
+
+// ✅ Con COALESCE — limpio y elegante:
+Precio Final = COALESCE('Productos'[PrecioOferta], 'Productos'[PrecioEspecial], 'Productos'[PrecioBásico])
+// Devuelve PrecioOferta si no es BLANK, sino PrecioEspecial, sino PrecioBásico</code></pre>
+</div>
+<h4>Ejemplo con medidas:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Usar el valor calculado o un fallback:
+Ventas Mostrar = COALESCE([Ventas Reales], [Ventas Estimadas], 0)
+// Primero intenta ventas reales, si son BLANK usa estimadas, si también son BLANK usa 0</code></pre>
+</div>
+</div>
+</section><!-- SECCIÓN 6: TRUE() y FALSE() --><section id="true-false">
+<div class="category-header">
+<span class="category-header__icon">✅</span>
+<h2 class="category-header__title">TRUE() y FALSE()</h2>
+</div>
+<p>TRUE() y FALSE() son funciones que devuelven los literales booleanos. En DAX moderno, puedes escribir directamente <code>TRUE</code> y <code>FALSE</code> sin paréntesis. Se usan principalmente en tablas calculadas, DATATABLE y como valores explícitos en condicionales.</p>
+<h4>Ejemplo:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// En una columna calculada:
+'Clientes'[EsActivo] = IF('Clientes'[UltimaCompra] &gt;= EDATE(TODAY(), -12), TRUE(), FALSE())
+
+// Equivalente más conciso:
+'Clientes'[EsActivo] = 'Clientes'[UltimaCompra] &gt;= EDATE(TODAY(), -12)
+// Las comparaciones ya devuelven TRUE/FALSE directamente</code></pre>
+</div>
+</section><!-- SECCIÓN 7: Operadores de bits --><section id="bits">
+<div class="category-header">
+<span class="category-header__icon">💻</span>
+<h2 class="category-header__title">BITAND, BITOR, BITXOR — operaciones de bits</h2>
+</div>
+<p>Estas funciones realizan operaciones a nivel de bits sobre enteros. Son funciones de nicho, muy usadas en integración con sistemas que codifican flags/permisos como campos de bits (sistemas legacy, Active Directory, etc.).</p>
+<h3>Tabla de funciones:</h3>
+<table class="function-table">
+<thead>
+<tr>
+<th>FUNCIÓN</th>
+<th>OPERACIÓN</th>
+<th>EJEMPLO</th>
+<th>RESULTADO</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>BITAND(a, b)</strong></td>
+<td>AND bit a bit</td>
+<td>BITAND(6, 3) → 010 &amp; 011</td>
+<td>2</td>
+</tr>
+<tr>
+<td><strong>BITOR(a, b)</strong></td>
+<td>OR bit a bit</td>
+<td>BITOR(6, 3) → 110 | 011</td>
+<td>7</td>
+</tr>
+<tr>
+<td><strong>BITXOR(a, b)</strong></td>
+<td>XOR bit a bit</td>
+<td>BITXOR(6, 3) → 110 ^ 011</td>
+<td>5</td>
+</tr>
+<tr>
+<td><strong>BITLSHIFT(n, d)</strong></td>
+<td>Despl. izq.</td>
+<td>BITLSHIFT(2, 3) → 2 * 2³</td>
+<td>16</td>
+</tr>
+<tr>
+<td><strong>BITRSHIFT(n, d)</strong></td>
+<td>Despl. der.</td>
+<td>BITRSHIFT(16, 2) → 16 / 2²</td>
+<td>4</td>
+</tr>
+</tbody>
+</table>
+<h3>Ejemplo real — decodificar permisos de Active Directory:</h3>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Un campo "Permisos" almacena flags en bits:
+// Bit 0 (valor 1) = puede leer
+// Bit 1 (valor 2) = puede escribir
+// Bit 2 (valor 4) = puede administrar
+// Si Permisos = 7 (111 en binario) → tiene todos los permisos
+
+Puede Leer = IF(BITAND('Usuarios'[Permisos], 1) = 1, TRUE, FALSE)
+Puede Escribir = IF(BITAND('Usuarios'[Permisos], 2) = 2, TRUE, FALSE)
+Puede Administrar = IF(BITAND('Usuarios'[Permisos], 4) = 4, TRUE, FALSE)</code></pre>
+</div>
+<div class="note note--tip">
+<strong>💡 Funciones de nicho</strong><br/>
+            Si nunca has trabajado con sistemas que usen campos de bits, es probable que no necesites estas funciones en el corto plazo. Pero si integras con Active Directory, sistemas ERP legacy o APIs que devuelven flags binarios, BITAND e BITOR serán tus mejores amigas.
+          </div>
+</section><!-- SECCIÓN 8: Patrones --><section id="patrones">
+<div class="category-header">
+<span class="category-header__icon">🛠️</span>
+<h2 class="category-header__title">Patrones de lógica condicional</h2>
+</div>
+<h3>Patrón 1 — Clasificador con SWITCH(TRUE()):</h3>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">Segmento RFM =
+SWITCH(
+    TRUE(),
+    [Recencia] &lt;= 30 &amp;&amp; [Frecuencia] &gt;= 5 &amp;&amp; [MonetarioScore] = "Alto", "🌟 Campeón",
+    [Recencia] &lt;= 60 &amp;&amp; [Frecuencia] &gt;= 3, "💛 Leal",
+    [Recencia] &lt;= 90, "💚 En riesgo",
+    [Recencia] &gt; 180, "💔 Perdido",
+    "📊 Normal"
+)</code></pre>
+</div>
+<h3>Patrón 2 — Valor por defecto en cascada con COALESCE:</h3>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">Precio Aplicado =
+COALESCE(
+    'Precios'[PrecioNegociado],   -- precio acordado con el cliente
+    'Precios'[PrecioOferta],      -- precio de oferta activa
+    'Precios'[PrecioTarifa]       -- precio de tarifa general
+)</code></pre>
+</div>
+<h3>Patrón 3 — Mensaje de estado amigable:</h3>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">Estado Display =
+SWITCH(
+    SELECTEDVALUE('Pedidos'[Estado]),
+    "P", "⏳ Pendiente de procesar",
+    "E", "🔄 En preparación",
+    "S", "📦 Enviado — en camino",
+    "D", "✅ Entregado",
+    "C", "❌ Cancelado",
+    IF(ISBLANK(SELECTEDVALUE('Pedidos'[Estado])), "Selecciona un pedido", "Estado desconocido")
+)</code></pre>
+</div>
+<div class="note note--next">
+<strong>🚀 Siguiente paso</strong><br/>
+            ¡La lógica condicional ya la tienes dominada! Con IF, SWITCH y COALESCE puedes manejar cualquier escenario de ramificación. El siguiente paso natural son las funciones de Texto para formatear y transformar los resultados de tus cálculos.
+          </div>
+</section>
+
+      </div>
+</main>
+</div>
+<!-- Footer (cargado dinámicamente) -->
+<div id="main-footer"></div>
+<!-- Botón volver arriba -->
+<button aria-label="Volver arriba" class="btn-back-to-top" id="back-to-top">↑</button>
+<!-- Scripts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+<script src="../../assets/js/theme.js"></script>
+<script src="../../assets/js/main.js"></script>
+<!-- Buscador DAX -->
+<script src="../../assets/js/dax-search.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Auto-inicializar todos los widgets con data-dax-search="true"
+      if (window.daxSearch) {
+        window.daxSearch.initAll({
+          baseUrl: '../'  // estamos en topics/dax/, las URLs deben ir a topics/dax/...
+        });
+      }
+    });
+  </script>
+<script src="../../assets/js/cursor.js"></script>
+</body>
+</html>

@@ -1,0 +1,323 @@
+/* ===================================================================
+   MAIN.CSS — Power BI Guide 🌸
+   Estilos base, variables globales y componentes fundamentales
+   =================================================================== */
+
+/* ===== RESET COMPLETO - ELIMINAR ESPACIOS SUPERIORES ===== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+body {
+  margin: 0 !important;
+  padding: 0 !important;
+  min-height: 100vh;
+}
+
+/* Sidebar sin margin ni padding superior */
+.site-sidebar {
+  margin: 0 !important;
+  padding-top: 16px;
+  top: 0;
+  left: 0;
+}
+
+/* Page wrapper pegado arriba */
+.page-wrapper {
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+}
+
+/* Contenido principal sin margin superior */
+.main-content, main {
+  margin-top: 0 !important;
+  padding-top: 24px;
+}
+
+/* Hero sin margin superior */
+.hero, .page-hero {
+  margin-top: 0 !important;
+  padding-top: 24px;
+}
+
+/* Topic header sin margin superior */
+.topic-header {
+  margin-top: 0 !important;
+  padding-top: 32px;
+}
+
+/* Breadcrumb sin margin superior excesivo */
+.breadcrumb {
+  margin-top: 0 !important;
+  padding-top: 16px;
+}
+
+/* === VARIABLES CSS === */
+:root {
+  /* Paleta principal Kawaii Power BI */
+  --color-blush: #FAEEEE;
+  --color-coral: #E74E37;
+  --color-rose: #F3E5E5;
+  --color-mauve: #D9CBCB;
+  --color-slate: #929C9C;
+
+  /* Colores complementarios */
+  --color-dark: #2C2C2C;
+  --color-white: #FFFFFF;
+  --color-peach: #F9A58B;
+  --color-success: #5BAD92;
+  --color-warning: #F2B84B;
+  --color-code-bg: #2E2E3A;
+
+  /* Tipografía */
+  --font-main: 'Plus Jakarta Sans', sans-serif;
+  --font-code: 'Fira Code', monospace;
+
+  /* Espaciado y layout */
+  --sidebar-width: 280px;
+  --header-height: 64px;
+  --border-radius-sm: 6px;
+  --border-radius: 12px;
+  --border-radius-lg: 20px;
+
+  /* Sombras */
+  --shadow-sm: 0 1px 4px rgba(44, 44, 44, 0.08);
+  --shadow: 0 4px 16px rgba(44, 44, 44, 0.10);
+  --shadow-md: 0 8px 32px rgba(44, 44, 44, 0.14);
+
+  /* Transición global */
+  --transition: all 0.2s ease;
+  --transition-slow: all 0.35s ease;
+}
+
+/* === RESET Y BASE === */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-size: 16px;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-main);
+  background-color: var(--color-blush);
+  color: var(--color-dark);
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+a {
+  color: var(--color-coral);
+  text-decoration: none;
+  transition: var(--transition);
+}
+
+a:hover {
+  text-decoration: underline;
+  color: var(--color-peach);
+}
+
+::selection {
+  background: var(--color-coral);
+  color: var(--color-white);
+}
+
+/* === TIPOGRAFÍA === */
+h1 {
+  font-size: clamp(2rem, 4vw, 2.75rem);
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--color-dark);
+}
+
+.title-by {
+  font-size: 0.65em;
+  font-weight: 500;
+  color: var(--color-slate);
+  display: inline-block;
+  margin-left: 0.5rem;
+}
+
+h2 {
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+h3 {
+  font-size: 1.375rem;
+  font-weight: 600;
+}
+
+h4 {
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+
+p {
+  margin-bottom: 1rem;
+}
+
+strong {
+  font-weight: 600;
+}
+
+/* === SECCIÓN HERO === */
+.hero {
+  margin: 0;
+  padding: 2rem 2rem 1.25rem;
+  text-align: center;
+  background: linear-gradient(135deg, var(--color-rose) 0%, var(--color-blush) 60%);
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 400px;
+  height: 400px;
+  background-image: url('../images/Logo Kawaii.jpg');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  opacity: 0.04;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.hero > * {
+  position: relative;
+  z-index: 1;
+}
+
+.hero__subtitle {
+  font-size: 1.125rem;
+  color: var(--color-slate);
+  margin: 0.5rem auto 1rem;
+  max-width: 560px;
+}
+
+.search-wrapper {
+  position: relative;
+  max-width: 520px;
+  margin: 0 auto;
+}
+
+.search-input {
+  width: 100%;
+  padding: 0.875rem 1rem 0.875rem 3rem;
+  border-radius: var(--border-radius-lg);
+  border: 2px solid var(--color-mauve);
+  background: var(--color-white);
+  font-family: var(--font-main);
+  font-size: 1rem;
+  transition: var(--transition);
+  outline: none;
+}
+
+.search-input:focus {
+  border-color: var(--color-coral);
+  box-shadow: 0 0 0 3px rgba(231, 78, 55, 0.12);
+}
+
+.search-icon {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.1rem;
+  pointer-events: none;
+}
+
+/* === SECCIÓN TOPICS === */
+.topics-section {
+  padding: 1rem 2rem 2rem;
+}
+
+.section-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 1.75rem;
+  color: var(--color-dark);
+}
+
+.topics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+/* === BOTÓN VOLVER ARRIBA === */
+.back-to-top {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--color-coral);
+  color: var(--color-white);
+  border: none;
+  cursor: pointer;
+  font-size: 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow);
+  transition: var(--transition);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 200;
+}
+
+.back-to-top.visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.back-to-top:hover {
+  background: var(--color-peach);
+  transform: translateY(-2px);
+}
+
+/* === UTILIDADES === */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}

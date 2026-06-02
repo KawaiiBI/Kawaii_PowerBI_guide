@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Bus Matrix de Kimball: herramienta de planificación para Data Warehouses dimensionales. Dimensiones conformadas, procesos de negocio y arquitecturas escalables en Power BI.">
+  <title>Bus Matrix de Kimball — Modelado de Datos | Power BI Guide by Kawaii BI</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/prismjs@1/themes/prism-okaidia.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="../../assets/css/main.css">
+  <link rel="stylesheet" href="../../assets/css/themes.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/layout.css">
+
+  <style>
+    /* === TOPIC HEADER === */
+    .topic-header { text-align: center; padding: 2.5rem 0 2rem; border-bottom: 2px solid var(--color-mauve); margin-bottom: 2.5rem; }
+    .topic-header__icon { font-size: 4rem; margin-bottom: 0.75rem; display: block; }
+    .topic-header__title { font-size: clamp(1.875rem, 4vw, 2.5rem); font-weight: 800; color: var(--color-dark); margin-bottom: 0.625rem; line-height: 1.2; }
+    .topic-header__subtitle { font-size: 1.0625rem; color: var(--color-slate); margin-bottom: 1.25rem; line-height: 1.5; max-width: 700px; margin-left: auto; margin-right: auto; }
+    .topic-header__levels { display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap; align-items: center; }
+
+    /* === CATEGORY HEADER === */
+    .category-header { display: flex; align-items: center; gap: 0.75rem; margin: 2.5rem 0 1.25rem; padding: 0.875rem 1.25rem; background: var(--color-rose); border-radius: var(--border-radius-sm); border-left: 4px solid var(--color-coral); }
+    .category-header__icon { font-size: 1.5rem; }
+    .category-header__title { font-size: 1.25rem; font-weight: 700; margin: 0; }
+
+    /* === CONCEPT CARD === */
+    .concept-card { background: var(--color-white); border: 1.5px solid var(--color-mauve); border-radius: var(--border-radius); padding: 1.75rem; margin-bottom: 1.5rem; scroll-margin-top: 80px; transition: border-color 0.2s; }
+    .concept-card:hover { border-color: var(--color-coral); }
+    .concept-card h3 { font-size: 1.25rem; font-weight: 700; color: var(--color-coral); margin-bottom: 0.75rem; }
+    .concept-card h4 { font-size: 0.9375rem; font-weight: 700; color: var(--color-dark); margin: 1.25rem 0 0.5rem; }
+    .concept-card p { font-size: 0.9375rem; line-height: 1.7; color: var(--color-dark); margin-bottom: 0.75rem; }
+    .concept-card ul, .concept-card ol { padding-left: 1.25rem; font-size: 0.9375rem; line-height: 1.8; color: var(--color-dark); }
+    .concept-card code { background: var(--color-blush); padding: 0.1em 0.4em; border-radius: 4px; font-family: 'Fira Code', monospace; font-size: 0.85em; color: var(--color-coral); }
+
+    /* === TOC === */
+    .toc { background: var(--color-rose); border-radius: var(--border-radius); padding: 1.25rem 1.5rem; margin-bottom: 2rem; border: 1.5px solid var(--color-mauve); }
+    .toc__title { font-size: 1rem; font-weight: 700; margin: 0 0 0.75rem; }
+    .toc__list { display: flex; flex-wrap: wrap; gap: 0.5rem; list-style: none; padding: 0; margin: 0; }
+    .toc__list a { font-size: 0.8125rem; color: var(--color-coral); text-decoration: none; padding: 0.25rem 0.625rem; background: var(--color-white); border-radius: 999px; border: 1px solid var(--color-mauve); transition: background 0.15s, color 0.15s; }
+    .toc__list a:hover { background: var(--color-coral); color: white; }
+
+    /* === STEP LIST (numerada con círculos coral) === */
+    .step-list { counter-reset: steps; list-style: none; padding: 0; margin: 0; }
+    .step-list li { counter-increment: steps; padding: 0.875rem 0.875rem 0.875rem 3.5rem; position: relative; border-bottom: 1px solid var(--color-rose); font-size: 0.9375rem; line-height: 1.7; color: var(--color-dark); }
+    .step-list li:last-child { border-bottom: none; }
+    .step-list li::before { content: counter(steps); position: absolute; left: 0.5rem; top: 0.875rem; width: 2rem; height: 2rem; background: var(--color-coral); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.875rem; }
+    .step-list li strong { color: var(--color-dark); }
+
+    /* === BUS MATRIX TABLE === */
+    .bus-matrix { width: 100%; border-collapse: collapse; font-size: 0.875rem; margin: 1.5rem 0; border-radius: var(--border-radius-sm); overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+    .bus-matrix thead tr { background: var(--color-coral); color: white; }
+    .bus-matrix th { padding: 0.875rem 1rem; font-weight: 700; text-align: center; white-space: nowrap; }
+    .bus-matrix th:first-child { text-align: left; }
+    .bus-matrix tbody tr { border-bottom: 1px solid var(--color-mauve); transition: background 0.15s; }
+    .bus-matrix tbody tr:last-child { border-bottom: none; }
+    .bus-matrix tbody tr:nth-child(even) { background: var(--color-blush); }
+    .bus-matrix tbody tr:hover { background: var(--color-rose); }
+    .bus-matrix td { padding: 0.875rem 1rem; text-align: center; color: var(--color-dark); }
+    .bus-matrix td:first-child { text-align: left; font-weight: 600; }
+    .bus-matrix .check { color: #5BAD92; font-weight: 800; font-size: 1rem; }
+    .bus-matrix .dash  { color: var(--color-mauve); font-size: 1rem; }
+    .bus-matrix .gran-row td { background: var(--color-rose); font-style: italic; font-size: 0.8125rem; color: var(--color-slate); }
+    .bus-matrix .gran-row td:first-child { font-style: normal; font-weight: 700; color: var(--color-dark); font-size: 0.875rem; }
+
+    /* === HIGHLIGHT BOX (definición conformada) === */
+    .highlight-box { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: var(--border-radius); padding: 2rem; margin: 1.5rem 0; }
+    .highlight-box h4 { font-size: 1.125rem; font-weight: 700; color: white; margin: 0 0 0.75rem; }
+    .highlight-box p { font-size: 0.9375rem; line-height: 1.7; margin: 0; color: rgba(255,255,255,0.95); }
+
+    /* === COMPONENT CARDS (4 componentes) === */
+    .component-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin: 1rem 0; }
+    .component-item { background: var(--color-white); border: 1.5px solid var(--color-mauve); border-radius: var(--border-radius-sm); padding: 1.125rem 1.25rem; }
+    .component-item__number { display: inline-block; background: var(--color-coral); color: white; font-weight: 800; font-size: 0.8125rem; border-radius: 50%; width: 1.75rem; height: 1.75rem; line-height: 1.75rem; text-align: center; margin-bottom: 0.5rem; }
+    .component-item h4 { font-size: 0.9375rem; font-weight: 700; color: var(--color-dark); margin: 0 0 0.375rem; }
+    .component-item p { font-size: 0.875rem; line-height: 1.6; color: var(--color-slate); margin: 0; }
+    @media (max-width: 600px) { .component-grid { grid-template-columns: 1fr; } }
+
+    /* === BENEFITS LIST === */
+    .benefit-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.625rem; }
+    .benefit-list li { display: flex; gap: 0.75rem; align-items: flex-start; font-size: 0.9375rem; line-height: 1.65; color: var(--color-dark); padding: 0.75rem 1rem; background: var(--color-white); border: 1px solid var(--color-mauve); border-radius: var(--border-radius-sm); }
+    .benefit-list li::before { content: "✨"; flex-shrink: 0; margin-top: 0.05rem; }
+  </style>
+</head>
+<body>
+
+  <!-- SIDEBAR -->
+  <aside class="site-sidebar">
+    <div class="site-sidebar__profile">
+      <img src="../../assets/images/avatar Sara.png" alt="Sara Lozano Martí" class="site-sidebar__avatar">
+      <p class="site-sidebar__name">Sara Lozano Martí</p>
+      <p class="site-sidebar__subtitle">Power BI Expert</p>
+    </div>
+    <nav class="site-sidebar__nav" aria-label="Navegación principal">
+      <ul>
+        <li><a href="../../index.html" class="site-sidebar__link"><span class="site-sidebar__icon">🏠</span> Inicio</a></li>
+        <li><a href="../dax.html" class="site-sidebar__link"><span class="site-sidebar__icon">⚡</span> Funciones DAX</a></li>
+        <li><a href="../power-query.html" class="site-sidebar__link"><span class="site-sidebar__icon">🔄</span> Power Query</a></li>
+        <li><a href="../lenguaje-m.html" class="site-sidebar__link"><span class="site-sidebar__icon">〽️</span> Lenguaje M</a></li>
+        <li><a href="../modelado.html" class="site-sidebar__link is-active"><span class="site-sidebar__icon">🗄️</span> Modelado</a></li>
+        <li><a href="../conceptos-powerbi.html" class="site-sidebar__link"><span class="site-sidebar__icon">📊</span> Conceptos Power BI</a></li>
+        <li><a href="../fabric.html" class="site-sidebar__link"><span class="site-sidebar__icon">🧵</span> Microsoft Fabric</a></li>
+        <li><a href="../tmdl.html" class="site-sidebar__link"><span class="site-sidebar__icon">📝</span> TMDL</a></li>
+        <li><a href="../diseno-ux.html" class="site-sidebar__link"><span class="site-sidebar__icon">🎨</span> Diseño y UX</a></li>
+        <li><a href="../gobernanza.html" class="site-sidebar__link"><span class="site-sidebar__icon">🔒</span> Gobernanza</a></li>
+      </ul>
+    </nav>
+    <div class="site-sidebar__divider"></div>
+    <div class="site-sidebar__footer">
+      <a href="../../quien-soy.html" class="site-sidebar__link site-sidebar__link--highlight"><span class="site-sidebar__icon">👩‍💻</span> ¿Quién soy?</a>
+      <div class="site-sidebar__social">
+        <a href="https://www.linkedin.com/in/saralozanomarti" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><img src="../../assets/images/logo linkedIN.png" alt="LinkedIn" class="site-sidebar__social-icon"></a>
+        <a href="https://www.youtube.com/@KawaiiPowerBI" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><img src="../../assets/images/logo youtube.png" alt="YouTube" class="site-sidebar__social-icon"></a>
+        <a href="https://github.com/KawaiiBI" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><img src="../../assets/images/logo github.png" alt="GitHub" class="site-sidebar__social-icon"></a>
+      </div>
+      <div class="site-sidebar__logo-bottom"><img src="../../assets/images/Logo Kawaii.jpg" alt="Kawaii BI" class="site-sidebar__logo-img"></div>
+      <p class="site-sidebar__copyright">Power BI Guide 🌸<br>© 2026 Kawaii BI</p>
+    </div>
+  </aside>
+
+  <!-- PAGE WRAPPER -->
+  <div class="page-wrapper">
+    <main class="main-content">
+      <div class="topic-page">
+
+        <!-- Breadcrumb -->
+        <nav class="breadcrumb" aria-label="Ruta de navegación">
+          <span class="breadcrumb__item"><a href="../../index.html">🏠 Inicio</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item"><a href="../modelado.html">Modelado de Datos</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item">Bus Matrix de Kimball</span>
+        </nav>
+
+        <!-- Cabecera -->
+        <header class="topic-header">
+          <span class="topic-header__icon">🚌</span>
+          <h1 class="topic-header__title">Bus Matrix de Kimball</h1>
+          <p class="topic-header__subtitle">La Bus Matrix es la herramienta de planificación central de la metodología Kimball para Data Warehouses dimensionales. Aprende a planificar arquitecturas de datos escalables con dimensiones conformadas y procesos de negocio bien definidos.</p>
+          <div class="topic-header__levels">
+            <span class="badge badge--advanced">Avanzado</span>
+          </div>
+        </header>
+
+        <!-- TOC -->
+        <nav class="toc" aria-label="Índice de contenidos">
+          <p class="toc__title">📑 En esta página:</p>
+          <ul class="toc__list">
+            <li><a href="#que-es">¿Qué es la Bus Matrix?</a></li>
+            <li><a href="#componentes">Los 4 Componentes</a></li>
+            <li><a href="#conformadas">Dimensiones Conformadas</a></li>
+            <li><a href="#como-crear">Cómo Crear una Bus Matrix</a></li>
+            <li><a href="#ejemplo">Ejemplo Práctico: Retail</a></li>
+            <li><a href="#beneficios">Beneficios</a></li>
+            <li><a href="#errores">Errores Comunes</a></li>
+          </ul>
+        </nav>
+
+        <!-- ══════════════════════════════════════════
+             SECCIÓN 1: ¿Qué es la Bus Matrix de Kimball?
+        ══════════════════════════════════════════ -->
+        <div class="category-header" id="que-es">
+          <span class="category-header__icon">🚌</span>
+          <h2 class="category-header__title">¿Qué es la Bus Matrix de Kimball?</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>El plano arquitectónico de tu Data Warehouse</h3>
+          <p>La <strong>Bus Matrix</strong> (matriz de bus) es una herramienta de arquitectura creada por Ralph Kimball, el padre del modelado dimensional. Es esencialmente un <strong>mapa maestro</strong> que muestra, en una sola tabla, toda la arquitectura de datos de una organización:</p>
+          <ul>
+            <li>Qué <strong>procesos de negocio</strong> existen y generan datos medibles</li>
+            <li>Qué <strong>dimensiones</strong> usa cada proceso para el análisis</li>
+            <li>Qué dimensiones son <strong>compartidas</strong> entre procesos (dimensiones conformadas)</li>
+            <li>La <strong>granularidad</strong> de cada tabla de hechos</li>
+          </ul>
+          <p>Piensa en la Bus Matrix como el <strong>plano arquitectónico</strong> de tu Data Warehouse. Antes de construir nada, defines qué piezas existen y cómo se conectan entre sí. Es el artefacto de diseño que evita que el DW se convierta en un conjunto de silos de datos desconectados.</p>
+
+          <div class="note note--tip">
+            💡 <strong>Analogía kawaii del autobús 🚌</strong>
+            <p style="margin: 8px 0 0; line-height: 1.7;">El nombre "Bus" viene de <em>information bus</em> (autobús de información). Las dimensiones conformadas son como paradas de autobús: múltiples rutas (procesos de negocio) pasan por la misma parada (dimensión), garantizando que todos los pasajeros (analistas) hablen exactamente el mismo idioma cuando llegan al mismo destino.</p>
+          </div>
+        </article>
+
+        <!-- ══════════════════════════════════════════
+             SECCIÓN 2: Los 4 Componentes de la Bus Matrix
+        ══════════════════════════════════════════ -->
+        <div class="category-header" id="componentes">
+          <span class="category-header__icon">🧩</span>
+          <h2 class="category-header__title">Los 4 Componentes de la Bus Matrix</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>Todo lo que aparece en la matriz</h3>
+          <p>La Bus Matrix es una tabla bidimensional simple, pero cada elemento tiene un significado preciso.</p>
+
+          <div class="component-grid">
+            <div class="component-item">
+              <div class="component-item__number">1</div>
+              <h4>Procesos de Negocio (filas)</h4>
+              <p>Cada fila representa un proceso que genera eventos medibles: Ventas, Devoluciones, Envíos, Llamadas de soporte, Visitas web. Cada proceso se convierte en una <strong>tabla de hechos</strong>.</p>
+            </div>
+            <div class="component-item">
+              <div class="component-item__number">2</div>
+              <h4>Dimensiones (columnas)</h4>
+              <p>Cada columna es una perspectiva de análisis: Fecha, Producto, Cliente, Tienda, Empleado, Campaña… Las columnas son las mismas para todas las filas; solo varía si cada proceso las usa o no.</p>
+            </div>
+            <div class="component-item">
+              <div class="component-item__number">3</div>
+              <h4>Marcas / Cruces (intersecciones)</h4>
+              <p>Una marca (✓) indica que ese proceso usa esa dimensión. Un guión (—) indica que no aplica. Por ejemplo, "Ventas Online" no tiene dimensión "Tienda Física".</p>
+            </div>
+            <div class="component-item">
+              <div class="component-item__number">4</div>
+              <h4>Granularidad</h4>
+              <p>Para cada proceso, defines qué representa 1 fila en la tabla de hechos. Ejemplos: 1 línea de pedido, 1 snapshot diario por producto-almacén, 1 llamada completa.</p>
+            </div>
+          </div>
+
+          <div class="note note--tip">
+            💡 <strong>Tip kawaii:</strong> Empieza siempre por la granularidad. Saber qué es "una fila" en cada proceso de negocio determina automáticamente qué dimensiones son posibles. No puedes tener una dimensión con más detalle que la granularidad de los hechos.
+          </div>
+        </article>
+
+        <!-- ══════════════════════════════════════════
+             SECCIÓN 3: Dimensiones Conformadas
+        ══════════════════════════════════════════ -->
+        <div class="category-header" id="conformadas">
+          <span class="category-header__icon">🔗</span>
+          <h2 class="category-header__title">Dimensiones Conformadas (Conformed Dimensions)</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>El concepto más importante de la Bus Matrix</h3>
+          <p>Las <strong>dimensiones conformadas</strong> son el corazón de la metodología Kimball y la razón por la que la Bus Matrix existe.</p>
+
+          <div class="highlight-box">
+            <h4>¿Qué es una dimensión conformada?</h4>
+            <p>Una dimensión conformada es una dimensión que <strong>se comparte entre múltiples procesos de negocio</strong> con <strong>exactamente las mismas claves, atributos y valores</strong>. Es una sola tabla física, no copias de ella.</p>
+          </div>
+
+          <h4>Ejemplo concreto:</h4>
+          <p>La dimensión <code>Dim_Producto</code> es conformada si:</p>
+          <ul>
+            <li><code>ProductID = 12345</code> significa <strong>exactamente lo mismo</strong> en Ventas, Devoluciones, Inventario y Compras</li>
+            <li>Los atributos (nombre, categoría, marca) son <strong>idénticos</strong> en todos los procesos que la consumen</li>
+            <li>Hay <strong>una sola tabla física</strong> <code>Dim_Producto</code> compartida por todas las tablas de hechos</li>
+          </ul>
+
+          <h4>¿Por qué son críticas?</h4>
+          <p>Las dimensiones conformadas son lo que hace posible el análisis cruzado entre procesos:</p>
+          <ul>
+            <li>Si Ventas y Devoluciones comparten la misma <code>Dim_Producto</code>, puedes calcular la <strong>tasa de devolución por producto</strong> sin ambigüedad</li>
+            <li>Si cada proceso tiene su propia tabla de productos con IDs distintos, cruzar la información es <strong>imposible o requiere transformaciones complejas y frágiles</strong></li>
+            <li>En Power BI, las dimensiones conformadas se traducen en <strong>relaciones activas bien definidas</strong> que funcionan de forma natural con todos los visuales</li>
+          </ul>
+
+          <div class="note note--practice">
+            📌 <strong>Buena práctica:</strong> Cuando identifiques una dimensión que aparece en múltiples procesos, pregúntate siempre: <em>"¿Es la MISMA entidad con las MISMAS claves, o son entidades similares que casualmente tienen el mismo nombre?"</em> Solo la primera es conformada.
+          </div>
+        </article>
+
+        <!-- ══════════════════════════════════════════
+             SECCIÓN 4: Cómo Crear una Bus Matrix
+        ══════════════════════════════════════════ -->
+        <div class="category-header" id="como-crear">
+          <span class="category-header__icon">📝</span>
+          <h2 class="category-header__title">Cómo Crear una Bus Matrix</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>Proceso paso a paso</h3>
+          <p>La Bus Matrix se construye en talleres colaborativos con stakeholders de negocio y de datos. No es un artefacto técnico que se crea en solitario — es el resultado de conversaciones estructuradas.</p>
+
+          <ol class="step-list">
+            <li>
+              <strong>Identificar Procesos de Negocio</strong><br>
+              Reúnete con stakeholders de diferentes áreas y pregunta: <em>"¿Qué eventos medibles ocurren en tu área?"</em> No preguntes por informes o KPIs todavía — pregunta por eventos. Lista todo: Ventas en tienda, Ventas online, Devoluciones, Llamadas al call center, Inventario diario, Impresiones de campaña, Incorporaciones de empleados…
+            </li>
+            <li>
+              <strong>Definir la Granularidad de cada Proceso</strong><br>
+              Para cada proceso, pregunta: <em>"¿Qué representa exactamente una fila en este conjunto de datos?"</em> Ejemplos: 1 línea de ticket, 1 pedido completo, 1 snapshot diario por producto-almacén. La granularidad determina qué dimensiones son posibles.
+            </li>
+            <li>
+              <strong>Identificar las Dimensiones</strong><br>
+              Para cada proceso, pregunta: <em>"¿Desde qué perspectivas queremos analizar esto?"</em> Consolida la lista eliminando duplicados aparentes. Dimensiones típicas: Fecha (siempre), Producto, Cliente, Tienda/Ubicación, Empleado, Promoción, Canal, Método de pago.
+            </li>
+            <li>
+              <strong>Marcar las Intersecciones</strong><br>
+              Construye la tabla. Filas = procesos, columnas = dimensiones. Marca ✓ donde el proceso usa la dimensión y — donde no aplica. Involucra a los propietarios de cada área para validar las marcas — es fácil equivocarse sin su conocimiento.
+            </li>
+            <li>
+              <strong>Identificar y Conformar Dimensiones</strong><br>
+              Para cada dimensión que aparece en múltiples procesos, decide: ¿es la misma entidad física para todos? Si sí, es conformada y debe haber una sola tabla. Define quién es el propietario ("sistema de registro"), qué atributos incluye y cómo se actualiza.
+            </li>
+            <li>
+              <strong>Priorizar e iterar</strong><br>
+              No intentes construir todo a la vez. Ordena los procesos por valor de negocio e impacto. Empieza con los 2-3 procesos más críticos, implementa, valida con usuarios y añade el siguiente proceso. La Bus Matrix evoluciona con el negocio.
+            </li>
+          </ol>
+
+          <div class="note note--warning">
+            ⚠️ <strong>Ojo con esto:</strong> La Bus Matrix no es un documento que se hace una vez. Es un artefacto vivo que debe revisarse cada vez que se añade un nuevo proceso de negocio o cuando cambia la estructura de una dimensión. Guárdala en un lugar accesible para todo el equipo.
+          </div>
+        </article>
+
+        <!-- ══════════════════════════════════════════
+             SECCIÓN 5: Ejemplo Práctico — Empresa Retail
+        ══════════════════════════════════════════ -->
+        <div class="category-header" id="ejemplo">
+          <span class="category-header__icon">🏪</span>
+          <h2 class="category-header__title">Ejemplo Práctico: Empresa Retail</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>Cadena de tiendas con canal físico y online</h3>
+          <p>Imaginemos una cadena de tiendas con ventas físicas y online, gestión de devoluciones e inventario. Aquí está su Bus Matrix simplificada:</p>
+
+          <div style="overflow-x: auto; margin: 1.5rem 0;">
+            <table class="bus-matrix">
+              <thead>
+                <tr>
+                  <th>Proceso de Negocio</th>
+                  <th>Fecha</th>
+                  <th>Producto</th>
+                  <th>Cliente</th>
+                  <th>Tienda</th>
+                  <th>Empleado</th>
+                  <th>Promoción</th>
+                  <th>Canal</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Ventas en Tienda</td>
+                  <td><span class="check">✓</span></td>
+                  <td><span class="check">✓</span></td>
+                  <td><span class="check">✓</span></td>
+                  <td><span class="check">✓</span></td>
+                  <td><span class="check">✓</span></td>
+                  <td><span class="check">✓</span></td>
+                  <td><span class="check">✓</span></td>
+                </tr>
+                <tr>
+                  <td>Ventas Online</td>
+                  <td><span class="check">✓</span></td>
+                  <td><span class="check">✓</span></td>
+                  <td><span class="check">✓</span></td>
+                  <td><span class="dash">—</span></td>
+                  <td><span class="dash">—</span></td>
+                  <td><span class="check">✓</span></td>
+                  <td><span class="check">✓</span></td>
+                </tr>
+                <tr>
+                  <td>Devoluciones</td>
+                  <td><span class="check">✓</span></td>
+                  <td><span class="check">✓</span></td>
+                  <td><span class="check">✓</span></td>
+                  <td><span class="check">✓</span></td>
+                  <td><span class="dash">—</span></td>
+                  <td><span class="dash">—</span></td>
+                  <td><span class="check">✓</span></td>
+                </tr>
+                <tr>
+                  <td>Inventario Snapshot</td>
+                  <td><span class="check">✓</span></td>
+                  <td><span class="check">✓</span></td>
+                  <td><span class="dash">—</span></td>
+                  <td><span class="check">✓</span></td>
+                  <td><span class="dash">—</span></td>
+                  <td><span class="dash">—</span></td>
+                  <td><span class="dash">—</span></td>
+                </tr>
+                <tr class="gran-row">
+                  <td>Granularidad:</td>
+                  <td colspan="7">Ver detalle abajo ↓</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h4>Granularidad de cada proceso:</h4>
+          <ul>
+            <li><strong>Ventas en Tienda:</strong> 1 fila = 1 línea de ticket (un artículo vendido en una transacción)</li>
+            <li><strong>Ventas Online:</strong> 1 fila = 1 línea de pedido web (un artículo dentro de un pedido)</li>
+            <li><strong>Devoluciones:</strong> 1 fila = 1 artículo devuelto (con referencia al pedido/ticket original)</li>
+            <li><strong>Inventario Snapshot:</strong> 1 fila = stock al cierre del día por combinación producto-tienda</li>
+          </ul>
+
+          <h4>Observaciones clave de esta matriz:</h4>
+          <ul>
+            <li><strong>Fecha, Producto y Cliente</strong> aparecen en casi todos los procesos → son dimensiones conformadas prioritarias</li>
+            <li><strong>Tienda</strong> no aplica a Ventas Online (canal digital no tiene tienda física) → marca —</li>
+            <li><strong>Empleado</strong> solo es relevante en ventas presenciales donde hay vendedor asignado</li>
+            <li><strong>Inventario</strong> no tiene dimensión Cliente ni Empleado porque un snapshot de stock no está asociado a ningún cliente</li>
+            <li>Los 4 procesos comparten <code>Dim_Producto</code>: <code>ProductID = 12345</code> significa lo mismo en Ventas, Devoluciones e Inventario → puedo calcular <em>% devuelto sobre vendido</em> directamente</li>
+          </ul>
+
+          <div class="note note--tip">
+            💡 <strong>Tip kawaii:</strong> Las columnas con más ✓ son tus dimensiones más valiosas — son las que habilitan más análisis cruzados. Inviérteles tiempo en diseñarlas bien desde el principio. Una <code>Dim_Producto</code> bien construida que sirve a 4 procesos vale mucho más que 4 tablas de productos independientes y mal documentadas.
+          </div>
+        </article>
+
+        <!-- ══════════════════════════════════════════
+             SECCIÓN 6: Beneficios de la Bus Matrix
+        ══════════════════════════════════════════ -->
+        <div class="category-header" id="beneficios">
+          <span class="category-header__icon">✨</span>
+          <h2 class="category-header__title">Beneficios de la Bus Matrix</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>Por qué merece la pena el esfuerzo</h3>
+          <p>La Bus Matrix no es solo un ejercicio académico. Tiene beneficios concretos y medibles en proyectos de datos reales.</p>
+
+          <ul class="benefit-list">
+            <li><strong>Visión global en una página:</strong> Ves toda la arquitectura de datos de la organización sin tener que leer documentación técnica extensa.</li>
+            <li><strong>Evita silos de datos:</strong> Detectas qué dimensiones se duplican innecesariamente y cuáles deberían conformarse, antes de construir nada.</li>
+            <li><strong>Planificación incremental:</strong> Puedes construir un proceso a la vez, sabiendo exactamente cómo encaja en el conjunto y qué dimensiones ya existen.</li>
+            <li><strong>Comunicación con stakeholders:</strong> Cualquier directivo o analista de negocio puede entender la matriz sin conocimientos técnicos de modelado.</li>
+            <li><strong>Análisis cruzado garantizado:</strong> Si dos procesos comparten una dimensión conformada, puedes cruzarlos sin transformaciones adicionales ni riesgo de ambigüedad.</li>
+            <li><strong>Base para priorización:</strong> Facilita conversaciones sobre qué construir primero basándose en valor de negocio, no en preferencias técnicas.</li>
+            <li><strong>Documentación viva:</strong> Con mantenimiento regular, la Bus Matrix sirve como fuente de verdad sobre qué existe en el DW y qué dimensiones son compartidas.</li>
+          </ul>
+        </article>
+
+        <!-- ══════════════════════════════════════════
+             SECCIÓN 7: Errores Comunes
+        ══════════════════════════════════════════ -->
+        <div class="category-header" id="errores">
+          <span class="category-header__icon">⚠️</span>
+          <h2 class="category-header__title">Errores Comunes</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>Los tropiezos más frecuentes y cómo evitarlos</h3>
+
+          <div class="note note--warning">
+            ⚠️ <strong>Error #1: Confundir "misma dimensión" con "conformada"</strong>
+            <p style="margin: 8px 0 0; line-height: 1.7;">Que Ventas y Devoluciones tengan una dimensión llamada "Cliente" <strong>NO significa que sea conformada</strong>. Solo lo es si comparten la MISMA tabla física con las MISMAS claves y los MISMOS atributos. Si cada proceso tiene su propia <code>Dim_Cliente</code> con IDs diferentes o definiciones distintas, no es conformada — es un silo con otro nombre.</p>
+          </div>
+
+          <div class="note note--warning">
+            ⚠️ <strong>Error #2: Granularidad inconsistente en dimensiones conformadas</strong>
+            <p style="margin: 8px 0 0; line-height: 1.7;">Si "Ventas" tiene granularidad de línea de pedido pero "Devoluciones" tiene granularidad de pedido completo, no puedes cruzarlas directamente aunque compartan <code>Dim_Producto</code>. La granularidad de los hechos debe ser compatible para que el análisis cruzado tenga sentido. Defínela explícitamente desde el principio y valídala con el negocio.</p>
+          </div>
+
+          <div class="note note--warning">
+            ⚠️ <strong>Error #3: Intentar hacer todo perfecto desde el día 1</strong>
+            <p style="margin: 8px 0 0; line-height: 1.7;">La Bus Matrix de una organización grande puede tener 30 procesos y 20 dimensiones. Intentar planificarlo todo en una primera reunión de 2 horas es una receta para el bloqueo. Empieza con 2-3 procesos de mayor valor, conforma las dimensiones críticas (Fecha, Producto, Cliente), y añade procesos incrementalmente en sprints siguientes.</p>
+          </div>
+
+          <div class="note note--warning">
+            ⚠️ <strong>Error #4: No designar un propietario para cada dimensión conformada</strong>
+            <p style="margin: 8px 0 0; line-height: 1.7;">Si nadie es responsable de mantener <code>Dim_Producto</code>, cada equipo empezará a añadir sus propios atributos de formas incompatibles. Cada dimensión conformada necesita un <strong>equipo propietario</strong> que decida su estructura, apruebe cambios y garantice la consistencia entre procesos.</p>
+          </div>
+
+          <div class="note note--warning">
+            ⚠️ <strong>Error #5: Tratar la Bus Matrix como documentación técnica</strong>
+            <p style="margin: 8px 0 0; line-height: 1.7;">La Bus Matrix es una herramienta de comunicación y gobernanza, no solo un documento técnico. Si la guardas en una carpeta de SharePoint que solo lee el equipo de datos, estás perdiendo el 80% de su valor. Compártela con los dueños de los procesos de negocio y revísala con ellos regularmente.</p>
+          </div>
+        </article>
+
+        <!-- Nota final -->
+        <div class="note note--next" style="margin-top: 2rem;">
+          🚀 <strong>¡Arquitectura planificada!</strong> Con la Bus Matrix definida, es hora de implementar. Aprende a crear un <a href="esquema-estrella.html">Esquema Estrella</a> profesional que materialice tu arquitectura, y luego revisa las <a href="relaciones.html">Relaciones en Power BI</a> para conectar tus tablas de hechos y dimensiones conformadas correctamente.
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <button id="back-to-top" class="back-to-top" aria-label="Volver arriba" title="Volver arriba">↑</button>
+
+  <script src="https://cdn.jsdelivr.net/npm/i18next@23/dist/umd/i18next.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1/prism.min.js"></script>
+  <script src="../../assets/js/theme.js"></script>
+  <script src="../../assets/js/main.js"></script>
+  <script src="../../assets/js/cursor.js"></script>
+</body>
+</html>

@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Guía completa de diseño y UX para dashboards Power BI: principios de diseño, storytelling con datos, accesibilidad, paleta de colores, layout y elección de gráficos">
+  <title>Diseño y UX para Dashboards — Power BI Guide by Kawaii BI</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+
+  <!-- Estilos CSS -->
+  <link rel="stylesheet" href="../assets/css/main.css">
+  <link rel="stylesheet" href="../assets/css/themes.css">
+  <link rel="stylesheet" href="../assets/css/components.css">
+  <link rel="stylesheet" href="../assets/css/layout.css">
+
+  <style>
+    /* Topic header — estilo caja (igual que dax.html y modelado.html) */
+    .topic-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 1.25rem;
+      margin-bottom: 2rem;
+      padding: 1.75rem;
+      background: var(--color-rose);
+      border-radius: var(--border-radius);
+      border: 1.5px solid var(--color-mauve);
+    }
+
+    .topic-header__icon {
+      font-size: 3rem;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+
+    .topic-header__title {
+      font-size: 1.875rem;
+      font-weight: 700;
+      margin-bottom: 0.25rem;
+    }
+
+    .topic-header__subtitle {
+      color: var(--color-slate);
+      font-size: 0.9375rem;
+      margin-bottom: 0.75rem;
+      line-height: 1.6;
+    }
+
+    .topic-header__levels {
+      display: flex;
+      gap: 0.375rem;
+      flex-wrap: wrap;
+    }
+
+    /* Sección intro con gradiente */
+    .ux-intro {
+      background: linear-gradient(135deg, var(--color-rose) 0%, var(--color-blush) 100%);
+      border-radius: var(--border-radius);
+      padding: 2rem;
+      margin-bottom: 2.5rem;
+      border: 1.5px solid var(--color-mauve);
+    }
+
+    .ux-intro__title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    .ux-intro__text {
+      color: var(--color-slate);
+      font-size: 0.9375rem;
+      line-height: 1.7;
+    }
+
+    .ux-intro__stats {
+      display: flex;
+      gap: 1.5rem;
+      margin-top: 1.25rem;
+      flex-wrap: wrap;
+    }
+
+    .ux-intro__stat {
+      background: var(--color-white);
+      border-radius: var(--border-radius-sm);
+      padding: 0.625rem 1rem;
+      border: 1px solid var(--color-mauve);
+      font-size: 0.875rem;
+    }
+
+    .ux-intro__stat strong {
+      color: var(--color-coral);
+      font-size: 1.125rem;
+      display: block;
+    }
+
+    /* Grid de categorías */
+    .category-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.25rem;
+      margin-top: 1.5rem;
+    }
+
+    .category-card {
+      background: var(--color-white);
+      border: 1.5px solid var(--color-mauve);
+      border-radius: var(--border-radius);
+      padding: 1.25rem 1.5rem;
+      text-decoration: none;
+      color: inherit;
+      transition: var(--transition);
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .category-card:hover {
+      border-color: var(--color-coral);
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-md);
+      text-decoration: none;
+    }
+
+    .category-card__header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .category-card__icon {
+      font-size: 1.75rem;
+      line-height: 1;
+    }
+
+    .category-card__name {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--color-dark);
+    }
+
+    .category-card__desc {
+      font-size: 0.8125rem;
+      color: var(--color-slate);
+      line-height: 1.5;
+    }
+
+    .category-card__levels {
+      display: flex;
+      gap: 0.375rem;
+      margin-top: 0.25rem;
+    }
+
+    /* Tema oscuro */
+    .dark-theme .topic-header,
+    .dark-theme .ux-intro {
+      background: var(--color-rose);
+      border-color: var(--color-mauve);
+    }
+
+    .dark-theme .ux-intro {
+      background: linear-gradient(135deg, var(--color-rose) 0%, var(--color-blush) 100%);
+    }
+
+    .dark-theme .category-card {
+      background: var(--color-white);
+      border-color: var(--color-mauve);
+    }
+
+    .dark-theme .ux-intro__stat {
+      background: var(--color-white);
+      border-color: var(--color-mauve);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- SIDEBAR: Navegación principal -->
+  <aside class="site-sidebar">
+
+    <!-- Avatar y nombre -->
+    <div class="site-sidebar__profile">
+      <img src="../assets/images/avatar Sara.png" alt="Sara Lozano Martí" class="site-sidebar__avatar" />
+      <p class="site-sidebar__name">Sara Lozano Martí</p>
+      <p class="site-sidebar__subtitle">Power BI Expert</p>
+    </div>
+
+    <!-- Navegación principal -->
+    <nav class="site-sidebar__nav" aria-label="Navegación principal">
+      <ul>
+        <li><a href="../index.html" class="site-sidebar__link">
+          <span class="site-sidebar__icon">🏠</span> Inicio
+        </a></li>
+
+        <li><a href="dax.html" class="site-sidebar__link">
+          <span class="site-sidebar__icon">⚡</span> Funciones DAX
+        </a></li>
+
+        <li><a href="power-query.html" class="site-sidebar__link">
+          <span class="site-sidebar__icon">🔄</span> Power Query
+        </a></li>
+
+        <li><a href="lenguaje-m.html" class="site-sidebar__link">
+          <span class="site-sidebar__icon">〽️</span> Lenguaje M
+        </a></li>
+
+        <li><a href="modelado.html" class="site-sidebar__link">
+          <span class="site-sidebar__icon">🗄️</span> Modelado
+        </a></li>
+
+        <li><a href="conceptos-powerbi.html" class="site-sidebar__link">
+          <span class="site-sidebar__icon">📊</span> Conceptos Power BI
+        </a></li>
+
+        <li><a href="fabric.html" class="site-sidebar__link">
+          <span class="site-sidebar__icon">🧵</span> Microsoft Fabric
+        </a></li>
+
+        <li><a href="tmdl.html" class="site-sidebar__link">
+          <span class="site-sidebar__icon">📝</span> TMDL
+        </a></li>
+
+        <li><a href="diseno-ux.html" class="site-sidebar__link is-active">
+          <span class="site-sidebar__icon">🎨</span> Diseño y UX
+        </a></li>
+
+        <li><a href="gobernanza.html" class="site-sidebar__link">
+          <span class="site-sidebar__icon">🔒</span> Gobernanza
+        </a></li>
+      </ul>
+    </nav>
+
+    <!-- Separador -->
+    <div class="site-sidebar__divider"></div>
+
+    <!-- Footer del sidebar -->
+    <div class="site-sidebar__footer">
+      <a href="../quien-soy.html" class="site-sidebar__link site-sidebar__link--highlight">
+        <span class="site-sidebar__icon">👩‍💻</span> ¿Quién soy?
+      </a>
+
+      <div class="site-sidebar__social">
+        <a href="https://www.linkedin.com/in/saralozanomarti" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+          <img src="../assets/images/logo linkedIN.png" alt="LinkedIn" class="site-sidebar__social-icon" />
+        </a>
+        <a href="https://www.youtube.com/@KawaiiPowerBI" target="_blank" rel="noopener noreferrer" aria-label="YouTube">
+          <img src="../assets/images/logo youtube.png" alt="YouTube" class="site-sidebar__social-icon" />
+        </a>
+        <a href="https://github.com/KawaiiBI" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
+          <img src="../assets/images/logo github.png" alt="GitHub" class="site-sidebar__social-icon" />
+        </a>
+      </div>
+
+      <div class="site-sidebar__logo-bottom">
+        <img src="../assets/images/Logo Kawaii.jpg" alt="Kawaii BI" class="site-sidebar__logo-img" />
+      </div>
+
+      <p class="site-sidebar__copyright">
+        Power BI Guide 🌸<br>
+        © 2026 Kawaii BI
+      </p>
+    </div>
+
+  </aside>
+
+  <!-- CONTENEDOR DEL CONTENIDO -->
+  <div class="page-wrapper">
+    <main class="main-content">
+      <div class="topic-page">
+
+        <!-- Breadcrumb -->
+        <nav class="breadcrumb" aria-label="Ruta de navegación">
+          <span class="breadcrumb__item"><a href="../index.html">🏠 Inicio</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item">Diseño y UX</span>
+        </nav>
+
+        <!-- Cabecera del topic -->
+        <div class="topic-header">
+          <div class="topic-header__icon">🎨</div>
+          <div>
+            <h1 class="topic-header__title">Diseño y UX para Dashboards Power BI</h1>
+            <p class="topic-header__subtitle">Más allá de los gráficos: empatía, claridad y función. Transforma datos en experiencias humanas — UX inclusiva, accesibilidad, diseño emocional y los principios que hacen que tus informes generen confianza desde el primer vistazo</p>
+            <div class="topic-header__levels">
+              <span class="badge badge--beginner">Principiante</span>
+              <span class="badge badge--intermediate">Intermedio</span>
+              <span class="badge badge--advanced">Avanzado</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Introducción -->
+        <div class="ux-intro">
+          <h2 class="ux-intro__title">Un dashboard no es un reporte, es una experiencia 🌸</h2>
+          <p class="ux-intro__text">
+            <strong>El buen diseño no solo se ve mejor, se siente mejor.</strong> Un dashboard es una experiencia
+            cognitiva: un entorno visual limpio ayuda a quien lo usa a "respirar" y reduce el estrés al tomar
+            decisiones. La claridad y la transparencia generan confianza inmediata en los datos. Y la confianza
+            es lo que convierte un informe en una herramienta de decisión real 🚀.
+          </p>
+          <p class="ux-intro__text" style="margin-top: 0.75rem;">
+            Aquí aprenderás los principios que uso en mis charlas y con mis clientes: patrones de lectura,
+            whitespace, la Regla del No Ruido, estrategia de color 1-1-1, accesibilidad WCAG y mucho más.
+            Todo aplicado directamente a Power BI, con ejemplos reales y el "Chachi-Resumen" final. 💕
+          </p>
+          <div class="ux-intro__stats">
+            <div class="ux-intro__stat"><strong>12</strong>temas cubiertos</div>
+            <div class="ux-intro__stat"><strong>3</strong>niveles de dificultad</div>
+            <div class="ux-intro__stat"><strong>♿</strong>WCAG incluido</div>
+            <div class="ux-intro__stat"><strong>👁️</strong>Preatentivos</div>
+          </div>
+        </div>
+
+        <!-- Grid de categorías -->
+        <h2 class="section-title">Explora por tema 📚</h2>
+        <div class="category-grid">
+
+          <!-- 1. Diseño Emocional -->
+          <a href="diseno-ux/diseno-emocional.html" class="category-card">
+            <div class="category-card__header">
+              <span class="category-card__icon">🧠</span>
+              <span class="category-card__name">Diseño Emocional</span>
+            </div>
+            <p class="category-card__desc">Un dashboard no es solo un reporte, es una experiencia cognitiva. Diseño calmado, confianza, "less is more" — los principios que hacen que tus informes se sientan bien, no solo se vean bien.</p>
+            <div class="category-card__levels">
+              <span class="badge badge--beginner">Principiante</span>
+            </div>
+          </a>
+
+          <!-- 2. Layout y Patrones de Lectura -->
+          <a href="diseno-ux/layout.html" class="category-card">
+            <div class="category-card__header">
+              <span class="category-card__icon">📐</span>
+              <span class="category-card__name">Layout y Patrones de Lectura</span>
+            </div>
+            <p class="category-card__desc">Patrón en Z (storytelling), Patrón en F (densidad de datos), Estructura Rectangular. No obligues al usuario a buscar — guía su mirada con bloques bien definidos.</p>
+            <div class="category-card__levels">
+              <span class="badge badge--beginner">Principiante</span>
+              <span class="badge badge--intermediate">Intermedio</span>
+            </div>
+          </a>
+
+          <!-- 3. Whitespace y Ruido Visual -->
+          <a href="diseno-ux/whitespace.html" class="category-card">
+            <div class="category-card__header">
+              <span class="category-card__icon">🫧</span>
+              <span class="category-card__name">Whitespace y Ruido Visual</span>
+            </div>
+            <p class="category-card__desc">"El espacio en blanco no es espacio vacío, es aire para tus datos." La Regla del No Ruido: efectos 3D, sombras excesivas, scroll infinito. ¿Este visual ayuda a decidir? Si no, sobra.</p>
+            <div class="category-card__levels">
+              <span class="badge badge--beginner">Principiante</span>
+            </div>
+          </a>
+
+          <!-- 4. Consistencia y Tipografía -->
+          <a href="diseno-ux/consistencia.html" class="category-card">
+            <div class="category-card__header">
+              <span class="category-card__icon">🔤</span>
+              <span class="category-card__name">Consistencia y Tipografía</span>
+            </div>
+            <p class="category-card__desc">"La consistencia reduce la curva de aprendizaje." Máximo 2 fuentes Sans Serif, jerarquía (títulos 20-24px / subtítulos 14-16px / datos 11-12px) y estados de botón coherentes en todo el informe.</p>
+            <div class="category-card__levels">
+              <span class="badge badge--beginner">Principiante</span>
+            </div>
+          </a>
+
+          <!-- 5. Estrategia de Color -->
+          <a href="diseno-ux/colores.html" class="category-card">
+            <div class="category-card__header">
+              <span class="category-card__icon">🎨</span>
+              <span class="category-card__name">Estrategia de Color</span>
+            </div>
+            <p class="category-card__desc">"El color es para comunicar datos, no para decorar." Regla 1-1-1: 1 color principal + 1 secundario + 1 alerta. Evita fondos brillantes. Armonía con Coolors.com. Colores semánticos bien aplicados.</p>
+            <div class="category-card__levels">
+              <span class="badge badge--beginner">Principiante</span>
+              <span class="badge badge--intermediate">Intermedio</span>
+            </div>
+          </a>
+
+          <!-- 6. Accesibilidad e Inclusividad -->
+          <a href="diseno-ux/accesibilidad.html" class="category-card">
+            <div class="category-card__header">
+              <span class="category-card__icon">♿</span>
+              <span class="category-card__name">Accesibilidad e Inclusividad (WCAG)</span>
+            </div>
+            <p class="category-card__desc">"Diseñar para la accesibilidad mejora la experiencia de todos." No uses solo color — añade iconos o formas. Contraste WCAG 2.1. El problema del traffic light. Texto y color deben coincidir siempre.</p>
+            <div class="category-card__levels">
+              <span class="badge badge--intermediate">Intermedio</span>
+            </div>
+          </a>
+
+          <!-- 7. Navegación y Micro-instrucciones -->
+          <a href="diseno-ux/navegacion.html" class="category-card">
+            <div class="category-card__header">
+              <span class="category-card__icon">🖱️</span>
+              <span class="category-card__name">Navegación y Micro-instrucciones</span>
+            </div>
+            <p class="category-card__desc">"La navegación debe ser aburridamente predecible." Botones Atrás/Reset siempre visibles. Botones de información (i) para explicar KPIs. Transparencia de cálculos. Señales visuales (+) para indicar profundidad.</p>
+            <div class="category-card__levels">
+              <span class="badge badge--intermediate">Intermedio</span>
+            </div>
+          </a>
+
+          <!-- 8. Iconografía y Semiótica -->
+          <a href="diseno-ux/iconografia.html" class="category-card">
+            <div class="category-card__header">
+              <span class="category-card__icon">🔍</span>
+              <span class="category-card__name">Iconografía y Semiótica</span>
+            </div>
+            <p class="category-card__desc">"Lo que es obvio para ti, no lo es para el usuario." Texto + icono: la combinación ganadora. Usa iconos universales (Lupa, Casa, Engranaje). Si falta espacio, el tooltip descriptivo es obligatorio.</p>
+            <div class="category-card__levels">
+              <span class="badge badge--beginner">Principiante</span>
+              <span class="badge badge--intermediate">Intermedio</span>
+            </div>
+          </a>
+
+          <!-- 9. Elección de Gráficos -->
+          <a href="diseno-ux/graficos.html" class="category-card">
+            <div class="category-card__header">
+              <span class="category-card__icon">📊</span>
+              <span class="category-card__name">Elección de Gráficos</span>
+            </div>
+            <p class="category-card__desc">Cuándo usar barras, líneas, dispersión o tablas. Por qué evitar los gráficos de tarta con muchos segmentos y los mapas de relleno. Cómo elegir el visual correcto para cada mensaje de datos.</p>
+            <div class="category-card__levels">
+              <span class="badge badge--beginner">Principiante</span>
+              <span class="badge badge--intermediate">Intermedio</span>
+            </div>
+          </a>
+
+          <!-- 10. Storytelling con Datos -->
+          <a href="diseno-ux/storytelling.html" class="category-card">
+            <div class="category-card__header">
+              <span class="category-card__icon">📖</span>
+              <span class="category-card__name">Storytelling con Datos</span>
+            </div>
+            <p class="category-card__desc">Narrativa visual aplicada a dashboards: estructura contexto → análisis → acción, jerarquía de mensajes y cómo construir un informe que guíe a la audiencia hacia una decisión concreta.</p>
+            <div class="category-card__levels">
+              <span class="badge badge--intermediate">Intermedio</span>
+            </div>
+          </a>
+
+          <!-- 11. Atributos Preatentivos -->
+          <a href="diseno-ux/preatentivos.html" class="category-card">
+            <div class="category-card__header">
+              <span class="category-card__icon">👁️</span>
+              <span class="category-card__name">Atributos Preatentivos</span>
+            </div>
+            <p class="category-card__desc">Lo que el ojo ve antes de que el cerebro lea. Color, tamaño, posición, orientación y forma: los canales visuales que el cerebro procesa en menos de 500ms y que determinan qué destaca en tu dashboard.</p>
+            <div class="category-card__levels">
+              <span class="badge badge--intermediate">Intermedio</span>
+            </div>
+          </a>
+
+          <!-- 12. Temas en Power BI -->
+          <a href="diseno-ux/temas.html" class="category-card">
+            <div class="category-card__header">
+              <span class="category-card__icon">🎭</span>
+              <span class="category-card__name">Temas en Power BI</span>
+            </div>
+            <p class="category-card__desc">Estructura del JSON de temas, paletas corporativas, tipografías personalizadas, estilos de visuals y cómo crear y distribuir un tema de marca consistente en toda la organización.</p>
+            <div class="category-card__levels">
+              <span class="badge badge--intermediate">Intermedio</span>
+              <span class="badge badge--advanced">Avanzado</span>
+            </div>
+          </a>
+
+        </div><!-- /category-grid -->
+
+        <!-- Nota motivadora final -->
+        <div class="note note--next" style="margin-top: 2.5rem;">
+          🚀 <strong>El diseño invisible es el más poderoso.</strong> Cuando quitas el ruido, solo queda la verdad de los datos. No necesitas ser diseñadora gráfica — necesitas entender a tu audiencia y aplicar los principios correctos. Haz que tus datos sean amigables. 🌸
+        </div>
+
+      </div><!-- /topic-page -->
+    </main>
+  </div><!-- /page-wrapper -->
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script>
+  <script src="../assets/js/theme.js"></script>
+  <script src="../assets/js/main.js"></script>
+  <script src="../assets/js/cursor.js"></script>
+
+</body>
+</html>

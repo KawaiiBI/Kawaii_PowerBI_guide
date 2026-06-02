@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Filtro y Contexto en DAX — CALCULATE, ALL, FILTER, KEEPFILTERS y el control del contexto">
+  <title>Filtro y Contexto — Funciones DAX | Power BI Guide</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+
+  <!-- Prism.js para syntax highlighting -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+
+  <!-- i18next para traducciones -->
+  <script src="https://cdn.jsdelivr.net/npm/i18next@23.7.6/i18next.min.js"></script>
+
+  <!-- CSS del proyecto -->
+  <link rel="stylesheet" href="../../assets/css/main.css">
+  <link rel="stylesheet" href="../../assets/css/themes.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/layout.css">
+  <link rel="stylesheet" href="../../assets/css/dax-search.css">
+
+  <style>
+    /* === ESTILOS ESPECÍFICOS PARA PÁGINAS DE TOPICS === */
+
+    /* Topic header con icono grande */
+    .topic-header {
+      text-align: center;
+      padding: 2.5rem 0 2rem;
+      border-bottom: 2px solid var(--color-mauve);
+      margin-bottom: 2.5rem;
+    }
+
+    .topic-header__icon {
+      font-size: 4rem;
+      margin-bottom: 0.75rem;
+      display: block;
+    }
+
+    .topic-header__title {
+      font-size: clamp(1.875rem, 4vw, 2.5rem);
+      font-weight: 800;
+      color: var(--color-dark);
+      margin-bottom: 0.625rem;
+      line-height: 1.2;
+    }
+
+    .topic-header__subtitle {
+      font-size: 1.0625rem;
+      color: var(--color-slate);
+      margin-bottom: 1.25rem;
+      line-height: 1.5;
+      max-width: 700px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .topic-header__levels {
+      display: flex;
+      gap: 0.5rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    /* TOC — Table of contents */
+    .toc {
+      background: var(--color-rose);
+      border: 1.5px solid var(--color-mauve);
+      border-radius: var(--border-radius);
+      padding: 1.5rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .toc__title {
+      font-size: 0.875rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--color-slate);
+      margin-bottom: 1rem;
+    }
+
+    .toc__list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .toc__link {
+      color: var(--color-dark);
+      text-decoration: none;
+      font-size: 0.9375rem;
+      transition: var(--transition);
+      display: inline-block;
+    }
+
+    .toc__link:hover {
+      color: var(--color-coral);
+      text-decoration: underline;
+    }
+
+    /* Category header — separadores entre categorías */
+    .category-header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin: 3rem 0 1.5rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 2px solid var(--color-mauve);
+    }
+
+    .category-header__icon {
+      font-size: 1.75rem;
+    }
+
+    .category-header__title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--color-dark);
+      margin: 0;
+    }
+
+    /* Function card — tarjeta individual para cada función */
+    .function-card {
+      background: var(--color-white);
+      border: 1.5px solid var(--color-mauve);
+      border-radius: var(--border-radius);
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .function-card__name {
+      font-family: var(--font-code);
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: var(--color-coral);
+      margin-bottom: 0.75rem;
+    }
+
+    .function-card__description {
+      font-size: 0.9375rem;
+      color: var(--color-dark);
+      margin-bottom: 1rem;
+      line-height: 1.6;
+    }
+
+    .function-card__level {
+      display: inline-block;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      padding: 0.25rem 0.625rem;
+      border-radius: var(--border-radius-sm);
+      background: var(--color-blush);
+      color: var(--color-slate);
+      margin-bottom: 1rem;
+    }
+
+    /* Function table — tabla compacta con ejemplos */
+    .function-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.5rem 0;
+      font-size: 0.875rem;
+    }
+
+    .function-table th {
+      background: var(--color-rose);
+      color: var(--color-dark);
+      font-weight: 700;
+      text-align: left;
+      padding: 0.75rem 1rem;
+      border: 1px solid var(--color-mauve);
+    }
+
+    .function-table td {
+      padding: 0.75rem 1rem;
+      border: 1px solid var(--color-mauve);
+      color: var(--color-dark);
+    }
+
+    .function-table tr:nth-child(even) {
+      background: var(--color-blush);
+    }
+
+    /* Code block wrapper */
+    .code-block {
+      position: relative;
+      margin: 1.25rem 0;
+    }
+
+    .code-block pre {
+      margin: 0;
+      border-radius: var(--border-radius);
+      border: 1.5px solid var(--color-mauve);
+    }
+
+    .code-block__copy {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.5rem;
+      padding: 0.375rem 0.75rem;
+      font-size: 0.75rem;
+      background: var(--color-coral);
+      color: var(--color-white);
+      border: none;
+      border-radius: var(--border-radius-sm);
+      cursor: pointer;
+      font-family: var(--font-main);
+      font-weight: 600;
+      transition: var(--transition);
+    }
+
+    .code-block__copy:hover {
+      background: var(--color-peach);
+    }
+  </style>
+</head>
+
+<body>
+
+    <!-- SIDEBAR: Navegación principal -->
+  <aside class="site-sidebar">
+
+    <!-- Avatar y nombre -->
+    <div class="site-sidebar__profile">
+      <img src="../../assets/images/avatar Sara.png" alt="Sara Lozano Martí" class="site-sidebar__avatar" />
+      <p class="site-sidebar__name">Sara Lozano Martí</p>
+      <p class="site-sidebar__subtitle">Power BI Expert</p>
+    </div>
+
+    <!-- Navegación principal -->
+    <nav class="site-sidebar__nav" aria-label="Navegación principal">
+      <ul>
+        <li><a href="../../index.html" class="site-sidebar__link">
+          <span class="site-sidebar__icon">🏠</span> Inicio
+        </a></li>
+
+        <li><a href="../dax.html" class="site-sidebar__link is-active">
+          <span class="site-sidebar__icon">⚡</span> Funciones DAX
+        </a></li>
+
+        <li><a href="../power-query.html" class="site-sidebar__link">
+          <span class="site-sidebar__icon">🔄</span> Power Query
+        </a></li>
+
+        <li><a href="../lenguaje-m.html" class="site-sidebar__link">
+          <span class="site-sidebar__icon">〽️</span> Lenguaje M
+        </a></li>
+
+        <li><a href="../modelado.html" class="site-sidebar__link">
+          <span class="site-sidebar__icon">🗄️</span> Modelado
+        </a></li>
+
+        <li><a href="../conceptos-powerbi.html" class="site-sidebar__link">
+          <span class="site-sidebar__icon">📊</span> Conceptos Power BI
+        </a></li>
+
+        <li><a href="../fabric.html" class="site-sidebar__link">
+          <span class="site-sidebar__icon">🧵</span> Microsoft Fabric
+        </a></li>
+
+        <li><a href="../tmdl.html" class="site-sidebar__link">
+          <span class="site-sidebar__icon">📝</span> TMDL
+        </a></li>
+
+        <li><a href="../diseno-ux.html" class="site-sidebar__link">
+          <span class="site-sidebar__icon">🎨</span> Diseño y UX
+        </a></li>
+
+        <li><a href="../gobernanza.html" class="site-sidebar__link">
+          <span class="site-sidebar__icon">🔒</span> Gobernanza
+        </a></li>
+      </ul>
+    </nav>
+
+    <!-- Separador -->
+    <div class="site-sidebar__divider"></div>
+
+    <!-- Footer del sidebar -->
+    <div class="site-sidebar__footer">
+      <!-- Enlace a quien soy -->
+      <a href="../../quien-soy.html" class="site-sidebar__link site-sidebar__link--highlight">
+        <span class="site-sidebar__icon">👩‍💻</span> ¿Quién soy?
+      </a>
+
+      <!-- Iconos sociales -->
+      <div class="site-sidebar__social">
+        <a href="https://www.linkedin.com/in/saralozanomarti" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+          <img src="../../assets/images/logo linkedIN.png" alt="LinkedIn" class="site-sidebar__social-icon" />
+        </a>
+        <a href="https://www.youtube.com/@KawaiiPowerBI" target="_blank" rel="noopener noreferrer" aria-label="YouTube">
+          <img src="../../assets/images/logo youtube.png" alt="YouTube" class="site-sidebar__social-icon" />
+        </a>
+        <a href="https://github.com/KawaiiBI" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
+          <img src="../../assets/images/logo github.png" alt="GitHub" class="site-sidebar__social-icon" />
+        </a>
+      </div>
+
+      <!-- Logo Kawaii BI -->
+      <div class="site-sidebar__logo-bottom">
+        <img src="../../assets/images/Logo Kawaii.jpg" alt="Kawaii BI" class="site-sidebar__logo-img" />
+      </div>
+
+      <!-- Copyright -->
+      <p class="site-sidebar__copyright">
+        Power BI Guide 🌸<br>
+        © 2026 Kawaii BI
+      </p>
+    </div>
+
+  </aside>
+
+  <!-- PAGE WRAPPER -->
+  <div class="page-wrapper">
+    <!-- Main content -->
+    <main id="main-content">
+      <div class="topic-page">
+        <!-- Breadcrumb -->
+        <nav class="breadcrumb" aria-label="breadcrumb">
+          <a href="../../index.html" class="breadcrumb__link">Inicio</a>
+          <span class="breadcrumb__separator">›</span>
+          <a href="../dax.html" class="breadcrumb__link">Funciones DAX</a>
+          <span class="breadcrumb__separator">›</span>
+          <span class="breadcrumb__current">Filtro y Contexto</span>
+        </nav>
+
+        <!-- Header del topic -->
+        <header class="topic-header">
+          <span class="topic-header__icon">🎯</span>
+          <h1 class="topic-header__title">Filtro y Contexto</h1>
+          <p class="topic-header__subtitle">CALCULATE, ALL, FILTER, KEEPFILTERS, TREATAS y toda la maquinaria que hace DAX único — domina el contexto y dominas DAX</p>
+          <div class="topic-header__levels">
+            <span class="badge badge--intermediate">Intermedio</span>
+            <span class="badge badge--advanced">Avanzado</span>
+          </div>
+        </header>
+
+        <!-- Buscador compacto DAX -->
+        <div class="dax-search-compact-bar">
+          <div class="dax-search-wrapper dax-search-compact" data-dax-search="true">
+            <span class="dax-search-icon">🔍</span>
+            <input
+              type="text"
+              class="dax-search-input"
+              placeholder="Buscar otra función DAX..."
+              autocomplete="off"
+              spellcheck="false"
+              aria-label="Buscar función DAX"
+            />
+            <button class="dax-search-clear" aria-label="Limpiar" hidden>✕</button>
+            <div class="dax-search-results" role="listbox"></div>
+          </div>
+        </div>
+
+        <!-- TOC -->
+        <nav class="toc">
+          <h2 class="toc__title">📑 En esta página</h2>
+          <ul class="toc__list">
+            <li><a href="#contexto" class="toc__link">Contexto de filtro vs contexto de fila — el concepto más importante</a></li>
+            <li><a href="#calculate" class="toc__link">CALCULATE y CALCULATETABLE — el corazón de DAX</a></li>
+            <li><a href="#all-family" class="toc__link">ALL, ALLEXCEPT, ALLSELECTED, ALLNOBLANKROW, ALLCROSSFILTERED</a></li>
+            <li><a href="#removefilters" class="toc__link">REMOVEFILTERS</a></li>
+            <li><a href="#keepfilters" class="toc__link">KEEPFILTERS</a></li>
+            <li><a href="#filter" class="toc__link">FILTER — filtrar tablas</a></li>
+            <li><a href="#values" class="toc__link">VALUES, DISTINCT, IN — obtener valores únicos</a></li>
+            <li><a href="#selectedvalue" class="toc__link">SELECTEDVALUE — leer slicers</a></li>
+            <li><a href="#treatas" class="toc__link">TREATAS — relaciones virtuales</a></li>
+            <li><a href="#patrones" class="toc__link">Patrones avanzados</a></li>
+          </ul>
+        </nav>
+
+        <!-- SECCIÓN 0: Contexto -->
+        <section id="contexto">
+          <h2 class="category-header__title">Antes de nada: el contexto de filtro 🧠</h2>
+
+          <p><strong>HAY DOS TIPOS DE CONTEXTO EN DAX:</strong></p>
+
+          <h3>1. CONTEXTO DE FILA (Row Context)</h3>
+          <p>Existe cuando DAX está <strong>iterando fila a fila</strong> (dentro de SUMX, AVERAGEX, columnas calculadas...).<br>
+          En contexto de fila, puedes acceder a <code>'Tabla'[Columna]</code> de la fila actual.</p>
+
+          <div class="note note--tip">
+            <strong>Analogía kawaii 🌸</strong><br>
+            Es como estar leyendo un libro línea a línea. En cada línea "sabes" qué hay escrito en esa línea concreta.
+          </div>
+
+          <h3>2. CONTEXTO DE FILTRO (Filter Context)</h3>
+          <p>Existe <strong>siempre</strong>. Lo crean los visuals, slicers, relaciones y CALCULATE.<br>
+          Define qué filas son "visibles" en el momento del cálculo.</p>
+
+          <div class="note note--tip">
+            <strong>Analogía kawaii 🌸</strong><br>
+            Es como tener unas gafas de colores puestas que solo te dejan ver ciertos datos. CALCULATE puede cambiarte las gafas.
+          </div>
+
+          <h3>La transición de contexto (Context Transition)</h3>
+          <p>Cuando usas CALCULATE (o cualquier función que internamente llama a CALCULATE) dentro de un contexto de fila, <strong>convierte el contexto de fila en un contexto de filtro</strong>. Esto es crucial y muchas veces confuso al principio.</p>
+
+          <div class="code-block">
+            <button class="code-block__copy">Copiar</button>
+            <pre><code class="language-javascript">// En una columna calculada (contexto de fila):
+'Productos'[VentasProducto] =
+CALCULATE(SUM('Ventas'[Importe]))
+
+// CALCULATE convierte el contexto de fila (estoy en la fila del producto X)
+// en un filtro: CALCULATE(SUM, 'Productos'[ID] = X)
+// Resultado: las ventas de ESE producto concreto</code></pre>
+          </div>
+
+          <div class="note note--warning">
+            <strong>⚠️ La fuente del 80% de los bugs en DAX</strong><br>
+            La transición de contexto es la causa del 80% de los bugs confusos en DAX. Si una medida dentro de un iterador da resultados raros, probablemente es un problema de transición de contexto. Cuando dudes, añade CALCULATE() alrededor de tu medida dentro del iterador.
+          </div>
+        </section>
+
+        <!-- SECCIÓN 1: CALCULATE -->
+        <section id="calculate">
+          <div class="category-header">
+            <span class="category-header__icon">❤️</span>
+            <h2 class="category-header__title">CALCULATE — La función más importante de DAX</h2>
+          </div>
+
+          <div class="function-card">
+            <div class="function-card__name">CALCULATE(&lt;expresión&gt;, &lt;filtro1&gt;, &lt;filtro2&gt;, ...)</div>
+            <div class="function-card__level">Intermedio → Avanzado</div>
+            <div class="function-card__description">
+              Evalúa una expresión en un contexto de filtro MODIFICADO. Es la función más importante y más poderosa de DAX. Puede añadir, quitar o modificar filtros del contexto antes de evaluar la expresión.
+            </div>
+
+            <h4>Cómo funciona paso a paso:</h4>
+            <div class="code-block">
+              <button class="code-block__copy">Copiar</button>
+              <pre><code class="language-javascript">// CALCULATE hace esto en orden:
+// 1. Toma el contexto de filtro actual
+// 2. Aplica las modificaciones de los argumentos de filtro
+// 3. Evalúa la expresión en el NUEVO contexto modificado
+// 4. Devuelve el resultado</code></pre>
+            </div>
+
+            <h4>Ejemplo básico — filtrar por un valor:</h4>
+            <div class="code-block">
+              <button class="code-block__copy">Copiar</button>
+              <pre><code class="language-javascript">// Total de ventas SOLO de España (independiente de lo que filtre el visual)
+Ventas España = CALCULATE(SUM('Ventas'[Importe]), 'Clientes'[País] = "España")
+
+// Si el visual está filtrado por "Francia" → CALCULATE sobreescribe ese filtro
+// y devuelve las ventas de España</code></pre>
+            </div>
+
+            <h4>Ejemplo — añadir un filtro:</h4>
+            <div class="code-block">
+              <button class="code-block__copy">Copiar</button>
+              <pre><code class="language-javascript">// Ventas de productos de la categoría "Electrónica" (se añade al filtro existente)
+Ventas Electrónica =
+CALCULATE(
+    SUM('Ventas'[Importe]),
+    'Productos'[Categoría] = "Electrónica"
+)
+
+// Si el visual ya filtra por "España" → resultado = ventas de España + Electrónica</code></pre>
+            </div>
+
+            <h4>Ejemplo — múltiples filtros (AND implícito):</h4>
+            <div class="code-block">
+              <button class="code-block__copy">Copiar</button>
+              <pre><code class="language-javascript">// Ventas de Electrónica en España en 2024
+Ventas Electrónica España 2024 =
+CALCULATE(
+    SUM('Ventas'[Importe]),
+    'Productos'[Categoría] = "Electrónica",
+    'Clientes'[País] = "España",
+    'Calendario'[Año] = 2024
+)
+
+// Los filtros de CALCULATE se combinan con AND entre ellos</code></pre>
+            </div>
+
+            <h4>Ejemplo — OR dentro de CALCULATE:</h4>
+            <div class="code-block">
+              <button class="code-block__copy">Copiar</button>
+              <pre><code class="language-javascript">// Ventas de Electrónica O Informática
+Ventas Electrónica o Informatica =
+CALCULATE(
+    SUM('Ventas'[Importe]),
+    'Productos'[Categoría] IN {"Electrónica", "Informática"}
+    -- o equivalente:
+    -- FILTER(ALL('Productos'), 'Productos'[Categoría] = "Electrónica" || 'Productos'[Categoría] = "Informática")
+)</code></pre>
+            </div>
+
+            <div class="note note--best-practice">
+              <strong>🏆 Best Practice</strong><br>
+              Cuando el filtro de CALCULATE es una condición simple de igualdad (columna = valor), siempre usa la sintaxis directa: <code>CALCULATE([Medida], Tabla[Columna] = 'valor')</code>. Es más eficiente que envolver todo en FILTER(ALL(Tabla), ...).
+            </div>
+          </div>
+
+          <div class="function-card">
+            <div class="function-card__name">CALCULATETABLE(&lt;tabla&gt;, &lt;filtro1&gt;, &lt;filtro2&gt;, ...)</div>
+            <div class="function-card__level">Avanzado</div>
+            <div class="function-card__description">
+              Igual que CALCULATE pero devuelve una TABLA en lugar de un escalar. Se usa para crear tablas filtradas que luego se pasan a otras funciones.
+            </div>
+
+            <h4>Ejemplo:</h4>
+            <div class="code-block">
+              <button class="code-block__copy">Copiar</button>
+              <pre><code class="language-javascript">// Tabla de ventas solo de clientes premium
+Ventas Premium =
+CALCULATETABLE(
+    'Ventas',
+    'Clientes'[Segmento] = "Premium"
+)
+
+// Uso típico: contar filas de una tabla filtrada
+Nº Pedidos Premium =
+COUNTROWS(
+    CALCULATETABLE('Pedidos', 'Clientes'[Segmento] = "Premium")
+)</code></pre>
+            </div>
+          </div>
+        </section>
+
+        <!-- SECCIÓN 2: La familia ALL -->
+        <section id="all-family">
+          <div class="category-header">
+            <span class="category-header__icon">🧹</span>
+            <h2 class="category-header__title">ALL y familia — eliminar filtros selectivamente</h2>
+          </div>
+
+          <p>La familia ALL es el complemento perfecto de CALCULATE. Si CALCULATE <strong>AÑADE</strong> filtros, ALL los <strong>QUITA</strong>. Juntos te dan control total sobre qué está filtrado y qué no.</p>
+
+          <div class="function-card">
+            <div class="function-card__name">ALL(&lt;tabla_o_columna&gt;)</div>
+            <div class="function-card__level">Intermedio</div>
+            <div class="function-card__description">
+              Elimina todos los filtros de la tabla o columna indicada. Como modificador de CALCULATE, también puede eliminar filtros de todo el contexto. Fundamental para calcular porcentajes sobre totales.
+            </div>
+
+            <h4>Ejemplo 1 — % sobre el total general:</h4>
+            <div class="code-block">
+              <button class="code-block__copy">Copiar</button>
+              <pre><code class="language-javascript">// ¿Qué porcentaje representan las ventas actuales sobre el total?
+% sobre Total =
+DIVIDE(
+    SUM('Ventas'[Importe]),
+    CALCULATE(SUM('Ventas'[Importe]), ALL('Ventas'))
+)
+
+// El denominador usa ALL para ignorar todos los filtros del visual
+// → siempre devuelve el total absoluto, sin importar qué filtre el slicer</code></pre>
+            </div>
+
+            <h4>Ejemplo 2 — % sobre el total de categoría:</h4>
+            <div class="code-block">
+              <button class="code-block__copy">Copiar</button>
+              <pre><code class="language-javascript">// % dentro de la categoría (sin perder el filtro de categoría)
+% en Categoría =
+DIVIDE(
+    SUM('Ventas'[Importe]),
+    CALCULATE(SUM('Ventas'[Importe]), ALL('Productos'[Producto]))
+    -- Quitamos el filtro de Producto pero mantenemos el de Categoría
+)</code></pre>
+            </div>
+
+            <h4>Ejemplo 3 — ALL con tabla completa vs columna:</h4>
+            <div class="code-block">
+              <button class="code-block__copy">Copiar</button>
+              <pre><code class="language-javascript">ALL('Ventas')              -- quita TODOS los filtros de la tabla Ventas
+ALL('Ventas'[Importe])     -- quita solo el filtro de la columna Importe
+ALL('Productos'[Categoría], 'Productos'[Producto])  -- quita filtros de dos columnas</code></pre>
+            </div>
+          </div>
+
+          <div class="function-card">
+            <div class="function-card__name">ALLEXCEPT(&lt;tabla&gt;, &lt;columna1&gt;, &lt;columna2&gt;, ...)</div>
+            <div class="function-card__level">Intermedio — Avanzado</div>
+            <div class="function-card__description">
+              Quita todos los filtros de la tabla EXCEPTO los de las columnas especificadas. Muy útil cuando quieres el total de grupo manteniendo un nivel de jerarquía.
+            </div>
+
+            <h4>Ejemplo — Total por categoría (manteniendo el filtro de categoría):</h4>
+            <div class="code-block">
+              <button class="code-block__copy">Copiar</button>
+              <pre><code class="language-javascript">// En una tabla con Categoría > Producto:
+// Para calcular el % dentro de la categoría actual:
+Total Categoría =
+CALCULATE(
+    SUM('Ventas'[Importe]),
+    ALLEXCEPT('Productos', 'Productos'[Categoría])
+    -- Quita todos los filtros de Productos EXCEPTO Categoría
+    -- → da el total de la categoría actual
+)
+
+% en Categoría v2 = DIVIDE(SUM('Ventas'[Importe]), [Total Categoría])</code></pre>
+            </div>
+
+            <div class="note note--warning">
+              <strong>⚠️ Cuidado con filtros cruzados</strong><br>
+              ALLEXCEPT puede dar resultados inesperados cuando hay filtros cruzados desde otras tablas. En esos casos, la combinación ALL(...) + VALUES(...) suele ser más predecible. Es uno de los temas más avanzados de DAX — si los resultados no cuadran, revisa los artículos de SQLBI sobre ALLxxx.
+            </div>
+          </div>
+
+          <div class="function-card">
+            <div class="function-card__name">ALLSELECTED(&lt;tabla_o_columna&gt;)</div>
+            <div class="function-card__level">Avanzado</div>
+            <div class="function-card__description">
+              Quita los filtros directos del contexto pero MANTIENE los filtros de los slicers y filtros de página (el "shadow filter context"). Perfecta para calcular % respecto a la selección actual del usuario.
+            </div>
+
+            <h4>Ejemplo — % sobre la selección visible (no sobre el total absoluto):</h4>
+            <div class="code-block">
+              <button class="code-block__copy">Copiar</button>
+              <pre><code class="language-javascript">// El usuario filtra por "2024" con un slicer de año
+// ALL daría el % sobre el total histórico
+// ALLSELECTED da el % sobre el total de 2024 (lo que el usuario ve)
+% sobre Selección =
+DIVIDE(
+    SUM('Ventas'[Importe]),
+    CALCULATE(SUM('Ventas'[Importe]), ALLSELECTED('Productos'))
+)</code></pre>
+            </div>
+
+            <div class="note note--warning">
+              <strong>⚠️ La función más compleja de DAX</strong><br>
+              ALLSELECTED es probablemente la función más compleja de entender en DAX — incluso para expertos. Su comportamiento en modelos compuestos y composite models puede ser sorprendente. Si puedes lograr el resultado con ALL + SELECTEDVALUE, hazlo así.
+            </div>
+          </div>
+
+          <h3>Menciones breves:</h3>
+          <ul>
+            <li><strong>ALLNOBLANKROW</strong> — Como ALL pero excluye la fila en blanco generada por relaciones inválidas</li>
+            <li><strong>ALLCROSSFILTERED</strong> — Quita filtros incluyendo los que llegan por filtrado cruzado desde tablas relacionadas</li>
+          </ul>
+        </section>
+
+        <!-- SECCIÓN 3: REMOVEFILTERS -->
+        <section id="removefilters">
+          <div class="category-header">
+            <span class="category-header__icon">🗑️</span>
+            <h2 class="category-header__title">REMOVEFILTERS</h2>
+          </div>
+
+          <div class="function-card">
+            <div class="function-card__name">REMOVEFILTERS(&lt;tabla_o_columna&gt;)</div>
+            <div class="function-card__level">Intermedio</div>
+            <div class="function-card__description">
+              Alias más legible de ALL cuando se usa como modificador de CALCULATE. No devuelve tabla — solo se usa dentro de CALCULATE para quitar filtros. Mejora la legibilidad del código.
+            </div>
+
+            <h4>Ejemplo:</h4>
+            <div class="code-block">
+              <button class="code-block__copy">Copiar</button>
+              <pre><code class="language-javascript">// Estas dos expresiones son equivalentes:
+CALCULATE([Ventas], ALL('Productos'))
+CALCULATE([Ventas], REMOVEFILTERS('Productos'))
+
+// REMOVEFILTERS deja más claro que la intención es QUITAR filtros, no obtener una tabla</code></pre>
+            </div>
+          </div>
+        </section>
+
+        <!-- SECCIÓN 4: KEEPFILTERS -->
+        <section id="keepfilters">
+          <div class="category-header">
+            <span class="category-header__icon">🔒</span>
+            <h2 class="category-header__title">KEEPFILTERS</h2>
+          </div>
+
+          <div class="function-card">
+            <div class="function-card__name">KEEPFILTERS(&lt;filtro&gt;)</div>
+            <div class="function-card__level">Avanzado</div>
+            <div class="function-card__description">
+              Modificador de CALCULATE que cambia cómo se combina el nuevo filtro con el existente. Sin KEEPFILTERS, CALCULATE REEMPLAZA el filtro existente. Con KEEPFILTERS, lo INTERSECTA (AND con el filtro existente).
+            </div>
+
+            <h4>Ejemplo crucial — la diferencia:</h4>
+            <div class="code-block">
+              <button class="code-block__copy">Copiar</button>
+              <pre><code class="language-javascript">// El visual tiene un slicer con "España" seleccionado
+// SIN KEEPFILTERS: SOBREESCRIBE el filtro existente
+Ventas Francia = CALCULATE([Ventas], 'Clientes'[País] = "Francia")
+// → Resultado: ventas de FRANCIA, ignora que el slicer dice España
+
+// CON KEEPFILTERS: INTERSECTA con el filtro existente
+Ventas Francia KF = CALCULATE([Ventas], KEEPFILTERS('Clientes'[País] = "Francia"))
+// → Resultado: BLANK (España ∩ Francia = vacío)
+// Si el slicer dice "Francia" → devuelve ventas de Francia
+// Si el slicer dice "España" → devuelve BLANK</code></pre>
+            </div>
+
+            <div class="note note--tip">
+              <strong>Cuándo usar KEEPFILTERS 💡</strong><br>
+              KEEPFILTERS es útil cuando quieres que tu cálculo RESPETE la selección del usuario en lugar de ignorarla. Por ejemplo, en gráficos donde cada barra tiene su propio CALCULATE pero quieres que el slicer de año siga funcionando.
+            </div>
+          </div>
+        </section>
+
+        <!-- SECCIÓN 5: FILTER -->
+        <section id="filter">
+          <div class="category-header">
+            <span class="category-header__icon">🔍</span>
+            <h2 class="category-header__title">FILTER — filtrar tablas</h2>
+          </div>
+
+          <div class="function-card">
+            <div class="function-card__name">FILTER(&lt;tabla&gt;, &lt;condición&gt;)</div>
+            <div class="function-card__level">Intermedio</div>
+            <div class="function-card__description">
+              Devuelve una tabla filtrada según una condición. Se usa principalmente dentro de otras funciones (CALCULATE, COUNTROWS, SUMX...) para crear subconjuntos de datos dinámicamente.
+            </div>
+
+            <h4>Ejemplo básico:</h4>
+            <div class="code-block">
+              <button class="code-block__copy">Copiar</button>
+              <pre><code class="language-javascript">// Tabla de solo clientes premium
+ClientesPremium = FILTER('Clientes', 'Clientes'[Segmento] = "Premium")
+
+// Dentro de CALCULATE:
+Ventas Rentables =
+CALCULATE(
+    SUM('Ventas'[Importe]),
+    FILTER('Ventas', 'Ventas'[Margen] > 0.15)
+)</code></pre>
+            </div>
+
+            <h4>Ejemplo — FILTER con referencias a medidas (acceso a contexto externo):</h4>
+            <div class="code-block">
+              <button class="code-block__copy">Copiar</button>
+              <pre><code class="language-javascript">// Productos cuyas ventas superan la media
+Ventas Sobre Media =
+CALCULATE(
+    COUNTROWS('Productos'),
+    FILTER(
+        'Productos',
+        CALCULATE(SUM('Ventas'[Importe])) > AVERAGE('Ventas'[Importe])
+    )
+)</code></pre>
+            </div>
+
+            <div class="note note--best-practice">
+              <strong>🏆 Best Practice</strong><br>
+              Usa FILTER solo cuando necesitas una condición compleja que no puedes expresar como argumento directo de CALCULATE. Para condiciones simples (columna = valor, columna IN lista), la sintaxis directa de CALCULATE es más eficiente que FILTER(ALL(tabla), condición).
+            </div>
+          </div>
+        </section>
+
+        <!-- SECCIÓN 6: VALUES, DISTINCT, IN -->
+        <section id="values">
+          <div class="category-header">
+            <span class="category-header__icon">📋</span>
+            <h2 class="category-header__title">VALUES, DISTINCT, IN — obtener valores únicos</h2>
+          </div>
+
+          <div class="function-card">
+            <div class="function-card__name">VALUES(&lt;tabla_o_columna&gt;)</div>
+            <div class="function-card__level">Intermedio</div>
+            <div class="function-card__description">
+              Devuelve los valores únicos de una columna (o tabla) en el contexto de filtro actual. Incluye una fila en blanco si hay relaciones inválidas. Muy usada para iterar sobre valores únicos visibles.
+            </div>
+
+            <h4>Ejemplo:</h4>
+            <div class="code-block">
+              <button class="code-block__copy">Copiar</button>
+              <pre><code class="language-javascript">// Los meses actualmente visibles en el visual
+Meses Visibles = COUNTROWS(VALUES('Calendario'[Mes]))
+
+// Iterar sobre los productos visibles
+Mejor Producto =
+MAXX(VALUES('Productos'[Nombre]), CALCULATE(SUM('Ventas'[Importe])))</code></pre>
+            </div>
+          </div>
+
+          <div class="function-card">
+            <div class="function-card__name">DISTINCT(&lt;columna&gt;)</div>
+            <div class="function-card__level">Intermedio</div>
+            <div class="function-card__description">
+              Muy similar a VALUES pero NO incluye la fila en blanco por relaciones inválidas. Útil cuando trabajas con columnas que pueden tener valores ambiguos y quieres solo los valores reales de los datos.
+            </div>
+
+            <h4>Diferencia VALUES vs DISTINCT:</h4>
+            <div class="code-block">
+              <button class="code-block__copy">Copiar</button>
+              <pre><code class="language-javascript">// VALUES incluye fila de BLANK si hay foreign keys sin match
+// DISTINCT no la incluye
+// En modelos bien diseñados, el resultado suele ser igual
+// En modelos con datos sucios o relaciones problemáticas, puede diferir</code></pre>
+            </div>
+          </div>
+
+          <div class="function-card">
+            <div class="function-card__name">&lt;valor&gt; IN &lt;tabla_de_una_columna&gt; o &lt;lista&gt;</div>
+            <div class="function-card__level">Intermedio</div>
+            <div class="function-card__description">
+              Operador (no función) que comprueba si un valor está en una lista o tabla. Muy útil para filtros de múltiples valores.
+            </div>
+
+            <h4>Ejemplo:</h4>
+            <div class="code-block">
+              <button class="code-block__copy">Copiar</button>
+              <pre><code class="language-javascript">// Filtrar varias categorías sin OR encadenados
+Ventas Top Categorías =
+CALCULATE(
+    SUM('Ventas'[Importe]),
+    'Productos'[Categoría] IN {"Electrónica", "Informática", "Audio"}
+)
+
+// Equivalente más verbose:
+CALCULATE(
+    SUM('Ventas'[Importe]),
+    OR(OR('Productos'[Categoría] = "Electrónica",
+          'Productos'[Categoría] = "Informática"),
+          'Productos'[Categoría] = "Audio")
+)</code></pre>
+            </div>
+          </div>
+        </section>
+
+        <!-- SECCIÓN 7: SELECTEDVALUE -->
+        <section id="selectedvalue">
+          <div class="category-header">
+            <span class="category-header__icon">🎚️</span>
+            <h2 class="category-header__title">SELECTEDVALUE — leer slicers</h2>
+          </div>
+
+          <div class="function-card">
+            <div class="function-card__name">SELECTEDVALUE(&lt;columna&gt;, [&lt;alternativa&gt;])</div>
+            <div class="function-card__level">Intermedio</div>
+            <div class="function-card__description">
+              Si hay exactamente UN valor seleccionado en el contexto para esa columna, lo devuelve. Si hay varios o ninguno, devuelve el valor alternativo (por defecto BLANK). Imprescindible para leer qué tiene seleccionado el usuario en un slicer.
+            </div>
+
+            <h4>Ejemplo básico — leer un slicer:</h4>
+            <div class="code-block">
+              <button class="code-block__copy">Copiar</button>
+              <pre><code class="language-javascript">// Mostrar el país seleccionado en el título del visual
+País Seleccionado = SELECTEDVALUE('Clientes'[País], "Todos los países")
+
+// Un slicer con "España" → "España"
+// Slicer con múltiples países seleccionados → "Todos los países"
+// Sin slicer → "Todos los países"</code></pre>
+            </div>
+
+            <h4>Ejemplo — lógica condicional basada en slicer:</h4>
+            <div class="code-block">
+              <button class="code-block__copy">Copiar</button>
+              <pre><code class="language-javascript">// Slicer de tipo de análisis: "Ventas" o "Margen"
+Métrica Seleccionada =
+SWITCH(
+    SELECTEDVALUE('Selector'[Tipo]),
+    "Ventas", SUM('Ventas'[Importe]),
+    "Margen", SUM('Ventas'[Margen]),
+    "Unidades", SUM('Ventas'[Cantidad]),
+    SUM('Ventas'[Importe])  -- valor por defecto
+)</code></pre>
+            </div>
+
+            <h4>Ejemplo — HASONEVALUE (complemento de SELECTEDVALUE):</h4>
+            <div class="code-block">
+              <button class="code-block__copy">Copiar</button>
+              <pre><code class="language-javascript">// HASONEVALUE devuelve TRUE/FALSE
+Tiene Un País = HASONEVALUE('Clientes'[País])
+
+// Útil para condicionar cálculos o mostrar mensajes</code></pre>
+            </div>
+          </div>
+        </section>
+
+        <!-- SECCIÓN 8: TREATAS -->
+        <section id="treatas">
+          <div class="category-header">
+            <span class="category-header__icon">🔗</span>
+            <h2 class="category-header__title">TREATAS — relaciones virtuales</h2>
+          </div>
+
+          <div class="function-card">
+            <div class="function-card__name">TREATAS(&lt;tabla&gt;, &lt;columna1&gt;, &lt;columna2&gt;, ...)</div>
+            <div class="function-card__level">Avanzado</div>
+            <div class="function-card__description">
+              Aplica los valores de una tabla como filtros de otras columnas, creando una "relación virtual" para el contexto de ese cálculo. Muy útil para hacer filtrajes cruzados entre tablas sin crear relaciones físicas en el modelo.
+            </div>
+
+            <h4>Ejemplo — pasar un filtro de una tabla a otra sin relación:</h4>
+            <div class="code-block">
+              <button class="code-block__copy">Copiar</button>
+              <pre><code class="language-javascript">// Quieres filtrar Ventas por los productos que aparecen en una lista externa
+VAR ProductosList = {"P001", "P002", "P003"}
+VAR TablaFiltro = DATATABLE("ID", STRING, {{"P001"}, {"P002"}, {"P003"}})
+Ventas Lista =
+CALCULATE(
+    SUM('Ventas'[Importe]),
+    TREATAS(TablaFiltro, 'Productos'[ID])
+)</code></pre>
+            </div>
+
+            <h4>Ejemplo — usar los valores de un parámetro What-If como filtro:</h4>
+            <div class="code-block">
+              <button class="code-block__copy">Copiar</button>
+              <pre><code class="language-javascript">// Caso más realista
+Ventas Escenario =
+CALCULATE(
+    SUM('Ventas'[Importe]),
+    TREATAS(
+        VALUES('EscenarioParam'[Región]),
+        'Clientes'[Región]
+    )
+)</code></pre>
+            </div>
+          </div>
+        </section>
+
+        <!-- SECCIÓN 9: Patrones avanzados -->
+        <section id="patrones">
+          <div class="category-header">
+            <span class="category-header__icon">🏆</span>
+            <h2 class="category-header__title">Los 5 patrones más usados con CALCULATE</h2>
+          </div>
+
+          <h3>Patrón 1 — Porcentaje sobre el total:</h3>
+          <div class="code-block">
+            <button class="code-block__copy">Copiar</button>
+            <pre><code class="language-javascript">% Total = DIVIDE([Ventas], CALCULATE([Ventas], ALL('Tabla')))</code></pre>
+          </div>
+
+          <h3>Patrón 2 — Porcentaje sobre el padre en una jerarquía:</h3>
+          <div class="code-block">
+            <button class="code-block__copy">Copiar</button>
+            <pre><code class="language-javascript">% del Padre = DIVIDE([Ventas], CALCULATE([Ventas], ALLEXCEPT('Productos','Productos'[Categoría])))</code></pre>
+          </div>
+
+          <h3>Patrón 3 — Valor del año anterior:</h3>
+          <div class="code-block">
+            <button class="code-block__copy">Copiar</button>
+            <pre><code class="language-javascript">Ventas Año Anterior = CALCULATE([Ventas], SAMEPERIODLASTYEAR('Calendario'[Fecha]))</code></pre>
+          </div>
+
+          <h3>Patrón 4 — Medida dinámica por slicer:</h3>
+          <div class="code-block">
+            <button class="code-block__copy">Copiar</button>
+            <pre><code class="language-javascript">Medida Dinámica =
+SWITCH(SELECTEDVALUE('KPI'[Nombre]),
+    "Ventas", [Total Ventas],
+    "Margen", [Total Margen],
+    "Clientes", [Clientes Únicos],
+    [Total Ventas])</code></pre>
+          </div>
+
+          <h3>Patrón 5 — Filtro sobre tabla relacionada:</h3>
+          <div class="code-block">
+            <button class="code-block__copy">Copiar</button>
+            <pre><code class="language-javascript">Ventas Clientes Premium =
+CALCULATE([Ventas], FILTER(RELATEDTABLE('Clientes'), 'Clientes'[Segmento] = "Premium"))</code></pre>
+          </div>
+
+          <div class="note note--next">
+            <strong>🚀 Siguiente paso</strong><br>
+            ¡Enhorabuena! CALCULATE es la cima de DAX y ya la tienes. Ahora que entiendes el contexto, las funciones de Inteligencia de Tiempo (como SAMEPERIODLASTYEAR o TOTALYTD) serán mucho más fáciles de entender.
+          </div>
+        </section>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- Footer (cargado dinámicamente) -->
+  <div id="main-footer"></div>
+
+  <!-- Botón volver arriba -->
+  <button id="back-to-top" class="btn-back-to-top" aria-label="Volver arriba">↑</button>
+
+  <!-- Scripts -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+  <script src="../../assets/js/theme.js"></script>
+  <script src="../../assets/js/main.js"></script>
+
+  <!-- Buscador DAX -->
+  <script src="../../assets/js/dax-search.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Auto-inicializar todos los widgets con data-dax-search="true"
+      if (window.daxSearch) {
+        window.daxSearch.initAll({
+          baseUrl: '../'  // estamos en topics/dax/, las URLs deben ir a topics/dax/...
+        });
+      }
+    });
+  </script>
+  <script src="../../assets/js/cursor.js"></script>
+</body>
+</html>

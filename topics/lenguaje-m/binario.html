@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta content="Binary.*, compresión, codificación Base64 y File.Contents en el Lenguaje M de Power Query." name="description"/>
+<title>Funciones Binarias (Binary.*) — Lenguaje M | Power BI Guide by Kawaii BI</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Fira+Code:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<!-- Prism.js -->
+<link href="https://cdn.jsdelivr.net/npm/prismjs@1/themes/prism-okaidia.min.css" rel="stylesheet"/>
+<!-- Estilos CSS -->
+<link href="../../assets/css/main.css" rel="stylesheet"/>
+<link href="../../assets/css/themes.css" rel="stylesheet"/>
+<link href="../../assets/css/components.css" rel="stylesheet"/>
+<link href="../../assets/css/layout.css" rel="stylesheet"/>
+<link href="../../assets/css/dax-search.css" rel="stylesheet"/>
+<style>
+        /* Topic header con icono grande */
+    .topic-header {
+      text-align: center;
+      padding: 2.5rem 0 2rem;
+      border-bottom: 2px solid var(--color-mauve);
+      margin-bottom: 2.5rem;
+    }
+
+    .topic-header__icon {
+      font-size: 4rem;
+      margin-bottom: 0.75rem;
+      display: block;
+    }
+
+    .topic-header__title {
+      font-size: clamp(1.875rem, 4vw, 2.5rem);
+      font-weight: 800;
+      color: var(--color-dark);
+      margin-bottom: 0.625rem;
+      line-height: 1.2;
+    }
+
+    .topic-header__subtitle {
+      font-size: 1.0625rem;
+      color: var(--color-slate);
+      margin-bottom: 1.25rem;
+      line-height: 1.5;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .topic-header__levels {
+      display: flex;
+      gap: 0.5rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    /* Category header */
+    .category-header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin: 2.5rem 0 1.25rem;
+      padding: 0.875rem 1.25rem;
+      background: var(--color-rose);
+      border-radius: var(--border-radius-sm);
+      border-left: 4px solid var(--color-coral);
+    }
+    .category-header__icon { font-size: 1.5rem; }
+    .category-header__title { font-size: 1.25rem; font-weight: 700; margin: 0; }
+
+    /* Function cards */
+    .function-card {
+      background: var(--color-white);
+      border: 1.5px solid var(--color-mauve);
+      border-radius: var(--border-radius);
+      padding: 1.75rem;
+      margin-bottom: 1.5rem;
+      scroll-margin-top: 80px;
+      transition: border-color 0.2s;
+    }
+    .function-card:hover { border-color: var(--color-coral); }
+
+    .function-card__header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.25rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 2px solid var(--color-blush);
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .function-card__title {
+      font-size: 1.375rem;
+      font-weight: 800;
+      color: var(--color-coral);
+      margin: 0;
+      font-family: 'Fira Code', monospace;
+    }
+
+    .function-card h4 {
+      font-size: 0.9375rem;
+      font-weight: 700;
+      color: var(--color-dark);
+      margin: 1.25rem 0 0.625rem;
+    }
+
+    .function-card p { font-size: 0.9375rem; line-height: 1.7; color: var(--color-dark); }
+
+    .function-card__params ul { list-style: none; padding: 0; margin: 0; }
+    .function-card__params li {
+      padding: 0.5rem 0 0.5rem 1.5rem;
+      position: relative;
+      line-height: 1.6;
+      font-size: 0.9rem;
+      border-bottom: 1px solid var(--color-blush);
+    }
+    .function-card__params li:last-child { border-bottom: none; }
+    .function-card__params li::before {
+      content: "→";
+      position: absolute;
+      left: 0;
+      color: var(--color-coral);
+      font-weight: 700;
+    }
+    .function-card__params code {
+      background: var(--color-blush);
+      padding: 0.1em 0.4em;
+      border-radius: 4px;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.85em;
+      color: var(--color-coral);
+    }
+
+    /* TOC */
+    .toc {
+      background: var(--color-rose);
+      border-radius: var(--border-radius);
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 2rem;
+      border: 1.5px solid var(--color-mauve);
+    }
+    .toc__title { font-size: 1rem; font-weight: 700; margin: 0 0 0.75rem; }
+    .toc__list { display: flex; flex-wrap: wrap; gap: 0.5rem; list-style: none; padding: 0; margin: 0; }
+    .toc__list a {
+      font-size: 0.8125rem;
+      color: var(--color-coral);
+      text-decoration: none;
+      padding: 0.25rem 0.625rem;
+      background: var(--color-white);
+      border-radius: 999px;
+      border: 1px solid var(--color-mauve);
+      transition: background 0.15s, color 0.15s;
+      font-family: 'Fira Code', monospace;
+    }
+    .toc__list a:hover { background: var(--color-coral); color: white; }
+
+    /* Table (tipo.html) */
+    .type-table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.9rem; }
+    .type-table th { background: var(--color-rose); color: var(--color-dark); font-weight: 600; padding: 0.6rem 1rem; text-align: left; }
+    .type-table td { padding: 0.55rem 1rem; border-bottom: 1px solid var(--color-mauve); }
+    .type-table tr:last-child td { border-bottom: none; }
+    .type-table code { font-family: 'Fira Code', monospace; font-size: 0.85em; }
+  </style>
+</head>
+<body>
+<!-- SIDEBAR: Navegación principal -->
+<aside class="site-sidebar">
+<div class="site-sidebar__profile">
+<img alt="Sara Lozano Martí" class="site-sidebar__avatar" src="../../assets/images/avatar Sara.png"/>
+<p class="site-sidebar__name">Sara Lozano Martí</p>
+<p class="site-sidebar__subtitle">Power BI Expert</p>
+</div>
+<nav aria-label="Navegación principal" class="site-sidebar__nav">
+<ul>
+<li><a class="site-sidebar__link" href="../../index.html">
+<span class="site-sidebar__icon">🏠</span> Inicio
+        </a></li>
+<li><a class="site-sidebar__link" href="../dax.html">
+<span class="site-sidebar__icon">⚡</span> Funciones DAX
+        </a></li>
+<li><a class="site-sidebar__link" href="../power-query.html">
+<span class="site-sidebar__icon">🔄</span> Power Query
+        </a></li>
+<li><a class="site-sidebar__link is-active" href="../lenguaje-m.html">
+<span class="site-sidebar__icon">〽️</span> Lenguaje M
+        </a></li>
+<li><a class="site-sidebar__link" href="../modelado.html">
+<span class="site-sidebar__icon">🗄️</span> Modelado
+        </a></li>
+<li><a class="site-sidebar__link" href="../conceptos-powerbi.html">
+<span class="site-sidebar__icon">📊</span> Conceptos Power BI
+        </a></li>
+<li><a class="site-sidebar__link" href="../fabric.html">
+<span class="site-sidebar__icon">🧵</span> Microsoft Fabric
+        </a></li>
+<li><a class="site-sidebar__link" href="../tmdl.html">
+<span class="site-sidebar__icon">📝</span> TMDL
+        </a></li>
+<li><a class="site-sidebar__link" href="../diseno-ux.html">
+<span class="site-sidebar__icon">🎨</span> Diseño y UX
+        </a></li>
+<li><a class="site-sidebar__link" href="../gobernanza.html">
+<span class="site-sidebar__icon">🔒</span> Gobernanza
+        </a></li>
+</ul>
+</nav>
+<div class="site-sidebar__divider"></div>
+<div class="site-sidebar__footer">
+<a class="site-sidebar__link site-sidebar__link--highlight" href="../../quien-soy.html">
+<span class="site-sidebar__icon">👩‍💻</span> ¿Quién soy?
+      </a>
+<div class="site-sidebar__social">
+<a aria-label="LinkedIn" href="https://www.linkedin.com/in/saralozanomarti" rel="noopener noreferrer" target="_blank">
+<img alt="LinkedIn" class="site-sidebar__social-icon" src="../../assets/images/logo linkedIN.png"/>
+</a>
+<a aria-label="YouTube" href="https://www.youtube.com/@KawaiiPowerBI" rel="noopener noreferrer" target="_blank">
+<img alt="YouTube" class="site-sidebar__social-icon" src="../../assets/images/logo youtube.png"/>
+</a>
+<a aria-label="GitHub" href="https://github.com/KawaiiBI" rel="noopener noreferrer" target="_blank">
+<img alt="GitHub" class="site-sidebar__social-icon" src="../../assets/images/logo github.png"/>
+</a>
+</div>
+<div class="site-sidebar__logo-bottom">
+<img alt="Kawaii BI" class="site-sidebar__logo-img" src="../../assets/images/Logo Kawaii.jpg"/>
+</div>
+<p class="site-sidebar__copyright">
+        Power BI Guide 🌸<br/>
+        © 2026 Kawaii BI
+      </p>
+</div>
+</aside>
+<!-- CONTENIDO PRINCIPAL -->
+<div class="page-wrapper">
+<main class="main-content">
+<div class="topic-page">
+<nav aria-label="Ruta de navegación" class="breadcrumb">
+<span class="breadcrumb__item"><a href="../../index.html">🏠 Inicio</a></span>
+<span aria-hidden="true" class="breadcrumb__separator">›</span>
+<span class="breadcrumb__item"><a href="../lenguaje-m.html">Lenguaje M</a></span>
+<span aria-hidden="true" class="breadcrumb__separator">›</span>
+<span class="breadcrumb__item">Funciones Binarias</span>
+</nav>
+<header class="topic-header">
+          <span class="topic-header__icon">💾</span>
+          <h1 class="topic-header__title">Funciones Binarias (Binary.*)</h1>
+          <p class="topic-header__subtitle">Trabaja con datos en formato binario usando Binary.*. Esencial para archivos, APIs, compresión y codificaciones.</p>
+          <div class="topic-header__levels">
+<span class="badge--intermediate">Intermedio</span>
+<span class="badge--advanced">Avanzado</span>
+</div>
+        </header>
+<div class="dax-search-wrapper dax-search-wrapper--compact" data-m-search="true">
+<div class="dax-search-input-row">
+<span aria-hidden="true" class="dax-search-icon">🔍</span>
+<input aria-autocomplete="list" aria-expanded="false" aria-label="Buscar funciones del Lenguaje M" autocomplete="off" class="dax-search-input" placeholder="Buscar otra función M..." spellcheck="false" type="search"/>
+<button aria-label="Limpiar búsqueda" class="dax-search-clear" hidden="">✕</button>
+</div>
+<div aria-label="Resultados de búsqueda" class="dax-search-results" role="listbox"></div>
+</div>
+<nav aria-label="Índice de funciones" class="toc">
+<p class="toc__title">📌 Funciones en esta página:</p>
+<ul class="toc__list">
+<li><a href="#create">Crear binarios</a></li>
+<li><a href="#read">Leer y extraer</a></li>
+<li><a href="#transform">Transformar</a></li>
+<li><a href="#compression">Compresión</a></li>
+<li><a href="#encoding">Codificación</a></li>
+<li><a href="#file">Archivos</a></li>
+</ul>
+</nav>
+<!-- Breadcrumb --><!-- Buscador compacto de funciones M --><!-- Cabecera --><div class="category-header" id="create">
+<span class="category-header__icon">🆕</span>
+<h2 class="category-header__title">Crear Valores Binarios</h2>
+</div><article class="function-card" id="binary-from">
+<header class="function-card__header">
+<h3 class="function-card__title">Binary.From / #binary</h3>
+<span class="badge badge--intermediate">Intermedio</span>
+</header>
+<div class="function-card__syntax"><h4>Sintaxis</h4>
+<pre><code class="language-javascript">#binary(list as list) as binary
+Binary.From(value as any) as nullable binary
+Binary.FromText(text as nullable text, optional encoding as nullable number) as nullable binary</code></pre>
+</div>
+<div class="function-card__description"><h4>¿Qué hace?</h4>
+<p>Crea valores de tipo <code>binary</code>. La literal <code>#binary</code> acepta una lista de bytes. <code>Binary.FromText</code> codifica un texto como bytes usando la codificación especificada.</p>
+</div>
+<div class="function-card__example"><h4>Ejemplo</h4>
+<pre><code class="language-javascript">// Crear binario desde lista de bytes
+#binary({0x48, 0x65, 0x6C, 0x6C, 0x6F})  // bytes de "Hello"
+
+// Codificar texto como UTF-8
+Binary.FromText("Hola mundo", TextEncoding.Utf8)
+
+// Codificar texto como UTF-16
+Binary.FromText("Hola", TextEncoding.Utf16)</code></pre>
+</div>
+<div class="note note--tip">
+            💡 <strong>Tip kawaii:</strong> Las constantes de codificación más usadas son: <code>TextEncoding.Utf8</code> (65001), <code>TextEncoding.Utf16</code> (1200), <code>TextEncoding.Windows</code> (1252 para Europa Occidental). El número entre paréntesis es el código de página de Windows.
+          </div>
+</article><div class="category-header" id="read">
+<span class="category-header__icon">🎯</span>
+<h2 class="category-header__title">Leer y Extraer Datos</h2>
+</div><article class="function-card" id="binary-totext">
+<header class="function-card__header">
+<h3 class="function-card__title">Binary.ToText / Binary.Buffer</h3>
+<span class="badge badge--intermediate">Intermedio</span>
+</header>
+<div class="function-card__syntax"><h4>Sintaxis</h4>
+<pre><code class="language-javascript">Binary.ToText(binary as nullable binary, optional encoding as nullable number) as nullable text
+Binary.Buffer(binary as nullable binary) as nullable binary</code></pre>
+</div>
+<div class="function-card__description"><h4>¿Qué hace?</h4>
+<p><code>Binary.ToText</code> convierte bytes a texto usando la codificación especificada. <code>Binary.Buffer</code> carga el binario completamente en memoria para operaciones más rápidas (evita re-lecturas del stream).</p>
+</div>
+<div class="function-card__example"><h4>Ejemplo</h4>
+<pre><code class="language-javascript">// Convertir binario a texto
+let
+    contenido = File.Contents("C:\datos\notas.txt"),
+    texto     = Binary.ToText(contenido, TextEncoding.Utf8)
+in texto
+
+// Buffering para acceso múltiple
+let
+    binario    = Web.Contents("https://api.ejemplo.com/archivo"),
+    buffered   = Binary.Buffer(binario),
+    comoExcel  = Excel.Workbook(buffered, true),
+    comoCSV    = Csv.Document(buffered)  // accede de nuevo sin re-descargar
+in comoExcel</code></pre>
+</div>
+<div class="note note--practice">
+            📌 <strong>Buena práctica:</strong> Usa <code>Binary.Buffer</code> cuando necesitas acceder al mismo binario varias veces (ej. para intentar parsearlo como Excel y, si falla, como CSV). Sin buffer, cada acceso re-descargaría el archivo.
+          </div>
+</article><article class="function-card" id="binary-length">
+<header class="function-card__header">
+<h3 class="function-card__title">Binary.Length / Binary.Range / Binary.InferContentType</h3>
+<span class="badge badge--advanced">Avanzado</span>
+</header>
+<div class="function-card__syntax"><h4>Sintaxis</h4>
+<pre><code class="language-javascript">Binary.Length(binary as nullable binary) as nullable number
+Binary.Range(binary as binary, offset as number, optional count as nullable number) as binary
+Binary.InferContentType(binary as binary) as record</code></pre>
+</div>
+<div class="function-card__description"><h4>¿Qué hace?</h4>
+<p><code>Binary.Length</code> devuelve el tamaño en bytes. <code>Binary.Range</code> extrae una subsecuencia de bytes (útil para parsear formatos binarios propietarios). <code>Binary.InferContentType</code> detecta el tipo MIME del binario.</p>
+</div>
+<div class="function-card__example"><h4>Ejemplo</h4>
+<pre><code class="language-javascript">let b = #binary({0x50, 0x4B, 0x03, 0x04, 0x00})  // cabecera ZIP
+in [
+    longitud   = Binary.Length(b),         // 5
+    primeros2  = Binary.Range(b, 0, 2),    // #binary({0x50, 0x4B})
+    tipoMime   = Binary.InferContentType(b) // [Content-Type = "application/zip", ...]
+]</code></pre>
+</div>
+</article><div class="category-header" id="transform">
+<span class="category-header__icon">💾</span>
+<h2 class="category-header__title">Transformar Binarios</h2>
+</div><article class="function-card" id="binary-combine">
+<header class="function-card__header">
+<h3 class="function-card__title">Binary.Combine / BinaryFormat.*</h3>
+<span class="badge badge--advanced">Avanzado</span>
+</header>
+<div class="function-card__syntax"><h4>Sintaxis</h4>
+<pre><code class="language-javascript">Binary.Combine(binaries as list) as binary
+
+// Formatos binarios para parsear estructuras
+BinaryFormat.Byte as function
+BinaryFormat.SignedInteger16 as function
+BinaryFormat.SignedInteger32 as function
+BinaryFormat.Float as function
+BinaryFormat.Double as function
+BinaryFormat.Text(encoding as number, count as number) as function
+BinaryFormat.List(binaryFormat as function, count as number) as function
+BinaryFormat.Record(record as record) as function</code></pre>
+</div>
+<div class="function-card__description"><h4>¿Qué hace?</h4>
+<p><code>Binary.Combine</code> concatena varios binarios. Las funciones <code>BinaryFormat.*</code> definen un esquema para parsear formatos binarios estructurados (protocolos de red, archivos binarios propietarios).</p>
+</div>
+<div class="function-card__example"><h4>Ejemplo</h4>
+<pre><code class="language-javascript">// Combinar varios binarios
+Binary.Combine({
+    Binary.FromText("Parte1"),
+    Binary.FromText("Parte2"),
+    Binary.FromText("Parte3")
+})
+
+// Parsear estructura binaria (ej. cabecera de archivo)
+let
+    formato = BinaryFormat.Record([
+        Firma    = BinaryFormat.Text(TextEncoding.Ascii, 4),
+        Version  = BinaryFormat.SignedInteger16,
+        Longitud = BinaryFormat.SignedInteger32
+    ]),
+    datos   = formato(#binary({0x4D,0x5A,0x50,0x45,0x01,0x00,0x00,0x00,0x00,0xFF}))
+in datos</code></pre>
+</div>
+</article><div class="category-header" id="compression">
+<span class="category-header__icon">🗜️</span>
+<h2 class="category-header__title">Compresión</h2>
+</div><article class="function-card" id="binary-decompress">
+<header class="function-card__header">
+<h3 class="function-card__title">Binary.Decompress / Binary.Compress</h3>
+<span class="badge badge--advanced">Avanzado</span>
+</header>
+<div class="function-card__syntax"><h4>Sintaxis</h4>
+<pre><code class="language-javascript">Binary.Decompress(binary as binary, compressionType as number) as binary
+Binary.Compress(binary as binary, compressionType as number) as binary</code></pre>
+</div>
+<div class="function-card__description"><h4>¿Qué hace?</h4>
+<p>Comprime o descomprime datos binarios. Los tipos de compresión disponibles son: <code>Compression.GZip</code>, <code>Compression.Deflate</code>, <code>Compression.Snappy</code>, <code>Compression.LZ4</code>, <code>Compression.Brotli</code>.</p>
+</div>
+<div class="function-card__example"><h4>Ejemplo</h4>
+<pre><code class="language-javascript">// Descomprimir respuesta GZIP de una API
+let
+    respuesta     = Web.Contents("https://api.ejemplo.com/datos"),
+    descomprimido = Binary.Decompress(respuesta, Compression.GZip),
+    texto         = Binary.ToText(descomprimido, TextEncoding.Utf8),
+    datos         = Json.Document(texto)
+in datos
+
+// Descomprimir DEFLATE
+Binary.Decompress(datos, Compression.Deflate)</code></pre>
+</div>
+<div class="note note--tip">
+            💡 <strong>Tip kawaii:</strong> Muchas APIs REST devuelven respuestas comprimidas con GZIP para reducir el tamaño de transferencia. Si recibes datos binarios que no parseas correctamente, prueba primero a descomprimirlos con <code>Binary.Decompress(respuesta, Compression.GZip)</code>.
+          </div>
+</article><div class="category-header" id="encoding">
+<span class="category-header__icon">🧠</span>
+<h2 class="category-header__title">Codificación (Base64 y similares)</h2>
+</div><article class="function-card" id="base64">
+<header class="function-card__header">
+<h3 class="function-card__title">Binary.ToText con Base64</h3>
+<span class="badge badge--intermediate">Intermedio</span>
+</header>
+<div class="function-card__syntax"><h4>Sintaxis</h4>
+<pre><code class="language-javascript">// Codificar a Base64
+Binary.ToText(binary, BinaryEncoding.Base64) as text
+
+// Decodificar desde Base64
+Binary.FromText(base64Text, BinaryEncoding.Base64) as binary
+
+// Base64 URL-safe
+Binary.ToText(binary, BinaryEncoding.Base64Url) as text</code></pre>
+</div>
+<div class="function-card__description"><h4>¿Qué hace?</h4>
+<p>Convierte entre datos binarios y representación Base64 (texto). Muy útil para autenticación HTTP Basic, envío de archivos en APIs REST y procesamiento de datos codificados.</p>
+</div>
+<div class="function-card__example"><h4>Ejemplo</h4>
+<pre><code class="language-javascript">// Crear cabecera de autenticación Basic
+let
+    usuario      = "mi_usuario",
+    contrasena   = "mi_contrasena",
+    credenciales = usuario &amp; ":" &amp; contrasena,
+    base64       = Binary.ToText(
+        Binary.FromText(credenciales, TextEncoding.Utf8),
+        BinaryEncoding.Base64
+    ),
+    cabecera     = "Basic " &amp; base64
+in
+    Web.Contents("https://api.ejemplo.com/datos",
+        [Headers = [Authorization = cabecera]])
+
+// Decodificar campo Base64 en respuesta JSON
+let
+    base64dato  = "SGVsbG8gV29ybGQ=",
+    binario     = Binary.FromText(base64dato, BinaryEncoding.Base64),
+    texto       = Binary.ToText(binario, TextEncoding.Utf8)
+in texto  // "Hello World"</code></pre>
+</div>
+<div class="note note--practice">
+            📌 <strong>Buena práctica:</strong> Para autenticación HTTP Basic, genera siempre la credencial Base64 dinámicamente desde parámetros seguros, nunca hardcodees credenciales en el código M. Usa parámetros de Power Query o Azure Key Vault.
+          </div>
+</article><div class="category-header" id="file">
+<span class="category-header__icon">📁</span>
+<h2 class="category-header__title">Trabajar con Archivos</h2>
+</div><article class="function-card" id="file-contents">
+<header class="function-card__header">
+<h3 class="function-card__title">File.Contents</h3>
+<span class="badge badge--beginner">Principiante</span>
+</header>
+<div class="function-card__syntax"><h4>Sintaxis</h4>
+<pre><code class="language-javascript">File.Contents(path as text, optional options as nullable record) as binary</code></pre>
+</div>
+<div class="function-card__description"><h4>¿Qué hace?</h4>
+<p>Lee un archivo del sistema de archivos local y devuelve su contenido como binario. Es la función base para leer cualquier tipo de archivo: Excel, CSV, JSON, imágenes, etc.</p>
+</div>
+<div class="function-card__example"><h4>Ejemplo</h4>
+<pre><code class="language-javascript">// Leer archivo y parsear según tipo
+let
+    ruta     = "C:\datos\informe.xlsx",
+    binario  = File.Contents(ruta),
+    workbook = Excel.Workbook(binario, true)
+in workbook
+
+// Leer archivo de texto plano
+let
+    ruta   = "C:\datos\log.txt",
+    texto  = Binary.ToText(File.Contents(ruta), TextEncoding.Utf8)
+in texto
+
+// Detectar tipo de archivo automáticamente
+let
+    ruta   = "C:\datos\archivo_desconocido",
+    b      = Binary.Buffer(File.Contents(ruta)),
+    tipo   = Binary.InferContentType(b)[#"Content-Type"]
+in tipo</code></pre>
+</div>
+</article><div class="note note--next">
+        🚀 <strong>¡Nivel binario desbloqueado!</strong> Para terminar el recorrido, explora las <a href="especiales.html">Funciones Especiales</a> — las características más avanzadas y únicas del lenguaje M.
+      </div>
+</div>
+</main>
+</div>
+<button aria-label="Volver arriba" class="back-to-top" id="back-to-top" title="Volver arriba">↑</button>
+<script src="https://cdn.jsdelivr.net/npm/i18next@23/dist/umd/i18next.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1/prism.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1/components/prism-javascript.min.js"></script>
+<script src="../../assets/js/theme.js"></script>
+<script src="../../assets/js/i18n.js"></script>
+<script src="../../assets/js/main.js"></script>
+<script src="../../assets/js/cursor.js"></script>
+<script src="../../assets/js/m-search.js"></script>
+</body>
+</html>

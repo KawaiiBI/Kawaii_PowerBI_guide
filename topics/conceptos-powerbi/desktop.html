@@ -1,0 +1,991 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Power BI Desktop: vistas, ribbon, parámetros de campo, parámetros numéricos, flujo de trabajo Desktop→Service y tipos de conexión a datos.">
+  <title>Power BI Desktop — Conceptos Power BI | Power BI Guide</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+
+  <!-- Prism.js -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1/themes/prism-okaidia.min.css">
+
+  <!-- CSS del proyecto -->
+  <link rel="stylesheet" href="../../assets/css/main.css">
+  <link rel="stylesheet" href="../../assets/css/themes.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/layout.css">
+
+  <style>
+    /* === Topic header === */
+    .topic-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 1.25rem;
+      margin-bottom: 2rem;
+      padding: 1.75rem;
+      background: var(--color-rose);
+      border-radius: var(--border-radius);
+      border: 1.5px solid var(--color-mauve);
+    }
+    .topic-header__icon { font-size: 3rem; line-height: 1; flex-shrink: 0; }
+    .topic-header__title { font-size: 1.875rem; font-weight: 700; margin-bottom: 0.25rem; }
+    .topic-header__subtitle { color: var(--color-slate); font-size: 0.9375rem; line-height: 1.6; margin-bottom: 0.75rem; }
+    .topic-header__levels { display: flex; gap: 0.375rem; flex-wrap: wrap; }
+
+    /* === TOC === */
+    .toc {
+      background: var(--color-rose);
+      border: 1.5px solid var(--color-mauve);
+      border-radius: var(--border-radius);
+      padding: 1.5rem;
+      margin-bottom: 2.5rem;
+    }
+    .toc__title {
+      font-size: 0.875rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--color-slate);
+      margin-bottom: 1rem;
+    }
+    .toc__list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.5rem; }
+    .toc__link { color: var(--color-dark); text-decoration: none; font-size: 0.9375rem; transition: var(--transition); display: inline-block; }
+    .toc__link:hover { color: var(--color-coral); text-decoration: underline; }
+    .toc__sublist { list-style: none; padding: 0; margin: 4px 0 0 16px; display: flex; flex-direction: column; gap: 4px; }
+    .toc__sublist .toc__link { font-size: 0.875rem; color: var(--color-slate); }
+    .toc__sublist .toc__link:hover { color: var(--color-coral); }
+
+    /* === TOC box (nuevo estilo) === */
+    .toc-box a { transition: color 0.2s; }
+    .toc-box a:hover { color: var(--color-coral) !important; text-decoration: underline; }
+
+    /* === Secciones === */
+    .content-section { margin: 48px 0; }
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 24px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid var(--color-mauve);
+    }
+    .section-icon { font-size: 28px; line-height: 1; }
+    .section-header h2 { font-size: 26px; font-weight: 800; color: var(--color-dark); margin: 0; }
+
+    .subsection-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--color-dark);
+      margin: 40px 0 16px;
+      padding: 10px 16px;
+      background: var(--color-blush);
+      border-left: 4px solid var(--color-coral);
+      border-radius: 0 8px 8px 0;
+    }
+
+    /* === Imagen de funcionalidad === */
+    .feature-image { max-width: 700px; width: 100%; margin: 32px auto; display: block; }
+    .feature-image img { width: 100%; border-radius: 12px; border: 2px solid var(--color-mauve); box-shadow: 0 8px 24px rgba(0,0,0,0.1); display: block; }
+    .feature-image figcaption { text-align: center; margin-top: 12px; font-size: 14px; color: var(--color-slate); font-style: italic; }
+
+    /* === Pasos numerados === */
+    .steps-list { counter-reset: step-counter; list-style: none; padding: 0; margin: 20px 0 28px; }
+    .steps-list li {
+      counter-increment: step-counter;
+      padding: 14px 12px 14px 60px;
+      position: relative;
+      line-height: 1.7;
+      font-size: 16px;
+      margin-bottom: 12px;
+      background: var(--color-blush);
+      border-radius: 10px;
+    }
+    .steps-list li::before {
+      content: counter(step-counter);
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: var(--color-coral);
+      color: white;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 16px;
+    }
+
+    /* === Feature grid === */
+    .feature-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; margin: 24px 0; }
+    .feature-card { background: var(--color-white); border: 2px solid var(--color-mauve); border-radius: 12px; padding: 20px; transition: transform 0.2s, border-color 0.2s; }
+    .feature-card:hover { transform: translateY(-2px); border-color: var(--color-coral); }
+    .feature-card__title { font-size: 16px; font-weight: 700; color: var(--color-dark); margin: 0 0 8px; }
+    .feature-card p { font-size: 14px; line-height: 1.6; color: var(--color-dark); margin: 0; }
+
+    /* === Código === */
+    code { font-family: 'Fira Code', monospace; font-size: 0.875em; background: var(--color-rose); color: var(--color-coral); padding: 2px 6px; border-radius: 4px; }
+    .code-block { background: var(--color-code-bg); color: #e4e4e7; padding: 24px; border-radius: 10px; margin: 20px 0; font-family: 'Fira Code', monospace; font-size: 14px; line-height: 1.7; overflow-x: auto; }
+    .code-block .comment { color: #8b8fa8; }
+    .code-block .keyword { color: #c792ea; }
+    .code-block .function { color: #82aaff; }
+    .code-block .string { color: #c3e88d; }
+
+    /* === Modo oscuro === */
+    .dark-theme .topic-header, .dark-theme .feature-card { background: var(--color-white); border-color: var(--color-mauve); }
+    .dark-theme .steps-list li { background: var(--color-rose); }
+
+    /* === Responsive === */
+    @media (max-width: 768px) { .feature-grid { grid-template-columns: 1fr !important; } }
+  </style>
+</head>
+<body>
+
+  <!-- SIDEBAR -->
+  <aside class="site-sidebar">
+    <div class="site-sidebar__profile">
+      <img src="../../assets/images/avatar Sara.png" alt="Sara Lozano Martí" class="site-sidebar__avatar" />
+      <p class="site-sidebar__name">Sara Lozano Martí</p>
+      <p class="site-sidebar__subtitle">Power BI Expert</p>
+    </div>
+
+    <nav class="site-sidebar__nav" aria-label="Navegación principal">
+      <ul>
+        <li><a href="../../index.html" class="site-sidebar__link">
+          <span class="site-sidebar__icon">🏠</span> Inicio
+        </a></li>
+        <li><a href="../dax.html" class="site-sidebar__link">
+          <span class="site-sidebar__icon">⚡</span> Funciones DAX
+        </a></li>
+        <li><a href="../power-query.html" class="site-sidebar__link">
+          <span class="site-sidebar__icon">🔄</span> Power Query
+        </a></li>
+        <li><a href="../lenguaje-m.html" class="site-sidebar__link">
+          <span class="site-sidebar__icon">〽️</span> Lenguaje M
+        </a></li>
+        <li><a href="../modelado.html" class="site-sidebar__link">
+          <span class="site-sidebar__icon">🗄️</span> Modelado
+        </a></li>
+        <li><a href="../conceptos-powerbi.html" class="site-sidebar__link is-active">
+          <span class="site-sidebar__icon">📊</span> Conceptos Power BI
+        </a></li>
+        <li><a href="../fabric.html" class="site-sidebar__link">
+          <span class="site-sidebar__icon">🧵</span> Microsoft Fabric
+        </a></li>
+        <li><a href="../tmdl.html" class="site-sidebar__link">
+          <span class="site-sidebar__icon">📝</span> TMDL
+        </a></li>
+        <li><a href="../diseno-ux.html" class="site-sidebar__link">
+          <span class="site-sidebar__icon">🎨</span> Diseño y UX
+        </a></li>
+        <li><a href="../gobernanza.html" class="site-sidebar__link">
+          <span class="site-sidebar__icon">🔒</span> Gobernanza
+        </a></li>
+      </ul>
+    </nav>
+
+    <div class="site-sidebar__divider"></div>
+
+    <div class="site-sidebar__footer">
+      <a href="../../quien-soy.html" class="site-sidebar__link site-sidebar__link--highlight">
+        <span class="site-sidebar__icon">👩‍💻</span> ¿Quién soy?
+      </a>
+      <div class="site-sidebar__social">
+        <a href="https://www.linkedin.com/in/saralozanomarti" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+          <img src="../../assets/images/logo linkedIN.png" alt="LinkedIn" class="site-sidebar__social-icon" />
+        </a>
+        <a href="https://www.youtube.com/@KawaiiPowerBI" target="_blank" rel="noopener noreferrer" aria-label="YouTube">
+          <img src="../../assets/images/logo youtube.png" alt="YouTube" class="site-sidebar__social-icon" />
+        </a>
+        <a href="https://github.com/KawaiiBI" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
+          <img src="../../assets/images/logo github.png" alt="GitHub" class="site-sidebar__social-icon" />
+        </a>
+      </div>
+      <div class="site-sidebar__logo-bottom">
+        <img src="../../assets/images/Logo Kawaii.jpg" alt="Kawaii BI" class="site-sidebar__logo-img" />
+      </div>
+      <p class="site-sidebar__copyright">
+        Power BI Guide 🌸<br>
+        © 2026 Kawaii BI
+      </p>
+    </div>
+  </aside>
+
+  <!-- PAGE WRAPPER -->
+  <div class="page-wrapper">
+    <main class="main-content">
+      <div class="topic-page">
+
+        <!-- Breadcrumb -->
+        <nav class="breadcrumb" aria-label="Ruta de navegación">
+          <a href="../../index.html" class="breadcrumb__link">Inicio</a>
+          <span class="breadcrumb__separator">›</span>
+          <a href="../conceptos-powerbi.html" class="breadcrumb__link">Conceptos Power BI</a>
+          <span class="breadcrumb__separator">›</span>
+          <span class="breadcrumb__current">Power BI Desktop</span>
+        </nav>
+
+        <!-- Header -->
+        <div style="background: white; border-radius: 20px; padding: 40px; margin: 32px 0; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
+          <div style="display: flex; align-items: flex-start; gap: 24px;">
+            <!-- Icono grande -->
+            <div style="font-size: 64px; line-height: 1;">🖥️</div>
+
+            <!-- Contenido -->
+            <div style="flex: 1;">
+              <h1 style="font-size: 42px; font-weight: 900; margin: 0 0 16px; color: var(--color-dark);">
+                Power BI Desktop
+              </h1>
+
+              <p style="font-size: 18px; line-height: 1.7; color: var(--color-slate); margin: 0 0 20px;">
+                La herramienta de desarrollo donde conectas a datos, creas el modelo semántico,
+                escribes DAX y diseñas informes. Incluye las vistas esenciales, el ribbon,
+                parámetros dinámicos, el flujo Desktop→Service y los tipos de conexión a datos.
+              </p>
+
+              <!-- Badges de nivel -->
+              <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+                <span style="background: #D4EDDA; color: #155724; padding: 6px 16px; border-radius: 20px; font-size: 14px; font-weight: 600;">
+                  • Principiante
+                </span>
+                <span style="background: #FFF3CD; color: #856404; padding: 6px 16px; border-radius: 20px; font-size: 14px; font-weight: 600;">
+                  • Intermedio
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TOC -->
+        <div class="toc-box" style="background: var(--color-rose); border-radius: 16px; padding: 32px; margin: 32px 0;">
+          <h2 style="font-size: 16px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: var(--color-slate); margin: 0 0 24px;">
+            📑 EN ESTA PÁGINA
+          </h2>
+
+          <div style="display: flex; flex-direction: column; gap: 12px;">
+            <!-- Sección 1: Power BI Desktop -->
+            <div>
+              <a href="#power-bi-desktop" style="font-size: 16px; font-weight: 700; color: var(--color-dark); text-decoration: none; display: flex; align-items: center; gap: 8px;">
+                🖥️ Power BI Desktop
+              </a>
+              <div style="margin-left: 28px; margin-top: 8px; display: flex; flex-direction: column; gap: 6px;">
+                <a href="#vistas-esenciales" style="font-size: 14px; color: var(--color-slate); text-decoration: none;">
+                  Las 3 Vistas Esenciales
+                </a>
+                <a href="#vistas-adicionales" style="font-size: 14px; color: var(--color-slate); text-decoration: none;">
+                  Vistas Adicionales
+                </a>
+                <a href="#cinta-superior" style="font-size: 14px; color: var(--color-slate); text-decoration: none;">
+                  La Cinta Superior (Ribbon)
+                </a>
+                <a href="#parametros-campo" style="font-size: 14px; color: var(--color-slate); text-decoration: none;">
+                  Parámetros de Campo
+                </a>
+                <a href="#parametros-numericos" style="font-size: 14px; color: var(--color-slate); text-decoration: none;">
+                  Parámetros Numéricos
+                </a>
+              </div>
+            </div>
+
+            <!-- Sección 2: Flujo Desktop → Service -->
+            <a href="#flujo-trabajo" style="font-size: 16px; font-weight: 700; color: var(--color-dark); text-decoration: none; display: flex; align-items: center; gap: 8px;">
+              🔄 El Flujo de Trabajo: Desktop → Service
+            </a>
+
+            <!-- Sección 3: Tipos de Conexión -->
+            <div>
+              <a href="#tipos-conexion" style="font-size: 16px; font-weight: 700; color: var(--color-dark); text-decoration: none; display: flex; align-items: center; gap: 8px;">
+                🔌 Tipos de Conexión a Datos
+              </a>
+              <div style="margin-left: 28px; margin-top: 8px; display: flex; flex-direction: column; gap: 6px;">
+                <a href="#import" style="font-size: 14px; color: var(--color-slate); text-decoration: none;">
+                  Import
+                </a>
+                <a href="#directquery" style="font-size: 14px; color: var(--color-slate); text-decoration: none;">
+                  DirectQuery
+                </a>
+                <a href="#live-connection" style="font-size: 14px; color: var(--color-slate); text-decoration: none;">
+                  Live Connection
+                </a>
+                <a href="#direct-lake" style="font-size: 14px; color: var(--color-slate); text-decoration: none;">
+                  Direct Lake
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ================================================
+             SECCIÓN: POWER BI DESKTOP
+        ================================================ -->
+        <section class="content-section" id="power-bi-desktop">
+          <div class="section-header">
+            <span class="section-icon">🖥️</span>
+            <h2>Power BI Desktop — Tu Estudio de Desarrollo</h2>
+          </div>
+
+          <p style="font-size: 17px; line-height: 1.8; margin-bottom: 28px;">
+            Power BI Desktop es una aplicación de Windows gratuita que concentra en un
+            solo lugar todo lo necesario para construir soluciones de BI profesionales:
+            conexión a datos (Power Query), modelado semántico (motor VertiPaq),
+            cálculos avanzados (DAX) y diseño de visualizaciones.
+          </p>
+
+          <figure class="feature-image">
+            <img src="../../assets/images/Power BI/pantalla inicial.jpg"
+                 alt="Pantalla de bienvenida de Power BI Desktop al abrirlo" />
+            <figcaption>La pantalla de bienvenida de Power BI Desktop, punto de partida de todo proyecto</figcaption>
+          </figure>
+
+          <!-- Las 3 vistas -->
+          <h3 class="subsection-title" id="vistas-esenciales">Las 3 Vistas Esenciales</h3>
+
+          <p>Power BI Desktop se organiza en 3 vistas accesibles desde la barra lateral
+          izquierda. Cada una tiene un propósito diferente y un flujo de trabajo propio:</p>
+
+          <figure style="margin: 24px auto 32px; text-align: center;">
+            <img src="../../assets/images/Power BI/panel izquierdo vistas.jpg"
+                 alt="Panel izquierdo de Power BI Desktop con los 3 iconos de vista"
+                 style="width: 120px; border-radius: 10px; border: 2px solid var(--color-mauve); box-shadow: 0 4px 12px rgba(0,0,0,0.1); display: block; margin: 0 auto;" />
+            <figcaption style="margin-top: 10px; font-size: 14px; color: var(--color-slate); font-style: italic;">
+              Barra lateral izquierda: iconos para cambiar entre Vista de Informe, Tabla y Modelo
+            </figcaption>
+          </figure>
+
+          <!-- Vista de Informe -->
+          <div style="margin-bottom: 40px;">
+            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 14px;">
+              <span style="font-size: 28px;">📊</span>
+              <h4 style="font-size: 19px; font-weight: 700; margin: 0; color: var(--color-coral);">Vista de Informe</h4>
+            </div>
+            <figure style="margin: 0 0 14px;">
+              <img src="../../assets/images/Power BI/vista de informe.jpg"
+                   alt="Vista de Informe en Power BI Desktop"
+                   style="width: 100%; border-radius: 10px; border: 2px solid var(--color-mauve); box-shadow: 0 4px 14px rgba(0,0,0,0.09);" />
+              <figcaption style="text-align: center; margin-top: 8px; font-size: 13px; color: var(--color-slate); font-style: italic;">Vista de Informe — el lienzo de diseño donde construyes la experiencia de usuario</figcaption>
+            </figure>
+            <p style="font-size: 15px; line-height: 1.7; margin: 0 0 8px;">
+              El lienzo de diseño. Aquí arrastras visuales, configuras interacciones, añades filtros,
+              creas páginas, aplicas temas y construyes la experiencia completa que verá el usuario final.
+            </p>
+            <p style="font-size: 14px; color: var(--color-slate); margin: 0;"><strong>Atajo de teclado:</strong> Ctrl+1</p>
+          </div>
+
+          <!-- Vista de Tabla -->
+          <div style="margin-bottom: 40px;">
+            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 14px;">
+              <span style="font-size: 28px;">📋</span>
+              <h4 style="font-size: 19px; font-weight: 700; margin: 0; color: var(--color-coral);">Vista de Tabla</h4>
+            </div>
+            <figure style="margin: 0 0 14px;">
+              <img src="../../assets/images/Power BI/vista de tabla.jpg"
+                   alt="Vista de Tabla en Power BI Desktop"
+                   style="width: 100%; border-radius: 10px; border: 2px solid var(--color-mauve); box-shadow: 0 4px 14px rgba(0,0,0,0.09);" />
+              <figcaption style="text-align: center; margin-top: 8px; font-size: 13px; color: var(--color-slate); font-style: italic;">Vista de Tabla — explora los datos cargados en memoria, columna a columna</figcaption>
+            </figure>
+            <p style="font-size: 15px; line-height: 1.7; margin: 0 0 8px;">
+              Explora los datos en memoria como si fuera Excel. Crea columnas calculadas,
+              verifica valores únicos, detecta duplicados y errores. Imprescindible para QA y debugging.
+            </p>
+            <p style="font-size: 14px; color: var(--color-slate); margin: 0;"><strong>Atajo de teclado:</strong> Ctrl+2</p>
+          </div>
+
+          <!-- Vista de Modelo -->
+          <div style="margin-bottom: 40px;">
+            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 14px;">
+              <span style="font-size: 28px;">🔗</span>
+              <h4 style="font-size: 19px; font-weight: 700; margin: 0; color: var(--color-coral);">Vista de Modelo</h4>
+            </div>
+            <figure style="margin: 0 0 14px;">
+              <img src="../../assets/images/Power BI/vista de modelo .jpg"
+                   alt="Vista de Modelo en Power BI Desktop"
+                   style="width: 100%; border-radius: 10px; border: 2px solid var(--color-mauve); box-shadow: 0 4px 14px rgba(0,0,0,0.09);" />
+              <figcaption style="text-align: center; margin-top: 8px; font-size: 13px; color: var(--color-slate); font-style: italic;">Vista de Modelo — diagrama de relaciones entre tablas del modelo semántico</figcaption>
+            </figure>
+            <p style="font-size: 15px; line-height: 1.7; margin: 0 0 8px;">
+              El diagrama de relaciones. Conectas tablas, configuras cardinalidad (1:N),
+              dirección de filtro (simple o bidireccional) y organizas visualmente tu esquema estrella.
+            </p>
+            <p style="font-size: 14px; color: var(--color-slate); margin: 0;"><strong>Atajo de teclado:</strong> Ctrl+3</p>
+          </div>
+
+          <!-- Vistas adicionales -->
+          <h3 class="subsection-title" id="vistas-adicionales">Vistas Adicionales de Power BI Desktop</h3>
+
+          <p>Además de las 3 vistas clásicas, Power BI Desktop incluye vistas especializadas para usuarios avanzados:</p>
+
+          <!-- Vista DAX -->
+          <div style="margin-bottom: 40px;">
+            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 14px;">
+              <span style="font-size: 28px;">📝</span>
+              <h4 style="font-size: 19px; font-weight: 700; margin: 0; color: var(--color-coral);">Vista de Consultas DAX</h4>
+            </div>
+            <figure style="margin: 0 0 14px;">
+              <img src="../../assets/images/Power BI/vista de DAX.jpg"
+                   alt="Vista de consultas DAX en Power BI Desktop"
+                   style="width: 100%; border-radius: 10px; border: 2px solid var(--color-mauve); box-shadow: 0 4px 14px rgba(0,0,0,0.09);" />
+              <figcaption style="text-align: center; margin-top: 8px; font-size: 13px; color: var(--color-slate); font-style: italic;">Vista de consultas DAX — escribe y ejecuta DAX directamente sobre el modelo</figcaption>
+            </figure>
+            <p style="font-size: 15px; line-height: 1.7; margin: 0;">
+              Una ventana de consulta DAX donde puedes escribir y ejecutar código directamente
+              sin necesidad de crear medidas. Perfecta para probar fórmulas complejas,
+              hacer debugging, experimentar con nuevas funciones y ejecutar análisis ad-hoc
+              sin modificar el modelo.
+            </p>
+          </div>
+
+          <!-- Vista TMDL -->
+          <div style="margin-bottom: 40px;">
+            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 14px;">
+              <span style="font-size: 28px;">📄</span>
+              <h4 style="font-size: 19px; font-weight: 700; margin: 0; color: var(--color-coral);">Vista TMDL (Tabular Model Definition Language)</h4>
+            </div>
+            <figure style="margin: 0 0 14px;">
+              <img src="../../assets/images/Power BI/vista de TMDL.jpg"
+                   alt="Vista TMDL en Power BI Desktop editando el modelo como código"
+                   style="width: 100%; border-radius: 10px; border: 2px solid var(--color-mauve); box-shadow: 0 4px 14px rgba(0,0,0,0.09);" />
+              <figcaption style="text-align: center; margin-top: 8px; font-size: 13px; color: var(--color-slate); font-style: italic;">Vista TMDL — edita el modelo semántico completo como archivos de texto</figcaption>
+            </figure>
+            <p style="font-size: 15px; line-height: 1.7; margin: 0;">
+              Edita el modelo semántico completo como archivos de texto estructurado.
+              TMDL es ideal para <strong>control de versiones con Git</strong>, búsquedas
+              masivas con Ctrl+F, cambios en bloque (renombrar medidas o tablas),
+              code reviews y desarrollo colaborativo avanzado.
+              Es el futuro del desarrollo profesional de Power BI.
+            </p>
+          </div>
+
+          <!-- La cinta superior -->
+          <h3 class="subsection-title" id="cinta-superior">La Cinta Superior (Ribbon)</h3>
+
+          <p>La cinta organiza todas las opciones en pestañas temáticas. Conocerla bien te ahorrará tiempo cada día:</p>
+
+          <div style="margin-top: 28px;">
+
+            <div style="margin-bottom: 48px;">
+              <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                <span style="font-size: 32px;">🏠</span>
+                <h4 style="font-size: 20px; font-weight: 700; margin: 0; color: var(--color-coral);">Inicio</h4>
+              </div>
+              <figure style="margin: 20px 0;">
+                <img src="../../assets/images/Power BI/cinta superior inicio.jpg"
+                     alt="Pestaña Inicio del Ribbon"
+                     style="width: 100%; max-width: 800px; border-radius: 12px; border: 3px solid var(--color-mauve); box-shadow: 0 6px 20px rgba(0,0,0,0.1);" />
+                <figcaption style="text-align: center; margin-top: 12px; font-size: 14px; color: var(--color-slate); font-style: italic;">Inicio — acciones más frecuentes</figcaption>
+              </figure>
+              <p style="font-size: 16px; line-height: 1.7; margin: 16px 0;">
+                Las acciones más comunes: pegar datos, obtener datos de fuentes, recientes, transformar datos (abre Power Query), actualizar datos, nuevo visual, nuevo parámetro, publicar al Service.
+              </p>
+            </div>
+
+            <div style="margin-bottom: 48px;">
+              <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                <span style="font-size: 32px;">➕</span>
+                <h4 style="font-size: 20px; font-weight: 700; margin: 0; color: var(--color-coral);">Insertar</h4>
+              </div>
+              <figure style="margin: 20px 0;">
+                <img src="../../assets/images/Power BI/cinta superior insertar.jpg"
+                     alt="Pestaña Insertar del Ribbon"
+                     style="width: 100%; max-width: 800px; border-radius: 12px; border: 3px solid var(--color-mauve); box-shadow: 0 6px 20px rgba(0,0,0,0.1);" />
+                <figcaption style="text-align: center; margin-top: 12px; font-size: 14px; color: var(--color-slate); font-style: italic;">Insertar — visuales y elementos de página</figcaption>
+              </figure>
+              <p style="font-size: 16px; line-height: 1.7; margin: 16px 0;">
+                Añade nuevos visuales: gráficos nativos, visuales personalizados de AppSource, elementos de diseño (cuadros de texto, imágenes, formas, botones), páginas y navegación.
+              </p>
+            </div>
+
+            <div style="margin-bottom: 48px;">
+              <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                <span style="font-size: 32px;">📊</span>
+                <h4 style="font-size: 20px; font-weight: 700; margin: 0; color: var(--color-coral);">Modelado</h4>
+              </div>
+              <figure style="margin: 20px 0;">
+                <img src="../../assets/images/Power BI/cinta superior modelado.jpg"
+                     alt="Pestaña Modelado del Ribbon"
+                     style="width: 100%; max-width: 800px; border-radius: 12px; border: 3px solid var(--color-mauve); box-shadow: 0 6px 20px rgba(0,0,0,0.1);" />
+                <figcaption style="text-align: center; margin-top: 12px; font-size: 14px; color: var(--color-slate); font-style: italic;">Modelado — medidas, columnas y parámetros</figcaption>
+              </figure>
+              <p style="font-size: 16px; line-height: 1.7; margin: 16px 0;">
+                El corazón del modelado: crear medidas, columnas calculadas, tablas calculadas, grupos, jerarquías, parámetros de campo, parámetros numéricos, gestionar relaciones y seguridad (RLS).
+              </p>
+            </div>
+
+            <div style="margin-bottom: 48px;">
+              <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                <span style="font-size: 32px;">👁️</span>
+                <h4 style="font-size: 20px; font-weight: 700; margin: 0; color: var(--color-coral);">Ver</h4>
+              </div>
+              <figure style="margin: 20px 0;">
+                <img src="../../assets/images/Power BI/cinta superior ver.jpg"
+                     alt="Pestaña Ver del Ribbon"
+                     style="width: 100%; max-width: 800px; border-radius: 12px; border: 3px solid var(--color-mauve); box-shadow: 0 6px 20px rgba(0,0,0,0.1);" />
+                <figcaption style="text-align: center; margin-top: 12px; font-size: 14px; color: var(--color-slate); font-style: italic;">Ver — temas, cuadrículas y paneles</figcaption>
+              </figure>
+              <p style="font-size: 16px; line-height: 1.7; margin: 16px 0;">
+                Opciones de visualización: aplicar temas predefinidos o personalizados, activar/desactivar líneas de cuadrícula, ajustar a cuadrícula, mostrar paneles (Filtros, Marcadores, Selección), zoom.
+              </p>
+            </div>
+
+            <div style="margin-bottom: 48px;">
+              <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                <span style="font-size: 32px;">⚡</span>
+                <h4 style="font-size: 20px; font-weight: 700; margin: 0; color: var(--color-coral);">Optimizar</h4>
+              </div>
+              <figure style="margin: 20px 0;">
+                <img src="../../assets/images/Power BI/cinta superior optimizar.jpg"
+                     alt="Pestaña Optimizar del Ribbon"
+                     style="width: 100%; max-width: 800px; border-radius: 12px; border: 3px solid var(--color-mauve); box-shadow: 0 6px 20px rgba(0,0,0,0.1);" />
+                <figcaption style="text-align: center; margin-top: 12px; font-size: 14px; color: var(--color-slate); font-style: italic;">Optimizar — rendimiento del modelo</figcaption>
+              </figure>
+              <p style="font-size: 16px; line-height: 1.7; margin: 16px 0;">
+                Herramientas de análisis de rendimiento: Performance Analyzer (medir cuánto tarda cada visual), Best Practice Analyzer, DAX Query View, información sobre el modelo y uso de memoria.
+              </p>
+            </div>
+
+            <div style="margin-bottom: 48px;">
+              <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                <span style="font-size: 32px;">❓</span>
+                <h4 style="font-size: 20px; font-weight: 700; margin: 0; color: var(--color-coral);">Ayuda</h4>
+              </div>
+              <figure style="margin: 20px 0;">
+                <img src="../../assets/images/Power BI/cinta superior ayuda.jpg"
+                     alt="Pestaña Ayuda del Ribbon"
+                     style="width: 100%; max-width: 800px; border-radius: 12px; border: 3px solid var(--color-mauve); box-shadow: 0 6px 20px rgba(0,0,0,0.1);" />
+                <figcaption style="text-align: center; margin-top: 12px; font-size: 14px; color: var(--color-slate); font-style: italic;">Ayuda — documentación y soporte</figcaption>
+              </figure>
+              <p style="font-size: 16px; line-height: 1.7; margin: 16px 0;">
+                Acceso a documentación oficial, comunidad, tutoriales de aprendizaje, soporte y gestión de licencias. También muestra la versión instalada de Desktop.
+              </p>
+            </div>
+
+          </div>
+
+          <!-- Herramientas externas -->
+          <div style="margin-top: 32px;">
+            <figure style="margin: 0 0 14px;">
+              <img src="../../assets/images/Power BI/cinta superior herramientas externas.jpg"
+                   alt="Pestaña Herramientas Externas mostrando DAX Studio, Tabular Editor y otras"
+                   style="width: 100%; border-radius: 10px; border: 2px solid var(--color-mauve); box-shadow: 0 4px 14px rgba(0,0,0,0.09);" />
+              <figcaption style="text-align: center; margin-top: 8px; font-size: 13px; color: var(--color-slate); font-style: italic;">Pestaña Herramientas externas — aparece al instalar DAX Studio, Tabular Editor, ALM Toolkit, Bravo...</figcaption>
+            </figure>
+            <h4 style="font-size: 16px; font-weight: 700; color: var(--color-coral); margin: 0 0 8px;">🛠️ Herramientas Externas</h4>
+            <p style="font-size: 15px; line-height: 1.7; margin: 0;">
+              Cuando instalas herramientas de terceros como <strong>DAX Studio</strong>,
+              <strong>Tabular Editor</strong>, <strong>ALM Toolkit</strong> o
+              <strong>Bravo</strong>, aparecen automáticamente en esta pestaña para
+              acceso directo desde Desktop.
+            </p>
+          </div>
+
+          <!-- Panel lateral -->
+          <h3 class="subsection-title">El Panel Lateral Derecho</h3>
+
+          <p>El panel derecho cambia según el contexto. Cuando tienes un visual seleccionado, verás 3 subpaneles clave:</p>
+
+          <figure class="feature-image">
+            <img src="../../assets/images/Power BI/panel lateral formato, compilar y datos.jpg"
+                 alt="Panel lateral derecho de Power BI Desktop con las pestañas Compilar, Formato y Datos" />
+            <figcaption>Panel derecho: Compilar (añadir campos al visual), Formato (estilo) y Datos (filtros de visual)</figcaption>
+          </figure>
+
+          <!-- PARÁMETROS DE CAMPO -->
+          <div style="margin-bottom: 48px;" id="parametros-campo">
+            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+              <span style="font-size: 32px;">🎛️</span>
+              <h4 style="font-size: 20px; font-weight: 700; margin: 0; color: var(--color-coral);">Parámetros de Campo (Field Parameters)</h4>
+            </div>
+
+            <p style="font-size: 16px; line-height: 1.7; margin: 16px 0;">
+              Los parámetros de campo son una de las funcionalidades más potentes de
+              Power BI Desktop. Permiten crear <strong>visuales completamente dinámicos</strong>
+              donde el usuario puede elegir en tiempo real qué medida o dimensión se
+              muestra, sin necesidad de duplicar visuales, páginas ni modelos.
+            </p>
+
+            <figure style="margin: 20px 0;">
+              <img src="../../assets/images/Power BI/menú parámetros de campo.jpg"
+                   alt="Menú de creación de parámetros de campo en Power BI Desktop"
+                   style="width: 100%; max-width: 800px; border-radius: 12px; border: 3px solid var(--color-mauve); box-shadow: 0 6px 20px rgba(0,0,0,0.1);" />
+              <figcaption style="text-align: center; margin-top: 12px; font-size: 14px; color: var(--color-slate); font-style: italic;">Menú para crear un parámetro de campo: Modelado → Nuevo parámetro → Campos</figcaption>
+            </figure>
+
+            <h5 style="font-size: 18px; font-weight: 700; margin: 32px 0 16px; color: var(--color-dark);">¿Qué problema resuelven?</h5>
+            <p style="font-size: 16px; line-height: 1.7; margin: 16px 0;">Imagina que tienes un gráfico de barras mostrando Ventas por Mes. El
+            usuario quiere ver Margen, luego Unidades, luego Ticket Medio... Sin
+            parámetros de campo necesitarías 4 páginas casi idénticas, o 4 gráficos
+            apilados que ocupan espacio. Con parámetros de campo: <strong>un solo
+            gráfico, el usuario elige</strong>.</p>
+
+            <h5 style="font-size: 18px; font-weight: 700; margin: 32px 0 16px; color: var(--color-dark);">Cómo crear un parámetro de campo</h5>
+            <ol class="steps-list">
+              <li>Abre la pestaña <strong>Modelado</strong> en la cinta superior</li>
+              <li>Haz clic en <strong>Nuevo parámetro</strong> → <strong>Campos</strong></li>
+              <li>Dale un nombre descriptivo, por ejemplo: <em>"Seleccionar Métrica"</em></li>
+              <li>Añade los campos que quieres ofrecer: pueden ser medidas, columnas, o ambas</li>
+              <li>Power BI crea automáticamente una tabla especial con esos campos en el modelo</li>
+              <li>Arrastra el parámetro a un visual como si fuera una medida normal</li>
+              <li>Añade una <strong>segmentación (slicer)</strong> del parámetro en la página para que el usuario cambie entre opciones</li>
+            </ol>
+
+            <h5 style="font-size: 18px; font-weight: 700; margin: 32px 0 16px; color: var(--color-dark);">💡 Casos de uso donde brillan los parámetros de campo</h5>
+            <ul style="margin-left: 24px; line-height: 1.8;">
+              <li><strong>Análisis multi-métrica:</strong> Un dashboard comercial donde el usuario elige entre Ingresos, Margen %, Unidades vendidas, Ticket medio o Coste — todo en el mismo gráfico de líneas</li>
+              <li><strong>Dimensiones dinámicas:</strong> Cambiar el eje X entre Mes, Trimestre, Semana, Producto, Región o Vendedor según lo que el usuario quiera analizar</li>
+              <li><strong>Tablas configurables:</strong> El usuario selecciona qué columnas mostrar en una tabla detallada sin duplicar páginas ni crear visuales extra</li>
+              <li><strong>Dashboards de autoservicio:</strong> Empoderar a usuarios de negocio para que exploren los datos a su manera sin depender de IT</li>
+            </ul>
+
+            <div class="note note--practice">
+              <p><strong>📌 Ordena las opciones estratégicamente</strong></p>
+              <p style="margin: 8px 0 0; line-height: 1.7;">
+                Al crear el parámetro, el orden de los campos que añadas determina el orden
+                en el slicer. La primera opción es la que se muestra por defecto al abrir el
+                informe. Pon siempre la métrica más relevante o más usada en primer lugar.
+              </p>
+            </div>
+          </div>
+
+          <!-- PARÁMETROS NUMÉRICOS -->
+          <div style="margin-bottom: 48px;" id="parametros-numericos">
+            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+              <span style="font-size: 32px;">🎚️</span>
+              <h4 style="font-size: 20px; font-weight: 700; margin: 0; color: var(--color-coral);">Parámetros Numéricos (What-If Parameters)</h4>
+            </div>
+
+            <p style="font-size: 16px; line-height: 1.7; margin: 16px 0;">
+              Los parámetros numéricos transforman tus informes en
+              <strong>simuladores interactivos</strong>. El usuario mueve un slider y
+              los KPIs se recalculan en tiempo real mostrando diferentes escenarios.
+            </p>
+
+            <figure style="margin: 20px 0;">
+              <img src="../../assets/images/Power BI/menú parámetro numérico.jpg"
+                   alt="Menú de creación de parámetros numéricos en Power BI Desktop"
+                   style="width: 100%; max-width: 800px; border-radius: 12px; border: 3px solid var(--color-mauve); box-shadow: 0 6px 20px rgba(0,0,0,0.1);" />
+              <figcaption style="text-align: center; margin-top: 12px; font-size: 14px; color: var(--color-slate); font-style: italic;">Menú para crear un parámetro numérico: Modelado → Nuevo parámetro → Numérico</figcaption>
+            </figure>
+
+            <h5 style="font-size: 18px; font-weight: 700; margin: 32px 0 16px; color: var(--color-dark);">Crear un parámetro numérico paso a paso</h5>
+            <ol class="steps-list">
+              <li>En <strong>Modelado</strong> → <strong>Nuevo parámetro</strong> → <strong>Numérico</strong></li>
+              <li>Define el <strong>nombre</strong> (ej: <em>"Tasa de Crecimiento %"</em>)</li>
+              <li>Establece <strong>Tipo de datos</strong>: entero o decimal</li>
+              <li>Configura <strong>Mínimo</strong>, <strong>Máximo</strong> e <strong>Incremento</strong></li>
+              <li>Elige el <strong>valor por defecto</strong> que aparecerá al abrir el informe</li>
+              <li>Marca "Agregar segmentación de datos" para que el slider aparezca automáticamente</li>
+              <li>Usa esa medida en tu DAX con <code>SELECTEDVALUE()</code></li>
+            </ol>
+
+            <h5 style="font-size: 18px; font-weight: 700; margin: 32px 0 16px; color: var(--color-dark);">Ejemplo real: Simulador de precios con descuento</h5>
+            <div class="code-block">
+<span class="comment">-- Parámetro creado: "Descuento %" con rango 0 a 50, incremento 5</span>
+
+<span class="keyword">Precio con Descuento</span> =
+<span class="keyword">VAR</span> PctDescuento = <span class="function">SELECTEDVALUE</span>('Descuento %'[Descuento %], 0) / 100
+<span class="keyword">RETURN</span>
+    [Precio Medio Unitario] * (1 - PctDescuento)
+
+<span class="keyword">Ingresos con Descuento</span> =
+    [Unidades Vendidas] * [Precio con Descuento]
+            </div>
+
+            <div class="note note--tip">
+              <p><strong>💡 Combina parámetros: múltiples sliders, máxima potencia</strong></p>
+              <p style="margin: 8px 0 0; line-height: 1.7;">
+                Puedes tener varios parámetros numéricos a la vez. Por ejemplo: un slider de
+                "% descuento en precio" y otro de "% incremento en volumen". Un simulador de
+                negocio completo directamente en Power BI.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================================================
+             SECCIÓN: FLUJO DESKTOP → SERVICE
+        ================================================ -->
+        <section class="content-section" id="flujo-trabajo">
+          <div class="section-header">
+            <span class="section-icon">🔄</span>
+            <h2>El Flujo de Trabajo: Desktop → Service</h2>
+          </div>
+
+          <p style="font-size: 17px; line-height: 1.8; margin-bottom: 28px;">
+            Entender cómo fluyen los datos entre <strong>Power BI Desktop</strong>
+            y <strong>Power BI Service</strong> es clave para trabajar eficientemente.
+            Aquí tienes el ciclo completo:
+          </p>
+
+          <figure style="margin: 20px 0;">
+            <img src="../../assets/images/Power BI/power bi service/flujo de datos en Power BI.jpg"
+                 alt="Diagrama del flujo de datos entre Power BI Desktop y Power BI Service"
+                 style="width: 100%; max-width: 800px; border-radius: 12px; border: 3px solid var(--color-mauve); box-shadow: 0 6px 20px rgba(0,0,0,0.1);" />
+            <figcaption style="text-align: center; margin-top: 12px; font-size: 14px; color: var(--color-slate); font-style: italic;">
+              El flujo completo: Desktop → publicar → Service → actualización automática desde las fuentes de datos
+            </figcaption>
+          </figure>
+
+          <div style="background: white; border-left: 4px solid #6264A7; padding: 24px; margin: 24px 0; border-radius: 8px;">
+            <h4 style="font-size: 20px; font-weight: 700; margin: 0 0 12px; color: #6264A7;">1️⃣ Desarrollo en Power BI Desktop</h4>
+            <ul style="margin-left: 24px; line-height: 1.8;">
+              <li>Te <strong>conectas a las fuentes de datos</strong> (SQL Server, Excel, APIs, SharePoint...)</li>
+              <li>Transformas y limpias datos en <strong>Power Query</strong></li>
+              <li>Creas el <strong>modelo de datos</strong> (relaciones, medidas DAX, columnas calculadas)</li>
+              <li>Diseñas el <strong>informe visual</strong> (gráficos, tablas, KPIs)</li>
+              <li>Guardas todo en un archivo <strong>.pbix</strong></li>
+            </ul>
+            <p style="font-size: 16px; line-height: 1.7; margin: 12px 0;">
+              En este punto, <strong>Desktop almacena una copia de los datos</strong> dentro del .pbix.
+            </p>
+          </div>
+
+          <div style="background: white; border-left: 4px solid var(--color-coral); padding: 24px; margin: 24px 0; border-radius: 8px;">
+            <h4 style="font-size: 20px; font-weight: 700; margin: 0 0 12px; color: var(--color-coral);">2️⃣ Publicar al Service</h4>
+            <p style="font-size: 16px; line-height: 1.7; margin: 12px 0;">
+              Desde Power BI Desktop, haces clic en <strong>"Publicar"</strong> (pestaña Inicio). Esto sube al Service:
+            </p>
+            <ul style="margin-left: 24px; line-height: 1.8;">
+              <li>El <strong>modelo de datos</strong> (semantic model / dataset)</li>
+              <li>El <strong>informe</strong> visual</li>
+              <li>La configuración base de <strong>actualización</strong></li>
+            </ul>
+          </div>
+
+          <div style="background: white; border-left: 4px solid #5BAD92; padding: 24px; margin: 24px 0; border-radius: 8px;">
+            <h4 style="font-size: 20px; font-weight: 700; margin: 0 0 12px; color: #5BAD92;">3️⃣ El Service conecta directamente a los datos</h4>
+            <ul style="margin-left: 24px; line-height: 1.8;">
+              <li>✅ Actualiza los datos automáticamente (hasta 8 veces al día en Pro, ilimitado en PPU/Fabric)</li>
+              <li>✅ Los usuarios ven siempre datos frescos sin intervención manual</li>
+              <li>✅ <strong>El archivo .pbix original ya NO es necesario</strong> para las actualizaciones</li>
+            </ul>
+          </div>
+
+          <div style="background: var(--color-blush); border-radius: 12px; padding: 24px; margin: 24px 0;">
+            <h4 style="font-size: 20px; font-weight: 700; margin: 0 0 16px; color: var(--color-dark);">🎯 ¿Puedo borrar el .pbix después de publicar?</h4>
+            <p style="font-size: 16px; line-height: 1.7; margin: 12px 0;">
+              <strong>Técnicamente sí, pero no deberías.</strong> El .pbix es tu punto de edición, tu backup y tu control de versiones.
+            </p>
+            <ul style="margin-left: 24px; line-height: 1.8;">
+              <li>⚠️ Si necesitas cambiar el modelo o el informe, lo haces en Desktop</li>
+              <li>⚠️ Es recuperable desde el Service solo si tienes permisos de Build</li>
+            </ul>
+          </div>
+
+          <div class="note note--practice">
+            <p><strong>📌 Mejores prácticas del flujo Desktop → Service</strong></p>
+            <ul style="margin: 8px 0 0 24px; line-height: 1.8;">
+              <li><strong>Control de versiones:</strong> guarda cada .pbix con fecha (InformeVentas_2025-03-21.pbix)</li>
+              <li><strong>Gateway:</strong> para datos on-premises necesitas un Power BI Gateway</li>
+              <li><strong>Workspace dedicado:</strong> publica en workspaces compartidos, no en "Mi área de trabajo"</li>
+              <li><strong>Separación modelo-informe:</strong> puedes tener múltiples informes conectados al mismo dataset</li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- ================================================
+             SECCIÓN: TIPOS DE CONEXIÓN
+        ================================================ -->
+        <section class="content-section" id="tipos-conexion">
+          <div class="section-header">
+            <span class="section-icon">🔌</span>
+            <h2>Tipos de Conexión a Datos</h2>
+          </div>
+
+          <p style="font-size: 17px; line-height: 1.8; margin-bottom: 28px;">
+            Una de las decisiones más importantes al crear un informe de Power BI es
+            <strong>cómo va a conectarse a los datos</strong>. Hay 4 modos principales:
+          </p>
+
+          <!-- IMPORT -->
+          <div style="background: white; border-left: 4px solid #5BAD92; padding: 24px; margin: 24px 0; border-radius: 8px;" id="import">
+            <h4 style="font-size: 20px; font-weight: 700; margin: 0 0 12px; color: #5BAD92;">📥 Import (Modo Importación)</h4>
+            <p style="font-size: 16px; line-height: 1.7; margin: 12px 0;">
+              Power BI <strong>copia todos los datos</strong> desde la fuente original y los almacena en su motor columnar (VertiPaq). Los datos quedan comprimidos en memoria.
+            </p>
+            <p style="font-size: 16px; line-height: 1.7; margin: 12px 0;"><strong>✅ Ventajas</strong></p>
+            <ul style="margin-left: 24px; line-height: 1.8;">
+              <li>⚡ <strong>Rendimiento extremadamente rápido</strong> — todo está en memoria RAM</li>
+              <li>🎯 <strong>Todas las funcionalidades DAX</strong> disponibles</li>
+              <li>📊 Compatible con cualquier fuente de datos</li>
+              <li>💾 Compresión excelente (ratio ~10:1 típico)</li>
+            </ul>
+            <p style="font-size: 16px; line-height: 1.7; margin: 12px 0;"><strong>⚠️ Limitaciones</strong></p>
+            <ul style="margin-left: 24px; line-height: 1.8;">
+              <li>Los datos no son en tiempo real (dependen de la actualización)</li>
+              <li>Límites de tamaño: 1 GB (Pro), 100 GB (PPU), 400 GB (Fabric)</li>
+            </ul>
+            <div class="note note--practice" style="margin-top: 16px;">
+              <p><strong>📌 Cuándo usar Import</strong></p>
+              <p>Import es el modo <strong>por defecto y recomendado</strong> en el 99% de los casos. Úsalo siempre que puedas, especialmente para informes donde la actualización diaria/horaria es suficiente.</p>
+            </div>
+          </div>
+
+          <!-- DIRECTQUERY -->
+          <div style="background: white; border-left: 4px solid #F2B84B; padding: 24px; margin: 24px 0; border-radius: 8px;" id="directquery">
+            <h4 style="font-size: 20px; font-weight: 700; margin: 0 0 12px; color: #F2B84B;">⚡ DirectQuery</h4>
+            <p style="font-size: 16px; line-height: 1.7; margin: 12px 0;">
+              Power BI <strong>NO importa los datos</strong>. Cada vez que un usuario interactúa con el informe, Power BI envía consultas SQL en tiempo real a la base de datos original.
+            </p>
+            <p style="font-size: 16px; line-height: 1.7; margin: 12px 0;"><strong>✅ Ventajas</strong></p>
+            <ul style="margin-left: 24px; line-height: 1.8;">
+              <li>📡 <strong>Datos siempre actualizados</strong> — consultas en tiempo real</li>
+              <li>♾️ Sin límites de tamaño de datos</li>
+              <li>🔐 Seguridad a nivel de base de datos (RLS nativo)</li>
+            </ul>
+            <p style="font-size: 16px; line-height: 1.7; margin: 12px 0;"><strong>⚠️ Limitaciones</strong></p>
+            <ul style="margin-left: 24px; line-height: 1.8;">
+              <li>🐌 Rendimiento dependiente de la BD</li>
+              <li>❌ Muchas funciones DAX no disponibles</li>
+              <li>⏱️ Timeout de consultas (normalmente 4 minutos)</li>
+            </ul>
+            <div class="note note--warning" style="margin-top: 16px;">
+              <p><strong>⚠️ Ojo con esto</strong></p>
+              <p>DirectQuery puede <strong>saturar tu base de datos</strong> con consultas si muchos usuarios usan el informe simultáneamente. Cada click = consulta SQL.</p>
+            </div>
+            <div class="note note--tip" style="margin-top: 16px;">
+              <p><strong>💡 Cuándo usar DirectQuery</strong></p>
+              <ul style="margin: 8px 0 0 24px; line-height: 1.8;">
+                <li>Necesitas datos en <strong>tiempo real o casi real</strong></li>
+                <li>Tienes bases de datos enormes (TB) que no puedes importar</li>
+                <li>La base de datos está súper optimizada y bien indexada</li>
+                <li>Los datos cambian constantemente (bolsa, IoT, tracking)</li>
+                <li>Necesitas aplicar seguridad a nivel de BD</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- LIVE CONNECTION -->
+          <div style="background: white; border-left: 4px solid #6264A7; padding: 24px; margin: 24px 0; border-radius: 8px;" id="live-connection">
+            <h4 style="font-size: 20px; font-weight: 700; margin: 0 0 12px; color: #6264A7;">🔗 Live Connection</h4>
+            <p style="font-size: 16px; line-height: 1.7; margin: 12px 0;">
+              Power BI se conecta a un <strong>modelo de datos ya existente</strong> (un dataset publicado en Power BI Service, Azure Analysis Services o SQL Server Analysis Services). No creas modelo propio, solo diseñas el informe visual.
+            </p>
+            <p style="font-size: 16px; line-height: 1.7; margin: 12px 0;"><strong>✅ Ventajas</strong></p>
+            <ul style="margin-left: 24px; line-height: 1.8;">
+              <li>🎯 <strong>Única fuente de verdad</strong> — todos usan el mismo modelo</li>
+              <li>♻️ Reutilización total del modelo de datos</li>
+              <li>🔄 Actualizaciones centralizadas</li>
+            </ul>
+            <div class="note note--tip" style="margin-top: 16px;">
+              <p><strong>💡 Cuándo usar Live Connection</strong></p>
+              <p>Ideal en equipos de BI maduros donde una persona mantiene el modelo centralizado y varios desarrolladores crean informes sobre él.</p>
+            </div>
+          </div>
+
+          <!-- DIRECT LAKE -->
+          <div style="background: white; border-left: 4px solid var(--color-coral); padding: 24px; margin: 24px 0; border-radius: 8px;" id="direct-lake">
+            <h4 style="font-size: 20px; font-weight: 700; margin: 0 0 12px; color: var(--color-coral);">🏞️ Direct Lake</h4>
+            <p style="font-size: 16px; line-height: 1.7; margin: 12px 0;">
+              Exclusivo de <strong>Microsoft Fabric</strong>. Lee los datos directamente desde archivos <strong>Delta Parquet en OneLake</strong>, sin importarlos ni enviar consultas SQL. Combina la velocidad de Import con la frescura de DirectQuery.
+            </p>
+            <p style="font-size: 16px; line-height: 1.7; margin: 12px 0;"><strong>✅ Ventajas</strong></p>
+            <ul style="margin-left: 24px; line-height: 1.8;">
+              <li>🚀 <strong>Velocidad de Import + frescura de DirectQuery</strong></li>
+              <li>🔄 No necesitas programar actualizaciones</li>
+              <li>♾️ Sin límites artificiales de tamaño</li>
+              <li>💰 Sin duplicación de datos (solo en OneLake)</li>
+            </ul>
+            <div class="note note--tip" style="margin-top: 16px;">
+              <p><strong>💡 Cuándo usar Direct Lake</strong></p>
+              <p>Si ya tienes Microsoft Fabric y tus datos están en un Lakehouse o Warehouse, Direct Lake es la <strong>opción natural y más eficiente</strong>.</p>
+            </div>
+          </div>
+
+          <!-- Tabla comparativa -->
+          <h4 style="font-size: 20px; font-weight: 700; margin: 40px 0 16px; color: var(--color-dark);">📊 Comparativa rápida</h4>
+          <div style="overflow-x: auto;">
+            <table style="width: 100%; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden; font-size: 15px;">
+              <thead>
+                <tr style="background: var(--color-coral); color: white;">
+                  <th style="padding: 12px 16px; text-align: left;">Criterio</th>
+                  <th style="padding: 12px 16px; text-align: center;">Import</th>
+                  <th style="padding: 12px 16px; text-align: center;">DirectQuery</th>
+                  <th style="padding: 12px 16px; text-align: center;">Live Connection</th>
+                  <th style="padding: 12px 16px; text-align: center;">Direct Lake</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr style="border-bottom: 1px solid var(--color-mauve);">
+                  <td style="padding: 12px 16px;">Rendimiento</td>
+                  <td style="padding: 12px 16px; text-align: center;">⚡⚡⚡</td>
+                  <td style="padding: 12px 16px; text-align: center;">⚡</td>
+                  <td style="padding: 12px 16px; text-align: center;">⚡⚡</td>
+                  <td style="padding: 12px 16px; text-align: center;">⚡⚡⚡</td>
+                </tr>
+                <tr style="border-bottom: 1px solid var(--color-mauve); background: var(--color-rose);">
+                  <td style="padding: 12px 16px;">Frescura de datos</td>
+                  <td style="padding: 12px 16px; text-align: center;">Programada</td>
+                  <td style="padding: 12px 16px; text-align: center;">Tiempo real</td>
+                  <td style="padding: 12px 16px; text-align: center;">Según modelo</td>
+                  <td style="padding: 12px 16px; text-align: center;">Tiempo real</td>
+                </tr>
+                <tr style="border-bottom: 1px solid var(--color-mauve);">
+                  <td style="padding: 12px 16px;">DAX completo</td>
+                  <td style="padding: 12px 16px; text-align: center;">✅</td>
+                  <td style="padding: 12px 16px; text-align: center;">❌ Parcial</td>
+                  <td style="padding: 12px 16px; text-align: center;">✅</td>
+                  <td style="padding: 12px 16px; text-align: center;">✅</td>
+                </tr>
+                <tr style="border-bottom: 1px solid var(--color-mauve); background: var(--color-rose);">
+                  <td style="padding: 12px 16px;">Límite de tamaño</td>
+                  <td style="padding: 12px 16px; text-align: center;">Sí (por licencia)</td>
+                  <td style="padding: 12px 16px; text-align: center;">Sin límite</td>
+                  <td style="padding: 12px 16px; text-align: center;">Según modelo</td>
+                  <td style="padding: 12px 16px; text-align: center;">Sin límite</td>
+                </tr>
+                <tr style="border-bottom: 1px solid var(--color-mauve);">
+                  <td style="padding: 12px 16px;">Requiere Fabric</td>
+                  <td style="padding: 12px 16px; text-align: center;">❌</td>
+                  <td style="padding: 12px 16px; text-align: center;">❌</td>
+                  <td style="padding: 12px 16px; text-align: center;">❌</td>
+                  <td style="padding: 12px 16px; text-align: center;">✅</td>
+                </tr>
+                <tr>
+                  <td style="padding: 12px 16px;">Uso recomendado</td>
+                  <td style="padding: 12px 16px; text-align: center;">99% de casos</td>
+                  <td style="padding: 12px 16px; text-align: center;">Tiempo real / TB</td>
+                  <td style="padding: 12px 16px; text-align: center;">Modelo corporativo</td>
+                  <td style="padding: 12px 16px; text-align: center;">Fabric / OneLake</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="note note--tip" style="margin-top: 32px;">
+            <p><strong>💡 Regla de oro: empieza siempre por Import</strong></p>
+            <p style="margin: 8px 0 0; line-height: 1.7;">
+              Si no tienes una razón clara para usar otro modo, <strong>usa Import</strong>.
+              Es el modo más performante, más flexible y con menos sorpresas.
+            </p>
+          </div>
+        </section>
+
+        <!-- Siguiente paso -->
+        <section class="content-section">
+          <div class="note note--next">
+            <p><strong>🚀 ¡Ya dominas Power BI Desktop!</strong></p>
+            <p style="margin: 8px 0 0; line-height: 1.75;">
+              Ahora descubre todo lo que puedes hacer en la nube.
+              Visita <a href="service.html">Power BI Service</a> para aprender sobre
+              workspaces, suscripciones, alertas, licencias y mucho más. 🌸
+            </p>
+          </div>
+        </section>
+
+      </div><!-- .topic-page -->
+    </main>
+  </div><!-- .page-wrapper -->
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1/prism.min.js"></script>
+  <script src="../../assets/js/theme.js"></script>
+  <script src="../../assets/js/cursor.js"></script>
+
+</body>
+</html>

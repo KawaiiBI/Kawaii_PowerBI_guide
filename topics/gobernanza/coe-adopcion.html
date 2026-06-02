@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Centro de Excelencia (CoE) y Adoption Roadmap de Power BI: estructura, niveles de madurez, métricas de adopción y cómo escalar buenas prácticas.">
+  <title>CoE y Adopción — Gobernanza | Power BI Guide by Kawaii BI</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/prismjs@1/themes/prism-okaidia.min.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="../../assets/css/main.css">
+  <link rel="stylesheet" href="../../assets/css/themes.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/layout.css">
+
+  <style>
+    .topic-header { text-align: center; padding: 2.5rem 0 2rem; border-bottom: 2px solid var(--color-mauve); margin-bottom: 2.5rem; }
+    .topic-header__icon { font-size: 4rem; margin-bottom: 0.75rem; display: block; }
+    .topic-header__title { font-size: clamp(1.875rem, 4vw, 2.5rem); font-weight: 800; color: var(--color-dark); margin-bottom: 0.625rem; line-height: 1.2; }
+    .topic-header__subtitle { font-size: 1.0625rem; color: var(--color-slate); margin-bottom: 1.25rem; line-height: 1.5; max-width: 600px; margin-left: auto; margin-right: auto; }
+    .topic-header__levels { display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap; align-items: center; }
+    .category-header { display: flex; align-items: center; gap: 0.75rem; margin: 2.5rem 0 1.25rem; padding: 0.875rem 1.25rem; background: var(--color-rose); border-radius: var(--border-radius-sm); border-left: 4px solid var(--color-coral); }
+    .category-header__icon { font-size: 1.5rem; }
+    .category-header__title { font-size: 1.25rem; font-weight: 700; margin: 0; }
+    .concept-card { background: var(--color-white); border: 1.5px solid var(--color-mauve); border-radius: var(--border-radius); padding: 1.75rem; margin-bottom: 1.5rem; scroll-margin-top: 80px; transition: border-color 0.2s; }
+    .concept-card:hover { border-color: var(--color-coral); }
+    .concept-card h3 { font-size: 1.25rem; font-weight: 700; color: var(--color-coral); margin-bottom: 0.75rem; }
+    .concept-card h4 { font-size: 0.9375rem; font-weight: 700; color: var(--color-dark); margin: 1.25rem 0 0.5rem; }
+    .concept-card p { font-size: 0.9375rem; line-height: 1.7; color: var(--color-dark); margin-bottom: 0.75rem; }
+    .concept-card ul { padding-left: 1.25rem; font-size: 0.9375rem; line-height: 1.8; color: var(--color-dark); }
+    .concept-card code { background: var(--color-blush); padding: 0.1em 0.4em; border-radius: 4px; font-family: 'Fira Code', monospace; font-size: 0.85em; color: var(--color-coral); }
+    .maturity-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.5rem; margin: 1rem 0; }
+    .maturity-step { background: var(--color-rose); border: 1.5px solid var(--color-mauve); border-radius: var(--border-radius-sm); padding: 0.75rem; text-align: center; font-size: 0.8125rem; }
+    .maturity-step strong { display: block; color: var(--color-coral); font-size: 0.95rem; margin-bottom: 0.3rem; }
+    @media (max-width: 900px) { .maturity-grid { grid-template-columns: 1fr 1fr; } }
+    .toc { background: var(--color-rose); border-radius: var(--border-radius); padding: 1.25rem 1.5rem; margin-bottom: 2rem; border: 1.5px solid var(--color-mauve); }
+    .toc__title { font-size: 1rem; font-weight: 700; margin: 0 0 0.75rem; }
+    .toc__list { display: flex; flex-wrap: wrap; gap: 0.5rem; list-style: none; padding: 0; margin: 0; }
+    .toc__list a { font-size: 0.8125rem; color: var(--color-coral); text-decoration: none; padding: 0.25rem 0.625rem; background: var(--color-white); border-radius: 999px; border: 1px solid var(--color-mauve); transition: background 0.15s, color 0.15s; }
+    .toc__list a:hover { background: var(--color-coral); color: white; }
+  </style>
+</head>
+<body>
+
+  <aside class="site-sidebar">
+    <div class="site-sidebar__profile">
+      <img src="../../assets/images/avatar Sara.png" alt="Sara Lozano Martí" class="site-sidebar__avatar">
+      <p class="site-sidebar__name">Sara Lozano Martí</p>
+      <p class="site-sidebar__subtitle">Power BI Expert</p>
+    </div>
+    <nav class="site-sidebar__nav" aria-label="Navegación principal">
+      <ul>
+        <li><a href="../../index.html" class="site-sidebar__link"><span class="site-sidebar__icon">🏠</span> Inicio</a></li>
+        <li><a href="../dax.html" class="site-sidebar__link"><span class="site-sidebar__icon">⚡</span> Funciones DAX</a></li>
+        <li><a href="../power-query.html" class="site-sidebar__link"><span class="site-sidebar__icon">🔄</span> Power Query</a></li>
+        <li><a href="../lenguaje-m.html" class="site-sidebar__link"><span class="site-sidebar__icon">〽️</span> Lenguaje M</a></li>
+        <li><a href="../modelado.html" class="site-sidebar__link"><span class="site-sidebar__icon">🗄️</span> Modelado</a></li>
+        <li><a href="../conceptos-powerbi.html" class="site-sidebar__link"><span class="site-sidebar__icon">📊</span> Conceptos Power BI</a></li>
+        <li><a href="../fabric.html" class="site-sidebar__link"><span class="site-sidebar__icon">🧵</span> Microsoft Fabric</a></li>
+        <li><a href="../tmdl.html" class="site-sidebar__link"><span class="site-sidebar__icon">📝</span> TMDL</a></li>
+        <li><a href="../diseno-ux.html" class="site-sidebar__link"><span class="site-sidebar__icon">🎨</span> Diseño y UX</a></li>
+        <li><a href="../gobernanza.html" class="site-sidebar__link is-active"><span class="site-sidebar__icon">🔒</span> Gobernanza</a></li>
+      </ul>
+    </nav>
+    <div class="site-sidebar__divider"></div>
+    <div class="site-sidebar__footer">
+      <a href="../../quien-soy.html" class="site-sidebar__link site-sidebar__link--highlight"><span class="site-sidebar__icon">👩‍💻</span> ¿Quién soy?</a>
+      <div class="site-sidebar__social">
+        <a href="https://www.linkedin.com/in/saralozanomarti" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><img src="../../assets/images/logo linkedIN.png" alt="LinkedIn" class="site-sidebar__social-icon"></a>
+        <a href="https://www.youtube.com/@KawaiiPowerBI" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><img src="../../assets/images/logo youtube.png" alt="YouTube" class="site-sidebar__social-icon"></a>
+        <a href="https://github.com/KawaiiBI" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><img src="../../assets/images/logo github.png" alt="GitHub" class="site-sidebar__social-icon"></a>
+      </div>
+      <div class="site-sidebar__logo-bottom"><img src="../../assets/images/Logo Kawaii.jpg" alt="Kawaii BI" class="site-sidebar__logo-img"></div>
+      <p class="site-sidebar__copyright">Power BI Guide 🌸<br>© 2026 Kawaii BI</p>
+    </div>
+  </aside>
+
+  <div class="page-wrapper">
+    <main class="main-content">
+      <div class="topic-page">
+
+        <nav class="breadcrumb" aria-label="Ruta de navegación">
+          <span class="breadcrumb__item"><a href="../../index.html">🏠 Inicio</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item"><a href="../gobernanza.html">Gobernanza</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item">CoE y Adopción</span>
+        </nav>
+
+        <header class="topic-header">
+          <span class="topic-header__icon">🤝</span>
+          <h1 class="topic-header__title">CoE y Adopción</h1>
+          <p class="topic-header__subtitle">El Centro de Excelencia, el Power BI / Fabric Adoption Roadmap, los 5 niveles de madurez y cómo escalar buenas prácticas para que la plataforma "pegue" en la organización.</p>
+          <div class="topic-header__levels">
+            <span class="badge badge--intermediate">Intermedio</span>
+          </div>
+        </header>
+
+        <nav class="toc" aria-label="Índice de contenidos">
+          <p class="toc__title">📌 En esta página:</p>
+          <ul class="toc__list">
+            <li><a href="#coe">¿Qué es un CoE?</a></li>
+            <li><a href="#roadmap">Adoption Roadmap</a></li>
+            <li><a href="#madurez">5 niveles de madurez</a></li>
+            <li><a href="#champions">Programa Champions</a></li>
+            <li><a href="#metricas">Métricas de adopción</a></li>
+            <li><a href="#plan-90">Plan de 90 días</a></li>
+          </ul>
+        </nav>
+
+        <div class="category-header" id="coe">
+          <span class="category-header__icon">🏛️</span>
+          <h2 class="category-header__title">¿Qué es un Centro de Excelencia (CoE)?</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>El equipo que cuida la plataforma</h3>
+          <p>Un <strong>Center of Excellence (CoE)</strong> de Power BI / Fabric es un equipo (a veces virtual, a veces dedicado) cuya misión es <em>habilitar</em> al resto de la organización para usar la plataforma de datos con éxito. No es el equipo que hace todos los informes — es el equipo que enseña, define estándares, gobierna y resuelve problemas comunes.</p>
+
+          <h4>Funciones típicas</h4>
+          <ul>
+            <li>Definir y mantener estándares: nomenclatura, plantillas, diseño visual</li>
+            <li>Gestionar tenant settings y capacidades</li>
+            <li>Mantener datasets compartidos certificados (el "core" reutilizable)</li>
+            <li>Formación: onboardings, sesiones temáticas, comunidad interna</li>
+            <li>Soporte avanzado: cola de tickets para casos complejos</li>
+            <li>Innovación y vigilancia: probar features nuevas, definir cuándo adoptarlas</li>
+          </ul>
+
+          <h4>Tamaño realista</h4>
+          <ul>
+            <li>Empresa &lt; 200 personas: CoE virtual de 1–2 referentes con dedicación parcial</li>
+            <li>Empresa 200–2.000: CoE de 2–4 personas dedicadas</li>
+            <li>Empresa &gt; 2.000: CoE de 4–10 personas + champions distribuidos</li>
+          </ul>
+        </article>
+
+        <div class="category-header" id="roadmap">
+          <span class="category-header__icon">🗺️</span>
+          <h2 class="category-header__title">Power BI Adoption Roadmap</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>El framework oficial de Microsoft</h3>
+          <p>Microsoft publica el <strong>Power BI Adoption Roadmap</strong> (Melissa Coates y equipo): un documento muy completo y abierto que define todas las áreas que debe cubrir una adopción seria. Lo encontrarás como referencia en docs.microsoft.com bajo "Power BI implementation planning".</p>
+
+          <h4>Las áreas que cubre</h4>
+          <ul>
+            <li><strong>Data culture:</strong> mentalidad data-driven, sponsorship ejecutivo</li>
+            <li><strong>Executive sponsorship:</strong> patrocinador con poder de decisión y presupuesto</li>
+            <li><strong>Content ownership and management:</strong> centralizado vs descentralizado vs federado</li>
+            <li><strong>Content delivery scope:</strong> personal, team, departamental, organizacional</li>
+            <li><strong>Centro de Excelencia</strong></li>
+            <li><strong>Gobernanza</strong></li>
+            <li><strong>Mentoring y formación</strong></li>
+            <li><strong>Community of practice</strong></li>
+            <li><strong>User support</strong></li>
+            <li><strong>System oversight</strong> (admin/tenant)</li>
+          </ul>
+          <p>El roadmap funciona como checklist y como benchmark interno: identifica para cada área tu nivel de madurez actual y decide a qué subir el próximo trimestre.</p>
+        </article>
+
+        <div class="category-header" id="madurez">
+          <span class="category-header__icon">📈</span>
+          <h2 class="category-header__title">Los 5 niveles de madurez</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>El modelo de Microsoft + Carnegie Mellon</h3>
+          <div class="maturity-grid">
+            <div class="maturity-step">
+              <strong>1. Initial</strong>
+              Caos controlado. Iniciativas aisladas, sin estándares. Cada quien hace lo que puede.
+            </div>
+            <div class="maturity-step">
+              <strong>2. Repeatable</strong>
+              Hay procesos repetibles en algunos equipos, pero sin escalar al resto.
+            </div>
+            <div class="maturity-step">
+              <strong>3. Defined</strong>
+              Procesos estándar publicados, CoE funcional, comunidad activa.
+            </div>
+            <div class="maturity-step">
+              <strong>4. Capable</strong>
+              Medición sistemática, mejora continua, gobernanza embedded.
+            </div>
+            <div class="maturity-step">
+              <strong>5. Efficient</strong>
+              Cultura data-driven embebida. La plataforma escala sola.
+            </div>
+          </div>
+
+          <p style="margin-top: 0.75rem;">La realidad: la mayoría de organizaciones grandes están entre 2 y 3, y eso ya es bueno. Pasar de 1 a 3 en un año es objetivo realista; saltar a 5 lleva años de cultura sostenida.</p>
+        </article>
+
+        <div class="note note--tip">
+          💡 <strong>Tip kawaii:</strong> No intentes saltar de 1 a 4 en 6 meses. Las plataformas que intentan correr demasiado generan rechazo y vuelven a 1. Mejor avanzar un escalón firme y consolidarlo. 🌸
+        </div>
+
+        <div class="category-header" id="champions">
+          <span class="category-header__icon">🏆</span>
+          <h2 class="category-header__title">Programa Champions</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>El secreto a voces de las adopciones exitosas</h3>
+          <p>Un <strong>Champion</strong> es una persona del negocio (no del CoE) con afinidad y conocimiento de Power BI que actúa como referente local de su equipo. Multiplica el alcance del CoE sin necesitar contratar gente.</p>
+
+          <h4>Cómo arrancar un programa Champions</h4>
+          <ol style="padding-left: 1.25rem;">
+            <li>Identifica a las 5–10 personas que ya destacan por ayudar a otros con Power BI — probablemente ya lo son</li>
+            <li>Reconócelo: badge interno, mención en comunicación a managers, sesiones exclusivas con el CoE</li>
+            <li>Forma una comunidad regular: monthly call de 30–45 min con novedades, preguntas, casos</li>
+            <li>Dales acceso anticipado a plantillas, features nuevas, certificación rápida de su contenido</li>
+            <li>Mide el impacto: tickets que resuelven, contenido que certifican, formaciones que dan</li>
+          </ol>
+
+          <h4>Lo que NO funciona</h4>
+          <ul>
+            <li>Imponer champions desde arriba sin que la persona quiera el rol</li>
+            <li>Programa champions sin tiempo dedicado reconocido por managers</li>
+            <li>Champions sin canal directo al CoE: se acaban frustrando</li>
+          </ul>
+        </article>
+
+        <div class="category-header" id="metricas">
+          <span class="category-header__icon">📊</span>
+          <h2 class="category-header__title">Métricas de adopción</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>Qué medir para saber si la plataforma "pega"</h3>
+          <p>Sin métricas, la adopción es percepción subjetiva. Con métricas, sabes qué empujar y qué frenar.</p>
+
+          <h4>Métricas de actividad (la base)</h4>
+          <ul>
+            <li>Usuarios activos mensuales (MAU) — el corazón de la adopción</li>
+            <li>Ratio consumidores / autores — proporción saludable suele ser 10:1 o superior</li>
+            <li>Vistas únicas por informe</li>
+            <li>Informes "huérfanos" (sin vistas en 60 días)</li>
+          </ul>
+
+          <h4>Métricas de calidad</h4>
+          <ul>
+            <li>% de contenido publicado en workspaces gobernados (no My Workspace)</li>
+            <li>% de datasets con endorsement (promoted o certified)</li>
+            <li>% de datasets con sensitivity label aplicada</li>
+            <li>Tasa de refresh exitoso (semanal)</li>
+            <li>SLA del CoE: tiempo de respuesta a tickets</li>
+          </ul>
+
+          <h4>Métricas de salud</h4>
+          <ul>
+            <li>Capacidad media usada vs disponible</li>
+            <li>Incidents DLP por mes</li>
+            <li>External sharing — número y % del total</li>
+          </ul>
+        </article>
+
+        <div class="category-header" id="plan-90">
+          <span class="category-header__icon">🚀</span>
+          <h2 class="category-header__title">Plan de 90 días para arrancar un CoE</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>De cero a CoE funcional</h3>
+          <h4>Días 1–30 — Diagnóstico</h4>
+          <ul>
+            <li>Inventario: workspaces, capacidades, usuarios activos</li>
+            <li>Activar y revisar activity log durante 30 días</li>
+            <li>Identificar 3 dolores principales (con datos)</li>
+            <li>Conseguir sponsor ejecutivo</li>
+          </ul>
+
+          <h4>Días 31–60 — Cimientos</h4>
+          <ul>
+            <li>Publicar 5 reglas mínimas: nomenclatura workspaces, política de My Workspace, sensitivity labels obligatorias, propietario por workspace, certificación con proceso</li>
+            <li>Configurar tenant settings críticos (publish to web OFF, etc.)</li>
+            <li>Crear workspace de plantillas y guías</li>
+            <li>Lanzar canal interno (Teams) "Power BI Community"</li>
+          </ul>
+
+          <h4>Días 61–90 — Activación</h4>
+          <ul>
+            <li>Primer "Office hours" semanal abierto del CoE</li>
+            <li>Identificar y reconocer 5 champions iniciales</li>
+            <li>Lanzar primer dashboard de adopción</li>
+            <li>Comunicar a la organización con casos de éxito y próximos pasos</li>
+          </ul>
+        </article>
+
+        <div class="note note--practice">
+          📌 <strong>Buena práctica:</strong> El CoE no es un proyecto que termine en el día 91. A los 90 días tienes cimientos; a los 365, hábitos. La constancia es lo que diferencia adopciones que despegan de las que se estancan.
+        </div>
+
+        <div class="note note--next" style="margin-top: 2rem;">
+          🚀 <strong>¡Lo estás haciendo genial!</strong> Has recorrido los 12 temas de gobernanza. Si te falta volver al mapa general, aquí tienes el <a href="../gobernanza.html">hub de Gobernanza</a>. Y para seguir construyendo plataformas sólidas, complementa con <a href="../modelado.html">Modelado</a> y <a href="../diseno-ux.html">Diseño y UX</a>. 🌸
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <button id="back-to-top" class="back-to-top" aria-label="Volver arriba" title="Volver arriba">↑</button>
+
+  <script src="https://cdn.jsdelivr.net/npm/i18next@23/dist/umd/i18next.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1/prism.min.js"></script>
+  <script src="../../assets/js/theme.js"></script>
+  <script src="../../assets/js/main.js"></script>
+  <script src="../../assets/js/cursor.js"></script>
+</body>
+</html>

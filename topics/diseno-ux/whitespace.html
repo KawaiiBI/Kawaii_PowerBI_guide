@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Whitespace y Ruido Visual en Power BI: cómo usar el espacio negativo, padding en visuals, la Regla del No Ruido y el test para limpiar cualquier dashboard.">
+  <title>Whitespace y Ruido Visual — Diseño y UX | Power BI Guide by Kawaii BI</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+
+  <!-- Estilos CSS -->
+  <link rel="stylesheet" href="../../assets/css/main.css">
+  <link rel="stylesheet" href="../../assets/css/themes.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/layout.css">
+
+  <style>
+    /* ── Cabecera centrada ──────────────────────────────── */
+    .topic-header {
+      text-align: center;
+      padding: 2.5rem 0 2rem;
+      border-bottom: 2px solid var(--color-mauve);
+      margin-bottom: 2.5rem;
+    }
+    .topic-header__icon { font-size: 4rem; margin-bottom: 0.75rem; display: block; }
+    .topic-header__title { font-size: clamp(1.875rem, 4vw, 2.5rem); font-weight: 800; color: var(--color-dark); margin-bottom: 0.625rem; line-height: 1.2; }
+    .topic-header__subtitle { font-size: 1.0625rem; color: var(--color-slate); margin-bottom: 1.25rem; line-height: 1.5; max-width: 620px; margin-left: auto; margin-right: auto; }
+    .topic-header__levels { display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap; }
+
+    /* ── TOC ────────────────────────────────────────────── */
+    .toc { background: var(--color-rose); border-radius: var(--border-radius); padding: 1.25rem 1.5rem; margin-bottom: 2rem; border: 1.5px solid var(--color-mauve); }
+    .toc__title { font-size: 1rem; font-weight: 700; margin: 0 0 0.75rem; }
+    .toc__list { display: flex; flex-wrap: wrap; gap: 0.5rem; list-style: none; padding: 0; margin: 0; }
+    .toc__list a { font-size: 0.8125rem; color: var(--color-coral); text-decoration: none; padding: 0.25rem 0.625rem; background: var(--color-white); border-radius: 999px; border: 1px solid var(--color-mauve); transition: background 0.15s, color 0.15s; }
+    .toc__list a:hover { background: var(--color-coral); color: white; }
+
+    /* ── Sección header ─────────────────────────────────── */
+    .category-header { display: flex; align-items: center; gap: 0.75rem; margin: 2.5rem 0 1.25rem; padding: 0.875rem 1.25rem; background: var(--color-rose); border-radius: var(--border-radius-sm); border-left: 4px solid var(--color-coral); }
+    .category-header__icon { font-size: 1.5rem; }
+    .category-header__title { font-size: 1.25rem; font-weight: 700; margin: 0; }
+
+    /* ── Concept card ───────────────────────────────────── */
+    .concept-card { background: var(--color-white); border: 1.5px solid var(--color-mauve); border-radius: var(--border-radius); padding: 1.75rem; margin-bottom: 1.5rem; scroll-margin-top: 80px; transition: border-color 0.2s; }
+    .concept-card:hover { border-color: var(--color-coral); }
+    .concept-card h3 { font-size: 1.25rem; font-weight: 700; color: var(--color-coral); margin-bottom: 0.75rem; }
+    .concept-card h4 { font-size: 0.9375rem; font-weight: 700; color: var(--color-dark); margin: 1.25rem 0 0.5rem; }
+    .concept-card p { font-size: 0.9375rem; line-height: 1.7; color: var(--color-dark); margin-bottom: 0.75rem; }
+    .concept-card p:last-child { margin-bottom: 0; }
+    .concept-card ul, .concept-card ol { padding-left: 1.25rem; font-size: 0.9375rem; line-height: 1.8; color: var(--color-dark); margin-bottom: 0.75rem; }
+
+    /* ── Cita destacada ─────────────────────────────────── */
+    .quote-block { background: linear-gradient(135deg, var(--color-rose) 0%, var(--color-blush) 100%); border-left: 4px solid var(--color-coral); border-radius: var(--border-radius); padding: 1.5rem 1.75rem; margin: 1.5rem 0; }
+    .quote-block__text { font-size: 1.125rem; font-weight: 600; color: var(--color-dark); line-height: 1.5; font-style: italic; margin: 0 0 0.375rem; }
+    .quote-block__author { font-size: 0.8125rem; color: var(--color-slate); margin: 0; }
+
+    /* ── Demo padding ───────────────────────────────────── */
+    .padding-demo {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.25rem;
+      margin: 1.25rem 0;
+    }
+    .padding-demo__panel {
+      border-radius: var(--border-radius-sm);
+      border: 1.5px solid var(--color-mauve);
+      overflow: hidden;
+    }
+    .padding-demo__label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 0.5rem 0.75rem;
+      border-bottom: 1px solid var(--color-mauve);
+    }
+    .padding-demo__label--bad { background: #fff0f0; color: #c0392b; }
+    .padding-demo__label--good { background: #f0faf5; color: #27ae60; }
+    .padding-demo__content { padding: 0; background: var(--color-white); }
+    /* Visual "apretado" */
+    .mock-visual--tight {
+      margin: 4px;
+      background: var(--color-blush);
+      border: 1px solid var(--color-mauve);
+      border-radius: 2px;
+      padding: 4px 6px;
+    }
+    .mock-visual--tight .mock-title { font-size: 0.6rem; font-weight: 700; color: var(--color-slate); }
+    .mock-visual--tight .mock-value { font-size: 1.1rem; font-weight: 800; color: var(--color-dark); line-height: 1.1; }
+    .mock-visual--tight .mock-bar-row { display: flex; gap: 2px; margin-top: 3px; align-items: flex-end; }
+    .mock-visual--tight .mock-bar { width: 10px; background: var(--color-coral); border-radius: 1px; }
+    /* Visual "con padding" */
+    .mock-visual--padded {
+      margin: 12px;
+      background: var(--color-blush);
+      border: 1px solid var(--color-mauve);
+      border-radius: 6px;
+      padding: 14px 16px;
+    }
+    .mock-visual--padded .mock-title { font-size: 0.65rem; font-weight: 700; color: var(--color-slate); margin-bottom: 4px; }
+    .mock-visual--padded .mock-value { font-size: 1.25rem; font-weight: 800; color: var(--color-dark); line-height: 1.1; margin-bottom: 8px; }
+    .mock-visual--padded .mock-bar-row { display: flex; gap: 5px; align-items: flex-end; }
+    .mock-visual--padded .mock-bar { width: 14px; background: var(--color-coral); border-radius: 2px; }
+    @media (max-width: 600px) { .padding-demo { grid-template-columns: 1fr; } }
+
+    /* ── Culpables del ruido (grid) ─────────────────────── */
+    .noise-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.25rem;
+      margin: 1.25rem 0;
+    }
+    .noise-card {
+      border: 1.5px solid #f5c6c6;
+      border-radius: var(--border-radius);
+      overflow: hidden;
+    }
+    .noise-card__header {
+      background: #fff0f0;
+      padding: 0.875rem 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .noise-card__icon { font-size: 1.5rem; }
+    .noise-card__name { font-size: 0.9375rem; font-weight: 700; color: #c0392b; }
+    .noise-card__body { padding: 1.25rem; background: var(--color-white); }
+    .noise-card__why { font-size: 0.875rem; color: var(--color-slate); line-height: 1.6; margin-bottom: 0.75rem; }
+    .noise-card__alt { font-size: 0.875rem; color: var(--color-dark); line-height: 1.6; }
+    .noise-card__alt strong { color: #27ae60; }
+
+    /* ── Test del No Ruido ──────────────────────────────── */
+    .test-steps {
+      counter-reset: test-step;
+      list-style: none;
+      padding: 0;
+      margin: 1.25rem 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+    .test-steps li {
+      counter-increment: test-step;
+      display: flex;
+      gap: 1rem;
+      align-items: flex-start;
+      background: var(--color-white);
+      border: 1.5px solid var(--color-mauve);
+      border-radius: var(--border-radius-sm);
+      padding: 1rem 1.25rem;
+      font-size: 0.9375rem;
+      line-height: 1.6;
+      color: var(--color-dark);
+      transition: border-color 0.2s;
+    }
+    .test-steps li:hover { border-color: var(--color-coral); }
+    .test-steps li::before {
+      content: counter(test-step);
+      min-width: 1.75rem;
+      height: 1.75rem;
+      background: var(--color-coral);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.8125rem;
+      flex-shrink: 0;
+      margin-top: 0.1rem;
+    }
+
+    /* ── Escala de ruido ────────────────────────────────── */
+    .noise-scale {
+      display: flex;
+      align-items: stretch;
+      border-radius: var(--border-radius-sm);
+      overflow: hidden;
+      border: 1.5px solid var(--color-mauve);
+      margin: 1.25rem 0;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      text-align: center;
+    }
+    .noise-scale__item {
+      flex: 1;
+      padding: 0.75rem 0.5rem;
+      line-height: 1.4;
+    }
+    .noise-scale__item:not(:last-child) { border-right: 1px solid var(--color-mauve); }
+    .noise-scale__item--1 { background: #f0faf5; color: #27ae60; }
+    .noise-scale__item--2 { background: #fffbe6; color: #b8860b; }
+    .noise-scale__item--3 { background: #fff3e0; color: #d35400; }
+    .noise-scale__item--4 { background: #fff0f0; color: #c0392b; }
+    .noise-scale__num { font-size: 1.25rem; display: block; margin-bottom: 0.25rem; }
+  </style>
+</head>
+<body>
+
+  <!-- SIDEBAR -->
+  <aside class="site-sidebar">
+    <div class="site-sidebar__profile">
+      <img src="../../assets/images/avatar Sara.png" alt="Sara Lozano Martí" class="site-sidebar__avatar">
+      <p class="site-sidebar__name">Sara Lozano Martí</p>
+      <p class="site-sidebar__subtitle">Power BI Expert</p>
+    </div>
+    <nav class="site-sidebar__nav" aria-label="Navegación principal">
+      <ul>
+        <li><a href="../../index.html" class="site-sidebar__link"><span class="site-sidebar__icon">🏠</span> Inicio</a></li>
+        <li><a href="../dax.html" class="site-sidebar__link"><span class="site-sidebar__icon">⚡</span> Funciones DAX</a></li>
+        <li><a href="../power-query.html" class="site-sidebar__link"><span class="site-sidebar__icon">🔄</span> Power Query</a></li>
+        <li><a href="../lenguaje-m.html" class="site-sidebar__link"><span class="site-sidebar__icon">〽️</span> Lenguaje M</a></li>
+        <li><a href="../modelado.html" class="site-sidebar__link"><span class="site-sidebar__icon">🗄️</span> Modelado</a></li>
+        <li><a href="../conceptos-powerbi.html" class="site-sidebar__link"><span class="site-sidebar__icon">📊</span> Conceptos Power BI</a></li>
+        <li><a href="../fabric.html" class="site-sidebar__link"><span class="site-sidebar__icon">🧵</span> Microsoft Fabric</a></li>
+        <li><a href="../tmdl.html" class="site-sidebar__link"><span class="site-sidebar__icon">📝</span> TMDL</a></li>
+        <li><a href="../diseno-ux.html" class="site-sidebar__link is-active"><span class="site-sidebar__icon">🎨</span> Diseño y UX</a></li>
+        <li><a href="../gobernanza.html" class="site-sidebar__link"><span class="site-sidebar__icon">🔒</span> Gobernanza</a></li>
+      </ul>
+    </nav>
+    <div class="site-sidebar__divider"></div>
+    <div class="site-sidebar__footer">
+      <a href="../../quien-soy.html" class="site-sidebar__link site-sidebar__link--highlight"><span class="site-sidebar__icon">👩‍💻</span> ¿Quién soy?</a>
+      <div class="site-sidebar__social">
+        <a href="https://www.linkedin.com/in/saralozanomarti" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><img src="../../assets/images/logo linkedIN.png" alt="LinkedIn" class="site-sidebar__social-icon"></a>
+        <a href="https://www.youtube.com/@KawaiiPowerBI" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><img src="../../assets/images/logo youtube.png" alt="YouTube" class="site-sidebar__social-icon"></a>
+        <a href="https://github.com/KawaiiBI" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><img src="../../assets/images/logo github.png" alt="GitHub" class="site-sidebar__social-icon"></a>
+      </div>
+      <div class="site-sidebar__logo-bottom"><img src="../../assets/images/Logo Kawaii.jpg" alt="Kawaii BI" class="site-sidebar__logo-img"></div>
+      <p class="site-sidebar__copyright">Power BI Guide 🌸<br>© 2026 Kawaii BI</p>
+    </div>
+  </aside>
+
+  <!-- CONTENIDO PRINCIPAL -->
+  <div class="page-wrapper">
+    <main class="main-content">
+      <div class="topic-page">
+
+        <!-- Breadcrumb -->
+        <nav class="breadcrumb" aria-label="Ruta de navegación">
+          <span class="breadcrumb__item"><a href="../../index.html">🏠 Inicio</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item"><a href="../diseno-ux.html">Diseño y UX</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item">Whitespace y Ruido Visual</span>
+        </nav>
+
+        <!-- Cabecera -->
+        <header class="topic-header">
+          <span class="topic-header__icon">🫧</span>
+          <h1 class="topic-header__title">Whitespace y Ruido Visual</h1>
+          <p class="topic-header__subtitle">"El espacio en blanco no es espacio vacío, es aire para tus datos." Aprende a usar el whitespace como herramienta activa y a identificar y eliminar el ruido visual de tus dashboards Power BI</p>
+          <div class="topic-header__levels">
+            <span class="badge badge--beginner">Principiante</span>
+          </div>
+        </header>
+
+        <!-- TOC -->
+        <nav class="toc" aria-label="Contenido de esta página">
+          <p class="toc__title">📋 En esta página</p>
+          <ul class="toc__list">
+            <li><a href="#whitespace-activo">Whitespace como herramienta activa</a></li>
+            <li><a href="#padding-pbi">Padding en Power BI</a></li>
+            <li><a href="#que-es-ruido">¿Qué es el ruido visual?</a></li>
+            <li><a href="#culpables">Los grandes culpables</a></li>
+            <li><a href="#escala">Escala de ruido</a></li>
+            <li><a href="#test">El Test del No Ruido</a></li>
+            <li><a href="#limpieza">Protocolo de limpieza</a></li>
+          </ul>
+        </nav>
+
+        <!-- ─────────────────────────────────────────── -->
+        <!-- 1. Whitespace como herramienta activa       -->
+        <!-- ─────────────────────────────────────────── -->
+        <div class="category-header" id="whitespace-activo">
+          <span class="category-header__icon">🌬️</span>
+          <h2 class="category-header__title">Whitespace como herramienta activa de diseño</h2>
+        </div>
+
+        <div class="concept-card">
+          <h3>No es lo que falta — es lo que sostiene todo lo demás</h3>
+          <p>
+            En diseño, el <strong>whitespace</strong> (espacio negativo o espacio en blanco) es el área
+            vacía alrededor y entre los elementos visuales. No tiene que ser blanco literalmente —
+            puede ser cualquier color de fondo. Lo que lo define es la <em>ausencia de contenido</em>.
+          </p>
+          <p>
+            El error que comete casi todo el mundo al empezar a diseñar dashboards es tratarlo
+            como espacio desperdiciado que hay que rellenar. En realidad es todo lo contrario:
+            el whitespace es el instrumento más potente que tienes para <strong>jerarquizar,
+            separar, agrupar y hacer destacar</strong> la información que importa.
+          </p>
+
+          <div class="quote-block">
+            <p class="quote-block__text">"El espacio en blanco no es espacio vacío, es aire para tus datos."</p>
+            <p class="quote-block__author">— Kawaii BI</p>
+          </div>
+
+          <h4>Qué hace el whitespace por ti</h4>
+          <ul>
+            <li><strong>Jerarquiza:</strong> Un elemento con más espacio a su alrededor parece más importante — el ojo lo interpreta como "protagonista"</li>
+            <li><strong>Agrupa:</strong> Los elementos próximos entre sí se perciben como relacionados (Ley de Proximidad de Gestalt)</li>
+            <li><strong>Separa:</strong> El espacio entre grupos crea fronteras visuales sin necesidad de líneas ni bordes</li>
+            <li><strong>Descansa:</strong> Da al ojo lugares donde "respirar" entre bloques de información densa</li>
+            <li><strong>Enfoca:</strong> Cuando todo tiene espacio salvo un elemento, ese elemento domina visualmente sin necesidad de ser más grande ni más colorido</li>
+          </ul>
+        </div>
+
+        <!-- ─────────────────────────────────────────── -->
+        <!-- 2. Padding en Power BI                      -->
+        <!-- ─────────────────────────────────────────── -->
+        <div class="category-header" id="padding-pbi">
+          <span class="category-header__icon">📦</span>
+          <h2 class="category-header__title">Padding en Power BI: dónde y cuánto</h2>
+        </div>
+
+        <div class="concept-card">
+          <h3>Padding es claridad — usa márgenes internos generosos</h3>
+          <p>
+            El padding es el espacio entre el borde de un visual y su contenido interior.
+            En Power BI puedes controlarlo en el panel de formato de cada visual bajo
+            <strong>Format visual → General → Padding</strong>. Es uno de los ajustes
+            más ignorados y de mayor impacto en la percepción de calidad de un informe.
+          </p>
+
+          <h4>Comparativa visual: sin padding vs con padding</h4>
+          <div class="padding-demo" aria-label="Comparativa de visuals con y sin padding">
+            <div class="padding-demo__panel">
+              <div class="padding-demo__label padding-demo__label--bad">❌ Padding mínimo (4px)</div>
+              <div class="padding-demo__content" style="padding: 4px;">
+                <div class="mock-visual--tight">
+                  <div class="mock-title">VENTAS TOTALES</div>
+                  <div class="mock-value">€ 1.284.390</div>
+                  <div class="mock-bar-row">
+                    <div class="mock-bar" style="height:20px;"></div>
+                    <div class="mock-bar" style="height:32px;"></div>
+                    <div class="mock-bar" style="height:14px;"></div>
+                    <div class="mock-bar" style="height:28px;"></div>
+                    <div class="mock-bar" style="height:38px;"></div>
+                    <div class="mock-bar" style="height:24px;"></div>
+                  </div>
+                </div>
+                <div class="mock-visual--tight" style="margin-top: 2px;">
+                  <div class="mock-title">MARGEN</div>
+                  <div class="mock-value">23,4%</div>
+                  <div class="mock-bar-row">
+                    <div class="mock-bar" style="height:18px; background:#929C9C;"></div>
+                    <div class="mock-bar" style="height:26px; background:#929C9C;"></div>
+                    <div class="mock-bar" style="height:22px; background:#929C9C;"></div>
+                    <div class="mock-bar" style="height:30px; background:#929C9C;"></div>
+                    <div class="mock-bar" style="height:16px; background:#929C9C;"></div>
+                    <div class="mock-bar" style="height:34px; background:#929C9C;"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="padding-demo__panel">
+              <div class="padding-demo__label padding-demo__label--good">✅ Padding generoso (14px)</div>
+              <div class="padding-demo__content">
+                <div class="mock-visual--padded">
+                  <div class="mock-title">VENTAS TOTALES</div>
+                  <div class="mock-value">€ 1.284.390</div>
+                  <div class="mock-bar-row">
+                    <div class="mock-bar" style="height:24px;"></div>
+                    <div class="mock-bar" style="height:38px;"></div>
+                    <div class="mock-bar" style="height:18px;"></div>
+                    <div class="mock-bar" style="height:32px;"></div>
+                    <div class="mock-bar" style="height:44px;"></div>
+                    <div class="mock-bar" style="height:28px;"></div>
+                  </div>
+                </div>
+                <div class="mock-visual--padded">
+                  <div class="mock-title">MARGEN</div>
+                  <div class="mock-value">23,4%</div>
+                  <div class="mock-bar-row">
+                    <div class="mock-bar" style="height:22px; background:#929C9C;"></div>
+                    <div class="mock-bar" style="height:30px; background:#929C9C;"></div>
+                    <div class="mock-bar" style="height:26px; background:#929C9C;"></div>
+                    <div class="mock-bar" style="height:36px; background:#929C9C;"></div>
+                    <div class="mock-bar" style="height:20px; background:#929C9C;"></div>
+                    <div class="mock-bar" style="height:40px; background:#929C9C;"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <h4>Valores de referencia para Power BI</h4>
+          <ul>
+            <li><strong>Padding interno de visuals:</strong> 10-16px en todos los lados — Format visual → General → Padding</li>
+            <li><strong>Separación entre visuals:</strong> mínimo 8px, óptimo 12-16px — contrólalo durante la colocación con las guías inteligentes de PBI Desktop</li>
+            <li><strong>Margen del canvas:</strong> deja al menos 16px entre los visuals y el borde de la página — Format page → Canvas background</li>
+            <li><strong>Separación entre grupos de visuals:</strong> 24-32px — mucho más que entre visuals del mismo grupo, para que la separación de grupos sea evidente</li>
+          </ul>
+
+          <div class="note note--tip">
+            💡 <strong>Tip kawaii:</strong> Si ajustas el padding visual a visual te volverás loca. Crea un visual base con el padding correcto, formatea el resto igual con el pincel de formato (<em>Format painter</em> en la barra de herramientas) y aplícalo a todos de una vez.
+          </div>
+        </div>
+
+        <!-- ─────────────────────────────────────────── -->
+        <!-- 3. ¿Qué es el ruido visual?                 -->
+        <!-- ─────────────────────────────────────────── -->
+        <div class="category-header" id="que-es-ruido">
+          <span class="category-header__icon">🔇</span>
+          <h2 class="category-header__title">¿Qué es el ruido visual?</h2>
+        </div>
+
+        <div class="concept-card">
+          <h3>"Diseña la magia justa, y luego detente"</h3>
+          <p>
+            El <strong>ruido visual</strong> es cualquier elemento que ocupa espacio en el canvas
+            sin aportar comprensión del dato. Puede ser obvio — un gráfico de tarta 3D que
+            distorsiona las proporciones — o puede ser casi invisible, como una sombra suave
+            en cada visual que acumula ruido de fondo y cansa al ojo sin que la persona sepa
+            exactamente por qué se siente agotada al ver el informe.
+          </p>
+
+          <div class="quote-block">
+            <p class="quote-block__text">"¿Este visual ayuda a tomar una decisión? Si la respuesta es no, sobra."</p>
+            <p class="quote-block__author">— La Regla del No Ruido, Kawaii BI</p>
+          </div>
+
+          <p>
+            El ruido no es solo feo — es activamente dañino para la comunicación. Cada elemento
+            superfluo compite por la atención del usuario, diluyendo el peso visual de los datos
+            que sí importan. Un dashboard limpio no parece "pobre" o "poco trabajado" — al
+            contrario, transmite confianza, rigor y respeto por el tiempo de quien lo usa.
+          </p>
+
+          <div class="note note--tip">
+            💡 <strong>Tip kawaii:</strong> El ruido más peligroso es el que se ve normal porque siempre ha estado ahí. Los efectos 3D, las sombras en todos los visuals, los títulos de visual idénticos al título de la página — son ruido normalizado. Cuestiónalo todo.
+          </div>
+        </div>
+
+        <!-- ─────────────────────────────────────────── -->
+        <!-- 4. Los grandes culpables                    -->
+        <!-- ─────────────────────────────────────────── -->
+        <div class="category-header" id="culpables">
+          <span class="category-header__icon">🚫</span>
+          <h2 class="category-header__title">Los grandes culpables del ruido visual en Power BI</h2>
+        </div>
+
+        <div class="concept-card">
+          <h3>Estos son los más frecuentes — y los más fáciles de eliminar</h3>
+
+          <div class="noise-grid">
+
+            <div class="noise-card">
+              <div class="noise-card__header">
+                <span class="noise-card__icon">📊</span>
+                <span class="noise-card__name">Gráficos 3D</span>
+              </div>
+              <div class="noise-card__body">
+                <p class="noise-card__why">El efecto de perspectiva distorsiona las alturas reales de las barras y el tamaño de los sectores. El usuario no puede leer valores precisos — solo percibe una sensación de "cantidad".</p>
+                <p class="noise-card__alt"><strong>✅ Alternativa:</strong> Barras 2D simples o gráfico de líneas. Si necesitas comparar partes de un todo, usa un gráfico de barras apiladas en lugar de una tarta 3D.</p>
+              </div>
+            </div>
+
+            <div class="noise-card">
+              <div class="noise-card__header">
+                <span class="noise-card__icon">🌑</span>
+                <span class="noise-card__name">Sombras excesivas</span>
+              </div>
+              <div class="noise-card__body">
+                <p class="noise-card__why">Una sombra en cada visual crea una sensación de profundidad falsa y fragmenta el canvas en capas. El ojo gasta energía interpretando la jerarquía espacial en lugar de leer los datos.</p>
+                <p class="noise-card__alt"><strong>✅ Alternativa:</strong> Sin sombra, o sombra ultrasutil (1-2px offset, 20% opacidad) únicamente en cards interactivas que el usuario puede pulsar.</p>
+              </div>
+            </div>
+
+            <div class="noise-card">
+              <div class="noise-card__header">
+                <span class="noise-card__icon">🗺️</span>
+                <span class="noise-card__name">Mapas de relleno (choropleth)</span>
+              </div>
+              <div class="noise-card__body">
+                <p class="noise-card__why">El área geográfica del territorio domina la percepción visual. España parece mucho más pequeña que Castilla y León aunque tenga más ventas — el tamaño del polígono distorsiona el dato.</p>
+                <p class="noise-card__alt"><strong>✅ Alternativa:</strong> Mapa de burbujas (el tamaño del círculo sí es proporcional al valor), o directamente una tabla con banderas si la geografía no es el mensaje principal.</p>
+              </div>
+            </div>
+
+            <div class="noise-card">
+              <div class="noise-card__header">
+                <span class="noise-card__icon">🥧</span>
+                <span class="noise-card__name">Gráficos de tarta con más de 4 sectores</span>
+              </div>
+              <div class="noise-card__body">
+                <p class="noise-card__why">El ojo humano no puede comparar ángulos con precisión. A partir del 4.º sector, los colores se acumulan y la leyenda se vuelve necesaria — lo que obliga al usuario a hacer un esfuerzo extra de interpretación.</p>
+                <p class="noise-card__alt"><strong>✅ Alternativa:</strong> Barras horizontales ordenadas de mayor a menor. La longitud es mucho más fácil de comparar que el ángulo. Con 5+ categorías, las barras siempre ganan.</p>
+              </div>
+            </div>
+
+            <div class="noise-card">
+              <div class="noise-card__header">
+                <span class="noise-card__icon">🖼️</span>
+                <span class="noise-card__name">Imágenes decorativas de fondo</span>
+              </div>
+              <div class="noise-card__body">
+                <p class="noise-card__why">Una foto de stock o un patrón de textura compite visualmente con los datos. Por muy suave que sea la opacidad, el cerebro procesa la imagen aunque no conscientemente, consumiendo recursos cognitivos.</p>
+                <p class="noise-card__alt"><strong>✅ Alternativa:</strong> Fondo liso en un tono neutro (blanco, gris muy suave, o el color más claro de tu paleta de marca). El logo de la empresa, si es obligatorio, va en una esquina, pequeño y en un solo lugar.</p>
+              </div>
+            </div>
+
+            <div class="noise-card">
+              <div class="noise-card__header">
+                <span class="noise-card__icon">🔤</span>
+                <span class="noise-card__name">Texto en vertical o diagonal</span>
+              </div>
+              <div class="noise-card__body">
+                <p class="noise-card__why">El ojo humano lee texto horizontal a una velocidad muy superior. El texto rotado obliga al cerebro a hacer un esfuerzo adicional — y ese esfuerzo se acumula como fatiga visual. (Tortícolis visual, literalmente.)</p>
+                <p class="noise-card__alt"><strong>✅ Alternativa:</strong> Etiquetas del eje X horizontales abreviadas, o cambiar a barras horizontales donde las etiquetas van a la izquierda y son siempre legibles.</p>
+              </div>
+            </div>
+
+            <div class="noise-card">
+              <div class="noise-card__header">
+                <span class="noise-card__icon">🏷️</span>
+                <span class="noise-card__name">Etiquetas de dato en todas las barras</span>
+              </div>
+              <div class="noise-card__body">
+                <p class="noise-card__why">Cuando hay más de 6-8 barras, las etiquetas de dato se superponen o se hacen tan pequeñas que son ilegibles. El visual se convierte en ruido tipográfico — todos los números compiten y ninguno destaca.</p>
+                <p class="noise-card__alt"><strong>✅ Alternativa:</strong> Activa etiquetas solo en el valor máximo y el mínimo, o en la barra seleccionada con condicional. El eje Y ya da la escala — las etiquetas son redundantes salvo para valores clave.</p>
+              </div>
+            </div>
+
+            <div class="noise-card">
+              <div class="noise-card__header">
+                <span class="noise-card__icon">🖱️</span>
+                <span class="noise-card__name">Bordes en todos los visuals</span>
+              </div>
+              <div class="noise-card__body">
+                <p class="noise-card__why">Si cada visual tiene un borde, el canvas parece un formulario de Excel — cuadriculado, rígido, con mucho ruido de líneas. Los bordes crean fronteras visuales que fragmentan el flujo de lectura.</p>
+                <p class="noise-card__alt"><strong>✅ Alternativa:</strong> Usa el espacio (whitespace) y los fondos de grupo para delimitar áreas. Los bordes, si se usan, deben ser para destacar un visual concreto, no para todos por igual.</p>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- ─────────────────────────────────────────── -->
+        <!-- 5. Escala de ruido                          -->
+        <!-- ─────────────────────────────────────────── -->
+        <div class="category-header" id="escala">
+          <span class="category-header__icon">📏</span>
+          <h2 class="category-header__title">Escala de ruido visual</h2>
+        </div>
+
+        <div class="concept-card">
+          <h3>¿En qué nivel está tu dashboard ahora mismo?</h3>
+          <p>
+            Usa esta escala para hacer una primera evaluación rápida de cualquier informe antes
+            de entrar en el detalle. Es subjetiva — y eso es exactamente el punto. El ruido
+            visual se siente, no se mide.
+          </p>
+
+          <div class="noise-scale" role="img" aria-label="Escala de ruido visual del 1 al 4">
+            <div class="noise-scale__item noise-scale__item--1">
+              <span class="noise-scale__num">1</span>
+              Limpio<br>Todo tiene propósito
+            </div>
+            <div class="noise-scale__item noise-scale__item--2">
+              <span class="noise-scale__num">2</span>
+              Aceptable<br>Algún elemento cuestionable
+            </div>
+            <div class="noise-scale__item noise-scale__item--3">
+              <span class="noise-scale__num">3</span>
+              Ruidoso<br>Varios elementos decorativos
+            </div>
+            <div class="noise-scale__item noise-scale__item--4">
+              <span class="noise-scale__num">4</span>
+              Caótico<br>El dato se pierde
+            </div>
+          </div>
+
+          <p style="margin-top: 1rem;">
+            El objetivo es nivel 1, aunque level 2 es perfectamente aceptable en dashboards
+            corporativos donde hay compromisos de branding. Los niveles 3 y 4 siempre tienen
+            solución — y suele ser más sencilla de lo que parece.
+          </p>
+        </div>
+
+        <!-- ─────────────────────────────────────────── -->
+        <!-- 6. El Test del No Ruido                     -->
+        <!-- ─────────────────────────────────────────── -->
+        <div class="category-header" id="test">
+          <span class="category-header__icon">🧪</span>
+          <h2 class="category-header__title">El Test del No Ruido</h2>
+        </div>
+
+        <div class="concept-card">
+          <h3>El protocolo en 5 pasos para auditar cualquier dashboard</h3>
+          <p>
+            Aplica este proceso a cualquier informe tuyo o de tu equipo — tarda menos de
+            10 minutos y siempre aparece algo que mejorar.
+          </p>
+
+          <ol class="test-steps">
+            <li>
+              <strong>Recorre el canvas elemento por elemento</strong> y para en cada uno a preguntarte: <em>"¿Si esto desaparece, se entiende el informe peor?"</em> Si la respuesta es no, o dudas, márcalo para eliminar o reducir.
+            </li>
+            <li>
+              <strong>Cuenta los colores distintos</strong> que aparecen en el informe, incluyendo los de fondo, bordes y texto. Si son más de 4-5, hay ruido cromático. Reduce a tu paleta base: 1 principal + 1 secundario + 1 alerta + neutros.
+            </li>
+            <li>
+              <strong>Aleja la pantalla hasta que el texto sea ilegible</strong> (o entrecierra los ojos). Lo que sigue destacando son tus elementos de alta jerarquía visual. ¿Son los datos más importantes? Si destaca más la decoración que los KPIs, hay ruido.
+            </li>
+            <li>
+              <strong>Pide a alguien ajeno al informe</strong> que lo mire 5 segundos y luego te cuente qué recordó. Si menciona elementos decorativos antes que datos, hay demasiado ruido. Si no puede decir el mensaje principal, el layout también necesita trabajo.
+            </li>
+            <li>
+              <strong>Activa el modo "Solo datos"</strong> mentalmente: imagina el informe con solo los datos y sus etiquetas, sin ningún formato. Ahora añade de vuelta formato elemento a elemento, solo si cada uno aporta comprensión. Detente cuando el siguiente elemento ya no aporte nada nuevo.
+            </li>
+          </ol>
+
+          <div class="note note--warning">
+            ⚠️ <strong>Ojo con esto:</strong> El Test del No Ruido es más fácil de aplicar a informes ajenos que a los propios. Llevamos demasiado tiempo mirando nuestros dashboards y nos hemos "acostumbrado" al ruido. Pide siempre una segunda opinión externa antes de publicar.
+          </div>
+        </div>
+
+        <!-- ─────────────────────────────────────────── -->
+        <!-- 7. Protocolo de limpieza                    -->
+        <!-- ─────────────────────────────────────────── -->
+        <div class="category-header" id="limpieza">
+          <span class="category-header__icon">🧹</span>
+          <h2 class="category-header__title">Protocolo de limpieza visual para Power BI</h2>
+        </div>
+
+        <div class="concept-card">
+          <h3>Por dónde empezar cuando el informe ya existe</h3>
+          <p>
+            Limpiar un informe existente puede abrumar si se intenta todo a la vez. Este orden
+            de actuación funciona de lo más impactante a lo más fino, para que notes mejoras
+            rápidas desde el primer paso.
+          </p>
+
+          <h4>Paso 1 — Elimina primero, añade después</h4>
+          <ul>
+            <li>Desactiva todos los efectos 3D en los visuals (Format visual → Visual → Shadow / 3D effect)</li>
+            <li>Elimina sombras de todos los visuals salvo donde aporten jerarquía real</li>
+            <li>Retira imágenes de fondo decorativas del canvas</li>
+            <li>Quita bordes de los visuals que estén delimitados por el espacio o por rectángulos de grupo</li>
+          </ul>
+
+          <h4>Paso 2 — Ajusta el espacio</h4>
+          <ul>
+            <li>Aumenta el padding interno de todos los visuals a al menos 10px</li>
+            <li>Separa los visuals entre sí mínimo 12px</li>
+            <li>Añade márgenes al canvas dejando espacio en los 4 bordes</li>
+          </ul>
+
+          <h4>Paso 3 — Simplifica los gráficos</h4>
+          <ul>
+            <li>Sustituye gráficos de tarta con más de 4 sectores por barras horizontales</li>
+            <li>Elimina etiquetas de dato en visuals con más de 8 elementos</li>
+            <li>Quita etiquetas de eje redundantes (si ya hay etiquetas de dato, el eje Y puede ocultarse)</li>
+            <li>Revisa que ningún texto esté rotado más de 0° en los ejes</li>
+          </ul>
+
+          <h4>Paso 4 — Revisa el color</h4>
+          <ul>
+            <li>Asegúrate de que solo 1 color es el "protagonista" (el color de marca o el coral del dato principal)</li>
+            <li>El resto de series en gris neutro — el color llama la atención, el gris informa</li>
+            <li>Elimina gradientes decorativos en fondos de tarjetas o títulos</li>
+          </ul>
+
+          <div class="note note--next">
+            🚀 <strong>¡Lo estás haciendo genial!</strong> La limpieza visual no es restar trabajo — es dejar que los datos hablen por sí solos. Cuando quitas el ruido, los datos ganan presencia sin que hayas añadido nada nuevo. Ese es el poder del diseño invisible. 🌸
+          </div>
+        </div>
+
+        <!-- Navegación entre páginas -->
+        <nav aria-label="Páginas relacionadas" style="margin-top: 2.5rem; display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap;">
+          <a href="layout.html" style="display: inline-flex; align-items: center; gap: 0.5rem; color: var(--color-coral); text-decoration: none; font-weight: 600; font-size: 0.9375rem;">
+            ← Layout y Patrones de Lectura
+          </a>
+          <a href="consistencia.html" style="display: inline-flex; align-items: center; gap: 0.5rem; color: var(--color-coral); text-decoration: none; font-weight: 600; font-size: 0.9375rem;">
+            Consistencia y Tipografía →
+          </a>
+        </nav>
+
+      </div><!-- /topic-page -->
+    </main>
+  </div><!-- /page-wrapper -->
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script>
+  <script src="../../assets/js/theme.js"></script>
+  <script src="../../assets/js/main.js"></script>
+  <script src="../../assets/js/cursor.js"></script>
+
+</body>
+</html>

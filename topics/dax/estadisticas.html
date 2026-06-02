@@ -1,0 +1,1120 @@
+<!DOCTYPE html>
+
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta content="Funciones Estadísticas en DAX - MEDIAN, PERCENTILE, STDEV, RANKX, distribuciones y regresión lineal en Power BI" name="description"/>
+<meta content="DAX, Power BI, estadísticas, median, percentile, stdev, rankx, regresión, linest, distribuciones" name="keywords"/>
+<title>Funciones Estadísticas DAX | Power BI Guide</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Fira+Code:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<!-- Prism.js para syntax highlighting -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet"/>
+<!-- i18next para traducciones -->
+<script src="https://cdn.jsdelivr.net/npm/i18next@23.7.6/i18next.min.js"></script>
+<!-- CSS del proyecto -->
+<link href="../../assets/css/main.css" rel="stylesheet"/>
+<link href="../../assets/css/themes.css" rel="stylesheet"/>
+<link href="../../assets/css/components.css" rel="stylesheet"/>
+<link href="../../assets/css/layout.css" rel="stylesheet"/>
+<link href="../../assets/css/dax-search.css" rel="stylesheet"/>
+<style>
+    /* === ESTILOS ESPECÍFICOS PARA PÁGINAS DE TOPICS === */
+
+    /* Topic header con icono grande */
+    .topic-header {
+      text-align: center;
+      padding: 2.5rem 0 2rem;
+      border-bottom: 2px solid var(--color-mauve);
+      margin-bottom: 2.5rem;
+    }
+
+    .topic-header__icon {
+      font-size: 4rem;
+      margin-bottom: 0.75rem;
+      display: block;
+    }
+
+    .topic-header__title {
+      font-size: clamp(1.875rem, 4vw, 2.5rem);
+      font-weight: 800;
+      color: var(--color-dark);
+      margin-bottom: 0.625rem;
+      line-height: 1.2;
+    }
+
+    .topic-header__subtitle {
+      font-size: 1.0625rem;
+      color: var(--color-slate);
+      margin-bottom: 1.25rem;
+      line-height: 1.5;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .topic-header__levels {
+      display: flex;
+      gap: 0.5rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    /* TOC — Table of contents */
+    .toc {
+      background: var(--color-rose);
+      border: 1.5px solid var(--color-mauve);
+      border-radius: var(--border-radius);
+      padding: 1.5rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .toc__title {
+      font-size: 0.875rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--color-slate);
+      margin-bottom: 1rem;
+    }
+
+    .toc__list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .toc__link {
+      color: var(--color-dark);
+      text-decoration: none;
+      font-size: 0.9375rem;
+      font-weight: 500;
+      transition: var(--transition);
+      padding-left: 0.25rem;
+    }
+
+    .toc__link:hover {
+      color: var(--color-coral);
+      padding-left: 0.75rem;
+    }
+
+    /* Category headers */
+    .category-header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+      margin-top: 3rem;
+    }
+
+    .category-header__icon {
+      font-size: 2rem;
+    }
+
+    .category-header__title {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: var(--color-dark);
+      margin: 0;
+    }
+
+    /* Function cards */
+    .function-card {
+      background: var(--color-white);
+      border: 1.5px solid var(--color-mauve);
+      border-radius: var(--border-radius);
+      padding: 1.75rem;
+      margin-bottom: 2rem;
+      transition: var(--transition);
+    }
+
+    .function-card:hover {
+      border-color: var(--color-coral);
+      box-shadow: 0 4px 12px rgba(231, 78, 55, 0.1);
+    }
+
+    .function-card__name {
+      font-family: var(--font-code);
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--color-coral);
+      margin-bottom: 0.5rem;
+    }
+
+    .function-card__level {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 0.25rem 0.75rem;
+      border-radius: 12px;
+      margin-bottom: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .function-card__description {
+      color: var(--color-slate);
+      line-height: 1.6;
+      margin-bottom: 1rem;
+    }
+
+    .function-card h3,
+    .function-card h4 {
+      color: var(--color-dark);
+      margin-top: 1.5rem;
+      margin-bottom: 0.75rem;
+      font-weight: 600;
+    }
+
+    .function-card h3 {
+      font-size: 1.125rem;
+    }
+
+    .function-card h4 {
+      font-size: 1rem;
+    }
+
+    .function-card ul {
+      margin: 1rem 0;
+      padding-left: 1.5rem;
+    }
+
+    .function-card ul li {
+      margin-bottom: 0.5rem;
+      line-height: 1.6;
+    }
+
+    /* Code blocks */
+    .code-block {
+      position: relative;
+      margin: 1.25rem 0;
+    }
+
+    .code-block__copy {
+      position: absolute;
+      top: 0.75rem;
+      right: 0.75rem;
+      padding: 0.4rem 0.85rem;
+      font-size: 0.75rem;
+      background: var(--color-coral);
+      color: var(--color-white);
+      border: none;
+      border-radius: var(--border-radius-sm);
+      cursor: pointer;
+      font-family: var(--font-main);
+      font-weight: 600;
+      transition: var(--transition);
+      z-index: 10;
+    }
+
+    .code-block__copy:hover {
+      background: var(--color-peach);
+    }
+
+    .code-block pre {
+      margin: 0;
+      border-radius: var(--border-radius-sm);
+      background: var(--bg-code);
+    }
+
+    .code-block code {
+      font-family: var(--font-code);
+      font-size: 0.9rem;
+      line-height: 1.6;
+    }
+
+    /* Notes */
+    .note {
+      padding: 1.25rem 1.5rem;
+      border-radius: var(--border-radius);
+      margin: 1.5rem 0;
+      border-left: 4px solid;
+      line-height: 1.6;
+    }
+
+    .note--tip {
+      background: rgba(91, 173, 146, 0.1);
+      border-color: var(--color-mint);
+    }
+
+    .note--warning {
+      background: rgba(242, 184, 75, 0.1);
+      border-color: var(--color-gold);
+    }
+
+    .note--best-practice {
+      background: rgba(91, 173, 146, 0.1);
+      border-color: var(--color-mint);
+    }
+
+    .note--next {
+      background: rgba(173, 144, 230, 0.1);
+      border-color: var(--color-lavender);
+    }
+
+    .note strong {
+      display: block;
+      margin-bottom: 0.5rem;
+      color: var(--color-dark);
+    }
+
+    /* Tables */
+    .function-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.5rem 0;
+      background: var(--color-white);
+      border: 1.5px solid var(--color-mauve);
+      border-radius: var(--border-radius);
+      overflow: hidden;
+    }
+
+    .function-table thead {
+      background: var(--color-blush);
+    }
+
+    .function-table th {
+      padding: 0.875rem 1rem;
+      text-align: left;
+      font-weight: 700;
+      font-size: 0.875rem;
+      color: var(--color-dark);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .function-table td {
+      padding: 0.875rem 1rem;
+      border-top: 1px solid var(--color-mauve);
+      color: var(--color-slate);
+      font-size: 0.9375rem;
+    }
+
+    .function-table td strong,
+    .function-table td code {
+      color: var(--color-dark);
+      font-weight: 600;
+    }
+
+    /* Secciones generales */
+    section {
+      margin-bottom: 3rem;
+    }
+
+    section h2 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: var(--color-dark);
+      margin-bottom: 1rem;
+    }
+
+    section h3 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--color-dark);
+      margin: 2rem 0 1rem;
+    }
+
+    section p {
+      color: var(--color-slate);
+      line-height: 1.7;
+      margin-bottom: 1rem;
+    }
+
+    section ul {
+      margin: 1rem 0;
+      padding-left: 1.5rem;
+    }
+
+    section ul li {
+      margin-bottom: 0.5rem;
+      line-height: 1.6;
+      color: var(--color-slate);
+    }
+
+    section a {
+      color: var(--color-coral);
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+<!-- SIDEBAR: Navegación principal -->
+<aside class="site-sidebar">
+<!-- Avatar y nombre -->
+<div class="site-sidebar__profile">
+<img alt="Sara Lozano Martí" class="site-sidebar__avatar" src="../../assets/images/avatar Sara.png"/>
+<p class="site-sidebar__name">Sara Lozano Martí</p>
+<p class="site-sidebar__subtitle">Power BI Expert</p>
+</div>
+<!-- Navegación principal -->
+<nav aria-label="Navegación principal" class="site-sidebar__nav">
+<ul>
+<li><a class="site-sidebar__link" href="../../index.html">
+<span class="site-sidebar__icon">🏠</span> Inicio
+        </a></li>
+<li><a class="site-sidebar__link is-active" href="../dax.html">
+<span class="site-sidebar__icon">⚡</span> Funciones DAX
+        </a></li>
+<li><a class="site-sidebar__link" href="../power-query.html">
+<span class="site-sidebar__icon">🔄</span> Power Query
+        </a></li>
+<li><a class="site-sidebar__link" href="../lenguaje-m.html">
+<span class="site-sidebar__icon">〽️</span> Lenguaje M
+        </a></li>
+<li><a class="site-sidebar__link" href="../modelado.html">
+<span class="site-sidebar__icon">🗄️</span> Modelado
+        </a></li>
+<li><a class="site-sidebar__link" href="../conceptos-powerbi.html">
+<span class="site-sidebar__icon">📊</span> Conceptos Power BI
+        </a></li>
+<li><a class="site-sidebar__link" href="../fabric.html">
+<span class="site-sidebar__icon">🧵</span> Microsoft Fabric
+        </a></li>
+<li><a class="site-sidebar__link" href="../tmdl.html">
+<span class="site-sidebar__icon">📝</span> TMDL
+        </a></li>
+<li><a class="site-sidebar__link" href="../diseno-ux.html">
+<span class="site-sidebar__icon">🎨</span> Diseño y UX
+        </a></li>
+<li><a class="site-sidebar__link" href="../gobernanza.html">
+<span class="site-sidebar__icon">🔒</span> Gobernanza
+        </a></li>
+</ul>
+</nav>
+<!-- Separador -->
+<div class="site-sidebar__divider"></div>
+<!-- Footer del sidebar -->
+<div class="site-sidebar__footer">
+<!-- Enlace a quien soy -->
+<a class="site-sidebar__link site-sidebar__link--highlight" href="../../quien-soy.html">
+<span class="site-sidebar__icon">👩‍💻</span> ¿Quién soy?
+      </a>
+<!-- Iconos sociales -->
+<div class="site-sidebar__social">
+<a aria-label="LinkedIn" href="https://www.linkedin.com/in/saralozanomarti" rel="noopener noreferrer" target="_blank">
+<img alt="LinkedIn" class="site-sidebar__social-icon" src="../../assets/images/logo linkedIN.png"/>
+</a>
+<a aria-label="YouTube" href="https://www.youtube.com/@KawaiiPowerBI" rel="noopener noreferrer" target="_blank">
+<img alt="YouTube" class="site-sidebar__social-icon" src="../../assets/images/logo youtube.png"/>
+</a>
+<a aria-label="GitHub" href="https://github.com/KawaiiBI" rel="noopener noreferrer" target="_blank">
+<img alt="GitHub" class="site-sidebar__social-icon" src="../../assets/images/logo github.png"/>
+</a>
+</div>
+<!-- Logo Kawaii BI -->
+<div class="site-sidebar__logo-bottom">
+<img alt="Kawaii BI" class="site-sidebar__logo-img" src="../../assets/images/Logo Kawaii.jpg"/>
+</div>
+<!-- Copyright -->
+<p class="site-sidebar__copyright">
+        Power BI Guide 🌸<br/>
+        © 2026 Kawaii BI
+      </p>
+</div>
+</aside>
+<!-- PAGE WRAPPER -->
+<div class="page-wrapper">
+<!-- Main content -->
+<main id="main-content">
+<div class="topic-page">
+        <nav aria-label="breadcrumb" class="breadcrumb">
+<a class="breadcrumb__link" href="../../index.html">Inicio</a>
+<span class="breadcrumb__separator">›</span>
+<a class="breadcrumb__link" href="../dax.html">Funciones DAX</a>
+<span class="breadcrumb__separator">›</span>
+<span class="breadcrumb__current">Estadísticas</span>
+</nav>
+
+        <header class="topic-header">
+<span class="topic-header__icon">📈</span>
+<h1 class="topic-header__title">Funciones Estadísticas</h1>
+<p class="topic-header__subtitle">MEDIAN, PERCENTILE, STDEV, RANKX, distribuciones estadísticas y regresión lineal — el análisis estadístico completo en DAX</p>
+<div class="topic-header__levels">
+<span class="badge badge--intermediate">Intermedio</span>
+<span class="badge badge--advanced">Avanzado</span>
+</div>
+</header>
+
+        <div class="dax-search-compact-bar">
+<div class="dax-search-wrapper dax-search-compact" data-dax-search="true">
+<span class="dax-search-icon">🔍</span>
+<input aria-label="Buscar función DAX" autocomplete="off" class="dax-search-input" placeholder="Buscar otra función DAX..." spellcheck="false" type="text"/>
+<button aria-label="Limpiar" class="dax-search-clear" hidden="">✕</button>
+<div class="dax-search-results" role="listbox"></div>
+</div>
+</div>
+
+        <nav class="toc">
+<h2 class="toc__title">📑 En esta página</h2>
+<ul class="toc__list">
+<li><a class="toc__link" href="#intro">Estadística descriptiva vs inferencial en DAX</a></li>
+<li><a class="toc__link" href="#posicion">Medidas de posición: MEDIAN, PERCENTILE</a></li>
+<li><a class="toc__link" href="#dispersion">Medidas de dispersión: STDEV, VAR</a></li>
+<li><a class="toc__link" href="#ranking">Rankings: RANKX y RANK.EQ</a></li>
+<li><a class="toc__link" href="#muestras">Muestras: SAMPLE y GEOMEAN</a></li>
+<li><a class="toc__link" href="#regresion">Regresión lineal: LINEST y LINESTX</a></li>
+<li><a class="toc__link" href="#distribuciones">Distribuciones estadísticas</a></li>
+<li><a class="toc__link" href="#combinatoria">Combinatoria estadística</a></li>
+<li><a class="toc__link" href="#patrones">Patrones de análisis estadístico</a></li>
+</ul>
+</nav>
+
+        <!-- Breadcrumb --><!-- Buscador compacto DAX --><!-- Header del topic --><!-- TOC --><!-- Sección 0: Intro --><section id="intro">
+<div class="category-header">
+<span class="category-header__icon">🎯</span>
+<h2 class="category-header__title">Estadística descriptiva vs inferencial en DAX</h2>
+</div>
+<p>
+            ¿Crees que DAX es solo SUM y COUNT? ¡Para nada! Tiene un conjunto de funciones estadísticas digno de R o Python en modo básico.
+            Desde la mediana hasta distribuciones chi-cuadrado, pasando por regresión lineal. Te cuento cuándo y por qué usarlas en un contexto de BI. 📊
+          </p>
+<h3>Clasificación rápida de funciones estadísticas</h3>
+<table class="function-table">
+<thead>
+<tr>
+<th>Tipo</th>
+<th>Qué hace</th>
+<th>Funciones DAX</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Estadística DESCRIPTIVA</strong></td>
+<td>Describe los datos que tienes</td>
+<td>MEDIAN, STDEV, VAR, PERCENTILE, RANKX</td>
+</tr>
+<tr>
+<td><strong>Estadística INFERENCIAL</strong></td>
+<td>Hace inferencias sobre una población</td>
+<td>NORM.DIST, T.DIST, CHISQ.DIST, BETA.DIST</td>
+</tr>
+<tr>
+<td><strong>Machine Learning básico</strong></td>
+<td>Predice valores basándose en patrones</td>
+<td>LINEST, LINESTX (regresión lineal)</td>
+</tr>
+</tbody>
+</table>
+<div class="note note--tip">
+<strong>💡 Contexto de uso en Power BI</strong><br/>
+            En la práctica, el <strong>95% del uso estadístico en Power BI es descriptivo</strong> — mediana, percentiles, desviación estándar.
+            Las distribuciones estadísticas y la regresión son para usuarios avanzados que integran análisis estadístico directamente en sus informes.
+          </div>
+</section><!-- Sección 1: Medidas de posición --><section id="posicion">
+<div class="category-header">
+<span class="category-header__icon">📏</span>
+<h2 class="category-header__title">Medidas de posición — dónde están los datos</h2>
+</div>
+<!-- MEDIAN / MEDIANX -->
+<div class="function-card">
+<div class="function-card__name">MEDIAN / MEDIANX</div>
+<div class="function-card__level badge--intermediate">Intermedio</div>
+<div class="function-card__description">
+              La mediana es el valor central cuando los datos están ordenados. A diferencia de la media (AVERAGE), la mediana NO se ve afectada por valores extremos (outliers). Para distribuciones asimétricas, la mediana es más representativa que la media.
+            </div>
+<h3>¿Cuándo usar mediana vs media?</h3>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Supongamos salarios: 20.000, 22.000, 24.000, 25.000, 200.000
+// (el CEO infla la media)
+
+Salario Medio = AVERAGE('Empleados'[Salario])
+// Resultado: 58.200€ (el CEO infla la media)
+
+Salario Mediano = MEDIAN('Empleados'[Salario])
+// Resultado: 24.000€ (el valor central real — mucho más representativo)</code></pre>
+</div>
+<h4>Ejemplos prácticos</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// ✅ Ticket mediano (más robusto que el ticket medio)
+Ticket Mediano = MEDIAN('Ventas'[Importe])
+Ticket Medio = AVERAGE('Ventas'[Importe])
+// Si hay ventas atípicas muy grandes, Ticket Mediano es más representativo
+
+// ✅ MEDIANX — mediana de una expresión calculada
+Margen Mediano =
+MEDIANX(
+    'Pedidos',
+    DIVIDE([Margen Pedido], [Importe Pedido])
+)</code></pre>
+</div>
+</div>
+<!-- PERCENTILE.INC / PERCENTILE.EXC -->
+<div class="function-card">
+<div class="function-card__name">PERCENTILE.INC / PERCENTILE.EXC</div>
+<div class="function-card__level badge--intermediate">Intermedio</div>
+<div class="function-card__level badge--advanced">Avanzado</div>
+<div class="function-card__description">
+              Devuelve el percentil k de una columna. k debe ser entre 0 y 1 (0.25 = percentil 25, es decir Q1).
+              <strong>INC</strong> incluye los extremos (0 y 1 son válidos), <strong>EXC</strong> los excluye (solo valores estrictamente entre 0 y 1).
+            </div>
+<h4>Cuartiles y percentiles</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// ✅ Cuartiles de ventas
+Q1 Ventas = PERCENTILE.INC('Ventas'[Importe], 0.25)  -- 25% inferior
+Q2 Ventas = PERCENTILE.INC('Ventas'[Importe], 0.50)  -- mediana
+Q3 Ventas = PERCENTILE.INC('Ventas'[Importe], 0.75)  -- 75% inferior
+P90 Ventas = PERCENTILE.INC('Ventas'[Importe], 0.90) -- top 10%
+
+// ✅ Rango intercuartílico (IQR — medida de dispersión robusta)
+IQR =
+    PERCENTILE.INC('Ventas'[Importe], 0.75) -
+    PERCENTILE.INC('Ventas'[Importe], 0.25)
+
+// ✅ Detectar outliers (método IQR)
+Limite Superior Outlier =
+    PERCENTILE.INC('Ventas'[Importe], 0.75) + 1.5 * [IQR]
+
+Limite Inferior Outlier =
+    PERCENTILE.INC('Ventas'[Importe], 0.25) - 1.5 * [IQR]
+
+Es Outlier =
+OR(
+    'Ventas'[Importe] &gt; [Limite Superior Outlier],
+    'Ventas'[Importe] &lt; [Limite Inferior Outlier]
+)</code></pre>
+</div>
+</div>
+<!-- PERCENTILEX.INC / PERCENTILEX.EXC -->
+<div class="function-card">
+<div class="function-card__name">PERCENTILEX.INC / PERCENTILEX.EXC</div>
+<div class="function-card__level badge--advanced">Avanzado</div>
+<div class="function-card__description">
+              Versión iteradora de PERCENTILE — calcula el percentil de una expresión evaluada fila a fila.
+            </div>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// ✅ Percentil 90 del margen calculado por pedido
+P90 Margen =
+PERCENTILEX.INC(
+    'Pedidos',
+    DIVIDE(
+        SUMX(RELATEDTABLE('Lineas'), 'Lineas'[Margen]),
+        SUMX(RELATEDTABLE('Lineas'), 'Lineas'[Importe])
+    ),
+    0.90
+)</code></pre>
+</div>
+</div>
+</section><!-- Sección 2: Dispersión --><section id="dispersion">
+<div class="category-header">
+<span class="category-header__icon">📊</span>
+<h2 class="category-header__title">Dispersión — cómo de dispersos están los datos</h2>
+</div>
+<h3>Tabla comparativa de funciones de dispersión</h3>
+<table class="function-table">
+<thead>
+<tr>
+<th>Función</th>
+<th>Qué mide</th>
+<th>Variante</th>
+<th>Cuándo usar</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>STDEV.P</code></td>
+<td>Desv. estándar poblacional</td>
+<td>Toda la población</td>
+<td>Tienes TODOS los datos</td>
+</tr>
+<tr>
+<td><code>STDEV.S</code></td>
+<td>Desv. estándar muestral</td>
+<td>Muestra</td>
+<td>Tienes una MUESTRA de los datos</td>
+</tr>
+<tr>
+<td><code>STDEVX.P</code></td>
+<td>Como STDEV.P pero iteradora</td>
+<td>Expresión por fila</td>
+<td>Con expresiones calculadas</td>
+</tr>
+<tr>
+<td><code>STDEVX.S</code></td>
+<td>Como STDEV.S pero iteradora</td>
+<td>Expresión por fila</td>
+<td>Con expresiones calculadas</td>
+</tr>
+<tr>
+<td><code>VAR.P</code></td>
+<td>Varianza poblacional</td>
+<td>Toda la población</td>
+<td>(STDEV.P al cuadrado)</td>
+</tr>
+<tr>
+<td><code>VAR.S</code></td>
+<td>Varianza muestral</td>
+<td>Muestra</td>
+<td>(STDEV.S al cuadrado)</td>
+</tr>
+<tr>
+<td><code>VARX.P</code></td>
+<td>Varianza poblacional iteradora</td>
+<td>Expresión por fila</td>
+<td>Con expresiones calculadas</td>
+</tr>
+<tr>
+<td><code>VARX.S</code></td>
+<td>Varianza muestral iteradora</td>
+<td>Expresión por fila</td>
+<td>Con expresiones calculadas</td>
+</tr>
+</tbody>
+</table>
+<!-- STDEV.S (la más usada) -->
+<div class="function-card">
+<div class="function-card__name">STDEV.S</div>
+<div class="function-card__level badge--intermediate">Intermedio</div>
+<div class="function-card__level badge--advanced">Avanzado</div>
+<div class="function-card__description">
+              Desviación estándar muestral. Mide cuánto se dispersan los valores respecto a su media.
+              Una desv. estándar alta = datos muy dispersos. Baja = datos concentrados alrededor de la media.
+            </div>
+<h4>Análisis de consistencia</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// ✅ ¿Cómo de consistentes son las ventas diarias?
+Consistencia Ventas = STDEV.S('Ventas'[Importe])
+// Alta → ventas muy variables día a día (riesgo)
+// Baja → ventas estables y predecibles
+
+// ✅ Coeficiente de variación (CV) — dispersión relativa
+// Comparable entre medidas con diferentes escalas
+CV Ventas = DIVIDE(STDEV.S('Ventas'[Importe]), AVERAGE('Ventas'[Importe]))
+// 0.1 = 10% de variación (muy estable)
+// 0.5 = 50% de variación (muy variable)
+// Permite comparar variabilidad entre métricas con distintas escalas
+
+// ✅ Z-Score — a cuántas desviaciones estándar está cada venta de la media
+'Ventas'[Z-Score] =
+DIVIDE(
+    'Ventas'[Importe] - AVERAGE('Ventas'[Importe]),
+    STDEV.S('Ventas'[Importe])
+)
+// Z &gt; 2 o Z &lt; -2 → posible outlier
+// Z = 0 → valor igual a la media
+// Z = 1 → una desviación estándar por encima de la media</code></pre>
+</div>
+<div class="note note--tip">
+<strong>💡 La regla práctica P vs S</strong><br/>
+<strong>Usa .P (poblacional):</strong> Si tus datos son el universo completo (todas las ventas del año pasado).<br/>
+<strong>Usa .S (muestral):</strong> Si tus datos son una muestra de una población más grande.<br/><br/>
+              En la práctica de BI, casi siempre usarás <code>.S</code> porque trabajas con los datos disponibles como muestra del comportamiento futuro.
+            </div>
+</div>
+</section><!-- Sección 3: Rankings --><section id="ranking">
+<div class="category-header">
+<span class="category-header__icon">🏅</span>
+<h2 class="category-header__title">Rankings — RANKX y RANK.EQ</h2>
+</div>
+<!-- RANKX -->
+<div class="function-card">
+<div class="function-card__name">RANKX</div>
+<div class="function-card__level badge--intermediate">Intermedio</div>
+<div class="function-card__level badge--advanced">Avanzado</div>
+<div class="function-card__description">
+              Calcula el ranking de un valor dentro de una tabla. Es un iterador — evalúa la expresión para cada fila de la tabla y determina la posición del valor actual.
+              <strong>La función de ranking más usada en Power BI</strong> para rankings dinámicos.
+            </div>
+<h3>Parámetros de RANKX</h3>
+<ul>
+<li><strong>tabla:</strong> el conjunto sobre el que ranquear (ALL, VALUES, tabla completa...)</li>
+<li><strong>expresión:</strong> qué se rankea (generalmente una medida)</li>
+<li><strong>valor:</strong> qué valor ranquear (por defecto, la expresión evaluada en el contexto actual)</li>
+<li><strong>orden:</strong> DESC (mayor=1, por defecto) o ASC (menor=1)</li>
+<li><strong>empates:</strong> SKIP (1,2,2,4) o DENSE (1,2,2,3)</li>
+</ul>
+<h4>Ranking básico de productos</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// ✅ Ranking de productos por ventas (el más vendido = posición 1)
+Ranking Producto =
+RANKX(
+    ALL('Productos'),      -- sobre todos los productos
+    [Total Ventas],        -- ranquear por ventas totales
+    ,                      -- valor actual (se omite = usa la expresión)
+    DESC,                  -- mayor ventas = posición 1
+    DENSE                  -- sin saltos en empates
+)
+
+// ✅ Ranking dentro de categoría
+Ranking en Categoría =
+RANKX(
+    ALLEXCEPT('Productos', 'Productos'[Categoría]),
+    -- solo productos de la misma categoría
+    [Total Ventas],
+    ,
+    DESC,
+    DENSE
+)
+
+// ✅ Usar RANKX para mostrar solo el Top N
+Es Top 10 = IF([Ranking Producto] &lt;= 10, TRUE, FALSE)
+
+// ✅ Top N dinámico (con slicer de N)
+Top N Ventas =
+VAR N = SELECTEDVALUE('TopN Selector'[Valor], 10)
+RETURN
+    IF([Ranking Producto] &lt;= N, [Total Ventas], BLANK())</code></pre>
+</div>
+<div class="note note--warning">
+<strong>⚠️ Performance con RANKX</strong><br/>
+              RANKX puede ser lento en tablas grandes porque es un iterador que evalúa la expresión para CADA FILA de la tabla especificada.
+              Si la tabla tiene millones de filas, considera usar la función RANK (Window Function) en tablas calculadas, o limitar la tabla con TOPN primero.
+            </div>
+</div>
+<!-- RANK.EQ -->
+<div class="function-card">
+<div class="function-card__name">RANK.EQ</div>
+<div class="function-card__level badge--advanced">Avanzado</div>
+<div class="function-card__description">
+              Versión simplificada de ranking — busca la posición de un valor específico dentro de una columna. No es iteradora. Menos flexible que RANKX pero más directa para casos simples.
+            </div>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// ✅ Posición de una categoría específica en la lista de ventas
+Posición Electrónica =
+RANK.EQ(
+    [Ventas Electrónica],
+    'ResumenCategorías'[TotalVentas],
+    DESC
+)</code></pre>
+</div>
+</div>
+</section><!-- Sección 4: Muestras y medias geométricas --><section id="muestras">
+<div class="category-header">
+<span class="category-header__icon">🎲</span>
+<h2 class="category-header__title">Muestras y medias geométricas</h2>
+</div>
+<!-- SAMPLE -->
+<div class="function-card">
+<div class="function-card__name">SAMPLE</div>
+<div class="function-card__level badge--advanced">Avanzado</div>
+<div class="function-card__description">
+              Devuelve una muestra de N filas de una tabla, ordenadas por la expresión especificada. Útil para mostrar ejemplos representativos o hacer muestreo sistemático.
+            </div>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// ✅ Mostrar 10 transacciones representativas (distribuidas uniformemente)
+Muestra Transacciones =
+SAMPLE(10, 'Ventas', 'Ventas'[Importe], ASC)
+// Devuelve 10 filas de Ventas distribuidas a lo largo del rango de importes</code></pre>
+</div>
+</div>
+<!-- GEOMEAN / GEOMEANX -->
+<div class="function-card">
+<div class="function-card__name">GEOMEAN / GEOMEANX</div>
+<div class="function-card__level badge--advanced">Avanzado</div>
+<div class="function-card__description">
+              Media geométrica — la raíz N-ésima del producto de N valores.
+              <strong>Perfecta para promediar tasas de crecimiento, rendimientos compuestos y ratios multiplicativos.</strong>
+</div>
+<h3>¿Cuándo usar media geométrica vs aritmética?</h3>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Si tienes rendimientos: +50%, -50%
+// Media aritmética: (50 + (-50)) / 2 = 0% → parece neutro
+// Pero si inviertes 100€:
+// +50% → 150€, luego -50% → 75€ (¡has perdido dinero!)
+// Media geométrica: SQRT(1.5 × 0.5) - 1 = -13.4% → refleja la realidad</code></pre>
+</div>
+<h4>CAGR (tasa de crecimiento compuesto anual)</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// ✅ CAGR = (Valor Final / Valor Inicial)^(1/años) - 1
+CAGR =
+VAR ValorInicial = FIRSTNONBLANK('Ventas'[TotalAño], 1)
+VAR ValorFinal = LASTNONBLANK('Ventas'[TotalAño], 1)
+VAR Años = DATEDIFF(MIN('Calendario'[Fecha]), MAX('Calendario'[Fecha]), YEAR)
+RETURN
+    POWER(DIVIDE(ValorFinal, ValorInicial), DIVIDE(1, Años)) - 1
+
+// ✅ Alternativa con GEOMEANX (para factores de crecimiento año a año)
+CAGR con Geomean =
+GEOMEANX('Crecimientos', 1 + 'Crecimientos'[Tasa]) - 1</code></pre>
+</div>
+</div>
+</section><!-- Sección 5: Regresión lineal --><section id="regresion">
+<div class="category-header">
+<span class="category-header__icon">📉</span>
+<h2 class="category-header__title">LINEST y LINESTX — regresión lineal en DAX</h2>
+</div>
+<p>
+            Sí, DAX puede hacer regresión lineal. Quizás no al nivel de Python con scikit-learn, pero sí lo suficiente para calcular tendencias,
+            coeficientes de correlación y líneas de ajuste directamente en Power BI.
+          </p>
+<!-- LINEST -->
+<div class="function-card">
+<div class="function-card__name">LINEST</div>
+<div class="function-card__level badge--advanced">Avanzado</div>
+<div class="function-card__description">
+              Calcula los coeficientes de la regresión lineal simple (y = mx + b) entre dos columnas.
+              Devuelve una tabla de dos columnas: el slope (pendiente m) y el intercept (ordenada al origen b).
+            </div>
+<h4>Línea de tendencia de ventas</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// ✅ Calcular la pendiente de la tendencia de ventas en el tiempo
+Ventas Predichas =
+VAR RegresionTabla =
+    LINEST(
+        SUMMARIZE('Ventas', 'Calendario'[MesNum], "Y", SUM('Ventas'[Importe])),
+        [Y],         -- variable dependiente: ventas
+        [MesNum]     -- variable independiente: número de mes
+    )
+VAR Slope = MAXX(FILTER(RegresionTabla, [Nombre] = "Slope"), [Valor])
+VAR Intercept = MAXX(FILTER(RegresionTabla, [Nombre] = "Intercept"), [Valor])
+RETURN
+    -- Ventas predichas para el mes N:
+    Slope * [MesNum] + Intercept</code></pre>
+</div>
+</div>
+<!-- LINESTX -->
+<div class="function-card">
+<div class="function-card__name">LINESTX</div>
+<div class="function-card__level badge--advanced">Avanzado</div>
+<div class="function-card__description">
+              Versión iteradora de LINEST. Más flexible porque las variables Y y X son expresiones evaluadas fila a fila, no columnas directas.
+            </div>
+<h4>Correlación entre descuento y margen</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// ✅ ¿A mayor descuento, menor margen? (esperamos que sí...)
+Pendiente Descuento-Margen =
+VAR Regresion =
+    LINESTX(
+        'Ventas',
+        'Ventas'[Margen],    -- Y: lo que queremos predecir
+        'Ventas'[Descuento]  -- X: el predictor
+    )
+VAR Pendiente = MAXX(FILTER(Regresion, [Nombre] = "Slope"), [Valor])
+RETURN Pendiente
+// Pendiente negativa → a mayor descuento, menor margen (confirma la hipótesis)
+// Pendiente positiva → algo raro pasa (revisar datos)</code></pre>
+</div>
+<div class="note note--tip">
+<strong>💡 Análisis estadístico más profundo</strong><br/>
+              Para análisis estadístico más profundo (regresión múltiple, Machine Learning, clustering) considera usar Python o R integrado en Power BI,
+              o exportar los datos a Fabric para procesarlos con notebooks. LINEST es útil para tendencias simples directamente en el modelo.
+            </div>
+</div>
+</section><!-- Sección 6: Distribuciones estadísticas --><section id="distribuciones">
+<div class="category-header">
+<span class="category-header__icon">🔔</span>
+<h2 class="category-header__title">Distribuciones estadísticas — para análisis avanzado</h2>
+</div>
+<p>
+            Estas funciones son el territorio de las personas con formación en estadística. Si eres analista de datos, ingeniera o científica de datos, las reconocerás inmediatamente.
+            Si no tienes ese background, no te preocupes — la mayoría de proyectos de BI no las necesitan. Pero están aquí para cuando las necesites.
+          </p>
+<h3>Tabla de todas las distribuciones disponibles</h3>
+<table class="function-table">
+<thead>
+<tr>
+<th>Distribución</th>
+<th>Funciones DAX</th>
+<th>Uso principal</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Normal</strong></td>
+<td>NORM.DIST, NORM.INV, NORM.S.DIST, NORM.S.INV</td>
+<td>Intervalos de confianza, z-scores</td>
+</tr>
+<tr>
+<td><strong>T de Student</strong></td>
+<td>T.DIST, T.DIST.2T, T.DIST.RT, T.INV, T.INV.2T</td>
+<td>Tests de hipótesis con muestras pequeñas</td>
+</tr>
+<tr>
+<td><strong>Chi-cuadrado</strong></td>
+<td>CHISQ.DIST, CHISQ.DIST.RT, CHISQ.INV, CHISQ.INV.RT</td>
+<td>Tests de independencia, goodness of fit</td>
+</tr>
+<tr>
+<td><strong>Beta</strong></td>
+<td>BETA.DIST, BETA.INV</td>
+<td>Probabilidades de proporciones (ej: tasa de conversión)</td>
+</tr>
+<tr>
+<td><strong>Exponencial</strong></td>
+<td>EXPON.DIST</td>
+<td>Tiempos entre eventos (procesos de Poisson)</td>
+</tr>
+<tr>
+<td><strong>Poisson</strong></td>
+<td>POISSON.DIST</td>
+<td>Conteo de eventos en un intervalo</td>
+</tr>
+</tbody>
+</table>
+<!-- NORM.DIST -->
+<div class="function-card">
+<div class="function-card__name">NORM.DIST</div>
+<div class="function-card__level badge--advanced">Avanzado</div>
+<div class="function-card__description">
+              Distribución normal. Si acumulado=TRUE devuelve P(X ≤ x); si FALSE devuelve la función de densidad.
+              Fundamental para calcular probabilidades e intervalos de confianza.
+            </div>
+<h4>Probabilidad de superar un umbral</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// ✅ ¿Cuál es la probabilidad de que las ventas de mañana sean &gt; 5000€?
+// Asumiendo que las ventas siguen una distribución normal con media=4000 y σ=800
+P(Ventas &gt; 5000) = 1 - NORM.DIST(5000, 4000, 800, TRUE)
+// Resultado: ~10.6%
+
+// ✅ Intervalo de confianza del 95% para la media de ventas
+IC 95% Ventas =
+VAR Media = AVERAGE('Ventas'[Importe])
+VAR Sigma = STDEV.S('Ventas'[Importe])
+VAR N = COUNTROWS('Ventas')
+VAR MargenError = 1.96 * DIVIDE(Sigma, SQRT(N))  -- 1.96 = z para 95%
+VAR LimiteSup = Media + MargenError
+VAR LimiteInf = Media - MargenError
+RETURN
+    "IC 95%: [" &amp; FORMAT(LimiteInf, "#,##0") &amp; ", " &amp; FORMAT(LimiteSup, "#,##0") &amp; "]"</code></pre>
+</div>
+</div>
+<!-- BETA.DIST -->
+<div class="function-card">
+<div class="function-card__name">BETA.DIST</div>
+<div class="function-card__level badge--advanced">Avanzado</div>
+<div class="function-card__description">
+              Distribución Beta. Perfecta para modelar probabilidades (valores entre 0 y 1) como tasas de conversión, porcentajes de éxito.
+              Muy usada en análisis Bayesiano de A/B tests.
+            </div>
+<h4>A/B Test bayesiano simple</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Versión A: 100 visitas, 10 conversiones (alpha=11, beta=91)
+// Versión B: 100 visitas, 15 conversiones (alpha=16, beta=86)
+// ¿Cuál es mejor con qué probabilidad?
+
+// ✅ Probabilidad de que la tasa de conversión de B &gt; 5%
+P(B &gt; 0.05) = 1 - BETA.DIST(0.05, 16, 86, TRUE)</code></pre>
+</div>
+</div>
+</section><!-- Sección 7: Combinatoria --><section id="combinatoria">
+<div class="category-header">
+<span class="category-header__icon">🎲</span>
+<h2 class="category-header__title">Combinatoria estadística</h2>
+</div>
+<p>
+            Aunque las funciones combinatorias (COMBIN, COMBINA, PERMUT) están documentadas en la página de
+            <a href="matematicas.html">Funciones Matemáticas</a>,
+            aquí te dejamos un recordatorio rápido porque son fundamentales para cálculos de probabilidad.
+          </p>
+<table class="function-table">
+<thead>
+<tr>
+<th>Función</th>
+<th>Qué calcula</th>
+<th>Ejemplo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>COMBIN(n, k)</code></td>
+<td>Combinaciones sin repetición</td>
+<td>¿De cuántas formas puedo elegir 3 productos de 10? → COMBIN(10, 3) = 120</td>
+</tr>
+<tr>
+<td><code>COMBINA(n, k)</code></td>
+<td>Combinaciones con repetición</td>
+<td>¿De cuántas formas puedo elegir 3 productos de 10 (con repetición)? → COMBINA(10, 3) = 220</td>
+</tr>
+<tr>
+<td><code>PERMUT(n, k)</code></td>
+<td>Permutaciones (orden importa)</td>
+<td>¿De cuántas formas puedo ordenar 3 productos de 10? → PERMUT(10, 3) = 720</td>
+</tr>
+</tbody>
+</table>
+</section><!-- Sección 8: Patrones --><section id="patrones">
+<div class="category-header">
+<span class="category-header__icon">🎯</span>
+<h2 class="category-header__title">Patrones de análisis estadístico</h2>
+</div>
+<div class="note note--best-practice">
+<strong>🏆 Patrón 1: Dashboard de estadísticas descriptivas</strong><br/>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Tabla calculada con resumen estadístico de ventas
+Resumen Estadístico =
+DATATABLE(
+    "Estadístico", STRING,
+    "Valor", DOUBLE,
+    {
+        {"Media", AVERAGE('Ventas'[Importe])},
+        {"Mediana", MEDIAN('Ventas'[Importe])},
+        {"Desv. Estándar", STDEV.S('Ventas'[Importe])},
+        {"Mínimo", MIN('Ventas'[Importe])},
+        {"Q1 (25%)", PERCENTILE.INC('Ventas'[Importe], 0.25)},
+        {"Q3 (75%)", PERCENTILE.INC('Ventas'[Importe], 0.75)},
+        {"Máximo", MAX('Ventas'[Importe])}
+    }
+)</code></pre>
+</div>
+</div>
+<div class="note note--best-practice">
+<strong>🏆 Patrón 2: Detección automática de outliers</strong><br/>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">Es Outlier =
+VAR Q1 = PERCENTILE.INC(ALL('Ventas'[Importe]), 0.25)
+VAR Q3 = PERCENTILE.INC(ALL('Ventas'[Importe]), 0.75)
+VAR IQR = Q3 - Q1
+RETURN
+    OR(
+        'Ventas'[Importe] &lt; Q1 - 1.5 * IQR,
+        'Ventas'[Importe] &gt; Q3 + 1.5 * IQR
+    )</code></pre>
+</div>
+</div>
+</section><!-- Note: Next Steps --><div class="note note--next">
+<strong>🚀 Siguiente paso</strong><br/>
+          ¡Impresionante — ya manejas estadística en DAX! Ahora pasamos a algo más visual y muy usado en el día a día:
+          las <strong><a href="texto.html" style="color: var(--color-lavender);">funciones de texto</a></strong>
+          para formatear, limpiar y transformar cadenas de caracteres. 🚀
+        </div>
+
+      </div>
+</main>
+</div>
+<!-- Footer (cargado dinámicamente) -->
+<div id="main-footer"></div>
+<!-- Botón volver arriba -->
+<button aria-label="Volver arriba" class="btn-back-to-top" id="back-to-top">↑</button>
+<!-- Scripts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+<script src="../../assets/js/theme.js"></script>
+<script src="../../assets/js/main.js"></script>
+<!-- Buscador DAX -->
+<script src="../../assets/js/dax-search.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Auto-inicializar todos los widgets con data-dax-search="true"
+      if (window.daxSearch) {
+        window.daxSearch.initAll({
+          baseUrl: '../'  // estamos en topics/dax/, las URLs deben ir a topics/dax/...
+        });
+      }
+    });
+  </script>
+<script src="../../assets/js/cursor.js"></script>
+</body>
+</html>

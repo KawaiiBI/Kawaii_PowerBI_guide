@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Normalización vs Desnormalización en Power BI: cuándo usar cada enfoque, trade-offs reales, formas normales explicadas fácil y guía práctica de decisión.">
+  <title>Normalización vs Desnormalización — Modelado de Datos | Power BI Guide by Kawaii BI</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/prismjs@1/themes/prism-okaidia.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="../../assets/css/main.css">
+  <link rel="stylesheet" href="../../assets/css/themes.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/layout.css">
+
+  <style>
+    /* === TOPIC HEADER === */
+    .topic-header { text-align: center; padding: 2.5rem 0 2rem; border-bottom: 2px solid var(--color-mauve); margin-bottom: 2.5rem; }
+    .topic-header__icon { font-size: 4rem; margin-bottom: 0.75rem; display: block; }
+    .topic-header__title { font-size: clamp(1.875rem, 4vw, 2.5rem); font-weight: 800; color: var(--color-dark); margin-bottom: 0.625rem; line-height: 1.2; }
+    .topic-header__subtitle { font-size: 1.0625rem; color: var(--color-slate); margin-bottom: 1.25rem; line-height: 1.5; max-width: 640px; margin-left: auto; margin-right: auto; }
+    .topic-header__levels { display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap; align-items: center; }
+
+    /* === CATEGORY HEADER === */
+    .category-header { display: flex; align-items: center; gap: 0.75rem; margin: 2.5rem 0 1.25rem; padding: 0.875rem 1.25rem; background: var(--color-rose); border-radius: var(--border-radius-sm); border-left: 4px solid var(--color-coral); }
+    .category-header__icon { font-size: 1.5rem; }
+    .category-header__title { font-size: 1.25rem; font-weight: 700; margin: 0; }
+
+    /* === CONCEPT CARD === */
+    .concept-card { background: var(--color-white); border: 1.5px solid var(--color-mauve); border-radius: var(--border-radius); padding: 1.75rem; margin-bottom: 1.5rem; scroll-margin-top: 80px; transition: border-color 0.2s; }
+    .concept-card:hover { border-color: var(--color-coral); }
+    .concept-card h3 { font-size: 1.25rem; font-weight: 700; color: var(--color-coral); margin-bottom: 0.75rem; }
+    .concept-card h4 { font-size: 0.9375rem; font-weight: 700; color: var(--color-dark); margin: 1.25rem 0 0.5rem; }
+    .concept-card p { font-size: 0.9375rem; line-height: 1.7; color: var(--color-dark); margin-bottom: 0.75rem; }
+    .concept-card ul, .concept-card ol { padding-left: 1.25rem; font-size: 0.9375rem; line-height: 1.8; color: var(--color-dark); }
+    .concept-card code { background: var(--color-blush); padding: 0.1em 0.4em; border-radius: 4px; font-family: 'Fira Code', monospace; font-size: 0.85em; color: var(--color-coral); }
+
+    /* === TOC === */
+    .toc { background: var(--color-rose); border-radius: var(--border-radius); padding: 1.25rem 1.5rem; margin-bottom: 2rem; border: 1.5px solid var(--color-mauve); }
+    .toc__title { font-size: 1rem; font-weight: 700; margin: 0 0 0.75rem; }
+    .toc__list { display: flex; flex-wrap: wrap; gap: 0.5rem; list-style: none; padding: 0; margin: 0; }
+    .toc__list a { font-size: 0.8125rem; color: var(--color-coral); text-decoration: none; padding: 0.25rem 0.625rem; background: var(--color-white); border-radius: 999px; border: 1px solid var(--color-mauve); transition: background 0.15s, color 0.15s; }
+    .toc__list a:hover { background: var(--color-coral); color: white; }
+
+    /* === SCHEMA DIAGRAM (ASCII) === */
+    .schema-diagram { font-family: 'Fira Code', monospace; font-size: 0.8125rem; line-height: 1.75; background: var(--color-code-bg); color: #abb2bf; padding: 1.5rem; border-radius: var(--border-radius-sm); overflow-x: auto; margin: 1rem 0; }
+    .schema-diagram .hl-fact   { color: #e5c07b; font-weight: 700; }
+    .schema-diagram .hl-dim    { color: #98c379; }
+    .schema-diagram .hl-good   { color: #5BAD92; }
+    .schema-diagram .hl-bad    { color: #e06c75; }
+    .schema-diagram .hl-note   { color: #c678dd; }
+
+    /* === CODE BLOCK === */
+    .code-block { position: relative; margin: 1rem 0; }
+    .code-block pre { margin: 0; border-radius: var(--border-radius-sm); border: 1.5px solid var(--color-mauve); font-size: 0.8125rem; }
+    .code-block__label { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--color-slate); margin-bottom: 0.375rem; }
+
+    /* === COMPARISON TABLE === */
+    .comparison-table { width: 100%; border-collapse: collapse; font-size: 0.875rem; margin: 1rem 0; }
+    .comparison-table th { background: var(--color-coral); color: white; font-weight: 700; padding: 0.75rem 1rem; text-align: left; }
+    .comparison-table td { padding: 0.625rem 1rem; border-bottom: 1px solid var(--color-mauve); color: var(--color-dark); vertical-align: top; line-height: 1.5; }
+    .comparison-table tr:last-child td { border-bottom: none; }
+    .comparison-table tr:nth-child(even) td { background: var(--color-blush); }
+    .comparison-table .td-aspect { font-weight: 600; white-space: nowrap; }
+    .comparison-table .td-good { color: #5BAD92; font-weight: 600; }
+    .comparison-table .td-bad  { color: #E74E37; font-weight: 600; }
+    .comparison-table .td-mid  { color: #F2B84B; font-weight: 600; }
+
+    /* === DATA TABLE (ejemplo de filas) === */
+    .data-table-wrap { overflow-x: auto; margin: 0.75rem 0; }
+    .data-table { border-collapse: collapse; font-size: 0.8125rem; font-family: 'Fira Code', monospace; }
+    .data-table caption { font-size: 0.75rem; font-weight: 700; color: var(--color-slate); text-align: left; padding: 0 0 0.25rem; text-transform: uppercase; letter-spacing: 0.04em; font-family: var(--font-main, sans-serif); }
+    .data-table th { background: var(--color-rose); color: var(--color-dark); font-weight: 700; padding: 0.5rem 0.75rem; text-align: left; border: 1px solid var(--color-mauve); }
+    .data-table td { padding: 0.4rem 0.75rem; border: 1px solid var(--color-mauve); color: var(--color-dark); background: var(--color-white); }
+    .data-table td.bad { background: #fff0f0; color: #E74E37; }
+    .data-table td.good { background: #f0faf6; }
+
+    /* === GOOD / BAD PAIR === */
+    .pair-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1rem 0; }
+    @media (max-width: 640px) { .pair-grid { grid-template-columns: 1fr; } }
+    .pair-block { border-radius: var(--border-radius-sm); overflow: hidden; }
+    .pair-block__label { padding: 0.375rem 0.875rem; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
+    .pair-block--bad  .pair-block__label { background: #ffe5e5; color: #E74E37; }
+    .pair-block--good .pair-block__label { background: #e5f5ee; color: #5BAD92; }
+    .pair-block__body { padding: 0.75rem; }
+    .pair-block--bad  .pair-block__body { background: #fff8f8; border: 1px solid #f5c6c6; border-top: none; }
+    .pair-block--good .pair-block__body { background: #f8fdf9; border: 1px solid #b8e0cc; border-top: none; }
+
+    /* === NORMAL FORM CARD === */
+    .nf-card { border: 1.5px solid var(--color-mauve); border-radius: var(--border-radius-sm); margin-bottom: 1.25rem; overflow: hidden; }
+    .nf-card__header { display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; background: var(--color-rose); }
+    .nf-card__badge { background: var(--color-coral); color: white; font-weight: 800; font-size: 0.8125rem; padding: 0.2rem 0.6rem; border-radius: 999px; white-space: nowrap; }
+    .nf-card__title { font-weight: 700; font-size: 0.9375rem; color: var(--color-dark); margin: 0; }
+    .nf-card__rule  { font-size: 0.875rem; color: var(--color-slate); margin: 0; }
+    .nf-card__body  { padding: 1rem 1.125rem; }
+
+    /* === DECISION TREE === */
+    .decision-tree { display: flex; flex-direction: column; gap: 0.75rem; margin: 1rem 0; }
+    .decision-node { border: 1.5px solid var(--color-mauve); border-radius: var(--border-radius-sm); overflow: hidden; }
+    .decision-node__question { background: var(--color-rose); padding: 0.625rem 1rem; font-size: 0.9375rem; font-weight: 700; color: var(--color-dark); }
+    .decision-node__answers { display: grid; grid-template-columns: 1fr 1fr; }
+    .decision-node__answer { padding: 0.5rem 0.875rem; font-size: 0.875rem; line-height: 1.55; }
+    .decision-node__answer--yes { background: #f0faf6; border-right: 1px solid var(--color-mauve); }
+    .decision-node__answer--no  { background: var(--color-white); }
+    .decision-node__answer strong { display: block; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.2rem; }
+    .decision-node__answer--yes strong { color: #5BAD92; }
+    .decision-node__answer--no  strong { color: var(--color-coral); }
+
+    /* === SUMMARY BOX === */
+    .summary-box { background: var(--color-rose); border: 1.5px solid var(--color-coral); border-radius: var(--border-radius); padding: 1.5rem 1.75rem; margin: 1.5rem 0; }
+    .summary-box h4 { font-size: 1rem; font-weight: 700; color: var(--color-coral); margin: 0 0 0.875rem; }
+    .summary-box ol { padding-left: 1.25rem; font-size: 0.9375rem; line-height: 2.1; color: var(--color-dark); margin: 0; }
+
+    /* === RULE LIST === */
+    .rule-list { list-style: none; padding: 0; margin: 0.75rem 0; display: flex; flex-direction: column; gap: 0.375rem; }
+    .rule-list li { display: flex; gap: 0.625rem; align-items: flex-start; font-size: 0.9375rem; line-height: 1.65; padding: 0.5rem 0.875rem; border-radius: var(--border-radius-sm); }
+    .rule-list li.ok  { background: #f0faf6; border-left: 3px solid #5BAD92; color: var(--color-dark); }
+    .rule-list li.ok::before  { content: "✅"; flex-shrink: 0; }
+    .rule-list li.bad { background: #fff5f5; border-left: 3px solid #E74E37; color: var(--color-dark); }
+    .rule-list li.bad::before { content: "❌"; flex-shrink: 0; }
+  </style>
+</head>
+<body>
+
+  <!-- SIDEBAR -->
+  <aside class="site-sidebar">
+    <div class="site-sidebar__profile">
+      <img src="../../assets/images/avatar Sara.png" alt="Sara Lozano Martí" class="site-sidebar__avatar">
+      <p class="site-sidebar__name">Sara Lozano Martí</p>
+      <p class="site-sidebar__subtitle">Power BI Expert</p>
+    </div>
+    <nav class="site-sidebar__nav" aria-label="Navegación principal">
+      <ul>
+        <li><a href="../../index.html" class="site-sidebar__link"><span class="site-sidebar__icon">🏠</span> Inicio</a></li>
+        <li><a href="../dax.html" class="site-sidebar__link"><span class="site-sidebar__icon">⚡</span> Funciones DAX</a></li>
+        <li><a href="../power-query.html" class="site-sidebar__link"><span class="site-sidebar__icon">🔄</span> Power Query</a></li>
+        <li><a href="../lenguaje-m.html" class="site-sidebar__link"><span class="site-sidebar__icon">〽️</span> Lenguaje M</a></li>
+        <li><a href="../modelado.html" class="site-sidebar__link is-active"><span class="site-sidebar__icon">🗄️</span> Modelado</a></li>
+        <li><a href="../conceptos-powerbi.html" class="site-sidebar__link"><span class="site-sidebar__icon">📊</span> Conceptos Power BI</a></li>
+        <li><a href="../fabric.html" class="site-sidebar__link"><span class="site-sidebar__icon">🧵</span> Microsoft Fabric</a></li>
+        <li><a href="../tmdl.html" class="site-sidebar__link"><span class="site-sidebar__icon">📝</span> TMDL</a></li>
+        <li><a href="../diseno-ux.html" class="site-sidebar__link"><span class="site-sidebar__icon">🎨</span> Diseño y UX</a></li>
+        <li><a href="../gobernanza.html" class="site-sidebar__link"><span class="site-sidebar__icon">🔒</span> Gobernanza</a></li>
+      </ul>
+    </nav>
+    <div class="site-sidebar__divider"></div>
+    <div class="site-sidebar__footer">
+      <a href="../../quien-soy.html" class="site-sidebar__link site-sidebar__link--highlight"><span class="site-sidebar__icon">👩‍💻</span> ¿Quién soy?</a>
+      <div class="site-sidebar__social">
+        <a href="https://www.linkedin.com/in/saralozanomarti" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><img src="../../assets/images/logo linkedIN.png" alt="LinkedIn" class="site-sidebar__social-icon"></a>
+        <a href="https://www.youtube.com/@KawaiiPowerBI" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><img src="../../assets/images/logo youtube.png" alt="YouTube" class="site-sidebar__social-icon"></a>
+        <a href="https://github.com/KawaiiBI" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><img src="../../assets/images/logo github.png" alt="GitHub" class="site-sidebar__social-icon"></a>
+      </div>
+      <div class="site-sidebar__logo-bottom"><img src="../../assets/images/Logo Kawaii.jpg" alt="Kawaii BI" class="site-sidebar__logo-img"></div>
+      <p class="site-sidebar__copyright">Power BI Guide 🌸<br>© 2026 Kawaii BI</p>
+    </div>
+  </aside>
+
+  <!-- PAGE WRAPPER -->
+  <div class="page-wrapper">
+    <main class="main-content">
+      <div class="topic-page">
+
+        <!-- Breadcrumb -->
+        <nav class="breadcrumb" aria-label="Ruta de navegación">
+          <span class="breadcrumb__item"><a href="../../index.html">🏠 Inicio</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item"><a href="../modelado.html">Modelado de Datos</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item">Normalización vs Desnormalización</span>
+        </nav>
+
+        <!-- Cabecera -->
+        <header class="topic-header">
+          <span class="topic-header__icon">⚖️</span>
+          <h1 class="topic-header__title">Normalización vs Desnormalización</h1>
+          <p class="topic-header__subtitle">Cuándo conviene cada enfoque, cómo afecta al rendimiento y la guía práctica para tomar la decisión correcta en tu modelo de Power BI</p>
+          <div class="topic-header__levels">
+            <span class="badge badge--intermediate">Intermedio</span>
+          </div>
+        </header>
+
+        <!-- TOC -->
+        <nav class="toc" aria-label="Índice de contenidos">
+          <p class="toc__title">📌 En esta página:</p>
+          <ul class="toc__list">
+            <li><a href="#intro">¿Qué significan estos términos?</a></li>
+            <li><a href="#normalizacion">Cuándo normalizar</a></li>
+            <li><a href="#desnormalizacion">Cuándo desnormalizar</a></li>
+            <li><a href="#tradeoffs">Los trade-offs reales</a></li>
+            <li><a href="#formas">Las formas normales explicadas fácil</a></li>
+            <li><a href="#guia">Guía práctica de decisión</a></li>
+            <li><a href="#ejemplos">Ejemplos reales comparados</a></li>
+            <li><a href="#siguiente">Resumen y siguiente paso</a></li>
+          </ul>
+        </nav>
+
+        <!-- ══════════════════════════════════════════
+             SECCIÓN 0 — ¿Qué significan estos términos?
+        ══════════════════════════════════════════ -->
+        <div class="category-header" id="intro">
+          <span class="category-header__icon">⚖️</span>
+          <h2 class="category-header__title">¿Qué significan estos términos?</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>Dos filosofías de organización de datos</h3>
+          <p><strong>Normalizar</strong> un modelo de datos es como organizar tu armario en cajones 🗂️: cada tipo de ropa en su sitio, sin duplicados, todo ordenadito. Si cambias el nombre de una categoría, lo cambias en un solo lugar y el cambio se propaga a todas partes automáticamente.</p>
+          <p><strong>Desnormalizar</strong> es como preparar una maleta para un viaje 🧳: juntas todo lo que necesitas para un propósito concreto, aunque repitas algún dato. Es menos "perfecto" en papel, pero más práctico para lo que necesitas hacer ahora mismo.</p>
+          <p>Ninguno de los dos enfoques es mejor en absoluto — depende del contexto de uso. La clave es saber cuál aplicar y cuándo.</p>
+
+          <div class="note note--tip">
+            💡 <strong>La regla general del mundo de los datos:</strong> Los <strong>Data Warehouses (DWH)</strong> tienden a estar más normalizados para garantizar consistencia y eficiencia de almacenamiento. Los <strong>modelos semánticos de BI</strong> (incluido Power BI) suelen estar más desnormalizados para maximizar el rendimiento de las consultas analíticas y simplificar la experiencia del usuario.
+          </div>
+        </article>
+
+        <!-- ══════════════════════════════════════════
+             SECCIÓN 1 — Cuándo normalizar
+        ══════════════════════════════════════════ -->
+        <div class="category-header" id="normalizacion">
+          <span class="category-header__icon">🗂️</span>
+          <h2 class="category-header__title">Cuándo normalizar (Data Warehouse)</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>La filosofía del dato único y consistente</h3>
+          <p>La normalización busca que cada dato exista en un único lugar. Sus objetivos son:</p>
+          <ul>
+            <li>Eliminar <strong>redundancia</strong> (cada dato se guarda una sola vez)</li>
+            <li>Garantizar <strong>integridad</strong> (una actualización se propaga correctamente)</li>
+            <li>Reducir <strong>anomalías</strong> de inserción, modificación y borrado</li>
+            <li>Optimizar el <strong>almacenamiento</strong> en bases de datos relacionales clásicas</li>
+          </ul>
+
+          <h4>¿Cuándo normalizar?</h4>
+          <ul class="rule-list">
+            <li class="ok">Cuando diseñas el Data Warehouse o Data Lakehouse de origen (capa de almacenamiento)</li>
+            <li class="ok">Cuando los datos se actualizan con frecuencia — sistemas OLTP o transaccionales</li>
+            <li class="ok">Cuando el equipo de datos necesita mantener la consistencia a largo plazo</li>
+            <li class="ok">Cuando el modelo tiene millones de filas con mucha repetición de texto largo</li>
+            <li class="ok">En Microsoft Fabric Warehouse, SQL Server o PostgreSQL como capa de base de datos</li>
+          </ul>
+
+          <h4>Ejemplo — modelo normalizado (copo de nieve):</h4>
+          <pre class="schema-diagram">
+  <span class="hl-dim">'Familias'</span>
+  ┌──────────────────┐
+  │ IDFamilia     PK │
+  │ NomFamilia       │
+  └──────────────────┘
+           ▲ FK
+  <span class="hl-dim">'Categorias'</span>
+  ┌──────────────────┐
+  │ IDCategoria   PK │
+  │ NomCategoria     │
+  │ IDFamilia     FK │
+  └──────────────────┘
+           ▲ FK
+  <span class="hl-dim">'SubCategorias'</span>
+  ┌──────────────────┐
+  │ IDSubCat      PK │
+  │ NomSubCat        │
+  │ IDCategoria   FK │
+  └──────────────────┘
+           ▲ FK
+  <span class="hl-dim">'Productos'</span>
+  ┌──────────────────┐
+  │ IDProducto    PK │
+  │ NomProducto      │
+  │ IDSubCat      FK │
+  └──────────────────┘
+           │ 1:N
+           ▼
+  <span class="hl-fact">'Ventas'</span>
+  ┌──────────────────┐
+  │ IDProducto    FK │
+  │ Importe          │
+  └──────────────────┘
+
+  <span class="hl-note">✦ Sin duplicados · 4 tablas de dimensión · 4 relaciones</span>
+</pre>
+        </article>
+
+        <!-- ══════════════════════════════════════════
+             SECCIÓN 2 — Cuándo desnormalizar
+        ══════════════════════════════════════════ -->
+        <div class="category-header" id="desnormalizacion">
+          <span class="category-header__icon">🧳</span>
+          <h2 class="category-header__title">Cuándo desnormalizar (BI / Power BI)</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>La filosofía del modelo rápido y simple</h3>
+          <p>La desnormalización acepta cierta redundancia de datos a cambio de:</p>
+          <ul>
+            <li>Reducir el número de <strong>relaciones y JOINs</strong> necesarios en el modelo</li>
+            <li>Acelerar las <strong>consultas analíticas</strong> (OLAP) al evitar cruces costosos</li>
+            <li>Simplificar el modelo para que sea más <strong>intuitivo para el negocio</strong></li>
+            <li>Aprovechar la <strong>compresión de VertiPaq</strong>, que gestiona muy bien los datos repetidos</li>
+          </ul>
+
+          <h4>¿Cuándo desnormalizar?</h4>
+          <ul class="rule-list">
+            <li class="ok">Cuando diseñas el modelo semántico de Power BI / Fabric Semantic Model</li>
+            <li class="ok">Cuando los datos son de solo lectura y se refrescan en bloque (no fila a fila)</li>
+            <li class="ok">Cuando la prioridad es el rendimiento de las queries analíticas</li>
+            <li class="ok">Cuando quieres simplificar el modelo para que el equipo de negocio lo use con autonomía</li>
+            <li class="ok">En Power BI Desktop, Azure Analysis Services o Fabric Semantic Model</li>
+          </ul>
+
+          <h4>Ejemplo — modelo desnormalizado (estrella):</h4>
+          <pre class="schema-diagram">
+  <span class="hl-dim">'DimProductos'</span>
+  ┌──────────────────────────────┐
+  │ IDProducto        PK         │
+  │ NomProducto                  │
+  │ NomSubCategoria              │  <span class="hl-note">← antes en SubCategorias</span>
+  │ NomCategoria                 │  <span class="hl-note">← antes en Categorias</span>
+  │ NomFamilia                   │  <span class="hl-note">← antes en Familias</span>
+  └──────────────────────────────┘
+           │ 1:N
+           ▼
+  <span class="hl-fact">'Ventas'</span>
+  ┌──────────────────────────────┐
+  │ IDProducto        FK         │
+  │ Importe                      │
+  └──────────────────────────────┘
+
+  <span class="hl-good">✦ 1 sola tabla de dimensión · 1 relación · queries más rápidas</span>
+</pre>
+
+          <div class="note note--tip">
+            💡 <strong>Tip VertiPaq:</strong> El motor de almacenamiento de Power BI comprime datos en columnas usando <strong>codificación por valor y por hash</strong>. Un string como "Electrónica" que aparece 50.000 veces en una columna se almacena prácticamente igual que si apareciese una sola vez. La desnormalización no penaliza tanto en tamaño de modelo como podrías intuir, y el beneficio en rendimiento de consultas suele superar con creces el coste de almacenamiento.
+          </div>
+        </article>
+
+        <!-- ══════════════════════════════════════════
+             SECCIÓN 3 — Los trade-offs reales
+        ══════════════════════════════════════════ -->
+        <div class="category-header" id="tradeoffs">
+          <span class="category-header__icon">📊</span>
+          <h2 class="category-header__title">Los trade-offs reales</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>Comparativa honesta entre los dos enfoques</h3>
+          <p>Aquí no hay respuestas universalmente correctas — solo contextos. Esta tabla resume los trade-offs reales para ayudarte a decidir:</p>
+
+          <div style="overflow-x: auto; margin: 1rem 0;">
+            <table class="comparison-table">
+              <thead>
+                <tr>
+                  <th>Aspecto</th>
+                  <th>Normalizado</th>
+                  <th>Desnormalizado</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="td-aspect">Almacenamiento en DWH/SQL</td>
+                  <td><span class="td-good">✅ Más eficiente</span></td>
+                  <td><span class="td-bad">❌ Más espacio en disco</span></td>
+                </tr>
+                <tr>
+                  <td class="td-aspect">Almacenamiento en Power BI</td>
+                  <td><span class="td-mid">⚠️ Similar (VertiPaq comprime)</span></td>
+                  <td><span class="td-good">✅ Similar (VertiPaq comprime)</span></td>
+                </tr>
+                <tr>
+                  <td class="td-aspect">Rendimiento de queries</td>
+                  <td><span class="td-bad">❌ Más lento (más JOINs)</span></td>
+                  <td><span class="td-good">✅ Más rápido</span></td>
+                </tr>
+                <tr>
+                  <td class="td-aspect">Nº de relaciones en modelo</td>
+                  <td><span class="td-bad">❌ Más relaciones</span></td>
+                  <td><span class="td-good">✅ Menos relaciones</span></td>
+                </tr>
+                <tr>
+                  <td class="td-aspect">Mantenibilidad del dato</td>
+                  <td><span class="td-good">✅ Un solo lugar por dato</span></td>
+                  <td><span class="td-bad">❌ Actualizar muchas filas si cambia algo</span></td>
+                </tr>
+                <tr>
+                  <td class="td-aspect">Simplicidad del modelo</td>
+                  <td><span class="td-bad">❌ Más tablas, más complejo</span></td>
+                  <td><span class="td-good">✅ Más simple, más intuitivo</span></td>
+                </tr>
+                <tr>
+                  <td class="td-aspect">Flexibilidad analítica</td>
+                  <td><span class="td-good">✅ Muy flexible para queries complejas</span></td>
+                  <td><span class="td-mid">⚠️ Más rígido si cambia la lógica</span></td>
+                </tr>
+                <tr>
+                  <td class="td-aspect">Ideal para</td>
+                  <td>DWH · OLTP · SQL · Fabric Warehouse</td>
+                  <td>Semantic Model · Power BI · SSAS · AAS</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="note note--warning">
+            ⚠️ <strong>Ojo con esto:</strong> En Power BI, tener <strong>muchas relaciones</strong> (especialmente bidireccionales) puede degradar el rendimiento significativamente, porque el motor debe evaluar la propagación de filtros en cada consulta. La desnormalización estratégica de las dimensiones reduce el número de relaciones y suele ser la mejor decisión para el modelo semántico, aunque signifique algunos datos repetidos.
+          </div>
+        </article>
+
+        <!-- ══════════════════════════════════════════
+             SECCIÓN 4 — Las formas normales explicadas fácil
+        ══════════════════════════════════════════ -->
+        <div class="category-header" id="formas">
+          <span class="category-header__icon">📐</span>
+          <h2 class="category-header__title">Las formas normales explicadas fácil</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>Sin jerga académica innecesaria</h3>
+          <p>Las formas normales son reglas que, si sigues, garantizan que tu modelo no tiene redundancias problemáticas. Aquí van las tres más relevantes para el trabajo con Power BI.</p>
+
+          <!-- 1FN -->
+          <div class="nf-card">
+            <div class="nf-card__header">
+              <span class="nf-card__badge">1FN</span>
+              <div>
+                <p class="nf-card__title">Primera Forma Normal</p>
+                <p class="nf-card__rule">Regla: cada celda contiene un solo valor. No hay listas dentro de celdas.</p>
+              </div>
+            </div>
+            <div class="nf-card__body">
+              <div class="pair-grid">
+                <div class="pair-block pair-block--bad">
+                  <div class="pair-block__label">❌ No cumple 1FN</div>
+                  <div class="pair-block__body">
+                    <div class="data-table-wrap">
+                      <table class="data-table">
+                        <thead><tr><th>IDProducto</th><th>Categorias</th></tr></thead>
+                        <tbody>
+                          <tr><td>P001</td><td class="bad">Electrónica, Informática</td></tr>
+                          <tr><td>P002</td><td class="bad">Accesorios</td></tr>
+                        </tbody>
+                      </table>
+                    </div>
+                    <p style="font-size:0.8125rem; margin: 0.5rem 0 0; color: #E74E37;">Dos valores en una celda → no se puede filtrar correctamente</p>
+                  </div>
+                </div>
+                <div class="pair-block pair-block--good">
+                  <div class="pair-block__label">✅ Cumple 1FN</div>
+                  <div class="pair-block__body">
+                    <div class="data-table-wrap">
+                      <table class="data-table">
+                        <thead><tr><th>IDProducto</th><th>Categoria</th></tr></thead>
+                        <tbody>
+                          <tr><td>P001</td><td class="good">Electrónica</td></tr>
+                          <tr><td>P001</td><td class="good">Informática</td></tr>
+                          <tr><td>P002</td><td class="good">Accesorios</td></tr>
+                        </tbody>
+                      </table>
+                    </div>
+                    <p style="font-size:0.8125rem; margin: 0.5rem 0 0; color: #5BAD92;">Una fila por valor → Power BI puede filtrar y contar correctamente</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 2FN -->
+          <div class="nf-card">
+            <div class="nf-card__header">
+              <span class="nf-card__badge">2FN</span>
+              <div>
+                <p class="nf-card__title">Segunda Forma Normal</p>
+                <p class="nf-card__rule">Regla: todo dato depende de la clave completa, no de una parte de ella. Aplica cuando la clave primaria es compuesta.</p>
+              </div>
+            </div>
+            <div class="nf-card__body">
+              <div class="pair-grid">
+                <div class="pair-block pair-block--bad">
+                  <div class="pair-block__label">❌ No cumple 2FN — clave: (IDPedido + IDProducto)</div>
+                  <div class="pair-block__body">
+                    <div class="data-table-wrap">
+                      <table class="data-table">
+                        <thead><tr><th>IDPedido</th><th>IDProducto</th><th>NomProducto</th><th>Cantidad</th></tr></thead>
+                        <tbody>
+                          <tr><td>001</td><td>P01</td><td class="bad">Laptop</td><td>2</td></tr>
+                          <tr><td>002</td><td>P01</td><td class="bad">Laptop</td><td>1</td></tr>
+                        </tbody>
+                      </table>
+                    </div>
+                    <p style="font-size:0.8125rem; margin: 0.5rem 0 0; color: #E74E37;"><code>NomProducto</code> depende solo de <code>IDProducto</code>, no del pedido completo</p>
+                  </div>
+                </div>
+                <div class="pair-block pair-block--good">
+                  <div class="pair-block__label">✅ Cumple 2FN</div>
+                  <div class="pair-block__body">
+                    <p style="font-size:0.875rem; color: var(--color-dark); margin: 0 0 0.5rem;"><strong>Tabla Pedido_Producto:</strong> (IDPedido, IDProducto, Cantidad)</p>
+                    <p style="font-size:0.875rem; color: var(--color-dark); margin: 0;"><strong>Tabla Productos:</strong> (IDProducto, NomProducto)</p>
+                    <p style="font-size:0.8125rem; margin: 0.5rem 0 0; color: #5BAD92;">Cada tabla tiene datos que dependen solo de su propia clave</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 3FN -->
+          <div class="nf-card">
+            <div class="nf-card__header">
+              <span class="nf-card__badge">3FN</span>
+              <div>
+                <p class="nf-card__title">Tercera Forma Normal</p>
+                <p class="nf-card__rule">Regla: ningún dato depende de otro que no sea la clave primaria (sin dependencias transitivas).</p>
+              </div>
+            </div>
+            <div class="nf-card__body">
+              <div class="pair-grid">
+                <div class="pair-block pair-block--bad">
+                  <div class="pair-block__label">❌ No cumple 3FN</div>
+                  <div class="pair-block__body">
+                    <div class="data-table-wrap">
+                      <table class="data-table">
+                        <thead><tr><th>IDProducto</th><th>CodCategoria</th><th>NomCategoria</th></tr></thead>
+                        <tbody>
+                          <tr><td>P001</td><td>C01</td><td class="bad">Electrónica</td></tr>
+                          <tr><td>P002</td><td>C01</td><td class="bad">Electrónica</td></tr>
+                        </tbody>
+                      </table>
+                    </div>
+                    <p style="font-size:0.8125rem; margin: 0.5rem 0 0; color: #E74E37;"><code>NomCategoria</code> depende de <code>CodCategoria</code>, no de <code>IDProducto</code></p>
+                  </div>
+                </div>
+                <div class="pair-block pair-block--good">
+                  <div class="pair-block__label">✅ Cumple 3FN</div>
+                  <div class="pair-block__body">
+                    <p style="font-size:0.875rem; color: var(--color-dark); margin: 0 0 0.5rem;"><strong>Tabla Productos:</strong> (IDProducto, CodCategoria)</p>
+                    <p style="font-size:0.875rem; color: var(--color-dark); margin: 0;"><strong>Tabla Categorias:</strong> (CodCategoria, NomCategoria)</p>
+                    <p style="font-size:0.8125rem; margin: 0.5rem 0 0; color: #5BAD92;">Cada dato depende solo de la clave de su tabla</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="note note--tip">
+            💡 <strong>Tip para Power BI:</strong> Lo más importante es entender <strong>1FN y 3FN</strong>. La 1FN es básica para que los datos estén bien estructurados y puedan filtrarse. La 3FN te indica cuándo tiene sentido separar en tablas diferentes — aunque en el modelo semántico de BI, a veces <em>rompemos</em> la 3FN intencionalmente (desnormalizando) para ganar rendimiento. Y eso está bien, siempre que sea una decisión consciente.
+          </div>
+        </article>
+
+        <!-- ══════════════════════════════════════════
+             SECCIÓN 5 — Guía práctica de decisión
+        ══════════════════════════════════════════ -->
+        <div class="category-header" id="guia">
+          <span class="category-header__icon">🗺️</span>
+          <h2 class="category-header__title">Guía práctica de decisión</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>Cuatro preguntas para tomar la decisión correcta</h3>
+
+          <div class="decision-tree">
+            <div class="decision-node">
+              <div class="decision-node__question">❓ ¿Estás diseñando el origen de datos (DWH, Data Lake, SQL, Fabric Warehouse)?</div>
+              <div class="decision-node__answers">
+                <div class="decision-node__answer decision-node__answer--yes"><strong>→ SÍ</strong> Normaliza siguiendo las formas normales (hasta 3FN como mínimo). La consistencia a largo plazo vale más aquí.</div>
+                <div class="decision-node__answer decision-node__answer--no"><strong>→ NO</strong> Pasa a la pregunta 2.</div>
+              </div>
+            </div>
+            <div class="decision-node">
+              <div class="decision-node__question">❓ ¿Es el modelo semántico de Power BI o Analysis Services?</div>
+              <div class="decision-node__answers">
+                <div class="decision-node__answer decision-node__answer--yes"><strong>→ SÍ</strong> Desnormaliza las dimensiones (esquema estrella). Aplana jerarquías en Power Query antes de cargar.</div>
+                <div class="decision-node__answer decision-node__answer--no"><strong>→ NO</strong> Pasa a la pregunta 3.</div>
+              </div>
+            </div>
+            <div class="decision-node">
+              <div class="decision-node__question">❓ ¿Los datos se actualizan fila a fila constantemente (sistema OLTP, ERP, CRM)?</div>
+              <div class="decision-node__answers">
+                <div class="decision-node__answer decision-node__answer--yes"><strong>→ SÍ</strong> Normaliza para evitar anomalías de actualización. Una sola fila que cambiar es infinitamente mejor que miles.</div>
+                <div class="decision-node__answer decision-node__answer--no"><strong>→ NO</strong> Desnormaliza para optimizar las consultas analíticas. Los refrescos en bloque no tienen el problema de las anomalías.</div>
+              </div>
+            </div>
+            <div class="decision-node">
+              <div class="decision-node__question">❓ ¿Tienes problemas de rendimiento en Power BI (queries lentas, modelo pesado)?</div>
+              <div class="decision-node__answers">
+                <div class="decision-node__answer decision-node__answer--yes"><strong>→ SÍ</strong> Revisa si hay tablas muy normalizadas que puedas aplanar en Power Query. Cada relación que elimines mejora el rendimiento.</div>
+                <div class="decision-node__answer decision-node__answer--no"><strong>→ NO</strong> Mantén el diseño actual — si funciona bien, no lo toques.</div>
+              </div>
+            </div>
+          </div>
+
+          <h4>La regla de oro para Power BI:</h4>
+          <ul class="rule-list">
+            <li class="ok"><strong>Tablas de hechos</strong> (Ventas, Pedidos, Transacciones): muy normalizadas — solo FKs y métricas, sin atributos descriptivos</li>
+            <li class="ok"><strong>Tablas de dimensiones</strong> (Productos, Clientes, Calendario): desnormalizadas — todos los atributos directamente en la tabla, sin sub-tablas</li>
+          </ul>
+        </article>
+
+        <!-- ══════════════════════════════════════════
+             SECCIÓN 6 — Ejemplos reales comparados
+        ══════════════════════════════════════════ -->
+        <div class="category-header" id="ejemplos">
+          <span class="category-header__icon">🔬</span>
+          <h2 class="category-header__title">Ejemplos reales comparados</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>Ejemplo 1 — Jerarquía de productos con familia, categoría y subcategoría</h3>
+
+          <h4>Enfoque normalizado (DWH en SQL Server):</h4>
+          <pre class="schema-diagram">
+  <span class="hl-dim">Familias</span>      (IDFamilia, NomFamilia)
+  <span class="hl-dim">Categorias</span>    (IDCategoria, NomCategoria, IDFamilia FK)
+  <span class="hl-dim">SubCategorias</span> (IDSubCat, NomSubCat, IDCategoria FK)
+  <span class="hl-dim">Productos</span>     (IDProducto, NomProducto, Precio, IDSubCat FK)
+
+  <span class="hl-note">Query SQL para obtener el nombre completo de la jerarquía:</span>
+  SELECT p.NomProducto, sc.NomSubCat, c.NomCategoria, f.NomFamilia
+  FROM   Productos p
+  JOIN   SubCategorias sc ON p.IDSubCat     = sc.IDSubCat
+  JOIN   Categorias    c  ON sc.IDCategoria = c.IDCategoria
+  JOIN   Familias      f  ON c.IDFamilia    = f.IDFamilia
+  <span class="hl-note">→ 3 JOINs necesarios para cada consulta</span>
+</pre>
+
+          <h4>Enfoque desnormalizado (DimProductos en Power BI):</h4>
+          <pre class="schema-diagram">
+  <span class="hl-dim">DimProductos</span>  (IDProducto, NomProducto, Precio,
+                  NomSubCat, NomCategoria, NomFamilia)
+  <span class="hl-good">→ 0 JOINs necesarios · 3 relaciones menos en el modelo semántico ✅</span>
+</pre>
+
+          <h4>Código Power Query (M) para aplanar la jerarquía en una sola tabla:</h4>
+          <div class="code-block">
+            <p class="code-block__label">Power Query — M</p>
+            <pre><code class="language-javascript">let
+    Productos     = ...,  // tabla de origen
+    SubCategorias = ...,
+    Categorias    = ...,
+    Familias      = ...,
+
+    // Paso 1: unir Productos con SubCategorias
+    Join1   = Table.NestedJoin(Productos, "IDSubCat",
+                SubCategorias, "IDSubCat", "SubCat", JoinKind.Left),
+    Expand1 = Table.ExpandTableColumn(Join1, "SubCat",
+                {"NomSubCat", "IDCategoria"}),
+
+    // Paso 2: unir con Categorias
+    Join2   = Table.NestedJoin(Expand1, "IDCategoria",
+                Categorias, "IDCategoria", "Cat", JoinKind.Left),
+    Expand2 = Table.ExpandTableColumn(Join2, "Cat",
+                {"NomCategoria", "IDFamilia"}),
+
+    // Paso 3: unir con Familias
+    Join3   = Table.NestedJoin(Expand2, "IDFamilia",
+                Familias, "IDFamilia", "Fam", JoinKind.Left),
+    Expand3 = Table.ExpandTableColumn(Join3, "Fam", {"NomFamilia"}),
+
+    // Limpiar: quitar FKs intermedias que ya no son necesarias
+    QuitarFKs = Table.RemoveColumns(Expand3,
+                  {"IDSubCat", "IDCategoria", "IDFamilia"})
+in
+    QuitarFKs</code></pre>
+          </div>
+
+          <div class="note note--practice">
+            📌 <strong>Buena práctica:</strong> Este patrón de aplanar jerarquías en Power Query es una de las técnicas de optimización más habituales en proyectos Power BI profesionales. Lo aplicas una sola vez en la capa de transformación, el modelo semántico queda limpio, y las consultas DAX vuelan.
+          </div>
+        </article>
+
+        <article class="concept-card">
+          <h3>Ejemplo 2 — Gestión de clientes con dirección</h3>
+
+          <div class="pair-grid">
+            <div class="pair-block pair-block--bad">
+              <div class="pair-block__label">Normalizado (DWH)</div>
+              <div class="pair-block__body" style="font-size: 0.875rem; line-height: 1.7; color: var(--color-dark);">
+                <p style="margin: 0 0 0.375rem;"><strong>Clientes:</strong> (IDCliente, Nombre, IDDireccion)</p>
+                <p style="margin: 0;">      <strong>Direcciones:</strong> (IDDireccion, Calle, Ciudad, CP, Pais)</p>
+              </div>
+            </div>
+            <div class="pair-block pair-block--good">
+              <div class="pair-block__label">Desnormalizado (Power BI)</div>
+              <div class="pair-block__body" style="font-size: 0.875rem; line-height: 1.7; color: var(--color-dark);">
+                <p style="margin: 0;"><strong>DimClientes:</strong> (IDCliente, Nombre, Calle, Ciudad, CP, Pais)</p>
+              </div>
+            </div>
+          </div>
+
+          <h4>¿Vale la pena desnormalizar aquí?</h4>
+          <ul class="rule-list">
+            <li class="ok">Si un cliente tiene <strong>una sola dirección</strong>: desnormaliza — es una relación 1:1, no hay ganancia en separarla</li>
+            <li class="bad">Si un cliente puede tener <strong>múltiples direcciones</strong>: NO desnormalices — necesitas una tabla puente o una dimensión de dirección separada</li>
+          </ul>
+        </article>
+
+        <!-- ══════════════════════════════════════════
+             SECCIÓN 7 — Resumen y siguiente paso
+        ══════════════════════════════════════════ -->
+        <div class="category-header" id="siguiente">
+          <span class="category-header__icon">🎯</span>
+          <h2 class="category-header__title">Resumen y siguiente paso</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>Los 5 puntos que debes llevarte</h3>
+
+          <div class="summary-box">
+            <h4>📋 Checklist normalización en Power BI</h4>
+            <ol>
+              <li>Normalizar = eliminar redundancia, ideal para <strong>DWH y sistemas transaccionales</strong></li>
+              <li>Desnormalizar = optimizar consultas analíticas, ideal para <strong>modelos semánticos de BI</strong></li>
+              <li>En Power BI, las <strong>dimensiones suelen estar desnormalizadas</strong> (esquema estrella)</li>
+              <li>Las <strong>tablas de hechos siempre deben estar muy normalizadas</strong> (solo FKs + métricas, sin atributos)</li>
+              <li>VertiPaq comprime bien los datos repetidos → la desnormalización <strong>no penaliza tanto en tamaño</strong> como se intuye, y el beneficio en rendimiento es real</li>
+            </ol>
+          </div>
+        </article>
+
+        <div class="note note--next" style="margin-top: 2rem;">
+          🚀 <strong>¡Enhorabuena!</strong> Ya entiendes uno de los conceptos más debatidos en el mundo del modelado de datos. Con la normalización, la desnormalización y las <a href="tablas-puente.html">tablas puente</a> dominadas, tienes las bases para construir modelos de datos realmente profesionales en Power BI. El siguiente paso: explorar patrones avanzados como <a href="patrones-avanzados.html">Role-Playing Dimensions y Slowly Changing Dimensions</a> para llevar tu arquitectura al siguiente nivel. 🌸
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <button id="back-to-top" class="back-to-top" aria-label="Volver arriba" title="Volver arriba">↑</button>
+
+  <script src="https://cdn.jsdelivr.net/npm/i18next@23/dist/umd/i18next.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1/prism.min.js"></script>
+  <script src="../../assets/js/theme.js"></script>
+  <script src="../../assets/js/main.js"></script>
+  <script src="../../assets/js/cursor.js"></script>
+</body>
+</html>

@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Esquema estrella en Power BI: el patrón gold standard para el modelado de datos. Aprende a implementarlo y por qué es superior al esquema copo de nieve.">
+  <title>Esquema Estrella — Modelado de Datos | Power BI Guide by Kawaii BI</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/prismjs@1/themes/prism-okaidia.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="../../assets/css/main.css">
+  <link rel="stylesheet" href="../../assets/css/themes.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/layout.css">
+
+  <style>
+    .topic-header { text-align: center; padding: 2.5rem 0 2rem; border-bottom: 2px solid var(--color-mauve); margin-bottom: 2.5rem; }
+    .topic-header__icon { font-size: 4rem; margin-bottom: 0.75rem; display: block; }
+    .topic-header__title { font-size: clamp(1.875rem, 4vw, 2.5rem); font-weight: 800; color: var(--color-dark); margin-bottom: 0.625rem; line-height: 1.2; }
+    .topic-header__subtitle { font-size: 1.0625rem; color: var(--color-slate); margin-bottom: 1.25rem; line-height: 1.5; max-width: 600px; margin-left: auto; margin-right: auto; }
+    .topic-header__levels { display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap; align-items: center; }
+
+    .category-header { display: flex; align-items: center; gap: 0.75rem; margin: 2.5rem 0 1.25rem; padding: 0.875rem 1.25rem; background: var(--color-rose); border-radius: var(--border-radius-sm); border-left: 4px solid var(--color-coral); }
+    .category-header__icon { font-size: 1.5rem; }
+    .category-header__title { font-size: 1.25rem; font-weight: 700; margin: 0; }
+
+    .concept-card { background: var(--color-white); border: 1.5px solid var(--color-mauve); border-radius: var(--border-radius); padding: 1.75rem; margin-bottom: 1.5rem; scroll-margin-top: 80px; transition: border-color 0.2s; }
+    .concept-card:hover { border-color: var(--color-coral); }
+    .concept-card h3 { font-size: 1.25rem; font-weight: 700; color: var(--color-coral); margin-bottom: 0.75rem; }
+    .concept-card h4 { font-size: 0.9375rem; font-weight: 700; color: var(--color-dark); margin: 1.25rem 0 0.5rem; }
+    .concept-card p { font-size: 0.9375rem; line-height: 1.7; color: var(--color-dark); margin-bottom: 0.75rem; }
+    .concept-card ul, .concept-card ol { padding-left: 1.25rem; font-size: 0.9375rem; line-height: 1.8; color: var(--color-dark); }
+    .concept-card code { background: var(--color-blush); padding: 0.1em 0.4em; border-radius: 4px; font-family: 'Fira Code', monospace; font-size: 0.85em; color: var(--color-coral); }
+
+    /* Diagrama ASCII del esquema estrella */
+    .star-diagram { font-family: 'Fira Code', monospace; font-size: 0.8125rem; line-height: 1.7; background: var(--color-code-bg); color: #abb2bf; padding: 1.5rem; border-radius: var(--border-radius-sm); overflow-x: auto; }
+    .star-diagram .fact { color: #e5c07b; font-weight: 700; }
+    .star-diagram .dim { color: #98c379; }
+    .star-diagram .connector { color: #61afef; }
+
+    .comparison-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1rem 0; }
+    .comparison-col { background: var(--color-rose); border-radius: var(--border-radius-sm); padding: 1rem; border: 1px solid var(--color-mauve); }
+    .comparison-col h4 { font-size: 0.9rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--color-dark); }
+    .comparison-col ul { font-size: 0.875rem; padding-left: 1rem; margin: 0; }
+    @media (max-width: 600px) { .comparison-grid { grid-template-columns: 1fr; } }
+
+    .step-list { counter-reset: steps; list-style: none; padding: 0; }
+    .step-list li { counter-increment: steps; padding: 0.875rem 0.875rem 0.875rem 3.5rem; position: relative; border-bottom: 1px solid var(--color-rose); font-size: 0.9375rem; line-height: 1.6; }
+    .step-list li:last-child { border-bottom: none; }
+    .step-list li::before { content: counter(steps); position: absolute; left: 0.5rem; top: 0.75rem; width: 2rem; height: 2rem; background: var(--color-coral); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.875rem; }
+
+    .toc { background: var(--color-rose); border-radius: var(--border-radius); padding: 1.25rem 1.5rem; margin-bottom: 2rem; border: 1.5px solid var(--color-mauve); }
+    .toc__title { font-size: 1rem; font-weight: 700; margin: 0 0 0.75rem; }
+    .toc__list { display: flex; flex-wrap: wrap; gap: 0.5rem; list-style: none; padding: 0; margin: 0; }
+    .toc__list a { font-size: 0.8125rem; color: var(--color-coral); text-decoration: none; padding: 0.25rem 0.625rem; background: var(--color-white); border-radius: 999px; border: 1px solid var(--color-mauve); transition: background 0.15s, color 0.15s; }
+    .toc__list a:hover { background: var(--color-coral); color: white; }
+  </style>
+</head>
+<body>
+
+  <!-- SIDEBAR -->
+  <aside class="site-sidebar">
+    <div class="site-sidebar__profile">
+      <img src="../../assets/images/avatar Sara.png" alt="Sara Lozano Martí" class="site-sidebar__avatar">
+      <p class="site-sidebar__name">Sara Lozano Martí</p>
+      <p class="site-sidebar__subtitle">Power BI Expert</p>
+    </div>
+    <nav class="site-sidebar__nav" aria-label="Navegación principal">
+      <ul>
+        <li><a href="../../index.html" class="site-sidebar__link"><span class="site-sidebar__icon">🏠</span> Inicio</a></li>
+        <li><a href="../dax.html" class="site-sidebar__link"><span class="site-sidebar__icon">⚡</span> Funciones DAX</a></li>
+        <li><a href="../power-query.html" class="site-sidebar__link"><span class="site-sidebar__icon">🔄</span> Power Query</a></li>
+        <li><a href="../lenguaje-m.html" class="site-sidebar__link"><span class="site-sidebar__icon">〽️</span> Lenguaje M</a></li>
+        <li><a href="../modelado.html" class="site-sidebar__link is-active"><span class="site-sidebar__icon">🗄️</span> Modelado</a></li>
+        <li><a href="../conceptos-powerbi.html" class="site-sidebar__link"><span class="site-sidebar__icon">📊</span> Conceptos Power BI</a></li>
+        <li><a href="../fabric.html" class="site-sidebar__link"><span class="site-sidebar__icon">🧵</span> Microsoft Fabric</a></li>
+        <li><a href="../tmdl.html" class="site-sidebar__link"><span class="site-sidebar__icon">📝</span> TMDL</a></li>
+        <li><a href="../diseno-ux.html" class="site-sidebar__link"><span class="site-sidebar__icon">🎨</span> Diseño y UX</a></li>
+        <li><a href="../gobernanza.html" class="site-sidebar__link"><span class="site-sidebar__icon">🔒</span> Gobernanza</a></li>
+      </ul>
+    </nav>
+    <div class="site-sidebar__divider"></div>
+    <div class="site-sidebar__footer">
+      <a href="../../quien-soy.html" class="site-sidebar__link site-sidebar__link--highlight"><span class="site-sidebar__icon">👩‍💻</span> ¿Quién soy?</a>
+      <div class="site-sidebar__social">
+        <a href="https://www.linkedin.com/in/saralozanomarti" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><img src="../../assets/images/logo linkedIN.png" alt="LinkedIn" class="site-sidebar__social-icon"></a>
+        <a href="https://www.youtube.com/@KawaiiPowerBI" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><img src="../../assets/images/logo youtube.png" alt="YouTube" class="site-sidebar__social-icon"></a>
+        <a href="https://github.com/KawaiiBI" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><img src="../../assets/images/logo github.png" alt="GitHub" class="site-sidebar__social-icon"></a>
+      </div>
+      <div class="site-sidebar__logo-bottom"><img src="../../assets/images/Logo Kawaii.jpg" alt="Kawaii BI" class="site-sidebar__logo-img"></div>
+      <p class="site-sidebar__copyright">Power BI Guide 🌸<br>© 2026 Kawaii BI</p>
+    </div>
+  </aside>
+
+  <div class="page-wrapper">
+    <main class="main-content">
+      <div class="topic-page">
+
+        <!-- Breadcrumb -->
+        <nav class="breadcrumb" aria-label="Ruta de navegación">
+          <span class="breadcrumb__item"><a href="../../index.html">🏠 Inicio</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item"><a href="../modelado.html">Modelado de Datos</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item">Esquema Estrella</span>
+        </nav>
+
+        <!-- Cabecera -->
+        <header class="topic-header">
+          <span class="topic-header__icon">⭐</span>
+          <h1 class="topic-header__title">Esquema Estrella</h1>
+          <p class="topic-header__subtitle">El patrón gold standard para modelado en Power BI. Aprende a implementarlo y por qué es la base de todo modelo de datos profesional</p>
+          <div class="topic-header__levels">
+            <span class="badge badge--intermediate">Intermedio</span>
+          </div>
+        </header>
+
+        <!-- TOC -->
+        <nav class="toc" aria-label="Índice de contenidos">
+          <p class="toc__title">📌 En esta página:</p>
+          <ul class="toc__list">
+            <li><a href="#que-es">¿Qué es?</a></li>
+            <li><a href="#diagrama">Diagrama y estructura</a></li>
+            <li><a href="#vs-snowflake">Estrella vs Copo de Nieve</a></li>
+            <li><a href="#implementar">Cómo implementarlo</a></li>
+            <li><a href="#ejemplos">Ejemplo completo</a></li>
+          </ul>
+        </nav>
+
+        <!-- Qué es -->
+        <div class="category-header" id="que-es">
+          <span class="category-header__icon">⭐</span>
+          <h2 class="category-header__title">¿Qué es el Esquema Estrella?</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>El patrón fundamental del modelado analítico</h3>
+          <p>El <strong>esquema estrella</strong> (star schema) es un patrón de diseño de base de datos optimizado para análisis y reporting. Se llama así porque visualmente se parece a una estrella: una tabla de hechos central rodeada de tablas de dimensiones que irradian hacia afuera.</p>
+
+          <p>Es el patrón <strong>recomendado por Microsoft</strong> para Power BI y el que mejor aprovecha el motor VertiPaq (el motor de almacenamiento columnar de Analysis Services / Power BI).</p>
+
+          <h4>Por qué es el estándar:</h4>
+          <ul>
+            <li>Consultas DAX más simples y predecibles</li>
+            <li>Mejor rendimiento (menos JOINs, mejor compresión)</li>
+            <li>Más fácil de entender y mantener</li>
+            <li>Las funciones de inteligencia de tiempo funcionan perfectamente</li>
+            <li>RLS (seguridad) es más fácil de implementar</li>
+          </ul>
+        </article>
+
+        <!-- Diagrama -->
+        <div class="category-header" id="diagrama">
+          <span class="category-header__icon">🗺️</span>
+          <h2 class="category-header__title">Diagrama y Estructura</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>Estructura visual del esquema estrella</h3>
+          <pre class="star-diagram">
+        <span class="dim">DimFecha</span>
+            │
+            │ 1:N
+            ▼
+<span class="dim">DimCliente</span> ─1:N─▶ <span class="fact">FactVentas</span> ◀─1:N─ <span class="dim">DimProducto</span>
+                        │
+                      1:N │
+                        ▼
+                    <span class="dim">DimTienda</span>
+
+<span class="fact">FactVentas</span> contiene:
+  ├─ IDFecha (FK)
+  ├─ IDCliente (FK)
+  ├─ IDProducto (FK)
+  ├─ IDTienda (FK)
+  ├─ Cantidad
+  ├─ PrecioUnitario
+  └─ Descuento
+</pre>
+
+          <h4>Reglas del esquema estrella:</h4>
+          <ul>
+            <li>Una tabla de hechos central (o varias, si el modelo tiene varias áreas)</li>
+            <li>Dimensiones conectadas directamente a los hechos (sin dimensiones anidadas)</li>
+            <li>Relaciones siempre 1:N (dimensión → hechos)</li>
+            <li>Dimensiones desnormalizadas (un solo nivel, sin JOINs entre dimensiones)</li>
+          </ul>
+        </article>
+
+        <!-- Estrella vs Snowflake -->
+        <div class="category-header" id="vs-snowflake">
+          <span class="category-header__icon">❄️</span>
+          <h2 class="category-header__title">Esquema Estrella vs Copo de Nieve</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>¿Cuándo importa la diferencia?</h3>
+          <p>El <strong>esquema copo de nieve</strong> (snowflake schema) es una extensión del esquema estrella donde las dimensiones están normalizadas: en lugar de una tabla plana <code>DimProducto</code>, tienes <code>DimProducto → DimCategoria → DimSubcategoria</code>.</p>
+
+          <div class="comparison-grid">
+            <div class="comparison-col">
+              <h4>⭐ Estrella (recomendado)</h4>
+              <ul>
+                <li>Dimensiones planas y desnormalizadas</li>
+                <li>Un solo JOIN por dimensión</li>
+                <li>Consultas DAX simples</li>
+                <li>Mejor rendimiento VertiPaq</li>
+                <li>Más fácil de mantener</li>
+              </ul>
+            </div>
+            <div class="comparison-col">
+              <h4>❄️ Copo de Nieve (evitar en PBI)</h4>
+              <ul>
+                <li>Dimensiones normalizadas en cascada</li>
+                <li>Múltiples JOINs en cadena</li>
+                <li>DAX más complejo con RELATED</li>
+                <li>Más tablas = más relaciones = más lento</li>
+                <li>Dificulta la inteligencia de tiempo</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="note note--warning" style="margin-top: 1rem;">
+            ⚠️ <strong>Ojo con esto:</strong> Si tu base de datos fuente está normalizada (esquema copo de nieve), aplana las dimensiones en Power Query antes de cargar al modelo. Combina las tablas <code>Producto + Categoria + Subcategoria</code> en una sola <code>DimProducto</code> plana.
+          </div>
+        </article>
+
+        <!-- Cómo implementarlo -->
+        <div class="category-header" id="implementar">
+          <span class="category-header__icon">🛠️</span>
+          <h2 class="category-header__title">Cómo Implementar un Esquema Estrella</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>Proceso paso a paso</h3>
+          <ol class="step-list">
+            <li><strong>Identifica el proceso de negocio:</strong> ¿Qué quieres analizar? (Ventas, Inventario, RR.HH., etc.)</li>
+            <li><strong>Define la granularidad:</strong> ¿Qué representa cada fila de la tabla de hechos? (línea de pedido, pedido, día)</li>
+            <li><strong>Identifica las dimensiones:</strong> ¿Desde qué perspectivas analizarás? (fecha, cliente, producto, geografía)</li>
+            <li><strong>Define las métricas:</strong> ¿Qué números quieres medir? (importe, cantidad, coste, margen)</li>
+            <li><strong>Aplana las dimensiones en Power Query:</strong> JOINs de tablas normalizadas en dimensiones planas</li>
+            <li><strong>Crea las relaciones en Power BI:</strong> 1:N desde cada dimensión a la tabla de hechos</li>
+            <li><strong>Crea una tabla de fechas dedicada:</strong> nunca uses la fecha directamente de la tabla de hechos</li>
+          </ol>
+        </article>
+
+        <!-- Ejemplo completo -->
+        <div class="category-header" id="ejemplos">
+          <span class="category-header__icon">💼</span>
+          <h2 class="category-header__title">Ejemplo Completo: Modelo de Ventas Retail</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>Caso práctico: cadena de tiendas retail</h3>
+          <p>Vamos a diseñar el modelo estrella para una cadena de tiendas que quiere analizar sus ventas por fecha, producto, cliente y tienda.</p>
+
+          <pre><code class="language-sql">-- TABLA DE HECHOS
+FactVentas (
+  IDFecha       INT,    -- FK → DimFecha
+  IDCliente     INT,    -- FK → DimCliente
+  IDProducto    INT,    -- FK → DimProducto
+  IDTienda      INT,    -- FK → DimTienda
+  IDPromocion   INT,    -- FK → DimPromocion (puede ser NULL)
+  Cantidad      INT,
+  PrecioUnitario DECIMAL,
+  Coste         DECIMAL,
+  Descuento     DECIMAL
+)
+
+-- DIMENSIÓN FECHA (tabla calendario)
+DimFecha (
+  IDFecha       INT PRIMARY KEY,  -- formato YYYYMMDD
+  Fecha         DATE,
+  Año           INT,
+  Trimestre     INT,
+  Mes           INT,
+  NombreMes     VARCHAR,
+  Semana        INT,
+  DiaSemana     VARCHAR,
+  EsFestivo     BIT
+)
+
+-- DIMENSIÓN CLIENTE (aplanada)
+DimCliente (
+  IDCliente     INT PRIMARY KEY,
+  Nombre        VARCHAR,
+  Email         VARCHAR,
+  Segmento      VARCHAR,  -- Incluido desde tabla segmentos (aplanado)
+  Pais          VARCHAR,
+  Region        VARCHAR,
+  Ciudad        VARCHAR   -- Incluido desde tabla geografia (aplanado)
+)
+
+-- DIMENSIÓN PRODUCTO (aplanada)
+DimProducto (
+  IDProducto    INT PRIMARY KEY,
+  Nombre        VARCHAR,
+  SKU           VARCHAR,
+  Categoria     VARCHAR,  -- Aplanado desde tabla categorias
+  Subcategoria  VARCHAR,  -- Aplanado desde tabla subcategorias
+  Marca         VARCHAR,
+  PrecioLista   DECIMAL
+)
+
+-- DIMENSIÓN TIENDA (aplanada)
+DimTienda (
+  IDTienda      INT PRIMARY KEY,
+  Nombre        VARCHAR,
+  Ciudad        VARCHAR,
+  Comunidad     VARCHAR,
+  Pais          VARCHAR,
+  Formato       VARCHAR,  -- 'Flagship', 'Outlet', 'Express'
+  M2            INT
+)</code></pre>
+
+          <div class="note note--practice" style="margin-top: 1rem;">
+            📌 <strong>Buena práctica:</strong> Nombra siempre tus tablas de hechos con el prefijo <code>Fact</code> y tus dimensiones con el prefijo <code>Dim</code>. Hace el modelo inmediatamente legible y facilita el trabajo en equipo. Muchas organizaciones usan esta convención de nomenclatura como estándar.
+          </div>
+        </article>
+
+        <div class="note note--next" style="margin-top: 2rem;">
+          🚀 <strong>¡Modelo diseñado!</strong> Con el esquema estrella en mente, el siguiente paso es crear una <a href="tablas-fechas.html">Tabla de Fechas correcta</a> — uno de los errores más comunes en Power BI es no tenerla. También te recomiendo revisar <a href="columnas-vs-medidas.html">Columnas Calculadas vs Medidas</a> para decidir dónde poner tus cálculos.
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <button id="back-to-top" class="back-to-top" aria-label="Volver arriba" title="Volver arriba">↑</button>
+
+  <script src="https://cdn.jsdelivr.net/npm/i18next@23/dist/umd/i18next.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1/prism.min.js"></script>
+  <script src="../../assets/js/theme.js"></script>
+  <script src="../../assets/js/main.js"></script>
+  <script src="../../assets/js/cursor.js"></script>
+</body>
+</html>

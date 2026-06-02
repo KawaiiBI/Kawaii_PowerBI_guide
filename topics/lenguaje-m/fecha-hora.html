@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta content="Date.*, DateTime.*, Time.* y Duration.* para trabajar con fechas y horas en Power Query M." name="description"/>
+<title>Funciones de Fecha y Hora — Lenguaje M | Power BI Guide by Kawaii BI</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Fira+Code:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<!-- Prism.js -->
+<link href="https://cdn.jsdelivr.net/npm/prismjs@1/themes/prism-okaidia.min.css" rel="stylesheet"/>
+<!-- Estilos CSS -->
+<link href="../../assets/css/main.css" rel="stylesheet"/>
+<link href="../../assets/css/themes.css" rel="stylesheet"/>
+<link href="../../assets/css/components.css" rel="stylesheet"/>
+<link href="../../assets/css/layout.css" rel="stylesheet"/>
+<link href="../../assets/css/dax-search.css" rel="stylesheet"/>
+<style>
+        /* Topic header con icono grande */
+    .topic-header {
+      text-align: center;
+      padding: 2.5rem 0 2rem;
+      border-bottom: 2px solid var(--color-mauve);
+      margin-bottom: 2.5rem;
+    }
+
+    .topic-header__icon {
+      font-size: 4rem;
+      margin-bottom: 0.75rem;
+      display: block;
+    }
+
+    .topic-header__title {
+      font-size: clamp(1.875rem, 4vw, 2.5rem);
+      font-weight: 800;
+      color: var(--color-dark);
+      margin-bottom: 0.625rem;
+      line-height: 1.2;
+    }
+
+    .topic-header__subtitle {
+      font-size: 1.0625rem;
+      color: var(--color-slate);
+      margin-bottom: 1.25rem;
+      line-height: 1.5;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .topic-header__levels {
+      display: flex;
+      gap: 0.5rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    /* Category header */
+    .category-header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin: 2.5rem 0 1.25rem;
+      padding: 0.875rem 1.25rem;
+      background: var(--color-rose);
+      border-radius: var(--border-radius-sm);
+      border-left: 4px solid var(--color-coral);
+    }
+    .category-header__icon { font-size: 1.5rem; }
+    .category-header__title { font-size: 1.25rem; font-weight: 700; margin: 0; }
+
+    /* Function cards */
+    .function-card {
+      background: var(--color-white);
+      border: 1.5px solid var(--color-mauve);
+      border-radius: var(--border-radius);
+      padding: 1.75rem;
+      margin-bottom: 1.5rem;
+      scroll-margin-top: 80px;
+      transition: border-color 0.2s;
+    }
+    .function-card:hover { border-color: var(--color-coral); }
+
+    .function-card__header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.25rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 2px solid var(--color-blush);
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .function-card__title {
+      font-size: 1.375rem;
+      font-weight: 800;
+      color: var(--color-coral);
+      margin: 0;
+      font-family: 'Fira Code', monospace;
+    }
+
+    .function-card h4 {
+      font-size: 0.9375rem;
+      font-weight: 700;
+      color: var(--color-dark);
+      margin: 1.25rem 0 0.625rem;
+    }
+
+    .function-card p { font-size: 0.9375rem; line-height: 1.7; color: var(--color-dark); }
+
+    .function-card__params ul { list-style: none; padding: 0; margin: 0; }
+    .function-card__params li {
+      padding: 0.5rem 0 0.5rem 1.5rem;
+      position: relative;
+      line-height: 1.6;
+      font-size: 0.9rem;
+      border-bottom: 1px solid var(--color-blush);
+    }
+    .function-card__params li:last-child { border-bottom: none; }
+    .function-card__params li::before {
+      content: "→";
+      position: absolute;
+      left: 0;
+      color: var(--color-coral);
+      font-weight: 700;
+    }
+    .function-card__params code {
+      background: var(--color-blush);
+      padding: 0.1em 0.4em;
+      border-radius: 4px;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.85em;
+      color: var(--color-coral);
+    }
+
+    /* TOC */
+    .toc {
+      background: var(--color-rose);
+      border-radius: var(--border-radius);
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 2rem;
+      border: 1.5px solid var(--color-mauve);
+    }
+    .toc__title { font-size: 1rem; font-weight: 700; margin: 0 0 0.75rem; }
+    .toc__list { display: flex; flex-wrap: wrap; gap: 0.5rem; list-style: none; padding: 0; margin: 0; }
+    .toc__list a {
+      font-size: 0.8125rem;
+      color: var(--color-coral);
+      text-decoration: none;
+      padding: 0.25rem 0.625rem;
+      background: var(--color-white);
+      border-radius: 999px;
+      border: 1px solid var(--color-mauve);
+      transition: background 0.15s, color 0.15s;
+      font-family: 'Fira Code', monospace;
+    }
+    .toc__list a:hover { background: var(--color-coral); color: white; }
+
+    /* Table (tipo.html) */
+    .type-table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.9rem; }
+    .type-table th { background: var(--color-rose); color: var(--color-dark); font-weight: 600; padding: 0.6rem 1rem; text-align: left; }
+    .type-table td { padding: 0.55rem 1rem; border-bottom: 1px solid var(--color-mauve); }
+    .type-table tr:last-child td { border-bottom: none; }
+    .type-table code { font-family: 'Fira Code', monospace; font-size: 0.85em; }
+  </style>
+</head>
+<body>
+<!-- SIDEBAR: Navegación principal -->
+<aside class="site-sidebar">
+<div class="site-sidebar__profile">
+<img alt="Sara Lozano Martí" class="site-sidebar__avatar" src="../../assets/images/avatar Sara.png"/>
+<p class="site-sidebar__name">Sara Lozano Martí</p>
+<p class="site-sidebar__subtitle">Power BI Expert</p>
+</div>
+<nav aria-label="Navegación principal" class="site-sidebar__nav">
+<ul>
+<li><a class="site-sidebar__link" href="../../index.html">
+<span class="site-sidebar__icon">🏠</span> Inicio
+        </a></li>
+<li><a class="site-sidebar__link" href="../dax.html">
+<span class="site-sidebar__icon">⚡</span> Funciones DAX
+        </a></li>
+<li><a class="site-sidebar__link" href="../power-query.html">
+<span class="site-sidebar__icon">🔄</span> Power Query
+        </a></li>
+<li><a class="site-sidebar__link is-active" href="../lenguaje-m.html">
+<span class="site-sidebar__icon">〽️</span> Lenguaje M
+        </a></li>
+<li><a class="site-sidebar__link" href="../modelado.html">
+<span class="site-sidebar__icon">🗄️</span> Modelado
+        </a></li>
+<li><a class="site-sidebar__link" href="../conceptos-powerbi.html">
+<span class="site-sidebar__icon">📊</span> Conceptos Power BI
+        </a></li>
+<li><a class="site-sidebar__link" href="../fabric.html">
+<span class="site-sidebar__icon">🧵</span> Microsoft Fabric
+        </a></li>
+<li><a class="site-sidebar__link" href="../tmdl.html">
+<span class="site-sidebar__icon">📝</span> TMDL
+        </a></li>
+<li><a class="site-sidebar__link" href="../diseno-ux.html">
+<span class="site-sidebar__icon">🎨</span> Diseño y UX
+        </a></li>
+<li><a class="site-sidebar__link" href="../gobernanza.html">
+<span class="site-sidebar__icon">🔒</span> Gobernanza
+        </a></li>
+</ul>
+</nav>
+<div class="site-sidebar__divider"></div>
+<div class="site-sidebar__footer">
+<a class="site-sidebar__link site-sidebar__link--highlight" href="../../quien-soy.html">
+<span class="site-sidebar__icon">👩‍💻</span> ¿Quién soy?
+      </a>
+<div class="site-sidebar__social">
+<a aria-label="LinkedIn" href="https://www.linkedin.com/in/saralozanomarti" rel="noopener noreferrer" target="_blank">
+<img alt="LinkedIn" class="site-sidebar__social-icon" src="../../assets/images/logo linkedIN.png"/>
+</a>
+<a aria-label="YouTube" href="https://www.youtube.com/@KawaiiPowerBI" rel="noopener noreferrer" target="_blank">
+<img alt="YouTube" class="site-sidebar__social-icon" src="../../assets/images/logo youtube.png"/>
+</a>
+<a aria-label="GitHub" href="https://github.com/KawaiiBI" rel="noopener noreferrer" target="_blank">
+<img alt="GitHub" class="site-sidebar__social-icon" src="../../assets/images/logo github.png"/>
+</a>
+</div>
+<div class="site-sidebar__logo-bottom">
+<img alt="Kawaii BI" class="site-sidebar__logo-img" src="../../assets/images/Logo Kawaii.jpg"/>
+</div>
+<p class="site-sidebar__copyright">
+        Power BI Guide 🌸<br/>
+        © 2026 Kawaii BI
+      </p>
+</div>
+</aside>
+<!-- CONTENIDO PRINCIPAL -->
+<div class="page-wrapper">
+<main class="main-content">
+<div class="topic-page">
+<nav aria-label="Ruta de navegación" class="breadcrumb">
+<span class="breadcrumb__item"><a href="../../index.html">🏠 Inicio</a></span>
+<span aria-hidden="true" class="breadcrumb__separator">›</span>
+<span class="breadcrumb__item"><a href="../lenguaje-m.html">Lenguaje M</a></span>
+<span aria-hidden="true" class="breadcrumb__separator">›</span>
+<span class="breadcrumb__item">Funciones de Fecha y Hora</span>
+</nav>
+<header class="topic-header">
+          <span class="topic-header__icon">📅</span>
+          <h1 class="topic-header__title">Funciones de Fecha y Hora</h1>
+          <p class="topic-header__subtitle">Trabaja con fechas, horas y duraciones usando Date.*, DateTime.*, Time.* y Duration.* en Power Query M.</p>
+          <div class="topic-header__levels">
+<span class="badge--beginner">Principiante</span>
+<span class="badge--intermediate">Intermedio</span>
+<span class="badge--advanced">Avanzado</span>
+</div>
+        </header>
+<div class="dax-search-wrapper dax-search-wrapper--compact" data-m-search="true">
+<div class="dax-search-input-row">
+<span aria-hidden="true" class="dax-search-icon">🔍</span>
+<input aria-autocomplete="list" aria-expanded="false" aria-label="Buscar funciones del Lenguaje M" autocomplete="off" class="dax-search-input" placeholder="Buscar otra función M..." spellcheck="false" type="search"/>
+<button aria-label="Limpiar búsqueda" class="dax-search-clear" hidden="">✕</button>
+</div>
+<div aria-label="Resultados de búsqueda" class="dax-search-results" role="listbox"></div>
+</div>
+<nav aria-label="Índice de funciones" class="toc">
+<p class="toc__title">📌 Funciones en esta página:</p>
+<ul class="toc__list">
+<li><a href="#date-create">Crear fechas</a></li>
+<li><a href="#date-parts">Extraer partes</a></li>
+<li><a href="#date-ops">Operaciones con fechas</a></li>
+<li><a href="#datetime">DateTime</a></li>
+<li><a href="#time">Time</a></li>
+<li><a href="#duration">Duration</a></li>
+<li><a href="#convert">Conversión</a></li>
+</ul>
+</nav>
+<!-- Breadcrumb --><!-- Buscador compacto de funciones M --><!-- Cabecera --><div class="category-header" id="date-create">
+<span class="category-header__icon">🆕</span>
+<h2 class="category-header__title">Crear Fechas</h2>
+</div><article class="function-card" id="date-from">
+<header class="function-card__header">
+<h3 class="function-card__title">Date.From / #date</h3>
+<span class="badge badge--beginner">Principiante</span>
+</header>
+<div class="function-card__syntax"><h4>Sintaxis</h4>
+<pre><code class="language-javascript">Date.From(value as any, optional culture as nullable text) as nullable date
+#date(year as number, month as number, day as number) as date</code></pre>
+</div>
+<div class="function-card__description"><h4>¿Qué hace?</h4>
+<p>Crea un valor de tipo <code>date</code>. La literal <code>#date</code> es la forma más directa. <code>Date.From</code> convierte otros tipos (texto, número, datetime) a fecha.</p>
+</div>
+<div class="function-card__example"><h4>Ejemplo</h4>
+<pre><code class="language-javascript">#date(2024, 1, 15)           // 2024-01-15
+Date.From("2024-01-15")      // 2024-01-15
+Date.From(45306)             // 2024-01-15 (número de serie Excel)
+Date.From(DateTime.LocalNow()) // Fecha actual sin hora</code></pre>
+</div>
+</article><article class="function-card" id="date-today">
+<header class="function-card__header">
+<h3 class="function-card__title">DateTime.LocalNow / DateTime.FixedLocalNow</h3>
+<span class="badge badge--beginner">Principiante</span>
+</header>
+<div class="function-card__syntax"><h4>Sintaxis</h4>
+<pre><code class="language-javascript">DateTime.LocalNow() as datetime
+DateTime.FixedLocalNow() as datetime</code></pre>
+</div>
+<div class="function-card__description"><h4>¿Qué hace?</h4>
+<p><code>DateTime.LocalNow</code> devuelve la fecha y hora actual del sistema. <code>DateTime.FixedLocalNow</code> devuelve la misma valor durante toda la ejecución de la consulta (no cambia si se llama varias veces).</p>
+</div>
+<div class="function-card__example"><h4>Ejemplo</h4>
+<pre><code class="language-javascript">// Fecha de última actualización
+Date.From(DateTime.LocalNow())
+
+// Añadir columna con timestamp de carga
+Table.AddColumn(tabla, "FechaCarga", each DateTime.LocalNow())</code></pre>
+</div>
+<div class="note note--warning">
+            ⚠️ <strong>Ojo con esto:</strong> <code>DateTime.LocalNow</code> usa la zona horaria del servidor de actualización, no la del usuario. En Power BI Service, el servidor puede estar en UTC. Considera usar <code>DateTimeZone.LocalNow()</code> si la zona horaria importa.
+          </div>
+</article><div class="category-header" id="date-parts">
+<span class="category-header__icon">🎯</span>
+<h2 class="category-header__title">Extraer Partes de una Fecha</h2>
+</div><article class="function-card" id="date-year">
+<header class="function-card__header">
+<h3 class="function-card__title">Date.Year / Date.Month / Date.Day</h3>
+<span class="badge badge--beginner">Principiante</span>
+</header>
+<div class="function-card__syntax"><h4>Sintaxis</h4>
+<pre><code class="language-javascript">Date.Year(dateTime as nullable any) as nullable number
+Date.Month(dateTime as nullable any) as nullable number
+Date.Day(dateTime as nullable any) as nullable number</code></pre>
+</div>
+<div class="function-card__description"><h4>¿Qué hace?</h4>
+<p>Extrae el año, mes (1-12) o día (1-31) de una fecha. Funcionan con tipos <code>date</code>, <code>datetime</code> y <code>datetimezone</code>.</p>
+</div>
+<div class="function-card__example"><h4>Ejemplo</h4>
+<pre><code class="language-javascript">Date.Year(#date(2024, 3, 15))   // 2024
+Date.Month(#date(2024, 3, 15))  // 3
+Date.Day(#date(2024, 3, 15))    // 15
+
+// Crear columna de año fiscal (año fiscal empieza en octubre)
+if Date.Month([Fecha]) &gt;= 10
+    then Date.Year([Fecha]) + 1
+    else Date.Year([Fecha])</code></pre>
+</div>
+</article><article class="function-card" id="date-quarter">
+<header class="function-card__header">
+<h3 class="function-card__title">Date.QuarterOfYear / Date.WeekOfYear / Date.DayOfWeek</h3>
+<span class="badge badge--intermediate">Intermedio</span>
+</header>
+<div class="function-card__syntax"><h4>Sintaxis</h4>
+<pre><code class="language-javascript">Date.QuarterOfYear(dateTime as nullable any) as nullable number
+Date.WeekOfYear(dateTime as nullable any, optional firstDayOfWeek as nullable number) as nullable number
+Date.DayOfWeek(dateTime as nullable any, optional firstDayOfWeek as nullable number) as nullable number
+Date.DayOfYear(dateTime as nullable any) as nullable number</code></pre>
+</div>
+<div class="function-card__description"><h4>¿Qué hace?</h4>
+<p>Extrae el trimestre (1-4), semana del año (1-53), día de la semana (0=domingo por defecto) o día del año (1-366).</p>
+</div>
+<div class="function-card__example"><h4>Ejemplo</h4>
+<pre><code class="language-javascript">Date.QuarterOfYear(#date(2024, 7, 15))    // 3
+Date.WeekOfYear(#date(2024, 3, 15))       // 11
+Date.DayOfWeek(#date(2024, 3, 15))        // 5 (viernes, base domingo=0)
+Date.DayOfWeek(#date(2024, 3, 15), Day.Monday)  // 4 (viernes, base lunes=0)
+Date.DayOfYear(#date(2024, 3, 15))        // 75
+
+// Nombre del día en español
+Date.DayOfWeekName(#date(2024, 3, 15), "es-ES")   // "viernes"
+Date.MonthName(#date(2024, 3, 15), "es-ES")        // "marzo"</code></pre>
+</div>
+</article><div class="category-header" id="date-ops">
+<span class="category-header__icon">⚙️</span>
+<h2 class="category-header__title">Operaciones con Fechas</h2>
+</div><article class="function-card" id="date-add">
+<header class="function-card__header">
+<h3 class="function-card__title">Date.AddDays / Date.AddMonths / Date.AddYears</h3>
+<span class="badge badge--beginner">Principiante</span>
+</header>
+<div class="function-card__syntax"><h4>Sintaxis</h4>
+<pre><code class="language-javascript">Date.AddDays(dateTime as nullable any, numberOfDays as number) as nullable any
+Date.AddMonths(dateTime as nullable any, numberOfMonths as number) as nullable any
+Date.AddYears(dateTime as nullable any, numberOfYears as number) as nullable any
+Date.AddWeeks(dateTime as nullable any, numberOfWeeks as number) as nullable any</code></pre>
+</div>
+<div class="function-card__description"><h4>¿Qué hace?</h4>
+<p>Suma (o resta si el número es negativo) días, meses, años o semanas a una fecha. Maneja automáticamente los cambios de mes y año.</p>
+</div>
+<div class="function-card__example"><h4>Ejemplo</h4>
+<pre><code class="language-javascript">Date.AddDays(#date(2024, 1, 30), 5)    // 2024-02-04
+Date.AddMonths(#date(2024, 1, 31), 1)  // 2024-02-29 (2024 es bisiesto)
+Date.AddYears(#date(2024, 2, 29), 1)   // 2025-02-28 (ajusta automáticamente)
+
+// Calcular fecha de vencimiento 30 días después
+Date.AddDays([FechaFactura], 30)</code></pre>
+</div>
+</article><article class="function-card" id="date-diff">
+<header class="function-card__header">
+<h3 class="function-card__title">Date.From — Diferencia entre fechas</h3>
+<span class="badge badge--intermediate">Intermedio</span>
+</header>
+<div class="function-card__syntax"><h4>Sintaxis</h4>
+<pre><code class="language-javascript">// La resta de fechas en M devuelve una Duration
+fecha2 - fecha1 as duration
+Duration.Days(duration as nullable duration) as nullable number</code></pre>
+</div>
+<div class="function-card__description"><h4>¿Qué hace?</h4>
+<p>En M, restar dos fechas devuelve una <code>duration</code>. Para obtener el número de días, usa <code>Duration.Days</code>. Para meses y años exactos, usa <code>Date.Year</code>/<code>Date.Month</code> con aritmética.</p>
+</div>
+<div class="function-card__example"><h4>Ejemplo</h4>
+<pre><code class="language-javascript">// Días entre dos fechas
+Duration.Days(#date(2024, 12, 31) - #date(2024, 1, 1))
+// 365
+
+// Edad en años (aproximada)
+Number.RoundDown(
+    Duration.Days(Date.From(DateTime.LocalNow()) - [FechaNacimiento]) / 365.25
+)
+
+// Días hasta vencimiento
+Duration.Days([FechaVencimiento] - Date.From(DateTime.LocalNow()))</code></pre>
+</div>
+</article><article class="function-card" id="date-startend">
+<header class="function-card__header">
+<h3 class="function-card__title">Date.StartOfMonth / Date.EndOfMonth</h3>
+<span class="badge badge--intermediate">Intermedio</span>
+</header>
+<div class="function-card__syntax"><h4>Sintaxis</h4>
+<pre><code class="language-javascript">Date.StartOfMonth(dateTime as nullable any) as nullable any
+Date.EndOfMonth(dateTime as nullable any) as nullable any
+Date.StartOfQuarter / Date.EndOfQuarter
+Date.StartOfYear / Date.EndOfYear
+Date.StartOfWeek / Date.EndOfWeek</code></pre>
+</div>
+<div class="function-card__description"><h4>¿Qué hace?</h4>
+<p>Devuelve el primer o último día del período (mes, trimestre, año, semana) que contiene la fecha dada. Muy útil para crear tablas de calendario y calcular períodos.</p>
+</div>
+<div class="function-card__example"><h4>Ejemplo</h4>
+<pre><code class="language-javascript">Date.StartOfMonth(#date(2024, 3, 15))  // 2024-03-01
+Date.EndOfMonth(#date(2024, 3, 15))    // 2024-03-31
+Date.StartOfYear(#date(2024, 7, 20))   // 2024-01-01
+Date.EndOfQuarter(#date(2024, 7, 20))  // 2024-09-30
+
+// Filtrar el mes actual completo
+Table.SelectRows(tabla, each
+    [Fecha] &gt;= Date.StartOfMonth(Date.From(DateTime.LocalNow())) and
+    [Fecha] &lt;= Date.EndOfMonth(Date.From(DateTime.LocalNow()))
+)</code></pre>
+</div>
+<div class="note note--tip">
+            💡 <strong>Tip kawaii:</strong> La combinación de <code>Date.StartOfMonth</code> y <code>Date.EndOfMonth</code> es la base para crear filtros de "mes en curso", "mes anterior" y otros períodos relativos sin depender de fechas hardcodeadas.
+          </div>
+</article><div class="category-header" id="datetime">
+<span class="category-header__icon">🕐</span>
+<h2 class="category-header__title">DateTime — Fecha y Hora Combinadas</h2>
+</div><article class="function-card" id="datetime-fn">
+<header class="function-card__header">
+<h3 class="function-card__title">DateTime.From / #datetime</h3>
+<span class="badge badge--intermediate">Intermedio</span>
+</header>
+<div class="function-card__syntax"><h4>Sintaxis</h4>
+<pre><code class="language-javascript">#datetime(year, month, day, hour, minute, second) as datetime
+DateTime.From(value as any, optional culture as nullable text) as nullable datetime
+DateTime.Date(dateTime as nullable datetime) as nullable date
+DateTime.Time(dateTime as nullable datetime) as nullable time</code></pre>
+</div>
+<div class="function-card__description"><h4>¿Qué hace?</h4>
+<p>Crea valores <code>datetime</code> combinando fecha y hora. <code>DateTime.Date</code> extrae sólo la parte de fecha y <code>DateTime.Time</code> sólo la parte de hora.</p>
+</div>
+<div class="function-card__example"><h4>Ejemplo</h4>
+<pre><code class="language-javascript">#datetime(2024, 3, 15, 14, 30, 0)   // 2024-03-15 14:30:00
+
+// Separar fecha y hora de un campo datetime
+DateTime.Date([FechaHora])   // 2024-03-15
+DateTime.Time([FechaHora])   // 14:30:00
+
+// Truncar a inicio del día
+DateTime.From(Date.From([FechaHora]))</code></pre>
+</div>
+</article><div class="category-header" id="time">
+<span class="category-header__icon">⏰</span>
+<h2 class="category-header__title">Time — Hora</h2>
+</div><article class="function-card" id="time-fn">
+<header class="function-card__header">
+<h3 class="function-card__title">Time.Hour / Time.Minute / Time.Second</h3>
+<span class="badge badge--beginner">Principiante</span>
+</header>
+<div class="function-card__syntax"><h4>Sintaxis</h4>
+<pre><code class="language-javascript">#time(hour, minute, second) as time
+Time.Hour(time as nullable any) as nullable number
+Time.Minute(time as nullable any) as nullable number
+Time.Second(time as nullable any) as nullable number</code></pre>
+</div>
+<div class="function-card__description"><h4>¿Qué hace?</h4>
+<p>Crea y extrae componentes de valores de hora. Útil para analizar datos de timestamps y calcular duraciones intradiarias.</p>
+</div>
+<div class="function-card__example"><h4>Ejemplo</h4>
+<pre><code class="language-javascript">#time(14, 30, 45)        // 14:30:45
+Time.Hour(#time(14, 30, 45))    // 14
+Time.Minute(#time(14, 30, 45))  // 30
+Time.Second(#time(14, 30, 45))  // 45
+
+// Clasificar por turno
+if Time.Hour([HoraEntrada]) &lt; 8 then "Madrugada"
+else if Time.Hour([HoraEntrada]) &lt; 14 then "Mañana"
+else if Time.Hour([HoraEntrada]) &lt; 22 then "Tarde"
+else "Noche"</code></pre>
+</div>
+</article><div class="category-header" id="duration">
+<span class="category-header__icon">⏳</span>
+<h2 class="category-header__title">Duration — Duraciones</h2>
+</div><article class="function-card" id="duration-fn">
+<header class="function-card__header">
+<h3 class="function-card__title">Duration.* — Trabajar con duraciones</h3>
+<span class="badge badge--intermediate">Intermedio</span>
+</header>
+<div class="function-card__syntax"><h4>Sintaxis</h4>
+<pre><code class="language-javascript">#duration(days, hours, minutes, seconds) as duration
+Duration.Days(duration as nullable duration) as nullable number
+Duration.Hours(duration as nullable duration) as nullable number
+Duration.Minutes(duration as nullable duration) as nullable number
+Duration.Seconds(duration as nullable duration) as nullable number
+Duration.TotalDays(duration as nullable duration) as nullable number
+Duration.TotalHours(duration as nullable duration) as nullable number
+Duration.TotalMinutes(duration as nullable duration) as nullable number
+Duration.TotalSeconds(duration as nullable duration) as nullable number</code></pre>
+</div>
+<div class="function-card__description"><h4>¿Qué hace?</h4>
+<p>Las funciones <code>Duration.*</code> extraen la parte de la duración (ej. <code>Duration.Hours</code> = 0-23). Las funciones <code>Duration.Total*</code> convierten la duración completa a esa unidad.</p>
+</div>
+<div class="function-card__example"><h4>Ejemplo</h4>
+<pre><code class="language-javascript">let dur = #duration(2, 5, 30, 0)  // 2 días, 5 horas, 30 min
+in [
+    dias    = Duration.Days(dur),         // 2
+    horas   = Duration.Hours(dur),        // 5
+    minutos = Duration.Minutes(dur),      // 30
+    total_horas = Duration.TotalHours(dur)  // 53.5 horas totales
+]
+
+// Tiempo de resolución de tickets
+let duracion = [FechaCierre] - [FechaApertura]
+in Duration.TotalHours(duracion)</code></pre>
+</div>
+<div class="note note--tip">
+            💡 <strong>Tip kawaii:</strong> <code>Duration.TotalHours</code> vs <code>Duration.Hours</code>: si tienes una duración de 25 horas, <code>Duration.Hours</code> devuelve 1 (la parte de horas del día 1) mientras que <code>Duration.TotalHours</code> devuelve 25. ¡No las confundas!
+          </div>
+</article><div class="category-header" id="convert">
+<span class="category-header__icon">🔄</span>
+<h2 class="category-header__title">Conversión y Formato</h2>
+</div><article class="function-card" id="date-totext">
+<header class="function-card__header">
+<h3 class="function-card__title">Date.ToText / DateTime.ToText</h3>
+<span class="badge badge--intermediate">Intermedio</span>
+</header>
+<div class="function-card__syntax"><h4>Sintaxis</h4>
+<pre><code class="language-javascript">Date.ToText(date as nullable date, optional options as any, optional culture as nullable text) as nullable text
+DateTime.ToText(dateTime as nullable datetime, optional options as any, optional culture as nullable text) as nullable text</code></pre>
+</div>
+<div class="function-card__description"><h4>¿Qué hace?</h4>
+<p>Convierte una fecha o datetime a texto con el formato especificado. Usa patrones de formato .NET: <code>"yyyy-MM-dd"</code>, <code>"dd/MM/yyyy"</code>, <code>"MMMM yyyy"</code>, etc.</p>
+</div>
+<div class="function-card__example"><h4>Ejemplo</h4>
+<pre><code class="language-javascript">Date.ToText(#date(2024, 3, 15), "dd/MM/yyyy")
+// "15/03/2024"
+
+Date.ToText(#date(2024, 3, 15), "MMMM yyyy", "es-ES")
+// "marzo 2024"
+
+Date.ToText(#date(2024, 3, 15), "yyyy-MM-dd")
+// "2024-03-15" (formato ISO)
+
+DateTime.ToText(DateTime.LocalNow(), "dd/MM/yyyy HH:mm")
+// "15/03/2024 14:30"</code></pre>
+</div>
+<div class="note note--practice">
+            📌 <strong>Buena práctica:</strong> Para columnas clave (joins, tablas de calendario), usa siempre el formato ISO <code>"yyyy-MM-dd"</code>. Para columnas de visualización, usa el formato local con la cultura adecuada.
+          </div>
+</article><div class="note note--next">
+        🚀 <strong>¡Dominas las fechas!</strong> Ahora explora las <a href="logicas.html">Expresiones Lógicas</a> para controlar el flujo de tus consultas M.
+      </div>
+</div>
+</main>
+</div>
+<button aria-label="Volver arriba" class="back-to-top" id="back-to-top" title="Volver arriba">↑</button>
+<script src="https://cdn.jsdelivr.net/npm/i18next@23/dist/umd/i18next.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1/prism.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1/components/prism-javascript.min.js"></script>
+<script src="../../assets/js/theme.js"></script>
+<script src="../../assets/js/i18n.js"></script>
+<script src="../../assets/js/main.js"></script>
+<script src="../../assets/js/cursor.js"></script>
+<script src="../../assets/js/m-search.js"></script>
+</body>
+</html>

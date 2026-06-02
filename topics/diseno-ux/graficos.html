@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Elección de gráficos para dashboards Power BI: cuándo usar barras, líneas, dispersión o tablas, por qué evitar gráficos de tarta y mapas de relleno, y la guía visual para elegir el visual correcto.">
+  <title>Elección de Gráficos — Diseño y UX | Power BI Guide by Kawaii BI</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+
+  <!-- Estilos CSS -->
+  <link rel="stylesheet" href="../../assets/css/main.css">
+  <link rel="stylesheet" href="../../assets/css/themes.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/layout.css">
+
+  <style>
+    .topic-header { text-align: center; padding: 2.5rem 0 2rem; border-bottom: 2px solid var(--color-mauve); margin-bottom: 2.5rem; }
+    .topic-header__icon { font-size: 4rem; margin-bottom: 0.75rem; display: block; }
+    .topic-header__title { font-size: clamp(1.875rem, 4vw, 2.5rem); font-weight: 800; color: var(--color-dark); margin-bottom: 0.625rem; line-height: 1.2; }
+    .topic-header__subtitle { font-size: 1.0625rem; color: var(--color-slate); margin-bottom: 1.25rem; line-height: 1.5; max-width: 620px; margin-left: auto; margin-right: auto; }
+    .topic-header__levels { display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap; }
+
+    .toc { background: var(--color-rose); border-radius: var(--border-radius); padding: 1.25rem 1.5rem; margin-bottom: 2rem; border: 1.5px solid var(--color-mauve); }
+    .toc__title { font-size: 1rem; font-weight: 700; margin: 0 0 0.75rem; }
+    .toc__list { display: flex; flex-wrap: wrap; gap: 0.5rem; list-style: none; padding: 0; margin: 0; }
+    .toc__list a { font-size: 0.8125rem; color: var(--color-coral); text-decoration: none; padding: 0.25rem 0.625rem; background: var(--color-white); border-radius: 999px; border: 1px solid var(--color-mauve); transition: background 0.15s, color 0.15s; }
+    .toc__list a:hover { background: var(--color-coral); color: white; }
+
+    .category-header { display: flex; align-items: center; gap: 0.75rem; margin: 2.5rem 0 1.25rem; padding: 0.875rem 1.25rem; background: var(--color-rose); border-radius: var(--border-radius-sm); border-left: 4px solid var(--color-coral); }
+    .category-header__icon { font-size: 1.5rem; }
+    .category-header__title { font-size: 1.25rem; font-weight: 700; margin: 0; }
+
+    .concept-card { background: var(--color-white); border: 1.5px solid var(--color-mauve); border-radius: var(--border-radius); padding: 1.75rem; margin-bottom: 1.5rem; scroll-margin-top: 80px; transition: border-color 0.2s; }
+    .concept-card:hover { border-color: var(--color-coral); }
+    .concept-card h3 { font-size: 1.25rem; font-weight: 700; color: var(--color-coral); margin-bottom: 0.75rem; }
+    .concept-card h4 { font-size: 0.9375rem; font-weight: 700; color: var(--color-dark); margin: 1.25rem 0 0.5rem; }
+    .concept-card p { font-size: 0.9375rem; line-height: 1.7; color: var(--color-dark); margin-bottom: 0.75rem; }
+    .concept-card p:last-child { margin-bottom: 0; }
+    .concept-card ul, .concept-card ol { padding-left: 1.25rem; font-size: 0.9375rem; line-height: 1.8; color: var(--color-dark); margin-bottom: 0.75rem; }
+
+    .quote-block { background: linear-gradient(135deg, var(--color-rose) 0%, var(--color-blush) 100%); border-left: 4px solid var(--color-coral); border-radius: var(--border-radius); padding: 1.5rem 1.75rem; margin: 1.5rem 0; }
+    .quote-block__text { font-size: 1.125rem; font-weight: 600; color: var(--color-dark); line-height: 1.5; font-style: italic; margin: 0 0 0.375rem; }
+    .quote-block__author { font-size: 0.8125rem; color: var(--color-slate); margin: 0; }
+
+    /* ── Guía de decisión (tabla principal) ────────────── */
+    .decision-table { width: 100%; border-collapse: collapse; font-size: 0.875rem; margin: 1rem 0; }
+    .decision-table th { background: var(--color-rose); padding: 0.75rem 0.875rem; text-align: left; font-weight: 700; border: 1px solid var(--color-mauve); }
+    .decision-table td { padding: 0.75rem 0.875rem; border: 1px solid var(--color-mauve); line-height: 1.5; vertical-align: top; }
+    .decision-table tr:nth-child(even) td { background: var(--color-blush); }
+    .decision-table .visual-icon { font-size: 1.25rem; text-align: center; }
+
+    /* ── Cards de visual tipo ──────────────────────────── */
+    .visual-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.25rem;
+      margin: 1.25rem 0;
+    }
+    .visual-card {
+      border: 1.5px solid var(--color-mauve);
+      border-radius: var(--border-radius);
+      overflow: hidden;
+      transition: border-color 0.2s;
+    }
+    .visual-card:hover { border-color: var(--color-coral); }
+    .visual-card__header {
+      background: var(--color-blush);
+      padding: 1rem 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .visual-card__icon { font-size: 1.5rem; }
+    .visual-card__name { font-size: 1rem; font-weight: 700; color: var(--color-dark); }
+    .visual-card__body { padding: 1.25rem; background: var(--color-white); }
+    .visual-card__use { font-size: 0.875rem; color: var(--color-dark); line-height: 1.6; margin-bottom: 0.75rem; }
+    .visual-card__tag {
+      display: inline-block;
+      font-size: 0.6875rem;
+      font-weight: 600;
+      border-radius: 999px;
+      padding: 0.15rem 0.625rem;
+      margin-right: 0.375rem;
+      margin-bottom: 0.25rem;
+    }
+    .visual-card__tag--do { background: #f0faf5; color: #27ae60; border: 1px solid #b8dfc9; }
+    .visual-card__tag--avoid { background: #fff5f5; color: #c0392b; border: 1px solid #f5c6c6; }
+
+    /* ── Zona roja (visuals a evitar) ──────────────────── */
+    .avoid-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 1rem;
+      margin: 1.25rem 0;
+    }
+    .avoid-card {
+      border: 1.5px solid #f5c6c6;
+      border-radius: var(--border-radius);
+      padding: 1.25rem;
+      background: #fff8f8;
+      text-align: center;
+      transition: border-color 0.2s;
+    }
+    .avoid-card:hover { border-color: #c0392b; }
+    .avoid-card__icon { font-size: 2rem; display: block; margin-bottom: 0.5rem; }
+    .avoid-card__name { font-size: 0.9375rem; font-weight: 700; color: #c0392b; margin-bottom: 0.375rem; }
+    .avoid-card__why { font-size: 0.8125rem; color: var(--color-slate); line-height: 1.5; margin-bottom: 0.5rem; }
+    .avoid-card__alt { font-size: 0.8125rem; color: #27ae60; font-weight: 600; }
+
+    /* ── Comparativo ──────────────────────────────────── */
+    .comparison-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1rem 0; }
+    .comparison-col { border-radius: var(--border-radius-sm); padding: 1.25rem; border: 1.5px solid var(--color-mauve); }
+    .comparison-col--bad { background: #fff5f5; border-color: #f5c6c6; }
+    .comparison-col--good { background: #f0faf5; border-color: #b8dfc9; }
+    .comparison-col__label { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.625rem; }
+    .comparison-col--bad .comparison-col__label { color: #c0392b; }
+    .comparison-col--good .comparison-col__label { color: #27ae60; }
+    .comparison-col ul { font-size: 0.875rem; padding-left: 1.1rem; margin: 0; line-height: 1.7; color: var(--color-dark); }
+    @media (max-width: 600px) { .comparison-grid { grid-template-columns: 1fr; } }
+
+    /* ── Checklist ─────────────────────────────────────── */
+    .checklist { list-style: none; padding: 0; margin: 1rem 0; }
+    .checklist li { display: flex; align-items: flex-start; gap: 0.75rem; padding: 0.625rem 0; border-bottom: 1px solid var(--color-blush); font-size: 0.9375rem; line-height: 1.6; color: var(--color-dark); }
+    .checklist li:last-child { border-bottom: none; }
+    .checklist li::before { content: "✅"; flex-shrink: 0; margin-top: 0.1rem; }
+  </style>
+</head>
+<body>
+
+  <!-- SIDEBAR -->
+  <aside class="site-sidebar">
+    <div class="site-sidebar__profile">
+      <img src="../../assets/images/avatar Sara.png" alt="Sara Lozano Martí" class="site-sidebar__avatar">
+      <p class="site-sidebar__name">Sara Lozano Martí</p>
+      <p class="site-sidebar__subtitle">Power BI Expert</p>
+    </div>
+    <nav class="site-sidebar__nav" aria-label="Navegación principal">
+      <ul>
+        <li><a href="../../index.html" class="site-sidebar__link"><span class="site-sidebar__icon">🏠</span> Inicio</a></li>
+        <li><a href="../dax.html" class="site-sidebar__link"><span class="site-sidebar__icon">⚡</span> Funciones DAX</a></li>
+        <li><a href="../power-query.html" class="site-sidebar__link"><span class="site-sidebar__icon">🔄</span> Power Query</a></li>
+        <li><a href="../lenguaje-m.html" class="site-sidebar__link"><span class="site-sidebar__icon">〽️</span> Lenguaje M</a></li>
+        <li><a href="../modelado.html" class="site-sidebar__link"><span class="site-sidebar__icon">🗄️</span> Modelado</a></li>
+        <li><a href="../conceptos-powerbi.html" class="site-sidebar__link"><span class="site-sidebar__icon">📊</span> Conceptos Power BI</a></li>
+        <li><a href="../fabric.html" class="site-sidebar__link"><span class="site-sidebar__icon">🧵</span> Microsoft Fabric</a></li>
+        <li><a href="../tmdl.html" class="site-sidebar__link"><span class="site-sidebar__icon">📝</span> TMDL</a></li>
+        <li><a href="../diseno-ux.html" class="site-sidebar__link is-active"><span class="site-sidebar__icon">🎨</span> Diseño y UX</a></li>
+        <li><a href="../gobernanza.html" class="site-sidebar__link"><span class="site-sidebar__icon">🔒</span> Gobernanza</a></li>
+      </ul>
+    </nav>
+    <div class="site-sidebar__divider"></div>
+    <div class="site-sidebar__footer">
+      <a href="../../quien-soy.html" class="site-sidebar__link site-sidebar__link--highlight"><span class="site-sidebar__icon">👩‍💻</span> ¿Quién soy?</a>
+      <div class="site-sidebar__social">
+        <a href="https://www.linkedin.com/in/saralozanomarti" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><img src="../../assets/images/logo linkedIN.png" alt="LinkedIn" class="site-sidebar__social-icon"></a>
+        <a href="https://www.youtube.com/@KawaiiPowerBI" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><img src="../../assets/images/logo youtube.png" alt="YouTube" class="site-sidebar__social-icon"></a>
+        <a href="https://github.com/KawaiiBI" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><img src="../../assets/images/logo github.png" alt="GitHub" class="site-sidebar__social-icon"></a>
+      </div>
+      <div class="site-sidebar__logo-bottom"><img src="../../assets/images/Logo Kawaii.jpg" alt="Kawaii BI" class="site-sidebar__logo-img"></div>
+      <p class="site-sidebar__copyright">Power BI Guide 🌸<br>© 2026 Kawaii BI</p>
+    </div>
+  </aside>
+
+  <!-- CONTENIDO PRINCIPAL -->
+  <div class="page-wrapper">
+    <main class="main-content">
+      <div class="topic-page">
+
+        <!-- Breadcrumb -->
+        <nav class="breadcrumb" aria-label="Ruta de navegación">
+          <span class="breadcrumb__item"><a href="../../index.html">🏠 Inicio</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item"><a href="../diseno-ux.html">Diseño y UX</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item">Elección de Gráficos</span>
+        </nav>
+
+        <!-- Cabecera -->
+        <header class="topic-header">
+          <span class="topic-header__icon">📊</span>
+          <h1 class="topic-header__title">Elección de Gráficos</h1>
+          <p class="topic-header__subtitle">El visual correcto responde a una pregunta. El visual incorrecto la entierra. Guía práctica para elegir barras, líneas, dispersión, tablas o KPIs según el mensaje que quieres comunicar en Power BI</p>
+          <div class="topic-header__levels">
+            <span class="badge badge--beginner">Principiante</span>
+            <span class="badge badge--intermediate">Intermedio</span>
+          </div>
+        </header>
+
+        <!-- TOC -->
+        <nav class="toc" aria-label="Contenido de esta página">
+          <p class="toc__title">📋 En esta página</p>
+          <ul class="toc__list">
+            <li><a href="#pregunta">Empieza por la pregunta</a></li>
+            <li><a href="#guia">Guía rápida de decisión</a></li>
+            <li><a href="#visuals">Los visuals y cuándo usarlos</a></li>
+            <li><a href="#evitar">Visuals a evitar (o usar con precaución)</a></li>
+            <li><a href="#segmentos">El problema de los demasiados segmentos</a></li>
+            <li><a href="#errores">Errores comunes</a></li>
+            <li><a href="#checklist">Checklist de gráficos</a></li>
+          </ul>
+        </nav>
+
+        <!-- ─────────────────────────────────────────── -->
+        <!-- 1. Empieza por la pregunta                  -->
+        <!-- ─────────────────────────────────────────── -->
+        <div class="category-header" id="pregunta">
+          <span class="category-header__icon">❓</span>
+          <h2 class="category-header__title">Empieza por la pregunta, no por el gráfico</h2>
+        </div>
+
+        <div class="concept-card">
+          <h3>El visual es la respuesta — pero ¿cuál es la pregunta?</h3>
+          <p>
+            El error más frecuente al diseñar un dashboard es empezar eligiendo visuals:
+            "voy a poner un gráfico de barras aquí y un mapa allá". El enfoque correcto es
+            exactamente al revés: <strong>primero la pregunta de negocio, luego el visual
+            que mejor la responde</strong>.
+          </p>
+
+          <h4>El proceso correcto</h4>
+          <ol>
+            <li><strong>¿Qué pregunta responde este visual?</strong> — "¿Cómo evolucionan las ventas mes a mes?"</li>
+            <li><strong>¿Qué tipo de comparación necesito?</strong> — Tendencia en el tiempo</li>
+            <li><strong>¿Cuántos datos tengo?</strong> — 12 meses, 1 serie</li>
+            <li><strong>Ahora sí: ¿qué visual es el mejor?</strong> — Gráfico de líneas</li>
+          </ol>
+
+          <div class="quote-block">
+            <p class="quote-block__text">"¿Este visual ayuda a tomar una decisión? Si la respuesta es no, sobra."</p>
+            <p class="quote-block__author">— La Regla del No Ruido, Kawaii BI</p>
+          </div>
+
+          <div class="note note--tip">
+            💡 <strong>Tip kawaii:</strong> Antes de añadir un visual, escribe en una nota adhesiva la pregunta que responde. Si no puedes formular la pregunta en una frase, el visual probablemente sobra o necesita ser dividido en dos más simples.
+          </div>
+        </div>
+
+        <!-- ─────────────────────────────────────────── -->
+        <!-- 2. Guía rápida de decisión                  -->
+        <!-- ─────────────────────────────────────────── -->
+        <div class="category-header" id="guia">
+          <span class="category-header__icon">🗺️</span>
+          <h2 class="category-header__title">Guía rápida: "¿Qué visual uso?"</h2>
+        </div>
+
+        <div class="concept-card">
+          <h3>Responde a la pregunta y elige el visual</h3>
+
+          <table class="decision-table" aria-label="Guía de decisión para elegir gráficos">
+            <thead>
+              <tr>
+                <th>Quiero mostrar…</th>
+                <th>Tipo de comparación</th>
+                <th>Visual recomendado</th>
+                <th>En Power BI</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Un valor clave</strong></td>
+                <td>Sin comparación — dato aislado</td>
+                <td>Card / KPI</td>
+                <td>Card visual, KPI visual, Multi-row card</td>
+              </tr>
+              <tr>
+                <td><strong>Evolución en el tiempo</strong></td>
+                <td>Tendencia temporal</td>
+                <td>Líneas</td>
+                <td>Line chart, Area chart</td>
+              </tr>
+              <tr>
+                <td><strong>Comparación entre categorías</strong></td>
+                <td>Ranking / comparativa</td>
+                <td>Barras horizontales</td>
+                <td>Clustered bar chart (horizontal)</td>
+              </tr>
+              <tr>
+                <td><strong>Partes de un todo</strong></td>
+                <td>Proporción (≤ 4 categorías)</td>
+                <td>Barras apiladas 100%</td>
+                <td>100% stacked bar chart</td>
+              </tr>
+              <tr>
+                <td><strong>Distribución de valores</strong></td>
+                <td>Dispersión y outliers</td>
+                <td>Dispersión</td>
+                <td>Scatter chart</td>
+              </tr>
+              <tr>
+                <td><strong>Correlación entre 2 variables</strong></td>
+                <td>Relación x↔y</td>
+                <td>Dispersión</td>
+                <td>Scatter chart con línea de tendencia</td>
+              </tr>
+              <tr>
+                <td><strong>Datos exactos para consulta</strong></td>
+                <td>Lookup preciso</td>
+                <td>Tabla / Matrix</td>
+                <td>Table visual, Matrix visual</td>
+              </tr>
+              <tr>
+                <td><strong>Progreso hacia objetivo</strong></td>
+                <td>Actual vs. meta</td>
+                <td>Gauge / Bullet chart</td>
+                <td>Gauge visual, o barras con línea de referencia</td>
+              </tr>
+              <tr>
+                <td><strong>Datos geográficos</strong></td>
+                <td>Localización espacial</td>
+                <td>Mapa de burbujas</td>
+                <td>Map visual (bubble), Shape map (con cautela)</td>
+              </tr>
+              <tr>
+                <td><strong>Flujo o proceso</strong></td>
+                <td>De dónde a dónde</td>
+                <td>Sankey / Funnel</td>
+                <td>Funnel chart, Decomposition tree, custom visuals</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="note note--practice">
+            📌 <strong>Buena práctica:</strong> Si dudas entre dos visuals, elige siempre el más simple. Un gráfico de barras ordenadas de mayor a menor es casi siempre mejor que un gráfico exótico que requiere explicación.
+          </div>
+        </div>
+
+        <!-- ─────────────────────────────────────────── -->
+        <!-- 3. Los visuals y cuándo usarlos             -->
+        <!-- ─────────────────────────────────────────── -->
+        <div class="category-header" id="visuals">
+          <span class="category-header__icon">📈</span>
+          <h2 class="category-header__title">Los visuals principales y cuándo usarlos</h2>
+        </div>
+
+        <div class="concept-card">
+          <h3>Detalle visual por visual</h3>
+
+          <div class="visual-grid">
+
+            <div class="visual-card">
+              <div class="visual-card__header">
+                <span class="visual-card__icon">📊</span>
+                <span class="visual-card__name">Barras (horizontal)</span>
+              </div>
+              <div class="visual-card__body">
+                <p class="visual-card__use">El visual más versátil. Comparar valores entre categorías. Siempre horizontal cuando las etiquetas son largas — así se leen sin rotar texto. Ordena de mayor a menor.</p>
+                <span class="visual-card__tag visual-card__tag--do">✓ Ranking</span>
+                <span class="visual-card__tag visual-card__tag--do">✓ Comparación</span>
+                <span class="visual-card__tag visual-card__tag--do">✓ Etiquetas largas</span>
+              </div>
+            </div>
+
+            <div class="visual-card">
+              <div class="visual-card__header">
+                <span class="visual-card__icon">📈</span>
+                <span class="visual-card__name">Líneas</span>
+              </div>
+              <div class="visual-card__body">
+                <p class="visual-card__use">Tendencia en el tiempo. El eje X es siempre temporal. Máximo 3-4 series para evitar el efecto "espagueti". Si necesitas más, usa Small Multiples.</p>
+                <span class="visual-card__tag visual-card__tag--do">✓ Tendencia temporal</span>
+                <span class="visual-card__tag visual-card__tag--do">✓ 1-4 series</span>
+                <span class="visual-card__tag visual-card__tag--avoid">✗ Evitar con 5+ series</span>
+              </div>
+            </div>
+
+            <div class="visual-card">
+              <div class="visual-card__header">
+                <span class="visual-card__icon">🃏</span>
+                <span class="visual-card__name">Card / KPI</span>
+              </div>
+              <div class="visual-card__body">
+                <p class="visual-card__use">Un solo valor numérico grande y claro. Perfecto para los 3-5 KPIs principales en la fila superior. Incluye siempre variación (% o pp) respecto a referencia.</p>
+                <span class="visual-card__tag visual-card__tag--do">✓ Dato clave</span>
+                <span class="visual-card__tag visual-card__tag--do">✓ Rápido de leer</span>
+                <span class="visual-card__tag visual-card__tag--avoid">✗ No para datos detallados</span>
+              </div>
+            </div>
+
+            <div class="visual-card">
+              <div class="visual-card__header">
+                <span class="visual-card__icon">📋</span>
+                <span class="visual-card__name">Tabla / Matrix</span>
+              </div>
+              <div class="visual-card__body">
+                <p class="visual-card__use">Cuando el usuario necesita valores exactos. Lookup de datos, comparativas detalladas, exportación a Excel. Siempre con formato condicional y barras de datos.</p>
+                <span class="visual-card__tag visual-card__tag--do">✓ Valores exactos</span>
+                <span class="visual-card__tag visual-card__tag--do">✓ Drill-down</span>
+                <span class="visual-card__tag visual-card__tag--avoid">✗ No para mostrar tendencias</span>
+              </div>
+            </div>
+
+            <div class="visual-card">
+              <div class="visual-card__header">
+                <span class="visual-card__icon">🔵</span>
+                <span class="visual-card__name">Dispersión (Scatter)</span>
+              </div>
+              <div class="visual-card__body">
+                <p class="visual-card__use">Relación entre dos variables numéricas. Detectar outliers, clusters y correlaciones. El tamaño de la burbuja puede representar una tercera dimensión.</p>
+                <span class="visual-card__tag visual-card__tag--do">✓ Correlación</span>
+                <span class="visual-card__tag visual-card__tag--do">✓ Outliers</span>
+                <span class="visual-card__tag visual-card__tag--avoid">✗ Más difícil de leer para la audiencia general</span>
+              </div>
+            </div>
+
+            <div class="visual-card">
+              <div class="visual-card__header">
+                <span class="visual-card__icon">📊</span>
+                <span class="visual-card__name">Barras apiladas 100%</span>
+              </div>
+              <div class="visual-card__body">
+                <p class="visual-card__use">Proporción de partes sobre el total. La alternativa correcta al gráfico de tarta. Funciona bien con 2-5 categorías. El ojo compara longitudes, no ángulos.</p>
+                <span class="visual-card__tag visual-card__tag--do">✓ Partes de un todo</span>
+                <span class="visual-card__tag visual-card__tag--do">✓ 2-5 categorías</span>
+                <span class="visual-card__tag visual-card__tag--avoid">✗ No para 6+ categorías</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- ─────────────────────────────────────────── -->
+        <!-- 4. Visuals a evitar                         -->
+        <!-- ─────────────────────────────────────────── -->
+        <div class="category-header" id="evitar">
+          <span class="category-header__icon">🚫</span>
+          <h2 class="category-header__title">Visuals a evitar (o usar con mucha precaución)</h2>
+        </div>
+
+        <div class="concept-card">
+          <h3>No todos los visuals disponibles en Power BI son buena idea</h3>
+          <p>
+            El catálogo de Power BI incluye docenas de tipos de visual. Que estén disponibles
+            no significa que sean buenas opciones. Estos son los que más problemas generan:
+          </p>
+
+          <div class="avoid-grid">
+            <div class="avoid-card">
+              <span class="avoid-card__icon">🥧</span>
+              <p class="avoid-card__name">Gráfico de tarta</p>
+              <p class="avoid-card__why">El ojo humano no compara ángulos con precisión. Con más de 3-4 sectores se vuelve ilegible.</p>
+              <p class="avoid-card__alt">→ Barras horizontales ordenadas</p>
+            </div>
+            <div class="avoid-card">
+              <span class="avoid-card__icon">🍩</span>
+              <p class="avoid-card__name">Donut chart</p>
+              <p class="avoid-card__why">El mismo problema que la tarta pero peor — el hueco central elimina el punto de referencia del centro.</p>
+              <p class="avoid-card__alt">→ Barras apiladas 100%</p>
+            </div>
+            <div class="avoid-card">
+              <span class="avoid-card__icon">📊</span>
+              <p class="avoid-card__name">Barras 3D</p>
+              <p class="avoid-card__why">La perspectiva distorsiona la altura real. Las barras del fondo parecen más pequeñas de lo que son.</p>
+              <p class="avoid-card__alt">→ Barras 2D planas</p>
+            </div>
+            <div class="avoid-card">
+              <span class="avoid-card__icon">🗺️</span>
+              <p class="avoid-card__name">Mapa de relleno (choropleth)</p>
+              <p class="avoid-card__why">El área geográfica domina la percepción. Castilla-La Mancha parece más importante que Madrid aunque tenga menos ventas.</p>
+              <p class="avoid-card__alt">→ Mapa de burbujas o tabla con flags</p>
+            </div>
+            <div class="avoid-card">
+              <span class="avoid-card__icon">🕸️</span>
+              <p class="avoid-card__name">Radar / Spider chart</p>
+              <p class="avoid-card__why">Difícil de leer para la audiencia general. Las áreas se solapan y las escalas de los ejes son confusas.</p>
+              <p class="avoid-card__alt">→ Barras agrupadas o tabla con formato condicional</p>
+            </div>
+            <div class="avoid-card">
+              <span class="avoid-card__icon">⏱️</span>
+              <p class="avoid-card__name">Gauge (velocímetro)</p>
+              <p class="avoid-card__why">Ocupa mucho espacio para un solo dato. El arco hace difícil leer el valor exacto. La escala no es intuitiva.</p>
+              <p class="avoid-card__alt">→ Card con barra de progreso o bullet chart</p>
+            </div>
+          </div>
+
+          <div class="note note--tip">
+            💡 <strong>Tip kawaii:</strong> El gráfico de tarta tiene UNA situación donde funciona bien: cuando tienes 2 categorías y quieres mostrar una proporción tipo 70/30. En cualquier otro caso, las barras ganan.
+          </div>
+        </div>
+
+        <!-- ─────────────────────────────────────────── -->
+        <!-- 5. Demasiados segmentos                     -->
+        <!-- ─────────────────────────────────────────── -->
+        <div class="category-header" id="segmentos">
+          <span class="category-header__icon">🧩</span>
+          <h2 class="category-header__title">El problema de los demasiados segmentos</h2>
+        </div>
+
+        <div class="concept-card">
+          <h3>Evita gráficos con demasiados segmentos</h3>
+          <p>
+            Uno de los puntos del Chachi-Resumen que aplica directamente aquí: un gráfico
+            con demasiadas categorías, series o segmentos se convierte en ruido visual.
+            El ojo no puede distinguir 8 colores en una leyenda ni comparar 15 barras
+            simultáneamente.
+          </p>
+
+          <h4>Cuántos son "demasiados"</h4>
+          <ul>
+            <li><strong>Gráfico de tarta / donut:</strong> máximo 3-4 sectores (idealmente 2)</li>
+            <li><strong>Gráfico de barras:</strong> máximo 8-10 barras visibles sin scroll</li>
+            <li><strong>Gráfico de líneas:</strong> máximo 3-4 series (1-2 es ideal)</li>
+            <li><strong>Leyenda:</strong> si tiene más de 5 elementos, el gráfico es demasiado complejo</li>
+          </ul>
+
+          <h4>Qué hacer cuando tienes más categorías</h4>
+          <ul>
+            <li><strong>Agrupa:</strong> Muestra el Top 5 y agrupa el resto en "Otros"</li>
+            <li><strong>Filtra:</strong> Añade un slicer para que el usuario elija qué categorías ver</li>
+            <li><strong>Small Multiples:</strong> Divide en mini-gráficos (uno por categoría) en Power BI</li>
+            <li><strong>Drill-through:</strong> Muestra el resumen en la página principal y el detalle en otra</li>
+          </ul>
+
+          <div class="note note--warning">
+            ⚠️ <strong>Ojo con esto:</strong> La tentación de "mostrar todo" es el mayor enemigo del buen diseño de gráficos. Un visual que muestra 20 categorías no informa — abruma. El trabajo del diseñador es decidir qué merece estar en primer plano y qué puede esperar a un segundo nivel de detalle.
+          </div>
+        </div>
+
+        <!-- ─────────────────────────────────────────── -->
+        <!-- 6. Errores comunes                          -->
+        <!-- ─────────────────────────────────────────── -->
+        <div class="category-header" id="errores">
+          <span class="category-header__icon">🐛</span>
+          <h2 class="category-header__title">Errores comunes en la elección de gráficos</h2>
+        </div>
+
+        <div class="concept-card">
+          <h3>Los que más veo en informes reales</h3>
+
+          <div class="comparison-grid">
+            <div class="comparison-col comparison-col--bad">
+              <p class="comparison-col__label">❌ Errores frecuentes</p>
+              <ul>
+                <li>Gráfico de tarta con 8+ sectores y leyenda imposible de leer</li>
+                <li>Gráfico de líneas con 7 series ("espaguetis")</li>
+                <li>Mapa de relleno donde el dato importante está en una región pequeña</li>
+                <li>Gauge (velocímetro) que ocupa 1/4 de la página para un solo dato</li>
+                <li>Usar barras verticales con etiquetas de eje rotadas 90°</li>
+                <li>Visual elegido "porque queda bonito" sin responder a una pregunta</li>
+                <li>Gráfico con doble eje Y que confunde más de lo que aclara</li>
+              </ul>
+            </div>
+            <div class="comparison-col comparison-col--good">
+              <p class="comparison-col__label">✅ Alternativas correctas</p>
+              <ul>
+                <li>Barras horizontales ordenadas con Top 5 + "Otros"</li>
+                <li>Small Multiples o slicer para seleccionar 1-2 series</li>
+                <li>Mapa de burbujas o tabla con formato condicional</li>
+                <li>Card con barra de progreso: mismo dato, 1/10 del espacio</li>
+                <li>Barras horizontales donde las etiquetas van a la izquierda</li>
+                <li>Visual elegido porque responde a "¿cuál es la mejor región?"</li>
+                <li>Dos visuals separados, cada uno con su propio eje</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- ─────────────────────────────────────────── -->
+        <!-- 7. Checklist                                -->
+        <!-- ─────────────────────────────────────────── -->
+        <div class="category-header" id="checklist">
+          <span class="category-header__icon">✅</span>
+          <h2 class="category-header__title">Checklist de elección de gráficos</h2>
+        </div>
+
+        <div class="concept-card">
+          <h3>Antes de publicar, verifica estos 10 puntos</h3>
+
+          <ul class="checklist">
+            <li>Cada visual responde a una pregunta de negocio concreta que puedo formular en una frase</li>
+            <li>No hay gráficos de tarta con más de 4 sectores</li>
+            <li>Los gráficos de líneas tienen máximo 3-4 series</li>
+            <li>Las barras están ordenadas de mayor a menor (no en orden alfabético)</li>
+            <li>Las barras son horizontales cuando las etiquetas son largas</li>
+            <li>No hay texto rotado en ningún eje</li>
+            <li>No hay gráficos 3D en ninguna página</li>
+            <li>Los mapas usan burbujas en lugar de relleno de áreas</li>
+            <li>Las leyendas tienen 5 o menos elementos</li>
+            <li>Cada visual "pasa el test": si desaparece, el informe pierde información útil</li>
+          </ul>
+
+          <div class="note note--next">
+            🚀 <strong>¡Lo estás haciendo genial!</strong> Elegir el gráfico correcto es la mitad del trabajo de diseño de un dashboard. La otra mitad es tener el coraje de no poner un visual "porque queda chulo". Si cada visual responde a una pregunta y es lo más simple que puede ser, tu informe ya está por encima del 90% de los dashboards que existen. 🌸
+          </div>
+        </div>
+
+        <!-- Navegación entre páginas -->
+        <nav aria-label="Páginas relacionadas" style="margin-top: 2.5rem; display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap;">
+          <a href="iconografia.html" style="display: inline-flex; align-items: center; gap: 0.5rem; color: var(--color-coral); text-decoration: none; font-weight: 600; font-size: 0.9375rem;">
+            ← Iconografía y Semiótica
+          </a>
+          <a href="storytelling.html" style="display: inline-flex; align-items: center; gap: 0.5rem; color: var(--color-coral); text-decoration: none; font-weight: 600; font-size: 0.9375rem;">
+            Storytelling con Datos →
+          </a>
+        </nav>
+
+      </div><!-- /topic-page -->
+    </main>
+  </div><!-- /page-wrapper -->
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script>
+  <script src="../../assets/js/theme.js"></script>
+  <script src="../../assets/js/main.js"></script>
+  <script src="../../assets/js/cursor.js"></script>
+
+</body>
+</html>

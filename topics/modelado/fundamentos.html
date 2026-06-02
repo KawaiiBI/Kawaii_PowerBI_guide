@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Fundamentos del modelado de datos en Power BI: tablas de hechos y dimensiones, granularidad, cardinalidad y normalización con ejemplos reales.">
+  <title>Fundamentos del Modelado — Modelado de Datos | Power BI Guide by Kawaii BI</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+
+  <!-- Prism.js -->
+  <link href="https://cdn.jsdelivr.net/npm/prismjs@1/themes/prism-okaidia.min.css" rel="stylesheet">
+
+  <!-- Estilos CSS -->
+  <link rel="stylesheet" href="../../assets/css/main.css">
+  <link rel="stylesheet" href="../../assets/css/themes.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/layout.css">
+
+  <style>
+    .topic-header {
+      text-align: center;
+      padding: 2.5rem 0 2rem;
+      border-bottom: 2px solid var(--color-mauve);
+      margin-bottom: 2.5rem;
+    }
+    .topic-header__icon { font-size: 4rem; margin-bottom: 0.75rem; display: block; }
+    .topic-header__title { font-size: clamp(1.875rem, 4vw, 2.5rem); font-weight: 800; color: var(--color-dark); margin-bottom: 0.625rem; line-height: 1.2; }
+    .topic-header__subtitle { font-size: 1.0625rem; color: var(--color-slate); margin-bottom: 1.25rem; line-height: 1.5; max-width: 600px; margin-left: auto; margin-right: auto; }
+    .topic-header__levels { display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap; align-items: center; }
+
+    .category-header { display: flex; align-items: center; gap: 0.75rem; margin: 2.5rem 0 1.25rem; padding: 0.875rem 1.25rem; background: var(--color-rose); border-radius: var(--border-radius-sm); border-left: 4px solid var(--color-coral); }
+    .category-header__icon { font-size: 1.5rem; }
+    .category-header__title { font-size: 1.25rem; font-weight: 700; margin: 0; }
+
+    .concept-card { background: var(--color-white); border: 1.5px solid var(--color-mauve); border-radius: var(--border-radius); padding: 1.75rem; margin-bottom: 1.5rem; scroll-margin-top: 80px; transition: border-color 0.2s; }
+    .concept-card:hover { border-color: var(--color-coral); }
+    .concept-card h3 { font-size: 1.25rem; font-weight: 700; color: var(--color-coral); margin-bottom: 0.75rem; }
+    .concept-card h4 { font-size: 0.9375rem; font-weight: 700; color: var(--color-dark); margin: 1.25rem 0 0.5rem; }
+    .concept-card p { font-size: 0.9375rem; line-height: 1.7; color: var(--color-dark); margin-bottom: 0.75rem; }
+    .concept-card ul { padding-left: 1.25rem; font-size: 0.9375rem; line-height: 1.8; color: var(--color-dark); }
+    .concept-card code { background: var(--color-blush); padding: 0.1em 0.4em; border-radius: 4px; font-family: 'Fira Code', monospace; font-size: 0.85em; color: var(--color-coral); }
+
+    .comparison-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1rem 0; }
+    .comparison-col { background: var(--color-rose); border-radius: var(--border-radius-sm); padding: 1rem; border: 1px solid var(--color-mauve); }
+    .comparison-col h4 { font-size: 0.9rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--color-dark); }
+    .comparison-col ul { font-size: 0.875rem; padding-left: 1rem; margin: 0; }
+    @media (max-width: 600px) { .comparison-grid { grid-template-columns: 1fr; } }
+
+    .toc { background: var(--color-rose); border-radius: var(--border-radius); padding: 1.25rem 1.5rem; margin-bottom: 2rem; border: 1.5px solid var(--color-mauve); }
+    .toc__title { font-size: 1rem; font-weight: 700; margin: 0 0 0.75rem; }
+    .toc__list { display: flex; flex-wrap: wrap; gap: 0.5rem; list-style: none; padding: 0; margin: 0; }
+    .toc__list a { font-size: 0.8125rem; color: var(--color-coral); text-decoration: none; padding: 0.25rem 0.625rem; background: var(--color-white); border-radius: 999px; border: 1px solid var(--color-mauve); transition: background 0.15s, color 0.15s; }
+    .toc__list a:hover { background: var(--color-coral); color: white; }
+  </style>
+</head>
+<body>
+
+  <!-- SIDEBAR -->
+  <aside class="site-sidebar">
+    <div class="site-sidebar__profile">
+      <img src="../../assets/images/avatar Sara.png" alt="Sara Lozano Martí" class="site-sidebar__avatar">
+      <p class="site-sidebar__name">Sara Lozano Martí</p>
+      <p class="site-sidebar__subtitle">Power BI Expert</p>
+    </div>
+    <nav class="site-sidebar__nav" aria-label="Navegación principal">
+      <ul>
+        <li><a href="../../index.html" class="site-sidebar__link"><span class="site-sidebar__icon">🏠</span> Inicio</a></li>
+        <li><a href="../dax.html" class="site-sidebar__link"><span class="site-sidebar__icon">⚡</span> Funciones DAX</a></li>
+        <li><a href="../power-query.html" class="site-sidebar__link"><span class="site-sidebar__icon">🔄</span> Power Query</a></li>
+        <li><a href="../lenguaje-m.html" class="site-sidebar__link"><span class="site-sidebar__icon">〽️</span> Lenguaje M</a></li>
+        <li><a href="../modelado.html" class="site-sidebar__link is-active"><span class="site-sidebar__icon">🗄️</span> Modelado</a></li>
+        <li><a href="../conceptos-powerbi.html" class="site-sidebar__link"><span class="site-sidebar__icon">📊</span> Conceptos Power BI</a></li>
+        <li><a href="../fabric.html" class="site-sidebar__link"><span class="site-sidebar__icon">🧵</span> Microsoft Fabric</a></li>
+        <li><a href="../tmdl.html" class="site-sidebar__link"><span class="site-sidebar__icon">📝</span> TMDL</a></li>
+        <li><a href="../diseno-ux.html" class="site-sidebar__link"><span class="site-sidebar__icon">🎨</span> Diseño y UX</a></li>
+        <li><a href="../gobernanza.html" class="site-sidebar__link"><span class="site-sidebar__icon">🔒</span> Gobernanza</a></li>
+      </ul>
+    </nav>
+    <div class="site-sidebar__divider"></div>
+    <div class="site-sidebar__footer">
+      <a href="../../quien-soy.html" class="site-sidebar__link site-sidebar__link--highlight"><span class="site-sidebar__icon">👩‍💻</span> ¿Quién soy?</a>
+      <div class="site-sidebar__social">
+        <a href="https://www.linkedin.com/in/saralozanomarti" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><img src="../../assets/images/logo linkedIN.png" alt="LinkedIn" class="site-sidebar__social-icon"></a>
+        <a href="https://www.youtube.com/@KawaiiPowerBI" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><img src="../../assets/images/logo youtube.png" alt="YouTube" class="site-sidebar__social-icon"></a>
+        <a href="https://github.com/KawaiiBI" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><img src="../../assets/images/logo github.png" alt="GitHub" class="site-sidebar__social-icon"></a>
+      </div>
+      <div class="site-sidebar__logo-bottom"><img src="../../assets/images/Logo Kawaii.jpg" alt="Kawaii BI" class="site-sidebar__logo-img"></div>
+      <p class="site-sidebar__copyright">Power BI Guide 🌸<br>© 2026 Kawaii BI</p>
+    </div>
+  </aside>
+
+  <!-- CONTENIDO PRINCIPAL -->
+  <div class="page-wrapper">
+    <main class="main-content">
+      <div class="topic-page">
+
+        <!-- Breadcrumb -->
+        <nav class="breadcrumb" aria-label="Ruta de navegación">
+          <span class="breadcrumb__item"><a href="../../index.html">🏠 Inicio</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item"><a href="../modelado.html">Modelado de Datos</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item">Fundamentos del Modelado</span>
+        </nav>
+
+        <!-- Cabecera -->
+        <header class="topic-header">
+          <span class="topic-header__icon">📐</span>
+          <h1 class="topic-header__title">Fundamentos del Modelado de Datos</h1>
+          <p class="topic-header__subtitle">Tablas de hechos y dimensiones, granularidad, cardinalidad y normalización — los conceptos que todo profesional Power BI debe dominar antes de tocar DAX</p>
+          <div class="topic-header__levels">
+            <span class="badge badge--beginner">Principiante</span>
+          </div>
+        </header>
+
+        <!-- TOC -->
+        <nav class="toc" aria-label="Índice de contenidos">
+          <p class="toc__title">📌 En esta página:</p>
+          <ul class="toc__list">
+            <li><a href="#hechos-dimensiones">Hechos vs Dimensiones</a></li>
+            <li><a href="#granularidad">Granularidad</a></li>
+            <li><a href="#cardinalidad">Cardinalidad</a></li>
+            <li><a href="#normalizacion">Normalización</a></li>
+            <li><a href="#claves">Claves y relaciones</a></li>
+          </ul>
+        </nav>
+
+        <!-- SECCIÓN: Hechos vs Dimensiones -->
+        <div class="category-header" id="hechos-dimensiones">
+          <span class="category-header__icon">📊</span>
+          <h2 class="category-header__title">Tablas de Hechos vs Tablas de Dimensiones</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>¿Qué son las tablas de hechos?</h3>
+          <p>Las <strong>tablas de hechos</strong> contienen las <em>métricas cuantitativas</em> de tu negocio — los números que quieres analizar. Representan eventos o transacciones: ventas, pedidos, llamadas, pagos, clicks.</p>
+
+          <h4>Características de una tabla de hechos:</h4>
+          <ul>
+            <li>Muchas filas (millones en proyectos reales)</li>
+            <li>Pocas columnas (principalmente claves foráneas + métricas numéricas)</li>
+            <li>Ejemplos: <code>FactVentas</code>, <code>FactPedidos</code>, <code>FactInventario</code></li>
+          </ul>
+
+          <h4>Ejemplo de tabla de hechos:</h4>
+          <pre><code class="language-sql">-- FactVentas
+IDFecha | IDCliente | IDProducto | IDTienda | Cantidad | PrecioUnitario | Descuento
+20240115 | 1042 | 507 | 3 | 2 | 29.99 | 0.10</code></pre>
+        </article>
+
+        <article class="concept-card">
+          <h3>¿Qué son las tablas de dimensiones?</h3>
+          <p>Las <strong>tablas de dimensiones</strong> contienen el <em>contexto descriptivo</em> de los hechos — las perspectivas desde las que quieres analizar: qué producto, qué cliente, cuándo, dónde.</p>
+
+          <h4>Características de una tabla de dimensiones:</h4>
+          <ul>
+            <li>Pocas filas (cientos o miles, raramente millones)</li>
+            <li>Muchas columnas de atributos descriptivos</li>
+            <li>Ejemplos: <code>DimCliente</code>, <code>DimProducto</code>, <code>DimFecha</code>, <code>DimTienda</code></li>
+          </ul>
+
+          <div class="comparison-grid">
+            <div class="comparison-col">
+              <h4>Tabla de Hechos</h4>
+              <ul>
+                <li>Datos cuantitativos</li>
+                <li>Muchas filas</li>
+                <li>Pocas columnas</li>
+                <li>Claves foráneas</li>
+                <li>Crece constantemente</li>
+              </ul>
+            </div>
+            <div class="comparison-col">
+              <h4>Tabla de Dimensión</h4>
+              <ul>
+                <li>Datos descriptivos</li>
+                <li>Pocas filas</li>
+                <li>Muchas columnas</li>
+                <li>Clave primaria</li>
+                <li>Cambia poco</li>
+              </ul>
+            </div>
+          </div>
+        </article>
+
+        <div class="note note--tip">
+          💡 <strong>Tip kawaii:</strong> Una regla fácil para distinguirlas: si la tabla responde a "¿cuánto?" o "¿cuántas veces?" → es tabla de hechos. Si responde a "¿de qué?", "¿quién?", "¿dónde?" o "¿cuándo?" → es dimensión. 🌸
+        </div>
+
+        <!-- SECCIÓN: Granularidad -->
+        <div class="category-header" id="granularidad">
+          <span class="category-header__icon">🔍</span>
+          <h2 class="category-header__title">Granularidad</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>¿Qué es la granularidad?</h3>
+          <p>La <strong>granularidad</strong> define <em>el nivel de detalle de cada fila</em> en tu tabla de hechos. Es la decisión más importante al diseñar un modelo: ¿qué representa exactamente una fila?</p>
+
+          <h4>Ejemplos de granularidad:</h4>
+          <ul>
+            <li><strong>Granularidad de línea de pedido:</strong> una fila = un producto dentro de un pedido</li>
+            <li><strong>Granularidad de pedido:</strong> una fila = un pedido completo (varios productos agregados)</li>
+            <li><strong>Granularidad diaria:</strong> una fila = ventas totales del día por tienda</li>
+          </ul>
+
+          <h4>¿Cuál elegir?</h4>
+          <p>Siempre el nivel de detalle <strong>más granular que necesites</strong>. Un modelo a nivel de línea de pedido puede agruparse para ver ventas diarias, mensuales o anuales. Al revés no es posible — no puedes desagregar datos ya agregados.</p>
+        </article>
+
+        <div class="note note--warning">
+          ⚠️ <strong>Ojo con esto:</strong> Mezclar granularidades distintas en la misma tabla de hechos es una fuente habitual de errores en los cálculos. Si tienes datos a nivel diario y a nivel mensual, créalos en tablas separadas.
+        </div>
+
+        <!-- SECCIÓN: Cardinalidad -->
+        <div class="category-header" id="cardinalidad">
+          <span class="category-header__icon">🔢</span>
+          <h2 class="category-header__title">Cardinalidad</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>¿Qué es la cardinalidad?</h3>
+          <p>La <strong>cardinalidad</strong> describe el número de valores únicos en una columna. En Power BI, la cardinalidad tiene un impacto directo en el rendimiento del modelo y en el tamaño del archivo.</p>
+
+          <h4>Alta cardinalidad (problemática):</h4>
+          <ul>
+            <li>Columnas como <code>IDTransaccion</code>, <code>FechaHora</code>, <code>Email</code> — cada fila es única</li>
+            <li>El motor VertiPaq no comprime bien estas columnas</li>
+            <li>El archivo PBIX crece y las consultas son más lentas</li>
+          </ul>
+
+          <h4>Cómo reducir cardinalidad:</h4>
+          <ul>
+            <li>Eliminar columnas de alta cardinalidad que no uses en análisis</li>
+            <li>Redondear fechas/horas: guardar solo fecha si la hora no importa</li>
+            <li>Agrupar valores raros en una categoría "Otros"</li>
+            <li>Usar enteros en lugar de texto como claves (1 en vez de "PROD-001")</li>
+          </ul>
+        </article>
+
+        <!-- SECCIÓN: Normalización -->
+        <div class="category-header" id="normalizacion">
+          <span class="category-header__icon">📋</span>
+          <h2 class="category-header__title">Normalización vs Desnormalización</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>Normalización en bases de datos</h3>
+          <p>Las bases de datos transaccionales (OLTP) se diseñan <strong>normalizadas</strong>: sin datos duplicados, con tablas separadas para cada entidad y relaciones entre ellas. Esto es ideal para operaciones de escritura pero no para análisis.</p>
+
+          <h3>Desnormalización para análisis (OLAP)</h3>
+          <p>Para Power BI, queremos modelos <strong>desnormalizados estratégicamente</strong>: dimensiones planas con todos los atributos en una sola tabla para facilitar el análisis y reducir los JOINs en tiempo de consulta.</p>
+
+          <h4>Ejemplo práctico:</h4>
+          <pre><code class="language-sql">-- Base de datos normalizada (3 tablas)
+Producto (IDProducto, Nombre, IDCategoria)
+Categoria (IDCategoria, NombreCategoria, IDSubcategoria)
+Subcategoria (IDSubcategoria, NombreSubcategoria)
+
+-- Dimensión desnormalizada para Power BI (1 tabla)
+DimProducto (IDProducto, Nombre, Categoria, Subcategoria)</code></pre>
+
+          <p>En Power BI, la dimensión plana rinde mejor porque VertiPaq puede comprimirla eficientemente sin necesidad de JOINs costosos en tiempo de consulta.</p>
+        </article>
+
+        <!-- SECCIÓN: Claves -->
+        <div class="category-header" id="claves">
+          <span class="category-header__icon">🔑</span>
+          <h2 class="category-header__title">Claves Primarias y Foráneas</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>Clave primaria (Primary Key)</h3>
+          <p>La <strong>clave primaria</strong> identifica de forma única cada fila en una tabla de dimensión. Debe ser:</p>
+          <ul>
+            <li><strong>Única:</strong> sin valores duplicados</li>
+            <li><strong>Sin nulos:</strong> cada fila tiene un valor</li>
+            <li><strong>Estable:</strong> no cambia con el tiempo</li>
+          </ul>
+          <p>Por convención: <code>IDProducto</code>, <code>IDCliente</code>, <code>IDFecha</code>.</p>
+
+          <h3>Clave foránea (Foreign Key)</h3>
+          <p>La <strong>clave foránea</strong> en la tabla de hechos hace referencia a la clave primaria de una dimensión, estableciendo la relación entre ambas tablas.</p>
+
+          <div class="note note--practice" style="margin-top: 1rem;">
+            📌 <strong>Buena práctica:</strong> Usa siempre claves enteras (<code>INT</code>) como claves primarias y foráneas. Son más pequeñas, rápidas de comparar y el motor VertiPaq las comprime mucho mejor que texto.
+          </div>
+        </article>
+
+        <!-- Nota final -->
+        <div class="note note--next" style="margin-top: 2rem;">
+          🚀 <strong>¡Ya tienes las bases!</strong> Con estos conceptos claros, el siguiente paso es entender el patrón de diseño que usarás en el 90% de tus modelos: el <a href="esquema-estrella.html">Esquema Estrella</a>. También es fundamental dominar las <a href="relaciones.html">Relaciones entre tablas</a> para conectar correctamente hechos y dimensiones.
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <button id="back-to-top" class="back-to-top" aria-label="Volver arriba" title="Volver arriba">↑</button>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/i18next@23/dist/umd/i18next.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1/prism.min.js"></script>
+  <script src="../../assets/js/theme.js"></script>
+  <script src="../../assets/js/main.js"></script>
+  <script src="../../assets/js/cursor.js"></script>
+</body>
+</html>

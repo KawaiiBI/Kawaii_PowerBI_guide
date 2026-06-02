@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta content="Funciones Matemáticas y Trigonométricas en DAX — DIVIDE, ROUND, ABS, MOD, trigonometría y las 47 funciones matemáticas" name="description"/>
+<title>Funciones Matemáticas y Trigonométricas — Funciones DAX | Power BI Guide</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Fira+Code:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<!-- Prism.js para syntax highlighting -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet"/>
+<!-- i18next para traducciones -->
+<script src="https://cdn.jsdelivr.net/npm/i18next@23.7.6/i18next.min.js"></script>
+<!-- CSS del proyecto -->
+<link href="../../assets/css/main.css" rel="stylesheet"/>
+<link href="../../assets/css/themes.css" rel="stylesheet"/>
+<link href="../../assets/css/components.css" rel="stylesheet"/>
+<link href="../../assets/css/layout.css" rel="stylesheet"/>
+<link href="../../assets/css/dax-search.css" rel="stylesheet"/>
+<style>
+    /* === ESTILOS ESPECÍFICOS PARA PÁGINAS DE TOPICS === */
+
+    /* Topic header con icono grande */
+    .topic-header {
+      text-align: center;
+      padding: 2.5rem 0 2rem;
+      border-bottom: 2px solid var(--color-mauve);
+      margin-bottom: 2.5rem;
+    }
+
+    .topic-header__icon {
+      font-size: 4rem;
+      margin-bottom: 0.75rem;
+      display: block;
+    }
+
+    .topic-header__title {
+      font-size: clamp(1.875rem, 4vw, 2.5rem);
+      font-weight: 800;
+      color: var(--color-dark);
+      margin-bottom: 0.625rem;
+      line-height: 1.2;
+    }
+
+    .topic-header__subtitle {
+      font-size: 1.0625rem;
+      color: var(--color-slate);
+      margin-bottom: 1.25rem;
+      line-height: 1.5;
+      max-width: 700px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .topic-header__levels {
+      display: flex;
+      gap: 0.5rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    /* TOC — Table of contents */
+    .toc {
+      background: var(--color-rose);
+      border: 1.5px solid var(--color-mauve);
+      border-radius: var(--border-radius);
+      padding: 1.5rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .toc__title {
+      font-size: 0.875rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--color-slate);
+      margin-bottom: 1rem;
+    }
+
+    .toc__list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .toc__link {
+      color: var(--color-dark);
+      text-decoration: none;
+      font-size: 0.9375rem;
+      transition: var(--transition);
+      display: inline-block;
+    }
+
+    .toc__link:hover {
+      color: var(--color-coral);
+      text-decoration: underline;
+    }
+
+    /* Category header — separadores entre categorías */
+    .category-header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin: 3rem 0 1.5rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 2px solid var(--color-mauve);
+    }
+
+    .category-header__icon {
+      font-size: 1.75rem;
+    }
+
+    .category-header__title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--color-dark);
+      margin: 0;
+    }
+
+    /* Function card — tarjeta individual para cada función */
+    .function-card {
+      background: var(--color-white);
+      border: 1.5px solid var(--color-mauve);
+      border-radius: var(--border-radius);
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .function-card__name {
+      font-family: var(--font-code);
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: var(--color-coral);
+      margin-bottom: 0.75rem;
+    }
+
+    .function-card__description {
+      font-size: 0.9375rem;
+      color: var(--color-dark);
+      margin-bottom: 1rem;
+      line-height: 1.6;
+    }
+
+    .function-card__level {
+      display: inline-block;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      padding: 0.25rem 0.625rem;
+      border-radius: var(--border-radius-sm);
+      background: var(--color-blush);
+      color: var(--color-slate);
+      margin-bottom: 1rem;
+    }
+
+    /* Function table — tabla compacta con ejemplos */
+    .function-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.5rem 0;
+      font-size: 0.875rem;
+    }
+
+    .function-table th {
+      background: var(--color-rose);
+      color: var(--color-dark);
+      font-weight: 700;
+      text-align: left;
+      padding: 0.75rem 1rem;
+      border: 1px solid var(--color-mauve);
+    }
+
+    .function-table td {
+      padding: 0.75rem 1rem;
+      border: 1px solid var(--color-mauve);
+      color: var(--color-dark);
+    }
+
+    .function-table tr:nth-child(even) {
+      background: var(--color-blush);
+    }
+
+    /* Code block wrapper */
+    .code-block {
+      position: relative;
+      margin: 1.25rem 0;
+    }
+
+    .code-block pre {
+      margin: 0;
+      border-radius: var(--border-radius);
+      border: 1.5px solid var(--color-mauve);
+    }
+
+    .code-block__copy {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.5rem;
+      padding: 0.375rem 0.75rem;
+      font-size: 0.75rem;
+      background: var(--color-coral);
+      color: var(--color-white);
+      border: none;
+      border-radius: var(--border-radius-sm);
+      cursor: pointer;
+      font-family: var(--font-main);
+      font-weight: 600;
+      transition: var(--transition);
+    }
+
+    .code-block__copy:hover {
+      background: var(--color-peach);
+    }
+  </style>
+</head>
+<body>
+<!-- SIDEBAR: Navegación principal -->
+<aside class="site-sidebar">
+<!-- Avatar y nombre -->
+<div class="site-sidebar__profile">
+<img alt="Sara Lozano Martí" class="site-sidebar__avatar" src="../../assets/images/avatar Sara.png"/>
+<p class="site-sidebar__name">Sara Lozano Martí</p>
+<p class="site-sidebar__subtitle">Power BI Expert</p>
+</div>
+<!-- Navegación principal -->
+<nav aria-label="Navegación principal" class="site-sidebar__nav">
+<ul>
+<li><a class="site-sidebar__link" href="../../index.html">
+<span class="site-sidebar__icon">🏠</span> Inicio
+        </a></li>
+<li><a class="site-sidebar__link is-active" href="../dax.html">
+<span class="site-sidebar__icon">⚡</span> Funciones DAX
+        </a></li>
+<li><a class="site-sidebar__link" href="../power-query.html">
+<span class="site-sidebar__icon">🔄</span> Power Query
+        </a></li>
+<li><a class="site-sidebar__link" href="../lenguaje-m.html">
+<span class="site-sidebar__icon">〽️</span> Lenguaje M
+        </a></li>
+<li><a class="site-sidebar__link" href="../modelado.html">
+<span class="site-sidebar__icon">🗄️</span> Modelado
+        </a></li>
+<li><a class="site-sidebar__link" href="../conceptos-powerbi.html">
+<span class="site-sidebar__icon">📊</span> Conceptos Power BI
+        </a></li>
+<li><a class="site-sidebar__link" href="../fabric.html">
+<span class="site-sidebar__icon">🧵</span> Microsoft Fabric
+        </a></li>
+<li><a class="site-sidebar__link" href="../tmdl.html">
+<span class="site-sidebar__icon">📝</span> TMDL
+        </a></li>
+<li><a class="site-sidebar__link" href="../diseno-ux.html">
+<span class="site-sidebar__icon">🎨</span> Diseño y UX
+        </a></li>
+<li><a class="site-sidebar__link" href="../gobernanza.html">
+<span class="site-sidebar__icon">🔒</span> Gobernanza
+        </a></li>
+</ul>
+</nav>
+<!-- Separador -->
+<div class="site-sidebar__divider"></div>
+<!-- Footer del sidebar -->
+<div class="site-sidebar__footer">
+<!-- Enlace a quien soy -->
+<a class="site-sidebar__link site-sidebar__link--highlight" href="../../quien-soy.html">
+<span class="site-sidebar__icon">👩‍💻</span> ¿Quién soy?
+      </a>
+<!-- Iconos sociales -->
+<div class="site-sidebar__social">
+<a aria-label="LinkedIn" href="https://www.linkedin.com/in/saralozanomarti" rel="noopener noreferrer" target="_blank">
+<img alt="LinkedIn" class="site-sidebar__social-icon" src="../../assets/images/logo linkedIN.png"/>
+</a>
+<a aria-label="YouTube" href="https://www.youtube.com/@KawaiiPowerBI" rel="noopener noreferrer" target="_blank">
+<img alt="YouTube" class="site-sidebar__social-icon" src="../../assets/images/logo youtube.png"/>
+</a>
+<a aria-label="GitHub" href="https://github.com/KawaiiBI" rel="noopener noreferrer" target="_blank">
+<img alt="GitHub" class="site-sidebar__social-icon" src="../../assets/images/logo github.png"/>
+</a>
+</div>
+<!-- Logo Kawaii BI -->
+<div class="site-sidebar__logo-bottom">
+<img alt="Kawaii BI" class="site-sidebar__logo-img" src="../../assets/images/Logo Kawaii.jpg"/>
+</div>
+<!-- Copyright -->
+<p class="site-sidebar__copyright">
+        Power BI Guide 🌸<br/>
+        © 2026 Kawaii BI
+      </p>
+</div>
+</aside>
+<!-- PAGE WRAPPER -->
+<div class="page-wrapper">
+<!-- Main content -->
+<main id="main-content">
+<div class="topic-page">
+        <nav aria-label="breadcrumb" class="breadcrumb">
+<a class="breadcrumb__link" href="../../index.html">Inicio</a>
+<span class="breadcrumb__separator">›</span>
+<a class="breadcrumb__link" href="../dax.html">Funciones DAX</a>
+<span class="breadcrumb__separator">›</span>
+<span class="breadcrumb__current">Matemáticas y Trigonometría</span>
+</nav>
+
+        <header class="topic-header">
+<span class="topic-header__icon">🔢</span>
+<h1 class="topic-header__title">Funciones Matemáticas y Trigonométricas</h1>
+<p class="topic-header__subtitle">DIVIDE, ROUND, ABS, MOD, SQRT, LOG, trigonometría completa y mucho más — las 47 funciones matemáticas de DAX</p>
+<div class="topic-header__levels">
+<span class="badge badge--beginner">Principiante</span>
+<span class="badge badge--intermediate">Intermedio</span>
+<span class="badge badge--advanced">Avanzado</span>
+</div>
+</header>
+
+        <div class="dax-search-compact-bar">
+<div class="dax-search-wrapper dax-search-compact" data-dax-search="true">
+<span class="dax-search-icon">🔍</span>
+<input aria-label="Buscar función DAX" autocomplete="off" class="dax-search-input" placeholder="Buscar otra función DAX..." spellcheck="false" type="text"/>
+<button aria-label="Limpiar" class="dax-search-clear" hidden="">✕</button>
+<div class="dax-search-results" role="listbox"></div>
+</div>
+</div>
+
+        <nav class="toc">
+<h2 class="toc__title">📑 En esta página</h2>
+<ul class="toc__list">
+<li><a class="toc__link" href="#esenciales">Las esenciales del día a día: DIVIDE, ABS, SIGN, MOD, QUOTIENT</a></li>
+<li><a class="toc__link" href="#redondeo">Redondeo: ROUND, ROUNDUP, ROUNDDOWN, INT, TRUNC, CEILING, FLOOR, MROUND, ISO.CEILING, EVEN, ODD</a></li>
+<li><a class="toc__link" href="#potencias">Potencias y logaritmos: SQRT, SQRTPI, POWER, EXP, LN, LOG, LOG10</a></li>
+<li><a class="toc__link" href="#conversion">Conversión y utilidades: DEGREES, RADIANS, PI, CONVERT, CURRENCY, GCD, LCM, FACT</a></li>
+<li><a class="toc__link" href="#combinatoria">Combinatoria: COMBIN, COMBINA, PERMUT</a></li>
+<li><a class="toc__link" href="#aleatorio">Números aleatorios: RAND, RANDBETWEEN</a></li>
+<li><a class="toc__link" href="#trigonometria">Trigonometría completa: SIN, COS, TAN, ASIN, ACOS, ATAN, COT y variantes hiperbólicas</a></li>
+<li><a class="toc__link" href="#patrones">Patrones prácticos</a></li>
+</ul>
+</nav>
+
+        <!-- Breadcrumb --><!-- Buscador compacto DAX --><!-- Header del topic --><!-- TOC --><!-- Intro --><section>
+<div class="note note--tip">
+<strong>Bienvenida desde Excel 🌸</strong><br/>
+            Las funciones matemáticas en DAX son casi idénticas a las de Excel — si vienes de ahí, te sentirás como en casa. Pero hay algunas que son exclusivas de DAX y muy importantes para análisis de datos, como DIVIDE (que maneja la división por cero de forma elegante) o CONVERT (para cambiar tipos de datos). Vamos por categorías.
+          </div>
+</section><!-- SECCIÓN 1: Esenciales --><section id="esenciales">
+<div class="category-header">
+<span class="category-header__icon">🎯</span>
+<h2 class="category-header__title">Las más usadas en proyectos reales</h2>
+</div>
+<div class="function-card">
+<div class="function-card__name">DIVIDE(&lt;numerador&gt;, &lt;denominador&gt;, [&lt;alternativa&gt;])</div>
+<div class="function-card__level">Principiante</div>
+<div class="function-card__description">
+              Divide dos números de forma SEGURA. Si el denominador es 0 o BLANK, devuelve el valor alternativo (por defecto BLANK) en lugar de dar error. La forma correcta de dividir en DAX — nunca uses el operador / directamente sin protección.
+            </div>
+<h4>Ejemplo básico — la diferencia crítica:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// ❌ Nunca hagas esto en una medida:
+Ratio PELIGROSO = [Ventas] / [Pedidos]
+// Si Pedidos = 0 → ERROR en el visual
+
+// ✅ Siempre usa DIVIDE:
+Ticket Medio = DIVIDE([Total Ventas], [Nº Pedidos])
+// Si Nº Pedidos = 0 → BLANK (la celda aparece vacía, sin error)
+
+// Con valor alternativo explícito:
+Ticket Medio = DIVIDE([Total Ventas], [Nº Pedidos], 0)
+// Si Nº Pedidos = 0 → 0
+
+// Margen %:
+Margen % = DIVIDE([Total Margen], [Total Ventas], BLANK())
+
+// Variación %:
+Variación % = DIVIDE([Ventas Actual] - [Ventas Anterior], [Ventas Anterior], BLANK())</code></pre>
+</div>
+<div class="note note--best-practice">
+<strong>🏆 Best Practice</strong><br/>
+              DIVIDE es más eficiente que IFERROR([Ventas]/[Pedidos], 0) porque está optimizada internamente. Úsala siempre que dividas — es una de esas buenas prácticas que deberían ser automáticas.
+            </div>
+</div>
+<div class="function-card">
+<div class="function-card__name">ABS(&lt;número&gt;)</div>
+<div class="function-card__level">Principiante</div>
+<div class="function-card__description">
+              Devuelve el valor absoluto (sin signo) de un número. Útil para calcular diferencias sin importar el orden, desviaciones y análisis de errores.
+            </div>
+<h4>Ejemplos:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Diferencia absoluta entre presupuesto y real (sin importar el signo)
+Desviación = ABS([Real] - [Presupuesto])
+
+// Error medio absoluto (MAE — Mean Absolute Error):
+MAE = AVERAGEX('Predicciones', ABS('Predicciones'[Predicho] - 'Predicciones'[Real]))</code></pre>
+</div>
+</div>
+<div class="function-card">
+<div class="function-card__name">SIGN(&lt;número&gt;)</div>
+<div class="function-card__level">Intermedio</div>
+<div class="function-card__description">
+              Devuelve 1 si el número es positivo, -1 si es negativo, 0 si es cero. Útil para clasificar tendencias y crear indicadores visuales de dirección.
+            </div>
+<h4>Ejemplo:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Indicador de tendencia como emoji:
+Tendencia =
+SWITCH(
+    SIGN([Variación]),
+    1,  "📈 Subida",
+    -1, "📉 Bajada",
+    "➡️ Sin cambio"
+)</code></pre>
+</div>
+</div>
+<div class="function-card">
+<div class="function-card__name">MOD(&lt;número&gt;, &lt;divisor&gt;)</div>
+<div class="function-card__level">Principiante — Intermedio</div>
+<div class="function-card__description">
+              Devuelve el RESTO de la división entera. Esencial para detectar si un número es par/impar, para ciclos, patrones y lógica de rotación.
+            </div>
+<h4>Ejemplos:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// ¿El año es bisiesto? (divisible por 4 pero no por 100, excepto por 400)
+Es Bisiesto =
+IF(
+    OR(
+        AND(MOD(YEAR('Calendario'[Fecha]), 4) = 0, MOD(YEAR('Calendario'[Fecha]), 100) &lt;&gt; 0),
+        MOD(YEAR('Calendario'[Fecha]), 400) = 0
+    ),
+    TRUE, FALSE
+)
+
+// Filas en grupos de 3 (para layout alternado):
+Grupo = MOD(ROWNUMBER(ALL('Tabla'), ORDERBY('Tabla'[ID])), 3)
+
+// Color alternado en tabla (usando columna calculada):
+'Tabla'[FilaAlterna] = IF(MOD('Tabla'[IndiceOrden], 2) = 0, "Par", "Impar")</code></pre>
+</div>
+</div>
+<div class="function-card">
+<div class="function-card__name">QUOTIENT(&lt;numerador&gt;, &lt;denominador&gt;)</div>
+<div class="function-card__level">Principiante</div>
+<div class="function-card__description">
+              Devuelve la parte ENTERA de una división (sin el resto). Complementario de MOD — juntos dan el cociente y el resto completos.
+            </div>
+<h4>Ejemplos:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Convertir minutos totales a horas y minutos:
+VAR TotalMinutos = 150
+VAR Horas = QUOTIENT(TotalMinutos, 60)     -- 2 horas
+VAR Minutos = MOD(TotalMinutos, 60)         -- 30 minutos
+RETURN Horas &amp; "h " &amp; Minutos &amp; "min"       -- "2h 30min"
+
+// Dividir stock en lotes de 12 (cajas completas):
+Cajas Completas = QUOTIENT('Productos'[Stock], 12)
+Unidades Sueltas = MOD('Productos'[Stock], 12)</code></pre>
+</div>
+</div>
+</section><!-- SECCIÓN 2: Redondeo --><section id="redondeo">
+<div class="category-header">
+<span class="category-header__icon">🎯</span>
+<h2 class="category-header__title">Redondeo — más opciones de las que crees</h2>
+</div>
+<h3>Tabla comparativa de todas las funciones de redondeo:</h3>
+<table class="function-table">
+<thead>
+<tr>
+<th>FUNCIÓN</th>
+<th>QUÉ HACE</th>
+<th>EJEMPLO (con 2.567)</th>
+<th>RESULTADO</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>ROUND(n, 2)</strong></td>
+<td>Redondea al decimal más cercano</td>
+<td>ROUND(2.567, 2)</td>
+<td>2.57</td>
+</tr>
+<tr>
+<td><strong>ROUNDUP(n, 2)</strong></td>
+<td>Siempre redondea HACIA ARRIBA</td>
+<td>ROUNDUP(2.561, 2)</td>
+<td>2.57</td>
+</tr>
+<tr>
+<td><strong>ROUNDDOWN(n, 2)</strong></td>
+<td>Siempre redondea HACIA ABAJO</td>
+<td>ROUNDDOWN(2.569, 2)</td>
+<td>2.56</td>
+</tr>
+<tr>
+<td><strong>INT(n)</strong></td>
+<td>Redondea al entero inferior (hacia -∞)</td>
+<td>INT(2.9) / INT(-2.1)</td>
+<td>2 / -3</td>
+</tr>
+<tr>
+<td><strong>TRUNC(n, 2)</strong></td>
+<td>Trunca (elimina decimales) hacia 0</td>
+<td>TRUNC(2.9) / TRUNC(-2.9)</td>
+<td>2 / -2</td>
+</tr>
+<tr>
+<td><strong>CEILING(n, 1)</strong></td>
+<td>Redondea al múltiplo superior</td>
+<td>CEILING(2.1, 0.5)</td>
+<td>2.5</td>
+</tr>
+<tr>
+<td><strong>FLOOR(n, 1)</strong></td>
+<td>Redondea al múltiplo inferior</td>
+<td>FLOOR(2.9, 0.5)</td>
+<td>2.5</td>
+</tr>
+<tr>
+<td><strong>MROUND(n, 0.5)</strong></td>
+<td>Redondea al múltiplo más cercano</td>
+<td>MROUND(2.3, 0.5)</td>
+<td>2.5</td>
+</tr>
+<tr>
+<td><strong>ISO.CEILING(n, 1)</strong></td>
+<td>Como CEILING pero siempre hacia +∞</td>
+<td>ISO.CEILING(-2.1, 1)</td>
+<td>-2</td>
+</tr>
+<tr>
+<td><strong>EVEN(n)</strong></td>
+<td>Redondea al entero par superior</td>
+<td>EVEN(3) / EVEN(2.1)</td>
+<td>4 / 4</td>
+</tr>
+<tr>
+<td><strong>ODD(n)</strong></td>
+<td>Redondea al entero impar superior</td>
+<td>ODD(2) / ODD(3.1)</td>
+<td>3 / 5</td>
+</tr>
+</tbody>
+</table>
+<h3>Diferencia clave INT vs TRUNC:</h3>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Con números negativos:
+INT(-2.3)   -- resultado: -3 (redondea hacia -infinito)
+TRUNC(-2.3) -- resultado: -2 (trunca hacia 0)
+
+// Con números positivos, ambas dan el mismo resultado:
+INT(2.9)   -- 2
+TRUNC(2.9) -- 2</code></pre>
+</div>
+<h3>Ejemplos prácticos:</h3>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Precio redondeado al múltiplo de 0.05 más cercano:
+Precio Redondeado = MROUND('Productos'[Precio], 0.05)
+// 1.23 → 1.25, 1.22 → 1.20
+
+// Número de camiones necesarios (siempre redondear arriba):
+Camiones Necesarios = CEILING(DIVIDE([TotalUnidades], [CapacidadCamion]), 1)
+
+// Redondear a miles (sin decimales negativos):
+En Miles = ROUND([Ventas] / 1000, 1)
+
+// O directamente con decimales negativos:
+En Miles v2 = ROUND([Ventas], -3)
+// ROUND con decimales negativos redondea a la izquierda del punto decimal:
+// ROUND(12345, -3) → 12000</code></pre>
+</div>
+</section><!-- SECCIÓN 3: Potencias y logaritmos --><section id="potencias">
+<div class="category-header">
+<span class="category-header__icon">📐</span>
+<h2 class="category-header__title">Potencias, raíces y logaritmos</h2>
+</div>
+<div class="function-card">
+<div class="function-card__name">SQRT(&lt;número&gt;) | SQRTPI(&lt;número&gt;)</div>
+<div class="function-card__level">Principiante</div>
+<div class="function-card__description">
+<strong>SQRT:</strong> Raíz cuadrada. <strong>SQRTPI(n)</strong> = SQRT(n × π). Útil en estadística y física.
+            </div>
+<h4>Ejemplo:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Distancia euclidiana entre dos puntos (Pitágoras):
+Distancia = SQRT(POWER([X2] - [X1], 2) + POWER([Y2] - [Y1], 2))</code></pre>
+</div>
+</div>
+<div class="function-card">
+<div class="function-card__name">POWER(&lt;base&gt;, &lt;exponente&gt;)</div>
+<div class="function-card__level">Principiante</div>
+<div class="function-card__description">
+              Eleva la base al exponente. Equivalente al operador ^ en DAX.
+            </div>
+<h4>Ejemplos:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Interés compuesto: Capital × (1 + tasa)^años
+Capital Final = 'Inversión'[Capital] * POWER(1 + 'Inversión'[Tasa], 'Inversión'[Años])
+
+// 2^10:
+POWER(2, 10) -- 1024</code></pre>
+</div>
+</div>
+<div class="function-card">
+<div class="function-card__name">EXP(&lt;número&gt;)</div>
+<div class="function-card__level">Intermedio</div>
+<div class="function-card__description">
+              Calcula e^número (número de Euler ≈ 2.71828 elevado a la potencia dada). Fundamental para cálculos de crecimiento exponencial y modelos logísticos.
+            </div>
+<h4>Ejemplo:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Modelo de crecimiento exponencial: P(t) = P0 × e^(r×t)
+Población Estimada = 'Ciudades'[PoblacionInicial] * EXP('Ciudades'[TasaCrecimiento] * [AñosTranscurridos])</code></pre>
+</div>
+</div>
+<div class="function-card">
+<div class="function-card__name">LN(&lt;número&gt;) | LOG(&lt;número&gt;, [&lt;base&gt;]) | LOG10(&lt;número&gt;)</div>
+<div class="function-card__level">Intermedio</div>
+<div class="function-card__description">
+<strong>LN:</strong> Logaritmo natural (base e). <strong>LOG:</strong> Logaritmo en la base especificada (por defecto base 10). <strong>LOG10:</strong> Logaritmo base 10.
+            </div>
+<h4>Ejemplos:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Tiempo de duplicación (Rule of 72 precisa):
+Tiempo Duplicación = LN(2) / LN(1 + 'Inversión'[TasaAnual])
+
+// Escala logarítmica para valores muy dispares:
+Escala Log Ventas = LOG10([Total Ventas])
+// Útil cuando tienes desde ventas de 100€ hasta 10.000.000€ en el mismo visual</code></pre>
+</div>
+</div>
+</section><!-- SECCIÓN 4: Conversión y utilidades --><section id="conversion">
+<div class="category-header">
+<span class="category-header__icon">🔄</span>
+<h2 class="category-header__title">Conversión y funciones de utilidad</h2>
+</div>
+<div class="function-card">
+<div class="function-card__name">DEGREES(&lt;radianes&gt;) | RADIANS(&lt;grados&gt;)</div>
+<div class="function-card__level">Intermedio</div>
+<div class="function-card__description">
+              Convierten entre grados y radianes. Las funciones trigonométricas de DAX trabajan en radianes, así que necesitas RADIANS() si tu ángulo está en grados.
+            </div>
+<h4>Ejemplos:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Convertir 45 grados a radianes:
+RADIANS(45)  -- 0.7854 (π/4)
+
+// Convertir π/2 radianes a grados:
+DEGREES(PI() / 2)  -- 90</code></pre>
+</div>
+</div>
+<div class="function-card">
+<div class="function-card__name">PI()</div>
+<div class="function-card__level">Principiante</div>
+<div class="function-card__description">
+              Devuelve el valor de π (3.14159265358979...). Sin argumentos.
+            </div>
+<h4>Ejemplos:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Área de un círculo:
+Área = PI() * POWER('Formas'[Radio], 2)
+
+// Longitud de circunferencia:
+Circunferencia = PI() * 'Formas'[Diámetro]</code></pre>
+</div>
+</div>
+<div class="function-card">
+<div class="function-card__name">CONVERT(&lt;valor&gt;, &lt;tipo_dato&gt;)</div>
+<div class="function-card__level">Intermedio</div>
+<div class="function-card__description">
+              Convierte un valor a un tipo de dato específico: INTEGER, DOUBLE, DECIMAL, DATETIME, BOOLEAN, STRING, CURRENCY. Más explícito que las conversiones implícitas de DAX.
+            </div>
+<h4>Ejemplos:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Convertir texto a entero:
+CONVERT("123", INTEGER)  -- 123 (número)
+
+// Convertir número a fecha (los números son fechas seriales en DAX):
+CONVERT(45291, DATETIME)  -- la fecha correspondiente al día 45291</code></pre>
+</div>
+</div>
+<div class="function-card">
+<div class="function-card__name">CURRENCY(&lt;valor&gt;)</div>
+<div class="function-card__level">Intermedio</div>
+<div class="function-card__description">
+              Convierte un valor al tipo de dato Currency (4 decimales fijos, alta precisión). Útil cuando necesitas garantizar precisión en cálculos financieros.
+            </div>
+<h4>Ejemplo:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">Importe Preciso = CURRENCY([Total Ventas])</code></pre>
+</div>
+</div>
+<div class="function-card">
+<div class="function-card__name">GCD(&lt;número1&gt;, &lt;número2&gt;, ...) | LCM(&lt;número1&gt;, &lt;número2&gt;, ...)</div>
+<div class="function-card__level">Avanzado</div>
+<div class="function-card__description">
+<strong>GCD:</strong> Máximo común divisor. <strong>LCM:</strong> Mínimo común múltiplo. Raramente usados en BI pero útiles en análisis de ritmos, ciclos y normalización.
+            </div>
+<h4>Ejemplo:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Ciclo en el que coinciden dos frecuencias (ej: reuniones cada 4 y 6 semanas):
+Ciclo Reuniones = LCM(4, 6)  -- 12 semanas</code></pre>
+</div>
+</div>
+<div class="function-card">
+<div class="function-card__name">FACT(&lt;número&gt;)</div>
+<div class="function-card__level">Avanzado</div>
+<div class="function-card__description">
+              Factorial de un número no negativo. Usado principalmente en combinatoria y probabilidad.
+            </div>
+<h4>Ejemplo:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Probabilidades combinatorias:
+FACT(5)  -- 120  (5! = 5×4×3×2×1)</code></pre>
+</div>
+</div>
+</section><!-- SECCIÓN 5: Combinatoria --><section id="combinatoria">
+<div class="category-header">
+<span class="category-header__icon">🎲</span>
+<h2 class="category-header__title">Combinatoria y permutaciones</h2>
+</div>
+<div class="function-card">
+<div class="function-card__name">COMBIN(&lt;n&gt;, &lt;k&gt;) | COMBINA(&lt;n&gt;, &lt;k&gt;)</div>
+<div class="function-card__level">Avanzado</div>
+<div class="function-card__description">
+<strong>COMBIN:</strong> Combinaciones sin repetición (C(n,k) = n! / k!(n-k)!). <strong>COMBINA:</strong> Combinaciones CON repetición.
+            </div>
+<h4>Ejemplos:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// ¿Cuántas formas de elegir 3 productos de un catálogo de 10?
+COMBIN(10, 3)   -- 120 combinaciones sin repetición
+COMBINA(10, 3)  -- 220 combinaciones con repetición
+
+// Útil en A/B testing: cuántas combinaciones de variantes:
+Combinaciones Test = COMBIN([Nº Variantes], 2)</code></pre>
+</div>
+</div>
+<div class="function-card">
+<div class="function-card__name">PERMUT(&lt;n&gt;, &lt;k&gt;)</div>
+<div class="function-card__level">Avanzado</div>
+<div class="function-card__description">
+              Permutaciones sin repetición — como COMBIN pero el orden importa.
+            </div>
+<h4>Ejemplo:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// ¿De cuántas formas puedes ordenar 3 ganadores de un grupo de 10?
+PERMUT(10, 3)  -- 720</code></pre>
+</div>
+</div>
+</section><!-- SECCIÓN 6: Números aleatorios --><section id="aleatorio">
+<div class="category-header">
+<span class="category-header__icon">🎲</span>
+<h2 class="category-header__title">RAND y RANDBETWEEN — números aleatorios</h2>
+</div>
+<div class="function-card">
+<div class="function-card__name">RAND() | RANDBETWEEN(&lt;inferior&gt;, &lt;superior&gt;)</div>
+<div class="function-card__level">Intermedio</div>
+<div class="function-card__description">
+<strong>RAND:</strong> Devuelve un número decimal aleatorio entre 0 y 1 (exclusivo). <strong>RANDBETWEEN:</strong> Devuelve un entero aleatorio entre dos valores (inclusivo). Ambas son VOLÁTILES — se recalculan en cada refresco.
+            </div>
+<h4>Ejemplo de uso en datos de prueba:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Crear datos de prueba (en tabla calculada):
+Datos Prueba =
+ADDCOLUMNS(
+    GENERATESERIES(1, 100, 1),  -- 100 filas
+    "Ventas", RANDBETWEEN(100, 10000),
+    "Mes", RANDBETWEEN(1, 12),
+    "Activo", IF(RAND() &gt; 0.3, TRUE, FALSE)  -- 70% activos
+)</code></pre>
+</div>
+<div class="note note--warning">
+<strong>⚠️ Funciones volátiles</strong><br/>
+              RAND() y RANDBETWEEN() son VOLÁTILES — se recalculan cada vez que el informe se actualiza. Esto significa que los valores cambian en cada refresco. Si necesitas datos aleatorios fijos (para pruebas reproducibles), genera la tabla una vez con DATATABLE o importa los datos.
+            </div>
+</div>
+</section><!-- SECCIÓN 7: Trigonometría --><section id="trigonometria">
+<div class="category-header">
+<span class="category-header__icon">📐</span>
+<h2 class="category-header__title">Trigonometría completa</h2>
+</div>
+<div class="note note--tip">
+<strong>Trigonometría en Power BI 🌸</strong><br/>
+            La trigonometría en DAX es casi idéntica a la de Excel. La mayoría de proyectos de BI nunca la necesitarán, pero si trabajas con datos geoespaciales, física, ingeniería o análisis de señales, estas funciones serán tus mejores amigas. ¡Y tampoco está de más conocerlas! 😊
+          </div>
+<h3>Tabla completa de funciones trigonométricas:</h3>
+<table class="function-table">
+<thead>
+<tr>
+<th>FUNCIÓN</th>
+<th>DESCRIPCIÓN</th>
+<th>DEVUELVE</th>
+</tr>
+</thead>
+<tbody>
+<tr><td><strong>SIN(x)</strong></td><td>Seno de x (en radianes)</td><td>-1 a 1</td></tr>
+<tr><td><strong>COS(x)</strong></td><td>Coseno de x (en radianes)</td><td>-1 a 1</td></tr>
+<tr><td><strong>TAN(x)</strong></td><td>Tangente de x (en radianes)</td><td>-∞ a +∞</td></tr>
+<tr><td><strong>ASIN(x)</strong></td><td>Arcoseno de x</td><td>-π/2 a π/2 radianes</td></tr>
+<tr><td><strong>ACOS(x)</strong></td><td>Arcocoseno de x</td><td>0 a π radianes</td></tr>
+<tr><td><strong>ATAN(x)</strong></td><td>Arcotangente de x</td><td>-π/2 a π/2 radianes</td></tr>
+<tr><td><strong>COT(x)</strong></td><td>Cotangente de x</td><td>-∞ a +∞</td></tr>
+<tr><td><strong>SINH(x)</strong></td><td>Seno hiperbólico</td><td>-∞ a +∞</td></tr>
+<tr><td><strong>COSH(x)</strong></td><td>Coseno hiperbólico</td><td>1 a +∞</td></tr>
+<tr><td><strong>TANH(x)</strong></td><td>Tangente hiperbólica</td><td>-1 a 1</td></tr>
+<tr><td><strong>ACOT(x)</strong></td><td>Arcocotangente</td><td>0 a π radianes</td></tr>
+<tr><td><strong>ACOSH(x)</strong></td><td>Arcoseno hiperbólico inverso</td><td>0 a +∞</td></tr>
+<tr><td><strong>ASINH(x)</strong></td><td>Arcseno hiperbólico</td><td>-∞ a +∞</td></tr>
+<tr><td><strong>ATANH(x)</strong></td><td>Arctangente hiperbólica</td><td>-∞ a +∞</td></tr>
+<tr><td><strong>COTH(x)</strong></td><td>Cotangente hiperbólica</td><td>-∞ a +∞</td></tr>
+</tbody>
+</table>
+<h3>Ejemplo práctico — distancia entre dos coordenadas geográficas (fórmula Haversine):</h3>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Distancia en km entre dos puntos (lat/lon en grados)
+Distancia KM =
+VAR R = 6371    -- radio de la Tierra en km
+VAR Lat1 = RADIANS('Tiendas'[Latitud])
+VAR Lat2 = RADIANS('Almacenes'[Latitud])
+VAR DLat = RADIANS('Almacenes'[Latitud] - 'Tiendas'[Latitud])
+VAR DLon = RADIANS('Almacenes'[Longitud] - 'Tiendas'[Longitud])
+VAR A = POWER(SIN(DLat/2), 2) + COS(Lat1) * COS(Lat2) * POWER(SIN(DLon/2), 2)
+VAR C = 2 * ATAN(SQRT(A) / SQRT(1-A))
+RETURN R * C</code></pre>
+</div>
+<div class="note note--tip">
+<strong>Caso de uso real 💡</strong><br/>
+            La fórmula Haversine es el caso de uso real más común para trigonometría en Power BI. Si tienes coordenadas GPS de puntos de entrega, tiendas o clientes, puedes calcular distancias reales en DAX con esta fórmula.
+          </div>
+</section><!-- SECCIÓN 8: Patrones --><section id="patrones">
+<div class="category-header">
+<span class="category-header__icon">🛠️</span>
+<h2 class="category-header__title">Patrones prácticos</h2>
+</div>
+<h3>Patrón 1 — Formateo de número en escala automática:</h3>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">Ventas Formateadas =
+VAR V = [Total Ventas]
+RETURN
+SWITCH(
+    TRUE(),
+    V &gt;= 1000000000, FORMAT(DIVIDE(V, 1000000000), "#,##0.0") &amp; " B",
+    V &gt;= 1000000,    FORMAT(DIVIDE(V, 1000000), "#,##0.0") &amp; " M",
+    V &gt;= 1000,       FORMAT(DIVIDE(V, 1000), "#,##0.0") &amp; " K",
+    FORMAT(V, "#,##0")
+)</code></pre>
+</div>
+<h3>Patrón 2 — Redondeo a cifras significativas:</h3>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Redondear a N cifras significativas:
+VAR Valor = 12345.678
+VAR Cifras = 3
+VAR Magnitud = POWER(10, INT(LOG10(ABS(Valor))) - Cifras + 1)
+RETURN ROUND(Valor / Magnitud, 0) * Magnitud
+// Resultado: 12300</code></pre>
+</div>
+<h3>Patrón 3 — Porcentaje siempre entre 0 y 100:</h3>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">% Seguro =
+VAR Ratio = DIVIDE([Parte], [Total])
+RETURN MAX(0, MIN(1, IFERROR(Ratio, 0))) * 100</code></pre>
+</div>
+<div class="note note--next">
+<strong>🚀 Siguiente paso</strong><br/>
+            ¡Ahora tienes todo el arsenal matemático de DAX! Si tu trabajo incluye análisis estadístico — distribuciones, percentiles, regresión — la siguiente página de Estadísticas te va a encantar.
+          </div>
+</section>
+
+      </div>
+</main>
+</div>
+<!-- Footer (cargado dinámicamente) -->
+<div id="main-footer"></div>
+<!-- Botón volver arriba -->
+<button aria-label="Volver arriba" class="btn-back-to-top" id="back-to-top">↑</button>
+<!-- Scripts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+<script src="../../assets/js/theme.js"></script>
+<script src="../../assets/js/main.js"></script>
+<!-- Buscador DAX -->
+<script src="../../assets/js/dax-search.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Auto-inicializar todos los widgets con data-dax-search="true"
+      if (window.daxSearch) {
+        window.daxSearch.initAll({
+          baseUrl: '../'  // estamos en topics/dax/, las URLs deben ir a topics/dax/...
+        });
+      }
+    });
+  </script>
+<script src="../../assets/js/cursor.js"></script>
+</body>
+</html>

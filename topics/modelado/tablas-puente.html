@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Tablas Puente en Power BI: cómo resolver relaciones muchos a muchos sin duplicación de métricas ni ambigüedad de filtros. Casos reales, DAX y errores frecuentes.">
+  <title>Tablas Puente (Bridge Tables) — Modelado de Datos | Power BI Guide by Kawaii BI</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/prismjs@1/themes/prism-okaidia.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="../../assets/css/main.css">
+  <link rel="stylesheet" href="../../assets/css/themes.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/layout.css">
+
+  <style>
+    /* === TOPIC HEADER === */
+    .topic-header { text-align: center; padding: 2.5rem 0 2rem; border-bottom: 2px solid var(--color-mauve); margin-bottom: 2.5rem; }
+    .topic-header__icon { font-size: 4rem; margin-bottom: 0.75rem; display: block; }
+    .topic-header__title { font-size: clamp(1.875rem, 4vw, 2.5rem); font-weight: 800; color: var(--color-dark); margin-bottom: 0.625rem; line-height: 1.2; }
+    .topic-header__subtitle { font-size: 1.0625rem; color: var(--color-slate); margin-bottom: 1.25rem; line-height: 1.5; max-width: 600px; margin-left: auto; margin-right: auto; }
+    .topic-header__levels { display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap; align-items: center; }
+
+    /* === CATEGORY HEADER === */
+    .category-header { display: flex; align-items: center; gap: 0.75rem; margin: 2.5rem 0 1.25rem; padding: 0.875rem 1.25rem; background: var(--color-rose); border-radius: var(--border-radius-sm); border-left: 4px solid var(--color-coral); }
+    .category-header__icon { font-size: 1.5rem; }
+    .category-header__title { font-size: 1.25rem; font-weight: 700; margin: 0; }
+
+    /* === CONCEPT CARD === */
+    .concept-card { background: var(--color-white); border: 1.5px solid var(--color-mauve); border-radius: var(--border-radius); padding: 1.75rem; margin-bottom: 1.5rem; scroll-margin-top: 80px; transition: border-color 0.2s; }
+    .concept-card:hover { border-color: var(--color-coral); }
+    .concept-card h3 { font-size: 1.25rem; font-weight: 700; color: var(--color-coral); margin-bottom: 0.75rem; }
+    .concept-card h4 { font-size: 0.9375rem; font-weight: 700; color: var(--color-dark); margin: 1.25rem 0 0.5rem; }
+    .concept-card p { font-size: 0.9375rem; line-height: 1.7; color: var(--color-dark); margin-bottom: 0.75rem; }
+    .concept-card ul, .concept-card ol { padding-left: 1.25rem; font-size: 0.9375rem; line-height: 1.8; color: var(--color-dark); }
+    .concept-card code { background: var(--color-blush); padding: 0.1em 0.4em; border-radius: 4px; font-family: 'Fira Code', monospace; font-size: 0.85em; color: var(--color-coral); }
+
+    /* === TOC === */
+    .toc { background: var(--color-rose); border-radius: var(--border-radius); padding: 1.25rem 1.5rem; margin-bottom: 2rem; border: 1.5px solid var(--color-mauve); }
+    .toc__title { font-size: 1rem; font-weight: 700; margin: 0 0 0.75rem; }
+    .toc__list { display: flex; flex-wrap: wrap; gap: 0.5rem; list-style: none; padding: 0; margin: 0; }
+    .toc__list a { font-size: 0.8125rem; color: var(--color-coral); text-decoration: none; padding: 0.25rem 0.625rem; background: var(--color-white); border-radius: 999px; border: 1px solid var(--color-mauve); transition: background 0.15s, color 0.15s; }
+    .toc__list a:hover { background: var(--color-coral); color: white; }
+
+    /* === ASCII / SCHEMA DIAGRAM === */
+    .schema-diagram { font-family: 'Fira Code', monospace; font-size: 0.8125rem; line-height: 1.75; background: var(--color-code-bg); color: #abb2bf; padding: 1.5rem; border-radius: var(--border-radius-sm); overflow-x: auto; margin: 1rem 0; }
+    .schema-diagram .hl-fact  { color: #e5c07b; font-weight: 700; }
+    .schema-diagram .hl-dim   { color: #98c379; }
+    .schema-diagram .hl-bridge{ color: #61afef; }
+    .schema-diagram .hl-warn  { color: #e06c75; }
+    .schema-diagram .hl-arrow { color: #c678dd; }
+
+    /* === DATA TABLE === */
+    .data-table-wrap { overflow-x: auto; margin: 1rem 0; }
+    .data-table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
+    .data-table caption { font-size: 0.8125rem; font-weight: 700; color: var(--color-slate); text-align: left; padding: 0 0 0.375rem; letter-spacing: 0.04em; text-transform: uppercase; }
+    .data-table th { background: var(--color-coral); color: white; font-weight: 700; padding: 0.625rem 0.875rem; text-align: left; white-space: nowrap; }
+    .data-table td { padding: 0.5rem 0.875rem; border-bottom: 1px solid var(--color-mauve); color: var(--color-dark); font-family: 'Fira Code', monospace; font-size: 0.8125rem; }
+    .data-table tr:last-child td { border-bottom: none; }
+    .data-table tr:nth-child(even) td { background: var(--color-blush); }
+    .data-table .td-note { font-family: var(--font-main, sans-serif); font-size: 0.8rem; color: var(--color-slate); font-style: italic; }
+
+    /* === FILTER FLOW LIST === */
+    .filter-flow { list-style: none; padding: 0; margin: 1rem 0; counter-reset: flow; display: flex; flex-direction: column; gap: 0.5rem; }
+    .filter-flow li { counter-increment: flow; display: flex; gap: 0.75rem; align-items: flex-start; font-size: 0.9375rem; line-height: 1.65; color: var(--color-dark); }
+    .filter-flow li::before { content: counter(flow); flex-shrink: 0; width: 1.75rem; height: 1.75rem; background: var(--color-coral); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.8125rem; margin-top: 0.05rem; }
+
+    /* === GOLDEN RULES LIST === */
+    .rule-list { list-style: none; padding: 0; margin: 1rem 0; display: flex; flex-direction: column; gap: 0.5rem; }
+    .rule-list li { display: flex; gap: 0.625rem; align-items: flex-start; font-size: 0.9375rem; line-height: 1.65; color: var(--color-dark); background: var(--color-blush); border-left: 3px solid var(--color-coral); padding: 0.625rem 0.875rem; border-radius: 0 var(--border-radius-sm) var(--border-radius-sm) 0; }
+    .rule-list li::before { content: "✦"; color: var(--color-coral); font-weight: 800; flex-shrink: 0; }
+
+    /* === ERROR CARD === */
+    .error-card { border: 1.5px solid var(--color-mauve); border-radius: var(--border-radius-sm); padding: 1.125rem 1.25rem; margin-bottom: 1rem; }
+    .error-card__label { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--color-slate); margin-bottom: 0.25rem; }
+    .error-card__title { font-size: 1rem; font-weight: 700; color: #E74E37; margin: 0 0 0.5rem; }
+    .error-card__row { display: flex; gap: 0.5rem; align-items: baseline; font-size: 0.875rem; line-height: 1.65; color: var(--color-dark); margin-bottom: 0.25rem; }
+    .error-card__row strong { flex-shrink: 0; color: var(--color-slate); min-width: 80px; }
+
+    /* === SUMMARY BOX === */
+    .summary-box { background: var(--color-rose); border: 1.5px solid var(--color-coral); border-radius: var(--border-radius); padding: 1.5rem 1.75rem; margin: 1.5rem 0; }
+    .summary-box h4 { font-size: 1rem; font-weight: 700; color: var(--color-coral); margin: 0 0 0.875rem; }
+    .summary-box ol { padding-left: 1.25rem; font-size: 0.9375rem; line-height: 2; color: var(--color-dark); margin: 0; }
+
+    /* === CODE BLOCK (dentro de concept-card) === */
+    .code-block { position: relative; margin: 1rem 0; }
+    .code-block pre { margin: 0; border-radius: var(--border-radius-sm); border: 1.5px solid var(--color-mauve); font-size: 0.8125rem; }
+    .code-block__label { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--color-slate); margin-bottom: 0.375rem; }
+
+    /* === TABLES GRID (side by side) === */
+    .tables-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin: 1rem 0; }
+    .tables-grid--2 { grid-template-columns: repeat(2, 1fr); }
+    @media (max-width: 700px) { .tables-grid, .tables-grid--2 { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+  <!-- SIDEBAR -->
+  <aside class="site-sidebar">
+    <div class="site-sidebar__profile">
+      <img src="../../assets/images/avatar Sara.png" alt="Sara Lozano Martí" class="site-sidebar__avatar">
+      <p class="site-sidebar__name">Sara Lozano Martí</p>
+      <p class="site-sidebar__subtitle">Power BI Expert</p>
+    </div>
+    <nav class="site-sidebar__nav" aria-label="Navegación principal">
+      <ul>
+        <li><a href="../../index.html" class="site-sidebar__link"><span class="site-sidebar__icon">🏠</span> Inicio</a></li>
+        <li><a href="../dax.html" class="site-sidebar__link"><span class="site-sidebar__icon">⚡</span> Funciones DAX</a></li>
+        <li><a href="../power-query.html" class="site-sidebar__link"><span class="site-sidebar__icon">🔄</span> Power Query</a></li>
+        <li><a href="../lenguaje-m.html" class="site-sidebar__link"><span class="site-sidebar__icon">〽️</span> Lenguaje M</a></li>
+        <li><a href="../modelado.html" class="site-sidebar__link is-active"><span class="site-sidebar__icon">🗄️</span> Modelado</a></li>
+        <li><a href="../conceptos-powerbi.html" class="site-sidebar__link"><span class="site-sidebar__icon">📊</span> Conceptos Power BI</a></li>
+        <li><a href="../fabric.html" class="site-sidebar__link"><span class="site-sidebar__icon">🧵</span> Microsoft Fabric</a></li>
+        <li><a href="../tmdl.html" class="site-sidebar__link"><span class="site-sidebar__icon">📝</span> TMDL</a></li>
+        <li><a href="../diseno-ux.html" class="site-sidebar__link"><span class="site-sidebar__icon">🎨</span> Diseño y UX</a></li>
+        <li><a href="../gobernanza.html" class="site-sidebar__link"><span class="site-sidebar__icon">🔒</span> Gobernanza</a></li>
+      </ul>
+    </nav>
+    <div class="site-sidebar__divider"></div>
+    <div class="site-sidebar__footer">
+      <a href="../../quien-soy.html" class="site-sidebar__link site-sidebar__link--highlight"><span class="site-sidebar__icon">👩‍💻</span> ¿Quién soy?</a>
+      <div class="site-sidebar__social">
+        <a href="https://www.linkedin.com/in/saralozanomarti" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><img src="../../assets/images/logo linkedIN.png" alt="LinkedIn" class="site-sidebar__social-icon"></a>
+        <a href="https://www.youtube.com/@KawaiiPowerBI" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><img src="../../assets/images/logo youtube.png" alt="YouTube" class="site-sidebar__social-icon"></a>
+        <a href="https://github.com/KawaiiBI" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><img src="../../assets/images/logo github.png" alt="GitHub" class="site-sidebar__social-icon"></a>
+      </div>
+      <div class="site-sidebar__logo-bottom"><img src="../../assets/images/Logo Kawaii.jpg" alt="Kawaii BI" class="site-sidebar__logo-img"></div>
+      <p class="site-sidebar__copyright">Power BI Guide 🌸<br>© 2026 Kawaii BI</p>
+    </div>
+  </aside>
+
+  <!-- PAGE WRAPPER -->
+  <div class="page-wrapper">
+    <main class="main-content">
+      <div class="topic-page">
+
+        <!-- Breadcrumb -->
+        <nav class="breadcrumb" aria-label="Ruta de navegación">
+          <span class="breadcrumb__item"><a href="../../index.html">🏠 Inicio</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item"><a href="../modelado.html">Modelado de Datos</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item">Tablas Puente</span>
+        </nav>
+
+        <!-- Cabecera -->
+        <header class="topic-header">
+          <span class="topic-header__icon">🌉</span>
+          <h1 class="topic-header__title">Tablas Puente (Bridge Tables)</h1>
+          <p class="topic-header__subtitle">Cómo resolver las relaciones muchos a muchos correctamente en Power BI sin ambigüedad de filtros ni duplicaciones de datos</p>
+          <div class="topic-header__levels">
+            <span class="badge badge--advanced">Avanzado</span>
+          </div>
+        </header>
+
+        <!-- TOC -->
+        <nav class="toc" aria-label="Índice de contenidos">
+          <p class="toc__title">📌 En esta página:</p>
+          <ul class="toc__list">
+            <li><a href="#intro">¿Qué es una tabla puente?</a></li>
+            <li><a href="#problema">El problema muchos a muchos</a></li>
+            <li><a href="#solucion">La solución: tabla puente</a></li>
+            <li><a href="#multicategoria">Caso real: productos multi-categoría</a></li>
+            <li><a href="#multirol">Caso real: empleados multi-rol</a></li>
+            <li><a href="#dax">DAX con tablas puente</a></li>
+            <li><a href="#errores">Errores frecuentes</a></li>
+            <li><a href="#siguiente">Resumen y siguiente paso</a></li>
+          </ul>
+        </nav>
+
+        <!-- ══════════════════════════════════════════
+             SECCIÓN 0 — ¿Qué es una tabla puente?
+        ══════════════════════════════════════════ -->
+        <div class="category-header" id="intro">
+          <span class="category-header__icon">🌉</span>
+          <h2 class="category-header__title">¿Qué es una tabla puente?</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>La intermediaria que resuelve el caos N:N</h3>
+          <p>Una <strong>tabla puente</strong> (también llamada <em>bridge table</em>, <em>junction table</em> o tabla de intersección) es una tabla que actúa de intermediaria entre dos tablas que tienen una relación muchos a muchos (N:N). Es como una lista de "quién está con quién" que permite que Power BI filtre correctamente sin duplicar datos ni crear ambigüedades.</p>
+
+          <p>En la teoría de bases de datos relacionales, las relaciones N:N no se pueden representar directamente: siempre se descomponen en dos relaciones 1:N a través de una tabla puente. Power BI introduce relaciones N:N nativas, pero con limitaciones importantes que veremos en la sección siguiente.</p>
+
+          <div class="note note--tip">
+            💡 <strong>Analogía kawaii 🌸</strong>
+            <p style="margin: 8px 0 0; line-height: 1.7;">Imagina que tienes una lista de estudiantes 👩‍🎓 y una lista de clubs 🌸. Una estudiante puede pertenecer a varios clubs, y un club puede tener varias estudiantes. La tabla puente es la <strong>lista de inscripciones</strong>: quién está apuntada a qué club. Sin esa lista, ¿cómo sabrías qué clubs tiene cada estudiante? Exactamente — no podrías.</p>
+          </div>
+
+          <div class="note note--tip">
+            💡 <strong>Las relaciones N:N directas en Power BI</strong> (sin tabla puente) técnicamente funcionan, pero pueden generar resultados incorrectos en ciertos contextos de filtro si no las entiendes a fondo. La tabla puente es siempre la solución más robusta, predecible y recomendada por Microsoft.
+          </div>
+        </article>
+
+        <!-- ══════════════════════════════════════════
+             SECCIÓN 1 — El problema muchos a muchos
+        ══════════════════════════════════════════ -->
+        <div class="category-header" id="problema">
+          <span class="category-header__icon">⚠️</span>
+          <h2 class="category-header__title">El problema muchos a muchos</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>Por qué la relación N:N directa es problemática</h3>
+          <p>Supón que tienes productos y categorías con una relación muchos a muchos: un producto puede pertenecer a varias categorías, y una categoría puede contener varios productos.</p>
+
+          <h4>Sin tabla puente — relación N:N directa:</h4>
+          <pre class="schema-diagram">
+  <span class="hl-dim">'Productos'</span>                       <span class="hl-dim">'Categorias'</span>
+  ┌──────────────────┐             ┌──────────────────┐
+  │ IDProducto       │─────────────│ IDCategoria      │
+  │ NomProducto      │  N        N │ NomCategoria     │
+  └──────────────────┘             └──────────────────┘
+         │
+         │ 1:N
+         ▼
+  <span class="hl-fact">'Ventas'</span>
+  ┌──────────────────┐
+  │ IDProducto (FK)  │
+  │ Importe          │
+  └──────────────────┘
+
+  <span class="hl-warn">Problema: ¿cómo filtra Power BI?
+  "Laptop Pro" pertenece a "Electrónica" Y a "Informática".
+  El filtro puede propagar el contexto de forma ambigua.</span>
+</pre>
+
+          <h4>El resultado incorrecto:</h4>
+          <p>Si una venta de Laptop Pro tiene <code>Importe = 1.000 €</code> y el producto aparece en 2 categorías, al filtrar por categoría y sumar <code>SUM(Ventas[Importe])</code> el motor puede — en determinados modelos y contextos — devolver <strong>2.000 €</strong> en lugar de 1.000 €, porque la fila de ventas aparece "visible" desde ambas categorías al mismo tiempo.</p>
+
+          <div class="note note--warning">
+            ⚠️ <strong>Ojo con esto:</strong> La relación muchos a muchos nativa de Power BI <em>puede parecer</em> que funciona correctamente en los visuales básicos, pero en ciertos contextos de filtro cruzado produce <strong>duplicaciones silenciosas</strong>. El peligro es que los números parecen plausibles y nadie los cuestiona hasta que alguien cruza los datos con otra fuente. Siempre prueba tus métricas con valores conocidos antes de publicar.
+          </div>
+        </article>
+
+        <!-- ══════════════════════════════════════════
+             SECCIÓN 2 — La solución: tabla puente
+        ══════════════════════════════════════════ -->
+        <div class="category-header" id="solucion">
+          <span class="category-header__icon">✅</span>
+          <h2 class="category-header__title">La solución: tabla puente</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>El modelo correcto con tabla puente interpuesta</h3>
+          <p>La solución es introducir una tabla intermedia que descomponga la relación N:N en dos relaciones 1:N, cada una perfectamente manejable por el motor VertiPaq.</p>
+
+          <pre class="schema-diagram">
+  <span class="hl-dim">'Productos'</span>       <span class="hl-bridge">'ProductoCategorias'</span>         <span class="hl-dim">'Categorias'</span>
+  ┌────────────┐    ┌────────────────────────┐    ┌────────────────┐
+  │ IDProd  PK │─1─▶│ IDProducto  FK         │◀─N─│ IDCategoria PK │
+  │ NomProd    │    │ IDCategoria FK         │  1 │ NomCategoria   │
+  └────────────┘    └────────────────────────┘    └────────────────┘
+        │
+        │ 1:N
+        ▼
+  <span class="hl-fact">'Ventas'</span>
+  ┌────────────┐
+  │ IDProducto │
+  │ Importe    │
+  └────────────┘
+</pre>
+
+          <h4>Flujo de filtros paso a paso:</h4>
+          <ol class="filter-flow">
+            <li>El usuario filtra <code>Categorias[NomCategoria] = "Electrónica"</code></li>
+            <li>El filtro pasa a <code>ProductoCategorias</code> (tabla puente) y devuelve los <code>IDProducto</code> que pertenecen a Electrónica</li>
+            <li>Esos <code>IDProducto</code> filtran la tabla <code>Ventas</code> a través de su relación con <code>Productos</code></li>
+            <li><code>SUM(Ventas[Importe])</code> devuelve el resultado correcto, <strong>sin duplicados</strong></li>
+          </ol>
+
+          <h4>Reglas de oro de la tabla puente:</h4>
+          <ul class="rule-list">
+            <li>Contiene <strong>solo claves foráneas (FK)</strong>, nunca métricas ni atributos descriptivos</li>
+            <li>Se relaciona con cada dimensión en <strong>N:1</strong> (muchos registros de puente → una dimensión)</li>
+            <li>Se relaciona con la tabla de hechos de forma <strong>indirecta</strong>, pasando por la dimensión principal</li>
+            <li>No se usa directamente en visuales — es <strong>infraestructura invisible</strong> del modelo</li>
+          </ul>
+
+          <div class="note note--practice">
+            📌 <strong>Buena práctica:</strong> La tabla puente debe estar en modo <strong>Import</strong> (no DirectQuery) siempre que sea posible, para que el motor VertiPaq pueda comprimir correctamente sus columnas de claves enteras y ejecutar los cruces con máxima eficiencia.
+          </div>
+        </article>
+
+        <!-- ══════════════════════════════════════════
+             SECCIÓN 3 — Caso real: productos multi-categoría
+        ══════════════════════════════════════════ -->
+        <div class="category-header" id="multicategoria">
+          <span class="category-header__icon">🛍️</span>
+          <h2 class="category-header__title">Caso real: productos multi-categoría</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>Tienda online con categorías múltiples por producto</h3>
+          <p>Escenario: tienda online con 500 productos, donde cada producto puede pertenecer a 1, 2 o 3 categorías. Se necesita analizar las ventas por categoría <strong>sin duplicar los importes</strong>.</p>
+
+          <div class="tables-grid">
+            <div class="data-table-wrap">
+              <table class="data-table">
+                <caption>Dim_Productos</caption>
+                <thead><tr><th>IDProducto</th><th>Nombre</th></tr></thead>
+                <tbody>
+                  <tr><td>P001</td><td>Laptop Pro</td></tr>
+                  <tr><td>P002</td><td>Ratón USB</td></tr>
+                  <tr><td>P003</td><td>Auriculares</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="data-table-wrap">
+              <table class="data-table">
+                <caption>Dim_Categorias</caption>
+                <thead><tr><th>IDCategoria</th><th>Nombre</th></tr></thead>
+                <tbody>
+                  <tr><td>C01</td><td>Electrónica</td></tr>
+                  <tr><td>C02</td><td>Informática</td></tr>
+                  <tr><td>C03</td><td>Accesorios</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="data-table-wrap">
+              <table class="data-table">
+                <caption>ProductoCategorias (tabla puente)</caption>
+                <thead><tr><th>IDProducto</th><th>IDCategoria</th><th></th></tr></thead>
+                <tbody>
+                  <tr><td>P001</td><td>C01</td><td class="td-note">Laptop → Electrónica</td></tr>
+                  <tr><td>P001</td><td>C02</td><td class="td-note">Laptop → Informática</td></tr>
+                  <tr><td>P002</td><td>C02</td><td class="td-note">Ratón → Informática</td></tr>
+                  <tr><td>P002</td><td>C03</td><td class="td-note">Ratón → Accesorios</td></tr>
+                  <tr><td>P003</td><td>C01</td><td class="td-note">Auriculares → Electrónica</td></tr>
+                  <tr><td>P003</td><td>C03</td><td class="td-note">Auriculares → Accesorios</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <h4>Crear la tabla puente en Power Query (M)</h4>
+          <p>Cuando el origen tiene las categorías como texto separado por comas, Power Query puede generar la tabla puente automáticamente:</p>
+
+          <div class="code-block">
+            <p class="code-block__label">Power Query — M</p>
+            <pre><code class="language-javascript">// Origen: columna "Categorias" contiene "Electrónica, Informática"
+// Queremos generar una fila por cada categoría asignada al producto
+
+let
+    Origen           = TablaProductos,
+    SplitCategorias  = Table.TransformColumns(
+                         Origen,
+                         {{"Categorias",
+                           each Text.Split(_, ", "),
+                           type list}}
+                       ),
+    Expand           = Table.ExpandListColumn(
+                         SplitCategorias, "Categorias"
+                       ),
+    SeleccionarCols  = Table.SelectColumns(
+                         Expand,
+                         {"IDProducto", "Categorias"}
+                       ),
+    Renombrar        = Table.RenameColumns(
+                         SeleccionarCols,
+                         {{"Categorias", "IDCategoria"}}
+                       )
+in
+    Renombrar</code></pre>
+          </div>
+
+          <div class="note note--tip">
+            💡 <strong>Tip kawaii:</strong> El patrón <code>Text.Split</code> + <code>ExpandListColumn</code> es uno de los más usados en Power Query para normalizar datos "sucios". Una columna con valores separados por comas se convierte en filas individuales en tres pasos. Guárdalo en tu repertorio — lo usarás constantemente.
+          </div>
+        </article>
+
+        <!-- ══════════════════════════════════════════
+             SECCIÓN 4 — Caso real: empleados multi-rol
+        ══════════════════════════════════════════ -->
+        <div class="category-header" id="multirol">
+          <span class="category-header__icon">👩‍💼</span>
+          <h2 class="category-header__title">Caso real: empleados multi-rol</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>RRHH con empleadas que tienen más de un rol</h3>
+          <p>Escenario: el equipo de RRHH necesita analizar costes de personal por departamento y rol. Algunas personas tienen más de un rol asignado (por ejemplo, Analista de BI <em>y</em> Scrum Master). El objetivo es que el coste mensual de cada persona <strong>no se duplique</strong> al filtrar por rol.</p>
+
+          <div class="tables-grid tables-grid--2">
+            <div class="data-table-wrap">
+              <table class="data-table">
+                <caption>Dim_Empleadas</caption>
+                <thead><tr><th>IDEmpleada</th><th>Nombre</th><th>Coste Mensual</th></tr></thead>
+                <tbody>
+                  <tr><td>E001</td><td>Laura</td><td>3.500 €</td></tr>
+                  <tr><td>E002</td><td>Marta</td><td>4.000 €</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="data-table-wrap">
+              <table class="data-table">
+                <caption>Dim_Roles</caption>
+                <thead><tr><th>IDRol</th><th>NombreRol</th></tr></thead>
+                <tbody>
+                  <tr><td>R01</td><td>Analista de BI</td></tr>
+                  <tr><td>R02</td><td>Scrum Master</td></tr>
+                  <tr><td>R03</td><td>Data Engineer</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="data-table-wrap" style="margin-top: 1rem;">
+            <table class="data-table">
+              <caption>EmpleadaRoles (tabla puente)</caption>
+              <thead><tr><th>IDEmpleada</th><th>IDRol</th><th></th></tr></thead>
+              <tbody>
+                <tr><td>E001</td><td>R01</td><td class="td-note">Laura → Analista de BI</td></tr>
+                <tr><td>E001</td><td>R02</td><td class="td-note">Laura → Scrum Master también</td></tr>
+                <tr><td>E002</td><td>R01</td><td class="td-note">Marta → Analista de BI</td></tr>
+                <tr><td>E002</td><td>R03</td><td class="td-note">Marta → Data Engineer también</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h4>Diagrama del modelo completo:</h4>
+          <pre class="schema-diagram">
+  <span class="hl-dim">'Empleadas'</span> ──1:N──▶ <span class="hl-bridge">'EmpleadaRoles'</span> ◀──N:1── <span class="hl-dim">'Roles'</span>
+       │              (tabla puente)
+       │ 1:N
+       ▼
+  <span class="hl-fact">'CostesPersonal'</span>
+  ┌──────────────────┐
+  │ IDEmpleada (FK)  │
+  │ Mes              │
+  │ ImporteCoste     │
+  └──────────────────┘
+</pre>
+
+          <div class="note note--warning">
+            ⚠️ <strong>Ojo con esto:</strong> Si aplicaras <code>SUM(Empleadas[CosteMensual])</code> filtrando directamente por rol <strong>sin tabla puente</strong>, Laura (que tiene R01 y R02) contaría <em>dos veces</em>: 3.500 + 3.500 = 7.000 €. Con la tabla puente correctamente configurada, el filtro de rol actúa sobre <code>EmpleadaRoles</code> y el coste de Laura se contabiliza <strong>una sola vez</strong>.
+          </div>
+        </article>
+
+        <!-- ══════════════════════════════════════════
+             SECCIÓN 5 — DAX con tablas puente
+        ══════════════════════════════════════════ -->
+        <div class="category-header" id="dax">
+          <span class="category-header__icon">⚡</span>
+          <h2 class="category-header__title">DAX con tablas puente</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>A) Medidas estándar — funcionan automáticamente</h3>
+          <p>Con la tabla puente en su sitio y las relaciones correctamente definidas, las medidas básicas funcionan sin código DAX adicional. Power BI propaga el filtro a través de la cadena de relaciones de forma transparente.</p>
+
+          <div class="code-block">
+            <p class="code-block__label">DAX — medida estándar</p>
+            <pre><code class="language-javascript">// Esta medida es suficiente. No necesitas nada especial.
+Total Ventas = SUM(Ventas[Importe])
+// Al filtrar por Categorias[NomCategoria]:
+//   1. Filtro → ProductoCategorias (puente)
+//   2. → Productos (relación 1:N)
+//   3. → Ventas (relación 1:N)
+// Resultado: correcto, sin duplicados.
+
+// Para verificar que no hay duplicación:
+Productos Únicos en Categoría =
+DISTINCTCOUNT(ProductoCategorias[IDProducto])
+// Compara este número con lo esperado en cada categoría.</code></pre>
+          </div>
+
+          <h3>B) DAX explícito — casos avanzados</h3>
+          <p>A veces necesitas filtrar la propia tabla puente o navegar la relación de forma explícita.</p>
+
+          <div class="code-block">
+            <p class="code-block__label">DAX — filtro explícito sobre la tabla puente</p>
+            <pre><code class="language-javascript">// Ventas de productos que tienen AL MENOS UNA categoría
+// cuyo nombre empieza por "Elec" (ej: "Electrónica"):
+Ventas Electro =
+CALCULATE(
+    [Total Ventas],
+    FILTER(
+        ProductoCategorias,
+        LEFT(RELATED(Categorias[NomCategoria]), 4) = "Elec"
+    )
+)
+
+// Categorías únicas representadas en las ventas del mes actual:
+Categorias Vendidas Este Mes =
+CALCULATE(
+    DISTINCTCOUNT(ProductoCategorias[IDCategoria]),
+    FILTER(
+        Ventas,
+        Ventas[Fecha] >= DATE(YEAR(TODAY()), MONTH(TODAY()), 1)
+    )
+)</code></pre>
+          </div>
+
+          <h3>C) Tabla puente calculada en DAX (sin Power Query)</h3>
+          <p>Si no puedes generar la tabla puente en el origen, puedes crearla como tabla calculada en DAX. Úsalo solo como último recurso.</p>
+
+          <div class="code-block">
+            <p class="code-block__label">DAX — tabla calculada (tabla puente)</p>
+            <pre><code class="language-javascript">// Tabla calculada que reconstruye la puente desde una tabla de mapeo:
+ProductoCategorias_Calc =
+SELECTCOLUMNS(
+    FILTER(
+        CROSSJOIN(
+            VALUES(Productos[IDProducto]),
+            VALUES(Categorias[IDCategoria])
+        ),
+        // Mantener solo las combinaciones válidas según tabla de mapeo:
+        NOT ISBLANK(
+            LOOKUPVALUE(
+                MapeoCategoria[IDCategoria],
+                MapeoCategoria[IDProducto], [IDProducto],
+                MapeoCategoria[IDCategoria], [IDCategoria]
+            )
+        )
+    ),
+    "IDProducto", [IDProducto],
+    "IDCategoria", [IDCategoria]
+)</code></pre>
+          </div>
+
+          <div class="note note--practice">
+            📌 <strong>Buena práctica:</strong> Siempre que puedas, crea la tabla puente en <strong>Power Query</strong> (o en el origen de datos), no en DAX. Las tablas calculadas en DAX se recalculan en cada refresh usando el motor de fórmulas, que es más lento. Las tablas de Power Query son procesadas directamente por VertiPaq con compresión óptima.
+          </div>
+        </article>
+
+        <!-- ══════════════════════════════════════════
+             SECCIÓN 6 — Errores frecuentes
+        ══════════════════════════════════════════ -->
+        <div class="category-header" id="errores">
+          <span class="category-header__icon">🐛</span>
+          <h2 class="category-header__title">Errores frecuentes</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>Los cuatro tropiezos clásicos con tablas puente</h3>
+
+          <div class="error-card">
+            <p class="error-card__label">Error 01</p>
+            <p class="error-card__title">Relación N:N directa sin tabla puente</p>
+            <div class="error-card__row"><strong>Síntoma:</strong> Las métricas parecen correctas en algunos visuales, pero se duplican al cruzar con otras dimensiones o al usar ciertos filtros.</div>
+            <div class="error-card__row"><strong>Solución:</strong> Interponer tabla puente y verificar los totales con <code>DISTINCTCOUNT</code> contra un recuento manual conocido.</div>
+          </div>
+
+          <div class="error-card">
+            <p class="error-card__label">Error 02</p>
+            <p class="error-card__title">Incluir métricas o atributos en la tabla puente</p>
+            <div class="error-card__row"><strong>Síntoma:</strong> Se añade <code>Importe</code>, <code>Precio</code> o <code>NombreCategoria</code> a la tabla puente para "tener todo en un sitio".</div>
+            <div class="error-card__row"><strong>Solución:</strong> La tabla puente <strong>solo tiene FKs</strong>. Las métricas van en la tabla de hechos; los atributos descriptivos van en las dimensiones.</div>
+          </div>
+
+          <div class="error-card">
+            <p class="error-card__label">Error 03</p>
+            <p class="error-card__title">Dirección de filtro incorrecta en las relaciones</p>
+            <div class="error-card__row"><strong>Síntoma:</strong> Filtrar por categoría no afecta a la tabla de ventas, o afecta a tablas que no debería.</div>
+            <div class="error-card__row"><strong>Solución:</strong> Verificar que la relación <code>Productos ↔ ProductoCategorias</code> tiene dirección de filtro desde <code>Productos</code> hacia <code>ProductoCategorias</code>. En la UI: la flecha apunta hacia la tabla puente.</div>
+          </div>
+
+          <div class="error-card">
+            <p class="error-card__label">Error 04</p>
+            <p class="error-card__title">Usar la tabla puente directamente en visuales</p>
+            <div class="error-card__row"><strong>Síntoma:</strong> Se arrastra <code>ProductoCategorias[IDCategoria]</code> a un visual en lugar de <code>Categorias[NomCategoria]</code>. El resultado son IDs en lugar de nombres, y el agrupamiento puede ser incorrecto.</div>
+            <div class="error-card__row"><strong>Solución:</strong> Usa siempre la <strong>dimensión real</strong> (<code>Categorias</code>) en los visuales. La tabla puente es infraestructura interna del modelo, no está pensada para exponerse al usuario.</div>
+          </div>
+        </article>
+
+        <!-- ══════════════════════════════════════════
+             SECCIÓN 7 — Resumen y siguiente paso
+        ══════════════════════════════════════════ -->
+        <div class="category-header" id="siguiente">
+          <span class="category-header__icon">🎯</span>
+          <h2 class="category-header__title">Resumen y siguiente paso</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>Los 4 puntos que debes llevarte</h3>
+
+          <div class="summary-box">
+            <h4>📋 Checklist tabla puente</h4>
+            <ol>
+              <li>Una tabla puente resuelve relaciones N:N <strong>sin duplicar métricas</strong> ni crear ambigüedades de filtro</li>
+              <li>Solo contiene <strong>claves foráneas (FK)</strong> — nunca métricas ni atributos descriptivos propios</li>
+              <li>Créala en <strong>Power Query</strong> (o en el origen) siempre que sea posible; evita tablas calculadas DAX salvo necesidad</li>
+              <li>Verifica el resultado con <code>DISTINCTCOUNT</code> y valores conocidos <strong>antes de publicar</strong></li>
+            </ol>
+          </div>
+        </article>
+
+        <div class="note note--next" style="margin-top: 2rem;">
+          🚀 <strong>¡Lo estás haciendo genial!</strong> Las tablas puente son uno de los patrones más profesionales del modelado de datos — no todo el mundo las domina. Ahora que las tienes bajo control, el siguiente paso natural es entender cuándo normalizar y cuándo desnormalizar tu modelo. Explora <a href="relaciones.html">Relaciones entre Tablas</a> para profundizar en la dirección de filtro y la bidireccionalidad, o revisa las <a href="esquema-estrella.html">buenas prácticas del Esquema Estrella</a> para ver cómo encajan las tablas puente en una arquitectura profesional. 🌸
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <button id="back-to-top" class="back-to-top" aria-label="Volver arriba" title="Volver arriba">↑</button>
+
+  <script src="https://cdn.jsdelivr.net/npm/i18next@23/dist/umd/i18next.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1/prism.min.js"></script>
+  <script src="../../assets/js/theme.js"></script>
+  <script src="../../assets/js/main.js"></script>
+  <script src="../../assets/js/cursor.js"></script>
+</body>
+</html>

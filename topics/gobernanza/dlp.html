@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Data Loss Prevention (DLP) en Power BI: políticas de Microsoft Purview para detectar y bloquear exportaciones de información sensible.">
+  <title>DLP y Protección de Datos — Gobernanza | Power BI Guide by Kawaii BI</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/prismjs@1/themes/prism-okaidia.min.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="../../assets/css/main.css">
+  <link rel="stylesheet" href="../../assets/css/themes.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/layout.css">
+
+  <style>
+    .topic-header { text-align: center; padding: 2.5rem 0 2rem; border-bottom: 2px solid var(--color-mauve); margin-bottom: 2.5rem; }
+    .topic-header__icon { font-size: 4rem; margin-bottom: 0.75rem; display: block; }
+    .topic-header__title { font-size: clamp(1.875rem, 4vw, 2.5rem); font-weight: 800; color: var(--color-dark); margin-bottom: 0.625rem; line-height: 1.2; }
+    .topic-header__subtitle { font-size: 1.0625rem; color: var(--color-slate); margin-bottom: 1.25rem; line-height: 1.5; max-width: 600px; margin-left: auto; margin-right: auto; }
+    .topic-header__levels { display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap; align-items: center; }
+    .category-header { display: flex; align-items: center; gap: 0.75rem; margin: 2.5rem 0 1.25rem; padding: 0.875rem 1.25rem; background: var(--color-rose); border-radius: var(--border-radius-sm); border-left: 4px solid var(--color-coral); }
+    .category-header__icon { font-size: 1.5rem; }
+    .category-header__title { font-size: 1.25rem; font-weight: 700; margin: 0; }
+    .concept-card { background: var(--color-white); border: 1.5px solid var(--color-mauve); border-radius: var(--border-radius); padding: 1.75rem; margin-bottom: 1.5rem; scroll-margin-top: 80px; transition: border-color 0.2s; }
+    .concept-card:hover { border-color: var(--color-coral); }
+    .concept-card h3 { font-size: 1.25rem; font-weight: 700; color: var(--color-coral); margin-bottom: 0.75rem; }
+    .concept-card h4 { font-size: 0.9375rem; font-weight: 700; color: var(--color-dark); margin: 1.25rem 0 0.5rem; }
+    .concept-card p { font-size: 0.9375rem; line-height: 1.7; color: var(--color-dark); margin-bottom: 0.75rem; }
+    .concept-card ul { padding-left: 1.25rem; font-size: 0.9375rem; line-height: 1.8; color: var(--color-dark); }
+    .concept-card code { background: var(--color-blush); padding: 0.1em 0.4em; border-radius: 4px; font-family: 'Fira Code', monospace; font-size: 0.85em; color: var(--color-coral); }
+    .toc { background: var(--color-rose); border-radius: var(--border-radius); padding: 1.25rem 1.5rem; margin-bottom: 2rem; border: 1.5px solid var(--color-mauve); }
+    .toc__title { font-size: 1rem; font-weight: 700; margin: 0 0 0.75rem; }
+    .toc__list { display: flex; flex-wrap: wrap; gap: 0.5rem; list-style: none; padding: 0; margin: 0; }
+    .toc__list a { font-size: 0.8125rem; color: var(--color-coral); text-decoration: none; padding: 0.25rem 0.625rem; background: var(--color-white); border-radius: 999px; border: 1px solid var(--color-mauve); transition: background 0.15s, color 0.15s; }
+    .toc__list a:hover { background: var(--color-coral); color: white; }
+  </style>
+</head>
+<body>
+
+  <aside class="site-sidebar">
+    <div class="site-sidebar__profile">
+      <img src="../../assets/images/avatar Sara.png" alt="Sara Lozano Martí" class="site-sidebar__avatar">
+      <p class="site-sidebar__name">Sara Lozano Martí</p>
+      <p class="site-sidebar__subtitle">Power BI Expert</p>
+    </div>
+    <nav class="site-sidebar__nav" aria-label="Navegación principal">
+      <ul>
+        <li><a href="../../index.html" class="site-sidebar__link"><span class="site-sidebar__icon">🏠</span> Inicio</a></li>
+        <li><a href="../dax.html" class="site-sidebar__link"><span class="site-sidebar__icon">⚡</span> Funciones DAX</a></li>
+        <li><a href="../power-query.html" class="site-sidebar__link"><span class="site-sidebar__icon">🔄</span> Power Query</a></li>
+        <li><a href="../lenguaje-m.html" class="site-sidebar__link"><span class="site-sidebar__icon">〽️</span> Lenguaje M</a></li>
+        <li><a href="../modelado.html" class="site-sidebar__link"><span class="site-sidebar__icon">🗄️</span> Modelado</a></li>
+        <li><a href="../conceptos-powerbi.html" class="site-sidebar__link"><span class="site-sidebar__icon">📊</span> Conceptos Power BI</a></li>
+        <li><a href="../fabric.html" class="site-sidebar__link"><span class="site-sidebar__icon">🧵</span> Microsoft Fabric</a></li>
+        <li><a href="../tmdl.html" class="site-sidebar__link"><span class="site-sidebar__icon">📝</span> TMDL</a></li>
+        <li><a href="../diseno-ux.html" class="site-sidebar__link"><span class="site-sidebar__icon">🎨</span> Diseño y UX</a></li>
+        <li><a href="../gobernanza.html" class="site-sidebar__link is-active"><span class="site-sidebar__icon">🔒</span> Gobernanza</a></li>
+      </ul>
+    </nav>
+    <div class="site-sidebar__divider"></div>
+    <div class="site-sidebar__footer">
+      <a href="../../quien-soy.html" class="site-sidebar__link site-sidebar__link--highlight"><span class="site-sidebar__icon">👩‍💻</span> ¿Quién soy?</a>
+      <div class="site-sidebar__social">
+        <a href="https://www.linkedin.com/in/saralozanomarti" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><img src="../../assets/images/logo linkedIN.png" alt="LinkedIn" class="site-sidebar__social-icon"></a>
+        <a href="https://www.youtube.com/@KawaiiPowerBI" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><img src="../../assets/images/logo youtube.png" alt="YouTube" class="site-sidebar__social-icon"></a>
+        <a href="https://github.com/KawaiiBI" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><img src="../../assets/images/logo github.png" alt="GitHub" class="site-sidebar__social-icon"></a>
+      </div>
+      <div class="site-sidebar__logo-bottom"><img src="../../assets/images/Logo Kawaii.jpg" alt="Kawaii BI" class="site-sidebar__logo-img"></div>
+      <p class="site-sidebar__copyright">Power BI Guide 🌸<br>© 2026 Kawaii BI</p>
+    </div>
+  </aside>
+
+  <div class="page-wrapper">
+    <main class="main-content">
+      <div class="topic-page">
+
+        <nav class="breadcrumb" aria-label="Ruta de navegación">
+          <span class="breadcrumb__item"><a href="../../index.html">🏠 Inicio</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item"><a href="../gobernanza.html">Gobernanza</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item">DLP y Protección de Datos</span>
+        </nav>
+
+        <header class="topic-header">
+          <span class="topic-header__icon">🛑</span>
+          <h1 class="topic-header__title">DLP y Protección de Datos</h1>
+          <p class="topic-header__subtitle">Políticas de Data Loss Prevention en Power BI con Microsoft Purview: detección de información sensible, alertas, bloqueo de exportación y configuración paso a paso.</p>
+          <div class="topic-header__levels">
+            <span class="badge badge--advanced">Avanzado</span>
+          </div>
+        </header>
+
+        <nav class="toc" aria-label="Índice de contenidos">
+          <p class="toc__title">📌 En esta página:</p>
+          <ul class="toc__list">
+            <li><a href="#que-es">¿Qué es DLP?</a></li>
+            <li><a href="#triggers">Qué detecta</a></li>
+            <li><a href="#acciones">Acciones disponibles</a></li>
+            <li><a href="#configurar">Configurar paso a paso</a></li>
+            <li><a href="#mip-dlp">DLP + Sensitivity Labels</a></li>
+            <li><a href="#limitaciones">Limitaciones</a></li>
+          </ul>
+        </nav>
+
+        <div class="category-header" id="que-es">
+          <span class="category-header__icon">💭</span>
+          <h2 class="category-header__title">¿Qué es DLP?</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>Detectar y reaccionar ante exposiciones</h3>
+          <p><strong>Data Loss Prevention</strong> es una familia de políticas de <em>Microsoft Purview</em> que escanean contenido en busca de información sensible y disparan acciones automáticas cuando la encuentran. En Power BI, las políticas DLP evalúan los <strong>datasets</strong> (modelos semánticos) y pueden activarse al publicar, al aplicar un refresh o al cambiar la sensitivity label.</p>
+          <p>Es la capa que responde a preguntas como:</p>
+          <ul>
+            <li>"¿Hay datasets con números de tarjeta o DNI que no deberían existir?"</li>
+            <li>"¿Alguien acaba de publicar un modelo con datos médicos?"</li>
+            <li>"¿Cómo aviso al equipo de compliance sin frenar la operativa?"</li>
+          </ul>
+        </article>
+
+        <div class="category-header" id="triggers">
+          <span class="category-header__icon">🔎</span>
+          <h2 class="category-header__title">Qué puede detectar</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>Tipos de información sensible</h3>
+          <p>DLP usa <strong>Sensitive Information Types (SITs)</strong> de Microsoft Purview, que vienen con catálogos preconstruidos y se pueden extender:</p>
+          <ul>
+            <li><strong>Datos financieros:</strong> tarjetas de crédito (PCI), IBAN, SWIFT, números de cuenta</li>
+            <li><strong>Datos personales (PII):</strong> DNI/NIE, NIF, pasaportes, números de la seguridad social</li>
+            <li><strong>Información sanitaria:</strong> identificadores de pacientes, códigos ICD-10, datos HIPAA</li>
+            <li><strong>Sensitivity labels específicos:</strong> p. ej. "todo dataset con label Highly Confidential"</li>
+            <li><strong>Custom SITs:</strong> patrones regex propios + diccionarios + funciones de validación</li>
+            <li><strong>Trainable classifiers:</strong> modelos ML que detectan categorías como "contratos", "currículums", "código fuente"</li>
+          </ul>
+        </article>
+
+        <div class="category-header" id="acciones">
+          <span class="category-header__icon">⚡</span>
+          <h2 class="category-header__title">Acciones disponibles</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>Lo que puede hacer una política cuando salta</h3>
+          <ul>
+            <li><strong>Alerta al admin:</strong> notificación en Purview compliance + email a la lista de seguridad</li>
+            <li><strong>Tooltip al usuario:</strong> cuando intenta hacer una acción restringida, se le muestra una explicación y el contacto</li>
+            <li><strong>Override con justificación:</strong> el usuario puede continuar si aporta motivo (auditado)</li>
+            <li><strong>Bloqueo duro:</strong> la acción no se puede completar</li>
+            <li><strong>Incident report:</strong> creación de incidente en el flujo de compliance</li>
+            <li><strong>Aplicar sensitivity label automáticamente:</strong> si detecta PII, sube la etiqueta a "Confidential"</li>
+          </ul>
+
+          <h4>Acciones específicas en Power BI</h4>
+          <ul>
+            <li>Bloquear export a Excel / PowerPoint</li>
+            <li>Bloquear publicación si la sensitivity label no cumple política</li>
+            <li>Alertar al cambiar tenant settings sensibles</li>
+          </ul>
+        </article>
+
+        <div class="category-header" id="configurar">
+          <span class="category-header__icon">🛠️</span>
+          <h2 class="category-header__title">Configurar una política paso a paso</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>Ejemplo: detectar datasets con PII y avisar al CoE</h3>
+          <ol style="padding-left: 1.25rem;">
+            <li>Microsoft Purview compliance portal → <em>Data Loss Prevention</em> → <em>Policies</em> → New policy</li>
+            <li>Plantilla: <em>Custom</em> (o "Financial → PCI" si encaja)</li>
+            <li>Locations: marcar <strong>Power BI</strong> (la única ubicación relevante aquí)</li>
+            <li>Rule: condición <em>Content contains</em> → Sensitive info types → "EU National Identification Number"</li>
+            <li>Definir threshold: por ejemplo, ≥ 10 ocurrencias detectadas</li>
+            <li>Acciones:
+              <ul>
+                <li>Enviar email a <code>governance@empresa.com</code></li>
+                <li>Generar incident report con detalles</li>
+                <li>Notificación in-product al propietario del dataset</li>
+              </ul>
+            </li>
+            <li>Modo: empezar siempre en <em>Test mode con tips</em> antes de activar enforcement</li>
+            <li>Publicar y revisar incidents durante 2 semanas para afinar</li>
+          </ol>
+
+          <h4>Modo de despliegue recomendado</h4>
+          <ul>
+            <li><strong>Fase 1 (2 semanas):</strong> Test mode sin notificaciones (silencioso)</li>
+            <li><strong>Fase 2 (2 semanas):</strong> Test mode con notificaciones al CoE (medir falsos positivos)</li>
+            <li><strong>Fase 3:</strong> Enforce con overrides permitidos</li>
+            <li><strong>Fase 4 (opcional):</strong> Enforce sin overrides para los SITs más críticos</li>
+          </ul>
+        </article>
+
+        <div class="note note--tip">
+          💡 <strong>Tip kawaii:</strong> Nunca actives una política DLP en modo enforce de golpe. Falsos positivos garantizados, frustración garantizada. Mide y comunica antes de bloquear. 🌸
+        </div>
+
+        <div class="category-header" id="mip-dlp">
+          <span class="category-header__icon">🤝</span>
+          <h2 class="category-header__title">DLP + Sensitivity Labels: el combo</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>Por qué van juntas</h3>
+          <p>Las <a href="sensitivity-labels.html">sensitivity labels</a> dicen <em>"este dato es confidencial"</em>. DLP es lo que hace que esa etiqueta tenga consecuencias.</p>
+          <ul>
+            <li>Sin DLP, la sensitivity label es solo un indicador visual (y la herencia)</li>
+            <li>Sin sensitivity labels, DLP tiene que detectar todo desde patrones — más caro y más falsos positivos</li>
+            <li>Combinadas: si el dataset tiene "Highly Confidential", DLP bloquea exports a destinos externos automáticamente</li>
+          </ul>
+
+          <h4>Patrón habitual</h4>
+          <ul>
+            <li>Política DLP A: detectar PII no etiquetada → forzar sensitivity label automática</li>
+            <li>Política DLP B: si label = "Highly Confidential" → bloquear export y notificar</li>
+          </ul>
+        </article>
+
+        <div class="category-header" id="limitaciones">
+          <span class="category-header__icon">🚧</span>
+          <h2 class="category-header__title">Limitaciones que debes conocer</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>Antes de comprometerte con DLP</h3>
+          <ul>
+            <li>DLP en Power BI escanea <strong>datasets</strong>; no escanea informes, dashboards ni dataflows en el mismo nivel de detalle</li>
+            <li>Solo disponible con <strong>capacidades Premium / PPU / Fabric</strong>; no aplica a workspaces en capacidad Pro compartida</li>
+            <li>El escaneo no es instantáneo — puede tardar minutos u horas tras un cambio</li>
+            <li>Custom SITs requieren ajuste fino para evitar falsos positivos (regex demasiado permisivos son enemigos)</li>
+            <li>El override con justificación se registra en el log, pero no se notifica en tiempo real al admin a menos que lo configures explícitamente</li>
+            <li>Algunos eventos (consumo en Mobile, exports vía API) tienen cobertura DLP limitada</li>
+          </ul>
+        </article>
+
+        <div class="note note--warning">
+          ⚠️ <strong>Ojo:</strong> DLP es una herramienta de <em>compliance</em> y de <em>detección</em>, no la única línea de defensa. Sin <a href="rls.html">RLS</a>, <a href="ols.html">OLS</a> y un buen control de permisos de workspace, DLP solo te avisa después de que el dato ya esté expuesto a alguien que no debería verlo.
+        </div>
+
+        <div class="note note--next" style="margin-top: 2rem;">
+          🚀 <strong>Siguiente paso:</strong> Cierra el círculo con <a href="auditoria.html">Auditoría</a> (los incidents DLP aparecen ahí) y con <a href="tenant-capacidades.html">Tenant Settings y Capacidades</a> para asegurarte de que las capacidades soporten estas políticas.
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <button id="back-to-top" class="back-to-top" aria-label="Volver arriba" title="Volver arriba">↑</button>
+
+  <script src="https://cdn.jsdelivr.net/npm/i18next@23/dist/umd/i18next.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1/prism.min.js"></script>
+  <script src="../../assets/js/theme.js"></script>
+  <script src="../../assets/js/main.js"></script>
+  <script src="../../assets/js/cursor.js"></script>
+</body>
+</html>

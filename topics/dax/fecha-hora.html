@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Funciones de Fecha y Hora en DAX — DATE, DATEDIFF, EOMONTH, NETWORKDAYS y más">
+  <title>Funciones de Fecha y Hora — Funciones DAX | Power BI Guide</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+
+  <!-- Prism.js para syntax highlighting -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+
+  <!-- i18next para traducciones -->
+  <script src="https://cdn.jsdelivr.net/npm/i18next@23.7.6/i18next.min.js"></script>
+
+  <!-- CSS del proyecto -->
+  <link rel="stylesheet" href="../../assets/css/main.css">
+  <link rel="stylesheet" href="../../assets/css/themes.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/layout.css">
+  <link rel="stylesheet" href="../../assets/css/dax-search.css">
+
+  <style>
+    /* === ESTILOS ESPECÍFICOS PARA PÁGINAS DE TOPICS === */
+
+    /* Topic header con icono grande */
+    .topic-header {
+      text-align: center;
+      padding: 2.5rem 0 2rem;
+      border-bottom: 2px solid var(--color-mauve);
+      margin-bottom: 2.5rem;
+    }
+
+    .topic-header__icon {
+      font-size: 4rem;
+      margin-bottom: 0.75rem;
+      display: block;
+    }
+
+    .topic-header__title {
+      font-size: clamp(1.875rem, 4vw, 2.5rem);
+      font-weight: 800;
+      color: var(--color-dark);
+      margin-bottom: 0.625rem;
+      line-height: 1.2;
+    }
+
+    .topic-header__subtitle {
+      font-size: 1.0625rem;
+      color: var(--color-slate);
+      margin-bottom: 1.25rem;
+      line-height: 1.5;
+      max-width: 700px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .topic-header__levels {
+      display: flex;
+      gap: 0.5rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    /* TOC — Table of contents */
+    .toc {
+      background: var(--color-rose);
+      border: 1.5px solid var(--color-mauve);
+      border-radius: var(--border-radius);
+      padding: 1.5rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .toc__title {
+      font-size: 0.875rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--color-slate);
+      margin-bottom: 1rem;
+    }
+
+    .toc__list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .toc__link {
+      color: var(--color-dark);
+      text-decoration: none;
+      font-size: 0.9375rem;
+      transition: var(--transition);
+      display: inline-block;
+    }
+
+    .toc__link:hover {
+      color: var(--color-coral);
+      text-decoration: underline;
+    }
+
+    /* Category header — separadores entre categorías */
+    .category-header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin: 3rem 0 1.5rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 2px solid var(--color-mauve);
+    }
+
+    .category-header__icon {
+      font-size: 1.75rem;
+    }
+
+    .category-header__title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--color-dark);
+      margin: 0;
+    }
+
+    /* Function card — tarjeta individual para cada función */
+    .function-card {
+      background: var(--color-white);
+      border: 1.5px solid var(--color-mauve);
+      border-radius: var(--border-radius);
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .function-card__name {
+      font-family: var(--font-code);
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: var(--color-coral);
+      margin-bottom: 0.75rem;
+    }
+
+    .function-card__description {
+      font-size: 0.9375rem;
+      color: var(--color-dark);
+      margin-bottom: 1rem;
+      line-height: 1.6;
+    }
+
+    .function-card__level {
+      display: inline-block;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      padding: 0.25rem 0.625rem;
+      border-radius: var(--border-radius-sm);
+      background: var(--color-blush);
+      color: var(--color-slate);
+      margin-bottom: 1rem;
+    }
+
+    /* Function table — tabla compacta con ejemplos */
+    .function-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.5rem 0;
+      font-size: 0.875rem;
+    }
+
+    .function-table th {
+      background: var(--color-rose);
+      color: var(--color-dark);
+      font-weight: 700;
+      text-align: left;
+      padding: 0.75rem 1rem;
+      border: 1px solid var(--color-mauve);
+    }
+
+    .function-table td {
+      padding: 0.75rem 1rem;
+      border: 1px solid var(--color-mauve);
+      color: var(--color-dark);
+    }
+
+    .function-table tr:nth-child(even) {
+      background: var(--color-blush);
+    }
+
+    /* Code block wrapper */
+    .code-block {
+      position: relative;
+      margin: 1.25rem 0;
+    }
+
+    .code-block pre {
+      margin: 0;
+      border-radius: var(--border-radius);
+      border: 1.5px solid var(--color-mauve);
+    }
+
+    .code-block__copy {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.5rem;
+      padding: 0.375rem 0.75rem;
+      font-size: 0.75rem;
+      background: var(--color-coral);
+      color: var(--color-white);
+      border: none;
+      border-radius: var(--border-radius-sm);
+      cursor: pointer;
+      font-family: var(--font-main);
+      font-weight: 600;
+      transition: var(--transition);
+    }
+
+    .code-block__copy:hover {
+      background: var(--color-peach);
+    }
+  </style>
+</head>
+
+<body>
+
+    <!-- SIDEBAR: Navegación principal -->
+  <aside class="site-sidebar">
+
+    <!-- Avatar y nombre -->
+    <div class="site-sidebar__profile">
+      <img src="../../assets/images/avatar Sara.png" alt="Sara Lozano Martí" class="site-sidebar__avatar" />
+      <p class="site-sidebar__name">Sara Lozano Martí</p>
+      <p class="site-sidebar__subtitle">Power BI Expert</p>
+    </div>
+
+    <!-- Navegación principal -->
+    <nav class="site-sidebar__nav" aria-label="Navegación principal">
+      <ul>
+        <li><a href="../../index.html" class="site-sidebar__link">
+          <span class="site-sidebar__icon">🏠</span> Inicio
+        </a></li>
+
+        <li><a href="../dax.html" class="site-sidebar__link is-active">
+          <span class="site-sidebar__icon">⚡</span> Funciones DAX
+        </a></li>
+
+        <li><a href="../power-query.html" class="site-sidebar__link">
+          <span class="site-sidebar__icon">🔄</span> Power Query
+        </a></li>
+
+        <li><a href="../lenguaje-m.html" class="site-sidebar__link">
+          <span class="site-sidebar__icon">〽️</span> Lenguaje M
+        </a></li>
+
+        <li><a href="../modelado.html" class="site-sidebar__link">
+          <span class="site-sidebar__icon">🗄️</span> Modelado
+        </a></li>
+
+        <li><a href="../conceptos-powerbi.html" class="site-sidebar__link">
+          <span class="site-sidebar__icon">📊</span> Conceptos Power BI
+        </a></li>
+
+        <li><a href="../fabric.html" class="site-sidebar__link">
+          <span class="site-sidebar__icon">🧵</span> Microsoft Fabric
+        </a></li>
+
+        <li><a href="../tmdl.html" class="site-sidebar__link">
+          <span class="site-sidebar__icon">📝</span> TMDL
+        </a></li>
+
+        <li><a href="../diseno-ux.html" class="site-sidebar__link">
+          <span class="site-sidebar__icon">🎨</span> Diseño y UX
+        </a></li>
+
+        <li><a href="../gobernanza.html" class="site-sidebar__link">
+          <span class="site-sidebar__icon">🔒</span> Gobernanza
+        </a></li>
+      </ul>
+    </nav>
+
+    <!-- Separador -->
+    <div class="site-sidebar__divider"></div>
+
+    <!-- Footer del sidebar -->
+    <div class="site-sidebar__footer">
+      <!-- Enlace a quien soy -->
+      <a href="../../quien-soy.html" class="site-sidebar__link site-sidebar__link--highlight">
+        <span class="site-sidebar__icon">👩‍💻</span> ¿Quién soy?
+      </a>
+
+      <!-- Iconos sociales -->
+      <div class="site-sidebar__social">
+        <a href="https://www.linkedin.com/in/saralozanomarti" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+          <img src="../../assets/images/logo linkedIN.png" alt="LinkedIn" class="site-sidebar__social-icon" />
+        </a>
+        <a href="https://www.youtube.com/@KawaiiPowerBI" target="_blank" rel="noopener noreferrer" aria-label="YouTube">
+          <img src="../../assets/images/logo youtube.png" alt="YouTube" class="site-sidebar__social-icon" />
+        </a>
+        <a href="https://github.com/KawaiiBI" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
+          <img src="../../assets/images/logo github.png" alt="GitHub" class="site-sidebar__social-icon" />
+        </a>
+      </div>
+
+      <!-- Logo Kawaii BI -->
+      <div class="site-sidebar__logo-bottom">
+        <img src="../../assets/images/Logo Kawaii.jpg" alt="Kawaii BI" class="site-sidebar__logo-img" />
+      </div>
+
+      <!-- Copyright -->
+      <p class="site-sidebar__copyright">
+        Power BI Guide 🌸<br>
+        © 2026 Kawaii BI
+      </p>
+    </div>
+
+  </aside>
+
+  <!-- PAGE WRAPPER -->
+  <div class="page-wrapper">
+    <!-- Main content -->
+    <main id="main-content">
+      <div class="topic-page">
+        <!-- Breadcrumb -->
+        <nav class="breadcrumb" aria-label="breadcrumb">
+          <a href="../../index.html" class="breadcrumb__link">Inicio</a>
+          <span class="breadcrumb__separator">›</span>
+          <a href="../dax.html" class="breadcrumb__link">Funciones DAX</a>
+          <span class="breadcrumb__separator">›</span>
+          <span class="breadcrumb__current">Fecha y Hora</span>
+        </nav>
+
+        <!-- Header del topic -->
+        <header class="topic-header">
+          <span class="topic-header__icon">📅</span>
+          <h1 class="topic-header__title">Funciones de Fecha y Hora</h1>
+          <p class="topic-header__subtitle">DATE, DATEDIFF, EOMONTH, NETWORKDAYS y todo lo que necesitas para trabajar con fechas en DAX</p>
+          <div class="topic-header__levels">
+            <span class="badge badge--beginner">Principiante</span>
+            <span class="badge badge--intermediate">Intermedio</span>
+          </div>
+        </header>
+
+        <!-- Buscador compacto DAX -->
+        <div class="dax-search-compact-bar">
+          <div class="dax-search-wrapper dax-search-compact" data-dax-search="true">
+            <span class="dax-search-icon">🔍</span>
+            <input
+              type="text"
+              class="dax-search-input"
+              placeholder="Buscar otra función DAX..."
+              autocomplete="off"
+              spellcheck="false"
+              aria-label="Buscar función DAX"
+            />
+            <button class="dax-search-clear" aria-label="Limpiar" hidden>✕</button>
+            <div class="dax-search-results" role="listbox"></div>
+          </div>
+        </div>
+
+        <!-- TOC -->
+        <nav class="toc">
+          <h2 class="toc__title">📑 En esta página</h2>
+          <ul class="toc__list">
+            <li><a href="#intro" class="toc__link">Cómo trata DAX las fechas internamente</a></li>
+            <li><a href="#construir" class="toc__link">Construir fechas: DATE, TIME, DATEVALUE, TIMEVALUE</a></li>
+            <li><a href="#extraer" class="toc__link">Extraer componentes: YEAR, MONTH, DAY, HOUR, MINUTE, SECOND, WEEKDAY, WEEKNUM, QUARTER</a></li>
+            <li><a href="#calcular" class="toc__link">Calcular entre fechas: DATEDIFF, EDATE, EOMONTH, NETWORKDAYS, YEARFRAC</a></li>
+            <li><a href="#hoy" class="toc__link">Fechas relativas: TODAY, NOW, UTCTODAY, UTCNOW</a></li>
+            <li><a href="#calendario" class="toc__link">Tablas de calendario: CALENDAR y CALENDARAUTO</a></li>
+            <li><a href="#patrones" class="toc__link">Patrones prácticos con fechas</a></li>
+          </ul>
+        </nav>
+
+        <!-- SECCIÓN 0: Cómo trata DAX las fechas -->
+        <section id="intro">
+          <h2 class="category-header__title">Cómo trata DAX las fechas internamente 🤔</h2>
+
+          <div class="note note--tip">
+            <strong>Analogía kawaii 🌸</strong><br>
+            En DAX, las fechas son en realidad números enteros disfrazados de fechas. El 1 de enero de 1900 es el día 1, el 2 de enero de 1900 es el 2... y así sucesivamente. Esto significa que puedes hacer aritmética con fechas: restar dos fechas te da el número de días entre ellas.
+          </div>
+
+          <h3>Tipos importantes:</h3>
+          <ul>
+            <li><strong>DateTime:</strong> fecha + hora (número decimal — la parte entera es la fecha, la decimal la hora)</li>
+            <li><strong>Date:</strong> solo fecha (entero)</li>
+            <li><strong>Time:</strong> solo hora (decimal entre 0 y 1)</li>
+          </ul>
+
+          <div class="note note--warning">
+            <strong>⚠️ Cuidado con el locale</strong><br>
+            Las fechas en DAX son sensibles al locale. Si tu modelo usa fechas en formato USA (MM/DD/YYYY) y tus datos vienen en formato europeo (DD/MM/YYYY), puedes tener problemas silenciosos. Siempre usa la función DATE() o DATEVALUE() para construir fechas de forma explícita.
+          </div>
+        </section>
+
+        <!-- SECCIÓN 1: Construir fechas -->
+        <section id="construir">
+          <div class="category-header">
+            <span class="category-header__icon">🏗️</span>
+            <h2 class="category-header__title">Construir fechas y horas</h2>
+          </div>
+
+          <div class="function-card">
+            <div class="function-card__name">DATE(&lt;año&gt;, &lt;mes&gt;, &lt;día&gt;)</div>
+            <div class="function-card__level">Principiante</div>
+            <div class="function-card__description">
+              Crea un valor de fecha a partir de año, mes y día. La forma más segura de construir fechas en DAX, sin ambigüedad de locale.
+            </div>
+
+            <h4>Ejemplos:</h4>
+            <div class="code-block">
+              <button class="code-block__copy">Copiar</button>
+              <pre><code class="language-javascript">// Crear fecha fija
+Inicio Año Actual = DATE(YEAR(TODAY()), 1, 1)
+// Equivale al 1 de enero del año actual
+
+// Crear fecha hace 6 meses exactos
+Hace 6 Meses = DATE(YEAR(TODAY()), MONTH(TODAY()) - 6, DAY(TODAY()))
+// DAX gestiona automáticamente el "desbordamiento" de meses
+// Si hoy es marzo, MONTH() - 6 = -3 → DAX lo convierte a septiembre del año anterior
+
+// Útil para límites dinámicos en filtros:
+Inicio Trimestre Actual =
+DATE(YEAR(TODAY()), (ROUNDUP(MONTH(TODAY())/3, 0) - 1) * 3 + 1, 1)</code></pre>
+            </div>
+          </div>
+
+          <div class="function-card">
+            <div class="function-card__name">TIME(&lt;hora&gt;, &lt;minuto&gt;, &lt;segundo&gt;)</div>
+            <div class="function-card__level">Principiante</div>
+            <div class="function-card__description">
+              Crea un valor de hora. Devuelve un decimal entre 0 (00:00:00) y 0.999... (23:59:59).
+            </div>
+
+            <h4>Ejemplo:</h4>
+            <div class="code-block">
+              <button class="code-block__copy">Copiar</button>
+              <pre><code class="language-javascript">Turno Mañana Inicio = TIME(8, 0, 0)   -- 08:00:00
+Turno Tarde Inicio = TIME(14, 30, 0)  -- 14:30:00</code></pre>
+            </div>
+          </div>
+
+          <div class="function-card">
+            <div class="function-card__name">DATEVALUE(&lt;texto&gt;) | TIMEVALUE(&lt;texto&gt;)</div>
+            <div class="function-card__level">Principiante</div>
+            <div class="function-card__description">
+              Convierte texto en fecha/hora. Útil cuando los datos vienen como strings y necesitas tratarlos como fechas.
+            </div>
+
+            <h4>Ejemplo:</h4>
+            <div class="code-block">
+              <button class="code-block__copy">Copiar</button>
+              <pre><code class="language-javascript">// Si una columna tiene fechas como texto "2024-01-15":
+FechaConvertida = DATEVALUE("2024-01-15")
+
+// ¡Cuidado con el formato! Depende del locale del modelo:
+DATEVALUE("15/01/2024")  -- formato europeo
+DATEVALUE("01/15/2024")  -- formato USA</code></pre>
+            </div>
+          </div>
+        </section>
+
+        <!-- SECCIÓN 2: Extraer componentes -->
+        <section id="extraer">
+          <div class="category-header">
+            <span class="category-header__icon">🔍</span>
+            <h2 class="category-header__title">Extraer partes de una fecha</h2>
+          </div>
+
+          <h3>Tabla de referencia completa:</h3>
+          <table class="function-table">
+            <thead>
+              <tr>
+                <th>FUNCIÓN</th>
+                <th>DEVUELVE</th>
+                <th>RANGO</th>
+                <th>EJEMPLO</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>YEAR(fecha)</strong></td>
+                <td>Año completo</td>
+                <td>1900-9999</td>
+                <td>YEAR(TODAY()) → 2024</td>
+              </tr>
+              <tr>
+                <td><strong>MONTH(fecha)</strong></td>
+                <td>Número de mes</td>
+                <td>1-12</td>
+                <td>MONTH(TODAY()) → 3</td>
+              </tr>
+              <tr>
+                <td><strong>DAY(fecha)</strong></td>
+                <td>Día del mes</td>
+                <td>1-31</td>
+                <td>DAY(TODAY()) → 15</td>
+              </tr>
+              <tr>
+                <td><strong>HOUR(fecha)</strong></td>
+                <td>Hora</td>
+                <td>0-23</td>
+                <td>HOUR(NOW()) → 14</td>
+              </tr>
+              <tr>
+                <td><strong>MINUTE(fecha)</strong></td>
+                <td>Minuto</td>
+                <td>0-59</td>
+                <td>MINUTE(NOW()) → 30</td>
+              </tr>
+              <tr>
+                <td><strong>SECOND(fecha)</strong></td>
+                <td>Segundo</td>
+                <td>0-59</td>
+                <td>SECOND(NOW()) → 45</td>
+              </tr>
+              <tr>
+                <td><strong>WEEKDAY(fecha, [tipo])</strong></td>
+                <td>Día de la semana</td>
+                <td>1-7</td>
+                <td>WEEKDAY(TODAY(), 2) → 1 (lunes=1)</td>
+              </tr>
+              <tr>
+                <td><strong>WEEKNUM(fecha, [tipo])</strong></td>
+                <td>Semana del año</td>
+                <td>1-53</td>
+                <td>WEEKNUM(TODAY(), 21) → 15 (ISO)</td>
+              </tr>
+              <tr>
+                <td><strong>QUARTER(fecha)</strong></td>
+                <td>Trimestre</td>
+                <td>1-4</td>
+                <td>QUARTER(TODAY()) → 1</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h3>Ejemplos prácticos en columnas calculadas:</h3>
+          <div class="code-block">
+            <button class="code-block__copy">Copiar</button>
+            <pre><code class="language-javascript">// En tabla Calendario — columnas calculadas útiles:
+'Calendario'[Año] = YEAR('Calendario'[Fecha])
+'Calendario'[Mes Num] = MONTH('Calendario'[Fecha])
+'Calendario'[Mes Nombre] = FORMAT('Calendario'[Fecha], "MMMM")
+'Calendario'[Trimestre] = "Q" & QUARTER('Calendario'[Fecha])
+'Calendario'[Semana ISO] = WEEKNUM('Calendario'[Fecha], 21)
+'Calendario'[Es Fin Semana] = IF(WEEKDAY('Calendario'[Fecha], 2) >= 6, TRUE, FALSE)
+'Calendario'[Año-Mes] = FORMAT('Calendario'[Fecha], "YYYY-MM")  -- para ordenar</code></pre>
+          </div>
+
+          <div class="note note--tip">
+            <strong>Nombres de mes en español 💡</strong><br>
+            Para el nombre del mes en español, usa FORMAT(fecha, 'MMMM') — DAX usará el idioma del locale de tu modelo. Si el modelo está en inglés pero quieres los meses en español, necesitarás una tabla de traducción o usar SWITCH(MONTH(fecha), 1, 'Enero', 2, 'Febrero', ...).
+          </div>
+        </section>
+
+        <!-- SECCIÓN 3: Calcular entre fechas -->
+        <section id="calcular">
+          <div class="category-header">
+            <span class="category-header__icon">⏱️</span>
+            <h2 class="category-header__title">Calcular diferencias y desplazamientos</h2>
+          </div>
+
+          <div class="function-card">
+            <div class="function-card__name">DATEDIFF(&lt;fecha_inicio&gt;, &lt;fecha_fin&gt;, &lt;intervalo&gt;)</div>
+            <div class="function-card__level">Principiante — Intermedio</div>
+            <div class="function-card__description">
+              Calcula la diferencia entre dos fechas en el intervalo especificado. El intervalo puede ser: SECOND, MINUTE, HOUR, DAY, WEEK, MONTH, QUARTER, YEAR.
+            </div>
+
+            <h4>Ejemplos:</h4>
+            <div class="code-block">
+              <button class="code-block__copy">Copiar</button>
+              <pre><code class="language-javascript">// Antigüedad de un cliente en años
+Antigüedad Años = DATEDIFF('Clientes'[FechaAlta], TODAY(), YEAR)
+
+// Días desde el último pedido
+Días Sin Compra = DATEDIFF(MAX('Pedidos'[Fecha]), TODAY(), DAY)
+
+// Diferencia en meses (para análisis de cohortes)
+Meses desde Alta = DATEDIFF('Clientes'[FechaAlta], MAX('Calendario'[Fecha]), MONTH)
+
+// Horas de un proceso (timestamps con hora)
+Duración Horas = DATEDIFF('Procesos'[Inicio], 'Procesos'[Fin], HOUR)</code></pre>
+            </div>
+          </div>
+
+          <div class="function-card">
+            <div class="function-card__name">EDATE(&lt;fecha_inicio&gt;, &lt;meses&gt;)</div>
+            <div class="function-card__level">Intermedio</div>
+            <div class="function-card__description">
+              Devuelve la fecha que resulta de sumar N meses a una fecha. Gestiona automáticamente el fin de mes (si la fecha es el 31 y el mes destino tiene menos días, devuelve el último día del mes).
+            </div>
+
+            <h4>Ejemplos:</h4>
+            <div class="code-block">
+              <button class="code-block__copy">Copiar</button>
+              <pre><code class="language-javascript">// Fecha de renovación (12 meses después del contrato)
+Fecha Renovación = EDATE('Contratos'[FechaInicio], 12)
+
+// Hace 3 meses:
+Hace 3 Meses = EDATE(TODAY(), -3)
+
+// Hace 1 año:
+Hace 1 Año = EDATE(TODAY(), -12)</code></pre>
+            </div>
+          </div>
+
+          <div class="function-card">
+            <div class="function-card__name">EOMONTH(&lt;fecha_inicio&gt;, &lt;meses&gt;)</div>
+            <div class="function-card__level">Principiante — Intermedio</div>
+            <div class="function-card__description">
+              Devuelve el ÚLTIMO DÍA del mes resultante de sumar N meses. Esencial para cálculos de períodos completos y cierres de mes.
+            </div>
+
+            <h4>Ejemplos:</h4>
+            <div class="code-block">
+              <button class="code-block__copy">Copiar</button>
+              <pre><code class="language-javascript">// Último día del mes actual
+Fin Mes Actual = EOMONTH(TODAY(), 0)
+
+// Último día del mes anterior
+Fin Mes Anterior = EOMONTH(TODAY(), -1)
+
+// Primer día del mes actual (truco con EOMONTH):
+Inicio Mes Actual = EOMONTH(TODAY(), -1) + 1
+// El último día del mes anterior + 1 = primer día del mes actual
+
+// Último día del mes siguiente:
+Fin Mes Siguiente = EOMONTH(TODAY(), 1)
+
+// Patrón para filtrar el mes actual completo:
+Es Mes Actual =
+AND(
+    'Calendario'[Fecha] >= DATE(YEAR(TODAY()), MONTH(TODAY()), 1),
+    'Calendario'[Fecha] <= EOMONTH(TODAY(), 0)
+)</code></pre>
+            </div>
+          </div>
+
+          <div class="function-card">
+            <div class="function-card__name">NETWORKDAYS(&lt;fecha_inicio&gt;, &lt;fecha_fin&gt;, [&lt;festivos&gt;])</div>
+            <div class="function-card__level">Intermedio</div>
+            <div class="function-card__description">
+              Cuenta los días laborables (lunes a viernes) entre dos fechas, excluyendo opcionalmente una tabla de días festivos. Perfecta para SLAs, plazos y análisis de productividad.
+            </div>
+
+            <h4>Ejemplos:</h4>
+            <div class="code-block">
+              <button class="code-block__copy">Copiar</button>
+              <pre><code class="language-javascript">// Días laborables para resolver un ticket de soporte
+Días Lab Resolución = NETWORKDAYS('Tickets'[FechaApertura], 'Tickets'[FechaCierre])
+
+// Con tabla de festivos:
+Días Lab con Festivos =
+NETWORKDAYS(
+    'Tickets'[FechaApertura],
+    'Tickets'[FechaCierre],
+    'Festivos'[Fecha]  -- tabla con columna de fechas festivas
+)
+
+// SLA: ¿cuántos tickets se resolvieron en <= 3 días laborables?
+Tickets en SLA =
+COUNTROWS(
+    FILTER('Tickets',
+        NETWORKDAYS('Tickets'[FechaApertura], 'Tickets'[FechaCierre]) <= 3)
+)</code></pre>
+            </div>
+          </div>
+
+          <div class="function-card">
+            <div class="function-card__name">YEARFRAC(&lt;fecha_inicio&gt;, &lt;fecha_fin&gt;, [&lt;base&gt;])</div>
+            <div class="function-card__level">Intermedio</div>
+            <div class="function-card__description">
+              Devuelve la fracción de año entre dos fechas (ej: 0.5 = 6 meses). Útil para cálculos financieros de intereses y proporciones temporales precisas.
+            </div>
+
+            <h4>Ejemplo:</h4>
+            <div class="code-block">
+              <button class="code-block__copy">Copiar</button>
+              <pre><code class="language-javascript">// Antigüedad exacta en años (con decimales)
+Antigüedad Exacta = YEARFRAC('Clientes'[FechaAlta], TODAY(), 1)
+// 2.75 = 2 años y 9 meses de antigüedad</code></pre>
+            </div>
+          </div>
+        </section>
+
+        <!-- SECCIÓN 4: Fechas relativas -->
+        <section id="hoy">
+          <div class="category-header">
+            <span class="category-header__icon">📌</span>
+            <h2 class="category-header__title">TODAY, NOW, UTCTODAY, UTCNOW</h2>
+          </div>
+
+          <div class="function-card">
+            <div class="function-card__name">TODAY() | NOW() | UTCTODAY() | UTCNOW()</div>
+            <div class="function-card__level">Principiante</div>
+            <div class="function-card__description">
+              <ul>
+                <li><strong>TODAY()</strong> — Fecha actual sin hora (se actualiza en cada refresco)</li>
+                <li><strong>NOW()</strong> — Fecha y hora actuales</li>
+                <li><strong>UTCTODAY()</strong> — Fecha actual en UTC</li>
+                <li><strong>UTCNOW()</strong> — Fecha y hora actuales en UTC</li>
+              </ul>
+            </div>
+
+            <h4>Ejemplo — Métricas relativas al día de hoy:</h4>
+            <div class="code-block">
+              <button class="code-block__copy">Copiar</button>
+              <pre><code class="language-javascript">// Ventas de los últimos 30 días (ventana móvil)
+Ventas Últimos 30 días =
+CALCULATE(
+    SUM('Ventas'[Importe]),
+    DATESINPERIOD('Calendario'[Fecha], TODAY(), -30, DAY)
+)
+
+// ¿El pedido está vencido?
+'Pedidos'[Vencido] = IF('Pedidos'[FechaEntrega] < TODAY(), TRUE, FALSE)
+
+// Días hasta la próxima renovación
+Días Para Renovar = DATEDIFF(TODAY(), 'Contratos'[FechaRenovación], DAY)</code></pre>
+            </div>
+
+            <div class="note note--warning">
+              <strong>⚠️ Funciones volátiles</strong><br>
+              TODAY() y NOW() son funciones VOLÁTILES — se recalculan en cada refresco del informe. Esto está bien para métricas dinámicas, pero si necesitas la fecha de un proceso concreto (ej: cuándo se importaron los datos), guárdala en una columna de la tabla en lugar de usar NOW().
+            </div>
+          </div>
+        </section>
+
+        <!-- SECCIÓN 5: CALENDAR y CALENDARAUTO -->
+        <section id="calendario">
+          <div class="category-header">
+            <span class="category-header__icon">🗓️</span>
+            <h2 class="category-header__title">Construir tu tabla de calendario</h2>
+          </div>
+
+          <div class="function-card">
+            <div class="function-card__name">CALENDAR(&lt;fecha_inicio&gt;, &lt;fecha_fin&gt;)</div>
+            <div class="function-card__level">Intermedio</div>
+            <div class="function-card__description">
+              Devuelve una tabla de una columna ([Date]) con todas las fechas entre las dos indicadas (inclusivo). La base para crear una tabla de calendario personalizada.
+            </div>
+
+            <h4>Ejemplos:</h4>
+            <div class="code-block">
+              <button class="code-block__copy">Copiar</button>
+              <pre><code class="language-javascript">// Tabla calculada con todas las fechas de 2020 a 2030
+Calendario =
+CALENDAR(DATE(2020,1,1), DATE(2030,12,31))
+
+// Versión dinámica (siempre 5 años atrás y 2 años adelante):
+Calendario Dinámico =
+CALENDAR(
+    DATE(YEAR(TODAY()) - 5, 1, 1),
+    DATE(YEAR(TODAY()) + 2, 12, 31)
+)
+
+// Añadir columnas con ADDCOLUMNS:
+Calendario Completo =
+ADDCOLUMNS(
+    CALENDAR(DATE(2020,1,1), DATE(2030,12,31)),
+    "Año", YEAR([Date]),
+    "Mes", MONTH([Date]),
+    "Nombre Mes", FORMAT([Date], "MMMM"),
+    "Trimestre", "Q" & QUARTER([Date]),
+    "Semana", WEEKNUM([Date], 21),
+    "Es Fin Semana", WEEKDAY([Date], 2) >= 6,
+    "Año-Mes", FORMAT([Date], "YYYY-MM"),
+    "Año-Trimestre", FORMAT([Date], "YYYY") & "-Q" & QUARTER([Date])
+)</code></pre>
+            </div>
+          </div>
+
+          <div class="function-card">
+            <div class="function-card__name">CALENDARAUTO([&lt;fin_de_mes_fiscal&gt;])</div>
+            <div class="function-card__level">Principiante — Intermedio</div>
+            <div class="function-card__description">
+              Genera automáticamente una tabla de calendario basándose en el rango de fechas de todas las tablas del modelo. ¡No necesitas definir el rango manualmente! DAX busca la fecha más antigua y más reciente en todo el modelo.
+            </div>
+
+            <h4>Ejemplos:</h4>
+            <div class="code-block">
+              <button class="code-block__copy">Copiar</button>
+              <pre><code class="language-javascript">// ¡Una sola línea! DAX detecta el rango de fechas automáticamente
+Calendario = CALENDARAUTO()
+
+// Con año fiscal que termina en marzo (mes 3):
+Calendario Fiscal = CALENDARAUTO(3)
+// Genera hasta el 31 de marzo del último año con datos</code></pre>
+            </div>
+
+            <div class="note note--tip">
+              <strong>CALENDAR vs CALENDARAUTO 💡</strong><br>
+              CALENDARAUTO es perfecta para empezar rápido. Pero para modelos en producción, CALENDAR con fechas explícitas es más recomendable — así tienes control total sobre el rango y no dependes de cómo cambien los datos.
+            </div>
+          </div>
+        </section>
+
+        <!-- SECCIÓN 6: Patrones prácticos -->
+        <section id="patrones">
+          <div class="category-header">
+            <span class="category-header__icon">🛠️</span>
+            <h2 class="category-header__title">Los patrones de fecha más usados en proyectos reales</h2>
+          </div>
+
+          <h3>Patrón 1 — Tabla de calendario completa (tabla calculada):</h3>
+          <div class="code-block">
+            <button class="code-block__copy">Copiar</button>
+            <pre><code class="language-javascript">Calendario =
+ADDCOLUMNS(
+    CALENDARAUTO(),
+    "Año", YEAR([Date]),
+    "Mes Num", MONTH([Date]),
+    "Mes Nombre", FORMAT([Date], "MMMM"),
+    "Trimestre Num", QUARTER([Date]),
+    "Trimestre", "Q" & QUARTER([Date]),
+    "Semana ISO", WEEKNUM([Date], 21),
+    "Día Semana Num", WEEKDAY([Date], 2),
+    "Día Semana Nombre", FORMAT([Date], "DDDD"),
+    "Es Fin Semana", IF(WEEKDAY([Date], 2) >= 6, TRUE, FALSE),
+    "Año-Mes", FORMAT([Date], "YYYY-MM"),
+    "Año-Trim", FORMAT([Date], "YYYY") & "-Q" & QUARTER([Date]),
+    "Mes-Año", FORMAT([Date], "MMM YYYY"),
+    "Es Mes Actual", MONTH([Date]) = MONTH(TODAY()) && YEAR([Date]) = YEAR(TODAY()),
+    "Es Año Actual", YEAR([Date]) = YEAR(TODAY()),
+    "Días hasta Hoy", DATEDIFF([Date], TODAY(), DAY)
+)</code></pre>
+          </div>
+
+          <h3>Patrón 2 — Filtro dinámico de período reciente:</h3>
+          <div class="code-block">
+            <button class="code-block__copy">Copiar</button>
+            <pre><code class="language-javascript">// Últimos N días (parámetro configurable)
+Ventas Período =
+VAR DiasAtras = SELECTEDVALUE('Selector Días'[Valor], 30)
+RETURN
+CALCULATE(
+    SUM('Ventas'[Importe]),
+    DATESINPERIOD('Calendario'[Fecha], TODAY(), -DiasAtras, DAY)
+)</code></pre>
+          </div>
+
+          <h3>Patrón 3 — Columna de antigüedad en segmentos:</h3>
+          <div class="code-block">
+            <button class="code-block__copy">Copiar</button>
+            <pre><code class="language-javascript">Segmento Antigüedad =
+VAR Dias = DATEDIFF('Clientes'[FechaAlta], TODAY(), DAY)
+RETURN
+SWITCH(TRUE(),
+    Dias <= 30, "Nuevo (< 1 mes)",
+    Dias <= 90, "Reciente (1-3 meses)",
+    Dias <= 365, "Establecido (3-12 meses)",
+    Dias <= 730, "Fiel (1-2 años)",
+    "Veterano (> 2 años)"
+)</code></pre>
+          </div>
+
+          <div class="note note--next">
+            <strong>🚀 Siguiente paso</strong><br>
+            ¡Ahora manejas las fechas como una pro! El siguiente nivel es la Inteligencia de Tiempo — funciones específicas para comparativas YTD, vs año anterior y medias móviles con tablas de calendario marcadas.
+          </div>
+        </section>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- Footer (cargado dinámicamente) -->
+  <div id="main-footer"></div>
+
+  <!-- Botón volver arriba -->
+  <button id="back-to-top" class="btn-back-to-top" aria-label="Volver arriba">↑</button>
+
+  <!-- Scripts -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+  <script src="../../assets/js/theme.js"></script>
+  <script src="../../assets/js/main.js"></script>
+
+  <!-- Buscador DAX -->
+  <script src="../../assets/js/dax-search.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Auto-inicializar todos los widgets con data-dax-search="true"
+      if (window.daxSearch) {
+        window.daxSearch.initAll({
+          baseUrl: '../'  // estamos en topics/dax/, las URLs deben ir a topics/dax/...
+        });
+      }
+    });
+  </script>
+  <script src="../../assets/js/cursor.js"></script>
+</body>
+</html>

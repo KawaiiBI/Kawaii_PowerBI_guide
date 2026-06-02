@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Accesibilidad e inclusividad en dashboards Power BI: WCAG 2.1, daltonismo, contraste, tab order, alt text, traffic light problem y diseño para todas las personas.">
+  <title>Accesibilidad e Inclusividad (WCAG) — Diseño y UX | Power BI Guide by Kawaii BI</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+
+  <!-- Estilos CSS -->
+  <link rel="stylesheet" href="../../assets/css/main.css">
+  <link rel="stylesheet" href="../../assets/css/themes.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/layout.css">
+
+  <style>
+    /* ── Cabecera centrada ──────────────────────────────── */
+    .topic-header {
+      text-align: center;
+      padding: 2.5rem 0 2rem;
+      border-bottom: 2px solid var(--color-mauve);
+      margin-bottom: 2.5rem;
+    }
+    .topic-header__icon { font-size: 4rem; margin-bottom: 0.75rem; display: block; }
+    .topic-header__title { font-size: clamp(1.875rem, 4vw, 2.5rem); font-weight: 800; color: var(--color-dark); margin-bottom: 0.625rem; line-height: 1.2; }
+    .topic-header__subtitle { font-size: 1.0625rem; color: var(--color-slate); margin-bottom: 1.25rem; line-height: 1.5; max-width: 620px; margin-left: auto; margin-right: auto; }
+    .topic-header__levels { display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap; }
+
+    /* ── TOC ────────────────────────────────────────────── */
+    .toc { background: var(--color-rose); border-radius: var(--border-radius); padding: 1.25rem 1.5rem; margin-bottom: 2rem; border: 1.5px solid var(--color-mauve); }
+    .toc__title { font-size: 1rem; font-weight: 700; margin: 0 0 0.75rem; }
+    .toc__list { display: flex; flex-wrap: wrap; gap: 0.5rem; list-style: none; padding: 0; margin: 0; }
+    .toc__list a { font-size: 0.8125rem; color: var(--color-coral); text-decoration: none; padding: 0.25rem 0.625rem; background: var(--color-white); border-radius: 999px; border: 1px solid var(--color-mauve); transition: background 0.15s, color 0.15s; }
+    .toc__list a:hover { background: var(--color-coral); color: white; }
+
+    /* ── Sección header ─────────────────────────────────── */
+    .category-header { display: flex; align-items: center; gap: 0.75rem; margin: 2.5rem 0 1.25rem; padding: 0.875rem 1.25rem; background: var(--color-rose); border-radius: var(--border-radius-sm); border-left: 4px solid var(--color-coral); }
+    .category-header__icon { font-size: 1.5rem; }
+    .category-header__title { font-size: 1.25rem; font-weight: 700; margin: 0; }
+
+    /* ── Concept card ───────────────────────────────────── */
+    .concept-card { background: var(--color-white); border: 1.5px solid var(--color-mauve); border-radius: var(--border-radius); padding: 1.75rem; margin-bottom: 1.5rem; scroll-margin-top: 80px; transition: border-color 0.2s; }
+    .concept-card:hover { border-color: var(--color-coral); }
+    .concept-card h3 { font-size: 1.25rem; font-weight: 700; color: var(--color-coral); margin-bottom: 0.75rem; }
+    .concept-card h4 { font-size: 0.9375rem; font-weight: 700; color: var(--color-dark); margin: 1.25rem 0 0.5rem; }
+    .concept-card p { font-size: 0.9375rem; line-height: 1.7; color: var(--color-dark); margin-bottom: 0.75rem; }
+    .concept-card p:last-child { margin-bottom: 0; }
+    .concept-card ul, .concept-card ol { padding-left: 1.25rem; font-size: 0.9375rem; line-height: 1.8; color: var(--color-dark); margin-bottom: 0.75rem; }
+
+    /* ── Cita destacada ─────────────────────────────────── */
+    .quote-block { background: linear-gradient(135deg, var(--color-rose) 0%, var(--color-blush) 100%); border-left: 4px solid var(--color-coral); border-radius: var(--border-radius); padding: 1.5rem 1.75rem; margin: 1.5rem 0; }
+    .quote-block__text { font-size: 1.125rem; font-weight: 600; color: var(--color-dark); line-height: 1.5; font-style: italic; margin: 0 0 0.375rem; }
+    .quote-block__author { font-size: 0.8125rem; color: var(--color-slate); margin: 0; }
+
+    /* ── Demo traffic light ────────────────────────────── */
+    .traffic-demo {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.25rem;
+      margin: 1.5rem 0;
+    }
+    .traffic-demo__panel {
+      border-radius: var(--border-radius);
+      padding: 1.5rem;
+      text-align: center;
+      border: 1.5px solid var(--color-mauve);
+    }
+    .traffic-demo__label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 1rem;
+    }
+    .traffic-demo__label--bad { color: #c0392b; }
+    .traffic-demo__label--good { color: #27ae60; }
+    .traffic-demo__lights {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      background: #444;
+      border-radius: 999px;
+      padding: 0.75rem 0.625rem;
+      width: 56px;
+      margin: 0 auto 0.75rem;
+    }
+    .traffic-demo__light {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.875rem;
+      font-weight: 800;
+      color: transparent;
+    }
+    .traffic-demo__light--red { background: #e74c3c; }
+    .traffic-demo__light--yellow { background: #f39c12; }
+    .traffic-demo__light--green { background: #27ae60; }
+    .traffic-demo__light--icon { color: #fff; }
+    .traffic-demo__caption {
+      font-size: 0.8125rem;
+      color: var(--color-slate);
+      line-height: 1.5;
+    }
+    @media (max-width: 600px) { .traffic-demo { grid-template-columns: 1fr; } }
+
+    /* ── Demo daltonismo ───────────────────────────────── */
+    .dalton-demo {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      margin: 1.25rem 0;
+    }
+    .dalton-demo__panel {
+      border-radius: var(--border-radius-sm);
+      padding: 1rem;
+      border: 1.5px solid var(--color-mauve);
+      text-align: center;
+    }
+    .dalton-demo__bars {
+      display: flex;
+      gap: 6px;
+      align-items: flex-end;
+      justify-content: center;
+      height: 60px;
+      margin-bottom: 0.625rem;
+    }
+    .dalton-demo__bar {
+      width: 20px;
+      border-radius: 3px 3px 0 0;
+    }
+    .dalton-demo__label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--color-dark);
+    }
+    .dalton-demo__sub {
+      font-size: 0.6875rem;
+      color: var(--color-slate);
+    }
+    @media (max-width: 600px) { .dalton-demo { grid-template-columns: 1fr; } }
+
+    /* ── Tabla de contraste ────────────────────────────── */
+    .contrast-table { width: 100%; border-collapse: collapse; font-size: 0.875rem; margin: 1rem 0; }
+    .contrast-table th { background: var(--color-rose); padding: 0.625rem 0.875rem; text-align: left; font-weight: 700; border: 1px solid var(--color-mauve); }
+    .contrast-table td { padding: 0.625rem 0.875rem; border: 1px solid var(--color-mauve); line-height: 1.5; vertical-align: top; }
+    .contrast-table tr:nth-child(even) td { background: var(--color-blush); }
+    .contrast-sample {
+      display: inline-block;
+      padding: 0.2rem 0.5rem;
+      border-radius: 3px;
+      font-weight: 600;
+      font-size: 0.8125rem;
+    }
+
+    /* ── Grid comparativo bien/mal ─────────────────────── */
+    .comparison-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1rem 0; }
+    .comparison-col { border-radius: var(--border-radius-sm); padding: 1.25rem; border: 1.5px solid var(--color-mauve); }
+    .comparison-col--bad { background: #fff5f5; border-color: #f5c6c6; }
+    .comparison-col--good { background: #f0faf5; border-color: #b8dfc9; }
+    .comparison-col__label { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.625rem; }
+    .comparison-col--bad .comparison-col__label { color: #c0392b; }
+    .comparison-col--good .comparison-col__label { color: #27ae60; }
+    .comparison-col ul { font-size: 0.875rem; padding-left: 1.1rem; margin: 0; line-height: 1.7; color: var(--color-dark); }
+    @media (max-width: 600px) { .comparison-grid { grid-template-columns: 1fr; } }
+
+    /* ── Checklist ─────────────────────────────────────── */
+    .checklist { list-style: none; padding: 0; margin: 1rem 0; }
+    .checklist li {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      padding: 0.625rem 0;
+      border-bottom: 1px solid var(--color-blush);
+      font-size: 0.9375rem;
+      line-height: 1.6;
+      color: var(--color-dark);
+    }
+    .checklist li:last-child { border-bottom: none; }
+    .checklist li::before { content: "✅"; flex-shrink: 0; margin-top: 0.1rem; }
+  </style>
+</head>
+<body>
+
+  <!-- SIDEBAR -->
+  <aside class="site-sidebar">
+    <div class="site-sidebar__profile">
+      <img src="../../assets/images/avatar Sara.png" alt="Sara Lozano Martí" class="site-sidebar__avatar">
+      <p class="site-sidebar__name">Sara Lozano Martí</p>
+      <p class="site-sidebar__subtitle">Power BI Expert</p>
+    </div>
+    <nav class="site-sidebar__nav" aria-label="Navegación principal">
+      <ul>
+        <li><a href="../../index.html" class="site-sidebar__link"><span class="site-sidebar__icon">🏠</span> Inicio</a></li>
+        <li><a href="../dax.html" class="site-sidebar__link"><span class="site-sidebar__icon">⚡</span> Funciones DAX</a></li>
+        <li><a href="../power-query.html" class="site-sidebar__link"><span class="site-sidebar__icon">🔄</span> Power Query</a></li>
+        <li><a href="../lenguaje-m.html" class="site-sidebar__link"><span class="site-sidebar__icon">〽️</span> Lenguaje M</a></li>
+        <li><a href="../modelado.html" class="site-sidebar__link"><span class="site-sidebar__icon">🗄️</span> Modelado</a></li>
+        <li><a href="../conceptos-powerbi.html" class="site-sidebar__link"><span class="site-sidebar__icon">📊</span> Conceptos Power BI</a></li>
+        <li><a href="../fabric.html" class="site-sidebar__link"><span class="site-sidebar__icon">🧵</span> Microsoft Fabric</a></li>
+        <li><a href="../tmdl.html" class="site-sidebar__link"><span class="site-sidebar__icon">📝</span> TMDL</a></li>
+        <li><a href="../diseno-ux.html" class="site-sidebar__link is-active"><span class="site-sidebar__icon">🎨</span> Diseño y UX</a></li>
+        <li><a href="../gobernanza.html" class="site-sidebar__link"><span class="site-sidebar__icon">🔒</span> Gobernanza</a></li>
+      </ul>
+    </nav>
+    <div class="site-sidebar__divider"></div>
+    <div class="site-sidebar__footer">
+      <a href="../../quien-soy.html" class="site-sidebar__link site-sidebar__link--highlight"><span class="site-sidebar__icon">👩‍💻</span> ¿Quién soy?</a>
+      <div class="site-sidebar__social">
+        <a href="https://www.linkedin.com/in/saralozanomarti" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><img src="../../assets/images/logo linkedIN.png" alt="LinkedIn" class="site-sidebar__social-icon"></a>
+        <a href="https://www.youtube.com/@KawaiiPowerBI" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><img src="../../assets/images/logo youtube.png" alt="YouTube" class="site-sidebar__social-icon"></a>
+        <a href="https://github.com/KawaiiBI" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><img src="../../assets/images/logo github.png" alt="GitHub" class="site-sidebar__social-icon"></a>
+      </div>
+      <div class="site-sidebar__logo-bottom"><img src="../../assets/images/Logo Kawaii.jpg" alt="Kawaii BI" class="site-sidebar__logo-img"></div>
+      <p class="site-sidebar__copyright">Power BI Guide 🌸<br>© 2026 Kawaii BI</p>
+    </div>
+  </aside>
+
+  <!-- CONTENIDO PRINCIPAL -->
+  <div class="page-wrapper">
+    <main class="main-content">
+      <div class="topic-page">
+
+        <!-- Breadcrumb -->
+        <nav class="breadcrumb" aria-label="Ruta de navegación">
+          <span class="breadcrumb__item"><a href="../../index.html">🏠 Inicio</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item"><a href="../diseno-ux.html">Diseño y UX</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item">Accesibilidad e Inclusividad</span>
+        </nav>
+
+        <!-- Cabecera -->
+        <header class="topic-header">
+          <span class="topic-header__icon">♿</span>
+          <h1 class="topic-header__title">Accesibilidad e Inclusividad (WCAG)</h1>
+          <p class="topic-header__subtitle">"Diseñar para la accesibilidad mejora la experiencia de todos." Daltonismo, contraste WCAG 2.1, el problema del traffic light, alt text, tab order y diseño inclusivo en Power BI</p>
+          <div class="topic-header__levels">
+            <span class="badge badge--intermediate">Intermedio</span>
+          </div>
+        </header>
+
+        <!-- TOC -->
+        <nav class="toc" aria-label="Contenido de esta página">
+          <p class="toc__title">📋 En esta página</p>
+          <ul class="toc__list">
+            <li><a href="#por-que">¿Por qué accesibilidad en dashboards?</a></li>
+            <li><a href="#daltonismo">Daltonismo: no uses solo color</a></li>
+            <li><a href="#traffic-light">El problema del traffic light</a></li>
+            <li><a href="#contraste">Contraste WCAG 2.1</a></li>
+            <li><a href="#senales-mixtas">Señales mixtas</a></li>
+            <li><a href="#tab-order">Tab order y navegación por teclado</a></li>
+            <li><a href="#alt-text">Alt text en visuals</a></li>
+            <li><a href="#checklist">Checklist de accesibilidad</a></li>
+          </ul>
+        </nav>
+
+        <!-- ─────────────────────────────────────────── -->
+        <!-- 1. ¿Por qué accesibilidad?                  -->
+        <!-- ─────────────────────────────────────────── -->
+        <div class="category-header" id="por-que">
+          <span class="category-header__icon">🌍</span>
+          <h2 class="category-header__title">¿Por qué accesibilidad en dashboards?</h2>
+        </div>
+
+        <div class="concept-card">
+          <h3>No es un "extra" — mejora la experiencia de absolutamente todas las personas</h3>
+          <p>
+            El 8% de los hombres y el 0.5% de las mujeres tienen algún tipo de daltonismo.
+            El 15% de la población mundial tiene alguna forma de discapacidad. Y el 100% de
+            las personas se benefician de un diseño claro, legible y con buen contraste.
+          </p>
+          <p>
+            Diseñar para la accesibilidad no es hacer un dashboard diferente para personas
+            con discapacidad — es hacer un dashboard <strong>mejor para todo el mundo</strong>.
+            Un texto con buen contraste se lee mejor en todas las pantallas. Un gráfico que
+            no depende solo del color se entiende en todas las situaciones: pantalla de
+            portátil, proyector en una sala iluminada, impresión en blanco y negro.
+          </p>
+
+          <div class="quote-block">
+            <p class="quote-block__text">"Diseñar para la accesibilidad mejora la experiencia de todos."</p>
+            <p class="quote-block__author">— Kawaii BI</p>
+          </div>
+
+          <div class="note note--tip">
+            💡 <strong>Tip kawaii:</strong> La accesibilidad no es caridad — es profesionalidad. Un informe Power BI accesible es un informe que funciona para tu CEO con daltonismo, tu jefa de operaciones que usa lector de pantalla, y el becario que está viendo el dashboard en un monitor antiguo con poco contraste.
+          </div>
+        </div>
+
+        <!-- ─────────────────────────────────────────── -->
+        <!-- 2. Daltonismo                               -->
+        <!-- ─────────────────────────────────────────── -->
+        <div class="category-header" id="daltonismo">
+          <span class="category-header__icon">👁️</span>
+          <h2 class="category-header__title">Daltonismo: no uses solo color para comunicar</h2>
+        </div>
+
+        <div class="concept-card">
+          <h3>Lo que tú ves no es lo que todos ven</h3>
+          <p>
+            El daltonismo (o deficiencia en la visión del color) afecta a cómo una persona
+            distingue ciertos colores. La forma más común es la <strong>deuteranomalía</strong>
+            (dificultad para distinguir rojo de verde), que afecta a aproximadamente el 6%
+            de la población masculina.
+          </p>
+          <p>
+            Esto significa que si tu dashboard usa rojo y verde como únicos indicadores
+            de bueno/malo, aproximadamente <strong>1 de cada 12 hombres</strong> de tu
+            audiencia no puede leerlo correctamente.
+          </p>
+
+          <h4>Cómo ven tus gráficos las personas con daltonismo</h4>
+          <div class="dalton-demo" aria-label="Simulación de daltonismo en gráficos de barras">
+            <!-- Visión normal -->
+            <div class="dalton-demo__panel">
+              <div class="dalton-demo__bars">
+                <div class="dalton-demo__bar" style="background:#e74c3c; height:45px;"></div>
+                <div class="dalton-demo__bar" style="background:#27ae60; height:55px;"></div>
+                <div class="dalton-demo__bar" style="background:#e74c3c; height:30px;"></div>
+                <div class="dalton-demo__bar" style="background:#27ae60; height:50px;"></div>
+                <div class="dalton-demo__bar" style="background:#e74c3c; height:40px;"></div>
+              </div>
+              <p class="dalton-demo__label">Visión normal</p>
+              <p class="dalton-demo__sub">Rojo y verde claramente distintos</p>
+            </div>
+            <!-- Deuteranomalía -->
+            <div class="dalton-demo__panel">
+              <div class="dalton-demo__bars">
+                <div class="dalton-demo__bar" style="background:#a8803a; height:45px;"></div>
+                <div class="dalton-demo__bar" style="background:#9a8a3e; height:55px;"></div>
+                <div class="dalton-demo__bar" style="background:#a8803a; height:30px;"></div>
+                <div class="dalton-demo__bar" style="background:#9a8a3e; height:50px;"></div>
+                <div class="dalton-demo__bar" style="background:#a8803a; height:40px;"></div>
+              </div>
+              <p class="dalton-demo__label">Deuteranomalía</p>
+              <p class="dalton-demo__sub">Rojo y verde casi indistinguibles</p>
+            </div>
+            <!-- Con iconos -->
+            <div class="dalton-demo__panel" style="border-color: #b8dfc9;">
+              <div class="dalton-demo__bars">
+                <div class="dalton-demo__bar" style="background:#a8803a; height:45px; display:flex; align-items:center; justify-content:center; width:24px;"><span style="color:#fff; font-size:0.6rem; font-weight:800;">✗</span></div>
+                <div class="dalton-demo__bar" style="background:#9a8a3e; height:55px; display:flex; align-items:center; justify-content:center; width:24px;"><span style="color:#fff; font-size:0.6rem; font-weight:800;">✓</span></div>
+                <div class="dalton-demo__bar" style="background:#a8803a; height:30px; display:flex; align-items:center; justify-content:center; width:24px;"><span style="color:#fff; font-size:0.6rem; font-weight:800;">✗</span></div>
+                <div class="dalton-demo__bar" style="background:#9a8a3e; height:50px; display:flex; align-items:center; justify-content:center; width:24px;"><span style="color:#fff; font-size:0.6rem; font-weight:800;">✓</span></div>
+                <div class="dalton-demo__bar" style="background:#a8803a; height:40px; display:flex; align-items:center; justify-content:center; width:24px;"><span style="color:#fff; font-size:0.6rem; font-weight:800;">✗</span></div>
+              </div>
+              <p class="dalton-demo__label" style="color: #27ae60;">✅ Con iconos</p>
+              <p class="dalton-demo__sub">Distinguible independientemente del color</p>
+            </div>
+          </div>
+
+          <h4>La regla fundamental</h4>
+          <p>
+            <strong>Nunca uses el color como único canal de información.</strong> Siempre
+            acompáñalo con un segundo canal visual que no dependa del color:
+          </p>
+          <ul>
+            <li><strong>Iconos o formas:</strong> ✗ para negativo, ✓ para positivo, ▲ para subida, ▼ para bajada</li>
+            <li><strong>Patrones o texturas:</strong> Rayas, puntos o líneas discontinuas como alternativa al color de relleno</li>
+            <li><strong>Texto explícito:</strong> Etiquetas "Cumple" / "No cumple" junto al indicador de color</li>
+            <li><strong>Posición:</strong> Los valores negativos pueden estar a la izquierda y los positivos a la derecha, además del color</li>
+          </ul>
+
+          <div class="note note--practice">
+            📌 <strong>Buena práctica en Power BI:</strong> Cuando uses formato condicional con colores, activa simultáneamente los iconos condicionales (Format visual → Visual → Cell elements → Icons). Power BI permite mostrar color + icono a la vez — usa ambos siempre.
+          </div>
+        </div>
+
+        <!-- ─────────────────────────────────────────── -->
+        <!-- 3. El problema del traffic light            -->
+        <!-- ─────────────────────────────────────────── -->
+        <div class="category-header" id="traffic-light">
+          <span class="category-header__icon">🚦</span>
+          <h2 class="category-header__title">El problema del traffic light</h2>
+        </div>
+
+        <div class="concept-card">
+          <h3>El semáforo sin iconos es invisible para muchas personas</h3>
+          <p>
+            El patrón "semáforo" (rojo-ámbar-verde) es uno de los más usados en dashboards
+            corporativos para indicar el estado de KPIs. El problema: sin formas adicionales,
+            las personas con daltonismo rojo-verde ven los tres colores como variaciones de
+            un mismo tono — y pierden completamente la información de estado.
+          </p>
+
+          <div class="traffic-demo" aria-label="Comparación de semáforo sin iconos vs con iconos">
+            <div class="traffic-demo__panel" style="background: #fff5f5;">
+              <p class="traffic-demo__label traffic-demo__label--bad">❌ Sin iconos</p>
+              <div class="traffic-demo__lights">
+                <div class="traffic-demo__light traffic-demo__light--red"></div>
+                <div class="traffic-demo__light traffic-demo__light--yellow"></div>
+                <div class="traffic-demo__light traffic-demo__light--green"></div>
+              </div>
+              <p class="traffic-demo__caption">Solo depende del color. 1 de cada 12 hombres no distingue rojo de verde.</p>
+            </div>
+            <div class="traffic-demo__panel" style="background: #f0faf5;">
+              <p class="traffic-demo__label traffic-demo__label--good">✅ Con iconos</p>
+              <div class="traffic-demo__lights">
+                <div class="traffic-demo__light traffic-demo__light--red traffic-demo__light--icon">✗</div>
+                <div class="traffic-demo__light traffic-demo__light--yellow traffic-demo__light--icon">!</div>
+                <div class="traffic-demo__light traffic-demo__light--green traffic-demo__light--icon">✓</div>
+              </div>
+              <p class="traffic-demo__caption">Color + forma. Distinguible por todas las personas independientemente de la visión del color.</p>
+            </div>
+          </div>
+
+          <div class="note note--tip">
+            💡 <strong>Tip kawaii:</strong> En Power BI, cuando uses un KPI visual con semáforo, añade una medida de texto auxiliar que muestre "OK" / "Alerta" / "Crítico" junto al color. Parece redundante para ti, pero es vital para las personas que no distinguen los colores.
+          </div>
+        </div>
+
+        <!-- ─────────────────────────────────────────── -->
+        <!-- 4. Contraste WCAG 2.1                       -->
+        <!-- ─────────────────────────────────────────── -->
+        <div class="category-header" id="contraste">
+          <span class="category-header__icon">🔲</span>
+          <h2 class="category-header__title">Contraste WCAG 2.1</h2>
+        </div>
+
+        <div class="concept-card">
+          <h3>Verifica que el texto se lea contra su fondo</h3>
+          <p>
+            Las <strong>WCAG 2.1</strong> (Web Content Accessibility Guidelines) definen ratios
+            mínimos de contraste entre texto y fondo para garantizar la legibilidad. Aunque Power BI
+            no es técnicamente una web, estos estándares aplican exactamente igual a los dashboards
+            porque se ven en pantalla.
+          </p>
+
+          <table class="contrast-table" aria-label="Niveles de contraste WCAG 2.1">
+            <thead>
+              <tr>
+                <th>Nivel</th>
+                <th>Ratio mínimo</th>
+                <th>Aplica a</th>
+                <th>Ejemplo</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>AA (mínimo)</strong></td>
+                <td>4.5:1</td>
+                <td>Texto normal (< 18pt)</td>
+                <td><span class="contrast-sample" style="background:#F5F5F5; color:#555555;">Texto 5.9:1 ✓</span></td>
+              </tr>
+              <tr>
+                <td><strong>AA (grande)</strong></td>
+                <td>3:1</td>
+                <td>Texto grande (≥ 18pt o ≥ 14pt bold)</td>
+                <td><span class="contrast-sample" style="background:#F5F5F5; color:#767676;">Grande 4.5:1 ✓</span></td>
+              </tr>
+              <tr>
+                <td><strong>AAA (ideal)</strong></td>
+                <td>7:1</td>
+                <td>Máxima legibilidad, lectura prolongada</td>
+                <td><span class="contrast-sample" style="background:#F5F5F5; color:#333333;">Óptimo 10.5:1 ✓</span></td>
+              </tr>
+              <tr>
+                <td><strong>Elementos gráficos</strong></td>
+                <td>3:1</td>
+                <td>Iconos, bordes funcionales, líneas de gráfico</td>
+                <td>Los bordes de los visuals y las líneas de los gráficos deben tener al menos 3:1 contra su fondo</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h4>Cómo verificar el contraste</h4>
+          <ol>
+            <li>Abre <strong>WebAIM Contrast Checker</strong> (webaim.org/resources/contrastchecker)</li>
+            <li>Introduce el color de texto (ej: #333333) como Foreground Color</li>
+            <li>Introduce el color de fondo (ej: #F5F5F5) como Background Color</li>
+            <li>Verifica que pase al menos <strong>WCAG AA</strong> — idealmente AAA</li>
+            <li>Repite para cada combinación de texto/fondo de tu informe</li>
+          </ol>
+
+          <div class="note note--warning">
+            ⚠️ <strong>Ojo con esto:</strong> Los colores que peor rendimiento dan en contraste son los colores claros sobre fondos claros: gris claro sobre blanco, amarillo sobre beige, rosa sobre blush. Si usas texto en color de acento (coral, azul…) sobre fondo claro, siempre verifica el contraste — a menudo necesita ser más oscuro de lo que parece.
+          </div>
+        </div>
+
+        <!-- ─────────────────────────────────────────── -->
+        <!-- 5. Señales mixtas                           -->
+        <!-- ─────────────────────────────────────────── -->
+        <div class="category-header" id="senales-mixtas">
+          <span class="category-header__icon">⚡</span>
+          <h2 class="category-header__title">Señales mixtas: cuando texto y color se contradicen</h2>
+        </div>
+
+        <div class="concept-card">
+          <h3>Texto y color deben coincidir — siempre</h3>
+          <p>
+            Las señales mixtas ocurren cuando el color de un elemento dice una cosa y el texto
+            dice otra. El cerebro recibe dos mensajes contradictorios y no sabe cuál priorizar.
+            Esto se llama <strong>efecto Stroop</strong> — y es uno de los errores de usabilidad
+            más frustrantes que existen.
+          </p>
+
+          <div class="comparison-grid">
+            <div class="comparison-col comparison-col--bad">
+              <p class="comparison-col__label">❌ Señales mixtas</p>
+              <ul>
+                <li><span style="color:#27ae60; font-weight:700;">Cerrado</span> — texto negativo en color positivo</li>
+                <li><span style="color:#e74c3c; font-weight:700;">Aprobado</span> — texto positivo en color de alerta</li>
+                <li><span style="color:#27ae60; font-weight:700;">-15% ▼</span> — descenso pintado en verde</li>
+                <li>KPI en rojo pero sin contexto de si rojo es bueno o malo</li>
+              </ul>
+            </div>
+            <div class="comparison-col comparison-col--good">
+              <p class="comparison-col__label">✅ Señales coherentes</p>
+              <ul>
+                <li><span style="color:#e74c3c; font-weight:700;">✗ Cerrado</span> — texto, color e icono coinciden</li>
+                <li><span style="color:#27ae60; font-weight:700;">✓ Aprobado</span> — todo dice "positivo"</li>
+                <li><span style="color:#e74c3c; font-weight:700;">-15% ▼</span> — descenso en rojo con flecha</li>
+                <li>KPI con leyenda: "Rojo = por debajo del objetivo"</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="note note--practice">
+            📌 <strong>Buena práctica:</strong> Antes de publicar, revisa cada indicador de color de tu informe preguntándote: <em>"Si tapo el color y solo leo el texto, ¿dice lo mismo?"</em> Si no coinciden, arréglalo. Y si un color tiene un significado que no es obvio, añade una leyenda visible en la propia página.
+          </div>
+        </div>
+
+        <!-- ─────────────────────────────────────────── -->
+        <!-- 6. Tab order                                -->
+        <!-- ─────────────────────────────────────────── -->
+        <div class="category-header" id="tab-order">
+          <span class="category-header__icon">⌨️</span>
+          <h2 class="category-header__title">Tab order y navegación por teclado</h2>
+        </div>
+
+        <div class="concept-card">
+          <h3>Orden lógico de tabulación en Power BI</h3>
+          <p>
+            Las personas que usan lector de pantalla o navegan con teclado (sin ratón) recorren
+            los visuals de un informe Power BI en un orden determinado: el <strong>tab order</strong>.
+            Por defecto, Power BI asigna el tab order en el orden en que creaste los visuals
+            — que casi nunca coincide con el orden lógico de lectura.
+          </p>
+
+          <h4>Cómo configurar el tab order en Power BI Desktop</h4>
+          <ol>
+            <li>Ve a <strong>View → Selection pane</strong> (panel de selección)</li>
+            <li>Haz clic en el icono de <strong>Tab order</strong> (la pestaña con números)</li>
+            <li>Arrastra los elementos para que sigan el orden lógico de lectura:
+              <ul>
+                <li>Título de la página primero</li>
+                <li>Slicers y filtros después</li>
+                <li>KPIs principales a continuación</li>
+                <li>Gráficos de detalle</li>
+                <li>Navegación al final</li>
+              </ul>
+            </li>
+            <li>Oculta del tab order los elementos puramente decorativos (rectángulos de fondo, imágenes de adorno) haciendo clic en el icono del ojo junto a cada uno</li>
+          </ol>
+
+          <div class="note note--warning">
+            ⚠️ <strong>Ojo con esto:</strong> Si no configuras el tab order, un usuario con lector de pantalla podría llegar primero a un rectángulo decorativo de fondo, luego a un visual secundario y finalmente al KPI principal — un recorrido absurdo que lo único que genera es frustración y abandono.
+          </div>
+        </div>
+
+        <!-- ─────────────────────────────────────────── -->
+        <!-- 7. Alt text                                 -->
+        <!-- ─────────────────────────────────────────── -->
+        <div class="category-header" id="alt-text">
+          <span class="category-header__icon">💬</span>
+          <h2 class="category-header__title">Alt text en visuals de Power BI</h2>
+        </div>
+
+        <div class="concept-card">
+          <h3>Describe qué muestra el visual, no cómo se ve</h3>
+          <p>
+            El <strong>texto alternativo</strong> (alt text) es la descripción que leen los lectores
+            de pantalla cuando un usuario navega por un visual. Power BI permite añadir alt text
+            estático (texto fijo) o dinámico (generado con una medida DAX) a cada visual.
+          </p>
+
+          <h4>Cómo añadir alt text en Power BI</h4>
+          <ol>
+            <li>Selecciona el visual → Format visual → <strong>General → Accessibility</strong></li>
+            <li>En el campo <strong>Alt text</strong>, escribe una descripción del contenido (no del aspecto)</li>
+            <li>Para alt text dinámico, haz clic en <strong>Fx</strong> y selecciona una medida DAX que genere la descripción automáticamente</li>
+          </ol>
+
+          <h4>Qué escribir y qué no escribir</h4>
+          <div class="comparison-grid">
+            <div class="comparison-col comparison-col--bad">
+              <p class="comparison-col__label">❌ Alt text malo</p>
+              <ul>
+                <li>"Gráfico de barras azul"</li>
+                <li>"Imagen de un gráfico"</li>
+                <li>"Gráfico 1"</li>
+                <li>Campo vacío (sin alt text)</li>
+              </ul>
+            </div>
+            <div class="comparison-col comparison-col--good">
+              <p class="comparison-col__label">✅ Alt text bueno</p>
+              <ul>
+                <li>"Ventas mensuales 2025. Máximo en junio (€420K), mínimo en enero (€180K)"</li>
+                <li>"Distribución de clientes por región: Norte 42%, Sur 31%, Centro 27%"</li>
+                <li>"Tendencia de margen bruto: descenso del 28% al 23% entre Q1 y Q3 2025"</li>
+                <li>Medida DAX: genera el resumen del visual automáticamente con los datos actuales</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="note note--tip">
+            💡 <strong>Tip kawaii:</strong> El alt text dinámico con DAX es la joya oculta de la accesibilidad en Power BI. Crea una medida como <code style="background: var(--color-blush); padding: 0.15em 0.4em; border-radius: 4px; font-family: 'Fira Code', monospace; font-size: 0.85em; color: var(--color-coral);">_AltText_Ventas = "Ventas totales: " &amp; FORMAT([Total Ventas], "€#,0")</code> y úsala como alt text del visual. Así la descripción se actualiza automáticamente con los datos filtrados.
+          </div>
+        </div>
+
+        <!-- ─────────────────────────────────────────── -->
+        <!-- 8. Checklist                                -->
+        <!-- ─────────────────────────────────────────── -->
+        <div class="category-header" id="checklist">
+          <span class="category-header__icon">✅</span>
+          <h2 class="category-header__title">Checklist de accesibilidad para Power BI</h2>
+        </div>
+
+        <div class="concept-card">
+          <h3>Antes de publicar, verifica estos 14 puntos</h3>
+
+          <ul class="checklist">
+            <li>El color nunca es el único canal de información — siempre va acompañado de icono, forma o texto</li>
+            <li>Los indicadores tipo semáforo (rojo/ámbar/verde) incluyen iconos o texto además del color</li>
+            <li>El contraste texto/fondo cumple WCAG AA como mínimo (ratio 4.5:1 para texto normal)</li>
+            <li>No se usa negro puro (#000) ni blanco puro (#FFF) en superficies grandes</li>
+            <li>Texto y color siempre coinciden en significado (no "Cerrado" en verde)</li>
+            <li>Todos los visuals tienen alt text descriptivo (estático o dinámico con DAX)</li>
+            <li>Los elementos decorativos (rectángulos de fondo, líneas) están ocultos del tab order</li>
+            <li>El tab order sigue el orden lógico de lectura (título → filtros → KPIs → detalle → navegación)</li>
+            <li>Los títulos de los visuals son descriptivos ("Ventas por región, 2025" en lugar de "Gráfico 1")</li>
+            <li>Los tooltips proporcionan contexto adicional útil, no solo repiten el valor</li>
+            <li>No hay texto en vertical ni en diagonal (fatiga visual y problemas de lectura)</li>
+            <li>Las tablas tienen encabezados de columna claros y descriptivos</li>
+            <li>Los botones de navegación tienen texto visible además del icono</li>
+            <li>Se ha verificado el informe con el simulador de daltonismo (Windows: Filtros de color en Accesibilidad)</li>
+          </ul>
+
+          <div class="note note--next">
+            🚀 <strong>¡Lo estás haciendo genial!</strong> La accesibilidad no es una funcionalidad extra que se añade al final — es una forma de pensar que permea cada decisión de diseño. Cuando diseñas para las personas con más dificultades, diseñas mejor para todas. Y eso es exactamente lo que significa UX inclusiva. 🌸
+          </div>
+        </div>
+
+        <!-- Navegación entre páginas -->
+        <nav aria-label="Páginas relacionadas" style="margin-top: 2.5rem; display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap;">
+          <a href="colores.html" style="display: inline-flex; align-items: center; gap: 0.5rem; color: var(--color-coral); text-decoration: none; font-weight: 600; font-size: 0.9375rem;">
+            ← Estrategia de Color
+          </a>
+          <a href="navegacion.html" style="display: inline-flex; align-items: center; gap: 0.5rem; color: var(--color-coral); text-decoration: none; font-weight: 600; font-size: 0.9375rem;">
+            Navegación y Micro-instrucciones →
+          </a>
+        </nav>
+
+      </div><!-- /topic-page -->
+    </main>
+  </div><!-- /page-wrapper -->
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script>
+  <script src="../../assets/js/theme.js"></script>
+  <script src="../../assets/js/main.js"></script>
+  <script src="../../assets/js/cursor.js"></script>
+
+</body>
+</html>

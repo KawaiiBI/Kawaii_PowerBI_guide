@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta content="Grupos de Cálculo en DAX — SELECTEDMEASURE, ISSELECTEDMEASURE y medidas dinámicas reutilizables" name="description"/>
+<title>Grupos de Cálculo — Funciones DAX | Power BI Guide</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Fira+Code:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<!-- Prism.js para syntax highlighting -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet"/>
+<!-- i18next para traducciones -->
+<script src="https://cdn.jsdelivr.net/npm/i18next@23.7.6/i18next.min.js"></script>
+<!-- CSS del proyecto -->
+<link href="../../assets/css/main.css" rel="stylesheet"/>
+<link href="../../assets/css/themes.css" rel="stylesheet"/>
+<link href="../../assets/css/components.css" rel="stylesheet"/>
+<link href="../../assets/css/layout.css" rel="stylesheet"/>
+<link href="../../assets/css/dax-search.css" rel="stylesheet"/>
+<style>
+    /* === ESTILOS ESPECÍFICOS PARA PÁGINAS DE TOPICS === */
+
+    /* Topic header con icono grande */
+    .topic-header {
+      text-align: center;
+      padding: 2.5rem 0 2rem;
+      border-bottom: 2px solid var(--color-mauve);
+      margin-bottom: 2.5rem;
+    }
+
+    .topic-header__icon {
+      font-size: 4rem;
+      margin-bottom: 0.75rem;
+      display: block;
+    }
+
+    .topic-header__title {
+      font-size: clamp(1.875rem, 4vw, 2.5rem);
+      font-weight: 800;
+      color: var(--color-dark);
+      margin-bottom: 0.625rem;
+      line-height: 1.2;
+    }
+
+    .topic-header__subtitle {
+      font-size: 1.0625rem;
+      color: var(--color-slate);
+      margin-bottom: 1.25rem;
+      line-height: 1.5;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .topic-header__levels {
+      display: flex;
+      gap: 0.5rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    /* TOC — Table of contents */
+    .toc {
+      background: var(--color-rose);
+      border: 1.5px solid var(--color-mauve);
+      border-radius: var(--border-radius);
+      padding: 1.5rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .toc__title {
+      font-size: 0.875rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--color-slate);
+      margin-bottom: 1rem;
+    }
+
+    .toc__list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .toc__link {
+      color: var(--color-dark);
+      text-decoration: none;
+      font-size: 0.9375rem;
+      transition: var(--transition);
+      display: inline-block;
+    }
+
+    .toc__link:hover {
+      color: var(--color-coral);
+      text-decoration: underline;
+    }
+
+    /* Category header — separadores entre categorías */
+    .category-header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin: 3rem 0 1.5rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 2px solid var(--color-mauve);
+    }
+
+    .category-header__icon {
+      font-size: 1.75rem;
+    }
+
+    .category-header__title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--color-dark);
+      margin: 0;
+    }
+
+    /* Function card — tarjeta individual para cada función */
+    .function-card {
+      background: var(--color-white);
+      border: 1.5px solid var(--color-mauve);
+      border-radius: var(--border-radius);
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .function-card__name {
+      font-family: var(--font-code);
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: var(--color-coral);
+      margin-bottom: 0.75rem;
+    }
+
+    .function-card__description {
+      font-size: 0.9375rem;
+      color: var(--color-dark);
+      margin-bottom: 1rem;
+      line-height: 1.6;
+    }
+
+    .function-card__level {
+      display: inline-block;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      padding: 0.25rem 0.625rem;
+      border-radius: var(--border-radius-sm);
+      background: var(--color-blush);
+      color: var(--color-slate);
+      margin-bottom: 1rem;
+    }
+
+    /* Function table — tabla compacta con ejemplos */
+    .function-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.5rem 0;
+      font-size: 0.875rem;
+    }
+
+    .function-table th {
+      background: var(--color-rose);
+      color: var(--color-dark);
+      font-weight: 700;
+      text-align: left;
+      padding: 0.75rem 1rem;
+      border: 1px solid var(--color-mauve);
+    }
+
+    .function-table td {
+      padding: 0.75rem 1rem;
+      border: 1px solid var(--color-mauve);
+      color: var(--color-dark);
+    }
+
+    .function-table tr:nth-child(even) {
+      background: var(--color-blush);
+    }
+
+    /* Code block wrapper */
+    .code-block {
+      position: relative;
+      margin: 1.25rem 0;
+    }
+
+    .code-block pre {
+      margin: 0;
+      border-radius: var(--border-radius);
+      border: 1.5px solid var(--color-mauve);
+    }
+
+    .code-block__copy {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.5rem;
+      padding: 0.375rem 0.75rem;
+      font-size: 0.75rem;
+      background: var(--color-coral);
+      color: var(--color-white);
+      border: none;
+      border-radius: var(--border-radius-sm);
+      cursor: pointer;
+      font-family: var(--font-main);
+      font-weight: 600;
+      transition: var(--transition);
+    }
+
+    .code-block__copy:hover {
+      background: var(--color-peach);
+    }
+  </style>
+</head>
+<body>
+<!-- SIDEBAR: Navegación principal -->
+<aside class="site-sidebar">
+<!-- Avatar y nombre -->
+<div class="site-sidebar__profile">
+<img alt="Sara Lozano Martí" class="site-sidebar__avatar" src="../../assets/images/avatar Sara.png"/>
+<p class="site-sidebar__name">Sara Lozano Martí</p>
+<p class="site-sidebar__subtitle">Power BI Expert</p>
+</div>
+<!-- Navegación principal -->
+<nav aria-label="Navegación principal" class="site-sidebar__nav">
+<ul>
+<li><a class="site-sidebar__link" href="../../index.html">
+<span class="site-sidebar__icon">🏠</span> Inicio
+        </a></li>
+<li><a class="site-sidebar__link is-active" href="../dax.html">
+<span class="site-sidebar__icon">⚡</span> Funciones DAX
+        </a></li>
+<li><a class="site-sidebar__link" href="../power-query.html">
+<span class="site-sidebar__icon">🔄</span> Power Query
+        </a></li>
+<li><a class="site-sidebar__link" href="../lenguaje-m.html">
+<span class="site-sidebar__icon">〽️</span> Lenguaje M
+        </a></li>
+<li><a class="site-sidebar__link" href="../modelado.html">
+<span class="site-sidebar__icon">🗄️</span> Modelado
+        </a></li>
+<li><a class="site-sidebar__link" href="../conceptos-powerbi.html">
+<span class="site-sidebar__icon">📊</span> Conceptos Power BI
+        </a></li>
+<li><a class="site-sidebar__link" href="../fabric.html">
+<span class="site-sidebar__icon">🧵</span> Microsoft Fabric
+        </a></li>
+<li><a class="site-sidebar__link" href="../tmdl.html">
+<span class="site-sidebar__icon">📝</span> TMDL
+        </a></li>
+<li><a class="site-sidebar__link" href="../diseno-ux.html">
+<span class="site-sidebar__icon">🎨</span> Diseño y UX
+        </a></li>
+<li><a class="site-sidebar__link" href="../gobernanza.html">
+<span class="site-sidebar__icon">🔒</span> Gobernanza
+        </a></li>
+</ul>
+</nav>
+<!-- Separador -->
+<div class="site-sidebar__divider"></div>
+<!-- Footer del sidebar -->
+<div class="site-sidebar__footer">
+<!-- Enlace a quien soy -->
+<a class="site-sidebar__link site-sidebar__link--highlight" href="../../quien-soy.html">
+<span class="site-sidebar__icon">👩‍💻</span> ¿Quién soy?
+      </a>
+<!-- Iconos sociales -->
+<div class="site-sidebar__social">
+<a aria-label="LinkedIn" href="https://www.linkedin.com/in/saralozanomarti" rel="noopener noreferrer" target="_blank">
+<img alt="LinkedIn" class="site-sidebar__social-icon" src="../../assets/images/logo linkedIN.png"/>
+</a>
+<a aria-label="YouTube" href="https://www.youtube.com/@KawaiiPowerBI" rel="noopener noreferrer" target="_blank">
+<img alt="YouTube" class="site-sidebar__social-icon" src="../../assets/images/logo youtube.png"/>
+</a>
+<a aria-label="GitHub" href="https://github.com/KawaiiBI" rel="noopener noreferrer" target="_blank">
+<img alt="GitHub" class="site-sidebar__social-icon" src="../../assets/images/logo github.png"/>
+</a>
+</div>
+<!-- Logo Kawaii BI -->
+<div class="site-sidebar__logo-bottom">
+<img alt="Kawaii BI" class="site-sidebar__logo-img" src="../../assets/images/Logo Kawaii.jpg"/>
+</div>
+<!-- Copyright -->
+<p class="site-sidebar__copyright">
+        Power BI Guide 🌸<br/>
+        © 2026 Kawaii BI
+      </p>
+</div>
+</aside>
+<!-- PAGE WRAPPER -->
+<div class="page-wrapper">
+<!-- Main content -->
+<main id="main-content">
+<div class="topic-page">
+        <nav aria-label="breadcrumb" class="breadcrumb">
+<a class="breadcrumb__link" href="../../index.html">Inicio</a>
+<span class="breadcrumb__separator">›</span>
+<a class="breadcrumb__link" href="../dax.html">Funciones DAX</a>
+<span class="breadcrumb__separator">›</span>
+<span class="breadcrumb__current">Grupos de Cálculo</span>
+</nav>
+
+        <header class="topic-header">
+<span class="topic-header__icon">⚗️</span>
+<h1 class="topic-header__title">Grupos de Cálculo (Calculation Groups)</h1>
+<p class="topic-header__subtitle">SELECTEDMEASURE, ISSELECTEDMEASURE y compañía — haz que tus medidas sean dinámicas y reutilizables</p>
+<div class="topic-header__levels">
+<span class="badge badge--advanced">Avanzado</span>
+</div>
+</header>
+
+        <div class="dax-search-compact-bar">
+<div class="dax-search-wrapper dax-search-compact" data-dax-search="true">
+<span class="dax-search-icon">🔍</span>
+<input aria-label="Buscar función DAX" autocomplete="off" class="dax-search-input" placeholder="Buscar otra función DAX..." spellcheck="false" type="text"/>
+<button aria-label="Limpiar" class="dax-search-clear" hidden="">✕</button>
+<div class="dax-search-results" role="listbox"></div>
+</div>
+</div>
+
+        <nav class="toc">
+<h2 class="toc__title">📑 En esta página</h2>
+<ul class="toc__list">
+<li><a class="toc__link" href="#que-son">¿Qué son los Grupos de Cálculo?</a></li>
+<li><a class="toc__link" href="#crear">Cómo crearlos en Power BI</a></li>
+<li><a class="toc__link" href="#selectedmeasure">SELECTEDMEASURE — La función central</a></li>
+<li><a class="toc__link" href="#isselectedmeasure">ISSELECTEDMEASURE — Lógica condicional</a></li>
+<li><a class="toc__link" href="#selectedmeasurename">SELECTEDMEASURENAME — Metadatos</a></li>
+<li><a class="toc__link" href="#selectedmeasureformatstring">SELECTEDMEASUREFORMATSTRING — Formatos dinámicos</a></li>
+<li><a class="toc__link" href="#nameof">NAMEOF — Referencia segura a objetos</a></li>
+<li><a class="toc__link" href="#patrones">Patrones clásicos con Grupos de Cálculo</a></li>
+<li><a class="toc__link" href="#limitaciones">Limitaciones y consideraciones</a></li>
+</ul>
+</nav>
+
+        <!-- Breadcrumb --><!-- Buscador compacto DAX --><!-- Header del topic --><!-- TOC --><!-- SECCIÓN 0: ¿Qué son? --><section id="que-son">
+<div class="category-header">
+<span class="category-header__icon">🎯</span>
+<h2 class="category-header__title">El problema que resuelven los Grupos de Cálculo</h2>
+</div>
+<p>Imagina que tienes 20 medidas en tu modelo: <strong>Total Ventas</strong>, <strong>Total Margen</strong>, <strong>Total Unidades</strong>, <strong>Total Costes</strong>... Y ahora tu jefe te pide que todas tengan también su versión YTD, su comparativa con año anterior, su % de variación y su media móvil. Eso son <strong>20 × 4 = 80 medidas</strong>. ¡Locura! 😱</p>
+<p>Los <strong>Grupos de Cálculo</strong> resuelven exactamente eso: defines la lógica de transformación <strong>UNA SOLA VEZ</strong> (YTD, año anterior, variación...) y se aplica automáticamente a cualquier medida que el usuario seleccione. De 80 medidas a <strong>20 + 4 items de cálculo</strong>.</p>
+<h3>¿Qué son técnicamente?</h3>
+<p>Los Grupos de Cálculo son <strong>tablas especiales</strong> del modelo que contienen "Calculation Items" (ítems de cálculo). Cada ítem aplica una transformación DAX a la medida activa del contexto. Se crean en <strong>Tabular Editor</strong> (no en Power BI Desktop directamente — aunque desde 2023 hay soporte limitado).</p>
+<h3>Usos más frecuentes:</h3>
+<ol>
+<li><strong>Comparativas temporales:</strong> YTD, vs Año Anterior, variación %, media móvil</li>
+<li><strong>Conversión de moneda dinámica</strong></li>
+<li><strong>Formateo condicional</strong> basado en la medida seleccionada</li>
+<li><strong>Escenarios What-If</strong> aplicados a múltiples medidas</li>
+</ol>
+<div class="note note--warning">
+<strong>⚠️ Herramienta externa requerida</strong><br/>
+            Los Grupos de Cálculo requieren Tabular Editor (herramienta gratuita externa) para crearlos en la mayoría de los entornos. En Power BI Desktop existe soporte desde 2023 pero todavía con limitaciones. Recomendamos Tabular Editor 2 (gratis) o Tabular Editor 3 (de pago) para trabajar con ellos.
+          </div>
+</section><!-- SECCIÓN 1: Cómo crearlos --><section id="crear">
+<div class="category-header">
+<span class="category-header__icon">🛠️</span>
+<h2 class="category-header__title">¿Cómo se crea un Grupo de Cálculo?</h2>
+</div>
+<p>Pasos para crear un Grupo de Cálculo con Tabular Editor:</p>
+<ol>
+<li>Abre <strong>Tabular Editor</strong> desde Power BI Desktop: <code>External Tools &gt; Tabular Editor</code></li>
+<li>Click derecho en "Tables" → <strong>Add &gt; Calculation Group</strong></li>
+<li>Dale un nombre (ej: "Time Intelligence")</li>
+<li>Dentro, crea <strong>"Calculation Items"</strong> (uno por transformación)</li>
+<li>Cada Calculation Item tiene una expresión DAX que usa <code>SELECTEDMEASURE()</code></li>
+<li>Guarda y vuelve a Power BI — verás la nueva tabla en tu modelo</li>
+<li>Añade la tabla de Grupo de Cálculo a un slicer para que el usuario elija la transformación</li>
+</ol>
+<div class="note note--tip">
+<strong>✨ La magia en acción</strong><br/>
+            Una vez creado el Grupo de Cálculo, el usuario del informe verá un slicer con las opciones 'Actual', 'YTD', 'Vs Año Anterior', etc. Al seleccionar una, TODAS las medidas del informe se transforman automáticamente. Magia. 🪄
+          </div>
+</section><!-- SECCIÓN 2: SELECTEDMEASURE --><section id="selectedmeasure">
+<div class="category-header">
+<span class="category-header__icon">⚗️</span>
+<h2 class="category-header__title">SELECTEDMEASURE — La función central</h2>
+</div>
+<div class="function-card">
+<div class="function-card__name">SELECTEDMEASURE()</div>
+<div class="function-card__level">Avanzado</div>
+<div class="function-card__description">
+              Dentro de un Calculation Item, devuelve la medida que está siendo evaluada en el contexto actual. Es el marcador de posición que representa "la medida sobre la que se aplica esta transformación".
+            </div>
+<h4>Ejemplo — Calculation Item "YTD":</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Este Calculation Item se aplica a cualquier medida cuando el usuario elige "YTD"
+// La expresión del ítem "Year-To-Date" sería:
+CALCULATE(
+    SELECTEDMEASURE(),           -- representa la medida activa (Total Ventas, Margen, etc.)
+    DATESYTD('Calendario'[Fecha])
+)
+
+// Si el usuario tiene seleccionada "Total Ventas" → calcula Total Ventas YTD
+// Si tiene "Total Margen" → calcula Total Margen YTD
+// ¡Una sola expresión para todas las medidas!</code></pre>
+</div>
+<h4>Ejemplo — Calculation Item "Vs Año Anterior":</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">CALCULATE(
+    SELECTEDMEASURE(),
+    SAMEPERIODLASTYEAR('Calendario'[Fecha])
+)</code></pre>
+</div>
+<h4>Ejemplo — Calculation Item "Variación % vs Año Anterior":</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">VAR MedidaActual = SELECTEDMEASURE()
+VAR MedidaAnterior =
+    CALCULATE(
+        SELECTEDMEASURE(),
+        SAMEPERIODLASTYEAR('Calendario'[Fecha])
+    )
+RETURN
+    DIVIDE(MedidaActual - MedidaAnterior, MedidaAnterior, BLANK())</code></pre>
+</div>
+</div>
+</section><!-- SECCIÓN 3: ISSELECTEDMEASURE --><section id="isselectedmeasure">
+<div class="category-header">
+<span class="category-header__icon">🔍</span>
+<h2 class="category-header__title">ISSELECTEDMEASURE — Lógica condicional</h2>
+</div>
+<div class="function-card">
+<div class="function-card__name">ISSELECTEDMEASURE(&lt;nombre_medida1&gt;, &lt;nombre_medida2&gt;, ...)</div>
+<div class="function-card__level">Avanzado</div>
+<div class="function-card__description">
+              Dentro de un Calculation Item, devuelve TRUE si la medida actualmente seleccionada es alguna de las indicadas. Permite aplicar lógica diferente según qué medida está activa.
+            </div>
+<p><strong>Caso de uso típico:</strong> algunas transformaciones no tienen sentido para ciertas medidas. Por ejemplo, el "% de variación" no tiene sentido para una medida de ratio que ya es un porcentaje.</p>
+<h4>Ejemplo — Evitar calcular % variación para medidas que ya son porcentajes:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Calculation Item "Variación % vs Año Anterior":
+VAR EsRatio =
+    ISSELECTEDMEASURE(
+        [Margen %],          -- si la medida activa es Margen %...
+        [Tasa Conversión],   -- ...o Tasa de Conversión...
+        [% Devoluciones]     -- ...o % Devoluciones
+    )
+VAR MedidaActual = SELECTEDMEASURE()
+VAR MedidaAnterior =
+    CALCULATE(SELECTEDMEASURE(), SAMEPERIODLASTYEAR('Calendario'[Fecha]))
+RETURN
+    IF(
+        EsRatio,
+        MedidaActual - MedidaAnterior,   -- para ratios: diferencia absoluta
+        DIVIDE(MedidaActual - MedidaAnterior, MedidaAnterior, BLANK())  -- para importes: %
+    )</code></pre>
+</div>
+</div>
+</section><!-- SECCIÓN 4: SELECTEDMEASURENAME --><section id="selectedmeasurename">
+<div class="category-header">
+<span class="category-header__icon">📝</span>
+<h2 class="category-header__title">SELECTEDMEASURENAME — Metadatos</h2>
+</div>
+<div class="function-card">
+<div class="function-card__name">SELECTEDMEASURENAME()</div>
+<div class="function-card__level">Avanzado</div>
+<div class="function-card__description">
+              Devuelve el NOMBRE (como texto) de la medida activa en el contexto. Útil para títulos dinámicos o para personalizar comportamientos según el nombre de la medida.
+            </div>
+<h4>Ejemplo — Título dinámico en una card KPI:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Medida para el título del visual:
+Título KPI Dinámico =
+SELECTEDMEASURENAME() &amp; " — " &amp;
+SELECTEDVALUE('Time Intelligence'[Nombre], "Actual")
+
+// Si el usuario tiene seleccionado "Total Ventas" y "YTD":
+// → "Total Ventas — YTD"</code></pre>
+</div>
+<h4>Ejemplo — Lógica basada en el nombre:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Aplicar formato diferente si el nombre contiene "%"
+Calc Item con Formato =
+IF(
+    CONTAINSSTRING(SELECTEDMEASURENAME(), "%"),
+    SELECTEDMEASURE(),              -- los % ya están bien formateados
+    SELECTEDMEASURE() * 1000        -- convertir unidades a miles
+)</code></pre>
+</div>
+</div>
+</section><!-- SECCIÓN 5: SELECTEDMEASUREFORMATSTRING --><section id="selectedmeasureformatstring">
+<div class="category-header">
+<span class="category-header__icon">🎨</span>
+<h2 class="category-header__title">SELECTEDMEASUREFORMATSTRING — Formatos dinámicos</h2>
+</div>
+<div class="function-card">
+<div class="function-card__name">SELECTEDMEASUREFORMATSTRING()</div>
+<div class="function-card__level">Avanzado</div>
+<div class="function-card__description">
+              Devuelve el formato string de la medida activa. Permite que el Calculation Item herede o modifique el formato de la medida original. Se usa en la propiedad "Format String Expression" del Calculation Item (no en la expresión DAX del ítem).
+            </div>
+<h4>Ejemplo — Heredar el formato de la medida original:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// En la propiedad "Format String Expression" del Calculation Item YTD:
+SELECTEDMEASUREFORMATSTRING()
+
+// Así si [Total Ventas] usa "#,##0 €", el YTD también usará "#,##0 €"
+// Si [Margen %] usa "0.0%", el YTD de Margen también usará "0.0%"</code></pre>
+</div>
+<h4>Ejemplo — Formato condicional:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Para el ítem "Variación %": siempre mostrar como porcentaje
+IF(
+    CONTAINSSTRING(SELECTEDMEASUREFORMATSTRING(), "%"),
+    SELECTEDMEASUREFORMATSTRING(),  -- si ya es %, mantener
+    "+0.0%;-0.0%;0.0%"             -- sino, formato de variación con signo
+)</code></pre>
+</div>
+</div>
+</section><!-- SECCIÓN 6: NAMEOF --><section id="nameof">
+<div class="category-header">
+<span class="category-header__icon">🔗</span>
+<h2 class="category-header__title">NAMEOF — Referencia segura a objetos</h2>
+</div>
+<div class="function-card">
+<div class="function-card__name">NAMEOF(&lt;objeto_dax&gt;)</div>
+<div class="function-card__level">Avanzado</div>
+<div class="function-card__description">
+              Devuelve el nombre de una columna o medida como texto, de forma segura. Si renombras la columna/medida, NAMEOF se actualiza automáticamente (a diferencia de hardcodear el nombre como texto). Previene bugs silenciosos por cambios de nombre.
+            </div>
+<h4>Ejemplo — Referencia segura a nombres de medidas:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// ❌ Sin NAMEOF — si cambias el nombre de la medida, esto falla silenciosamente
+IF(SELECTEDMEASURENAME() = "Total Ventas", ...)
+
+// ✅ Con NAMEOF — si cambias el nombre de la medida, DAX te avisará del error
+IF(SELECTEDMEASURENAME() = NAMEOF([Total Ventas]), ...)
+
+// También funciona con columnas
+NAMEOF('Productos'[Categoría])  -- devuelve "Categoría"</code></pre>
+</div>
+</div>
+</section><!-- SECCIÓN 7: Patrones clásicos --><section id="patrones">
+<div class="category-header">
+<span class="category-header__icon">🌟</span>
+<h2 class="category-header__title">Los 3 Grupos de Cálculo que todo modelo debería tener</h2>
+</div>
+<h3>Patrón 1 — Grupo "Time Intelligence" (el más común)</h3>
+<p><strong>Ítems típicos:</strong></p>
+<ul>
+<li><strong>"Actual"</strong> → <code>SELECTEDMEASURE()</code></li>
+<li><strong>"YTD"</strong> → <code>CALCULATE(SELECTEDMEASURE(), DATESYTD('Calendario'[Fecha]))</code></li>
+<li><strong>"QTD"</strong> → <code>CALCULATE(SELECTEDMEASURE(), DATESQTD('Calendario'[Fecha]))</code></li>
+<li><strong>"MTD"</strong> → <code>CALCULATE(SELECTEDMEASURE(), DATESMTD('Calendario'[Fecha]))</code></li>
+<li><strong>"vs Año Anterior"</strong> → <code>CALCULATE(SELECTEDMEASURE(), SAMEPERIODLASTYEAR('Calendario'[Fecha]))</code></li>
+<li><strong>"Variación % YoY"</strong> → Cálculo de % de variación</li>
+<li><strong>"Media Móvil 12M"</strong> → Media de los últimos 12 meses</li>
+</ul>
+<p>El usuario ve un slicer con estas opciones. Al elegir "YTD", todas las medidas del informe muestran su versión Year-To-Date automáticamente. ✨</p>
+<h3>Patrón 2 — Grupo "Conversión de Moneda"</h3>
+<p><strong>Ítems típicos:</strong> "EUR", "USD", "GBP"</p>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Ítem "USD":
+SELECTEDMEASURE() * LOOKUPVALUE(
+    'TasasCambio'[Tasa],
+    'TasasCambio'[Moneda], "USD"
+)
+
+// El usuario selecciona "USD" en el slicer → todas las medidas se convierten a dólares</code></pre>
+</div>
+<h3>Patrón 3 — Grupo "Escenarios"</h3>
+<p><strong>Ítems típicos:</strong> "Real", "Presupuesto", "Forecast"</p>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Ítem "Presupuesto":
+CALCULATE(
+    SELECTEDMEASURE(),
+    'Hechos'[Tipo] = "Budget"
+)
+
+// Permite que una sola medida muestre el escenario seleccionado por el usuario</code></pre>
+</div>
+<div class="note note--best-practice">
+<strong>🏆 Best Practice</strong><br/>
+            Crea el Grupo "Time Intelligence" PRIMERO — es el más útil y el que más mantenimiento te ahorrará. Un modelo con 50 medidas + Time Intelligence Group puede reemplazar fácilmente 200+ medidas hardcodeadas.
+          </div>
+</section><!-- SECCIÓN 8: Limitaciones --><section id="limitaciones">
+<div class="category-header">
+<span class="category-header__icon">⚠️</span>
+<h2 class="category-header__title">Limitaciones y consideraciones</h2>
+</div>
+<ol>
+<li><strong>Solo un Grupo de Cálculo activo a la vez</strong> por visual en Power BI (puedes tener varios en el modelo, pero su interacción es compleja)</li>
+<li><strong>Interacción compleja</strong> cuando hay múltiples Grupos de Cálculo en el mismo informe — requiere entender la precedencia</li>
+<li><strong>Requieren Tabular Editor</strong> para su creación en la mayoría de entornos (aunque el soporte nativo va mejorando)</li>
+<li><strong>Precedencia de ítems</strong> importante cuando hay múltiples Grupos aplicados simultáneamente</li>
+<li><strong>No todos los visuals</strong> de Power BI respetan los Grupos de Cálculo por igual — algunos tienen comportamientos inesperados</li>
+<li><strong>Rendimiento:</strong> pueden afectar al rendimiento si los Calculation Items son muy complejos o anidados</li>
+<li><strong>Curva de aprendizaje:</strong> requiere entender bien el contexto de evaluación DAX para usarlos eficientemente</li>
+</ol>
+<div class="note note--next">
+<strong>🚀 Siguiente paso</strong><br/>
+            ¡Ahora ya conoces las funciones DAX más avanzadas y menos conocidas! Los Grupos de Cálculo son una de esas herramientas que, una vez que las usas, no puedes creer que hayas vivido sin ellas. El siguiente paso en tu journey DAX es revisar las funciones de Manipulación de Tablas para sacar partido máximo de SUMMARIZECOLUMNS, TREATAS y GENERATE.
+          </div>
+</section>
+
+      </div>
+</main>
+</div>
+<!-- Footer (cargado dinámicamente) -->
+<div id="main-footer"></div>
+<!-- Botón volver arriba -->
+<button aria-label="Volver arriba" class="btn-back-to-top" id="back-to-top">↑</button>
+<!-- Scripts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+<script src="../../assets/js/theme.js"></script>
+<script src="../../assets/js/main.js"></script>
+<!-- Buscador DAX -->
+<script src="../../assets/js/dax-search.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Auto-inicializar todos los widgets con data-dax-search="true"
+      if (window.daxSearch) {
+        window.daxSearch.initAll({
+          baseUrl: '../'  // estamos en topics/dax/, las URLs deben ir a topics/dax/...
+        });
+      }
+    });
+  </script>
+<script src="../../assets/js/cursor.js"></script>
+</body>
+</html>

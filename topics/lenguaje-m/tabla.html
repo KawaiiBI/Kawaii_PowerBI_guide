@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta content="Funciones de Tabla en Lenguaje M — Table.AddColumn, Table.SelectRows, Table.Group, Table.Join y más de 50 funciones para manipular tablas en Power Query" name="description"/>
+<title>Funciones de Tabla (Table.*) — Lenguaje M | Power BI Guide by Kawaii BI</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Fira+Code:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<!-- Prism.js -->
+<link href="https://cdn.jsdelivr.net/npm/prismjs@1/themes/prism-okaidia.min.css" rel="stylesheet"/>
+<!-- Estilos CSS -->
+<link href="../../assets/css/main.css" rel="stylesheet"/>
+<link href="../../assets/css/themes.css" rel="stylesheet"/>
+<link href="../../assets/css/components.css" rel="stylesheet"/>
+<link href="../../assets/css/layout.css" rel="stylesheet"/>
+<link href="../../assets/css/dax-search.css" rel="stylesheet"/>
+<style>
+        /* Topic header con icono grande */
+    .topic-header {
+      text-align: center;
+      padding: 2.5rem 0 2rem;
+      border-bottom: 2px solid var(--color-mauve);
+      margin-bottom: 2.5rem;
+    }
+
+    .topic-header__icon {
+      font-size: 4rem;
+      margin-bottom: 0.75rem;
+      display: block;
+    }
+
+    .topic-header__title {
+      font-size: clamp(1.875rem, 4vw, 2.5rem);
+      font-weight: 800;
+      color: var(--color-dark);
+      margin-bottom: 0.625rem;
+      line-height: 1.2;
+    }
+
+    .topic-header__subtitle {
+      font-size: 1.0625rem;
+      color: var(--color-slate);
+      margin-bottom: 1.25rem;
+      line-height: 1.5;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .topic-header__levels {
+      display: flex;
+      gap: 0.5rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    /* Category header */
+    .category-header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin: 2.5rem 0 1.25rem;
+      padding: 0.875rem 1.25rem;
+      background: var(--color-rose);
+      border-radius: var(--border-radius-sm);
+      border-left: 4px solid var(--color-coral);
+    }
+    .category-header__icon { font-size: 1.5rem; }
+    .category-header__title { font-size: 1.25rem; font-weight: 700; margin: 0; }
+
+    /* Function cards */
+    .function-card {
+      background: var(--color-white);
+      border: 1.5px solid var(--color-mauve);
+      border-radius: var(--border-radius);
+      padding: 1.75rem;
+      margin-bottom: 1.5rem;
+      scroll-margin-top: 80px;
+      transition: border-color 0.2s;
+    }
+    .function-card:hover { border-color: var(--color-coral); }
+
+    .function-card__header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.25rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 2px solid var(--color-blush);
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .function-card__title {
+      font-size: 1.375rem;
+      font-weight: 800;
+      color: var(--color-coral);
+      margin: 0;
+      font-family: 'Fira Code', monospace;
+    }
+
+    .function-card h4 {
+      font-size: 0.9375rem;
+      font-weight: 700;
+      color: var(--color-dark);
+      margin: 1.25rem 0 0.625rem;
+    }
+
+    .function-card p { font-size: 0.9375rem; line-height: 1.7; color: var(--color-dark); }
+
+    .function-card__params ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .function-card__params li {
+      padding: 0.5rem 0 0.5rem 1.5rem;
+      position: relative;
+      line-height: 1.6;
+      font-size: 0.9rem;
+      border-bottom: 1px solid var(--color-blush);
+    }
+    .function-card__params li:last-child { border-bottom: none; }
+    .function-card__params li::before {
+      content: "→";
+      position: absolute;
+      left: 0;
+      color: var(--color-coral);
+      font-weight: 700;
+    }
+    .function-card__params code {
+      background: var(--color-blush);
+      padding: 0.1em 0.4em;
+      border-radius: 4px;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.85em;
+      color: var(--color-coral);
+    }
+
+    /* TOC */
+    .toc {
+      background: var(--color-rose);
+      border-radius: var(--border-radius);
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 2rem;
+      border: 1.5px solid var(--color-mauve);
+    }
+    .toc__title { font-size: 1rem; font-weight: 700; margin: 0 0 0.75rem; }
+    .toc__list { display: flex; flex-wrap: wrap; gap: 0.5rem; list-style: none; padding: 0; margin: 0; }
+    .toc__list a {
+      font-size: 0.8125rem;
+      color: var(--color-coral);
+      text-decoration: none;
+      padding: 0.25rem 0.625rem;
+      background: var(--color-white);
+      border-radius: 999px;
+      border: 1px solid var(--color-mauve);
+      transition: background 0.15s, color 0.15s;
+      font-family: 'Fira Code', monospace;
+    }
+    .toc__list a:hover { background: var(--color-coral); color: white; }
+  </style>
+</head>
+<body>
+<!-- SIDEBAR: Navegación principal -->
+<aside class="site-sidebar">
+<div class="site-sidebar__profile">
+<img alt="Sara Lozano Martí" class="site-sidebar__avatar" src="../../assets/images/avatar Sara.png"/>
+<p class="site-sidebar__name">Sara Lozano Martí</p>
+<p class="site-sidebar__subtitle">Power BI Expert</p>
+</div>
+<nav aria-label="Navegación principal" class="site-sidebar__nav">
+<ul>
+<li><a class="site-sidebar__link" href="../../index.html">
+<span class="site-sidebar__icon">🏠</span> Inicio
+        </a></li>
+<li><a class="site-sidebar__link" href="../dax.html">
+<span class="site-sidebar__icon">⚡</span> Funciones DAX
+        </a></li>
+<li><a class="site-sidebar__link" href="../power-query.html">
+<span class="site-sidebar__icon">🔄</span> Power Query
+        </a></li>
+<li><a class="site-sidebar__link is-active" href="../lenguaje-m.html">
+<span class="site-sidebar__icon">〽️</span> Lenguaje M
+        </a></li>
+<li><a class="site-sidebar__link" href="../modelado.html">
+<span class="site-sidebar__icon">🗄️</span> Modelado
+        </a></li>
+<li><a class="site-sidebar__link" href="../conceptos-powerbi.html">
+<span class="site-sidebar__icon">📊</span> Conceptos Power BI
+        </a></li>
+<li><a class="site-sidebar__link" href="../fabric.html">
+<span class="site-sidebar__icon">🧵</span> Microsoft Fabric
+        </a></li>
+<li><a class="site-sidebar__link" href="../tmdl.html">
+<span class="site-sidebar__icon">📝</span> TMDL
+        </a></li>
+<li><a class="site-sidebar__link" href="../diseno-ux.html">
+<span class="site-sidebar__icon">🎨</span> Diseño y UX
+        </a></li>
+<li><a class="site-sidebar__link" href="../gobernanza.html">
+<span class="site-sidebar__icon">🔒</span> Gobernanza
+        </a></li>
+</ul>
+</nav>
+<div class="site-sidebar__divider"></div>
+<div class="site-sidebar__footer">
+<a class="site-sidebar__link site-sidebar__link--highlight" href="../../quien-soy.html">
+<span class="site-sidebar__icon">👩‍💻</span> ¿Quién soy?
+      </a>
+<div class="site-sidebar__social">
+<a aria-label="LinkedIn" href="https://www.linkedin.com/in/saralozanomarti" rel="noopener noreferrer" target="_blank">
+<img alt="LinkedIn" class="site-sidebar__social-icon" src="../../assets/images/logo linkedIN.png"/>
+</a>
+<a aria-label="YouTube" href="https://www.youtube.com/@KawaiiPowerBI" rel="noopener noreferrer" target="_blank">
+<img alt="YouTube" class="site-sidebar__social-icon" src="../../assets/images/logo youtube.png"/>
+</a>
+<a aria-label="GitHub" href="https://github.com/KawaiiBI" rel="noopener noreferrer" target="_blank">
+<img alt="GitHub" class="site-sidebar__social-icon" src="../../assets/images/logo github.png"/>
+</a>
+</div>
+<div class="site-sidebar__logo-bottom">
+<img alt="Kawaii BI" class="site-sidebar__logo-img" src="../../assets/images/Logo Kawaii.jpg"/>
+</div>
+<p class="site-sidebar__copyright">
+        Power BI Guide 🌸<br/>
+        © 2026 Kawaii BI
+      </p>
+</div>
+</aside>
+<!-- CONTENIDO PRINCIPAL -->
+<div class="page-wrapper">
+<main class="main-content">
+<div class="topic-page">
+<nav aria-label="Ruta de navegación" class="breadcrumb">
+<span class="breadcrumb__item"><a href="../../index.html">🏠 Inicio</a></span>
+<span aria-hidden="true" class="breadcrumb__separator">›</span>
+<span class="breadcrumb__item"><a href="../lenguaje-m.html">Lenguaje M</a></span>
+<span aria-hidden="true" class="breadcrumb__separator">›</span>
+<span class="breadcrumb__item">Funciones de Tabla</span>
+</nav>
+<header class="topic-header">
+          <span class="topic-header__icon">📊</span>
+          <h1 class="topic-header__title">Funciones de Tabla (Table.*)</h1>
+          <p class="topic-header__subtitle">
+              El corazón del Lenguaje M. Las funciones Table.* son las que más usarás en cualquier consulta
+              de Power Query: añadir columnas, filtrar filas, agrupar, combinar tablas, pivotar y mucho más.
+            </p>
+          <div class="topic-header__levels">
+<span class="badge badge--intermediate">Intermedio</span>
+<span class="badge badge--advanced">Avanzado</span>
+</div>
+        </header>
+<div class="dax-search-wrapper dax-search-wrapper--compact" data-m-search="true">
+<div class="dax-search-input-row">
+<span aria-hidden="true" class="dax-search-icon">🔍</span>
+<input aria-autocomplete="list" aria-expanded="false" aria-label="Buscar funciones del Lenguaje M" autocomplete="off" class="dax-search-input" placeholder="Buscar otra función M..." spellcheck="false" type="search"/>
+<button aria-label="Limpiar búsqueda" class="dax-search-clear" hidden="">✕</button>
+</div>
+<div aria-label="Resultados de búsqueda" class="dax-search-results" role="listbox"></div>
+</div>
+<nav aria-label="Índice de funciones" class="toc">
+<p class="toc__title">📌 Funciones en esta página:</p>
+<ul class="toc__list">
+<li><a href="#addcolumn">Table.AddColumn</a></li>
+<li><a href="#selectrows">Table.SelectRows</a></li>
+<li><a href="#group">Table.Group</a></li>
+<li><a href="#join">Table.NestedJoin</a></li>
+<li><a href="#transformcolumns">Table.TransformColumns</a></li>
+<li><a href="#pivot">Table.Pivot</a></li>
+<li><a href="#unpivot">Table.UnpivotOtherColumns</a></li>
+<li><a href="#distinct">Table.Distinct</a></li>
+<li><a href="#sort">Table.Sort</a></li>
+<li><a href="#combinewith">Table.Combine</a></li>
+</ul>
+</nav>
+<!-- Breadcrumb --><!-- Buscador compacto de funciones M --><!-- Cabecera --><!-- TOC --><!-- ======================================
+             SECCIÓN: Añadir y modificar columnas
+        ======================================= --><div class="category-header">
+<span class="category-header__icon">➕</span>
+<h2 class="category-header__title">Añadir y Modificar Columnas</h2>
+</div><!-- Table.AddColumn --><article class="function-card" id="addcolumn">
+<header class="function-card__header">
+<h3 class="function-card__title">Table.AddColumn</h3>
+<span class="badge badge--intermediate">Intermedio</span>
+</header>
+<div class="function-card__syntax">
+<h4>Sintaxis</h4>
+<pre><code class="language-javascript">Table.AddColumn(
+    tabla as table,
+    nombreNuevaColumna as text,
+    funcionColumna as function,
+    optional tipoColumna as nullable type
+) as table</code></pre>
+</div>
+<div class="function-card__description">
+<h4>¿Qué hace?</h4>
+<p>Añade una nueva columna calculada a una tabla. La función se ejecuta para cada fila,
+            permitiéndote crear valores basados en otras columnas de esa misma fila mediante <code>each</code>.</p>
+</div>
+<div class="function-card__params">
+<h4>Parámetros</h4>
+<ul>
+<li><strong>tabla:</strong> La tabla a la que añadir la columna</li>
+<li><strong>nombreNuevaColumna:</strong> Nombre de la columna nueva (tipo text)</li>
+<li><strong>funcionColumna:</strong> Función que calcula el valor de cada celda. Usa <code>each</code> para acceder a las columnas de cada fila con <code>[NombreColumna]</code></li>
+<li><strong>tipoColumna (opcional):</strong> Tipo de dato: <code>type text</code>, <code>type number</code>, <code>type date</code>, etc.</li>
+</ul>
+</div>
+<div class="function-card__example">
+<h4>Ejemplo 1: Columna calculada</h4>
+<pre><code class="language-javascript">let
+    Ventas = #table(
+        {"Producto", "Precio", "Cantidad"},
+        {{"Mouse", 15, 10}, {"Teclado", 45, 5}, {"Monitor", 200, 2}}
+    ),
+
+    // Añadir columna Total = Precio * Cantidad
+    ConTotal = Table.AddColumn(
+        Ventas,
+        "Total",
+        each [Precio] * [Cantidad],
+        type number
+    )
+in
+    ConTotal
+// Resultado: columna "Total" con valores 150, 225, 400</code></pre>
+</div>
+<div class="function-card__example">
+<h4>Ejemplo 2: Columna condicional</h4>
+<pre><code class="language-javascript">Table.AddColumn(
+    Ventas,
+    "Segmento",
+    each if [Precio] &gt; 100 then "Premium"
+         else if [Precio] &gt; 30 then "Estándar"
+         else "Básico",
+    type text
+)</code></pre>
+</div>
+<div class="note note--tip">
+            💡 <strong>Tip kawaii:</strong> Especifica siempre el <code>tipoColumna</code>.
+            Ayuda a Power Query a optimizar la consulta y evita conversiones automáticas incorrectas.
+          </div>
+</article><!-- Table.TransformColumns --><article class="function-card" id="transformcolumns">
+<header class="function-card__header">
+<h3 class="function-card__title">Table.TransformColumns</h3>
+<span class="badge badge--intermediate">Intermedio</span>
+</header>
+<div class="function-card__syntax">
+<h4>Sintaxis</h4>
+<pre><code class="language-javascript">Table.TransformColumns(
+    tabla as table,
+    transformaciones as list,
+    optional defaultTransformation as nullable function,
+    optional missingField as nullable number
+) as table</code></pre>
+</div>
+<div class="function-card__description">
+<h4>¿Qué hace?</h4>
+<p>Aplica transformaciones a columnas existentes. Es más eficiente que AddColumn + RemoveColumn
+            cuando solo quieres modificar el valor de una columna que ya existe.</p>
+</div>
+<div class="function-card__params">
+<h4>Parámetros</h4>
+<ul>
+<li><strong>tabla:</strong> La tabla de origen</li>
+<li><strong>transformaciones:</strong> Lista de listas con la forma <code>{"NombreColumna", función, tipoOpcional}</code></li>
+<li><strong>defaultTransformation (opcional):</strong> Función aplicada a todas las columnas no especificadas</li>
+<li><strong>missingField (opcional):</strong> Comportamiento si la columna no existe (MissingField.Error, MissingField.Ignore, MissingField.UseNull)</li>
+</ul>
+</div>
+<div class="function-card__example">
+<h4>Ejemplo: Transformar múltiples columnas</h4>
+<pre><code class="language-javascript">Table.TransformColumns(
+    MiTabla,
+    {
+        // Poner Nombre en mayúsculas
+        {"Nombre", Text.Upper, type text},
+        // Redondear Precio a 2 decimales
+        {"Precio", each Number.Round(_, 2), type number},
+        // Extraer solo el año de Fecha
+        {"Fecha", Date.Year, Int64.Type}
+    }
+)</code></pre>
+</div>
+<div class="note note--practice">
+            📌 <strong>Buena práctica:</strong> Usa <code>Table.TransformColumns</code> cuando
+            quieres modificar columnas ya existentes. Usa <code>Table.AddColumn</code> cuando
+            quieres crear columnas nuevas sin perder las originales.
+          </div>
+</article><!-- ======================================
+             SECCIÓN: Filtrar filas
+        ======================================= --><div class="category-header">
+<span class="category-header__icon">🔍</span>
+<h2 class="category-header__title">Filtrar Filas</h2>
+</div><!-- Table.SelectRows --><article class="function-card" id="selectrows">
+<header class="function-card__header">
+<h3 class="function-card__title">Table.SelectRows</h3>
+<span class="badge badge--intermediate">Intermedio</span>
+</header>
+<div class="function-card__syntax">
+<h4>Sintaxis</h4>
+<pre><code class="language-javascript">Table.SelectRows(
+    tabla as table,
+    condicion as function
+) as table</code></pre>
+</div>
+<div class="function-card__description">
+<h4>¿Qué hace?</h4>
+<p>Filtra las filas de una tabla manteniendo solo las que cumplen la condición. Es el equivalente
+            en M al WHERE de SQL o al filtro en la interfaz de Power Query.</p>
+</div>
+<div class="function-card__example">
+<h4>Ejemplo 1: Filtro simple</h4>
+<pre><code class="language-javascript">// Mantener solo ventas con importe &gt; 1000
+Table.SelectRows(
+    Ventas,
+    each [Importe] &gt; 1000
+)</code></pre>
+</div>
+<div class="function-card__example">
+<h4>Ejemplo 2: Filtro compuesto</h4>
+<pre><code class="language-javascript">// Ventas de 2024 en España
+Table.SelectRows(
+    Ventas,
+    each Date.Year([Fecha]) = 2024 and [Pais] = "España"
+)
+
+// Excluir nulos y valores vacíos
+Table.SelectRows(
+    Clientes,
+    each [Email] &lt;&gt; null and [Email] &lt;&gt; ""
+)</code></pre>
+</div>
+<div class="note note--tip">
+            💡 <strong>Tip kawaii:</strong> <code>Table.SelectRows</code> soporta <em>query folding</em>
+            cuando se aplica cerca del origen de datos (SQL, SharePoint, etc.). Esto significa que el
+            filtro se ejecuta en el servidor, no en Power Query — ¡mucho más rápido!
+          </div>
+</article><!-- ======================================
+             SECCIÓN: Agrupar y agregar
+        ======================================= --><div class="category-header">
+<span class="category-header__icon">📦</span>
+<h2 class="category-header__title">Agrupar y Agregar</h2>
+</div><!-- Table.Group --><article class="function-card" id="group">
+<header class="function-card__header">
+<h3 class="function-card__title">Table.Group</h3>
+<span class="badge badge--advanced">Avanzado</span>
+</header>
+<div class="function-card__syntax">
+<h4>Sintaxis</h4>
+<pre><code class="language-javascript">Table.Group(
+    tabla as table,
+    columnasClave as any,
+    agregaciones as list,
+    optional groupKind as nullable number,
+    optional comparer as nullable function
+) as table</code></pre>
+</div>
+<div class="function-card__description">
+<h4>¿Qué hace?</h4>
+<p>Agrupa filas por una o más columnas y aplica funciones de agregación (suma, conteo, promedio…).
+            Es el equivalente al GROUP BY de SQL. Cada grupo puede tener múltiples agregaciones.</p>
+</div>
+<div class="function-card__example">
+<h4>Ejemplo 1: Agrupación simple</h4>
+<pre><code class="language-javascript">// Ventas totales por país
+Table.Group(
+    Ventas,
+    "Pais",                    // columna clave
+    {
+        {"TotalVentas", each List.Sum([Importe]), type number},
+        {"NumOperaciones", Table.RowCount, Int64.Type}
+    }
+)</code></pre>
+</div>
+<div class="function-card__example">
+<h4>Ejemplo 2: Agrupación múltiple con varias métricas</h4>
+<pre><code class="language-javascript">// Ventas por país y año con múltiples métricas
+Table.Group(
+    Ventas,
+    {"Pais", "Año"},          // varias columnas clave
+    {
+        {"Total", each List.Sum([Importe]), type number},
+        {"Promedio", each List.Average([Importe]), type number},
+        {"Max", each List.Max([Importe]), type number},
+        {"Filas", Table.RowCount, Int64.Type}
+    }
+)</code></pre>
+</div>
+<div class="note note--warning">
+            ⚠️ <strong>Ojo con esto:</strong> <code>Table.Group</code> no soporta query folding
+            en la mayoría de conectores. Si tienes millones de filas, considera agregar en la fuente
+            (vista SQL, stored procedure) antes de traer los datos.
+          </div>
+</article><!-- ======================================
+             SECCIÓN: Combinar tablas
+        ======================================= --><div class="category-header">
+<span class="category-header__icon">🔗</span>
+<h2 class="category-header__title">Combinar Tablas</h2>
+</div><!-- Table.NestedJoin --><article class="function-card" id="join">
+<header class="function-card__header">
+<h3 class="function-card__title">Table.NestedJoin</h3>
+<span class="badge badge--advanced">Avanzado</span>
+</header>
+<div class="function-card__syntax">
+<h4>Sintaxis</h4>
+<pre><code class="language-javascript">Table.NestedJoin(
+    tabla1 as table,
+    columnasClave1 as any,
+    tabla2 as any,
+    columnasClave2 as any,
+    nombreNuevaColumna as text,
+    optional tipoJoin as nullable number
+) as table</code></pre>
+</div>
+<div class="function-card__description">
+<h4>¿Qué hace?</h4>
+<p>Combina dos tablas mediante una clave común (como un JOIN de SQL). El resultado contiene
+            una columna nueva con la tabla relacionada anidada, que luego puedes expandir.</p>
+</div>
+<div class="function-card__params">
+<h4>Tipos de Join disponibles</h4>
+<ul>
+<li><code>JoinKind.Inner</code> — Solo filas con coincidencia en ambas tablas</li>
+<li><code>JoinKind.LeftOuter</code> — Todas las filas de tabla1, con NULLs de tabla2</li>
+<li><code>JoinKind.RightOuter</code> — Todas las filas de tabla2, con NULLs de tabla1</li>
+<li><code>JoinKind.FullOuter</code> — Todas las filas de ambas tablas</li>
+<li><code>JoinKind.LeftAnti</code> — Solo filas de tabla1 SIN coincidencia en tabla2</li>
+</ul>
+</div>
+<div class="function-card__example">
+<h4>Ejemplo: Left Join con expansión</h4>
+<pre><code class="language-javascript">let
+    // Join de Ventas con Clientes por ID
+    ConClientes = Table.NestedJoin(
+        Ventas,
+        "ClienteID",
+        Clientes,
+        "ID",
+        "DatosCliente",
+        JoinKind.LeftOuter
+    ),
+
+    // Expandir las columnas que necesitamos
+    Expandido = Table.ExpandTableColumn(
+        ConClientes,
+        "DatosCliente",
+        {"Nombre", "Email", "Ciudad"},
+        {"Cliente.Nombre", "Cliente.Email", "Cliente.Ciudad"}
+    )
+in
+    Expandido</code></pre>
+</div>
+<div class="note note--tip">
+            💡 <strong>Tip kawaii:</strong> Si solo necesitas traer columnas de una tabla relacionada
+            (lookup), considera <code>Table.AddColumn</code> con <code>Table.SelectRows</code> y
+            <code>List.First</code> — a veces es más legible que un NestedJoin + ExpandTableColumn.
+          </div>
+</article><!-- Table.Combine --><article class="function-card" id="combinewith">
+<header class="function-card__header">
+<h3 class="function-card__title">Table.Combine</h3>
+<span class="badge badge--intermediate">Intermedio</span>
+</header>
+<div class="function-card__syntax">
+<h4>Sintaxis</h4>
+<pre><code class="language-javascript">Table.Combine(
+    tablas as list,
+    optional columnas as any
+) as table</code></pre>
+</div>
+<div class="function-card__description">
+<h4>¿Qué hace?</h4>
+<p>Concatena verticalmente una lista de tablas (como UNION ALL en SQL). Las columnas se
+            alinean por nombre. Las columnas que no existen en alguna tabla aparecen como null.</p>
+</div>
+<div class="function-card__example">
+<h4>Ejemplo: Combinar tablas de distintos años</h4>
+<pre><code class="language-javascript">let
+    Ventas2022 = Excel.Workbook(File.Contents("ventas2022.xlsx")){0}[Data],
+    Ventas2023 = Excel.Workbook(File.Contents("ventas2023.xlsx")){0}[Data],
+    Ventas2024 = Excel.Workbook(File.Contents("ventas2024.xlsx")){0}[Data],
+
+    // Combinar las tres tablas en una sola
+    Todas = Table.Combine({Ventas2022, Ventas2023, Ventas2024})
+in
+    Todas</code></pre>
+</div>
+</article><!-- ======================================
+             SECCIÓN: Pivotar y despivotar
+        ======================================= --><div class="category-header">
+<span class="category-header__icon">🔀</span>
+<h2 class="category-header__title">Pivotar y Despivotar</h2>
+</div><!-- Table.Pivot --><article class="function-card" id="pivot">
+<header class="function-card__header">
+<h3 class="function-card__title">Table.Pivot</h3>
+<span class="badge badge--advanced">Avanzado</span>
+</header>
+<div class="function-card__syntax">
+<h4>Sintaxis</h4>
+<pre><code class="language-javascript">Table.Pivot(
+    tabla as table,
+    valoresPivot as list,
+    columnaPivot as text,
+    columnaValores as text,
+    optional agregacion as nullable function
+) as table</code></pre>
+</div>
+<div class="function-card__description">
+<h4>¿Qué hace?</h4>
+<p>Convierte filas en columnas: los valores únicos de <code>columnaPivot</code> se
+            convierten en nombres de columna, y los valores de <code>columnaValores</code> rellenan
+            las celdas. Útil para convertir datos en formato largo a formato ancho.</p>
+</div>
+<div class="function-card__example">
+<h4>Ejemplo: Convertir meses de filas a columnas</h4>
+<pre><code class="language-javascript">// Datos originales:
+// Producto | Mes    | Ventas
+// Mouse    | Enero  | 150
+// Mouse    | Febrero| 200
+// Teclado  | Enero  | 80
+
+Table.Pivot(
+    MiTabla,
+    {"Enero", "Febrero", "Marzo"},  // valores que se convierten en columnas
+    "Mes",                           // columna que contiene esos valores
+    "Ventas",                        // columna con los valores a mostrar
+    List.Sum                         // función de agregación (si hay duplicados)
+)
+// Resultado:
+// Producto | Enero | Febrero | Marzo
+// Mouse    |  150  |   200   | null
+// Teclado  |   80  |  null   | null</code></pre>
+</div>
+</article><!-- Table.UnpivotOtherColumns --><article class="function-card" id="unpivot">
+<header class="function-card__header">
+<h3 class="function-card__title">Table.UnpivotOtherColumns</h3>
+<span class="badge badge--intermediate">Intermedio</span>
+</header>
+<div class="function-card__syntax">
+<h4>Sintaxis</h4>
+<pre><code class="language-javascript">Table.UnpivotOtherColumns(
+    tabla as table,
+    columnasAMantener as list,
+    nombreAtributo as text,
+    nombreValor as text
+) as table</code></pre>
+</div>
+<div class="function-card__description">
+<h4>¿Qué hace?</h4>
+<p>Convierte columnas en filas (unpivot). Mantiene las columnas especificadas como
+            identificadores y "derrite" todas las demás. Fundamental para normalizar datos anchos.</p>
+</div>
+<div class="function-card__example">
+<h4>Ejemplo: Normalizar datos de meses</h4>
+<pre><code class="language-javascript">// Datos originales (formato ancho):
+// Producto | Enero | Febrero | Marzo
+// Mouse    |  150  |   200   |  180
+
+Table.UnpivotOtherColumns(
+    MiTabla,
+    {"Producto"},   // columnas que se mantienen como están
+    "Mes",          // nombre de la nueva columna de atributos
+    "Ventas"        // nombre de la nueva columna de valores
+)
+// Resultado (formato largo):
+// Producto | Mes     | Ventas
+// Mouse    | Enero   | 150
+// Mouse    | Febrero | 200
+// Mouse    | Marzo   | 180</code></pre>
+</div>
+<div class="note note--tip">
+            💡 <strong>Tip kawaii:</strong> Usa <code>Table.UnpivotOtherColumns</code> (mantener las
+            columnas ID y despivotar el resto) en lugar de <code>Table.Unpivot</code> (especificar
+            qué columnas despivotar). Es más robusto cuando el número de columnas puede cambiar.
+          </div>
+</article><!-- ======================================
+             SECCIÓN: Ordenar y deduplicar
+        ======================================= --><div class="category-header">
+<span class="category-header__icon">🗂️</span>
+<h2 class="category-header__title">Ordenar y Deduplicar</h2>
+</div><!-- Table.Distinct --><article class="function-card" id="distinct">
+<header class="function-card__header">
+<h3 class="function-card__title">Table.Distinct</h3>
+<span class="badge badge--intermediate">Intermedio</span>
+</header>
+<div class="function-card__syntax">
+<h4>Sintaxis</h4>
+<pre><code class="language-javascript">Table.Distinct(
+    tabla as table,
+    optional columnasClave as any
+) as table</code></pre>
+</div>
+<div class="function-card__description">
+<h4>¿Qué hace?</h4>
+<p>Elimina filas duplicadas. Sin parámetro opcional, compara todas las columnas. Con
+            <code>columnasClave</code>, elimina duplicados basándose solo en esas columnas.</p>
+</div>
+<div class="function-card__example">
+<h4>Ejemplo</h4>
+<pre><code class="language-javascript">// Eliminar filas completamente duplicadas
+Table.Distinct(MiTabla)
+
+// Eliminar duplicados por una columna (mantiene la primera ocurrencia)
+Table.Distinct(MiTabla, "ClienteID")
+
+// Eliminar duplicados por varias columnas
+Table.Distinct(MiTabla, {"Pais", "Ciudad"})</code></pre>
+</div>
+</article><!-- Table.Sort --><article class="function-card" id="sort">
+<header class="function-card__header">
+<h3 class="function-card__title">Table.Sort</h3>
+<span class="badge badge--intermediate">Intermedio</span>
+</header>
+<div class="function-card__syntax">
+<h4>Sintaxis</h4>
+<pre><code class="language-javascript">Table.Sort(
+    tabla as table,
+    criterios as any
+) as table</code></pre>
+</div>
+<div class="function-card__description">
+<h4>¿Qué hace?</h4>
+<p>Ordena las filas de la tabla según uno o más criterios. Cada criterio puede ser
+            ascendente (<code>Order.Ascending</code>) o descendente (<code>Order.Descending</code>).</p>
+</div>
+<div class="function-card__example">
+<h4>Ejemplo</h4>
+<pre><code class="language-javascript">// Ordenar por una columna (ascendente por defecto)
+Table.Sort(MiTabla, "Nombre")
+
+// Ordenar por fecha descendente, luego por importe descendente
+Table.Sort(
+    MiTabla,
+    {
+        {"Fecha", Order.Descending},
+        {"Importe", Order.Descending}
+    }
+)</code></pre>
+</div>
+<div class="note note--warning">
+            ⚠️ <strong>Ojo con esto:</strong> En la mayoría de casos, el orden de las filas en
+            Power BI no importa (DAX no depende del orden de las tablas). Evita <code>Table.Sort</code>
+            si no es estrictamente necesario — añade tiempo de procesamiento sin beneficio real.
+          </div>
+</article><!-- Nota final --><div class="note note--next" style="margin-top: 2.5rem;">
+          🚀 <strong>¡Vas genial!</strong> Las funciones de tabla son el core de M. El siguiente paso
+          natural son las <a href="lista.html">Funciones de Lista</a>, que se usan constantemente
+          dentro de las funciones de tabla para agregar y transformar valores. ¡Vamos allá!
+        </div>
+</div>
+</main>
+</div>
+<button aria-label="Volver arriba" class="back-to-top" id="back-to-top" title="Volver arriba">↑</button>
+<script src="https://cdn.jsdelivr.net/npm/i18next@23/dist/umd/i18next.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1/prism.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1/components/prism-javascript.min.js"></script>
+<script src="../../assets/js/theme.js"></script>
+<script src="../../assets/js/i18n.js"></script>
+<script src="../../assets/js/main.js"></script>
+<script src="../../assets/js/cursor.js"></script>
+<script src="../../assets/js/m-search.js"></script>
+</body>
+</html>

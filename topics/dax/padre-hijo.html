@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta content="Funciones Padre-Hijo en DAX — PATH, PATHITEM, PATHLENGTH, PATHCONTAINS para jerarquías irregulares" name="description"/>
+<title>Padre-Hijo — Funciones DAX | Power BI Guide</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Fira+Code:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<!-- Prism.js para syntax highlighting -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet"/>
+<!-- i18next para traducciones -->
+<script src="https://cdn.jsdelivr.net/npm/i18next@23.7.6/i18next.min.js"></script>
+<!-- CSS del proyecto -->
+<link href="../../assets/css/main.css" rel="stylesheet"/>
+<link href="../../assets/css/themes.css" rel="stylesheet"/>
+<link href="../../assets/css/components.css" rel="stylesheet"/>
+<link href="../../assets/css/layout.css" rel="stylesheet"/>
+<link href="../../assets/css/dax-search.css" rel="stylesheet"/>
+<style>
+    /* === ESTILOS ESPECÍFICOS PARA PÁGINAS DE TOPICS === */
+
+    /* Topic header con icono grande */
+    .topic-header {
+      text-align: center;
+      padding: 2.5rem 0 2rem;
+      border-bottom: 2px solid var(--color-mauve);
+      margin-bottom: 2.5rem;
+    }
+
+    .topic-header__icon {
+      font-size: 4rem;
+      margin-bottom: 0.75rem;
+      display: block;
+    }
+
+    .topic-header__title {
+      font-size: clamp(1.875rem, 4vw, 2.5rem);
+      font-weight: 800;
+      color: var(--color-dark);
+      margin-bottom: 0.625rem;
+      line-height: 1.2;
+    }
+
+    .topic-header__subtitle {
+      font-size: 1.0625rem;
+      color: var(--color-slate);
+      margin-bottom: 1.25rem;
+      line-height: 1.5;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .topic-header__levels {
+      display: flex;
+      gap: 0.5rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    /* TOC — Table of contents */
+    .toc {
+      background: var(--color-rose);
+      border: 1.5px solid var(--color-mauve);
+      border-radius: var(--border-radius);
+      padding: 1.5rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .toc__title {
+      font-size: 0.875rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--color-slate);
+      margin-bottom: 1rem;
+    }
+
+    .toc__list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .toc__link {
+      color: var(--color-dark);
+      text-decoration: none;
+      font-size: 0.9375rem;
+      transition: var(--transition);
+      display: inline-block;
+    }
+
+    .toc__link:hover {
+      color: var(--color-coral);
+      text-decoration: underline;
+    }
+
+    /* Category header — separadores entre categorías */
+    .category-header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin: 3rem 0 1.5rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 2px solid var(--color-mauve);
+    }
+
+    .category-header__icon {
+      font-size: 1.75rem;
+    }
+
+    .category-header__title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--color-dark);
+      margin: 0;
+    }
+
+    /* Function card — tarjeta individual para cada función */
+    .function-card {
+      background: var(--color-white);
+      border: 1.5px solid var(--color-mauve);
+      border-radius: var(--border-radius);
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .function-card__name {
+      font-family: var(--font-code);
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: var(--color-coral);
+      margin-bottom: 0.75rem;
+    }
+
+    .function-card__description {
+      font-size: 0.9375rem;
+      color: var(--color-dark);
+      margin-bottom: 1rem;
+      line-height: 1.6;
+    }
+
+    .function-card__level {
+      display: inline-block;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      padding: 0.25rem 0.625rem;
+      border-radius: var(--border-radius-sm);
+      background: var(--color-blush);
+      color: var(--color-slate);
+      margin-bottom: 1rem;
+    }
+
+    /* Function table — tabla compacta con ejemplos */
+    .function-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.5rem 0;
+      font-size: 0.875rem;
+    }
+
+    .function-table th {
+      background: var(--color-rose);
+      color: var(--color-dark);
+      font-weight: 700;
+      text-align: left;
+      padding: 0.75rem 1rem;
+      border: 1px solid var(--color-mauve);
+    }
+
+    .function-table td {
+      padding: 0.75rem 1rem;
+      border: 1px solid var(--color-mauve);
+      color: var(--color-dark);
+    }
+
+    .function-table tr:nth-child(even) {
+      background: var(--color-blush);
+    }
+
+    /* Code block wrapper */
+    .code-block {
+      position: relative;
+      margin: 1.25rem 0;
+    }
+
+    .code-block pre {
+      margin: 0;
+      border-radius: var(--border-radius);
+      border: 1.5px solid var(--color-mauve);
+    }
+
+    .code-block__copy {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.5rem;
+      padding: 0.375rem 0.75rem;
+      font-size: 0.75rem;
+      background: var(--color-coral);
+      color: var(--color-white);
+      border: none;
+      border-radius: var(--border-radius-sm);
+      cursor: pointer;
+      font-family: var(--font-main);
+      font-weight: 600;
+      transition: var(--transition);
+    }
+
+    .code-block__copy:hover {
+      background: var(--color-peach);
+    }
+
+    /* Diagram styles */
+    .diagram {
+      background: var(--color-darker);
+      color: #00ff00;
+      padding: 2rem;
+      border-radius: var(--border-radius);
+      font-family: var(--font-code);
+      font-size: 0.9rem;
+      line-height: 1.4;
+      margin: 2rem 0;
+      overflow-x: auto;
+      border: 1.5px solid var(--color-mauve);
+    }
+
+    .diagram pre {
+      margin: 0;
+      white-space: pre;
+    }
+  </style>
+</head>
+<body>
+<!-- SIDEBAR: Navegación principal -->
+<aside class="site-sidebar">
+<!-- Avatar y nombre -->
+<div class="site-sidebar__profile">
+<img alt="Sara Lozano Martí" class="site-sidebar__avatar" src="../../assets/images/avatar Sara.png"/>
+<p class="site-sidebar__name">Sara Lozano Martí</p>
+<p class="site-sidebar__subtitle">Power BI Expert</p>
+</div>
+<!-- Navegación principal -->
+<nav aria-label="Navegación principal" class="site-sidebar__nav">
+<ul>
+<li><a class="site-sidebar__link" href="../../index.html">
+<span class="site-sidebar__icon">🏠</span> Inicio
+        </a></li>
+<li><a class="site-sidebar__link is-active" href="../dax.html">
+<span class="site-sidebar__icon">⚡</span> Funciones DAX
+        </a></li>
+<li><a class="site-sidebar__link" href="../power-query.html">
+<span class="site-sidebar__icon">🔄</span> Power Query
+        </a></li>
+<li><a class="site-sidebar__link" href="../lenguaje-m.html">
+<span class="site-sidebar__icon">〽️</span> Lenguaje M
+        </a></li>
+<li><a class="site-sidebar__link" href="../modelado.html">
+<span class="site-sidebar__icon">🗄️</span> Modelado
+        </a></li>
+<li><a class="site-sidebar__link" href="../conceptos-powerbi.html">
+<span class="site-sidebar__icon">📊</span> Conceptos Power BI
+        </a></li>
+<li><a class="site-sidebar__link" href="../fabric.html">
+<span class="site-sidebar__icon">🧵</span> Microsoft Fabric
+        </a></li>
+<li><a class="site-sidebar__link" href="../tmdl.html">
+<span class="site-sidebar__icon">📝</span> TMDL
+        </a></li>
+<li><a class="site-sidebar__link" href="../diseno-ux.html">
+<span class="site-sidebar__icon">🎨</span> Diseño y UX
+        </a></li>
+<li><a class="site-sidebar__link" href="../gobernanza.html">
+<span class="site-sidebar__icon">🔒</span> Gobernanza
+        </a></li>
+</ul>
+</nav>
+<!-- Separador -->
+<div class="site-sidebar__divider"></div>
+<!-- Footer del sidebar -->
+<div class="site-sidebar__footer">
+<!-- Enlace a quien soy -->
+<a class="site-sidebar__link site-sidebar__link--highlight" href="../../quien-soy.html">
+<span class="site-sidebar__icon">👩‍💻</span> ¿Quién soy?
+      </a>
+<!-- Iconos sociales -->
+<div class="site-sidebar__social">
+<a aria-label="LinkedIn" href="https://www.linkedin.com/in/saralozanomarti" rel="noopener noreferrer" target="_blank">
+<img alt="LinkedIn" class="site-sidebar__social-icon" src="../../assets/images/logo linkedIN.png"/>
+</a>
+<a aria-label="YouTube" href="https://www.youtube.com/@KawaiiPowerBI" rel="noopener noreferrer" target="_blank">
+<img alt="YouTube" class="site-sidebar__social-icon" src="../../assets/images/logo youtube.png"/>
+</a>
+<a aria-label="GitHub" href="https://github.com/KawaiiBI" rel="noopener noreferrer" target="_blank">
+<img alt="GitHub" class="site-sidebar__social-icon" src="../../assets/images/logo github.png"/>
+</a>
+</div>
+<!-- Logo Kawaii BI -->
+<div class="site-sidebar__logo-bottom">
+<img alt="Kawaii BI" class="site-sidebar__logo-img" src="../../assets/images/Logo Kawaii.jpg"/>
+</div>
+<!-- Copyright -->
+<p class="site-sidebar__copyright">
+        Power BI Guide 🌸<br/>
+        © 2026 Kawaii BI
+      </p>
+</div>
+</aside>
+<!-- PAGE WRAPPER -->
+<div class="page-wrapper">
+<!-- Main content -->
+<main id="main-content">
+<div class="topic-page">
+        <nav aria-label="breadcrumb" class="breadcrumb">
+<a class="breadcrumb__link" href="../../index.html">Inicio</a>
+<span class="breadcrumb__separator">›</span>
+<a class="breadcrumb__link" href="../dax.html">Funciones DAX</a>
+<span class="breadcrumb__separator">›</span>
+<span class="breadcrumb__current">Padre-Hijo</span>
+</nav>
+
+        <header class="topic-header">
+<span class="topic-header__icon">🌳</span>
+<h1 class="topic-header__title">Funciones Padre-Hijo</h1>
+<p class="topic-header__subtitle">PATH, PATHITEM, PATHLENGTH, PATHCONTAINS — maneja jerarquías irregulares como organigramas y planes de cuentas</p>
+<div class="topic-header__levels">
+<span class="badge badge--advanced">Avanzado</span>
+</div>
+</header>
+
+        <div class="dax-search-compact-bar">
+<div class="dax-search-wrapper dax-search-compact" data-dax-search="true">
+<span class="dax-search-icon">🔍</span>
+<input aria-label="Buscar función DAX" autocomplete="off" class="dax-search-input" placeholder="Buscar otra función DAX..." spellcheck="false" type="text"/>
+<button aria-label="Limpiar" class="dax-search-clear" hidden="">✕</button>
+<div class="dax-search-results" role="listbox"></div>
+</div>
+</div>
+
+        <nav class="toc">
+<h2 class="toc__title">📑 En esta página</h2>
+<ul class="toc__list">
+<li><a class="toc__link" href="#intro">¿Qué es una jerarquía padre-hijo? El problema que resuelven</a></li>
+<li><a class="toc__link" href="#path">PATH — construir el camino completo</a></li>
+<li><a class="toc__link" href="#pathlength">PATHLENGTH — profundidad del nodo</a></li>
+<li><a class="toc__link" href="#pathitem">PATHITEM y PATHITEMREVERSE — extraer niveles</a></li>
+<li><a class="toc__link" href="#pathcontains">PATHCONTAINS — verificar pertenencia</a></li>
+<li><a class="toc__link" href="#aplanar">El patrón completo: aplanar jerarquía padre-hijo</a></li>
+<li><a class="toc__link" href="#patrones">Casos de uso reales</a></li>
+</ul>
+</nav>
+
+        <!-- Breadcrumb --><!-- Buscador compacto DAX --><!-- Header del topic --><!-- TOC --><!-- SECCIÓN 0: Intro --><section id="intro">
+<div class="category-header">
+<span class="category-header__icon">🎯</span>
+<h2 class="category-header__title">¿Qué es una jerarquía padre-hijo? El problema que resuelven</h2>
+</div>
+<p>Imagina que tienes un organigrama de empresa guardado en una tabla. Cada persona tiene un ID y el ID de su manager directo. La jerarquía tiene profundidad variable — la directora tiene 1 nivel, los managers 2, los coordinadores 3, los técnicos 4, los juniors 5... <strong>Power BI no sabe cómo manejar jerarquías de profundidad variable directamente. Ahí entran las funciones Padre-Hijo.</strong></p>
+<h3>El problema en datos</h3>
+<p><strong>TABLA 'Empleados':</strong></p>
+<table class="function-table">
+<thead>
+<tr>
+<th>EmpleadoID</th>
+<th>Nombre</th>
+<th>ManagerID</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>E001</td>
+<td>Elena García</td>
+<td>(vacío ← es la CEO)</td>
+</tr>
+<tr>
+<td>E002</td>
+<td>Carlos López</td>
+<td>E001</td>
+</tr>
+<tr>
+<td>E003</td>
+<td>Ana Martín</td>
+<td>E001</td>
+</tr>
+<tr>
+<td>E004</td>
+<td>Pedro Ruiz</td>
+<td>E002</td>
+</tr>
+<tr>
+<td>E005</td>
+<td>Laura Sanz</td>
+<td>E002</td>
+</tr>
+<tr>
+<td>E006</td>
+<td>Miguel Torres</td>
+<td>E003</td>
+</tr>
+<tr>
+<td>E007</td>
+<td>Sofia Pérez</td>
+<td>E004</td>
+</tr>
+</tbody>
+</table>
+<h3>Jerarquía resultante</h3>
+<div class="diagram">
+<pre>
+Elena García (CEO)
+├── Carlos López
+│   ├── Pedro Ruiz
+│   │   └── Sofia Pérez
+│   └── Laura Sanz
+└── Ana Martín
+    └── Miguel Torres
+            </pre>
+</div>
+<p><strong>El problema:</strong> la profundidad varía por rama (1, 2, 3, 4 niveles...).<br/>
+<strong>La solución:</strong> convertir esta estructura recursiva en columnas fijas.</p>
+<h3>Otros casos de uso típicos</h3>
+<ul>
+<li><strong>Plan de cuentas contable</strong> — cuenta padre &gt; subcuenta &gt; subsubcuenta...</li>
+<li><strong>Taxonomía de productos</strong> — categoría &gt; subcategoría &gt; familia &gt; SKU</li>
+<li><strong>Estructura organizativa</strong> — CEO &gt; Director &gt; Manager &gt; Coordinador &gt; Técnico</li>
+<li><strong>BOM (Bill of Materials)</strong> — productos con componentes y subcomponentes</li>
+</ul>
+</section><!-- SECCIÓN 1: PATH --><section id="path">
+<div class="category-header">
+<span class="category-header__icon">🛤️</span>
+<h2 class="category-header__title">PATH — el punto de partida</h2>
+</div>
+<div class="function-card">
+<div class="function-card__name">PATH(&lt;id_columna&gt;, &lt;padre_columna&gt;)</div>
+<div class="function-card__level">Avanzado</div>
+<div class="function-card__description">
+              Para cada nodo de la jerarquía, genera una cadena de texto con el camino completo desde la raíz hasta ese nodo, separado por el carácter pipe "|". <strong>Es la función base que habilita todo el análisis padre-hijo.</strong>
+</div>
+<h4>Ejemplo básico:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Columna calculada en la tabla Empleados:
+'Empleados'[Path] = PATH('Empleados'[EmpleadoID], 'Empleados'[ManagerID])
+
+// Resultado:
+// Elena García (E001):   "E001"
+// Carlos López (E002):   "E001|E002"
+// Pedro Ruiz (E004):     "E001|E002|E004"
+// Sofia Pérez (E007):    "E001|E002|E004|E007"
+
+// ¡Importante! El campo ManagerID de la raíz (CEO) debe ser BLANK o el mismo ID
+// Si tienes texto vacío "" en lugar de BLANK, conviértelo primero:
+'Empleados'[ManagerIDLimpio] =
+IF('Empleados'[ManagerID] = "", BLANK(), 'Empleados'[ManagerID])
+
+'Empleados'[Path] =
+PATH('Empleados'[EmpleadoID], 'Empleados'[ManagerIDLimpio])</code></pre>
+</div>
+<h4>Ejemplo plan de cuentas:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Lo mismo para plan de cuentas:
+'Cuentas'[Path] = PATH('Cuentas'[CuentaID], 'Cuentas'[CuentaPadreID])</code></pre>
+</div>
+</div>
+</section><!-- SECCIÓN 2: PATHLENGTH --><section id="pathlength">
+<div class="category-header">
+<span class="category-header__icon">📏</span>
+<h2 class="category-header__title">PATHLENGTH — la profundidad</h2>
+</div>
+<div class="function-card">
+<div class="function-card__name">PATHLENGTH(&lt;path&gt;)</div>
+<div class="function-card__level">Avanzado</div>
+<div class="function-card__description">
+              Devuelve el número de nodos en el camino (la profundidad del nodo en la jerarquía). La raíz tiene PATHLENGTH = 1, sus hijos directos = 2, etc.
+            </div>
+<h4>Ejemplo básico:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Nivel de cada empleado en la jerarquía:
+'Empleados'[Nivel] = PATHLENGTH('Empleados'[Path])
+
+// Resultado:
+// Elena García: Nivel 1 (la raíz)
+// Carlos López: Nivel 2
+// Pedro Ruiz:   Nivel 3
+// Sofia Pérez:  Nivel 4</code></pre>
+</div>
+<h4>Ejemplo con nombres de nivel:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Nombre del nivel:
+'Empleados'[Nombre Nivel] =
+SWITCH(
+    'Empleados'[Nivel],
+    1, "CEO / Dirección",
+    2, "Director",
+    3, "Manager",
+    4, "Coordinador",
+    5, "Técnico Senior",
+    "Junior"
+)</code></pre>
+</div>
+<h4>Profundidad máxima:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Profundidad máxima de la jerarquía:
+Niveles Totales = MAXX(ALL('Empleados'), 'Empleados'[Nivel])</code></pre>
+</div>
+</div>
+</section><!-- SECCIÓN 3: PATHITEM y PATHITEMREVERSE --><section id="pathitem">
+<div class="category-header">
+<span class="category-header__icon">🔍</span>
+<h2 class="category-header__title">PATHITEM y PATHITEMREVERSE — extraer niveles</h2>
+</div>
+<!-- PATHITEM -->
+<div class="function-card">
+<div class="function-card__name">PATHITEM(&lt;path&gt;, &lt;posición&gt;, [&lt;tipo&gt;])</div>
+<div class="function-card__level">Avanzado</div>
+<div class="function-card__description">
+              Extrae el elemento en la posición indicada del path (empezando desde la raíz, posición 1). Devuelve texto por defecto, o el tipo especificado (INTEGER, etc.) si se indica.
+            </div>
+<h4>Ejemplo básico:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Extraer el nivel 1 (la raíz — siempre es la CEO):
+'Empleados'[Nivel1 ID] = PATHITEM('Empleados'[Path], 1)
+// Siempre devuelve "E001" (Elena García) para todos los empleados
+
+// Extraer el nivel 2 (director directo de la CEO):
+'Empleados'[Nivel2 ID] = PATHITEM('Empleados'[Path], 2)
+// Para Pedro Ruiz: "E002" (Carlos López)
+// Para Elena García: BLANK (no tiene nivel 2)</code></pre>
+</div>
+<h4>Extraer el propio ID:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Extraer el propio ID (último nivel = el propio nodo):
+'Empleados'[Mi ID desde Path] =
+PATHITEM('Empleados'[Path], PATHLENGTH('Empleados'[Path]))</code></pre>
+</div>
+<h4>Convertir ID a nombre:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Usar LOOKUPVALUE para convertir ID en nombre:
+'Empleados'[Nombre Nivel1] =
+LOOKUPVALUE(
+    'Empleados'[Nombre],
+    'Empleados'[EmpleadoID],
+    PATHITEM('Empleados'[Path], 1)
+)</code></pre>
+</div>
+</div>
+<!-- PATHITEMREVERSE -->
+<div class="function-card">
+<div class="function-card__name">PATHITEMREVERSE(&lt;path&gt;, &lt;posición&gt;, [&lt;tipo&gt;])</div>
+<div class="function-card__level">Avanzado</div>
+<div class="function-card__description">
+              Como PATHITEM pero cuenta desde el final (desde el nodo actual hacia la raíz). Posición 1 = el propio nodo, posición 2 = su padre, posición 3 = su abuelo.
+            </div>
+<h4>Ejemplo básico:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// El propio empleado (posición 1 desde el final):
+'Empleados'[Mi ID] = PATHITEMREVERSE('Empleados'[Path], 1)
+// Siempre devuelve el propio EmpleadoID
+
+// El manager directo (posición 2 desde el final):
+'Empleados'[Manager Directo ID] = PATHITEMREVERSE('Empleados'[Path], 2)
+// Si Sofia Pérez: devuelve "E004" (Pedro Ruiz, su manager)
+
+// El "abuelo" en la jerarquía:
+'Empleados'[Nivel -2 ID] = PATHITEMREVERSE('Empleados'[Path], 3)</code></pre>
+</div>
+<h4>Diferencia PATHITEM vs PATHITEMREVERSE:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Para Sofia Pérez, Path = "E001|E002|E004|E007":
+
+PATHITEM('Empleados'[Path], 1)          → "E001" (Elena, la raíz)
+PATHITEM('Empleados'[Path], 2)          → "E002" (Carlos)
+PATHITEM('Empleados'[Path], 3)          → "E004" (Pedro)
+PATHITEM('Empleados'[Path], 4)          → "E007" (Sofia, ella misma)
+
+PATHITEMREVERSE('Empleados'[Path], 1)   → "E007" (Sofia, ella misma)
+PATHITEMREVERSE('Empleados'[Path], 2)   → "E004" (Pedro, su manager)
+PATHITEMREVERSE('Empleados'[Path], 3)   → "E002" (Carlos, su gran-manager)
+PATHITEMREVERSE('Empleados'[Path], 4)   → "E001" (Elena, la raíz)</code></pre>
+</div>
+</div>
+</section><!-- SECCIÓN 4: PATHCONTAINS --><section id="pathcontains">
+<div class="category-header">
+<span class="category-header__icon">✅</span>
+<h2 class="category-header__title">PATHCONTAINS — verificar pertenencia</h2>
+</div>
+<div class="function-card">
+<div class="function-card__name">PATHCONTAINS(&lt;path&gt;, &lt;elemento&gt;)</div>
+<div class="function-card__level">Avanzado</div>
+<div class="function-card__description">
+              Devuelve TRUE si el elemento especificado está en el path. <strong>Esencial para verificar si un nodo es ancestro de otro, o para filtrar toda la descendencia de un nodo.</strong>
+</div>
+<h4>Ejemplo básico:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// ¿Es Carlos López (E002) un ancestro de Sofia Pérez?
+Es Ancestro = PATHCONTAINS('Empleados'[Path], "E002")
+// Para Sofia (Path = "E001|E002|E004|E007"): TRUE
+// Para Miguel Torres (Path = "E001|E003|E006"): FALSE</code></pre>
+</div>
+<h4>Filtrar subordinados:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Todos los subordinados directos e indirectos de Carlos López:
+Equipo Carlos =
+FILTER(
+    'Empleados',
+    PATHCONTAINS('Empleados'[Path], "E002")
+    &amp;&amp; 'Empleados'[EmpleadoID] &lt;&gt; "E002"  -- excluir al propio Carlos
+)</code></pre>
+</div>
+<h4>Ventas del equipo:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Ventas del equipo de un manager (incluyendo todos sus subordinados):
+Ventas Equipo =
+CALCULATE(
+    SUM('Ventas'[Importe]),
+    FILTER(
+        'Empleados',
+        PATHCONTAINS(
+            'Empleados'[Path],
+            SELECTEDVALUE('Empleados'[EmpleadoID])
+        )
+    )
+)</code></pre>
+</div>
+</div>
+</section><!-- SECCIÓN 5: Aplanar jerarquía --><section id="aplanar">
+<div class="category-header">
+<span class="category-header__icon">🏆</span>
+<h2 class="category-header__title">El patrón completo — aplanar la jerarquía</h2>
+</div>
+<p><strong>El patrón definitivo para trabajar con jerarquías padre-hijo en Power BI</strong></p>
+<p>Power BI necesita columnas fijas para hacer jerarquías visuales (como las que ves en una matriz expandible). El patrón estándar es convertir la jerarquía padre-hijo recursiva en N columnas fijas (una por nivel máximo de la jerarquía). Así Power BI puede hacer drill-down.</p>
+<h3>Paso 1 — Determinar la profundidad máxima</h3>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Primero crea la columna Path:
+'Empleados'[Path] = PATH('Empleados'[EmpleadoID], 'Empleados'[ManagerID])
+
+// Luego la columna Nivel:
+'Empleados'[Nivel] = PATHLENGTH('Empleados'[Path])
+
+// Ver la profundidad máxima (para saber cuántas columnas necesitas):
+// En DAX Studio: EVALUATE ROW("MaxNivel", MAXX(ALL('Empleados'), 'Empleados'[Nivel]))</code></pre>
+</div>
+<h3>Paso 2 — Crear columnas por nivel (asumiendo max 5 niveles)</h3>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Columnas de ID por nivel:
+'Empleados'[Nivel1 ID] = PATHITEM('Empleados'[Path], 1)
+
+'Empleados'[Nivel2 ID] =
+IF(PATHLENGTH('Empleados'[Path]) &gt;= 2, PATHITEM('Empleados'[Path], 2), BLANK())
+
+'Empleados'[Nivel3 ID] =
+IF(PATHLENGTH('Empleados'[Path]) &gt;= 3, PATHITEM('Empleados'[Path], 3), BLANK())
+
+'Empleados'[Nivel4 ID] =
+IF(PATHLENGTH('Empleados'[Path]) &gt;= 4, PATHITEM('Empleados'[Path], 4), BLANK())
+
+'Empleados'[Nivel5 ID] =
+IF(PATHLENGTH('Empleados'[Path]) &gt;= 5, PATHITEM('Empleados'[Path], 5), BLANK())</code></pre>
+</div>
+<h3>Paso 3 — Convertir IDs a nombres</h3>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Columnas de Nombre por nivel (más útiles para visualización):
+'Empleados'[Nivel1 Nombre] =
+LOOKUPVALUE('Empleados'[Nombre], 'Empleados'[EmpleadoID], 'Empleados'[Nivel1 ID])
+
+'Empleados'[Nivel2 Nombre] =
+IF(NOT ISBLANK('Empleados'[Nivel2 ID]),
+   LOOKUPVALUE('Empleados'[Nombre], 'Empleados'[EmpleadoID], 'Empleados'[Nivel2 ID]),
+   BLANK())
+
+'Empleados'[Nivel3 Nombre] =
+IF(NOT ISBLANK('Empleados'[Nivel3 ID]),
+   LOOKUPVALUE('Empleados'[Nombre], 'Empleados'[EmpleadoID], 'Empleados'[Nivel3 ID]),
+   BLANK())
+// ... repetir para Nivel4 y Nivel5</code></pre>
+</div>
+<h3>Paso 4 — Crear la jerarquía en Power BI</h3>
+<p>En el panel de Campos:</p>
+<ul>
+<li>→ Clic derecho en 'Nivel1 Nombre' → "Crear jerarquía"</li>
+<li>→ Arrastrar 'Nivel2 Nombre', 'Nivel3 Nombre'... a la jerarquía</li>
+<li>→ Usar la jerarquía en una matriz con drill-down habilitado</li>
+</ul>
+<h3>Paso 5 — Medidas que respetan la jerarquía</h3>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Esta medida funciona en cualquier nivel de la jerarquía:
+Ventas Equipo =
+SUMX(
+    FILTER(
+        ALL('Empleados'),
+        PATHCONTAINS(
+            'Empleados'[Path],
+            SELECTEDVALUE('Empleados'[EmpleadoID])
+        )
+    ),
+    CALCULATE(SUM('Ventas'[Importe]))
+)</code></pre>
+</div>
+<div class="note note--best-practice">
+<strong>🏆 Best Practice</strong><br/>
+            Este es el patrón estándar que todo modelo con jerarquías padre-hijo debe seguir. Las columnas calculadas de Path, Nivel, y Nivel1-5 deben estar en la tabla fuente. Luego creas una jerarquía visual en Power BI para habilitar drill-down en matrices y visuales.
+          </div>
+</section><!-- SECCIÓN 6: Patrones --><section id="patrones">
+<div class="category-header">
+<span class="category-header__icon">💼</span>
+<h2 class="category-header__title">Casos de uso reales</h2>
+</div>
+<h3>Patrón 1 — Plan de cuentas contable</h3>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Misma lógica pero con cuentas:
+'Cuentas'[Path] = PATH('Cuentas'[CuentaID], 'Cuentas'[CuentaPadreID])
+'Cuentas'[Nivel] = PATHLENGTH('Cuentas'[Path])
+'Cuentas'[Cuenta Nivel1] = PATHITEM('Cuentas'[Path], 1)  // Activo / Pasivo / Patrimonio
+'Cuentas'[Cuenta Nivel2] =
+IF(PATHLENGTH('Cuentas'[Path]) &gt;= 2, PATHITEM('Cuentas'[Path], 2), BLANK())
+
+'Cuentas'[Cuenta Nivel3] =
+IF(PATHLENGTH('Cuentas'[Path]) &gt;= 3, PATHITEM('Cuentas'[Path], 3), BLANK())
+
+// Saldo acumulado (incluyendo todas las subcuentas hijas):
+Saldo Acumulado =
+CALCULATE(
+    SUM('Movimientos'[Importe]),
+    FILTER(
+        ALL('Cuentas'),
+        PATHCONTAINS('Cuentas'[Path], SELECTEDVALUE('Cuentas'[CuentaID]))
+    )
+)</code></pre>
+</div>
+<h3>Patrón 2 — Headcount y organigrama</h3>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Total de personas en el equipo de un manager (incluyendo todos los niveles):
+Headcount Total =
+COUNTROWS(
+    FILTER(
+        ALL('Empleados'),
+        PATHCONTAINS('Empleados'[Path], SELECTEDVALUE('Empleados'[EmpleadoID]))
+        &amp;&amp; 'Empleados'[EmpleadoID] &lt;&gt; SELECTEDVALUE('Empleados'[EmpleadoID])
+    )
+)
+
+// Manager con más personas a su cargo:
+Manager Mayor Equipo =
+MAXX(
+    ALL('Empleados'),
+    CALCULATE(
+        COUNTROWS(
+            FILTER(
+                ALL('Empleados'),
+                PATHCONTAINS('Empleados'[Path], 'Empleados'[EmpleadoID])
+            )
+        )
+    )
+)</code></pre>
+</div>
+<h3>Patrón 3 — BOM (Bill of Materials) — coste total de un producto</h3>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Tabla de componentes: ProductoID | ComponenteID | Cantidad | Coste
+'Componentes'[Path] =
+PATH('Componentes'[ComponenteID], 'Componentes'[ComponentePadreID])
+
+// Coste total incluyendo todos los subcomponentes:
+Coste Total BOM =
+SUMX(
+    FILTER(
+        ALL('Componentes'),
+        PATHCONTAINS(
+            'Componentes'[Path],
+            SELECTEDVALUE('Componentes'[ComponenteID])
+        )
+        &amp;&amp; PATHLENGTH('Componentes'[Path]) = MAXX(
+            ALL('Componentes'),
+            PATHLENGTH('Componentes'[Path])
+        )
+    ),
+    'Componentes'[Coste] * 'Componentes'[Cantidad]
+)</code></pre>
+</div>
+<div class="note note--next">
+<strong>🎉 ¡Enhorabuena! Has completado la guía DAX completa</strong><br/>
+<strong>¡Lo conseguiste!</strong> Has completado la guía más completa de funciones DAX en español. Desde SUM hasta PATH, pasando por CALCULATE, Window Functions, Visual Calculations y Grupos de Cálculo. Ahora tienes una referencia de cabecera para cualquier función DAX que necesites.<br/><br/>
+<strong>Recuerda:</strong> DAX se aprende usándolo. No te preocupes si no recuerdas todo — para eso está esta guía. Lo importante es saber que existe la función, qué hace y dónde buscarla cuando la necesites.<br/><br/>
+<strong>¡Tú puedes!</strong> 🌸🚀
+          </div>
+</section>
+
+      </div>
+</main>
+</div>
+<!-- Footer (cargado dinámicamente) -->
+<div id="main-footer"></div>
+<!-- Botón volver arriba -->
+<button aria-label="Volver arriba" class="btn-back-to-top" id="back-to-top">↑</button>
+<!-- Scripts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+<script src="../../assets/js/theme.js"></script>
+<script src="../../assets/js/main.js"></script>
+<!-- Buscador DAX -->
+<script src="../../assets/js/dax-search.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Auto-inicializar todos los widgets con data-dax-search="true"
+      if (window.daxSearch) {
+        window.daxSearch.initAll({
+          baseUrl: '../'  // estamos en topics/dax/, las URLs deben ir a topics/dax/...
+        });
+      }
+    });
+  </script>
+<script src="../../assets/js/cursor.js"></script>
+</body>
+</html>

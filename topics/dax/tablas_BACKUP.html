@@ -1,0 +1,1012 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Funciones de Texto en DAX - FORMAT, CONCATENATE, LEFT, RIGHT, SUBSTITUTE, CONTAINSSTRING en Power BI">
+  <title>Funciones de Texto — Power BI Guide</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+
+  <!-- Prism.js para syntax highlighting -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+
+  <!-- i18next para traducciones -->
+  <script src="https://cdn.jsdelivr.net/npm/i18next@23.7.6/i18next.min.js"></script>
+
+  <!-- CSS del proyecto -->
+  <link rel="stylesheet" href="../../assets/css/main.css">
+  <link rel="stylesheet" href="../../assets/css/themes.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/layout.css">
+  <link rel="stylesheet" href="../../assets/css/dax-search.css">
+
+  <style>
+    /* === ESTILOS ESPECÍFICOS PARA PÁGINAS DE TOPICS === */
+
+    /* Topic header con icono grande */
+    .topic-header {
+      text-align: center;
+      padding: 2.5rem 0 2rem;
+      border-bottom: 2px solid var(--color-mauve);
+      margin-bottom: 2.5rem;
+    }
+
+    .topic-header__icon {
+      font-size: 4rem;
+      margin-bottom: 0.75rem;
+      display: block;
+    }
+
+    .topic-header__title {
+      font-size: clamp(1.875rem, 4vw, 2.5rem);
+      font-weight: 800;
+      color: var(--color-dark);
+      margin-bottom: 0.625rem;
+      line-height: 1.2;
+    }
+
+    .topic-header__subtitle {
+      font-size: 1.0625rem;
+      color: var(--color-slate);
+      margin-bottom: 1.25rem;
+      line-height: 1.5;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .topic-header__levels {
+      display: flex;
+      gap: 0.5rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    /* TOC — Table of contents */
+    .toc {
+      background: var(--color-rose);
+      border: 1.5px solid var(--color-mauve);
+      border-radius: var(--border-radius);
+      padding: 1.5rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .toc__title {
+      font-size: 0.875rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--color-slate);
+      margin-bottom: 1rem;
+    }
+
+    .toc__list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .toc__link {
+      color: var(--color-dark);
+      text-decoration: none;
+      font-size: 0.9375rem;
+      transition: var(--transition);
+      display: inline-block;
+    }
+
+    .toc__link:hover {
+      color: var(--color-coral);
+      text-decoration: underline;
+    }
+
+    /* Category header — separadores entre categorías */
+    .category-header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin: 3rem 0 1.5rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 2px solid var(--color-mauve);
+    }
+
+    .category-header__icon {
+      font-size: 1.75rem;
+    }
+
+    .category-header__title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--color-dark);
+      margin: 0;
+    }
+
+    /* Function card — tarjeta individual para cada función */
+    .function-card {
+      background: var(--color-white);
+      border: 1.5px solid var(--color-mauve);
+      border-radius: var(--border-radius);
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .function-card__name {
+      font-family: var(--font-code);
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: var(--color-coral);
+      margin-bottom: 0.75rem;
+    }
+
+    .function-card__description {
+      font-size: 0.9375rem;
+      color: var(--color-dark);
+      margin-bottom: 1rem;
+      line-height: 1.6;
+    }
+
+    .function-card__level {
+      display: inline-block;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      padding: 0.25rem 0.625rem;
+      border-radius: var(--border-radius-sm);
+      background: var(--color-blush);
+      color: var(--color-slate);
+      margin-bottom: 1rem;
+    }
+
+    /* Function table — tabla compacta con ejemplos */
+    .function-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.5rem 0;
+      font-size: 0.875rem;
+    }
+
+    .function-table th {
+      background: var(--color-rose);
+      color: var(--color-dark);
+      font-weight: 700;
+      text-align: left;
+      padding: 0.75rem 1rem;
+      border: 1px solid var(--color-mauve);
+    }
+
+    .function-table td {
+      padding: 0.75rem 1rem;
+      border: 1px solid var(--color-mauve);
+      color: var(--color-dark);
+    }
+
+    .function-table tr:nth-child(even) {
+      background: var(--color-blush);
+    }
+
+    /* Code block wrapper */
+    .code-block {
+      position: relative;
+      margin: 1.25rem 0;
+    }
+
+    .code-block pre {
+      margin: 0;
+      border-radius: var(--border-radius);
+      border: 1.5px solid var(--color-mauve);
+    }
+
+    .code-block__copy {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.5rem;
+      padding: 0.375rem 0.75rem;
+      font-size: 0.75rem;
+      background: var(--color-coral);
+      color: var(--color-white);
+      border: none;
+      border-radius: var(--border-radius-sm);
+      cursor: pointer;
+      font-family: var(--font-main);
+      font-weight: 600;
+      transition: var(--transition);
+    }
+
+    .code-block__copy:hover {
+      background: var(--color-peach);
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Header (cargado dinámicamente) -->
+  <div id="main-header"></div>
+
+  <!-- Layout wrapper con sidebar + main -->
+  <div class="layout-wrapper">
+    <!-- Sidebar (cargado dinámicamente) -->
+    <aside id="sidebar"></aside>
+
+    <!-- Main content -->
+    <main id="main-content">
+      <div class="topic-page">
+        <!-- Breadcrumb -->
+        <nav class="breadcrumb" aria-label="breadcrumb">
+          <a href="../../index.html" class="breadcrumb__link">Inicio</a>
+          <span class="breadcrumb__separator">›</span>
+          <a href="../dax.html" class="breadcrumb__link">Funciones DAX</a>
+          <span class="breadcrumb__separator">›</span>
+          <span class="breadcrumb__current">Texto</span>
+        </nav>
+
+        <!-- Buscador compacto DAX -->
+        <div class="dax-search-compact-bar">
+          <div class="dax-search-wrapper dax-search-compact" data-dax-search="true">
+            <span class="dax-search-icon">🔍</span>
+            <input
+              type="text"
+              class="dax-search-input"
+              placeholder="Buscar otra función DAX..."
+              autocomplete="off"
+              spellcheck="false"
+              aria-label="Buscar función DAX"
+            />
+            <button class="dax-search-clear" aria-label="Limpiar" hidden>✕</button>
+            <div class="dax-search-results" role="listbox"></div>
+          </div>
+        </div>
+
+        <!-- Header del topic -->
+        <header class="topic-header">
+          <span class="topic-header__icon">📝</span>
+          <h1 class="topic-header__title">Funciones de Texto</h1>
+          <p class="topic-header__subtitle">FORMAT, CONCATENATE, LEFT, RIGHT, SUBSTITUTE, CONTAINSSTRING y todas las herramientas para manejar texto en DAX</p>
+          <div class="topic-header__levels">
+            <span class="badge badge--beginner">Principiante</span>
+            <span class="badge badge--intermediate">Intermedio</span>
+          </div>
+        </header>
+
+        <!-- TOC -->
+        <nav class="toc">
+          <h2 class="toc__title">📑 En esta página</h2>
+          <ul class="toc__list">
+            <li><a href="#intro" class="toc__link">Texto en DAX — cosas que debes saber</a></li>
+            <li><a href="#extraccion" class="toc__link">Extracción: LEFT, RIGHT, MID, LEN</a></li>
+            <li><a href="#busqueda" class="toc__link">Búsqueda: FIND, SEARCH, CONTAINSSTRING</a></li>
+            <li><a href="#transformacion" class="toc__link">Transformación: UPPER, LOWER, TRIM, SUBSTITUTE</a></li>
+            <li><a href="#construccion" class="toc__link">Construcción: CONCATENATE, CONCATENATEX</a></li>
+            <li><a href="#formato" class="toc__link">Formato: FORMAT, FIXED, VALUE</a></li>
+            <li><a href="#unicode" class="toc__link">Unicode: UNICHAR, UNICODE</a></li>
+            <li><a href="#exportacion" class="toc__link">Exportación: TOCSV, TOJSON</a></li>
+            <li><a href="#patrones" class="toc__link">Patrones de limpieza y formato</a></li>
+          </ul>
+        </nav>
+
+        <!-- SECCIÓN 0: Intro -->
+        <section id="intro">
+          <h2 class="category-header__title">Texto en DAX — cosas que debes saber 🎯</h2>
+
+          <p>
+            El texto en DAX puede ser un poco traicionero si no entiendes cómo funciona. Antes de lanzarnos a las funciones,
+            hay dos cositas importantes que debes saber para evitar sorpresas. 🧐
+          </p>
+
+          <h3>Cosa 1 — DAX distingue BLANK de cadena vacía</h3>
+          <div class="code-block">
+            <button class="code-block__copy">Copiar</button>
+            <pre><code class="language-javascript">// ⚠️ BLANK() no es lo mismo que ""
+ISBLANK("")          -- FALSE (una cadena vacía no es BLANK)
+ISBLANK(BLANK())     -- TRUE
+
+// Muchas funciones de texto devuelven "" cuando no hay resultado
+// y otras devuelven BLANK() — ¡verifica cuál usa cada función!</code></pre>
+          </div>
+
+          <h3>Cosa 2 — El operador & para concatenar</h3>
+          <div class="code-block">
+            <button class="code-block__copy">Copiar</button>
+            <pre><code class="language-javascript">// En DAX, & concatena textos igual que en Excel
+"Hola" & " " & "mundo"  -- "Hola mundo"
+// Mucho más legible que CONCATENATE anidados</code></pre>
+          </div>
+
+          <h3>Cosa 3 — Las funciones de texto y case-sensitivity</h3>
+          <div class="code-block">
+            <button class="code-block__copy">Copiar</button>
+            <pre><code class="language-javascript">// FIND y SEARCH son diferentes en este aspecto
+FIND("abc", "ABC")   -- ERROR (FIND sí distingue mayúsculas)
+SEARCH("abc", "ABC") -- 1 (SEARCH no distingue mayúsculas)</code></pre>
+          </div>
+        </section>
+
+        <!-- SECCIÓN 1: Extracción -->
+        <section id="extraccion">
+          <div class="category-header">
+            <span class="category-header__icon">✂️</span>
+            <h2 class="category-header__title">Extraer partes de un texto</h2>
+          </div>
+
+          <div class="function-card">
+            <div class="function-card__name">LEFT / RIGHT / MID</div>
+            <div class="function-card__level">Principiante</div>
+            <div class="function-card__description">
+              Extraen N caracteres desde el inicio, el final o una posición específica del texto.
+            </div>
+
+            <div class="code-block">
+              <button class="code-block__copy">Copiar</button>
+              <pre><code class="language-javascript">// ✅ Código de país (primeros 2 caracteres del código de producto)
+'Productos'[País] = LEFT('Productos'[CodProducto], 2)
+// "ES-001" → "ES"
+
+// ✅ Últimos 3 dígitos (sufijo)
+'Productos'[Sufijo] = RIGHT('Productos'[CodProducto], 3)
+// "ES-001" → "001"
+
+// ✅ Del carácter 4 al 7 (MID: posición 1-based, no 0-based)
+'Productos'[Segmento] = MID('Productos'[CodProducto], 4, 3)
+// "ES-PREM-001" → "PRE"
+
+// ✅ Extraer el dominio de un email
+Dominio =
+VAR PosArroba = FIND("@", 'Contactos'[Email])
+RETURN
+    MID('Contactos'[Email], PosArroba + 1, LEN('Contactos'[Email]) - PosArroba)
+// "nombre@empresa.com" → "empresa.com"</code></pre>
+            </div>
+          </div>
+
+          <div class="function-card">
+            <div class="function-card__name">LEN</div>
+            <div class="function-card__level">Principiante</div>
+            <div class="function-card__description">
+              Devuelve el número de caracteres de un texto (incluyendo espacios).
+            </div>
+
+            <div class="code-block">
+              <button class="code-block__copy">Copiar</button>
+              <pre><code class="language-javascript">// ✅ Verificar que los códigos tienen exactamente 8 caracteres
+Codigo Valido = IF(LEN('Productos'[Codigo]) = 8, TRUE, FALSE)
+
+// ✅ Detectar descripciones demasiado largas (para truncar)
+Descripcion Display =
+IF(
+    LEN('Productos'[Descripcion]) > 100,
+    LEFT('Productos'[Descripcion], 97) & "...",
+    'Productos'[Descripcion]
+)</code></pre>
+            </div>
+          </div>
+        </section>
+
+        <!-- SECCIÓN 2: Búsqueda -->
+        <section id="busqueda">
+          <div class="category-header">
+            <span class="category-header__icon">🔍</span>
+            <h2 class="category-header__title">Buscar dentro de texto</h2>
+          </div>
+
+          <div class="function-card">
+            <div class="function-card__name">FIND / SEARCH</div>
+            <div class="function-card__level">Intermedio</div>
+            <div class="function-card__description">
+              <strong>FIND:</strong> case-SENSITIVE (distingue mayúsculas). Da error si no encuentra, a menos que especifiques el 4º parámetro.<br>
+              <strong>SEARCH:</strong> case-INSENSITIVE (no distingue mayúsculas). Igual con el parámetro si no encuentra.<br>
+              Ambas devuelven la posición (1-based) donde empieza la coincidencia.
+            </div>
+
+            <h3>Tabla comparativa FIND vs SEARCH</h3>
+            <table class="function-table">
+              <thead>
+                <tr>
+                  <th>Característica</th>
+                  <th>FIND</th>
+                  <th>SEARCH</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Case sensitive</td>
+                  <td>✅ Sí</td>
+                  <td>❌ No</td>
+                </tr>
+                <tr>
+                  <td>Wildcards (* ?)</td>
+                  <td>❌ No</td>
+                  <td>✅ Sí</td>
+                </tr>
+                <tr>
+                  <td>Si no encuentra</td>
+                  <td>Error (a menos que se especifique valor)</td>
+                  <td>Error (idem)</td>
+                </tr>
+                <tr>
+                  <td>Uso recomendado</td>
+                  <td>Búsquedas exactas</td>
+                  <td>Búsquedas flexibles</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <div class="code-block">
+              <button class="code-block__copy">Copiar</button>
+              <pre><code class="language-javascript">// ✅ Encontrar la posición del guión en un código
+Pos Guion = FIND("-", 'Productos'[Codigo], 1, 0)
+// "ES-001" → 3 (el guión está en posición 3)
+// Si no hay guión → 0 (valor alternativo especificado)
+
+// ✅ Extraer todo antes del primer guión (código de país)
+Pais = LEFT('Productos'[Codigo], FIND("-", 'Productos'[Codigo], 1, 0) - 1)
+
+// ✅ SEARCH con wildcard: buscar textos que contengan "promo" en cualquier posición
+Tiene Promo = IF(SEARCH("promo*", 'Campañas'[Nombre], 1, 0) > 0, TRUE, FALSE)</code></pre>
+            </div>
+          </div>
+
+          <div class="function-card">
+            <div class="function-card__name">CONTAINSSTRING / CONTAINSSTRINGEXACT</div>
+            <div class="function-card__level">Principiante</div>
+            <div class="function-card__description">
+              Devuelven TRUE/FALSE indicando si el texto_buscar está contenido en texto_donde.<br>
+              <strong>CONTAINSSTRING:</strong> case-insensitive<br>
+              <strong>CONTAINSSTRINGEXACT:</strong> case-sensitive<br>
+              Mucho más legibles que usar SEARCH > 0.
+            </div>
+
+            <div class="code-block">
+              <button class="code-block__copy">Copiar</button>
+              <pre><code class="language-javascript">// ✅ ¿El nombre del producto contiene "premium"? (sin importar mayúsculas)
+Es Premium = CONTAINSSTRING('Productos'[Nombre], "premium")
+// "PREMIUM Gold" → TRUE
+// "Premium Silver" → TRUE
+// "Básico" → FALSE
+
+// ✅ ¿El comentario contiene palabras clave negativas?
+Requiere Atencion =
+OR(
+    CONTAINSSTRING('Tickets'[Comentario], "urgente"),
+    CONTAINSSTRING('Tickets'[Comentario], "crítico"),
+    CONTAINSSTRING('Tickets'[Comentario], "error grave")
+)
+
+// ✅ Con exactitud de mayúsculas
+Es Codigo Sistema = CONTAINSSTRINGEXACT('Logs'[Tipo], "ERROR")
+// "ERROR" → TRUE, "error" → FALSE</code></pre>
+            </div>
+          </div>
+
+          <div class="function-card">
+            <div class="function-card__name">EXACT</div>
+            <div class="function-card__level">Intermedio</div>
+            <div class="function-card__description">
+              Compara dos textos de forma EXACTA (case-sensitive). Devuelve TRUE solo si son idénticos incluyendo mayúsculas.
+              A diferencia del operador =, que no distingue mayúsculas.
+            </div>
+
+            <div class="code-block">
+              <button class="code-block__copy">Copiar</button>
+              <pre><code class="language-javascript">// = no distingue mayúsculas
+"ABC" = "abc"        -- TRUE  (¡sorpresa para quien viene de otros lenguajes!)
+EXACT("ABC", "abc")  -- FALSE (comparación exacta)
+
+// ✅ Útil para validar que los códigos respetan el formato exacto
+Codigo Correcto = EXACT('Productos'[Codigo], UPPER('Productos'[Codigo]))
+// Solo TRUE si el código está completamente en mayúsculas</code></pre>
+            </div>
+          </div>
+        </section>
+
+        <!-- SECCIÓN 3: Transformación -->
+        <section id="transformacion">
+          <div class="category-header">
+            <span class="category-header__icon">🔄</span>
+            <h2 class="category-header__title">Transformar y limpiar texto</h2>
+          </div>
+
+          <div class="function-card">
+            <div class="function-card__name">UPPER / LOWER</div>
+            <div class="function-card__level">Principiante</div>
+            <div class="function-card__description">
+              Convierten todo el texto a mayúsculas o minúsculas. Muy útiles para normalizar datos antes de comparar o clasificar.
+            </div>
+
+            <div class="code-block">
+              <button class="code-block__copy">Copiar</button>
+              <pre><code class="language-javascript">// ✅ Comparar independientemente de cómo el usuario escribió el país
+Es España = LOWER(TRIM('Clientes'[Pais])) = "españa"
+// Funciona con "ESPAÑA", "españa", " España ", "ESPAÑA "...</code></pre>
+            </div>
+          </div>
+
+          <div class="function-card">
+            <div class="function-card__name">TRIM</div>
+            <div class="function-card__level">Principiante</div>
+            <div class="function-card__description">
+              Elimina espacios del inicio y del final, y reduce múltiples espacios internos a uno solo.
+              <strong>Fundamental para limpiar datos importados.</strong>
+            </div>
+
+            <div class="code-block">
+              <button class="code-block__copy">Copiar</button>
+              <pre><code class="language-javascript">// ✅ Limpiar nombres con espacios extra
+Nombre Limpio = TRIM('Clientes'[Nombre])
+// "  Juan  García  " → "Juan García"
+
+// ✅ Patrón de limpieza completo
+Nombre Normalizado = UPPER(TRIM('Clientes'[Nombre]))
+// "  juan garcía  " → "JUAN GARCÍA"</code></pre>
+            </div>
+          </div>
+
+          <div class="function-card">
+            <div class="function-card__name">SUBSTITUTE</div>
+            <div class="function-card__level">Principiante</div>
+            <div class="function-card__description">
+              Reemplaza TODAS las apariciones de un texto por otro (o una instancia específica si se indica). Case-sensitive.
+            </div>
+
+            <div class="code-block">
+              <button class="code-block__copy">Copiar</button>
+              <pre><code class="language-javascript">// ✅ Eliminar espacios (reemplazar " " por "")
+Sin Espacios = SUBSTITUTE('Productos'[Codigo], " ", "")
+// "ES 001 A" → "ES001A"
+
+// ✅ Reemplazar separador decimal para localización
+Precio EU = SUBSTITUTE(FORMAT([Precio], "#,##0.00"), ".", ",")
+// "1,234.56" → "1,234,56" (formato europeo)
+
+// ✅ Limpiar caracteres no deseados
+Telefono Limpio =
+SUBSTITUTE(
+    SUBSTITUTE(
+        SUBSTITUTE('Clientes'[Telefono], "-", ""),
+        " ", ""),
+    "+34", ""
+)
+// "+34 612-345-678" → "612345678"
+
+// ✅ Solo la primera instancia
+SUBSTITUTE("aaa", "a", "b", 1)  -- "baa" (solo cambia la primera "a")
+SUBSTITUTE("aaa", "a", "b")     -- "bbb" (cambia todas)</code></pre>
+            </div>
+          </div>
+
+          <div class="function-card">
+            <div class="function-card__name">REPLACE</div>
+            <div class="function-card__level">Intermedio</div>
+            <div class="function-card__description">
+              Reemplaza N caracteres a partir de una posición específica. A diferencia de SUBSTITUTE que busca por contenido, REPLACE trabaja por posición.
+            </div>
+
+            <div class="code-block">
+              <button class="code-block__copy">Copiar</button>
+              <pre><code class="language-javascript">// ✅ Enmascarar el número de tarjeta (mostrar solo los últimos 4 dígitos)
+Tarjeta Enmascarada =
+REPLACE('Clientes'[NumTarjeta], 1, LEN('Clientes'[NumTarjeta]) - 4, "****-****-****-")
+// "1234567890123456" → "****-****-****-3456"
+
+// ✅ Cambiar el año en un código de fecha
+REPLACE("2023-Q1", 1, 4, "2024")  -- "2024-Q1"</code></pre>
+            </div>
+          </div>
+
+          <div class="function-card">
+            <div class="function-card__name">REPT</div>
+            <div class="function-card__level">Principiante</div>
+            <div class="function-card__description">
+              Repite un texto N veces. Muy creativo para crear barras visuales de texto, indicadores de rating y separadores.
+            </div>
+
+            <div class="code-block">
+              <button class="code-block__copy">Copiar</button>
+              <pre><code class="language-javascript">// ✅ Barra de progreso con texto
+Barra Progreso =
+VAR Porcentaje = [% Objetivo]
+VAR Llenos = ROUND(Porcentaje * 10, 0)    -- de 0 a 10 bloques
+VAR Vacios = 10 - Llenos
+RETURN
+    REPT("█", Llenos) & REPT("░", Vacios) & " " & FORMAT(Porcentaje, "0%")
+// Al 73%: "███████░░░ 73%"
+
+// ✅ Rating de estrellas
+Estrellas =
+    REPT("★", 'Productos'[Valoracion]) &
+    REPT("☆", 5 - 'Productos'[Valoracion])
+// Valoracion=3 → "★★★☆☆"</code></pre>
+            </div>
+          </div>
+        </section>
+
+        <!-- SECCIÓN 4: Construcción -->
+        <section id="construccion">
+          <div class="category-header">
+            <span class="category-header__icon">🏗️</span>
+            <h2 class="category-header__title">Construir cadenas de texto</h2>
+          </div>
+
+          <div class="function-card">
+            <div class="function-card__name">CONCATENATE / Operador &</div>
+            <div class="function-card__level">Principiante</div>
+            <div class="function-card__description">
+              Une dos textos. El operador & es más flexible (puede encadenar múltiples textos) y más legible.
+              CONCATENATE solo acepta exactamente 2 argumentos.
+            </div>
+
+            <div class="code-block">
+              <button class="code-block__copy">Copiar</button>
+              <pre><code class="language-javascript">// ❌ CONCATENATE con más de 2 textos (hay que anidar)
+CONCATENATE(CONCATENATE("A", "B"), "C")
+
+// ✅ Con & (mucho más limpio)
+"A" & "B" & "C"
+
+// ✅ Nombre completo
+Nombre Completo = 'Clientes'[Nombre] & " " & 'Clientes'[Apellidos]
+
+// ✅ Etiqueta para visual
+Etiqueta = 'Productos'[Nombre] & " (" & FORMAT([Ventas], "#,##0 €") & ")"
+// "Portátil Pro (12.450 €)"
+
+// ⚠️ Números en texto — SIEMPRE usa FORMAT o TEXT
+Precio Label = "Precio: " & FORMAT('Productos'[Precio], "#,##0.00 €")
+// No: "Precio: " & 'Productos'[Precio]  ← puede dar resultado inesperado</code></pre>
+            </div>
+          </div>
+
+          <div class="function-card">
+            <div class="function-card__name">CONCATENATEX</div>
+            <div class="function-card__level">Intermedio</div>
+            <div class="function-card__description">
+              Itera una tabla, evalúa una expresión para cada fila, y une todos los resultados con un delimitador.
+              Como STRING_AGG o GROUP_CONCAT en SQL. <strong>Esencial para crear listas de valores agrupados.</strong>
+            </div>
+
+            <div class="code-block">
+              <button class="code-block__copy">Copiar</button>
+              <pre><code class="language-javascript">// ✅ Lista de productos comprados por un cliente
+Productos Cliente =
+CONCATENATEX(
+    RELATEDTABLE('DetallesPedido'),
+    'DetallesPedido'[NombreProducto],
+    ", ",
+    'DetallesPedido'[NombreProducto], ASC
+)
+// "Laptop Pro, Monitor 4K, Teclado Mecánico"
+
+// ✅ Lista de años con ventas (para tooltip)
+Años con Ventas =
+CONCATENATEX(
+    VALUES('Calendario'[Año]),
+    'Calendario'[Año],
+    " | ",
+    'Calendario'[Año], ASC
+)
+// "2021 | 2022 | 2023 | 2024"
+
+// ✅ TOP 3 vendedores en una celda
+Top 3 Vendedores =
+CONCATENATEX(
+    TOPN(3, VALUES('Vendedores'[Nombre]), [Total Ventas], DESC),
+    'Vendedores'[Nombre] & " (" & FORMAT([Total Ventas], "#,##0 €") & ")",
+    " • "
+)
+// "María García (85.000 €) • Juan López (72.000 €) • Ana Martín (68.000 €)"</code></pre>
+            </div>
+          </div>
+
+          <div class="function-card">
+            <div class="function-card__name">COMBINEVALUES</div>
+            <div class="function-card__level">Intermedio</div>
+            <div class="function-card__description">
+              Une múltiples valores con un delimitador, tratando BLANK como cadena vacía.
+              <strong>Especialmente útil para crear claves compuestas en columnas calculadas y optimizar relaciones en DirectQuery.</strong>
+            </div>
+
+            <div class="code-block">
+              <button class="code-block__copy">Copiar</button>
+              <pre><code class="language-javascript">// ✅ Clave compuesta para relacionar tablas
+'Ventas'[ClaveCompuesta] =
+    COMBINEVALUES("-", 'Ventas'[Año], 'Ventas'[Mes], 'Ventas'[Region])
+// 2024, 3, "Norte" → "2024-3-Norte"
+
+// ⚠️ A diferencia de &, si algún valor es BLANK, COMBINEVALUES lo trata como ""
+"A" & BLANK() & "B"                        -- "AB" (BLANK desaparece en &)
+COMBINEVALUES("-", "A", BLANK(), "B")      -- "A--B" (el BLANK aparece como vacío)</code></pre>
+            </div>
+          </div>
+        </section>
+
+        <!-- SECCIÓN 5: Formato y conversión -->
+        <section id="formato">
+          <div class="category-header">
+            <span class="category-header__icon">🎨</span>
+            <h2 class="category-header__title">Dar formato y convertir tipos</h2>
+          </div>
+
+          <div class="function-card">
+            <div class="function-card__name">FORMAT</div>
+            <div class="function-card__level">Principiante</div>
+            <div class="function-card__description">
+              Convierte cualquier valor (número, fecha, booleano) a texto con el formato especificado.
+              <strong>Esencial para mostrar valores formateados en títulos dinámicos, tooltips y etiquetas.</strong>
+            </div>
+
+            <h3>Formatos de número más usados</h3>
+            <div class="code-block">
+              <button class="code-block__copy">Copiar</button>
+              <pre><code class="language-javascript">FORMAT(1234567.89, "#,##0")           -- "1.234.568"
+FORMAT(1234567.89, "#,##0.00")        -- "1.234.567,89"
+FORMAT(1234567.89, "#,##0.00 €")      -- "1.234.567,89 €"
+FORMAT(0.1523, "0.0%")                -- "15,2%"
+FORMAT(0.1523, "0.00%")               -- "15,23%"
+FORMAT(1234567.89, "0.00E+00")        -- "1,23E+06" (notación científica)
+FORMAT(42, "00000")                   -- "00042" (relleno con ceros)</code></pre>
+            </div>
+
+            <h3>Formatos de fecha más usados</h3>
+            <div class="code-block">
+              <button class="code-block__copy">Copiar</button>
+              <pre><code class="language-javascript">FORMAT(TODAY(), "DD/MM/YYYY")         -- "15/02/2025"
+FORMAT(TODAY(), "DD-MMM-YYYY")        -- "15-feb-2025"
+FORMAT(TODAY(), "MMMM YYYY")          -- "febrero 2025"
+FORMAT(TODAY(), "YYYY-MM-DD")         -- "2025-02-15" (formato ISO)
+FORMAT(TODAY(), "DDDD")               -- "sábado" (nombre del día)
+FORMAT(TODAY(), "MMM")                -- "feb" (mes abreviado)</code></pre>
+            </div>
+
+            <h3>Formatos condicionales</h3>
+            <div class="code-block">
+              <button class="code-block__copy">Copiar</button>
+              <pre><code class="language-javascript">// Con punto y coma para positivo;negativo;cero
+FORMAT([Variacion], "+#,##0.00;-#,##0.00;—")
+// +1234.56 → "+1.234,56"
+// -1234.56 → "-1.234,56"
+// 0 → "—"</code></pre>
+            </div>
+
+            <h3>Ejemplo en título dinámico</h3>
+            <div class="code-block">
+              <button class="code-block__copy">Copiar</button>
+              <pre><code class="language-javascript">Titulo Visual =
+"Ventas " & FORMAT([Total Ventas], "#,##0 €") &
+" — " & FORMAT(TODAY(), "MMMM YYYY") &
+" | Crecimiento: " & FORMAT([Variacion YoY], "+0.0%;-0.0%;0%")
+// "Ventas 1.234.567 € — febrero 2025 | Crecimiento: +12,3%"</code></pre>
+            </div>
+          </div>
+
+          <div class="function-card">
+            <div class="function-card__name">FIXED</div>
+            <div class="function-card__level">Principiante</div>
+            <div class="function-card__description">
+              Convierte un número a texto con un número fijo de decimales y, opcionalmente, sin separadores de miles.
+              Similar a FORMAT pero más simple.
+            </div>
+
+            <div class="code-block">
+              <button class="code-block__copy">Copiar</button>
+              <pre><code class="language-javascript">FIXED(1234.567, 2)        -- "1.234,57"  (con separadores de miles)
+FIXED(1234.567, 2, TRUE)  -- "1234,57"   (sin separadores de miles)
+FIXED(1234.567, 0)        -- "1.235"     (sin decimales)</code></pre>
+            </div>
+          </div>
+
+          <div class="function-card">
+            <div class="function-card__name">VALUE</div>
+            <div class="function-card__level">Principiante</div>
+            <div class="function-card__description">
+              Convierte texto que representa un número en un número real. Fundamental cuando importas datos con números guardados como texto.
+            </div>
+
+            <div class="code-block">
+              <button class="code-block__copy">Copiar</button>
+              <pre><code class="language-javascript">// ✅ Columna con precios como texto: "1234,56"
+Precio Real = VALUE(SUBSTITUTE('Productos'[PrecioTexto], ",", "."))
+// Primero normalizar el separador decimal, luego convertir
+
+// ✅ Con protección de errores
+Precio Seguro = IFERROR(VALUE('Productos'[PrecioTexto]), 0)</code></pre>
+            </div>
+          </div>
+        </section>
+
+        <!-- SECCIÓN 6: Unicode -->
+        <section id="unicode">
+          <div class="category-header">
+            <span class="category-header__icon">🔣</span>
+            <h2 class="category-header__title">Unicode y caracteres especiales</h2>
+          </div>
+
+          <div class="function-card">
+            <div class="function-card__name">UNICHAR / UNICODE</div>
+            <div class="function-card__level">Intermedio</div>
+            <div class="function-card__description">
+              <strong>UNICHAR:</strong> Devuelve el carácter Unicode correspondiente a un código numérico.<br>
+              <strong>UNICODE:</strong> Devuelve el código Unicode del primer carácter de un texto.
+            </div>
+
+            <div class="code-block">
+              <button class="code-block__copy">Copiar</button>
+              <pre><code class="language-javascript">// ✅ Flechas para indicadores
+Flecha Arriba = UNICHAR(8593)   -- ↑
+Flecha Abajo = UNICHAR(8595)    -- ↓
+Circulo Verde = UNICHAR(9679)   -- ●
+
+// ✅ Indicador de KPI con UNICHAR
+Icono KPI =
+SWITCH(
+    SIGN([Variacion]),
+    1,  UNICHAR(9650) & " ",  -- ▲ subida
+    -1, UNICHAR(9660) & " ",  -- ▼ bajada
+    UNICHAR(9644) & " "       -- ▬ sin cambio
+)
+// Resultado: "▲ 12,3%" o "▼ 5,1%"
+
+// ✅ Salto de línea en texto (CHAR 10)
+Dos Lineas = "Primera línea" & UNICHAR(10) & "Segunda línea"</code></pre>
+            </div>
+          </div>
+        </section>
+
+        <!-- SECCIÓN 7: Exportación -->
+        <section id="exportacion">
+          <div class="category-header">
+            <span class="category-header__icon">📤</span>
+            <h2 class="category-header__title">TOCSV y TOJSON — exportar tablas como texto</h2>
+          </div>
+
+          <p>
+            Estas dos funciones son las más recientes de la categoría de texto y abren posibilidades muy interesantes para integración con otras herramientas.
+          </p>
+
+          <div class="function-card">
+            <div class="function-card__name">TOCSV</div>
+            <div class="function-card__level">Avanzado</div>
+            <div class="function-card__description">
+              Convierte una tabla DAX a formato CSV como texto. Permite exportar datos calculados directamente desde una medida.
+            </div>
+
+            <div class="code-block">
+              <button class="code-block__copy">Copiar</button>
+              <pre><code class="language-javascript">// ✅ Exportar el top 10 de productos como CSV (para usar en tooltip o card)
+CSV Top Productos =
+TOCSV(
+    TOPN(10, SUMMARIZE('Ventas', 'Productos'[Nombre], "Total", [Total Ventas]),
+         [Total], DESC),
+    10,   -- máximo 10 filas
+    ";"   -- delimitador punto y coma
+)</code></pre>
+            </div>
+          </div>
+
+          <div class="function-card">
+            <div class="function-card__name">TOJSON</div>
+            <div class="function-card__level">Avanzado</div>
+            <div class="function-card__description">
+              Convierte una tabla DAX a formato JSON como texto. Muy útil para crear payloads para APIs o para integración con Power Automate.
+            </div>
+
+            <div class="code-block">
+              <button class="code-block__copy">Copiar</button>
+              <pre><code class="language-javascript">// ✅ Exportar datos para API externa
+JSON Clientes Top =
+TOJSON(
+    TOPN(5, 'Clientes', [Total Compras], DESC),
+    5
+)</code></pre>
+            </div>
+          </div>
+        </section>
+
+        <!-- SECCIÓN 8: Patrones -->
+        <section id="patrones">
+          <div class="category-header">
+            <span class="category-header__icon">🎯</span>
+            <h2 class="category-header__title">Patrones de limpieza y formato</h2>
+          </div>
+
+          <div class="note note--best-practice">
+            <strong>🏆 Patrón 1: Limpieza completa de texto</strong><br>
+            <div class="code-block">
+              <button class="code-block__copy">Copiar</button>
+              <pre><code class="language-javascript">Texto Limpio =
+UPPER(          -- normalizar a mayúsculas
+    TRIM(       -- eliminar espacios extra
+        SUBSTITUTE(
+            SUBSTITUTE('Datos'[Texto], "  ", " "),  -- dobles espacios
+            "  ", " "
+        )
+    )
+)</code></pre>
+            </div>
+          </div>
+
+          <div class="note note--best-practice">
+            <strong>🏆 Patrón 2: Extraer número de un código alfanumérico</strong><br>
+            <div class="code-block">
+              <button class="code-block__copy">Copiar</button>
+              <pre><code class="language-javascript">Numero de Codigo =
+VALUE(
+    SUBSTITUTE(
+        SUBSTITUTE(
+            SUBSTITUTE('Productos'[Codigo], "PROD", ""),
+            "ES", ""),
+            "-", ""
+    )
+)
+// "PROD-ES-12345" → 12345</code></pre>
+            </div>
+          </div>
+
+          <div class="note note--best-practice">
+            <strong>🏆 Patrón 3: Validar formato de email básico</strong><br>
+            <div class="code-block">
+              <button class="code-block__copy">Copiar</button>
+              <pre><code class="language-javascript">Es Email Valido =
+AND(
+    CONTAINSSTRING('Contactos'[Email], "@"),
+    CONTAINSSTRING('Contactos'[Email], "."),
+    LEN('Contactos'[Email]) > 5
+)</code></pre>
+            </div>
+          </div>
+
+          <div class="note note--best-practice">
+            <strong>🏆 Patrón 4: Título dinámico con todo</strong><br>
+            <div class="code-block">
+              <button class="code-block__copy">Copiar</button>
+              <pre><code class="language-javascript">Titulo Completo =
+VAR Periodo = SELECTEDVALUE('Calendario'[Año], "Todos los años")
+VAR Pais = SELECTEDVALUE('Clientes'[País], "Todos los países")
+VAR Ventas = FORMAT([Total Ventas], "#,##0 €")
+VAR Var = FORMAT([Variacion YoY], "+0.0%;-0.0%;—")
+RETURN
+    "📊 Ventas " & Pais & " — " & Periodo & " | " & Ventas & " (" & Var & ")"</code></pre>
+            </div>
+          </div>
+        </section>
+
+        <div class="note note--next">
+          <strong>🚀 Siguiente paso</strong><br>
+          ¡El texto ya no tiene secretos para ti! La siguiente parada son las
+          <strong><a href="tablas.html">Funciones de Manipulación de Tablas</a></strong>
+          — una de las categorías más potentes de DAX avanzado para construir tablas calculadas, hacer joins y crear estructuras de datos complejas. 🚀
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- Footer (cargado dinámicamente) -->
+  <div id="main-footer"></div>
+
+  <!-- Botón volver arriba -->
+  <button id="back-to-top" class="btn-back-to-top" aria-label="Volver arriba">↑</button>
+
+  <!-- Scripts -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+  <script src="../../assets/js/theme.js"></script>
+  <script src="../../assets/js/main.js"></script>
+
+  <!-- Buscador DAX -->
+  <script src="../../assets/js/dax-search.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Auto-inicializar todos los widgets con data-dax-search="true"
+      if (window.daxSearch) {
+        window.daxSearch.initAll({
+          baseUrl: '../'  // estamos en topics/dax/, las URLs deben ir a topics/dax/...
+        });
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta content="if/then/else, try/otherwise, and/or/not y manejo de errores en el Lenguaje M de Power Query." name="description"/>
+<title>Expresiones Lógicas — Lenguaje M | Power BI Guide by Kawaii BI</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Fira+Code:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<!-- Prism.js -->
+<link href="https://cdn.jsdelivr.net/npm/prismjs@1/themes/prism-okaidia.min.css" rel="stylesheet"/>
+<!-- Estilos CSS -->
+<link href="../../assets/css/main.css" rel="stylesheet"/>
+<link href="../../assets/css/themes.css" rel="stylesheet"/>
+<link href="../../assets/css/components.css" rel="stylesheet"/>
+<link href="../../assets/css/layout.css" rel="stylesheet"/>
+<link href="../../assets/css/dax-search.css" rel="stylesheet"/>
+<style>
+        /* Topic header con icono grande */
+    .topic-header {
+      text-align: center;
+      padding: 2.5rem 0 2rem;
+      border-bottom: 2px solid var(--color-mauve);
+      margin-bottom: 2.5rem;
+    }
+
+    .topic-header__icon {
+      font-size: 4rem;
+      margin-bottom: 0.75rem;
+      display: block;
+    }
+
+    .topic-header__title {
+      font-size: clamp(1.875rem, 4vw, 2.5rem);
+      font-weight: 800;
+      color: var(--color-dark);
+      margin-bottom: 0.625rem;
+      line-height: 1.2;
+    }
+
+    .topic-header__subtitle {
+      font-size: 1.0625rem;
+      color: var(--color-slate);
+      margin-bottom: 1.25rem;
+      line-height: 1.5;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .topic-header__levels {
+      display: flex;
+      gap: 0.5rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    /* Category header */
+    .category-header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin: 2.5rem 0 1.25rem;
+      padding: 0.875rem 1.25rem;
+      background: var(--color-rose);
+      border-radius: var(--border-radius-sm);
+      border-left: 4px solid var(--color-coral);
+    }
+    .category-header__icon { font-size: 1.5rem; }
+    .category-header__title { font-size: 1.25rem; font-weight: 700; margin: 0; }
+
+    /* Function cards */
+    .function-card {
+      background: var(--color-white);
+      border: 1.5px solid var(--color-mauve);
+      border-radius: var(--border-radius);
+      padding: 1.75rem;
+      margin-bottom: 1.5rem;
+      scroll-margin-top: 80px;
+      transition: border-color 0.2s;
+    }
+    .function-card:hover { border-color: var(--color-coral); }
+
+    .function-card__header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.25rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 2px solid var(--color-blush);
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .function-card__title {
+      font-size: 1.375rem;
+      font-weight: 800;
+      color: var(--color-coral);
+      margin: 0;
+      font-family: 'Fira Code', monospace;
+    }
+
+    .function-card h4 {
+      font-size: 0.9375rem;
+      font-weight: 700;
+      color: var(--color-dark);
+      margin: 1.25rem 0 0.625rem;
+    }
+
+    .function-card p { font-size: 0.9375rem; line-height: 1.7; color: var(--color-dark); }
+
+    .function-card__params ul { list-style: none; padding: 0; margin: 0; }
+    .function-card__params li {
+      padding: 0.5rem 0 0.5rem 1.5rem;
+      position: relative;
+      line-height: 1.6;
+      font-size: 0.9rem;
+      border-bottom: 1px solid var(--color-blush);
+    }
+    .function-card__params li:last-child { border-bottom: none; }
+    .function-card__params li::before {
+      content: "→";
+      position: absolute;
+      left: 0;
+      color: var(--color-coral);
+      font-weight: 700;
+    }
+    .function-card__params code {
+      background: var(--color-blush);
+      padding: 0.1em 0.4em;
+      border-radius: 4px;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.85em;
+      color: var(--color-coral);
+    }
+
+    /* TOC */
+    .toc {
+      background: var(--color-rose);
+      border-radius: var(--border-radius);
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 2rem;
+      border: 1.5px solid var(--color-mauve);
+    }
+    .toc__title { font-size: 1rem; font-weight: 700; margin: 0 0 0.75rem; }
+    .toc__list { display: flex; flex-wrap: wrap; gap: 0.5rem; list-style: none; padding: 0; margin: 0; }
+    .toc__list a {
+      font-size: 0.8125rem;
+      color: var(--color-coral);
+      text-decoration: none;
+      padding: 0.25rem 0.625rem;
+      background: var(--color-white);
+      border-radius: 999px;
+      border: 1px solid var(--color-mauve);
+      transition: background 0.15s, color 0.15s;
+      font-family: 'Fira Code', monospace;
+    }
+    .toc__list a:hover { background: var(--color-coral); color: white; }
+
+    /* Table (tipo.html) */
+    .type-table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.9rem; }
+    .type-table th { background: var(--color-rose); color: var(--color-dark); font-weight: 600; padding: 0.6rem 1rem; text-align: left; }
+    .type-table td { padding: 0.55rem 1rem; border-bottom: 1px solid var(--color-mauve); }
+    .type-table tr:last-child td { border-bottom: none; }
+    .type-table code { font-family: 'Fira Code', monospace; font-size: 0.85em; }
+  </style>
+</head>
+<body>
+<!-- SIDEBAR: Navegación principal -->
+<aside class="site-sidebar">
+<div class="site-sidebar__profile">
+<img alt="Sara Lozano Martí" class="site-sidebar__avatar" src="../../assets/images/avatar Sara.png"/>
+<p class="site-sidebar__name">Sara Lozano Martí</p>
+<p class="site-sidebar__subtitle">Power BI Expert</p>
+</div>
+<nav aria-label="Navegación principal" class="site-sidebar__nav">
+<ul>
+<li><a class="site-sidebar__link" href="../../index.html">
+<span class="site-sidebar__icon">🏠</span> Inicio
+        </a></li>
+<li><a class="site-sidebar__link" href="../dax.html">
+<span class="site-sidebar__icon">⚡</span> Funciones DAX
+        </a></li>
+<li><a class="site-sidebar__link" href="../power-query.html">
+<span class="site-sidebar__icon">🔄</span> Power Query
+        </a></li>
+<li><a class="site-sidebar__link is-active" href="../lenguaje-m.html">
+<span class="site-sidebar__icon">〽️</span> Lenguaje M
+        </a></li>
+<li><a class="site-sidebar__link" href="../modelado.html">
+<span class="site-sidebar__icon">🗄️</span> Modelado
+        </a></li>
+<li><a class="site-sidebar__link" href="../conceptos-powerbi.html">
+<span class="site-sidebar__icon">📊</span> Conceptos Power BI
+        </a></li>
+<li><a class="site-sidebar__link" href="../fabric.html">
+<span class="site-sidebar__icon">🧵</span> Microsoft Fabric
+        </a></li>
+<li><a class="site-sidebar__link" href="../tmdl.html">
+<span class="site-sidebar__icon">📝</span> TMDL
+        </a></li>
+<li><a class="site-sidebar__link" href="../diseno-ux.html">
+<span class="site-sidebar__icon">🎨</span> Diseño y UX
+        </a></li>
+<li><a class="site-sidebar__link" href="../gobernanza.html">
+<span class="site-sidebar__icon">🔒</span> Gobernanza
+        </a></li>
+</ul>
+</nav>
+<div class="site-sidebar__divider"></div>
+<div class="site-sidebar__footer">
+<a class="site-sidebar__link site-sidebar__link--highlight" href="../../quien-soy.html">
+<span class="site-sidebar__icon">👩‍💻</span> ¿Quién soy?
+      </a>
+<div class="site-sidebar__social">
+<a aria-label="LinkedIn" href="https://www.linkedin.com/in/saralozanomarti" rel="noopener noreferrer" target="_blank">
+<img alt="LinkedIn" class="site-sidebar__social-icon" src="../../assets/images/logo linkedIN.png"/>
+</a>
+<a aria-label="YouTube" href="https://www.youtube.com/@KawaiiPowerBI" rel="noopener noreferrer" target="_blank">
+<img alt="YouTube" class="site-sidebar__social-icon" src="../../assets/images/logo youtube.png"/>
+</a>
+<a aria-label="GitHub" href="https://github.com/KawaiiBI" rel="noopener noreferrer" target="_blank">
+<img alt="GitHub" class="site-sidebar__social-icon" src="../../assets/images/logo github.png"/>
+</a>
+</div>
+<div class="site-sidebar__logo-bottom">
+<img alt="Kawaii BI" class="site-sidebar__logo-img" src="../../assets/images/Logo Kawaii.jpg"/>
+</div>
+<p class="site-sidebar__copyright">
+        Power BI Guide 🌸<br/>
+        © 2026 Kawaii BI
+      </p>
+</div>
+</aside>
+<!-- CONTENIDO PRINCIPAL -->
+<div class="page-wrapper">
+<main class="main-content">
+<div class="topic-page">
+<nav aria-label="Ruta de navegación" class="breadcrumb">
+<span class="breadcrumb__item"><a href="../../index.html">🏠 Inicio</a></span>
+<span aria-hidden="true" class="breadcrumb__separator">›</span>
+<span class="breadcrumb__item"><a href="../lenguaje-m.html">Lenguaje M</a></span>
+<span aria-hidden="true" class="breadcrumb__separator">›</span>
+<span class="breadcrumb__item">Expresiones Lógicas</span>
+</nav>
+<header class="topic-header">
+          <span class="topic-header__icon">🧠</span>
+          <h1 class="topic-header__title">Expresiones Lógicas</h1>
+          <p class="topic-header__subtitle">Controla el flujo de tus consultas M con if/then/else, try/otherwise, operadores lógicos y patrones avanzados.</p>
+          <div class="topic-header__levels">
+<span class="badge--beginner">Principiante</span>
+<span class="badge--intermediate">Intermedio</span>
+<span class="badge--advanced">Avanzado</span>
+</div>
+        </header>
+<div class="dax-search-wrapper dax-search-wrapper--compact" data-m-search="true">
+<div class="dax-search-input-row">
+<span aria-hidden="true" class="dax-search-icon">🔍</span>
+<input aria-autocomplete="list" aria-expanded="false" aria-label="Buscar funciones del Lenguaje M" autocomplete="off" class="dax-search-input" placeholder="Buscar otra función M..." spellcheck="false" type="search"/>
+<button aria-label="Limpiar búsqueda" class="dax-search-clear" hidden="">✕</button>
+</div>
+<div aria-label="Resultados de búsqueda" class="dax-search-results" role="listbox"></div>
+</div>
+<nav aria-label="Índice de funciones" class="toc">
+<p class="toc__title">📌 Funciones en esta página:</p>
+<ul class="toc__list">
+<li><a href="#if-then-else">if / then / else</a></li>
+<li><a href="#logical-ops">Operadores lógicos</a></li>
+<li><a href="#try-otherwise">try / otherwise</a></li>
+<li><a href="#nulls">Manejo de nulos</a></li>
+<li><a href="#logical-fns">Funciones Logical.*</a></li>
+<li><a href="#patterns">Patrones avanzados</a></li>
+</ul>
+</nav>
+<!-- Breadcrumb --><!-- Buscador compacto de funciones M --><!-- Cabecera --><div class="category-header" id="if-then-else">
+<span class="category-header__icon">🧠</span>
+<h2 class="category-header__title">if / then / else</h2>
+</div><article class="function-card" id="if-basic">
+<header class="function-card__header">
+<h3 class="function-card__title">Expresión if / then / else</h3>
+<span class="badge badge--beginner">Principiante</span>
+</header>
+<div class="function-card__syntax"><h4>Sintaxis</h4>
+<pre><code class="language-javascript">if condicion then valor_si_verdadero else valor_si_falso</code></pre>
+</div>
+<div class="function-card__description"><h4>¿Qué hace?</h4>
+<p>La expresión condicional fundamental de M. Evalúa <code>condicion</code> y devuelve el resultado de <code>then</code> o <code>else</code> según sea <code>true</code> o <code>false</code>. En M, <code>if</code> es una expresión (devuelve un valor), no una instrucción.</p>
+</div>
+<div class="function-card__example"><h4>Ejemplo</h4>
+<pre><code class="language-javascript">// Básico
+if [Ventas] &gt; 1000 then "Alto" else "Bajo"
+
+// Anidado (equivalente a IFS de Excel)
+if [Nota] &gt;= 9 then "Sobresaliente"
+else if [Nota] &gt;= 7 then "Notable"
+else if [Nota] &gt;= 5 then "Aprobado"
+else "Suspenso"
+
+// En una columna calculada
+Table.AddColumn(tabla, "Categoria",
+    each if [Importe] &gt; 10000 then "Premium"
+         else if [Importe] &gt; 1000 then "Estándar"
+         else "Básico"
+)</code></pre>
+</div>
+<div class="note note--tip">
+            💡 <strong>Tip kawaii:</strong> M no tiene <code>switch</code> ni <code>case</code>. Para muchas condiciones, considera usar un <code>Record</code> como tabla de lookup en lugar de largas cadenas de <code>if/else if</code>.
+          </div>
+</article><article class="function-card" id="if-in-let">
+<header class="function-card__header">
+<h3 class="function-card__title">if dentro de expresiones let</h3>
+<span class="badge badge--intermediate">Intermedio</span>
+</header>
+<div class="function-card__description"><h4>¿Qué hace?</h4>
+<p>Puedes usar <code>if</code> en cualquier posición donde se espera un valor: dentro de <code>let</code>, como argumento de función, en definición de funciones, etc.</p>
+</div>
+<div class="function-card__example"><h4>Ejemplo</h4>
+<pre><code class="language-javascript">let
+    umbral = 500,
+    datos  = Table.FromRows({{1, 300}, {2, 700}, {3, 500}}),
+    // if dentro de una función anónima
+    clasificados = Table.AddColumn(datos, "Estado",
+        each if _[Column2] &gt; umbral then "Supera"
+             else if _[Column2] = umbral then "Exacto"
+             else "No supera"
+    )
+in
+    clasificados</code></pre>
+</div>
+</article><div class="category-header" id="logical-ops">
+<span class="category-header__icon">🧠</span>
+<h2 class="category-header__title">Operadores Lógicos</h2>
+</div><article class="function-card" id="and-or-not">
+<header class="function-card__header">
+<h3 class="function-card__title">and / or / not</h3>
+<span class="badge badge--beginner">Principiante</span>
+</header>
+<div class="function-card__syntax"><h4>Sintaxis</h4>
+<pre><code class="language-javascript">expresion1 and expresion2  // Ambas deben ser true
+expresion1 or expresion2   // Al menos una debe ser true
+not expresion              // Niega el valor lógico</code></pre>
+</div>
+<div class="function-card__description"><h4>¿Qué hace?</h4>
+<p>Operadores booleanos estándar. En M se escriben en minúsculas (<code>and</code>, <code>or</code>, <code>not</code>), no como <code>&amp;&amp;</code>, <code>||</code>, <code>!</code>.</p>
+</div>
+<div class="function-card__example"><h4>Ejemplo</h4>
+<pre><code class="language-javascript">// Múltiples condiciones
+if [Edad] &gt;= 18 and [Pais] = "ES" then "Elegible" else "No elegible"
+
+// OR para categorías
+if [Departamento] = "Ventas" or [Departamento] = "Marketing"
+    then "Comercial" else "Otro"
+
+// NOT para invertir
+Table.SelectRows(tabla, each not ([Estado] = "Cancelado"))
+
+// Combinación compleja
+Table.SelectRows(tabla, each
+    [Importe] &gt; 1000 and
+    ([Pais] = "ES" or [Pais] = "PT") and
+    not ([Estado] = "Borrador")
+)</code></pre>
+</div>
+<div class="note note--warning">
+            ⚠️ <strong>Ojo con esto:</strong> M evalúa ambas partes de <code>and</code> y <code>or</code> aunque el resultado ya esté determinado (no hay short-circuit garantizado). Si una parte puede fallar, usa <code>try/otherwise</code> para protegerla.
+          </div>
+</article><div class="category-header" id="try-otherwise">
+<span class="category-header__icon">🛡️</span>
+<h2 class="category-header__title">try / otherwise — Manejo de Errores</h2>
+</div><article class="function-card" id="try-basic">
+<header class="function-card__header">
+<h3 class="function-card__title">try / otherwise</h3>
+<span class="badge badge--intermediate">Intermedio</span>
+</header>
+<div class="function-card__syntax"><h4>Sintaxis</h4>
+<pre><code class="language-javascript">try expresion otherwise valor_por_defecto
+
+// Con acceso al error
+try expresion
+// Devuelve un record: [HasError = true/false, Value = ..., Error = ...]</code></pre>
+</div>
+<div class="function-card__description"><h4>¿Qué hace?</h4>
+<p>Evalúa <code>expresion</code> y si produce un error, devuelve <code>valor_por_defecto</code>. Sin <code>otherwise</code>, devuelve un record con información del error.</p>
+</div>
+<div class="function-card__example"><h4>Ejemplo</h4>
+<pre><code class="language-javascript">// Conversión segura a número
+try Number.FromText([Precio]) otherwise 0
+
+// División segura
+try [Numerador] / [Denominador] otherwise null
+
+// Con información del error
+let resultado = try Number.FromText("abc")
+in if resultado[HasError]
+   then "Error: " &amp; resultado[Error][Message]
+   else resultado[Value]
+
+// Conversión de fecha robusta
+try Date.FromText([FechaTexto], "es-ES") otherwise null</code></pre>
+</div>
+<div class="note note--practice">
+            📌 <strong>Buena práctica:</strong> Usa <code>try ... otherwise null</code> cuando importes datos de fuentes poco fiables. Es mejor tener un <code>null</code> controlado que un error que corte toda la actualización.
+          </div>
+</article><article class="function-card" id="error-raise">
+<header class="function-card__header">
+<h3 class="function-card__title">error — Lanzar errores personalizados</h3>
+<span class="badge badge--advanced">Avanzado</span>
+</header>
+<div class="function-card__syntax"><h4>Sintaxis</h4>
+<pre><code class="language-javascript">error "mensaje de error"
+error [Reason = "tipo", Message = "descripción", Detail = valor]</code></pre>
+</div>
+<div class="function-card__description"><h4>¿Qué hace?</h4>
+<p>Lanza un error de forma explícita. Útil en funciones personalizadas para validar parámetros y proporcionar mensajes claros al usuario.</p>
+</div>
+<div class="function-card__example"><h4>Ejemplo</h4>
+<pre><code class="language-javascript">// Función con validación
+let
+    DividirSeguro = (numerador as number, denominador as number) as number =&gt;
+        if denominador = 0
+        then error [
+            Reason  = "DivisionPorCero",
+            Message = "El denominador no puede ser cero",
+            Detail  = [Numerador = numerador]
+        ]
+        else numerador / denominador
+in
+    DividirSeguro(10, 0)</code></pre>
+</div>
+</article><div class="category-header" id="nulls">
+<span class="category-header__icon">⭕</span>
+<h2 class="category-header__title">Manejo de Nulos</h2>
+</div><article class="function-card" id="null-handling">
+<header class="function-card__header">
+<h3 class="function-card__title">null y el operador ??</h3>
+<span class="badge badge--intermediate">Intermedio</span>
+</header>
+<div class="function-card__syntax"><h4>Sintaxis</h4>
+<pre><code class="language-javascript">// Comprobar nulo
+valor = null
+valor &lt;&gt; null
+
+// Coalescencia nula (M no tiene ?? nativo, usar if/then/else)
+if valor = null then valor_por_defecto else valor</code></pre>
+</div>
+<div class="function-card__description"><h4>¿Qué hace?</h4>
+<p>En M, <code>null</code> representa la ausencia de valor. La mayoría de las funciones propagan el <code>null</code> (si la entrada es <code>null</code>, la salida es <code>null</code>). Es importante manejarlos explícitamente.</p>
+</div>
+<div class="function-card__example"><h4>Ejemplo</h4>
+<pre><code class="language-javascript">// Reemplazar null por valor por defecto
+if [Descripcion] = null then "Sin descripción" else [Descripcion]
+
+// Contar no-nulos en una lista
+List.Count(List.RemoveNulls([MiLista]))
+
+// Filtrar nulos de una tabla
+Table.SelectRows(tabla, each [Nombre] &lt;&gt; null)
+
+// Cadena de nulos: si [A] es null, intenta [B], si no "N/A"
+if [A] &lt;&gt; null then [A]
+else if [B] &lt;&gt; null then [B]
+else "N/A"</code></pre>
+</div>
+<div class="note note--tip">
+            💡 <strong>Tip kawaii:</strong> Las operaciones aritméticas con <code>null</code> devuelven <code>null</code> (ej. <code>null + 5 = null</code>). Las comparaciones con <code>null</code> devuelven <code>null</code>, no <code>false</code>. ¡Esto puede provocar comportamientos inesperados en filtros!
+          </div>
+</article><div class="category-header" id="logical-fns">
+<span class="category-header__icon">✅</span>
+<h2 class="category-header__title">Funciones Logical.*</h2>
+</div><article class="function-card" id="logical-from">
+<header class="function-card__header">
+<h3 class="function-card__title">Logical.From / Logical.FromText</h3>
+<span class="badge badge--beginner">Principiante</span>
+</header>
+<div class="function-card__syntax"><h4>Sintaxis</h4>
+<pre><code class="language-javascript">Logical.From(value as any) as nullable logical
+Logical.FromText(text as nullable text) as nullable logical
+Logical.ToText(logical as nullable logical) as nullable text</code></pre>
+</div>
+<div class="function-card__description"><h4>¿Qué hace?</h4>
+<p>Convierte valores a tipo lógico (<code>true</code>/<code>false</code>). <code>Logical.From</code> acepta números (0=false, cualquier otro=true) y textos. <code>Logical.FromText</code> acepta "true"/"false" en cualquier capitalización.</p>
+</div>
+<div class="function-card__example"><h4>Ejemplo</h4>
+<pre><code class="language-javascript">Logical.From(1)        // true
+Logical.From(0)        // false
+Logical.FromText("TRUE")   // true
+Logical.FromText("false")  // false
+Logical.ToText(true)       // "true"
+
+// Convertir columna de 0/1 a lógico
+Table.TransformColumns(tabla, {{"Activo", Logical.From}})</code></pre>
+</div>
+</article><div class="category-header" id="patterns">
+<span class="category-header__icon">🔮</span>
+<h2 class="category-header__title">Patrones Avanzados</h2>
+</div><article class="function-card" id="switch-pattern">
+<header class="function-card__header">
+<h3 class="function-card__title">Patrón switch con Record</h3>
+<span class="badge badge--advanced">Avanzado</span>
+</header>
+<div class="function-card__description"><h4>¿Qué hace?</h4>
+<p>Como M no tiene <code>switch</code>, puedes simular un mapeo de valores usando un <code>Record</code> como diccionario, con <code>Record.Field</code> o acceso por campo. Es mucho más limpio que largas cadenas <code>if/else if</code>.</p>
+</div>
+<div class="function-card__example"><h4>Ejemplo</h4>
+<pre><code class="language-javascript">// Mapa de códigos a nombres
+let
+    meses = [
+        #"1" = "Enero",   #"2" = "Febrero",  #"3" = "Marzo",
+        #"4" = "Abril",   #"5" = "Mayo",      #"6" = "Junio",
+        #"7" = "Julio",   #"8" = "Agosto",   #"9" = "Septiembre",
+        #"10" = "Octubre", #"11" = "Noviembre", #"12" = "Diciembre"
+    ],
+    obtenerMes = (num as number) as text =&gt;
+        if Record.HasFields(meses, Text.From(num))
+        then Record.Field(meses, Text.From(num))
+        else "Desconocido"
+in
+    obtenerMes(7)   // "Julio"</code></pre>
+</div>
+<div class="note note--practice">
+            📌 <strong>Buena práctica:</strong> El patrón Record-como-diccionario es más mantenible que 12 ramas <code>if/else if</code>. Si el mapa de valores puede cambiar, guárdalo en una tabla de parámetros en lugar de hardcodearlo en M.
+          </div>
+</article><article class="function-card" id="lazy-eval">
+<header class="function-card__header">
+<h3 class="function-card__title">Evaluación diferida con funciones</h3>
+<span class="badge badge--advanced">Avanzado</span>
+</header>
+<div class="function-card__description"><h4>¿Qué hace?</h4>
+<p>M usa evaluación diferida: las expresiones en <code>let</code> sólo se calculan cuando se necesitan. Puedes aprovechar esto para condiciones de cortocircuito seguro envolviendo ramas peligrosas en funciones <code>() =&gt;</code>.</p>
+</div>
+<div class="function-card__example"><h4>Ejemplo</h4>
+<pre><code class="language-javascript">// Problema: esto puede fallar si [Texto] es null
+// Text.Length([Texto]) &gt; 5  -- error si null
+
+// Solución: guardar en variable primero
+let
+    texto  = [Texto],
+    longitud = if texto = null then 0 else Text.Length(texto)
+in
+    longitud &gt; 5
+
+// O con try/otherwise
+try Text.Length([Texto]) &gt; 5 otherwise false</code></pre>
+</div>
+</article><div class="note note--next">
+        🚀 <strong>¡Lógica dominada!</strong> Ahora explora las <a href="record.html">Funciones de Record</a> para trabajar con estructuras de datos clave-valor.
+      </div>
+</div>
+</main>
+</div>
+<button aria-label="Volver arriba" class="back-to-top" id="back-to-top" title="Volver arriba">↑</button>
+<script src="https://cdn.jsdelivr.net/npm/i18next@23/dist/umd/i18next.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1/prism.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1/components/prism-javascript.min.js"></script>
+<script src="../../assets/js/theme.js"></script>
+<script src="../../assets/js/i18n.js"></script>
+<script src="../../assets/js/main.js"></script>
+<script src="../../assets/js/cursor.js"></script>
+<script src="../../assets/js/m-search.js"></script>
+</body>
+</html>

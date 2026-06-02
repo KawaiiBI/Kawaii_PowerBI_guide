@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Columnas calculadas vs medidas en Power BI: diferencias fundamentales, cuándo usar cada una, impacto en rendimiento y memoria, y los errores más comunes.">
+  <title>Columnas Calculadas vs Medidas — Modelado de Datos | Power BI Guide by Kawaii BI</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/prismjs@1/themes/prism-okaidia.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="../../assets/css/main.css">
+  <link rel="stylesheet" href="../../assets/css/themes.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/layout.css">
+
+  <style>
+    .topic-header { text-align: center; padding: 2.5rem 0 2rem; border-bottom: 2px solid var(--color-mauve); margin-bottom: 2.5rem; }
+    .topic-header__icon { font-size: 4rem; margin-bottom: 0.75rem; display: block; }
+    .topic-header__title { font-size: clamp(1.875rem, 4vw, 2.5rem); font-weight: 800; color: var(--color-dark); margin-bottom: 0.625rem; line-height: 1.2; }
+    .topic-header__subtitle { font-size: 1.0625rem; color: var(--color-slate); margin-bottom: 1.25rem; line-height: 1.5; max-width: 600px; margin-left: auto; margin-right: auto; }
+    .topic-header__levels { display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap; align-items: center; }
+
+    .category-header { display: flex; align-items: center; gap: 0.75rem; margin: 2.5rem 0 1.25rem; padding: 0.875rem 1.25rem; background: var(--color-rose); border-radius: var(--border-radius-sm); border-left: 4px solid var(--color-coral); }
+    .category-header__icon { font-size: 1.5rem; }
+    .category-header__title { font-size: 1.25rem; font-weight: 700; margin: 0; }
+
+    .concept-card { background: var(--color-white); border: 1.5px solid var(--color-mauve); border-radius: var(--border-radius); padding: 1.75rem; margin-bottom: 1.5rem; scroll-margin-top: 80px; transition: border-color 0.2s; }
+    .concept-card:hover { border-color: var(--color-coral); }
+    .concept-card h3 { font-size: 1.25rem; font-weight: 700; color: var(--color-coral); margin-bottom: 0.75rem; }
+    .concept-card h4 { font-size: 0.9375rem; font-weight: 700; color: var(--color-dark); margin: 1.25rem 0 0.5rem; }
+    .concept-card p { font-size: 0.9375rem; line-height: 1.7; color: var(--color-dark); margin-bottom: 0.75rem; }
+    .concept-card ul { padding-left: 1.25rem; font-size: 0.9375rem; line-height: 1.8; color: var(--color-dark); }
+    .concept-card code { background: var(--color-blush); padding: 0.1em 0.4em; border-radius: 4px; font-family: 'Fira Code', monospace; font-size: 0.85em; color: var(--color-coral); }
+
+    .comparison-full { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin: 1.25rem 0; }
+    .comparison-box { border-radius: var(--border-radius-sm); padding: 1.25rem; border: 1.5px solid var(--color-mauve); }
+    .comparison-box--col { background: #f0f8f5; border-color: #5BAD92; }
+    .comparison-box--mea { background: #fff8f0; border-color: var(--color-coral); }
+    .comparison-box h4 { font-size: 1rem; font-weight: 700; margin-bottom: 0.75rem; }
+    .comparison-box--col h4 { color: #5BAD92; }
+    .comparison-box--mea h4 { color: var(--color-coral); }
+    .comparison-box ul { font-size: 0.875rem; padding-left: 1rem; margin: 0; line-height: 1.8; }
+    @media (max-width: 600px) { .comparison-full { grid-template-columns: 1fr; } }
+
+    .decision-table { width: 100%; border-collapse: collapse; font-size: 0.875rem; margin: 1rem 0; }
+    .decision-table th { background: var(--color-rose); padding: 0.75rem 1rem; text-align: left; font-weight: 700; border-bottom: 2px solid var(--color-mauve); }
+    .decision-table td { padding: 0.75rem 1rem; border-bottom: 1px solid var(--color-rose); vertical-align: top; }
+    .decision-table tr:last-child td { border-bottom: none; }
+    .decision-table .yes { color: #5BAD92; font-weight: 700; }
+    .decision-table .no { color: var(--color-coral); font-weight: 700; }
+
+    .toc { background: var(--color-rose); border-radius: var(--border-radius); padding: 1.25rem 1.5rem; margin-bottom: 2rem; border: 1.5px solid var(--color-mauve); }
+    .toc__title { font-size: 1rem; font-weight: 700; margin: 0 0 0.75rem; }
+    .toc__list { display: flex; flex-wrap: wrap; gap: 0.5rem; list-style: none; padding: 0; margin: 0; }
+    .toc__list a { font-size: 0.8125rem; color: var(--color-coral); text-decoration: none; padding: 0.25rem 0.625rem; background: var(--color-white); border-radius: 999px; border: 1px solid var(--color-mauve); transition: background 0.15s, color 0.15s; }
+    .toc__list a:hover { background: var(--color-coral); color: white; }
+  </style>
+</head>
+<body>
+
+  <!-- SIDEBAR -->
+  <aside class="site-sidebar">
+    <div class="site-sidebar__profile">
+      <img src="../../assets/images/avatar Sara.png" alt="Sara Lozano Martí" class="site-sidebar__avatar">
+      <p class="site-sidebar__name">Sara Lozano Martí</p>
+      <p class="site-sidebar__subtitle">Power BI Expert</p>
+    </div>
+    <nav class="site-sidebar__nav" aria-label="Navegación principal">
+      <ul>
+        <li><a href="../../index.html" class="site-sidebar__link"><span class="site-sidebar__icon">🏠</span> Inicio</a></li>
+        <li><a href="../dax.html" class="site-sidebar__link"><span class="site-sidebar__icon">⚡</span> Funciones DAX</a></li>
+        <li><a href="../power-query.html" class="site-sidebar__link"><span class="site-sidebar__icon">🔄</span> Power Query</a></li>
+        <li><a href="../lenguaje-m.html" class="site-sidebar__link"><span class="site-sidebar__icon">〽️</span> Lenguaje M</a></li>
+        <li><a href="../modelado.html" class="site-sidebar__link is-active"><span class="site-sidebar__icon">🗄️</span> Modelado</a></li>
+        <li><a href="../conceptos-powerbi.html" class="site-sidebar__link"><span class="site-sidebar__icon">📊</span> Conceptos Power BI</a></li>
+        <li><a href="../fabric.html" class="site-sidebar__link"><span class="site-sidebar__icon">🧵</span> Microsoft Fabric</a></li>
+        <li><a href="../tmdl.html" class="site-sidebar__link"><span class="site-sidebar__icon">📝</span> TMDL</a></li>
+        <li><a href="../diseno-ux.html" class="site-sidebar__link"><span class="site-sidebar__icon">🎨</span> Diseño y UX</a></li>
+        <li><a href="../gobernanza.html" class="site-sidebar__link"><span class="site-sidebar__icon">🔒</span> Gobernanza</a></li>
+      </ul>
+    </nav>
+    <div class="site-sidebar__divider"></div>
+    <div class="site-sidebar__footer">
+      <a href="../../quien-soy.html" class="site-sidebar__link site-sidebar__link--highlight"><span class="site-sidebar__icon">👩‍💻</span> ¿Quién soy?</a>
+      <div class="site-sidebar__social">
+        <a href="https://www.linkedin.com/in/saralozanomarti" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><img src="../../assets/images/logo linkedIN.png" alt="LinkedIn" class="site-sidebar__social-icon"></a>
+        <a href="https://www.youtube.com/@KawaiiPowerBI" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><img src="../../assets/images/logo youtube.png" alt="YouTube" class="site-sidebar__social-icon"></a>
+        <a href="https://github.com/KawaiiBI" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><img src="../../assets/images/logo github.png" alt="GitHub" class="site-sidebar__social-icon"></a>
+      </div>
+      <div class="site-sidebar__logo-bottom"><img src="../../assets/images/Logo Kawaii.jpg" alt="Kawaii BI" class="site-sidebar__logo-img"></div>
+      <p class="site-sidebar__copyright">Power BI Guide 🌸<br>© 2026 Kawaii BI</p>
+    </div>
+  </aside>
+
+  <div class="page-wrapper">
+    <main class="main-content">
+      <div class="topic-page">
+
+        <!-- Breadcrumb -->
+        <nav class="breadcrumb" aria-label="Ruta de navegación">
+          <span class="breadcrumb__item"><a href="../../index.html">🏠 Inicio</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item"><a href="../modelado.html">Modelado de Datos</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item">Columnas Calculadas vs Medidas</span>
+        </nav>
+
+        <!-- Cabecera -->
+        <header class="topic-header">
+          <span class="topic-header__icon">⚖️</span>
+          <h1 class="topic-header__title">Columnas Calculadas vs Medidas</h1>
+          <p class="topic-header__subtitle">Una de las decisiones más importantes en DAX: entender cuándo usar columnas calculadas y cuándo usar medidas marcará la diferencia entre un modelo lento y uno eficiente</p>
+          <div class="topic-header__levels">
+            <span class="badge badge--beginner">Principiante</span>
+          </div>
+        </header>
+
+        <!-- TOC -->
+        <nav class="toc" aria-label="Índice de contenidos">
+          <p class="toc__title">📌 En esta página:</p>
+          <ul class="toc__list">
+            <li><a href="#columnas">Columnas calculadas</a></li>
+            <li><a href="#medidas">Medidas</a></li>
+            <li><a href="#diferencias">Diferencias clave</a></li>
+            <li><a href="#cuando-usar">¿Cuándo usar cada una?</a></li>
+            <li><a href="#errores">Errores comunes</a></li>
+          </ul>
+        </nav>
+
+        <!-- Columnas calculadas -->
+        <div class="category-header" id="columnas">
+          <span class="category-header__icon">📋</span>
+          <h2 class="category-header__title">Columnas Calculadas</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>¿Qué es una columna calculada?</h3>
+          <p>Una <strong>columna calculada</strong> es una columna nueva que añades a una tabla existente usando una fórmula DAX. Se calcula una vez durante la actualización de datos y su resultado se almacena en el modelo — ocupa espacio en memoria.</p>
+
+          <h4>Características:</h4>
+          <ul>
+            <li>Se evalúa <strong>fila por fila</strong> (contexto de fila)</li>
+            <li>El resultado se almacena en el archivo PBIX (en memoria)</li>
+            <li>Se calcula al actualizar datos, no en tiempo de consulta</li>
+            <li>Puede usarse en slicers, ejes X/Y de gráficos, filas de tabla, y para filtrar</li>
+            <li>Puede usarse como campo en relaciones</li>
+          </ul>
+
+          <h4>Ejemplo:</h4>
+          <pre><code class="language-javascript">// Columna calculada en FactVentas — se almacena en el modelo
+Importe Total = FactVentas[Cantidad] * FactVentas[PrecioUnitario]
+
+// Columna calculada con IF — categoriza cada fila
+Segmento Precio =
+IF(
+    FactVentas[PrecioUnitario] > 100,
+    "Premium",
+    IF(FactVentas[PrecioUnitario] > 50, "Medio", "Básico")
+)
+
+// Columna calculada con RELATED — trae datos de otra tabla
+Categoria Producto = RELATED(DimProducto[Categoria])</code></pre>
+        </article>
+
+        <!-- Medidas -->
+        <div class="category-header" id="medidas">
+          <span class="category-header__icon">📏</span>
+          <h2 class="category-header__title">Medidas (Measures)</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>¿Qué es una medida?</h3>
+          <p>Una <strong>medida</strong> es una fórmula DAX que se evalúa dinámicamente en el momento de la consulta, respondiendo al contexto de filtro actual del visual o informe. No almacena datos — solo calcula cuando es necesario.</p>
+
+          <h4>Características:</h4>
+          <ul>
+            <li>Se evalúa en <strong>contexto de filtro</strong> (no fila por fila)</li>
+            <li>No ocupa espacio en memoria — solo se calcula cuando se usa</li>
+            <li>Se recalcula dinámicamente con cada cambio de filtro o slicer</li>
+            <li>Puede usarse en la sección Valores de un visual</li>
+            <li>Puede contener CALCULATE para modificar el contexto de filtro</li>
+          </ul>
+
+          <h4>Ejemplo:</h4>
+          <pre><code class="language-javascript">// Medida básica — se recalcula según los filtros del visual
+Ventas Totales = SUM(FactVentas[Importe Total])
+
+// Medida con CALCULATE — modifica el contexto de filtro
+Ventas Año Anterior =
+CALCULATE(
+    SUM(FactVentas[Importe Total]),
+    SAMEPERIODLASTYEAR(DimFecha[Fecha])
+)
+
+// Medida de ratio — combina dos medidas
+% Margen =
+DIVIDE(
+    SUM(FactVentas[Margen]),
+    SUM(FactVentas[Importe Total]),
+    0
+)</code></pre>
+        </article>
+
+        <!-- Diferencias clave -->
+        <div class="category-header" id="diferencias">
+          <span class="category-header__icon">🔍</span>
+          <h2 class="category-header__title">Diferencias Clave</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>Comparativa completa</h3>
+
+          <div class="comparison-full">
+            <div class="comparison-box comparison-box--col">
+              <h4>📋 Columna Calculada</h4>
+              <ul>
+                <li>Contexto de fila (row context)</li>
+                <li>Se calcula al actualizar datos</li>
+                <li>Almacena el resultado (usa RAM)</li>
+                <li>Puede usarse en slicers y ejes</li>
+                <li>Puede usarse en relaciones</li>
+                <li>No puede usar CALCULATE directamente</li>
+                <li>Visible en la tabla de datos</li>
+              </ul>
+            </div>
+            <div class="comparison-box comparison-box--mea">
+              <h4>📏 Medida</h4>
+              <ul>
+                <li>Contexto de filtro (filter context)</li>
+                <li>Se calcula en tiempo de consulta</li>
+                <li>No almacena datos (usa CPU)</li>
+                <li>Solo en la sección "Valores"</li>
+                <li>No puede usarse en relaciones</li>
+                <li>Puede usar CALCULATE libremente</li>
+                <li>No ocupa columnas en tablas</li>
+              </ul>
+            </div>
+          </div>
+
+          <h4>Impacto en el rendimiento:</h4>
+          <table class="decision-table">
+            <thead>
+              <tr>
+                <th>Aspecto</th>
+                <th>Columna calculada</th>
+                <th>Medida</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Tamaño del archivo PBIX</td>
+                <td class="no">Aumenta (guarda datos)</td>
+                <td class="yes">No cambia</td>
+              </tr>
+              <tr>
+                <td>Tiempo de actualización</td>
+                <td class="no">Aumenta (recalcula todas)</td>
+                <td class="yes">No afecta</td>
+              </tr>
+              <tr>
+                <td>Velocidad de consulta</td>
+                <td class="yes">Rápida (dato ya calculado)</td>
+                <td>Variable (depende de la fórmula)</td>
+              </tr>
+              <tr>
+                <td>Flexibilidad</td>
+                <td class="no">Resultado fijo</td>
+                <td class="yes">Responde al contexto dinámicamente</td>
+              </tr>
+            </tbody>
+          </table>
+        </article>
+
+        <!-- Cuándo usar -->
+        <div class="category-header" id="cuando-usar">
+          <span class="category-header__icon">🎯</span>
+          <h2 class="category-header__title">¿Cuándo Usar Cada Una?</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>Usa una columna calculada cuando...</h3>
+          <ul>
+            <li>Necesitas el valor para <strong>filtrar, agrupar o segmentar</strong> (en un slicer o eje de gráfico)</li>
+            <li>Necesitas crear una <strong>columna de clave</strong> para una relación</li>
+            <li>El cálculo <strong>no depende del contexto</strong> del visual (es fijo por fila)</li>
+            <li>Necesitas acceder a valores de <strong>otra tabla relacionada</strong> con <code>RELATED()</code></li>
+            <li>La columna no existe en el origen y sería difícil crearla en Power Query</li>
+          </ul>
+
+          <h3 style="margin-top: 1.25rem;">Usa una medida cuando...</h3>
+          <ul>
+            <li>Necesitas un valor que <strong>cambia según los filtros</strong> del informe</li>
+            <li>Quieres hacer <strong>totales, ratios, comparativas</strong> o cálculos de período anterior</li>
+            <li>El cálculo requiere <strong>CALCULATE</strong> o funciones de inteligencia de tiempo</li>
+            <li>Quieres mantener el <strong>archivo PBIX pequeño</strong></li>
+            <li>El cálculo es una <strong>agregación</strong> (SUM, AVERAGE, COUNT, etc.)</li>
+          </ul>
+
+          <div class="note note--tip">
+            💡 <strong>Regla de oro:</strong> Si tu cálculo termina con SUM, AVERAGE, COUNT, MAX, MIN o cualquier otra agregación — es una medida. Si describes un atributo de una fila específica (color, categoría, precio con descuento) — puede ser una columna calculada. Cuando tengas duda, elige la medida: es más flexible y eficiente. 🌸
+          </div>
+        </article>
+
+        <!-- Errores comunes -->
+        <div class="category-header" id="errores">
+          <span class="category-header__icon">⚠️</span>
+          <h2 class="category-header__title">Errores Comunes de Principiantes</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>Error #1: Crear columnas calculadas para todo</h3>
+          <p>El error más frecuente es crear una columna calculada <code>Ventas = SUM(FactVentas[Importe])</code>. Esto no funciona como esperas — SUM en una columna calculada suma toda la tabla sin tener en cuenta los filtros del informe. Siempre crea medidas para las agregaciones.</p>
+
+          <h3 style="margin-top: 1.25rem;">Error #2: Columnas calculadas con alta cardinalidad innecesaria</h3>
+          <p>Crear columnas calculadas que generan muchos valores únicos (como concatenar ID + fecha para crear un ID único) aumenta la cardinalidad del modelo y lo hace más lento. Si no necesitas esa columna para filtrar o como clave de relación, evítala.</p>
+
+          <h3 style="margin-top: 1.25rem;">Error #3: No usar tablas de medidas</h3>
+          <pre><code class="language-javascript">// RECOMENDADO: crea una tabla vacía solo para organizar medidas
+// En Power Query crea una tabla: = #table({},{})
+// Nómbrala "Medidas" o "_Medidas" (el _ la pone al principio)
+
+// Así todas tus medidas quedan organizadas en un sitio
+// y no dispersas por todas las tablas del modelo</code></pre>
+
+          <div class="note note--practice">
+            📌 <strong>Buena práctica:</strong> Crea siempre una tabla vacía dedicada para tus medidas (se llama <em>tabla de medidas</em> o <em>measure table</em>). Nómbrala con un guion bajo al principio (<code>_Medidas</code>) para que aparezca primero en el panel de campos y sea fácil de encontrar.
+          </div>
+        </article>
+
+        <div class="note note--next" style="margin-top: 2rem;">
+          🚀 <strong>¡Gran avance!</strong> Ahora que entiendes la diferencia, el siguiente paso es aprender a crear medidas poderosas con las <a href="../dax/filtro.html">funciones de filtro y contexto DAX</a> (CALCULATE, ALL, FILTER). Para entender el impacto en rendimiento en profundidad, visita <a href="optimizacion.html">Optimización de Rendimiento</a>.
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <button id="back-to-top" class="back-to-top" aria-label="Volver arriba" title="Volver arriba">↑</button>
+
+  <script src="https://cdn.jsdelivr.net/npm/i18next@23/dist/umd/i18next.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1/prism.min.js"></script>
+  <script src="../../assets/js/theme.js"></script>
+  <script src="../../assets/js/main.js"></script>
+  <script src="../../assets/js/cursor.js"></script>
+</body>
+</html>

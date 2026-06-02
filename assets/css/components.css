@@ -179,18 +179,10 @@
   background: #FFFBF0;
 }
 
-.note--tip strong::before {
-  content: "💡 Tip: ";
-}
-
 /* Nota tipo Warning */
 .note--warning {
   border-color: var(--color-peach);
   background: #FFF6F4;
-}
-
-.note--warning strong::before {
-  content: "⚠️ Ojo con esto: ";
 }
 
 /* Nota tipo Best Practice */
@@ -199,18 +191,10 @@
   background: #F2FBF8;
 }
 
-.note--best-practice strong::before {
-  content: "📌 Buena práctica: ";
-}
-
 /* Nota tipo Next Level */
 .note--next {
   border-color: var(--color-coral);
   background: #FFF2F0;
-}
-
-.note--next strong::before {
-  content: "🚀 Siguiente nivel: ";
 }
 
 /* === BREADCRUMBS === */

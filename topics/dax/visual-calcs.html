@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta content="Visual Calculations en DAX — La mayor novedad de Power BI 2024 para cálculos sobre visuals" name="description"/>
+<title>Visual Calculations — Power BI Guide</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Fira+Code:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<!-- Prism.js para syntax highlighting -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet"/>
+<!-- i18next para traducciones -->
+<script src="https://cdn.jsdelivr.net/npm/i18next@23.7.6/i18next.min.js"></script>
+<!-- CSS del proyecto -->
+<link href="../../assets/css/main.css" rel="stylesheet"/>
+<link href="../../assets/css/themes.css" rel="stylesheet"/>
+<link href="../../assets/css/components.css" rel="stylesheet"/>
+<link href="../../assets/css/layout.css" rel="stylesheet"/>
+<link href="../../assets/css/dax-search.css" rel="stylesheet"/>
+<style>
+    /* === ESTILOS ESPECÍFICOS PARA PÁGINAS DE TOPICS === */
+
+    /* Topic header con icono grande */
+    .topic-header {
+      text-align: center;
+      padding: 2.5rem 0 2rem;
+      border-bottom: 2px solid var(--color-mauve);
+      margin-bottom: 2.5rem;
+    }
+
+    .topic-header__icon {
+      font-size: 4rem;
+      margin-bottom: 0.75rem;
+      display: block;
+    }
+
+    .topic-header__title {
+      font-size: clamp(1.875rem, 4vw, 2.5rem);
+      font-weight: 800;
+      color: var(--color-dark);
+      margin-bottom: 0.625rem;
+      line-height: 1.2;
+    }
+
+    .topic-header__subtitle {
+      font-size: 1.0625rem;
+      color: var(--color-slate);
+      margin-bottom: 1.25rem;
+      line-height: 1.5;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .topic-header__levels {
+      display: flex;
+      gap: 0.5rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    /* Badge especial "Novedad 2024" */
+    .category-card__new {
+      display: inline-block;
+      padding: 0.25rem 0.75rem;
+      background: linear-gradient(135deg, var(--color-coral) 0%, var(--color-peach) 100%);
+      color: var(--color-white);
+      font-size: 0.75rem;
+      font-weight: 700;
+      border-radius: var(--border-radius-sm);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-left: 0.5rem;
+    }
+
+    /* TOC — Table of contents */
+    .toc {
+      background: var(--color-rose);
+      border: 1.5px solid var(--color-mauve);
+      border-radius: var(--border-radius);
+      padding: 1.5rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .toc__title {
+      font-size: 0.875rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--color-slate);
+      margin-bottom: 1rem;
+    }
+
+    .toc__list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .toc__link {
+      color: var(--color-dark);
+      text-decoration: none;
+      font-size: 0.9375rem;
+      transition: var(--transition);
+      display: inline-block;
+    }
+
+    .toc__link:hover {
+      color: var(--color-coral);
+      text-decoration: underline;
+    }
+
+    /* Category header — separadores entre categorías */
+    .category-header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin: 3rem 0 1.5rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 2px solid var(--color-mauve);
+    }
+
+    .category-header__icon {
+      font-size: 1.75rem;
+    }
+
+    .category-header__title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--color-dark);
+      margin: 0;
+    }
+
+    /* Function card — tarjeta individual para cada función */
+    .function-card {
+      background: var(--color-white);
+      border: 1.5px solid var(--color-mauve);
+      border-radius: var(--border-radius);
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .function-card__name {
+      font-family: var(--font-code);
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: var(--color-coral);
+      margin-bottom: 0.75rem;
+    }
+
+    .function-card__description {
+      font-size: 0.9375rem;
+      color: var(--color-dark);
+      margin-bottom: 1rem;
+      line-height: 1.6;
+    }
+
+    .function-card__level {
+      display: inline-block;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      padding: 0.25rem 0.625rem;
+      border-radius: var(--border-radius-sm);
+      background: var(--color-blush);
+      color: var(--color-slate);
+      margin-bottom: 1rem;
+    }
+
+    /* Function table — tabla compacta con ejemplos */
+    .function-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.5rem 0;
+      font-size: 0.875rem;
+    }
+
+    .function-table th {
+      background: var(--color-rose);
+      color: var(--color-dark);
+      font-weight: 700;
+      text-align: left;
+      padding: 0.75rem 1rem;
+      border: 1px solid var(--color-mauve);
+    }
+
+    .function-table td {
+      padding: 0.75rem 1rem;
+      border: 1px solid var(--color-mauve);
+      color: var(--color-dark);
+    }
+
+    .function-table tr:nth-child(even) {
+      background: var(--color-blush);
+    }
+
+    /* Code block wrapper */
+    .code-block {
+      position: relative;
+      margin: 1.25rem 0;
+    }
+
+    .code-block pre {
+      margin: 0;
+      border-radius: var(--border-radius);
+      border: 1.5px solid var(--color-mauve);
+    }
+
+    .code-block__copy {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.5rem;
+      padding: 0.375rem 0.75rem;
+      font-size: 0.75rem;
+      background: var(--color-coral);
+      color: var(--color-white);
+      border: none;
+      border-radius: var(--border-radius-sm);
+      cursor: pointer;
+      font-family: var(--font-main);
+      font-weight: 600;
+      transition: var(--transition);
+    }
+
+    .code-block__copy:hover {
+      background: var(--color-peach);
+    }
+  </style>
+</head>
+<body>
+<!-- SIDEBAR: Navegación principal -->
+<aside class="site-sidebar">
+<!-- Avatar y nombre -->
+<div class="site-sidebar__profile">
+<img alt="Sara Lozano Martí" class="site-sidebar__avatar" src="../../assets/images/avatar Sara.png"/>
+<p class="site-sidebar__name">Sara Lozano Martí</p>
+<p class="site-sidebar__subtitle">Power BI Expert</p>
+</div>
+<!-- Navegación principal -->
+<nav aria-label="Navegación principal" class="site-sidebar__nav">
+<ul>
+<li><a class="site-sidebar__link" href="../../index.html">
+<span class="site-sidebar__icon">🏠</span> Inicio
+        </a></li>
+<li><a class="site-sidebar__link is-active" href="../dax.html">
+<span class="site-sidebar__icon">⚡</span> Funciones DAX
+        </a></li>
+<li><a class="site-sidebar__link" href="../power-query.html">
+<span class="site-sidebar__icon">🔄</span> Power Query
+        </a></li>
+<li><a class="site-sidebar__link" href="../lenguaje-m.html">
+<span class="site-sidebar__icon">〽️</span> Lenguaje M
+        </a></li>
+<li><a class="site-sidebar__link" href="../modelado.html">
+<span class="site-sidebar__icon">🗄️</span> Modelado
+        </a></li>
+<li><a class="site-sidebar__link" href="../conceptos-powerbi.html">
+<span class="site-sidebar__icon">📊</span> Conceptos Power BI
+        </a></li>
+<li><a class="site-sidebar__link" href="../fabric.html">
+<span class="site-sidebar__icon">🧵</span> Microsoft Fabric
+        </a></li>
+<li><a class="site-sidebar__link" href="../tmdl.html">
+<span class="site-sidebar__icon">📝</span> TMDL
+        </a></li>
+<li><a class="site-sidebar__link" href="../diseno-ux.html">
+<span class="site-sidebar__icon">🎨</span> Diseño y UX
+        </a></li>
+<li><a class="site-sidebar__link" href="../gobernanza.html">
+<span class="site-sidebar__icon">🔒</span> Gobernanza
+        </a></li>
+</ul>
+</nav>
+<!-- Separador -->
+<div class="site-sidebar__divider"></div>
+<!-- Footer del sidebar -->
+<div class="site-sidebar__footer">
+<!-- Enlace a quien soy -->
+<a class="site-sidebar__link site-sidebar__link--highlight" href="../../quien-soy.html">
+<span class="site-sidebar__icon">👩‍💻</span> ¿Quién soy?
+      </a>
+<!-- Iconos sociales -->
+<div class="site-sidebar__social">
+<a aria-label="LinkedIn" href="https://www.linkedin.com/in/saralozanomarti" rel="noopener noreferrer" target="_blank">
+<img alt="LinkedIn" class="site-sidebar__social-icon" src="../../assets/images/logo linkedIN.png"/>
+</a>
+<a aria-label="YouTube" href="https://www.youtube.com/@KawaiiPowerBI" rel="noopener noreferrer" target="_blank">
+<img alt="YouTube" class="site-sidebar__social-icon" src="../../assets/images/logo youtube.png"/>
+</a>
+<a aria-label="GitHub" href="https://github.com/KawaiiBI" rel="noopener noreferrer" target="_blank">
+<img alt="GitHub" class="site-sidebar__social-icon" src="../../assets/images/logo github.png"/>
+</a>
+</div>
+<!-- Logo Kawaii BI -->
+<div class="site-sidebar__logo-bottom">
+<img alt="Kawaii BI" class="site-sidebar__logo-img" src="../../assets/images/Logo Kawaii.jpg"/>
+</div>
+<!-- Copyright -->
+<p class="site-sidebar__copyright">
+        Power BI Guide 🌸<br/>
+        © 2026 Kawaii BI
+      </p>
+</div>
+</aside>
+<!-- PAGE WRAPPER -->
+<div class="page-wrapper">
+<!-- Main content -->
+<main id="main-content">
+<div class="topic-page">
+        <nav aria-label="breadcrumb" class="breadcrumb">
+<a class="breadcrumb__link" href="../../index.html">Inicio</a>
+<span class="breadcrumb__separator">›</span>
+<a class="breadcrumb__link" href="../dax.html">Funciones DAX</a>
+<span class="breadcrumb__separator">›</span>
+<span class="breadcrumb__current">Visual Calculations</span>
+</nav>
+
+        <header class="topic-header">
+<span class="topic-header__icon">✨</span>
+<h1 class="topic-header__title">
+            Visual Calculations
+            <span class="category-card__new">Novedad 2024</span>
+</h1>
+<p class="topic-header__subtitle">Las funciones DAX que solo viven dentro de los visuals de Power BI — la mayor novedad de 2024</p>
+<div class="topic-header__levels">
+<span class="badge badge--intermediate">Intermedio</span>
+<span class="badge badge--advanced">Avanzado</span>
+</div>
+</header>
+
+        
+<!-- Buscador compacto DAX -->
+<div class="dax-search-compact-bar">
+<div class="dax-search-wrapper dax-search-compact" data-dax-search="true">
+<span class="dax-search-icon">🔍</span>
+<input aria-label="Buscar función DAX" autocomplete="off" class="dax-search-input" placeholder="Buscar otra función DAX..." spellcheck="false" type="text"/>
+<button aria-label="Limpiar" class="dax-search-clear" hidden="">✕</button>
+<div class="dax-search-results" role="listbox"></div>
+</div>
+</div>
+
+        <nav class="toc">
+<h2 class="toc__title">📑 En esta página</h2>
+<ul class="toc__list">
+<li><a class="toc__link" href="#que-son">¿Qué son las Visual Calculations?</a></li>
+<li><a class="toc__link" href="#como-activar">Cómo activarlas en Power BI</a></li>
+<li><a class="toc__link" href="#running">RUNNINGSUM — Acumulados</a></li>
+<li><a class="toc__link" href="#moving">MOVINGAVERAGE — Media móvil</a></li>
+<li><a class="toc__link" href="#nav">FIRST, LAST, NEXT, PREVIOUS — Navegación</a></li>
+<li><a class="toc__link" href="#collapse">COLLAPSE y EXPAND — Jerarquías</a></li>
+<li><a class="toc__link" href="#range">RANGE — Ventanas relativas</a></li>
+<li><a class="toc__link" href="#vs-medidas">Visual Calcs vs Medidas normales</a></li>
+<li><a class="toc__link" href="#limitaciones">Limitaciones importantes</a></li>
+</ul>
+</nav>
+
+        <!-- Breadcrumb --><!-- Header del topic --><!-- TOC --><!-- SECCIÓN 0: ¿Qué son? --><section id="que-son">
+<h2 class="category-header__title">¿Qué son las Visual Calculations? 🤔</h2>
+<p>Las <strong>Visual Calculations</strong> son un tipo especial de cálculo DAX introducido en Power BI en 2024 que se define directamente sobre un visual (tabla, matriz, gráfico) en lugar de en el modelo de datos. La diferencia clave:</p>
+<ul>
+<li>Las <strong>MEDIDAS normales</strong> se calculan en el modelo → resultado independiente del visual</li>
+<li>Las <strong>VISUAL CALCULATIONS</strong> se calculan SOBRE la estructura del visual → pueden acceder a las filas de arriba, de abajo, al total del nivel, etc.</li>
+</ul>
+<div class="note note--tip">
+<strong>Analogía kawaii 🌸</strong><br/>
+            Imagina que las medidas normales son como un chef que cocina en la cocina central (el modelo). Las Visual Calculations son como una persona que está directamente en la mesa y puede ver exactamente lo que hay servido delante, a los lados y en el plato de al lado — y hacer cálculos con eso.
+          </div>
+<h3>¿Por qué son tan útiles?</h3>
+<p>Antes de Visual Calculations, calcular un acumulado en una tabla que respetara el orden visual era MUY complicado en DAX (requería WINDOW, RANKX, etc.). Ahora con una línea: <code>RUNNINGSUM([Ventas])</code>.</p>
+<div class="note note--warning">
+<strong>⚠️ Importante</strong><br/>
+            Las Visual Calculations SOLO funcionan dentro de visuals de Power BI Desktop (tablas, matrices, gráficos). NO se pueden usar en medidas normales, columnas calculadas, tablas calculadas ni en expresiones de RLS. Son exclusivas del contexto visual.
+          </div>
+</section><!-- SECCIÓN 1: Cómo activarlas --><section id="como-activar">
+<div class="category-header">
+<span class="category-header__icon">⚙️</span>
+<h2 class="category-header__title">¿Cómo se activan y crean?</h2>
+</div>
+<p>Para crear una Visual Calculation, sigue estos pasos:</p>
+<ol>
+<li>Selecciona un visual de tabla o matriz en tu informe</li>
+<li>En el menú superior de Power BI Desktop, ve a <strong>"Calculations"</strong> (o "Cálculos")</li>
+<li>Haz clic en <strong>"New visual calculation"</strong></li>
+<li>Se abre un editor DAX especial — aquí escribes tu fórmula</li>
+<li>La fórmula tiene acceso a las funciones especiales de Visual Calculations</li>
+</ol>
+<p><strong>Diferencia en el editor:</strong> en el editor de Visual Calculations verás una vista previa del visual con la nueva columna calculada añadida directamente.</p>
+<div class="note note--tip">
+<strong>💡 Tip importante</strong><br/>
+            Las Visual Calculations no aparecen en el panel de campos ni en el modelo. Son locales al visual donde las creas. Si quieres el mismo cálculo en otro visual, tienes que crearlo de nuevo — o usar una medida normal con WINDOW (más complejo pero reutilizable).
+          </div>
+</section><!-- SECCIÓN 2: RUNNINGSUM --><section id="running">
+<div class="category-header">
+<span class="category-header__icon">📈</span>
+<h2 class="category-header__title">RUNNINGSUM — Totales acumulados</h2>
+</div>
+<div class="function-card">
+<div class="function-card__name">RUNNINGSUM(&lt;expresión&gt;, [reset])</div>
+<div class="function-card__level">Intermedio</div>
+<div class="function-card__description">
+              Calcula el total acumulado (running sum) de una expresión a lo largo de las filas del visual. Opcional: el parámetro <code>reset</code> indica cuándo reiniciar el acumulado (NONE, LOWESTPARENT, HIGHESTPARENT, GRANDTOTAL o un nivel numérico).
+            </div>
+<h4>Ejemplo básico:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// En una tabla con columnas: Mes | Ventas | (nueva columna visual)
+// La columna "Ventas Acumuladas" se crea como Visual Calculation:
+Ventas Acumuladas = RUNNINGSUM([Ventas])
+
+// Resultado:
+// Enero     → 10.000
+// Febrero   → 25.000  (10.000 + 15.000)
+// Marzo     → 42.000  (25.000 + 17.000)
+// ...</code></pre>
+</div>
+<h4>Ejemplo con reset en una matriz con años y meses:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Reset en cada año (al llegar a enero del año siguiente, vuelve a 0)
+Ventas Acumuladas YTD = RUNNINGSUM([Ventas], HIGHESTPARENT)
+
+// 2023 / Enero   → 10.000
+// 2023 / Febrero → 25.000
+// 2023 / Diciembre → 150.000
+// 2024 / Enero   → 12.000  ← reinicia!
+// 2024 / Febrero → 28.000</code></pre>
+</div>
+<h4>Comparativa visual (antes vs después):</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// ❌ ANTES (medida DAX compleja para el mismo resultado):
+Ventas Acum Medida =
+CALCULATE(
+    SUM('Ventas'[Importe]),
+    FILTER(
+        ALLSELECTED('Calendario'),
+        'Calendario'[Fecha] &lt;= MAX('Calendario'[Fecha])
+    )
+)
+
+// ✅ AHORA con Visual Calculations:
+Ventas Acumuladas = RUNNINGSUM([Ventas])
+// ¡Una línea!</code></pre>
+</div>
+<div class="note note--tip">
+<strong>💡 Tip</strong><br/>
+              RUNNINGSUM es equivalente a TOTALYTD en algunos contextos, pero mucho más flexible porque trabaja sobre cualquier dimensión del visual, no solo fechas. Y no requiere tabla de calendario marcada. 🎉
+            </div>
+</div>
+</section><!-- SECCIÓN 3: MOVINGAVERAGE --><section id="moving">
+<div class="category-header">
+<span class="category-header__icon">📊</span>
+<h2 class="category-header__title">MOVINGAVERAGE — Media móvil</h2>
+</div>
+<div class="function-card">
+<div class="function-card__name">MOVINGAVERAGE(&lt;expresión&gt;, ventana, [incluir_blancos], [eje], [reset])</div>
+<div class="function-card__level">Intermedio — Avanzado</div>
+<div class="function-card__description">
+              Calcula la media móvil de N períodos anteriores (incluyendo el actual). Perfecta para suavizar series temporales y detectar tendencias.
+            </div>
+<h4>Ejemplo básico (media móvil de 3 meses):</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Media de los últimos 3 meses (incluye el mes actual)
+Media Móvil 3M = MOVINGAVERAGE([Ventas], 3)
+
+// Enero    → Ventas enero (solo hay 1 mes)
+// Febrero  → (enero + febrero) / 2
+// Marzo    → (enero + febrero + marzo) / 3
+// Abril    → (febrero + marzo + abril) / 3  ← ventana deslizante</code></pre>
+</div>
+<h4>Ejemplo (media móvil de 12 meses — tendencia anual):</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Tendencia de los últimos 12 meses
+Tendencia 12M = MOVINGAVERAGE([Ventas], 12)
+// Muy útil para eliminar la estacionalidad y ver la tendencia real</code></pre>
+</div>
+<h4>Comparativa con medida DAX equivalente:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// ❌ Medida DAX equivalente (mucho más compleja):
+Media Móvil 3M Medida =
+VAR FechaActual = MAX('Calendario'[Fecha])
+VAR Ventana =
+    CALCULATETABLE(
+        VALUES('Calendario'[Mes]),
+        DATESINPERIOD('Calendario'[Fecha], FechaActual, -3, MONTH)
+    )
+RETURN AVERAGEX(Ventana, CALCULATE(SUM('Ventas'[Importe])))
+
+// ✅ Visual Calculation:
+Media Móvil 3M = MOVINGAVERAGE([Ventas], 3)</code></pre>
+</div>
+</div>
+</section><!-- SECCIÓN 4: FIRST, LAST, NEXT, PREVIOUS --><section id="nav">
+<div class="category-header">
+<span class="category-header__icon">🧭</span>
+<h2 class="category-header__title">Funciones de Navegación — FIRST, LAST, NEXT, PREVIOUS</h2>
+</div>
+<p>Estas funciones permiten acceder al valor de otra fila del visual, ya sea la primera, la última, la siguiente o la anterior. Como una función OFFSET visual.</p>
+<div class="function-card">
+<div class="function-card__name">FIRST(&lt;expresión&gt;, [offset], [eje], [reset]) | LAST(&lt;expresión&gt;, [offset], [eje], [reset])</div>
+<div class="function-card__level">Intermedio</div>
+<div class="function-card__description">
+              FIRST devuelve el valor de la primera fila visible del visual. LAST devuelve el de la última. Útil para calcular variaciones respecto al inicio/fin del período.
+            </div>
+<h4>Ejemplo FIRST — Variación respecto al primer mes:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Diferencia respecto al primer mes del período visible
+Diferencia vs Inicio = [Ventas] - FIRST([Ventas])
+
+// Enero   → 0        (es el primero)
+// Febrero → +5.000   (si febrero = 15.000 y enero = 10.000)
+// Marzo   → +7.000
+// Sirve para ver el crecimiento acumulado desde el inicio</code></pre>
+</div>
+<h4>Ejemplo LAST — Comparar cada fila con el total final:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// % sobre el valor del último período
+% sobre Último = DIVIDE([Ventas], LAST([Ventas]))</code></pre>
+</div>
+</div>
+<div class="function-card">
+<div class="function-card__name">PREVIOUS(&lt;expresión&gt;, [offset], [eje], [reset]) | NEXT(&lt;expresión&gt;, [offset], [eje], [reset])</div>
+<div class="function-card__level">Intermedio</div>
+<div class="function-card__description">
+              PREVIOUS devuelve el valor de la fila anterior (o N filas antes). NEXT devuelve el valor de la fila siguiente. Perfectas para variaciones mes a mes sin necesidad de inteligencia de tiempo.
+            </div>
+<h4>Ejemplo PREVIOUS — Variación mes a mes:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Diferencia respecto al mes anterior
+Variación MoM = [Ventas] - PREVIOUS([Ventas])
+
+// Enero   → BLANK (no hay mes anterior)
+// Febrero → +5.000
+// Marzo   → +2.000
+
+// Variación en %
+Variación MoM % = DIVIDE([Ventas] - PREVIOUS([Ventas]), PREVIOUS([Ventas]))</code></pre>
+</div>
+<h4>Ejemplo NEXT — Ver cuánto falta para llegar al siguiente:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Diferencia respecto al siguiente mes (útil en análisis prospectivo)
+Diferencia al Siguiente = NEXT([Ventas]) - [Ventas]</code></pre>
+</div>
+<div class="note note--tip">
+<strong>💡 Tip</strong><br/>
+              PREVIOUS([Ventas]) dentro de un visual de fechas es equivalente a SAMEPERIODLASTYEAR en muchos casos, ¡pero sin necesitar tabla de calendario marcada! Aunque para comparativas anuales reales sigue siendo mejor la inteligencia de tiempo clásica.
+            </div>
+</div>
+</section><!-- SECCIÓN 5: COLLAPSE y EXPAND --><section id="collapse">
+<div class="category-header">
+<span class="category-header__icon">🌲</span>
+<h2 class="category-header__title">COLLAPSE y EXPAND — Navegación por jerarquías</h2>
+</div>
+<p>Estas funciones solo tienen sentido en matrices con jerarquías (como Año &gt; Trimestre &gt; Mes). Permiten acceder a valores de niveles superiores (padres) o inferiores (hijos) de la jerarquía directamente desde el visual.</p>
+<div class="function-card">
+<div class="function-card__name">COLLAPSE(&lt;expresión&gt;, &lt;eje&gt;) | COLLAPSEALL(&lt;expresión&gt;, &lt;eje&gt;)</div>
+<div class="function-card__level">Avanzado</div>
+<div class="function-card__description">
+              COLLAPSE sube un nivel en la jerarquía del visual (al padre inmediato). COLLAPSEALL sube hasta el nivel más alto (el abuelo/raíz). Útil para calcular % sobre el padre.
+            </div>
+<h4>Ejemplo — % sobre el total del año (padre del mes):</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// En una matriz Año &gt; Mes, columna "% del Año"
+% del Año = DIVIDE([Ventas], COLLAPSE([Ventas], ROWS))
+
+// Enero 2024   → 8,3%   (ventas enero / total 2024)
+// Febrero 2024 → 9,1%
+// Total 2024   → 100%  (se colapsa a sí mismo)
+
+// COLLAPSEALL: % sobre el gran total
+% del Total = DIVIDE([Ventas], COLLAPSEALL([Ventas], ROWS))</code></pre>
+</div>
+</div>
+<div class="function-card">
+<div class="function-card__name">EXPAND(&lt;expresión&gt;, &lt;eje&gt;) | EXPANDALL(&lt;expresión&gt;, &lt;eje&gt;)</div>
+<div class="function-card__level">Avanzado</div>
+<div class="function-card__description">
+              Lo contrario de COLLAPSE — baja un nivel (a los hijos). EXPANDALL baja hasta el nivel más detallado. Útil cuando en el nivel padre quieres calcular algo basado en los hijos.
+            </div>
+<h4>Ejemplo — Media de los hijos:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// En la fila "2024 Total": mostrar la media mensual
+Media Hijos = EXPAND(AVERAGE([Ventas]), ROWS)</code></pre>
+</div>
+</div>
+</section><!-- SECCIÓN 6: RANGE --><section id="range">
+<div class="category-header">
+<span class="category-header__icon">🎯</span>
+<h2 class="category-header__title">RANGE — Ventanas relativas personalizadas</h2>
+</div>
+<div class="function-card">
+<div class="function-card__name">RANGE(&lt;start&gt;, &lt;end&gt;) — se usa como parámetro de ventana</div>
+<div class="function-card__level">Avanzado</div>
+<div class="function-card__description">
+              Define una ventana relativa de filas para funciones como WINDOW. Permite especificar exactamente qué rango de filas incluir en el cálculo.
+            </div>
+<h4>Ejemplo — Total de los últimos 3 meses excluyendo el actual:</h4>
+<div class="code-block">
+<button class="code-block__copy">Copiar</button>
+<pre><code class="language-javascript">// Suma de las 3 filas anteriores (sin incluir la actual)
+Ventas 3M Anteriores =
+CALCULATE(
+    SUM([Ventas]),
+    RANGE(-3, -1)
+)
+
+// Marzo: suma de enero + febrero + (el que sea anterior a marzo)</code></pre>
+</div>
+</div>
+</section><!-- SECCIÓN 7: Comparativa --><section id="vs-medidas">
+<div class="category-header">
+<span class="category-header__icon">⚖️</span>
+<h2 class="category-header__title">¿Cuándo usar Visual Calculations vs medidas normales?</h2>
+</div>
+<table class="function-table">
+<thead>
+<tr>
+<th>CARACTERÍSTICA</th>
+<th>MEDIDAS NORMALES</th>
+<th>VISUAL CALCULATIONS</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Dónde se definen</strong></td>
+<td>En el modelo (pestaña de datos)</td>
+<td>Directamente sobre el visual</td>
+</tr>
+<tr>
+<td><strong>Reutilizables</strong></td>
+<td>✅ En cualquier visual</td>
+<td>❌ Solo en ese visual</td>
+</tr>
+<tr>
+<td><strong>Acceso a filas vecinas</strong></td>
+<td>❌ Complejo (WINDOW, OFFSET)</td>
+<td>✅ PREVIOUS, NEXT, FIRST, LAST</td>
+</tr>
+<tr>
+<td><strong>Rendimiento</strong></td>
+<td>✅ Mejor para cálculos complejos</td>
+<td>⚠️ Limitado a datos ya en el visual</td>
+</tr>
+<tr>
+<td><strong>Disponible en RLS</strong></td>
+<td>✅ Sí</td>
+<td>❌ No</td>
+</tr>
+<tr>
+<td><strong>Disponible en Export</strong></td>
+<td>⚠️ Depende</td>
+<td>❌ No siempre</td>
+</tr>
+<tr>
+<td><strong>Nivel de dificultad</strong></td>
+<td>🔴 Alto para acumulados</td>
+<td>🟡 Medio</td>
+</tr>
+<tr>
+<td><strong>Requiere tabla calendario</strong></td>
+<td>✅ Para time intelligence</td>
+<td>❌ No siempre</td>
+</tr>
+</tbody>
+</table>
+<div class="note note--tip">
+<strong>Regla práctica 🌸</strong><br/>
+            Si el cálculo lo vas a usar en UN solo visual y depende del orden o posición de las filas → Visual Calculations. Si lo vas a usar en varios visuals o necesitas reutilizarlo → Medida normal. Y si dudas, empieza con la medida — siempre puedes crear una Visual Calculation encima. 💡
+          </div>
+</section><!-- SECCIÓN 8: Limitaciones --><section id="limitaciones">
+<div class="category-header">
+<span class="category-header__icon">⚠️</span>
+<h2 class="category-header__title">Cosas importantes que debes saber</h2>
+</div>
+<ol>
+<li>Solo disponibles en <strong>Power BI Desktop</strong> — no en Report Builder ni Embedded antiguo</li>
+<li>No se exportan a Excel con todo su detalle</li>
+<li>No se pueden usar en expresiones de RLS</li>
+<li>No funcionan en todos los tipos de visual — principalmente tablas, matrices y algunos gráficos</li>
+<li>No son medidas del modelo — no aparecen en DAX Studio ni en el panel de campos para otros visuals</li>
+<li>El parámetro <code>[eje]</code> puede ser ROWS o COLUMNS — en matrices bidimensionales hay que especificarlo bien</li>
+<li>El parámetro <code>[reset]</code> controla cuándo se reinicia el cálculo al cambiar de nivel en jerarquías</li>
+</ol>
+<div class="note note--next">
+<strong>🚀 Siguiente paso</strong><br/>
+            ¡Enhorabuena! Ya conoces las Visual Calculations — una de las incorporaciones más esperadas de Power BI. Si quieres el control más fino sobre ventanas de filas desde el modelo (sin depender del visual), el siguiente paso son las Window Functions.
+          </div>
+</section>
+
+      </div>
+</main>
+</div>
+<!-- Footer (cargado dinámicamente) -->
+<div id="main-footer"></div>
+<!-- Botón volver arriba -->
+<button aria-label="Volver arriba" class="btn-back-to-top" id="back-to-top">↑</button>
+<!-- Scripts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+<script src="../../assets/js/theme.js"></script>
+<script src="../../assets/js/main.js"></script>
+<script src="../../assets/js/cursor.js"></script>
+</body>
+</html>

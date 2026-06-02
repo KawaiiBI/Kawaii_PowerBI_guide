@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta content="Combiner.*, Splitter.*, Comparer.* y Replacer.* — las piezas modulares del Lenguaje M." name="description"/>
+<title>Funciones de Transformación — Lenguaje M | Power BI Guide by Kawaii BI</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Fira+Code:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<!-- Prism.js -->
+<link href="https://cdn.jsdelivr.net/npm/prismjs@1/themes/prism-okaidia.min.css" rel="stylesheet"/>
+<!-- Estilos CSS -->
+<link href="../../assets/css/main.css" rel="stylesheet"/>
+<link href="../../assets/css/themes.css" rel="stylesheet"/>
+<link href="../../assets/css/components.css" rel="stylesheet"/>
+<link href="../../assets/css/layout.css" rel="stylesheet"/>
+<link href="../../assets/css/dax-search.css" rel="stylesheet"/>
+<style>
+        /* Topic header con icono grande */
+    .topic-header {
+      text-align: center;
+      padding: 2.5rem 0 2rem;
+      border-bottom: 2px solid var(--color-mauve);
+      margin-bottom: 2.5rem;
+    }
+
+    .topic-header__icon {
+      font-size: 4rem;
+      margin-bottom: 0.75rem;
+      display: block;
+    }
+
+    .topic-header__title {
+      font-size: clamp(1.875rem, 4vw, 2.5rem);
+      font-weight: 800;
+      color: var(--color-dark);
+      margin-bottom: 0.625rem;
+      line-height: 1.2;
+    }
+
+    .topic-header__subtitle {
+      font-size: 1.0625rem;
+      color: var(--color-slate);
+      margin-bottom: 1.25rem;
+      line-height: 1.5;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .topic-header__levels {
+      display: flex;
+      gap: 0.5rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    /* Category header */
+    .category-header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin: 2.5rem 0 1.25rem;
+      padding: 0.875rem 1.25rem;
+      background: var(--color-rose);
+      border-radius: var(--border-radius-sm);
+      border-left: 4px solid var(--color-coral);
+    }
+    .category-header__icon { font-size: 1.5rem; }
+    .category-header__title { font-size: 1.25rem; font-weight: 700; margin: 0; }
+
+    /* Function cards */
+    .function-card {
+      background: var(--color-white);
+      border: 1.5px solid var(--color-mauve);
+      border-radius: var(--border-radius);
+      padding: 1.75rem;
+      margin-bottom: 1.5rem;
+      scroll-margin-top: 80px;
+      transition: border-color 0.2s;
+    }
+    .function-card:hover { border-color: var(--color-coral); }
+
+    .function-card__header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.25rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 2px solid var(--color-blush);
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .function-card__title {
+      font-size: 1.375rem;
+      font-weight: 800;
+      color: var(--color-coral);
+      margin: 0;
+      font-family: 'Fira Code', monospace;
+    }
+
+    .function-card h4 {
+      font-size: 0.9375rem;
+      font-weight: 700;
+      color: var(--color-dark);
+      margin: 1.25rem 0 0.625rem;
+    }
+
+    .function-card p { font-size: 0.9375rem; line-height: 1.7; color: var(--color-dark); }
+
+    .function-card__params ul { list-style: none; padding: 0; margin: 0; }
+    .function-card__params li {
+      padding: 0.5rem 0 0.5rem 1.5rem;
+      position: relative;
+      line-height: 1.6;
+      font-size: 0.9rem;
+      border-bottom: 1px solid var(--color-blush);
+    }
+    .function-card__params li:last-child { border-bottom: none; }
+    .function-card__params li::before {
+      content: "→";
+      position: absolute;
+      left: 0;
+      color: var(--color-coral);
+      font-weight: 700;
+    }
+    .function-card__params code {
+      background: var(--color-blush);
+      padding: 0.1em 0.4em;
+      border-radius: 4px;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.85em;
+      color: var(--color-coral);
+    }
+
+    /* TOC */
+    .toc {
+      background: var(--color-rose);
+      border-radius: var(--border-radius);
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 2rem;
+      border: 1.5px solid var(--color-mauve);
+    }
+    .toc__title { font-size: 1rem; font-weight: 700; margin: 0 0 0.75rem; }
+    .toc__list { display: flex; flex-wrap: wrap; gap: 0.5rem; list-style: none; padding: 0; margin: 0; }
+    .toc__list a {
+      font-size: 0.8125rem;
+      color: var(--color-coral);
+      text-decoration: none;
+      padding: 0.25rem 0.625rem;
+      background: var(--color-white);
+      border-radius: 999px;
+      border: 1px solid var(--color-mauve);
+      transition: background 0.15s, color 0.15s;
+      font-family: 'Fira Code', monospace;
+    }
+    .toc__list a:hover { background: var(--color-coral); color: white; }
+
+    /* Table (tipo.html) */
+    .type-table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.9rem; }
+    .type-table th { background: var(--color-rose); color: var(--color-dark); font-weight: 600; padding: 0.6rem 1rem; text-align: left; }
+    .type-table td { padding: 0.55rem 1rem; border-bottom: 1px solid var(--color-mauve); }
+    .type-table tr:last-child td { border-bottom: none; }
+    .type-table code { font-family: 'Fira Code', monospace; font-size: 0.85em; }
+  </style>
+</head>
+<body>
+<!-- SIDEBAR: Navegación principal -->
+<aside class="site-sidebar">
+<div class="site-sidebar__profile">
+<img alt="Sara Lozano Martí" class="site-sidebar__avatar" src="../../assets/images/avatar Sara.png"/>
+<p class="site-sidebar__name">Sara Lozano Martí</p>
+<p class="site-sidebar__subtitle">Power BI Expert</p>
+</div>
+<nav aria-label="Navegación principal" class="site-sidebar__nav">
+<ul>
+<li><a class="site-sidebar__link" href="../../index.html">
+<span class="site-sidebar__icon">🏠</span> Inicio
+        </a></li>
+<li><a class="site-sidebar__link" href="../dax.html">
+<span class="site-sidebar__icon">⚡</span> Funciones DAX
+        </a></li>
+<li><a class="site-sidebar__link" href="../power-query.html">
+<span class="site-sidebar__icon">🔄</span> Power Query
+        </a></li>
+<li><a class="site-sidebar__link is-active" href="../lenguaje-m.html">
+<span class="site-sidebar__icon">〽️</span> Lenguaje M
+        </a></li>
+<li><a class="site-sidebar__link" href="../modelado.html">
+<span class="site-sidebar__icon">🗄️</span> Modelado
+        </a></li>
+<li><a class="site-sidebar__link" href="../conceptos-powerbi.html">
+<span class="site-sidebar__icon">📊</span> Conceptos Power BI
+        </a></li>
+<li><a class="site-sidebar__link" href="../fabric.html">
+<span class="site-sidebar__icon">🧵</span> Microsoft Fabric
+        </a></li>
+<li><a class="site-sidebar__link" href="../tmdl.html">
+<span class="site-sidebar__icon">📝</span> TMDL
+        </a></li>
+<li><a class="site-sidebar__link" href="../diseno-ux.html">
+<span class="site-sidebar__icon">🎨</span> Diseño y UX
+        </a></li>
+<li><a class="site-sidebar__link" href="../gobernanza.html">
+<span class="site-sidebar__icon">🔒</span> Gobernanza
+        </a></li>
+</ul>
+</nav>
+<div class="site-sidebar__divider"></div>
+<div class="site-sidebar__footer">
+<a class="site-sidebar__link site-sidebar__link--highlight" href="../../quien-soy.html">
+<span class="site-sidebar__icon">👩‍💻</span> ¿Quién soy?
+      </a>
+<div class="site-sidebar__social">
+<a aria-label="LinkedIn" href="https://www.linkedin.com/in/saralozanomarti" rel="noopener noreferrer" target="_blank">
+<img alt="LinkedIn" class="site-sidebar__social-icon" src="../../assets/images/logo linkedIN.png"/>
+</a>
+<a aria-label="YouTube" href="https://www.youtube.com/@KawaiiPowerBI" rel="noopener noreferrer" target="_blank">
+<img alt="YouTube" class="site-sidebar__social-icon" src="../../assets/images/logo youtube.png"/>
+</a>
+<a aria-label="GitHub" href="https://github.com/KawaiiBI" rel="noopener noreferrer" target="_blank">
+<img alt="GitHub" class="site-sidebar__social-icon" src="../../assets/images/logo github.png"/>
+</a>
+</div>
+<div class="site-sidebar__logo-bottom">
+<img alt="Kawaii BI" class="site-sidebar__logo-img" src="../../assets/images/Logo Kawaii.jpg"/>
+</div>
+<p class="site-sidebar__copyright">
+        Power BI Guide 🌸<br/>
+        © 2026 Kawaii BI
+      </p>
+</div>
+</aside>
+<!-- CONTENIDO PRINCIPAL -->
+<div class="page-wrapper">
+<main class="main-content">
+<div class="topic-page">
+<nav aria-label="Ruta de navegación" class="breadcrumb">
+<span class="breadcrumb__item"><a href="../../index.html">🏠 Inicio</a></span>
+<span aria-hidden="true" class="breadcrumb__separator">›</span>
+<span class="breadcrumb__item"><a href="../lenguaje-m.html">Lenguaje M</a></span>
+<span aria-hidden="true" class="breadcrumb__separator">›</span>
+<span class="breadcrumb__item">Funciones de Transformación</span>
+</nav>
+<header class="topic-header">
+          <span class="topic-header__icon">🔧</span>
+          <h1 class="topic-header__title">Funciones de Transformación</h1>
+          <p class="topic-header__subtitle">Combina, divide, compara y reemplaza con los módulos Combiner.*, Splitter.*, Comparer.* y Replacer.*.</p>
+          <div class="topic-header__levels">
+<span class="badge--intermediate">Intermedio</span>
+<span class="badge--advanced">Avanzado</span>
+</div>
+        </header>
+<div class="dax-search-wrapper dax-search-wrapper--compact" data-m-search="true">
+<div class="dax-search-input-row">
+<span aria-hidden="true" class="dax-search-icon">🔍</span>
+<input aria-autocomplete="list" aria-expanded="false" aria-label="Buscar funciones del Lenguaje M" autocomplete="off" class="dax-search-input" placeholder="Buscar otra función M..." spellcheck="false" type="search"/>
+<button aria-label="Limpiar búsqueda" class="dax-search-clear" hidden="">✕</button>
+</div>
+<div aria-label="Resultados de búsqueda" class="dax-search-results" role="listbox"></div>
+</div>
+<nav aria-label="Índice de funciones" class="toc">
+<p class="toc__title">📌 Funciones en esta página:</p>
+<ul class="toc__list">
+<li><a href="#combiner">Combiner.*</a></li>
+<li><a href="#splitter">Splitter.*</a></li>
+<li><a href="#comparer">Comparer.*</a></li>
+<li><a href="#replacer">Replacer.*</a></li>
+<li><a href="#value">Value.*</a></li>
+</ul>
+</nav>
+<!-- Breadcrumb --><!-- Buscador compacto de funciones M --><!-- Cabecera --><div class="category-header" id="combiner">
+<span class="category-header__icon">🔗</span>
+<h2 class="category-header__title">Combiner.* — Combinadores de texto</h2>
+</div><article class="function-card" id="combiner-combine">
+<header class="function-card__header">
+<h3 class="function-card__title">Combiner.CombineTextByDelimiter</h3>
+<span class="badge badge--intermediate">Intermedio</span>
+</header>
+<div class="function-card__syntax"><h4>Sintaxis</h4>
+<pre><code class="language-javascript">Combiner.CombineTextByDelimiter(delimiter as text, optional quoteStyle as nullable number) as function</code></pre>
+</div>
+<div class="function-card__description"><h4>¿Qué hace?</h4>
+<p>Devuelve una <strong>función</strong> que combina una lista de textos con el delimitador especificado. Los módulos <code>Combiner.*</code> son funciones de orden superior: devuelven funciones para usar como argumentos en otras funciones.</p>
+</div>
+<div class="function-card__example"><h4>Ejemplo</h4>
+<pre><code class="language-javascript">// Crear la función combinadora
+let combinador = Combiner.CombineTextByDelimiter(" | ")
+in combinador({"Madrid", "Barcelona", "Valencia"})
+// "Madrid | Barcelona | Valencia"
+
+// Uso típico: en Table.CombineColumns o List.Accumulate
+Table.CombineColumns(
+    tabla,
+    {"Nombre", "Apellido1", "Apellido2"},
+    Combiner.CombineTextByDelimiter(" "),
+    "NombreCompleto"
+)</code></pre>
+</div>
+</article><article class="function-card" id="combiner-bylengths">
+<header class="function-card__header">
+<h3 class="function-card__title">Combiner.CombineTextByLengths / CombineTextByPositions</h3>
+<span class="badge badge--advanced">Avanzado</span>
+</header>
+<div class="function-card__syntax"><h4>Sintaxis</h4>
+<pre><code class="language-javascript">Combiner.CombineTextByLengths(lengths as list) as function
+Combiner.CombineTextByPositions(positions as list) as function
+Combiner.CombineTextByRanges(ranges as list) as function</code></pre>
+</div>
+<div class="function-card__description"><h4>¿Qué hace?</h4>
+<p>Variantes especializadas para combinar texto con longitudes fijas, posiciones o rangos. Útiles para crear formatos de ancho fijo (flat files, formatos legacy).</p>
+</div>
+<div class="function-card__example"><h4>Ejemplo</h4>
+<pre><code class="language-javascript">// Combinar con longitudes fijas (rellena/trunca)
+let fn = Combiner.CombineTextByLengths({3, 4, 2})
+in fn({"ES", "2024", "01"})
+// "ES 20240 1" (cada parte tiene longitud fija)</code></pre>
+</div>
+</article><div class="category-header" id="splitter">
+<span class="category-header__icon">✂️</span>
+<h2 class="category-header__title">Splitter.* — Divisores de texto</h2>
+</div><article class="function-card" id="splitter-delimiter">
+<header class="function-card__header">
+<h3 class="function-card__title">Splitter.SplitTextByDelimiter</h3>
+<span class="badge badge--intermediate">Intermedio</span>
+</header>
+<div class="function-card__syntax"><h4>Sintaxis</h4>
+<pre><code class="language-javascript">Splitter.SplitTextByDelimiter(delimiter as text, optional quoteStyle as nullable number) as function</code></pre>
+</div>
+<div class="function-card__description"><h4>¿Qué hace?</h4>
+<p>Devuelve una función que divide un texto por el delimitador indicado. Es el equivalente modular de <code>Text.Split</code> para usar en <code>Table.SplitColumn</code>.</p>
+</div>
+<div class="function-card__example"><h4>Ejemplo</h4>
+<pre><code class="language-javascript">// Crear la función divisora
+let divisor = Splitter.SplitTextByDelimiter(";")
+in divisor("Madrid;Barcelona;Valencia")
+// {"Madrid", "Barcelona", "Valencia"}
+
+// Uso típico: dividir columna en varias
+Table.SplitColumn(
+    tabla,
+    "Categorias",
+    Splitter.SplitTextByDelimiter(","),
+    {"Cat1", "Cat2", "Cat3"}
+)</code></pre>
+</div>
+</article><article class="function-card" id="splitter-lengths">
+<header class="function-card__header">
+<h3 class="function-card__title">Splitter.SplitTextByLengths / SplitTextByPositions</h3>
+<span class="badge badge--advanced">Avanzado</span>
+</header>
+<div class="function-card__syntax"><h4>Sintaxis</h4>
+<pre><code class="language-javascript">Splitter.SplitTextByLengths(lengths as list, optional startOfNext as nullable logical) as function
+Splitter.SplitTextByPositions(positions as list) as function
+Splitter.SplitTextByRepeatedLengths(length as number) as function</code></pre>
+</div>
+<div class="function-card__description"><h4>¿Qué hace?</h4>
+<p>Divide texto de ancho fijo por longitudes o posiciones. Fundamental para procesar archivos de texto de formato fijo (mainframe, legacy systems).</p>
+</div>
+<div class="function-card__example"><h4>Ejemplo</h4>
+<pre><code class="language-javascript">// Dividir por longitudes (3, 4, 2 caracteres)
+let fn = Splitter.SplitTextByLengths({3, 4, 2})
+in fn("ESP20240115")
+// {"ESP", "2024", "01"} (los últimos 2 quedan: "15" → sólo 2 usados)
+
+// Dividir en fragmentos de longitud repetida
+let fn2 = Splitter.SplitTextByRepeatedLengths(2)
+in fn2("012345")
+// {"01", "23", "45"}
+
+// Dividir por posiciones (inicio de cada parte)
+let fn3 = Splitter.SplitTextByPositions({0, 3, 7})
+in fn3("ESP20240115")
+// {"ESP", "2024", "0115"}</code></pre>
+</div>
+<div class="note note--tip">
+            💡 <strong>Tip kawaii:</strong> Los módulos <code>Splitter.*</code> y <code>Combiner.*</code> son "funciones de función": devuelven una función lista para usar. Por eso en <code>Table.SplitColumn</code> no llamas <code>Splitter.SplitTextByDelimiter(",")</code> como función, sino que se la pasas directamente como argumento.
+          </div>
+</article><div class="category-header" id="comparer">
+<span class="category-header__icon">⚖️</span>
+<h2 class="category-header__title">Comparer.* — Comparadores</h2>
+</div><article class="function-card" id="comparer-ordinal">
+<header class="function-card__header">
+<h3 class="function-card__title">Comparer.Ordinal / OrdinalIgnoreCase</h3>
+<span class="badge badge--intermediate">Intermedio</span>
+</header>
+<div class="function-card__syntax"><h4>Sintaxis</h4>
+<pre><code class="language-javascript">Comparer.Ordinal(x as any, y as any) as number
+Comparer.OrdinalIgnoreCase(x as any, y as any) as number
+Comparer.FromCulture(culture as text, optional ignoreCase as nullable logical) as function</code></pre>
+</div>
+<div class="function-card__description"><h4>¿Qué hace?</h4>
+<p>Los comparadores definen cómo comparar dos valores. Devuelven -1 (x menor), 0 (iguales) o 1 (x mayor). Se usan en funciones de ordenación, búsqueda y agrupación.</p>
+</div>
+<div class="function-card__example"><h4>Ejemplo</h4>
+<pre><code class="language-javascript">// Búsqueda insensible a mayúsculas
+List.Contains({"Madrid", "BARCELONA"}, "barcelona", Comparer.OrdinalIgnoreCase)
+// true
+
+// Ordenar con cultura española (ñ ordenada correctamente)
+List.Sort({"zebra", "ñoño", "abeja"}, Comparer.FromCulture("es-ES"))
+// {"abeja", "ñoño", "zebra"}
+
+// En Table.Sort
+Table.Sort(tabla, {{"Nombre", Comparer.FromCulture("es-ES")}})</code></pre>
+</div>
+<div class="note note--warning">
+            ⚠️ <strong>Ojo con esto:</strong> <code>Comparer.Ordinal</code> ordena por código Unicode, por lo que la "Ñ" puede quedar en posición incorrecta. Usa siempre <code>Comparer.FromCulture("es-ES")</code> para ordenación alfabética correcta en español.
+          </div>
+</article><div class="category-header" id="replacer">
+<span class="category-header__icon">✏️</span>
+<h2 class="category-header__title">Replacer.* — Reemplazadores</h2>
+</div><article class="function-card" id="replacer-replacevalue">
+<header class="function-card__header">
+<h3 class="function-card__title">Replacer.ReplaceValue / ReplaceText</h3>
+<span class="badge badge--intermediate">Intermedio</span>
+</header>
+<div class="function-card__syntax"><h4>Sintaxis</h4>
+<pre><code class="language-javascript">Replacer.ReplaceValue(value as any, old as any, new as any) as any
+Replacer.ReplaceText(value as any, old as text, new as text) as any</code></pre>
+</div>
+<div class="function-card__description"><h4>¿Qué hace?</h4>
+<p>Funciones reemplazadoras modulares para usar en <code>Table.ReplaceValue</code>. <code>ReplaceValue</code> reemplaza valores exactos (de cualquier tipo). <code>ReplaceText</code> reemplaza subcadenas de texto.</p>
+</div>
+<div class="function-card__example"><h4>Ejemplo</h4>
+<pre><code class="language-javascript">// Reemplazar valor exacto null por 0 en columna "Ventas"
+Table.ReplaceValue(tabla, null, 0, Replacer.ReplaceValue, {"Ventas"})
+
+// Reemplazar subcadena en columna de texto
+Table.ReplaceValue(tabla, "S.A.", "SA", Replacer.ReplaceText, {"Empresa"})
+
+// Reemplazar en múltiples columnas
+Table.ReplaceValue(tabla, "N/D", null, Replacer.ReplaceValue,
+    {"Ciudad", "Pais", "Region"})</code></pre>
+</div>
+<div class="note note--practice">
+            📌 <strong>Buena práctica:</strong> Usa <code>Table.ReplaceValue</code> con <code>Replacer.*</code> para reemplazos masivos en columnas específicas. Es más eficiente que aplicar <code>Table.TransformColumns</code> con <code>Text.Replace</code> columna por columna.
+          </div>
+</article><div class="category-header" id="value">
+<span class="category-header__icon">🏷️</span>
+<h2 class="category-header__title">Value.* — Funciones de Valor</h2>
+</div><article class="function-card" id="value-is">
+<header class="function-card__header">
+<h3 class="function-card__title">Value.Is / Value.Type / Value.As</h3>
+<span class="badge badge--advanced">Avanzado</span>
+</header>
+<div class="function-card__syntax"><h4>Sintaxis</h4>
+<pre><code class="language-javascript">Value.Is(value as any, type as type) as logical
+Value.Type(value as any) as type
+Value.As(value as any, type as type) as any</code></pre>
+</div>
+<div class="function-card__description"><h4>¿Qué hace?</h4>
+<p><code>Value.Is</code> comprueba si un valor es de un tipo determinado. <code>Value.Type</code> devuelve el tipo de un valor. <code>Value.As</code> lanza un error si el valor no es del tipo esperado (aserción de tipo).</p>
+</div>
+<div class="function-card__example"><h4>Ejemplo</h4>
+<pre><code class="language-javascript">Value.Is(42, type number)     // true
+Value.Is("hola", type text)   // true
+Value.Is(null, type number)   // false
+
+Value.Type(42)        // type number
+Value.Type("texto")   // type text
+Value.Type(#date(2024,1,1))  // type date
+
+// Asegurar tipo antes de operar
+Value.As([Importe], type number)  // error si no es number</code></pre>
+</div>
+</article><article class="function-card" id="value-replace">
+<header class="function-card__header">
+<h3 class="function-card__title">Value.NativeQuery / Value.Metadata</h3>
+<span class="badge badge--advanced">Avanzado</span>
+</header>
+<div class="function-card__syntax"><h4>Sintaxis</h4>
+<pre><code class="language-javascript">Value.Metadata(value as any) as record
+Value.ReplaceMetadata(value as any, metaRecord as record) as any</code></pre>
+</div>
+<div class="function-card__description"><h4>¿Qué hace?</h4>
+<p>Accede o establece los metadatos asociados a un valor. Los metadatos son records opcionales que M adjunta a cualquier valor para transportar información adicional sin afectar al valor en sí.</p>
+</div>
+<div class="function-card__example"><h4>Ejemplo</h4>
+<pre><code class="language-javascript">// Asignar metadatos
+let
+    valor = "Kawaii BI" meta [Fuente = "Manual", Version = 1],
+    metadatos = Value.Metadata(valor)
+in metadatos[Fuente]   // "Manual"
+
+// Los metadatos no afectan al valor
+valor = "Kawaii BI"   // el texto sigue siendo el mismo</code></pre>
+</div>
+</article><div class="note note--next">
+        🚀 <strong>¡Transformaciones dominadas!</strong> Explora las <a href="tipo.html">Funciones de Tipo</a> para entender el sistema de tipos de M.
+      </div>
+</div>
+</main>
+</div>
+<button aria-label="Volver arriba" class="back-to-top" id="back-to-top" title="Volver arriba">↑</button>
+<script src="https://cdn.jsdelivr.net/npm/i18next@23/dist/umd/i18next.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1/prism.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1/components/prism-javascript.min.js"></script>
+<script src="../../assets/js/theme.js"></script>
+<script src="../../assets/js/i18n.js"></script>
+<script src="../../assets/js/main.js"></script>
+<script src="../../assets/js/cursor.js"></script>
+<script src="../../assets/js/m-search.js"></script>
+</body>
+</html>

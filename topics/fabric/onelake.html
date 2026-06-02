@@ -1,0 +1,1002 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="OneLake: el lago de datos único de Microsoft Fabric. Jerarquía, OneCopy, formato Delta Parquet, shortcuts, file explorer y arquitectura.">
+  <title>OneLake — Microsoft Fabric | Power BI Guide by Kawaii BI</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+
+  <!-- Prism.js -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1/themes/prism-okaidia.min.css">
+
+  <!-- CSS del proyecto -->
+  <link rel="stylesheet" href="../../assets/css/main.css">
+  <link rel="stylesheet" href="../../assets/css/themes.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/layout.css">
+
+  <style>
+    /* ============================================================
+       ESTILOS — ONELAKE
+    ============================================================ */
+
+    /* === Topic header === */
+    .topic-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 1.25rem;
+      margin-bottom: 2rem;
+      padding: 1.75rem;
+      background: var(--color-rose);
+      border-radius: var(--border-radius);
+      border: 1.5px solid var(--color-mauve);
+    }
+    .topic-header__icon { font-size: 3rem; line-height: 1; flex-shrink: 0; }
+    .topic-header__title { font-size: 1.875rem; font-weight: 700; margin-bottom: 0.25rem; }
+    .topic-header__subtitle { color: var(--color-slate); font-size: 0.9375rem; line-height: 1.6; margin-bottom: 0.75rem; }
+    .topic-header__levels { display: flex; gap: 0.375rem; flex-wrap: wrap; }
+
+    /* === TOC box === */
+    .toc-box {
+      background: var(--color-rose);
+      border-radius: 16px;
+      padding: 28px 32px;
+      margin: 32px 0;
+      border: 1.5px solid var(--color-mauve);
+    }
+    .toc-box__title {
+      font-size: 14px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--color-slate);
+      margin: 0 0 20px;
+    }
+    .toc-box__list { display: flex; flex-direction: column; gap: 10px; }
+    .toc-box__link {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--color-dark);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: color 0.2s;
+    }
+    .toc-box__link:hover { color: var(--color-coral); text-decoration: underline; }
+
+    /* === Secciones === */
+    .content-section { margin: 56px 0; }
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 24px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid var(--color-mauve);
+    }
+    .section-icon { font-size: 28px; line-height: 1; }
+    .section-header h2 { font-size: 26px; font-weight: 800; color: var(--color-dark); margin: 0; }
+
+    .subsection-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--color-dark);
+      margin: 40px 0 16px;
+      padding: 10px 16px;
+      background: var(--color-blush, #FFF6F4);
+      border-left: 4px solid var(--color-coral);
+      border-radius: 0 8px 8px 0;
+    }
+
+    p.lead { font-size: 17px; line-height: 1.8; margin-bottom: 20px; }
+    p.text { font-size: 16px; line-height: 1.75; margin-bottom: 16px; }
+
+    /* === Jerarquía visual de OneLake === */
+    .hierarchy {
+      background: var(--color-white);
+      border: 2px solid var(--color-mauve);
+      border-radius: 14px;
+      padding: 24px;
+      margin: 24px 0;
+    }
+    .hierarchy__level {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 18px;
+      margin: 8px 0;
+      border-radius: 10px;
+      background: var(--color-rose);
+      border-left: 4px solid var(--color-coral);
+      position: relative;
+    }
+    .hierarchy__level--2 { margin-left: 24px; background: #FFF6F4; }
+    .hierarchy__level--3 { margin-left: 48px; background: #FEF0EC; }
+    .hierarchy__level--4 { margin-left: 72px; background: #FDEAE4; }
+    .hierarchy__level--5 { margin-left: 96px; background: #FCE4DD; }
+    .hierarchy__icon { font-size: 1.5rem; line-height: 1; }
+    .hierarchy__name { font-weight: 700; color: var(--color-dark); font-size: 15px; }
+    .hierarchy__desc { font-size: 13px; color: var(--color-slate); margin-left: auto; }
+
+    /* === Feature grid === */
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 20px;
+      margin: 24px 0;
+    }
+    .feature-card {
+      background: var(--color-white);
+      border: 2px solid var(--color-mauve);
+      border-radius: 12px;
+      padding: 22px;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+    .feature-card:hover { transform: translateY(-2px); border-color: var(--color-coral); }
+    .feature-card__icon { font-size: 2rem; line-height: 1; display: block; margin-bottom: 10px; }
+    .feature-card__title { font-size: 16px; font-weight: 700; color: var(--color-dark); margin: 0 0 8px; }
+    .feature-card p { font-size: 14px; line-height: 1.65; color: var(--color-slate); margin: 0; }
+
+    /* === Comparación antes/después === */
+    .compare-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin: 24px 0;
+    }
+    .compare-card {
+      border-radius: 14px;
+      padding: 22px;
+      border: 2px solid;
+    }
+    .compare-card--old {
+      background: #FDF4F4;
+      border-color: #F5C4BE;
+    }
+    .compare-card--new {
+      background: #F0F9F0;
+      border-color: #B8E0B8;
+    }
+    .compare-card__title {
+      font-size: 15px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin: 0 0 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .compare-card--old .compare-card__title { color: #9B4C45; }
+    .compare-card--new .compare-card__title { color: #2D6A2D; }
+    .compare-card ul { margin: 0; padding-left: 20px; }
+    .compare-card li { font-size: 14px; line-height: 1.7; margin-bottom: 8px; color: var(--color-dark); }
+
+    /* === Shortcut diagram === */
+    .shortcut-diagram {
+      background: var(--color-white);
+      border: 2px dashed var(--color-mauve);
+      border-radius: 14px;
+      padding: 28px;
+      margin: 24px 0;
+      text-align: center;
+    }
+    .shortcut-diagram__row {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    .shortcut-box {
+      background: var(--color-rose);
+      border: 2px solid var(--color-coral);
+      border-radius: 12px;
+      padding: 16px 20px;
+      font-weight: 700;
+      color: var(--color-dark);
+      min-width: 140px;
+    }
+    .shortcut-box__icon { font-size: 1.75rem; display: block; margin-bottom: 6px; }
+    .shortcut-arrow { font-size: 2rem; color: var(--color-coral); font-weight: 900; }
+
+    /* === Tabla de formatos === */
+    .format-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 24px 0;
+      background: var(--color-white);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+      border: 1.5px solid var(--color-mauve);
+    }
+    .format-table th {
+      background: var(--color-rose);
+      padding: 14px 16px;
+      text-align: left;
+      font-size: 13px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--color-dark);
+      border-bottom: 2px solid var(--color-mauve);
+    }
+    .format-table td {
+      padding: 14px 16px;
+      font-size: 14px;
+      line-height: 1.55;
+      border-bottom: 1px solid var(--color-mauve);
+      color: var(--color-dark);
+    }
+    .format-table tr:last-child td { border-bottom: none; }
+    .format-table tr:hover td { background: #FFF8F6; }
+
+    /* === Código === */
+    code {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.875em;
+      background: var(--color-rose);
+      color: var(--color-coral);
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+    .code-block {
+      background: #1E1B2E;
+      color: #e4e4e7;
+      padding: 20px 24px;
+      border-radius: 10px;
+      margin: 18px 0;
+      font-family: 'Fira Code', monospace;
+      font-size: 13px;
+      line-height: 1.7;
+      overflow-x: auto;
+    }
+    .code-block .comment { color: #8b8fa8; }
+    .code-block .keyword { color: #c792ea; }
+    .code-block .function { color: #82aaff; }
+    .code-block .string { color: #c3e88d; }
+
+    /* === Responsive === */
+    @media (max-width: 768px) {
+      .feature-grid, .compare-grid { grid-template-columns: 1fr !important; }
+      .hierarchy__level--2 { margin-left: 12px; }
+      .hierarchy__level--3 { margin-left: 24px; }
+      .hierarchy__level--4 { margin-left: 36px; }
+      .hierarchy__level--5 { margin-left: 48px; }
+      .hierarchy__desc { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- SIDEBAR -->
+  <aside class="site-sidebar">
+    <div class="site-sidebar__profile">
+      <img src="../../assets/images/avatar Sara.png" alt="Sara Lozano Martí" class="site-sidebar__avatar" />
+      <p class="site-sidebar__name">Sara Lozano Martí</p>
+      <p class="site-sidebar__subtitle">Power BI Expert</p>
+    </div>
+
+    <nav class="site-sidebar__nav" aria-label="Navegación principal">
+      <ul>
+        <li><a href="../../index.html" class="site-sidebar__link">
+          <span class="site-sidebar__icon">🏠</span> Inicio
+        </a></li>
+        <li><a href="../dax.html" class="site-sidebar__link">
+          <span class="site-sidebar__icon">⚡</span> Funciones DAX
+        </a></li>
+        <li><a href="../power-query.html" class="site-sidebar__link">
+          <span class="site-sidebar__icon">🔄</span> Power Query
+        </a></li>
+        <li><a href="../lenguaje-m.html" class="site-sidebar__link">
+          <span class="site-sidebar__icon">〽️</span> Lenguaje M
+        </a></li>
+        <li><a href="../modelado.html" class="site-sidebar__link">
+          <span class="site-sidebar__icon">🗄️</span> Modelado
+        </a></li>
+        <li><a href="../conceptos-powerbi.html" class="site-sidebar__link">
+          <span class="site-sidebar__icon">📊</span> Conceptos Power BI
+        </a></li>
+        <li><a href="../fabric.html" class="site-sidebar__link is-active">
+          <span class="site-sidebar__icon">🧵</span> Microsoft Fabric
+        </a></li>
+        <li><a href="../tmdl.html" class="site-sidebar__link">
+          <span class="site-sidebar__icon">📝</span> TMDL
+        </a></li>
+        <li><a href="../mejores-practicas.html" class="site-sidebar__link">
+          <span class="site-sidebar__icon">🏆</span> Mejores Prácticas
+        </a></li>
+        <li><a href="../diseno-ux.html" class="site-sidebar__link">
+          <span class="site-sidebar__icon">🎨</span> Diseño y UX
+        </a></li>
+        <li><a href="../gobernanza.html" class="site-sidebar__link">
+          <span class="site-sidebar__icon">🔒</span> Gobernanza
+        </a></li>
+      </ul>
+    </nav>
+
+    <div class="site-sidebar__divider"></div>
+
+    <div class="site-sidebar__footer">
+      <a href="../../quien-soy.html" class="site-sidebar__link site-sidebar__link--highlight">
+        <span class="site-sidebar__icon">👩‍💻</span> ¿Quién soy?
+      </a>
+      <div class="site-sidebar__social">
+        <a href="https://www.linkedin.com/in/saralozanomarti" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+          <img src="../../assets/images/logo linkedIN.png" alt="LinkedIn" class="site-sidebar__social-icon" />
+        </a>
+        <a href="https://www.youtube.com/@KawaiiPowerBI" target="_blank" rel="noopener noreferrer" aria-label="YouTube">
+          <img src="../../assets/images/logo youtube.png" alt="YouTube" class="site-sidebar__social-icon" />
+        </a>
+        <a href="https://github.com/KawaiiBI" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
+          <img src="../../assets/images/logo github.png" alt="GitHub" class="site-sidebar__social-icon" />
+        </a>
+      </div>
+      <div class="site-sidebar__logo-bottom">
+        <img src="../../assets/images/Logo Kawaii.jpg" alt="Kawaii BI" class="site-sidebar__logo-img" />
+      </div>
+      <p class="site-sidebar__copyright">
+        Power BI Guide 🌸<br>
+        © 2026 Kawaii BI
+      </p>
+    </div>
+  </aside>
+
+  <!-- CONTENIDO PRINCIPAL -->
+  <div class="page-wrapper">
+    <main class="main-content">
+      <div class="topic-page">
+
+        <!-- Breadcrumb -->
+        <nav class="breadcrumb" aria-label="Ruta de navegación">
+          <span class="breadcrumb__item"><a href="../../index.html">🏠 Inicio</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item"><a href="../fabric.html">Microsoft Fabric</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item">OneLake</span>
+        </nav>
+
+        <!-- Cabecera -->
+        <div class="topic-header">
+          <div class="topic-header__icon">🪣</div>
+          <div>
+            <h1 class="topic-header__title">OneLake — el OneDrive de los datos</h1>
+            <p class="topic-header__subtitle">
+              Un único lago de datos por organización, en formato abierto, accesible desde
+              todas las experiencias de Fabric y desde fuera del ecosistema. Entiende su
+              jerarquía, el principio OneCopy, Delta Parquet, los shortcuts y la
+              integración con Windows. 🌸
+            </p>
+            <div class="topic-header__levels">
+              <span class="badge badge--intermediate">Intermedio</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- TOC -->
+        <div class="toc-box">
+          <h2 class="toc-box__title">📑 En esta página</h2>
+          <div class="toc-box__list">
+            <a href="#que-es" class="toc-box__link">🪣 ¿Qué es OneLake?</a>
+            <a href="#jerarquia" class="toc-box__link">🌳 La jerarquía: tenant → workspace → item → folder</a>
+            <a href="#onecopy" class="toc-box__link">♻️ OneCopy: una copia, muchos consumidores</a>
+            <a href="#delta-parquet" class="toc-box__link">📦 Formato abierto: Delta Parquet</a>
+            <a href="#shortcuts" class="toc-box__link">🔗 Shortcuts: conecta datos sin moverlos</a>
+            <a href="#file-explorer" class="toc-box__link">💻 OneLake File Explorer</a>
+            <a href="#apis" class="toc-box__link">🧪 APIs y acceso programático</a>
+            <a href="#dominios" class="toc-box__link">🏛️ Dominios y gobierno de datos</a>
+            <a href="#best-practices" class="toc-box__link">✨ Buenas prácticas</a>
+          </div>
+        </div>
+
+        <!-- ================================================
+             SECCIÓN 1: ¿QUÉ ES ONELAKE?
+        ================================================ -->
+        <section class="content-section" id="que-es">
+          <div class="section-header">
+            <span class="section-icon">🪣</span>
+            <h2>¿Qué es OneLake?</h2>
+          </div>
+
+          <p class="lead">
+            OneLake es el <strong>lago de datos unificado</strong> de Microsoft Fabric. Es
+            único, automático y gratis: cuando activas Fabric en tu tenant, ya tienes
+            OneLake. No se provisiona, no se configura, no se factura aparte. Simplemente
+            está ahí, listo para recibir los datos de tu organización.
+          </p>
+
+          <p class="text">
+            Técnicamente, OneLake está construido sobre <strong>Azure Data Lake Storage Gen2
+            (ADLS Gen2)</strong>, pero lo importante es que Microsoft lo gestiona por ti.
+            Tú no ves cuentas de almacenamiento, ni contenedores, ni claves de acceso: ves
+            workspaces e items. Es ADLS sin el dolor de ADLS.
+          </p>
+
+          <p class="text">
+            La analogía oficial es clara y buena: <strong>OneLake es a los datos lo que
+            OneDrive es a los documentos</strong>. Un único sitio por organización, con
+            jerarquía lógica, permisos granulares, sincronización con Windows y colaboración
+            integrada. Pero en lugar de Word y Excel, lo que guardas son tablas Delta,
+            archivos Parquet y ficheros de cualquier tipo.
+          </p>
+
+          <div class="note note--tip">
+            <strong>💡 Uno por tenant</strong>
+            Hay <em>exactamente un</em> OneLake por tenant de Microsoft. No puedes crear
+            varios ni borrarlo. Esto elimina de raíz el problema de los silos de datos:
+            todo el mundo en tu organización habla del mismo lago.
+          </div>
+        </section>
+
+        <!-- ================================================
+             SECCIÓN 2: LA JERARQUÍA
+        ================================================ -->
+        <section class="content-section" id="jerarquia">
+          <div class="section-header">
+            <span class="section-icon">🌳</span>
+            <h2>La jerarquía de OneLake</h2>
+          </div>
+
+          <p class="text">
+            OneLake organiza los datos en una jerarquía estricta de 4 niveles (más subcarpetas
+            internas por item). Es importante conocerla porque las URLs, los permisos y las
+            APIs siguen exactamente esta estructura:
+          </p>
+
+          <div class="hierarchy">
+            <div class="hierarchy__level">
+              <span class="hierarchy__icon">🏢</span>
+              <span class="hierarchy__name">Tenant</span>
+              <span class="hierarchy__desc">1 por organización · ej: <code>contoso.com</code></span>
+            </div>
+            <div class="hierarchy__level hierarchy__level--2">
+              <span class="hierarchy__icon">📂</span>
+              <span class="hierarchy__name">Workspace</span>
+              <span class="hierarchy__desc">Unidad de colaboración y permisos</span>
+            </div>
+            <div class="hierarchy__level hierarchy__level--3">
+              <span class="hierarchy__icon">🧩</span>
+              <span class="hierarchy__name">Item</span>
+              <span class="hierarchy__desc">Lakehouse, Warehouse, KQL DB…</span>
+            </div>
+            <div class="hierarchy__level hierarchy__level--4">
+              <span class="hierarchy__icon">🗂️</span>
+              <span class="hierarchy__name">Tables / Files</span>
+              <span class="hierarchy__desc">Datos estructurados vs no estructurados</span>
+            </div>
+            <div class="hierarchy__level hierarchy__level--5">
+              <span class="hierarchy__icon">📄</span>
+              <span class="hierarchy__name">Delta / Parquet / otros</span>
+              <span class="hierarchy__desc">Los ficheros físicos</span>
+            </div>
+          </div>
+
+          <h3 class="subsection-title">La URL canónica de OneLake</h3>
+
+          <p class="text">
+            Cualquier ruta dentro de OneLake sigue un patrón uniforme que puedes usar desde
+            Spark, Python, Power BI o cualquier herramienta compatible con ADLS Gen2:
+          </p>
+
+          <pre class="code-block"><span class="keyword">https://</span>onelake.dfs.fabric.microsoft.com/<span class="function">{workspace}</span>/<span class="function">{item}</span>.<span class="string">{itemType}</span>/Tables/<span class="function">{table}</span>
+
+<span class="comment">// Ejemplo real</span>
+https://onelake.dfs.fabric.microsoft.com/Ventas/Bronze.Lakehouse/Tables/facturas</pre>
+
+          <p class="text">
+            El <code>{itemType}</code> indica el tipo (<code>Lakehouse</code>,
+            <code>Warehouse</code>, <code>KQLDatabase</code>…) y el sufijo del item es parte
+            del nombre físico en el lago. Dentro de un Lakehouse siempre encontrarás dos
+            carpetas raíz:
+          </p>
+
+          <div class="feature-grid">
+            <div class="feature-card">
+              <span class="feature-card__icon">🗄️</span>
+              <h3 class="feature-card__title">Tables/</h3>
+              <p>
+                Área gestionada para datos <strong>estructurados en formato Delta</strong>.
+                Cada subcarpeta es una tabla Delta con sus archivos Parquet y su log
+                <code>_delta_log</code>. Aparecen automáticamente en el SQL analytics
+                endpoint y como tablas en el semantic model.
+              </p>
+            </div>
+            <div class="feature-card">
+              <span class="feature-card__icon">📁</span>
+              <h3 class="feature-card__title">Files/</h3>
+              <p>
+                Área libre para cualquier tipo de fichero: CSV, JSON, imágenes, Parquet
+                suelto, vídeos, PDFs. Ideal para landing zone, staging o datos no
+                estructurados que luego procesarás con Notebooks.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================================================
+             SECCIÓN 3: ONECOPY
+        ================================================ -->
+        <section class="content-section" id="onecopy">
+          <div class="section-header">
+            <span class="section-icon">♻️</span>
+            <h2>OneCopy: una copia, muchos consumidores</h2>
+          </div>
+
+          <p class="lead">
+            OneCopy es probablemente el principio más importante de Fabric. Dice así:
+            <strong>los datos se escriben una sola vez en OneLake y todas las herramientas
+            leen directamente desde ahí, sin copias ni ETL intermedios</strong>.
+          </p>
+
+          <p class="text">
+            Parece obvio dicho así, pero rompe con años de arquitecturas clásicas donde los
+            datos viajaban de un sistema a otro. Compara las dos mundos:
+          </p>
+
+          <div class="compare-grid">
+            <div class="compare-card compare-card--old">
+              <h3 class="compare-card__title">❌ Antes (arquitectura clásica)</h3>
+              <ul>
+                <li>ADF copia de origen → Data Lake</li>
+                <li>Databricks transforma → otra carpeta</li>
+                <li>ADF mueve → Synapse dedicated pool</li>
+                <li>Synapse export → cubo tabular</li>
+                <li>Power BI importa el cubo → dataset</li>
+                <li><strong>5 copias de los mismos datos</strong></li>
+                <li>5 lugares donde puede divergir la verdad</li>
+              </ul>
+            </div>
+            <div class="compare-card compare-card--new">
+              <h3 class="compare-card__title">✅ Ahora (OneCopy)</h3>
+              <ul>
+                <li>Pipeline escribe en OneLake como Delta</li>
+                <li>Notebook Spark lo transforma in-place</li>
+                <li>Warehouse lo consulta con T-SQL (mismo fichero)</li>
+                <li>Power BI lo lee con Direct Lake (sin importar)</li>
+                <li>Copilot lo explica en lenguaje natural</li>
+                <li><strong>1 sola copia de los datos</strong></li>
+                <li>1 única fuente de verdad</li>
+              </ul>
+            </div>
+          </div>
+
+          <p class="text">
+            El ahorro no es sólo de almacenamiento (que también). Es de complejidad, de
+            pipelines que se rompen, de latencia entre sistemas, de permisos que duplicas
+            en cada salto y de facturas de egress por mover datos entre servicios.
+          </p>
+
+          <div class="note note--best-practice">
+            <strong>✨ La implicación directa: Direct Lake</strong>
+            Direct Lake es la tecnología que permite a Power BI leer tablas Delta
+            directamente desde OneLake sin importar ni cargar en VertiPaq. Es el súmmum de
+            OneCopy: el informe consume los mismos ficheros que escribió el pipeline, sin
+            duplicación y sin refresco manual. Lo verás con detalle en la sección de
+            Conceptos Power BI.
+          </div>
+        </section>
+
+        <!-- ================================================
+             SECCIÓN 4: DELTA PARQUET
+        ================================================ -->
+        <section class="content-section" id="delta-parquet">
+          <div class="section-header">
+            <span class="section-icon">📦</span>
+            <h2>Formato abierto: Delta Parquet</h2>
+          </div>
+
+          <p class="text">
+            OneLake no es un formato propietario. Todo lo que se guarda en el área
+            <code>Tables/</code> se almacena como <strong>Delta Lake</strong>, un formato
+            open source estandarizado por la Linux Foundation. Esto tiene dos ventajas
+            enormes:
+          </p>
+
+          <ul style="font-size: 16px; line-height: 1.85; margin: 16px 0 24px; padding-left: 24px;">
+            <li><strong>Sin lock-in.</strong> Si mañana decides migrar fuera de Fabric, tus
+                datos ya están en un formato abierto que leen Databricks, Snowflake,
+                DuckDB, Spark, Trino, Polars y prácticamente todo el ecosistema moderno.</li>
+            <li><strong>Interoperabilidad.</strong> Cualquier herramienta externa que
+                hable Delta o Parquet puede leer OneLake sin adaptadores raros.</li>
+          </ul>
+
+          <h3 class="subsection-title">Parquet vs Delta: qué es cada cosa</h3>
+
+          <p class="text">
+            Delta no es un formato <em>separado</em> de Parquet — es una capa por encima.
+            Lo aclaramos rápido porque genera mucha confusión:
+          </p>
+
+          <table class="format-table">
+            <thead>
+              <tr>
+                <th style="width: 18%;">Capa</th>
+                <th style="width: 42%;">Qué es</th>
+                <th style="width: 40%;">Qué aporta</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Parquet</strong></td>
+                <td>Formato de archivo columnar comprimido, open source.</td>
+                <td>Lectura rápida, alto ratio de compresión, esquema embebido, pushdown de columnas.</td>
+              </tr>
+              <tr>
+                <td><strong>Delta</strong></td>
+                <td>Carpeta con archivos Parquet <em>+ transaction log</em> (<code>_delta_log</code>).</td>
+                <td>
+                  Transacciones ACID, time travel, schema evolution, MERGE/UPDATE/DELETE,
+                  concurrencia optimista, estadísticas para skip de ficheros.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <p class="text">
+            Resumen: <strong>Delta = Parquet con superpoderes</strong>. Todo Delta es
+            Parquet por debajo, pero no todo Parquet es Delta. En OneLake, cuando escribes
+            desde Spark, Dataflow Gen2 o un Pipeline a <code>Tables/</code>, escribes Delta
+            automáticamente.
+          </p>
+
+          <h3 class="subsection-title">V-Order: la optimización específica de Fabric</h3>
+
+          <p class="text">
+            Fabric añade una optimización propietaria sobre Delta llamada <strong>V-Order</strong>:
+            reordena internamente las filas y columnas para que el motor de Power BI
+            (VertiPaq) pueda consumirlas con rendimiento casi nativo a través de Direct
+            Lake. Sigue siendo Parquet estándar — cualquier herramienta externa lo lee
+            normal — pero Power BI lo lee <em>más rápido</em>. Está activado por defecto.
+          </p>
+
+          <div class="note note--tip">
+            <strong>💡 ¿Puedo desactivar V-Order?</strong>
+            Sí, y en ciertos escenarios (escrituras muy intensivas, pipelines de streaming
+            con mucha frecuencia) puede tener sentido desactivarlo para reducir el tiempo
+            de escritura. La contraparte es que las lecturas con Direct Lake serán algo
+            más lentas. Por defecto déjalo activado.
+          </div>
+        </section>
+
+        <!-- ================================================
+             SECCIÓN 5: SHORTCUTS
+        ================================================ -->
+        <section class="content-section" id="shortcuts">
+          <div class="section-header">
+            <span class="section-icon">🔗</span>
+            <h2>Shortcuts: conecta datos sin moverlos</h2>
+          </div>
+
+          <p class="lead">
+            Un <strong>shortcut</strong> es un puntero virtual dentro de OneLake que apunta
+            a datos que viven en otro sitio. Es como un enlace simbólico en Linux o un
+            acceso directo en Windows: ves una carpeta/tabla en tu workspace, pero los
+            bytes físicos están en otra parte.
+          </p>
+
+          <div class="shortcut-diagram">
+            <div class="shortcut-diagram__row">
+              <div class="shortcut-box">
+                <span class="shortcut-box__icon">🪣</span>
+                Tu Lakehouse<br>(OneLake)
+              </div>
+              <span class="shortcut-arrow">→</span>
+              <div class="shortcut-box">
+                <span class="shortcut-box__icon">🔗</span>
+                Shortcut
+              </div>
+              <span class="shortcut-arrow">→</span>
+              <div class="shortcut-box">
+                <span class="shortcut-box__icon">☁️</span>
+                Datos reales<br>(S3, ADLS, GCS…)
+              </div>
+            </div>
+            <p style="margin: 18px 0 0; font-size: 14px; color: var(--color-slate); font-style: italic;">
+              Los datos nunca se copian ni duplican. El shortcut es un puntero; cuando
+              alguien consulta, Fabric pasa la petición al origen real en tiempo real.
+            </p>
+          </div>
+
+          <h3 class="subsection-title">Dos tipos de shortcuts</h3>
+
+          <div class="feature-grid">
+            <div class="feature-card">
+              <span class="feature-card__icon">🔁</span>
+              <h3 class="feature-card__title">Internos</h3>
+              <p>
+                Apuntan a otro item <em>dentro del mismo OneLake</em>. Permiten que varios
+                workspaces compartan la misma tabla sin copiarla. Perfecto para
+                arquitecturas medallion donde Gold se consume desde múltiples workspaces
+                de negocio.
+              </p>
+            </div>
+            <div class="feature-card">
+              <span class="feature-card__icon">🌐</span>
+              <h3 class="feature-card__title">Externos</h3>
+              <p>
+                Apuntan a orígenes fuera de Fabric. Soportados: <strong>ADLS Gen2</strong>,
+                <strong>Amazon S3</strong>, <strong>Google Cloud Storage</strong>,
+                <strong>Dataverse</strong>, <strong>Azure Blob</strong>,
+                <strong>S3-compatible</strong> (MinIO, Cloudflare R2…). Ideal para
+                consumir datos multi-cloud sin ETL.
+              </p>
+            </div>
+          </div>
+
+          <h3 class="subsection-title">Por qué son tan potentes</h3>
+
+          <ul style="font-size: 16px; line-height: 1.85; margin: 16px 0; padding-left: 24px;">
+            <li><strong>Cero duplicación.</strong> No copias los datos, sólo referencias.
+                Ahorras almacenamiento y eliminas el problema de sincronización.</li>
+            <li><strong>Acceso unificado.</strong> Una vez creado el shortcut, el dato se
+                comporta como si fuese nativo de OneLake. Lo consultas desde Spark, T-SQL,
+                Power BI o Python sin saber que vive en S3.</li>
+            <li><strong>Permisos delegados.</strong> Los permisos sobre el shortcut en
+                Fabric se combinan con los permisos del origen. No se lo saltas.</li>
+            <li><strong>Ideal para migraciones.</strong> Si tienes un data lake existente
+                en ADLS o S3, puedes apuntarlo con shortcuts mientras planeas la migración,
+                sin reescribir nada el día uno.</li>
+          </ul>
+
+          <div class="note note--warning">
+            <strong>⚠️ Atención al egress</strong>
+            Un shortcut a S3 o GCS lee datos en tiempo real desde esos servicios. Si
+            consultas mucho y con volumen, estás pagando egress al proveedor original
+            cada vez. Para datos que leerás constantemente, valora si compensa mover
+            (copiar una vez a OneLake) en lugar de apuntar.
+          </div>
+        </section>
+
+        <!-- ================================================
+             SECCIÓN 6: FILE EXPLORER
+        ================================================ -->
+        <section class="content-section" id="file-explorer">
+          <div class="section-header">
+            <span class="section-icon">💻</span>
+            <h2>OneLake File Explorer</h2>
+          </div>
+
+          <p class="text">
+            Exactamente como OneDrive, pero para datos: Microsoft distribuye una
+            aplicación gratuita llamada <strong>OneLake File Explorer</strong> que integra
+            OneLake directamente en el explorador de archivos de Windows. Al instalarla,
+            aparece una nueva entrada en el panel lateral, junto a OneDrive, con todos tus
+            workspaces.
+          </p>
+
+          <p class="text">Desde ahí puedes:</p>
+
+          <ul style="font-size: 16px; line-height: 1.85; margin: 16px 0; padding-left: 24px;">
+            <li>Arrastrar y soltar ficheros desde tu escritorio a la carpeta
+                <code>Files/</code> de un Lakehouse.</li>
+            <li>Abrir un <code>.csv</code> o <code>.parquet</code> con Excel o cualquier
+                editor local.</li>
+            <li>Ver el contenido de tablas Delta sin abrir Fabric.</li>
+            <li>Sincronización bajo demanda — los ficheros se descargan sólo cuando los
+                abres, no ocupan disco mientras no los uses.</li>
+          </ul>
+
+          <p class="text">
+            Es útil sobre todo para <strong>gente que no es técnica</strong> (analistas de
+            negocio, finance, marketing) que necesitan dejar un CSV en un Lakehouse sin
+            pasar por la UI web. Lo arrastran a una carpeta en Windows y ya está disponible
+            para todo el mundo.
+          </p>
+
+          <div class="note note--tip">
+            <strong>💡 Disponibilidad</strong>
+            Disponible para Windows 10/11. La versión para macOS está en preview. Linux
+            se queda fuera por ahora — ahí usa las APIs REST o <code>azcopy</code>.
+          </div>
+        </section>
+
+        <!-- ================================================
+             SECCIÓN 7: APIs
+        ================================================ -->
+        <section class="content-section" id="apis">
+          <div class="section-header">
+            <span class="section-icon">🧪</span>
+            <h2>APIs y acceso programático</h2>
+          </div>
+
+          <p class="text">
+            OneLake implementa la misma API que <strong>ADLS Gen2</strong>, que a su vez
+            es compatible con la API de Blob Storage. Esto significa que prácticamente
+            cualquier SDK o herramienta que hable con ADLS puede hablar con OneLake
+            cambiando sólo la URL.
+          </p>
+
+          <h3 class="subsection-title">Desde Python con azure-storage-file-datalake</h3>
+
+          <pre class="code-block"><span class="keyword">from</span> azure.storage.filedatalake <span class="keyword">import</span> DataLakeServiceClient
+<span class="keyword">from</span> azure.identity <span class="keyword">import</span> DefaultAzureCredential
+
+<span class="comment"># OneLake usa la misma API que ADLS Gen2</span>
+service = DataLakeServiceClient(
+    account_url=<span class="string">"https://onelake.dfs.fabric.microsoft.com"</span>,
+    credential=DefaultAzureCredential()
+)
+
+<span class="comment"># Los "filesystems" son los workspaces</span>
+fs = service.get_file_system_client(<span class="string">"Ventas"</span>)
+
+<span class="comment"># Y los paths siguen la jerarquía de OneLake</span>
+<span class="keyword">for</span> p <span class="keyword">in</span> fs.get_paths(<span class="string">"Bronze.Lakehouse/Tables/facturas"</span>):
+    <span class="function">print</span>(p.name)</pre>
+
+          <h3 class="subsection-title">Desde Spark (fuera de Fabric)</h3>
+
+          <pre class="code-block"><span class="comment"># Funciona igual desde Databricks o un Spark externo</span>
+df = spark.read.format(<span class="string">"delta"</span>).load(
+  <span class="string">"abfss://Ventas@onelake.dfs.fabric.microsoft.com/Bronze.Lakehouse/Tables/facturas"</span>
+)</pre>
+
+          <p class="text">
+            Dentro de Fabric los propios Notebooks ya tienen el contexto configurado y no
+            necesitas URLs completas — basta con <code>/lakehouse/default/Tables/facturas</code>
+            o el shortcut correspondiente en el explorador de archivos del notebook.
+          </p>
+        </section>
+
+        <!-- ================================================
+             SECCIÓN 8: DOMINIOS
+        ================================================ -->
+        <section class="content-section" id="dominios">
+          <div class="section-header">
+            <span class="section-icon">🏛️</span>
+            <h2>Dominios: organizar OneLake por áreas de negocio</h2>
+          </div>
+
+          <p class="text">
+            Un <strong>dominio</strong> (domain) es una agrupación lógica de workspaces que
+            pertenecen a la misma área funcional: Finanzas, Marketing, Logística,
+            Recursos Humanos… Los dominios no mueven datos ni cambian la jerarquía física;
+            son una capa organizativa encima de los workspaces.
+          </p>
+
+          <p class="text">¿Para qué sirven?</p>
+
+          <div class="feature-grid">
+            <div class="feature-card">
+              <span class="feature-card__icon">🎯</span>
+              <h3 class="feature-card__title">Data Mesh</h3>
+              <p>
+                Implementan el patrón <em>data mesh</em>: cada dominio es responsable de
+                sus propios datos y los publica como "productos de datos" consumibles por
+                el resto. Descentralización con gobierno central.
+              </p>
+            </div>
+            <div class="feature-card">
+              <span class="feature-card__icon">👥</span>
+              <h3 class="feature-card__title">Delegación de admin</h3>
+              <p>
+                El admin del tenant puede nombrar <strong>domain admins</strong> — por
+                ejemplo, el lead de datos de Finanzas — que gestionan sus workspaces sin
+                tener permisos globales.
+              </p>
+            </div>
+            <div class="feature-card">
+              <span class="feature-card__icon">🔍</span>
+              <h3 class="feature-card__title">Navegación y descubrimiento</h3>
+              <p>
+                En el hub de datos de Fabric, los usuarios pueden filtrar por dominio y
+                encontrar rápidamente los datasets, lakehouses o informes relevantes para
+                su área.
+              </p>
+            </div>
+          </div>
+
+          <p class="text" style="margin-top: 16px;">
+            Los dominios son opcionales — no los necesitas en una implementación pequeña.
+            Empiezan a tener sentido cuando tu organización supera los 20–30 workspaces y
+            necesitas delegar responsabilidades.
+          </p>
+        </section>
+
+        <!-- ================================================
+             SECCIÓN 9: BUENAS PRÁCTICAS
+        ================================================ -->
+        <section class="content-section" id="best-practices">
+          <div class="section-header">
+            <span class="section-icon">✨</span>
+            <h2>Buenas prácticas para trabajar con OneLake</h2>
+          </div>
+
+          <div class="feature-grid">
+            <div class="feature-card">
+              <span class="feature-card__icon">🥉</span>
+              <h3 class="feature-card__title">Arquitectura Medallion</h3>
+              <p>
+                Organiza los datos en 3 niveles: <strong>Bronze</strong> (crudo, tal cual
+                llega), <strong>Silver</strong> (limpio, integrado) y
+                <strong>Gold</strong> (agregado, listo para consumo). Cada nivel puede ser
+                su propio Lakehouse para separar responsabilidades y permisos.
+              </p>
+            </div>
+            <div class="feature-card">
+              <span class="feature-card__icon">📁</span>
+              <h3 class="feature-card__title">Un Lakehouse por propósito</h3>
+              <p>
+                No metas todo en un único Lakehouse gigante. Uno por capa medallion, o uno
+                por dominio funcional. Los permisos se aplican a nivel item, así que
+                separar facilita el gobierno.
+              </p>
+            </div>
+            <div class="feature-card">
+              <span class="feature-card__icon">🔗</span>
+              <h3 class="feature-card__title">Shortcuts para compartir Gold</h3>
+              <p>
+                En lugar de copiar tablas Gold a los workspaces de los consumidores, crea
+                shortcuts internos. Cambios en Gold se propagan solos y no duplicas
+                almacenamiento.
+              </p>
+            </div>
+            <div class="feature-card">
+              <span class="feature-card__icon">🧹</span>
+              <h3 class="feature-card__title">OPTIMIZE y VACUUM</h3>
+              <p>
+                Programa mantenimiento Delta periódico: <code>OPTIMIZE</code> compacta
+                ficheros pequeños y <code>VACUUM</code> limpia versiones antiguas.
+                Sin esto, las tablas se fragmentan y las lecturas se ralentizan con el
+                tiempo.
+              </p>
+            </div>
+            <div class="feature-card">
+              <span class="feature-card__icon">🏷️</span>
+              <h3 class="feature-card__title">Nombres claros y consistentes</h3>
+              <p>
+                Workspaces: <code>DEV_&lt;dominio&gt;</code>, <code>PROD_&lt;dominio&gt;</code>.
+                Lakehouses: <code>Bronze_&lt;origen&gt;</code>. Tablas: snake_case.
+                Un estándar boring ahorra horas de confusión a los 6 meses.
+              </p>
+            </div>
+            <div class="feature-card">
+              <span class="feature-card__icon">📊</span>
+              <h3 class="feature-card__title">Monitorea el storage</h3>
+              <p>
+                Fabric Capacity Metrics App muestra consumo de OneLake por workspace.
+                Revísalo mensualmente: las tablas de log y los staging olvidados crecen
+                sin parar si nadie los vigila.
+              </p>
+            </div>
+          </div>
+
+          <div class="note note--best-practice">
+            <strong>🌟 Regla de oro</strong>
+            Antes de copiar datos, pregúntate si puedes resolverlo con un shortcut. Antes
+            de crear un Lakehouse, pregúntate si puedes reutilizar uno existente. La
+            filosofía OneCopy sólo funciona si la aplicas de verdad.
+          </div>
+        </section>
+
+        <!-- Siguiente -->
+        <section class="content-section" id="siguiente">
+          <div class="note note--next">
+            <strong>🚀 Siguiente paso</strong>
+            Ya sabes dónde viven los datos en Fabric. Ahora toca conocer
+            <em>qué puedes crear encima</em>: pásate por la página de
+            <a href="artefactos.html">Artefactos</a> para recorrer Lakehouse, Warehouse,
+            Notebook, Pipeline, Dataflow Gen2, Eventstream y todo el ecosistema de items.
+            🌸
+          </div>
+        </section>
+
+      </div><!-- .topic-page -->
+    </main>
+  </div><!-- .page-wrapper -->
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/i18next@23/dist/umd/i18next.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1/prism.min.js"></script>
+  <script src="../../assets/js/theme.js"></script>
+  <script src="../../assets/js/cursor.js"></script>
+
+</body>
+</html>

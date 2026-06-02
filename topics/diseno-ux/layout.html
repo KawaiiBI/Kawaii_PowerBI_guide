@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Layout y patrones de lectura para dashboards Power BI: patrón en Z, patrón en F, estructura rectangular y el poder del whitespace para guiar la mirada del usuario.">
+  <title>Layout y Patrones de Lectura — Diseño y UX | Power BI Guide by Kawaii BI</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+
+  <!-- Estilos CSS -->
+  <link rel="stylesheet" href="../../assets/css/main.css">
+  <link rel="stylesheet" href="../../assets/css/themes.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/layout.css">
+
+  <style>
+    /* ── Cabecera centrada ──────────────────────────────── */
+    .topic-header {
+      text-align: center;
+      padding: 2.5rem 0 2rem;
+      border-bottom: 2px solid var(--color-mauve);
+      margin-bottom: 2.5rem;
+    }
+    .topic-header__icon { font-size: 4rem; margin-bottom: 0.75rem; display: block; }
+    .topic-header__title { font-size: clamp(1.875rem, 4vw, 2.5rem); font-weight: 800; color: var(--color-dark); margin-bottom: 0.625rem; line-height: 1.2; }
+    .topic-header__subtitle { font-size: 1.0625rem; color: var(--color-slate); margin-bottom: 1.25rem; line-height: 1.5; max-width: 620px; margin-left: auto; margin-right: auto; }
+    .topic-header__levels { display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap; }
+
+    /* ── TOC ────────────────────────────────────────────── */
+    .toc { background: var(--color-rose); border-radius: var(--border-radius); padding: 1.25rem 1.5rem; margin-bottom: 2rem; border: 1.5px solid var(--color-mauve); }
+    .toc__title { font-size: 1rem; font-weight: 700; margin: 0 0 0.75rem; }
+    .toc__list { display: flex; flex-wrap: wrap; gap: 0.5rem; list-style: none; padding: 0; margin: 0; }
+    .toc__list a { font-size: 0.8125rem; color: var(--color-coral); text-decoration: none; padding: 0.25rem 0.625rem; background: var(--color-white); border-radius: 999px; border: 1px solid var(--color-mauve); transition: background 0.15s, color 0.15s; }
+    .toc__list a:hover { background: var(--color-coral); color: white; }
+
+    /* ── Sección header ─────────────────────────────────── */
+    .category-header { display: flex; align-items: center; gap: 0.75rem; margin: 2.5rem 0 1.25rem; padding: 0.875rem 1.25rem; background: var(--color-rose); border-radius: var(--border-radius-sm); border-left: 4px solid var(--color-coral); }
+    .category-header__icon { font-size: 1.5rem; }
+    .category-header__title { font-size: 1.25rem; font-weight: 700; margin: 0; }
+
+    /* ── Concept card ───────────────────────────────────── */
+    .concept-card { background: var(--color-white); border: 1.5px solid var(--color-mauve); border-radius: var(--border-radius); padding: 1.75rem; margin-bottom: 1.5rem; scroll-margin-top: 80px; transition: border-color 0.2s; }
+    .concept-card:hover { border-color: var(--color-coral); }
+    .concept-card h3 { font-size: 1.25rem; font-weight: 700; color: var(--color-coral); margin-bottom: 0.75rem; }
+    .concept-card h4 { font-size: 0.9375rem; font-weight: 700; color: var(--color-dark); margin: 1.25rem 0 0.5rem; }
+    .concept-card p { font-size: 0.9375rem; line-height: 1.7; color: var(--color-dark); margin-bottom: 0.75rem; }
+    .concept-card p:last-child { margin-bottom: 0; }
+    .concept-card ul, .concept-card ol { padding-left: 1.25rem; font-size: 0.9375rem; line-height: 1.8; color: var(--color-dark); margin-bottom: 0.75rem; }
+
+    /* ── Cita destacada ─────────────────────────────────── */
+    .quote-block {
+      background: linear-gradient(135deg, var(--color-rose) 0%, var(--color-blush) 100%);
+      border-left: 4px solid var(--color-coral);
+      border-radius: var(--border-radius);
+      padding: 1.5rem 1.75rem;
+      margin: 1.5rem 0;
+    }
+    .quote-block__text { font-size: 1.125rem; font-weight: 600; color: var(--color-dark); line-height: 1.5; font-style: italic; margin: 0 0 0.375rem; }
+    .quote-block__author { font-size: 0.8125rem; color: var(--color-slate); margin: 0; }
+
+    /* ── Grid de patrones ───────────────────────────────── */
+    .patterns-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1.25rem;
+      margin: 1.5rem 0;
+    }
+    .pattern-card {
+      border: 1.5px solid var(--color-mauve);
+      border-radius: var(--border-radius);
+      overflow: hidden;
+    }
+    .pattern-card__diagram {
+      background: var(--color-blush);
+      padding: 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 160px;
+    }
+    .pattern-card__body {
+      padding: 1.25rem;
+      background: var(--color-white);
+    }
+    .pattern-card__name {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--color-dark);
+      margin-bottom: 0.375rem;
+    }
+    .pattern-card__tag {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--color-coral);
+      background: var(--color-rose);
+      border-radius: 999px;
+      padding: 0.15rem 0.625rem;
+      margin-bottom: 0.625rem;
+    }
+    .pattern-card__desc {
+      font-size: 0.8125rem;
+      color: var(--color-slate);
+      line-height: 1.6;
+      margin: 0;
+    }
+
+    /* ── Diagramas SVG de patrones ──────────────────────── */
+    .diagram-z {
+      width: 140px;
+      height: 110px;
+    }
+    .diagram-f {
+      width: 100px;
+      height: 120px;
+    }
+    .diagram-rect {
+      width: 150px;
+      height: 100px;
+    }
+
+    /* ── Whitespace demo ────────────────────────────────── */
+    .ws-demo {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.25rem;
+      margin: 1.25rem 0;
+    }
+    .ws-demo__panel {
+      border-radius: var(--border-radius-sm);
+      padding: 0.75rem;
+      border: 1.5px solid var(--color-mauve);
+    }
+    .ws-demo__label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.5rem;
+    }
+    .ws-demo__label--bad { color: #c0392b; }
+    .ws-demo__label--good { color: #27ae60; }
+    /* Imitación de dashboard apretado */
+    .ws-bad { background: #fff; }
+    .ws-bad__grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 2px;
+    }
+    .ws-bad__block {
+      background: var(--color-rose);
+      border: 1px solid var(--color-mauve);
+      border-radius: 2px;
+      height: 44px;
+    }
+    /* Imitación de dashboard con whitespace */
+    .ws-good { background: #fff; }
+    .ws-good__grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 8px;
+      padding: 4px;
+    }
+    .ws-good__block {
+      background: var(--color-rose);
+      border: 1px solid var(--color-mauve);
+      border-radius: 4px;
+      height: 40px;
+    }
+    @media (max-width: 600px) {
+      .ws-demo { grid-template-columns: 1fr; }
+      .patterns-grid { grid-template-columns: 1fr; }
+    }
+
+    /* ── Tabla de reglas de whitespace ─────────────────── */
+    .rules-table { width: 100%; border-collapse: collapse; font-size: 0.875rem; margin: 1rem 0; }
+    .rules-table th { background: var(--color-rose); padding: 0.625rem 0.875rem; text-align: left; font-weight: 700; border: 1px solid var(--color-mauve); }
+    .rules-table td { padding: 0.625rem 0.875rem; border: 1px solid var(--color-mauve); line-height: 1.5; vertical-align: top; }
+    .rules-table tr:nth-child(even) td { background: var(--color-blush); }
+    .rules-table code { background: var(--color-blush); padding: 0.1em 0.4em; border-radius: 4px; font-family: 'Fira Code', monospace; font-size: 0.85em; color: var(--color-coral); }
+  </style>
+</head>
+<body>
+
+  <!-- SIDEBAR -->
+  <aside class="site-sidebar">
+    <div class="site-sidebar__profile">
+      <img src="../../assets/images/avatar Sara.png" alt="Sara Lozano Martí" class="site-sidebar__avatar">
+      <p class="site-sidebar__name">Sara Lozano Martí</p>
+      <p class="site-sidebar__subtitle">Power BI Expert</p>
+    </div>
+    <nav class="site-sidebar__nav" aria-label="Navegación principal">
+      <ul>
+        <li><a href="../../index.html" class="site-sidebar__link"><span class="site-sidebar__icon">🏠</span> Inicio</a></li>
+        <li><a href="../dax.html" class="site-sidebar__link"><span class="site-sidebar__icon">⚡</span> Funciones DAX</a></li>
+        <li><a href="../power-query.html" class="site-sidebar__link"><span class="site-sidebar__icon">🔄</span> Power Query</a></li>
+        <li><a href="../lenguaje-m.html" class="site-sidebar__link"><span class="site-sidebar__icon">〽️</span> Lenguaje M</a></li>
+        <li><a href="../modelado.html" class="site-sidebar__link"><span class="site-sidebar__icon">🗄️</span> Modelado</a></li>
+        <li><a href="../conceptos-powerbi.html" class="site-sidebar__link"><span class="site-sidebar__icon">📊</span> Conceptos Power BI</a></li>
+        <li><a href="../fabric.html" class="site-sidebar__link"><span class="site-sidebar__icon">🧵</span> Microsoft Fabric</a></li>
+        <li><a href="../tmdl.html" class="site-sidebar__link"><span class="site-sidebar__icon">📝</span> TMDL</a></li>
+        <li><a href="../diseno-ux.html" class="site-sidebar__link is-active"><span class="site-sidebar__icon">🎨</span> Diseño y UX</a></li>
+        <li><a href="../gobernanza.html" class="site-sidebar__link"><span class="site-sidebar__icon">🔒</span> Gobernanza</a></li>
+      </ul>
+    </nav>
+    <div class="site-sidebar__divider"></div>
+    <div class="site-sidebar__footer">
+      <a href="../../quien-soy.html" class="site-sidebar__link site-sidebar__link--highlight"><span class="site-sidebar__icon">👩‍💻</span> ¿Quién soy?</a>
+      <div class="site-sidebar__social">
+        <a href="https://www.linkedin.com/in/saralozanomarti" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><img src="../../assets/images/logo linkedIN.png" alt="LinkedIn" class="site-sidebar__social-icon"></a>
+        <a href="https://www.youtube.com/@KawaiiPowerBI" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><img src="../../assets/images/logo youtube.png" alt="YouTube" class="site-sidebar__social-icon"></a>
+        <a href="https://github.com/KawaiiBI" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><img src="../../assets/images/logo github.png" alt="GitHub" class="site-sidebar__social-icon"></a>
+      </div>
+      <div class="site-sidebar__logo-bottom"><img src="../../assets/images/Logo Kawaii.jpg" alt="Kawaii BI" class="site-sidebar__logo-img"></div>
+      <p class="site-sidebar__copyright">Power BI Guide 🌸<br>© 2026 Kawaii BI</p>
+    </div>
+  </aside>
+
+  <!-- CONTENIDO PRINCIPAL -->
+  <div class="page-wrapper">
+    <main class="main-content">
+      <div class="topic-page">
+
+        <!-- Breadcrumb -->
+        <nav class="breadcrumb" aria-label="Ruta de navegación">
+          <span class="breadcrumb__item"><a href="../../index.html">🏠 Inicio</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item"><a href="../diseno-ux.html">Diseño y UX</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item">Layout y Patrones de Lectura</span>
+        </nav>
+
+        <!-- Cabecera -->
+        <header class="topic-header">
+          <span class="topic-header__icon">📐</span>
+          <h1 class="topic-header__title">Layout y Patrones de Lectura</h1>
+          <p class="topic-header__subtitle">No obligues al usuario a buscar — guía su mirada. Patrón en Z, Patrón en F, Estructura Rectangular y el poder del whitespace aplicados a dashboards Power BI</p>
+          <div class="topic-header__levels">
+            <span class="badge badge--beginner">Principiante</span>
+            <span class="badge badge--intermediate">Intermedio</span>
+          </div>
+        </header>
+
+        <!-- TOC -->
+        <nav class="toc" aria-label="Contenido de esta página">
+          <p class="toc__title">📋 En esta página</p>
+          <ul class="toc__list">
+            <li><a href="#por-que">¿Por qué importa el layout?</a></li>
+            <li><a href="#patrones">Los 3 patrones de lectura</a></li>
+            <li><a href="#patron-z">Patrón en Z</a></li>
+            <li><a href="#patron-f">Patrón en F</a></li>
+            <li><a href="#rectangular">Estructura rectangular</a></li>
+            <li><a href="#whitespace">El poder del whitespace</a></li>
+            <li><a href="#en-power-bi">Aplicado en Power BI</a></li>
+          </ul>
+        </nav>
+
+        <!-- ─────────────────────────────────────────── -->
+        <!-- 1. ¿Por qué importa el layout?              -->
+        <!-- ─────────────────────────────────────────── -->
+        <div class="category-header" id="por-que">
+          <span class="category-header__icon">👁️</span>
+          <h2 class="category-header__title">¿Por qué importa el layout?</h2>
+        </div>
+
+        <div class="concept-card">
+          <h3>El ojo no lee un dashboard, lo escanea</h3>
+          <p>
+            Antes de que el usuario lea un solo número, su ojo ya ha recorrido toda la pantalla
+            siguiendo un patrón predecible. No lo elige conscientemente — lo hace el cerebro de
+            forma automática, buscando señales visuales que le indiquen dónde está la información
+            más importante.
+          </p>
+          <p>
+            Si tu layout no respeta esos patrones naturales de lectura, el usuario tiene que hacer
+            un esfuerzo extra para orientarse. Y ese esfuerzo, aunque pequeño, acumula fatiga y
+            genera fricción. Un layout bien pensado, en cambio, hace que navegar por el informe
+            se sienta <strong>intuitivo y sin esfuerzo</strong>.
+          </p>
+
+          <div class="quote-block">
+            <p class="quote-block__text">"No obligues al usuario a buscar; guía su mirada."</p>
+            <p class="quote-block__author">— Principio de layout, Kawaii BI</p>
+          </div>
+
+          <div class="note note--tip">
+            💡 <strong>Tip kawaii:</strong> El diseño de un dashboard y el diseño de una página web tienen mucho en común. Las investigaciones de eye-tracking que usamos para webs aplican directamente a dashboards — tus usuarios leen Power BI exactamente igual que leen una web.
+          </div>
+        </div>
+
+        <!-- ─────────────────────────────────────────── -->
+        <!-- 2. Los 3 patrones                           -->
+        <!-- ─────────────────────────────────────────── -->
+        <div class="category-header" id="patrones">
+          <span class="category-header__icon">🗺️</span>
+          <h2 class="category-header__title">Los 3 patrones de lectura</h2>
+        </div>
+
+        <div class="concept-card">
+          <h3>Cómo escanea el ojo humano una pantalla</h3>
+          <p>
+            Los estudios de eye-tracking (seguimiento ocular) llevados a cabo desde los años 90
+            han identificado tres patrones principales con los que los seres humanos escanean
+            interfaces visuales. Conocerlos te permite diseñar tu dashboard para que el ojo
+            encuentre lo importante <em>donde lo espera</em>.
+          </p>
+
+          <div class="patterns-grid">
+
+            <!-- Patrón Z -->
+            <div class="pattern-card">
+              <div class="pattern-card__diagram" aria-hidden="true">
+                <svg class="diagram-z" viewBox="0 0 140 110" aria-hidden="true">
+                  <!-- Flecha superior izq → der -->
+                  <line x1="15" y1="18" x2="125" y2="18" stroke="#E74E37" stroke-width="3" stroke-linecap="round"/>
+                  <polygon points="125,18 115,12 115,24" fill="#E74E37"/>
+                  <!-- Flecha diagonal der → izq -->
+                  <line x1="125" y1="18" x2="15" y2="90" stroke="#E74E37" stroke-width="3" stroke-linecap="round" stroke-dasharray="5,3"/>
+                  <!-- Flecha inferior izq → der -->
+                  <line x1="15" y1="90" x2="125" y2="90" stroke="#E74E37" stroke-width="3" stroke-linecap="round"/>
+                  <polygon points="125,90 115,84 115,96" fill="#E74E37"/>
+                  <!-- Bloques representativos -->
+                  <rect x="10" y="8" width="30" height="18" rx="3" fill="#FAEEEE" stroke="#D9CBCB" stroke-width="1"/>
+                  <rect x="100" y="8" width="30" height="18" rx="3" fill="#FAEEEE" stroke="#D9CBCB" stroke-width="1"/>
+                  <rect x="10" y="80" width="30" height="18" rx="3" fill="#FAEEEE" stroke="#D9CBCB" stroke-width="1"/>
+                  <rect x="100" y="80" width="30" height="18" rx="3" fill="#FAEEEE" stroke="#D9CBCB" stroke-width="1"/>
+                  <!-- Etiqueta Z -->
+                  <text x="70" y="60" text-anchor="middle" font-size="28" font-weight="800" fill="#E74E37" opacity="0.2" font-family="serif">Z</text>
+                </svg>
+              </div>
+              <div class="pattern-card__body">
+                <p class="pattern-card__name">Patrón en Z</p>
+                <span class="pattern-card__tag">Storytelling visual</span>
+                <p class="pattern-card__desc">El ojo va de arriba-izquierda → arriba-derecha, cruza en diagonal hacia abajo-izquierda y termina en abajo-derecha. Perfecto cuando tienes pocos elementos clave y quieres narrar una historia.</p>
+              </div>
+            </div>
+
+            <!-- Patrón F -->
+            <div class="pattern-card">
+              <div class="pattern-card__diagram" aria-hidden="true">
+                <svg class="diagram-f" viewBox="0 0 100 130" aria-hidden="true">
+                  <!-- Barra superior larga -->
+                  <rect x="10" y="10" width="80" height="12" rx="3" fill="#E74E37" opacity="0.8"/>
+                  <!-- Barra segunda más corta -->
+                  <rect x="10" y="32" width="60" height="10" rx="3" fill="#E74E37" opacity="0.6"/>
+                  <!-- Líneas verticales (escaneo izquierda) -->
+                  <rect x="10" y="52" width="35" height="8" rx="3" fill="#E74E37" opacity="0.4"/>
+                  <rect x="10" y="68" width="40" height="8" rx="3" fill="#E74E37" opacity="0.35"/>
+                  <rect x="10" y="84" width="30" height="8" rx="3" fill="#E74E37" opacity="0.3"/>
+                  <rect x="10" y="100" width="38" height="8" rx="3" fill="#E74E37" opacity="0.25"/>
+                  <rect x="10" y="116" width="25" height="8" rx="3" fill="#E74E37" opacity="0.2"/>
+                  <!-- Etiqueta F -->
+                  <text x="82" y="75" text-anchor="middle" font-size="28" font-weight="800" fill="#E74E37" opacity="0.15" font-family="serif">F</text>
+                </svg>
+              </div>
+              <div class="pattern-card__body">
+                <p class="pattern-card__name">Patrón en F</p>
+                <span class="pattern-card__tag">Densidad de datos</span>
+                <p class="pattern-card__desc">El ojo lee la fila superior completa, luego una segunda fila más corta, y después escanea verticalmente por el lado izquierdo. Habitual en dashboards analíticos con muchas métricas.</p>
+              </div>
+            </div>
+
+            <!-- Estructura rectangular -->
+            <div class="pattern-card">
+              <div class="pattern-card__diagram" aria-hidden="true">
+                <svg class="diagram-rect" viewBox="0 0 150 100" aria-hidden="true">
+                  <!-- Bloque grande izquierda -->
+                  <rect x="8" y="8" width="65" height="84" rx="5" fill="#FAEEEE" stroke="#D9CBCB" stroke-width="1.5"/>
+                  <!-- Dos bloques derecha arriba/abajo -->
+                  <rect x="80" y="8" width="62" height="38" rx="5" fill="#FAEEEE" stroke="#D9CBCB" stroke-width="1.5"/>
+                  <rect x="80" y="54" width="62" height="38" rx="5" fill="#FAEEEE" stroke="#D9CBCB" stroke-width="1.5"/>
+                  <!-- Tick de alineación -->
+                  <line x1="8" y1="4" x2="142" y2="4" stroke="#E74E37" stroke-width="1.5" stroke-dasharray="4,3"/>
+                  <line x1="8" y1="96" x2="142" y2="96" stroke="#E74E37" stroke-width="1.5" stroke-dasharray="4,3"/>
+                </svg>
+              </div>
+              <div class="pattern-card__body">
+                <p class="pattern-card__name">Estructura Rectangular</p>
+                <span class="pattern-card__tag">Descanso visual</span>
+                <p class="pattern-card__desc">Los visuals se agrupan en bloques rectangulares bien definidos y alineados. Es el patrón más amigable para el ojo humano — transmite orden, profesionalidad y facilita el escaneo.</p>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- ─────────────────────────────────────────── -->
+        <!-- 3. Patrón en Z                              -->
+        <!-- ─────────────────────────────────────────── -->
+        <div class="category-header" id="patron-z">
+          <span class="category-header__icon">↗️</span>
+          <h2 class="category-header__title">Patrón en Z — Ideal para storytelling visual</h2>
+        </div>
+
+        <div class="concept-card">
+          <h3>Cómo funciona el patrón en Z</h3>
+          <p>
+            El ojo empieza en la <strong>esquina superior izquierda</strong> (punto de entrada natural),
+            recorre horizontalmente hasta la <strong>esquina superior derecha</strong>, hace una diagonal
+            descendente hasta la <strong>esquina inferior izquierda</strong> y termina en la
+            <strong>esquina inferior derecha</strong> (punto de acción o cierre).
+          </p>
+          <p>
+            Este patrón funciona cuando tienes pocos elementos visuales de alto impacto y quieres
+            contar una historia progresiva: contexto → hallazgo → conclusión.
+          </p>
+
+          <h4>Cómo usar el patrón Z en Power BI</h4>
+          <ul>
+            <li><strong>Esquina superior izquierda:</strong> KPI principal o título del período analizado — lo más importante, lo primero que ve el ojo</li>
+            <li><strong>Esquina superior derecha:</strong> Comparativa o referencia (vs. año anterior, vs. objetivo)</li>
+            <li><strong>Centro-diagonal:</strong> El gráfico principal que cuenta la historia (tendencia, distribución…)</li>
+            <li><strong>Esquina inferior derecha:</strong> Acción, filtro de detalle o botón de drill-through</li>
+          </ul>
+
+          <h4>Cuándo usarlo</h4>
+          <ul>
+            <li>Dashboards ejecutivos con 3-5 KPIs principales</li>
+            <li>Páginas de resumen o portada del informe</li>
+            <li>Cualquier página donde quieras guiar a la audiencia hacia una conclusión concreta</li>
+          </ul>
+
+          <div class="note note--tip">
+            💡 <strong>Tip kawaii:</strong> El patrón Z funciona especialmente bien en monitores de 16:9. Si tu informe tiene dimensiones 1280×720 o 1920×1080, los cuatro "puntos ancla" del Z coinciden casi perfectamente con los bordes del canvas de Power BI.
+          </div>
+        </div>
+
+        <!-- ─────────────────────────────────────────── -->
+        <!-- 4. Patrón en F                              -->
+        <!-- ─────────────────────────────────────────── -->
+        <div class="category-header" id="patron-f">
+          <span class="category-header__icon">📋</span>
+          <h2 class="category-header__title">Patrón en F — Mejor para densidad de datos</h2>
+        </div>
+
+        <div class="concept-card">
+          <h3>Cómo funciona el patrón en F</h3>
+          <p>
+            El patrón en F es el que usa el ojo humano cuando procesa contenido denso — listas,
+            tablas, informes con muchas métricas. El movimiento es:
+          </p>
+          <ol>
+            <li>Lectura horizontal completa de la <strong>primera fila</strong> (la más importante)</li>
+            <li>Lectura horizontal, algo más corta, de una <strong>segunda fila</strong></li>
+            <li>Escaneo <strong>vertical por el lado izquierdo</strong>, donde la atención va decayendo</li>
+          </ol>
+          <p>
+            La consecuencia directa es que el <strong>lado izquierdo y la parte superior</strong> de tu
+            dashboard reciben mucha más atención que el centro-derecha inferior. Los datos que pones
+            ahí son prácticamente invisibles para el usuario en un primer vistazo.
+          </p>
+
+          <h4>Implicaciones para el diseño de dashboards analíticos</h4>
+          <ul>
+            <li><strong>Los slicers y filtros van arriba o a la izquierda</strong> — el usuario los busca ahí instintivamente</li>
+            <li><strong>Las métricas más importantes van en la fila superior</strong> como tarjetas de KPI</li>
+            <li><strong>La columna izquierda</strong> es la más leída: úsala para categorías, nombres de producto o dimensiones clave</li>
+            <li><strong>La esquina inferior derecha</strong> es el punto más ignorado — no pongas ahí información crítica</li>
+          </ul>
+
+          <div class="note note--warning">
+            ⚠️ <strong>Ojo con esto:</strong> En dashboards con tablas matrix o tablas detalladas, el patrón F penaliza mucho las columnas de la derecha. Si una columna es importante, considera moverla a la izquierda o destacarla con formato condicional (color, negrita) para romper el patrón y atraer el ojo.
+          </div>
+        </div>
+
+        <!-- ─────────────────────────────────────────── -->
+        <!-- 5. Estructura rectangular                   -->
+        <!-- ─────────────────────────────────────────── -->
+        <div class="category-header" id="rectangular">
+          <span class="category-header__icon">⬜</span>
+          <h2 class="category-header__title">Estructura Rectangular — Bloques definidos = descanso visual</h2>
+        </div>
+
+        <div class="concept-card">
+          <h3>Alinea en bloques, no en formas irregulares</h3>
+          <p>
+            La estructura rectangular es el sistema de organización más efectivo para dashboards.
+            Consiste en agrupar los visuals en <strong>bloques rectangulares bien definidos y alineados</strong>
+            entre sí — como si el canvas tuviera una cuadrícula invisible que todos los elementos respetan.
+          </p>
+
+          <div class="quote-block">
+            <p class="quote-block__text">"Alinea los elementos en bloques rectangulares definidos; es mucho más amigable para el ojo humano que las formas irregulares."</p>
+            <p class="quote-block__author">— Patrones de lectura y layout, Kawaii BI</p>
+          </div>
+
+          <p>
+            El motivo es neurológico: el cerebro humano reconoce y procesa las formas rectangulares
+            más rápido que las irregulares. Un layout con bloques alineados se percibe como
+            <strong>organizado y profesional</strong>. Un layout con visuals de distintos tamaños
+            solapados o mal alineados genera una sensación de caos que aumenta la carga cognitiva.
+          </p>
+
+          <h4>Sistemas de rejilla habituales en Power BI</h4>
+          <ul>
+            <li><strong>KPIs arriba, gráficos abajo:</strong> Fila de tarjetas en la parte superior, visuals más grandes ocupando el resto de la página</li>
+            <li><strong>Columna izquierda + área principal:</strong> Slicers o navegación a la izquierda (20-25% del ancho), contenido analítico a la derecha</li>
+            <li><strong>Grid 2×2 o 3×2:</strong> Visuals del mismo tamaño en cuadrícula perfecta — transmite igualdad de importancia entre métricas</li>
+            <li><strong>Visual destacado + grid secundario:</strong> Un visual grande ocupa el 50-60% y el resto se divide en 4-6 visuals pequeños</li>
+          </ul>
+
+          <div class="note note--practice">
+            📌 <strong>Buena práctica:</strong> En Power BI Desktop activa <em>View → Gridlines</em> y <em>Snap to grid</em> antes de colocar los visuals. Esto hace que los elementos se alineen automáticamente a una cuadrícula de 10px y evita que queden desalineados por 1-2 píxeles, que el ojo percibe aunque no lo procese conscientemente.
+          </div>
+        </div>
+
+        <!-- ─────────────────────────────────────────── -->
+        <!-- 6. Whitespace                               -->
+        <!-- ─────────────────────────────────────────── -->
+        <div class="category-header" id="whitespace">
+          <span class="category-header__icon">🫧</span>
+          <h2 class="category-header__title">El poder del whitespace (espacio negativo)</h2>
+        </div>
+
+        <div class="concept-card">
+          <h3>"El espacio en blanco no es espacio vacío, es aire para tus datos"</h3>
+          <p>
+            El <strong>whitespace</strong> (o espacio negativo) es el espacio vacío entre y alrededor de
+            los elementos del dashboard. No es espacio desperdiciado — es el ingrediente invisible
+            que hace que el diseño respire, que los datos destaquen y que la lectura sea cómoda.
+          </p>
+          <p>
+            El error más común de quienes empiezan a diseñar dashboards es querer aprovechar
+            "todo el espacio disponible". El resultado es un canvas lleno hasta los bordes donde
+            el ojo no sabe dónde ir y el usuario se siente abrumado desde el primer segundo.
+          </p>
+
+          <h4>Demostración visual</h4>
+          <div class="ws-demo" aria-label="Comparación de dashboards con y sin whitespace">
+            <div class="ws-demo__panel ws-bad">
+              <p class="ws-demo__label ws-demo__label--bad">❌ Sin whitespace</p>
+              <div class="ws-bad__grid">
+                <div class="ws-bad__block"></div>
+                <div class="ws-bad__block"></div>
+                <div class="ws-bad__block"></div>
+                <div class="ws-bad__block"></div>
+                <div class="ws-bad__block"></div>
+                <div class="ws-bad__block"></div>
+                <div class="ws-bad__block"></div>
+                <div class="ws-bad__block"></div>
+                <div class="ws-bad__block"></div>
+              </div>
+            </div>
+            <div class="ws-demo__panel ws-good">
+              <p class="ws-demo__label ws-demo__label--good">✅ Con whitespace</p>
+              <div class="ws-good__grid">
+                <div class="ws-good__block"></div>
+                <div class="ws-good__block"></div>
+                <div class="ws-good__block"></div>
+                <div class="ws-good__block"></div>
+                <div class="ws-good__block"></div>
+                <div class="ws-good__block"></div>
+                <div class="ws-good__block"></div>
+                <div class="ws-good__block"></div>
+                <div class="ws-good__block"></div>
+              </div>
+            </div>
+          </div>
+
+          <h4>Las tres reglas del whitespace en dashboards</h4>
+          <ul>
+            <li>
+              <strong>Padding es claridad:</strong> Usa márgenes internos generosos dentro de cada visual.
+              En Power BI, el panel de formato de cada visual permite ajustar el padding interno —
+              un mínimo de 8-12px hace una diferencia enorme en la percepción de orden.
+            </li>
+            <li>
+              <strong>Evita el ruido por proximidad:</strong> Los elementos demasiado pegados entre sí
+              generan ansiedad visual. El ojo los percibe como un bloque confuso en lugar de
+              como elementos individuales con su propio significado.
+            </li>
+            <li>
+              <strong>Cero scroll infinito:</strong> La información crítica debe ser visible sin hacer scroll.
+              Si tu página requiere desplazamiento, la estructura del informe necesita replantearse —
+              considera dividir el contenido en más páginas o en un drill-through.
+            </li>
+          </ul>
+
+          <div class="note note--warning">
+            ⚠️ <strong>Ojo con esto:</strong> "Sin scroll" no significa meter todo en una página apretando los visuals. Significa <em>priorizar</em> qué información es realmente crítica y qué puede estar en otra página o en un tooltip. Menos visuals con más espacio siempre gana a más visuals apretados.
+          </div>
+        </div>
+
+        <!-- ─────────────────────────────────────────── -->
+        <!-- 7. Aplicado en Power BI                     -->
+        <!-- ─────────────────────────────────────────── -->
+        <div class="category-header" id="en-power-bi">
+          <span class="category-header__icon">⚡</span>
+          <h2 class="category-header__title">Checklist de layout para tu próximo informe Power BI</h2>
+        </div>
+
+        <div class="concept-card">
+          <h3>Antes de publicar, comprueba esto</h3>
+
+          <table class="rules-table" aria-label="Checklist de layout para Power BI">
+            <thead>
+              <tr>
+                <th>Qué comprobar</th>
+                <th>Cómo hacerlo en Power BI</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>✅ Todos los visuals están alineados a una cuadrícula</td>
+                <td>View → Gridlines + Snap to grid activados durante el diseño</td>
+              </tr>
+              <tr>
+                <td>✅ Los KPIs más importantes están en la zona superior</td>
+                <td>Usa <em>Card</em> o <em>KPI visual</em> en la fila superior del canvas</td>
+              </tr>
+              <tr>
+                <td>✅ Hay espacio visible entre cada visual</td>
+                <td>Mínimo 8px de separación; usa <em>Format → General → Padding</em> en cada visual</td>
+              </tr>
+              <tr>
+                <td>✅ No hay información crítica en la esquina inferior derecha</td>
+                <td>Mueve esos datos a la parte superior o a una página dedicada</td>
+              </tr>
+              <tr>
+                <td>✅ Los slicers y filtros están arriba o a la izquierda</td>
+                <td>Agrúpalos en una barra superior o un panel lateral consistente</td>
+              </tr>
+              <tr>
+                <td>✅ La página no requiere scroll para ver lo importante</td>
+                <td>Ajusta el tamaño del canvas en View → Page view → Actual size y comprueba</td>
+              </tr>
+              <tr>
+                <td>✅ Visuals relacionados están agrupados visualmente</td>
+                <td>Usa un rectángulo de fondo (<em>Insert → Shapes → Rectangle</em>) con color suave para agrupar</td>
+              </tr>
+              <tr>
+                <td>✅ Se puede identificar el mensaje principal en 5 segundos</td>
+                <td>Pide a alguien ajeno al informe que lo mire 5 segundos y te diga qué vio primero</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="note note--next">
+            🚀 <strong>¡Lo estás haciendo genial!</strong> El layout es la base silenciosa sobre la que descansa todo lo demás. Con los patrones Z y F en mente y el whitespace como aliado, tus dashboards van a empezar a sentirse profesionales desde el primer vistazo. Siguiente parada: la Regla del No Ruido y el whitespace en profundidad. 🌸
+          </div>
+        </div>
+
+        <!-- Navegación entre páginas -->
+        <nav aria-label="Páginas relacionadas" style="margin-top: 2.5rem; display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap;">
+          <a href="diseno-emocional.html" style="display: inline-flex; align-items: center; gap: 0.5rem; color: var(--color-coral); text-decoration: none; font-weight: 600; font-size: 0.9375rem;">
+            ← Diseño Emocional
+          </a>
+          <a href="whitespace.html" style="display: inline-flex; align-items: center; gap: 0.5rem; color: var(--color-coral); text-decoration: none; font-weight: 600; font-size: 0.9375rem;">
+            Whitespace y Ruido Visual →
+          </a>
+        </nav>
+
+      </div><!-- /topic-page -->
+    </main>
+  </div><!-- /page-wrapper -->
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script>
+  <script src="../../assets/js/theme.js"></script>
+  <script src="../../assets/js/main.js"></script>
+  <script src="../../assets/js/cursor.js"></script>
+
+</body>
+</html>

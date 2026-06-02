@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Atributos preatentivos en dashboards Power BI: color, tamaño, posición, forma y orientación — los canales visuales que el cerebro procesa en menos de 500ms para destacar datos clave.">
+  <title>Atributos Preatentivos — Diseño y UX | Power BI Guide by Kawaii BI</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+
+  <!-- Estilos CSS -->
+  <link rel="stylesheet" href="../../assets/css/main.css">
+  <link rel="stylesheet" href="../../assets/css/themes.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/layout.css">
+
+  <style>
+    .topic-header { text-align: center; padding: 2.5rem 0 2rem; border-bottom: 2px solid var(--color-mauve); margin-bottom: 2.5rem; }
+    .topic-header__icon { font-size: 4rem; margin-bottom: 0.75rem; display: block; }
+    .topic-header__title { font-size: clamp(1.875rem, 4vw, 2.5rem); font-weight: 800; color: var(--color-dark); margin-bottom: 0.625rem; line-height: 1.2; }
+    .topic-header__subtitle { font-size: 1.0625rem; color: var(--color-slate); margin-bottom: 1.25rem; line-height: 1.5; max-width: 620px; margin-left: auto; margin-right: auto; }
+    .topic-header__levels { display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap; }
+
+    .toc { background: var(--color-rose); border-radius: var(--border-radius); padding: 1.25rem 1.5rem; margin-bottom: 2rem; border: 1.5px solid var(--color-mauve); }
+    .toc__title { font-size: 1rem; font-weight: 700; margin: 0 0 0.75rem; }
+    .toc__list { display: flex; flex-wrap: wrap; gap: 0.5rem; list-style: none; padding: 0; margin: 0; }
+    .toc__list a { font-size: 0.8125rem; color: var(--color-coral); text-decoration: none; padding: 0.25rem 0.625rem; background: var(--color-white); border-radius: 999px; border: 1px solid var(--color-mauve); transition: background 0.15s, color 0.15s; }
+    .toc__list a:hover { background: var(--color-coral); color: white; }
+
+    .category-header { display: flex; align-items: center; gap: 0.75rem; margin: 2.5rem 0 1.25rem; padding: 0.875rem 1.25rem; background: var(--color-rose); border-radius: var(--border-radius-sm); border-left: 4px solid var(--color-coral); }
+    .category-header__icon { font-size: 1.5rem; }
+    .category-header__title { font-size: 1.25rem; font-weight: 700; margin: 0; }
+
+    .concept-card { background: var(--color-white); border: 1.5px solid var(--color-mauve); border-radius: var(--border-radius); padding: 1.75rem; margin-bottom: 1.5rem; scroll-margin-top: 80px; transition: border-color 0.2s; }
+    .concept-card:hover { border-color: var(--color-coral); }
+    .concept-card h3 { font-size: 1.25rem; font-weight: 700; color: var(--color-coral); margin-bottom: 0.75rem; }
+    .concept-card h4 { font-size: 0.9375rem; font-weight: 700; color: var(--color-dark); margin: 1.25rem 0 0.5rem; }
+    .concept-card p { font-size: 0.9375rem; line-height: 1.7; color: var(--color-dark); margin-bottom: 0.75rem; }
+    .concept-card p:last-child { margin-bottom: 0; }
+    .concept-card ul, .concept-card ol { padding-left: 1.25rem; font-size: 0.9375rem; line-height: 1.8; color: var(--color-dark); margin-bottom: 0.75rem; }
+
+    .quote-block { background: linear-gradient(135deg, var(--color-rose) 0%, var(--color-blush) 100%); border-left: 4px solid var(--color-coral); border-radius: var(--border-radius); padding: 1.5rem 1.75rem; margin: 1.5rem 0; }
+    .quote-block__text { font-size: 1.125rem; font-weight: 600; color: var(--color-dark); line-height: 1.5; font-style: italic; margin: 0 0 0.375rem; }
+    .quote-block__author { font-size: 0.8125rem; color: var(--color-slate); margin: 0; }
+
+    /* ── Demo preatentiva (cuadrícula de puntos) ───────── */
+    .preattentive-demo {
+      display: flex;
+      gap: 1.5rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin: 1.5rem 0;
+    }
+    .preattentive-demo__panel {
+      border: 1.5px solid var(--color-mauve);
+      border-radius: var(--border-radius);
+      padding: 1.25rem;
+      text-align: center;
+      min-width: 180px;
+      flex: 1;
+      max-width: 260px;
+    }
+    .preattentive-demo__grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 6px;
+      justify-items: center;
+      margin-bottom: 0.75rem;
+    }
+    .preattentive-demo__dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: var(--color-mauve);
+    }
+    .preattentive-demo__dot--highlight-color { background: var(--color-coral); }
+    .preattentive-demo__dot--highlight-size { width: 22px; height: 22px; }
+    .preattentive-demo__dot--highlight-shape { border-radius: 2px; }
+    .preattentive-demo__label {
+      font-size: 0.8125rem;
+      font-weight: 700;
+      color: var(--color-dark);
+    }
+    .preattentive-demo__time {
+      font-size: 0.6875rem;
+      color: var(--color-coral);
+      font-weight: 600;
+    }
+
+    /* ── Cards de atributos ────────────────────────────── */
+    .attr-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1.25rem;
+      margin: 1.25rem 0;
+    }
+    .attr-card {
+      border: 1.5px solid var(--color-mauve);
+      border-radius: var(--border-radius);
+      overflow: hidden;
+      transition: border-color 0.2s;
+    }
+    .attr-card:hover { border-color: var(--color-coral); }
+    .attr-card__header {
+      background: var(--color-blush);
+      padding: 1rem 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .attr-card__icon { font-size: 1.5rem; }
+    .attr-card__name { font-size: 1rem; font-weight: 700; color: var(--color-dark); }
+    .attr-card__body { padding: 1.25rem; background: var(--color-white); }
+    .attr-card__desc { font-size: 0.875rem; color: var(--color-dark); line-height: 1.6; margin-bottom: 0.75rem; }
+    .attr-card__pbi { font-size: 0.8125rem; color: var(--color-slate); line-height: 1.5; }
+    .attr-card__pbi strong { color: var(--color-coral); }
+
+    /* ── Mini demo visual inline ──────────────────────── */
+    .inline-demo {
+      display: flex;
+      gap: 4px;
+      align-items: flex-end;
+      justify-content: center;
+      height: 50px;
+      margin: 0.75rem 0;
+      padding: 0.5rem;
+      background: var(--color-blush);
+      border-radius: var(--border-radius-sm);
+    }
+    .inline-demo__bar {
+      width: 18px;
+      border-radius: 2px 2px 0 0;
+      background: var(--color-mauve);
+      transition: all 0.2s;
+    }
+
+    /* ── Tabla de potencia ─────────────────────────────── */
+    .power-table { width: 100%; border-collapse: collapse; font-size: 0.875rem; margin: 1rem 0; }
+    .power-table th { background: var(--color-rose); padding: 0.625rem 0.875rem; text-align: left; font-weight: 700; border: 1px solid var(--color-mauve); }
+    .power-table td { padding: 0.625rem 0.875rem; border: 1px solid var(--color-mauve); line-height: 1.5; vertical-align: top; }
+    .power-table tr:nth-child(even) td { background: var(--color-blush); }
+    .power-bar { height: 10px; border-radius: 999px; background: var(--color-coral); display: inline-block; vertical-align: middle; margin-right: 6px; }
+
+    /* ── Comparativo ──────────────────────────────────── */
+    .comparison-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1rem 0; }
+    .comparison-col { border-radius: var(--border-radius-sm); padding: 1.25rem; border: 1.5px solid var(--color-mauve); }
+    .comparison-col--bad { background: #fff5f5; border-color: #f5c6c6; }
+    .comparison-col--good { background: #f0faf5; border-color: #b8dfc9; }
+    .comparison-col__label { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.625rem; }
+    .comparison-col--bad .comparison-col__label { color: #c0392b; }
+    .comparison-col--good .comparison-col__label { color: #27ae60; }
+    .comparison-col ul { font-size: 0.875rem; padding-left: 1.1rem; margin: 0; line-height: 1.7; color: var(--color-dark); }
+    @media (max-width: 600px) { .comparison-grid { grid-template-columns: 1fr; } }
+
+    .checklist { list-style: none; padding: 0; margin: 1rem 0; }
+    .checklist li { display: flex; align-items: flex-start; gap: 0.75rem; padding: 0.625rem 0; border-bottom: 1px solid var(--color-blush); font-size: 0.9375rem; line-height: 1.6; color: var(--color-dark); }
+    .checklist li:last-child { border-bottom: none; }
+    .checklist li::before { content: "✅"; flex-shrink: 0; margin-top: 0.1rem; }
+  </style>
+</head>
+<body>
+
+  <!-- SIDEBAR -->
+  <aside class="site-sidebar">
+    <div class="site-sidebar__profile">
+      <img src="../../assets/images/avatar Sara.png" alt="Sara Lozano Martí" class="site-sidebar__avatar">
+      <p class="site-sidebar__name">Sara Lozano Martí</p>
+      <p class="site-sidebar__subtitle">Power BI Expert</p>
+    </div>
+    <nav class="site-sidebar__nav" aria-label="Navegación principal">
+      <ul>
+        <li><a href="../../index.html" class="site-sidebar__link"><span class="site-sidebar__icon">🏠</span> Inicio</a></li>
+        <li><a href="../dax.html" class="site-sidebar__link"><span class="site-sidebar__icon">⚡</span> Funciones DAX</a></li>
+        <li><a href="../power-query.html" class="site-sidebar__link"><span class="site-sidebar__icon">🔄</span> Power Query</a></li>
+        <li><a href="../lenguaje-m.html" class="site-sidebar__link"><span class="site-sidebar__icon">〽️</span> Lenguaje M</a></li>
+        <li><a href="../modelado.html" class="site-sidebar__link"><span class="site-sidebar__icon">🗄️</span> Modelado</a></li>
+        <li><a href="../conceptos-powerbi.html" class="site-sidebar__link"><span class="site-sidebar__icon">📊</span> Conceptos Power BI</a></li>
+        <li><a href="../fabric.html" class="site-sidebar__link"><span class="site-sidebar__icon">🧵</span> Microsoft Fabric</a></li>
+        <li><a href="../tmdl.html" class="site-sidebar__link"><span class="site-sidebar__icon">📝</span> TMDL</a></li>
+        <li><a href="../diseno-ux.html" class="site-sidebar__link is-active"><span class="site-sidebar__icon">🎨</span> Diseño y UX</a></li>
+        <li><a href="../gobernanza.html" class="site-sidebar__link"><span class="site-sidebar__icon">🔒</span> Gobernanza</a></li>
+      </ul>
+    </nav>
+    <div class="site-sidebar__divider"></div>
+    <div class="site-sidebar__footer">
+      <a href="../../quien-soy.html" class="site-sidebar__link site-sidebar__link--highlight"><span class="site-sidebar__icon">👩‍💻</span> ¿Quién soy?</a>
+      <div class="site-sidebar__social">
+        <a href="https://www.linkedin.com/in/saralozanomarti" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><img src="../../assets/images/logo linkedIN.png" alt="LinkedIn" class="site-sidebar__social-icon"></a>
+        <a href="https://www.youtube.com/@KawaiiPowerBI" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><img src="../../assets/images/logo youtube.png" alt="YouTube" class="site-sidebar__social-icon"></a>
+        <a href="https://github.com/KawaiiBI" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><img src="../../assets/images/logo github.png" alt="GitHub" class="site-sidebar__social-icon"></a>
+      </div>
+      <div class="site-sidebar__logo-bottom"><img src="../../assets/images/Logo Kawaii.jpg" alt="Kawaii BI" class="site-sidebar__logo-img"></div>
+      <p class="site-sidebar__copyright">Power BI Guide 🌸<br>© 2026 Kawaii BI</p>
+    </div>
+  </aside>
+
+  <!-- CONTENIDO PRINCIPAL -->
+  <div class="page-wrapper">
+    <main class="main-content">
+      <div class="topic-page">
+
+        <!-- Breadcrumb -->
+        <nav class="breadcrumb" aria-label="Ruta de navegación">
+          <span class="breadcrumb__item"><a href="../../index.html">🏠 Inicio</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item"><a href="../diseno-ux.html">Diseño y UX</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item">Atributos Preatentivos</span>
+        </nav>
+
+        <!-- Cabecera -->
+        <header class="topic-header">
+          <span class="topic-header__icon">👁️</span>
+          <h1 class="topic-header__title">Atributos Preatentivos</h1>
+          <p class="topic-header__subtitle">Lo que el ojo ve antes de que el cerebro lea. Los canales visuales que se procesan en menos de 500 milisegundos — y que determinan qué destaca y qué pasa desapercibido en tu dashboard Power BI</p>
+          <div class="topic-header__levels">
+            <span class="badge badge--intermediate">Intermedio</span>
+          </div>
+        </header>
+
+        <!-- TOC -->
+        <nav class="toc" aria-label="Contenido de esta página">
+          <p class="toc__title">📋 En esta página</p>
+          <ul class="toc__list">
+            <li><a href="#que-son">¿Qué son los atributos preatentivos?</a></li>
+            <li><a href="#demo">Demostración: el efecto "pop-out"</a></li>
+            <li><a href="#catalogo">Los 7 atributos principales</a></li>
+            <li><a href="#potencia">Potencia de cada atributo</a></li>
+            <li><a href="#combinar">Combinar atributos (y cuándo es demasiado)</a></li>
+            <li><a href="#en-power-bi">Aplicado en Power BI</a></li>
+            <li><a href="#errores">Errores comunes</a></li>
+            <li><a href="#checklist">Checklist preatentiva</a></li>
+          </ul>
+        </nav>
+
+        <!-- ─────────────────────────────────────────── -->
+        <!-- 1. ¿Qué son?                               -->
+        <!-- ─────────────────────────────────────────── -->
+        <div class="category-header" id="que-son">
+          <span class="category-header__icon">🧠</span>
+          <h2 class="category-header__title">¿Qué son los atributos preatentivos?</h2>
+        </div>
+
+        <div class="concept-card">
+          <h3>El procesamiento visual que ocurre antes de pensar</h3>
+          <p>
+            Los <strong>atributos preatentivos</strong> son propiedades visuales que el sistema
+            visual humano procesa <em>antes</em> de que intervenga la atención consciente.
+            No los "decides ver" — los ves automáticamente, en menos de 500 milisegundos,
+            sin esfuerzo cognitivo.
+          </p>
+          <p>
+            Cuando una barra de un gráfico es roja y todas las demás son grises, tu ojo se
+            dirige a la roja <strong>instantáneamente</strong>. No has leído la leyenda, no has
+            mirado el eje, no has procesado ningún número — pero ya sabes dónde está el dato
+            diferente. Ese es el procesamiento preatentivo en acción.
+          </p>
+
+          <div class="quote-block">
+            <p class="quote-block__text">"El diseño invisible es el más poderoso. Cuando quitas el ruido, solo queda la verdad de los datos."</p>
+            <p class="quote-block__author">— Kawaii BI</p>
+          </div>
+
+          <p>
+            En el contexto de dashboards, los atributos preatentivos son tu herramienta más
+            poderosa para <strong>dirigir la atención del usuario exactamente donde quieres</strong>.
+            Son el fundamento neurocientífico de todo lo que hemos visto en las secciones de diseño
+            emocional, color, layout y storytelling.
+          </p>
+        </div>
+
+        <!-- ─────────────────────────────────────────── -->
+        <!-- 2. Demostración                             -->
+        <!-- ─────────────────────────────────────────── -->
+        <div class="category-header" id="demo">
+          <span class="category-header__icon">✨</span>
+          <h2 class="category-header__title">Demostración: el efecto "pop-out"</h2>
+        </div>
+
+        <div class="concept-card">
+          <h3>Encuentra el elemento diferente — sin pensar</h3>
+          <p>
+            En cada cuadrícula, un elemento es diferente al resto. Fíjate en cuánto tardas
+            en encontrarlo. No necesitas buscar — <em>salta a la vista</em>. Eso es el
+            procesamiento preatentivo.
+          </p>
+
+          <div class="preattentive-demo" aria-label="Demostración de atributos preatentivos">
+            <!-- Demo Color -->
+            <div class="preattentive-demo__panel">
+              <div class="preattentive-demo__grid">
+                <div class="preattentive-demo__dot"></div>
+                <div class="preattentive-demo__dot"></div>
+                <div class="preattentive-demo__dot"></div>
+                <div class="preattentive-demo__dot"></div>
+                <div class="preattentive-demo__dot"></div>
+                <div class="preattentive-demo__dot"></div>
+                <div class="preattentive-demo__dot"></div>
+                <div class="preattentive-demo__dot"></div>
+                <div class="preattentive-demo__dot preattentive-demo__dot--highlight-color"></div>
+                <div class="preattentive-demo__dot"></div>
+                <div class="preattentive-demo__dot"></div>
+                <div class="preattentive-demo__dot"></div>
+                <div class="preattentive-demo__dot"></div>
+                <div class="preattentive-demo__dot"></div>
+                <div class="preattentive-demo__dot"></div>
+                <div class="preattentive-demo__dot"></div>
+                <div class="preattentive-demo__dot"></div>
+                <div class="preattentive-demo__dot"></div>
+              </div>
+              <p class="preattentive-demo__label">Color</p>
+              <p class="preattentive-demo__time">&lt; 200ms</p>
+            </div>
+
+            <!-- Demo Tamaño -->
+            <div class="preattentive-demo__panel">
+              <div class="preattentive-demo__grid">
+                <div class="preattentive-demo__dot"></div>
+                <div class="preattentive-demo__dot"></div>
+                <div class="preattentive-demo__dot"></div>
+                <div class="preattentive-demo__dot"></div>
+                <div class="preattentive-demo__dot"></div>
+                <div class="preattentive-demo__dot"></div>
+                <div class="preattentive-demo__dot"></div>
+                <div class="preattentive-demo__dot"></div>
+                <div class="preattentive-demo__dot"></div>
+                <div class="preattentive-demo__dot"></div>
+                <div class="preattentive-demo__dot"></div>
+                <div class="preattentive-demo__dot preattentive-demo__dot--highlight-size"></div>
+                <div class="preattentive-demo__dot"></div>
+                <div class="preattentive-demo__dot"></div>
+                <div class="preattentive-demo__dot"></div>
+                <div class="preattentive-demo__dot"></div>
+                <div class="preattentive-demo__dot"></div>
+                <div class="preattentive-demo__dot"></div>
+              </div>
+              <p class="preattentive-demo__label">Tamaño</p>
+              <p class="preattentive-demo__time">&lt; 250ms</p>
+            </div>
+
+            <!-- Demo Forma -->
+            <div class="preattentive-demo__panel">
+              <div class="preattentive-demo__grid">
+                <div class="preattentive-demo__dot"></div>
+                <div class="preattentive-demo__dot"></div>
+                <div class="preattentive-demo__dot"></div>
+                <div class="preattentive-demo__dot"></div>
+                <div class="preattentive-demo__dot"></div>
+                <div class="preattentive-demo__dot"></div>
+                <div class="preattentive-demo__dot"></div>
+                <div class="preattentive-demo__dot preattentive-demo__dot--highlight-shape"></div>
+                <div class="preattentive-demo__dot"></div>
+                <div class="preattentive-demo__dot"></div>
+                <div class="preattentive-demo__dot"></div>
+                <div class="preattentive-demo__dot"></div>
+                <div class="preattentive-demo__dot"></div>
+                <div class="preattentive-demo__dot"></div>
+                <div class="preattentive-demo__dot"></div>
+                <div class="preattentive-demo__dot"></div>
+                <div class="preattentive-demo__dot"></div>
+                <div class="preattentive-demo__dot"></div>
+              </div>
+              <p class="preattentive-demo__label">Forma</p>
+              <p class="preattentive-demo__time">&lt; 300ms</p>
+            </div>
+          </div>
+
+          <div class="note note--tip">
+            💡 <strong>Tip kawaii:</strong> Lo has encontrado sin esfuerzo, ¿verdad? Ahora imagina que esos puntos son barras en un gráfico. Si una barra es de un color diferente, tu usuario la encontrará igual de rápido. Eso es diseñar con atributos preatentivos.
+          </div>
+        </div>
+
+        <!-- ─────────────────────────────────────────── -->
+        <!-- 3. Los 7 atributos                          -->
+        <!-- ─────────────────────────────────────────── -->
+        <div class="category-header" id="catalogo">
+          <span class="category-header__icon">📋</span>
+          <h2 class="category-header__title">Los 7 atributos preatentivos principales</h2>
+        </div>
+
+        <div class="concept-card">
+          <h3>Cada uno es un canal de comunicación instantánea</h3>
+
+          <div class="attr-grid">
+
+            <div class="attr-card">
+              <div class="attr-card__header">
+                <span class="attr-card__icon">🎨</span>
+                <span class="attr-card__name">Color (tono)</span>
+              </div>
+              <div class="attr-card__body">
+                <p class="attr-card__desc">El más potente de todos. Un cambio de tono (rojo entre grises, azul entre beiges) se detecta instantáneamente. Funciona incluso en visión periférica.</p>
+                <p class="attr-card__pbi"><strong>En Power BI:</strong> Formato condicional por color de fondo o color de fuente. Una barra roja entre grises para indicar el valor que necesita atención.</p>
+              </div>
+            </div>
+
+            <div class="attr-card">
+              <div class="attr-card__header">
+                <span class="attr-card__icon">🔴</span>
+                <span class="attr-card__name">Intensidad (saturación)</span>
+              </div>
+              <div class="attr-card__body">
+                <p class="attr-card__desc">Variaciones de saturación o brillo dentro de un mismo tono. Un azul oscuro entre azules claros destaca. Ideal para representar magnitud dentro de una misma categoría.</p>
+                <p class="attr-card__pbi"><strong>En Power BI:</strong> Escalas de color en tablas y matrices (de claro a oscuro). Mapas de calor. Background color scales en formato condicional.</p>
+              </div>
+            </div>
+
+            <div class="attr-card">
+              <div class="attr-card__header">
+                <span class="attr-card__icon">📏</span>
+                <span class="attr-card__name">Tamaño (longitud)</span>
+              </div>
+              <div class="attr-card__body">
+                <p class="attr-card__desc">El ojo detecta inmediatamente un elemento más grande o más largo que los demás. Es la razón por la que las barras funcionan tan bien para comparar — la longitud es preatentiva.</p>
+                <p class="attr-card__pbi"><strong>En Power BI:</strong> Data bars en tablas, tamaño de burbuja en scatter charts, tamaño de fuente del callout en cards para destacar un KPI.</p>
+              </div>
+            </div>
+
+            <div class="attr-card">
+              <div class="attr-card__header">
+                <span class="attr-card__icon">📍</span>
+                <span class="attr-card__name">Posición</span>
+              </div>
+              <div class="attr-card__body">
+                <p class="attr-card__desc">Un elemento fuera de su posición esperada atrae la atención. También la posición en un eje: el punto más alto o más bajo de una línea se detecta sin leer valores.</p>
+                <p class="attr-card__pbi"><strong>En Power BI:</strong> Scatter charts (un outlier fuera del cluster), la barra más alta de un gráfico, el punto en el que una línea cambia de dirección.</p>
+              </div>
+            </div>
+
+            <div class="attr-card">
+              <div class="attr-card__header">
+                <span class="attr-card__icon">🔷</span>
+                <span class="attr-card__name">Forma</span>
+              </div>
+              <div class="attr-card__body">
+                <p class="attr-card__desc">Un cuadrado entre círculos, un triángulo entre cuadrados. El cambio de forma es preatentivo. Menos potente que el color pero fundamental para accesibilidad (daltonismo).</p>
+                <p class="attr-card__pbi"><strong>En Power BI:</strong> Iconos condicionales (✓ ✗ ▲ ▼) en tablas y matrices. Marcadores de forma diferente en gráficos de líneas (círculo vs. triángulo).</p>
+              </div>
+            </div>
+
+            <div class="attr-card">
+              <div class="attr-card__header">
+                <span class="attr-card__icon">↗️</span>
+                <span class="attr-card__name">Orientación</span>
+              </div>
+              <div class="attr-card__body">
+                <p class="attr-card__desc">Una línea diagonal entre líneas verticales salta a la vista. Una flecha apuntando en dirección opuesta al resto se detecta instantáneamente.</p>
+                <p class="attr-card__pbi"><strong>En Power BI:</strong> Flechas de tendencia (↑ ↓) en cards y KPIs. La pendiente de una línea en un line chart (subida brusca vs. tendencia plana).</p>
+              </div>
+            </div>
+
+            <div class="attr-card">
+              <div class="attr-card__header">
+                <span class="attr-card__icon">▪️</span>
+                <span class="attr-card__name">Enclosure (marco)</span>
+              </div>
+              <div class="attr-card__body">
+                <p class="attr-card__desc">Un elemento con borde, recuadro o fondo diferente al resto se percibe como "especial" o "agrupado". El cerebro lo interpreta como un contenedor de información relacionada.</p>
+                <p class="attr-card__pbi"><strong>En Power BI:</strong> Rectángulos de fondo para agrupar visuals relacionados. Bordes en una card de KPI que necesita atención. Fondos de color en celdas de tabla.</p>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- ─────────────────────────────────────────── -->
+        <!-- 4. Potencia de cada atributo                -->
+        <!-- ─────────────────────────────────────────── -->
+        <div class="category-header" id="potencia">
+          <span class="category-header__icon">⚡</span>
+          <h2 class="category-header__title">Potencia de cada atributo: no todos son iguales</h2>
+        </div>
+
+        <div class="concept-card">
+          <h3>Color gana. Tamaño queda segundo. El resto complementa.</h3>
+          <p>
+            No todos los atributos preatentivos tienen el mismo poder para captar la atención.
+            El color es el rey absoluto — y por eso la estrategia de color es tan crítica en
+            dashboards. Si usas el color para todo, ningún dato destaca. Si lo reservas para
+            lo que importa, el dato correcto salta a la vista.
+          </p>
+
+          <table class="power-table" aria-label="Ranking de potencia de atributos preatentivos">
+            <thead>
+              <tr>
+                <th>Atributo</th>
+                <th>Potencia relativa</th>
+                <th>Mejor uso en dashboards</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Color (tono)</strong></td>
+                <td><span class="power-bar" style="width: 100%;"></span> Máxima</td>
+                <td>Distinguir una categoría del resto, señalar alertas, formato condicional</td>
+              </tr>
+              <tr>
+                <td><strong>Tamaño / Longitud</strong></td>
+                <td><span class="power-bar" style="width: 85%;"></span> Muy alta</td>
+                <td>Comparar valores (barras), representar magnitudes (burbujas), KPIs grandes</td>
+              </tr>
+              <tr>
+                <td><strong>Posición</strong></td>
+                <td><span class="power-bar" style="width: 75%;"></span> Alta</td>
+                <td>Detectar outliers en scatter, picos en líneas, elemento fuera de patrón</td>
+              </tr>
+              <tr>
+                <td><strong>Intensidad</strong></td>
+                <td><span class="power-bar" style="width: 65%;"></span> Media-alta</td>
+                <td>Mapas de calor, escalas de color en tablas, representar rangos</td>
+              </tr>
+              <tr>
+                <td><strong>Orientación</strong></td>
+                <td><span class="power-bar" style="width: 50%;"></span> Media</td>
+                <td>Flechas de tendencia, pendiente de líneas, indicadores de dirección</td>
+              </tr>
+              <tr>
+                <td><strong>Forma</strong></td>
+                <td><span class="power-bar" style="width: 40%;"></span> Media-baja</td>
+                <td>Iconos condicionales, marcadores en líneas, accesibilidad (daltonismo)</td>
+              </tr>
+              <tr>
+                <td><strong>Enclosure</strong></td>
+                <td><span class="power-bar" style="width: 30%;"></span> Baja</td>
+                <td>Agrupar visuals, destacar con recuadro, fondos de celda en tablas</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="note note--practice">
+            📌 <strong>Buena práctica:</strong> Usa los atributos de mayor potencia para los datos más importantes. Si tu KPI principal necesita destacar, cámbiale el color (máxima potencia). Si quieres indicar un estado secundario, usa una forma o un icono (potencia media). Reserva el color para lo que de verdad importa — como dice la Regla 1-1-1.
+          </div>
+        </div>
+
+        <!-- ─────────────────────────────────────────── -->
+        <!-- 5. Combinar atributos                       -->
+        <!-- ─────────────────────────────────────────── -->
+        <div class="category-header" id="combinar">
+          <span class="category-header__icon">🔀</span>
+          <h2 class="category-header__title">Combinar atributos (y cuándo es demasiado)</h2>
+        </div>
+
+        <div class="concept-card">
+          <h3>Dos atributos refuerzan. Tres atributos confunden.</h3>
+          <p>
+            Combinar dos atributos preatentivos crea un efecto de <strong>doble refuerzo</strong>
+            que hace que el elemento destaque aún más — y además mejora la accesibilidad.
+            Pero a partir de tres atributos combinados, el efecto se invierte: el elemento
+            pasa de "destacado" a "ruidoso" y el ojo no sabe qué atributo procesar primero.
+          </p>
+
+          <div class="comparison-grid">
+            <div class="comparison-col comparison-col--good">
+              <p class="comparison-col__label">✅ Combinaciones que funcionan</p>
+              <ul>
+                <li><strong>Color + forma:</strong> Barra roja + icono ✗ → accesible y potente</li>
+                <li><strong>Color + tamaño:</strong> Número grande + color coral → KPI principal</li>
+                <li><strong>Tamaño + posición:</strong> Barra más alta + posición superior → líder del ranking</li>
+                <li><strong>Intensidad + enclosure:</strong> Celda oscura + borde → mapa de calor claro</li>
+              </ul>
+            </div>
+            <div class="comparison-col comparison-col--bad">
+              <p class="comparison-col__label">❌ Demasiados atributos a la vez</p>
+              <ul>
+                <li>Barra roja + grande + negrita + con borde + con sombra + con icono</li>
+                <li>Texto rojo + subrayado + negrita + itálica + fondo amarillo</li>
+                <li>Cada barra de un color diferente + tamaños distintos + bordes mixtos</li>
+                <li>Si todo destaca, nada destaca — vuelves al ruido visual</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="note note--tip">
+            💡 <strong>Tip kawaii:</strong> La regla es sencilla: combina máximo 2 atributos preatentivos para destacar un dato. El combo más potente para dashboards es <strong>color + forma</strong> porque funciona para todas las personas (incluyendo daltonismo). El combo <strong>color + tamaño</strong> es el más impactante visualmente — perfecto para KPIs.
+          </div>
+        </div>
+
+        <!-- ─────────────────────────────────────────── -->
+        <!-- 6. Aplicado en Power BI                     -->
+        <!-- ─────────────────────────────────────────── -->
+        <div class="category-header" id="en-power-bi">
+          <span class="category-header__icon">⚡</span>
+          <h2 class="category-header__title">Atributos preatentivos aplicados en Power BI</h2>
+        </div>
+
+        <div class="concept-card">
+          <h3>Dónde usarlos en cada tipo de visual</h3>
+
+          <h4>En gráficos de barras</h4>
+          <ul>
+            <li><strong>Color:</strong> Todas las barras en gris (#D0D0D0) excepto la que quieres destacar en color de acento. Técnica "highlight bar".</li>
+            <li><strong>Tamaño:</strong> Ordena de mayor a menor — la barra más larga está arriba y atrae la atención por posición + tamaño.</li>
+            <li>En Power BI: usa una medida DAX con <code style="background: var(--color-blush); padding: 0.15em 0.4em; border-radius: 4px; font-family: 'Fira Code', monospace; font-size: 0.85em; color: var(--color-coral);">IF(SELECTEDVALUE('Tabla'[Region]) = "Norte", "#2C5F8A", "#D0D0D0")</code> como color condicional.</li>
+          </ul>
+
+          <h4>En tablas y matrices</h4>
+          <ul>
+            <li><strong>Color de fondo:</strong> Escalas de color para representar intensidad (heatmap). Claro = bajo, oscuro = alto.</li>
+            <li><strong>Iconos (forma):</strong> ✓ ✗ ▲ ▼ como formato condicional para estados. Doble canal: color + forma.</li>
+            <li><strong>Data bars (tamaño):</strong> Barras dentro de las celdas para comparar longitudes sin leer números.</li>
+          </ul>
+
+          <h4>En KPIs y cards</h4>
+          <ul>
+            <li><strong>Tamaño del callout:</strong> El número principal grande (28-32pt). El contexto en tamaño normal (11pt). La diferencia de tamaño es preatentiva.</li>
+            <li><strong>Flecha de tendencia (orientación):</strong> ↑ en verde o ↓ en rojo junto al valor — doble atributo: orientación + color.</li>
+            <li><strong>Enclosure:</strong> Un borde coral alrededor de la card que necesita atención inmediata.</li>
+          </ul>
+
+          <h4>En gráficos de líneas</h4>
+          <ul>
+            <li><strong>Color:</strong> La serie principal en color de marca, las series de referencia (año anterior, presupuesto) en gris o línea discontinua.</li>
+            <li><strong>Intensidad:</strong> Línea más gruesa para la serie principal (3px), más fina para las secundarias (1px).</li>
+            <li><strong>Marcadores (forma):</strong> Solo en el último punto de la serie actual para indicar "aquí estamos ahora".</li>
+          </ul>
+
+          <div class="note note--practice">
+            📌 <strong>Buena práctica:</strong> La técnica más efectiva en Power BI es la de "gris + acento": todos los datos en gris neutro y solo el dato que responde a la pregunta principal en tu color de marca. Es la aplicación directa del atributo preatentivo de color — y transforma cualquier gráfico de "datos" en "mensaje".
+          </div>
+        </div>
+
+        <!-- ─────────────────────────────────────────── -->
+        <!-- 7. Errores comunes                          -->
+        <!-- ─────────────────────────────────────────── -->
+        <div class="category-header" id="errores">
+          <span class="category-header__icon">🐛</span>
+          <h2 class="category-header__title">Errores comunes con atributos preatentivos</h2>
+        </div>
+
+        <div class="concept-card">
+          <h3>Los que anulan el efecto preatentivo</h3>
+
+          <div class="comparison-grid">
+            <div class="comparison-col comparison-col--bad">
+              <p class="comparison-col__label">❌ Errores que anulan el efecto</p>
+              <ul>
+                <li>Cada barra de un color diferente → ninguna destaca</li>
+                <li>Todas las celdas de la tabla con fondo de color → mapa de calor ilegible</li>
+                <li>Negrita en todo el texto → la negrita pierde su función de énfasis</li>
+                <li>5 colores de alerta diferentes → el usuario no sabe cuál es importante</li>
+                <li>Formato condicional en todos los visuals → todo "grita" a la vez</li>
+                <li>Iconos decorativos en cada fila → los iconos funcionales se pierden</li>
+              </ul>
+            </div>
+            <div class="comparison-col comparison-col--good">
+              <p class="comparison-col__label">✅ Uso efectivo</p>
+              <ul>
+                <li>Todas las barras grises, una en color → esa destaca al instante</li>
+                <li>Formato condicional solo en la columna de estado → fácil de escanear</li>
+                <li>Negrita solo en valores que necesitan atención → el ojo va directo</li>
+                <li>Un color de alerta (rojo) y uno de éxito (verde) → lenguaje binario claro</li>
+                <li>Formato condicional solo en 1-2 visuals clave → el impacto se concentra</li>
+                <li>Iconos solo donde hay un estado que comunicar → cada icono tiene valor</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="note note--warning">
+            ⚠️ <strong>Ojo con esto:</strong> El error número uno con los atributos preatentivos es <strong>usarlos para todo</strong>. Si todo tiene color, si todo es grande, si todo tiene un icono — el sistema preatentivo se satura y ya no puede distinguir qué es importante. El poder del atributo preatentivo viene de la <em>escasez</em>: úsalo poco para que funcione mucho.
+          </div>
+        </div>
+
+        <!-- ─────────────────────────────────────────── -->
+        <!-- 8. Checklist                                -->
+        <!-- ─────────────────────────────────────────── -->
+        <div class="category-header" id="checklist">
+          <span class="category-header__icon">✅</span>
+          <h2 class="category-header__title">Checklist preatentiva</h2>
+        </div>
+
+        <div class="concept-card">
+          <h3>Antes de publicar, verifica estos 10 puntos</h3>
+
+          <ul class="checklist">
+            <li>El dato más importante de cada página destaca por al menos un atributo preatentivo (color, tamaño o posición)</li>
+            <li>No hay más de 2 atributos preatentivos combinados en un mismo elemento</li>
+            <li>El color de acento se usa en máximo 1-2 visuals por página — el resto es neutro</li>
+            <li>Los gráficos de barras usan la técnica "gris + acento" para dirigir la atención</li>
+            <li>El formato condicional en tablas combina color + icono (doble canal para accesibilidad)</li>
+            <li>Las cards de KPI usan tamaño grande + color para el valor principal y tamaño pequeño + gris para el contexto</li>
+            <li>Las líneas de referencia (año anterior, objetivo) están en gris o discontinuas para no competir con la serie principal</li>
+            <li>No hay "inflación preatentiva" — si todo destaca, nada destaca</li>
+            <li>Al entrecerrar los ojos mirando el dashboard, lo que destaca es lo que debería destacar</li>
+            <li>Un usuario nuevo puede identificar el dato más importante de la página en menos de 3 segundos</li>
+          </ul>
+
+          <div class="note note--next">
+            🚀 <strong>¡Lo estás haciendo genial!</strong> Los atributos preatentivos son el fundamento invisible de todo buen dashboard. No necesitas aprender neurocience en profundidad — solo necesitas recordar esto: el color es tu arma más potente, úsalo con criterio. Lo que no tiene color, se queda en gris. Y lo que importa de verdad, salta a la vista sin que nadie tenga que buscarlo. 🌸
+          </div>
+        </div>
+
+        <!-- Navegación entre páginas -->
+        <nav aria-label="Páginas relacionadas" style="margin-top: 2.5rem; display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap;">
+          <a href="storytelling.html" style="display: inline-flex; align-items: center; gap: 0.5rem; color: var(--color-coral); text-decoration: none; font-weight: 600; font-size: 0.9375rem;">
+            ← Storytelling con Datos
+          </a>
+          <a href="temas.html" style="display: inline-flex; align-items: center; gap: 0.5rem; color: var(--color-coral); text-decoration: none; font-weight: 600; font-size: 0.9375rem;">
+            Temas en Power BI →
+          </a>
+        </nav>
+
+      </div><!-- /topic-page -->
+    </main>
+  </div><!-- /page-wrapper -->
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script>
+  <script src="../../assets/js/theme.js"></script>
+  <script src="../../assets/js/main.js"></script>
+  <script src="../../assets/js/cursor.js"></script>
+
+</body>
+</html>
