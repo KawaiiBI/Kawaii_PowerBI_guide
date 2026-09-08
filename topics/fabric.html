@@ -39,6 +39,7 @@
     .topic-header__title { font-size: 1.875rem; font-weight: 700; margin-bottom: 0.25rem; }
     .topic-header__subtitle { color: var(--color-slate); font-size: 0.9375rem; line-height: 1.6; margin-bottom: 0.75rem; }
     .topic-header__levels { display: flex; gap: 0.375rem; flex-wrap: wrap; }
+    .topic-header__updated { margin-top: 0.75rem; font-size: 0.8rem; color: var(--color-slate); font-weight: 600; }
 
     .content-section { margin: 48px 0; }
     .section-header {
@@ -166,24 +167,28 @@
     }
     .category-card__levels { display: flex; gap: 0.375rem; margin-top: 0.25rem; }
 
-    /* ----- Diagrama simple del stack Fabric ----- */
+    /* ----- Diagrama del stack Fabric (capas + bandas transversales) ----- */
     .fabric-stack {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 10px;
       background: var(--color-white);
       border: 2px solid var(--color-mauve);
       border-radius: 14px;
       padding: 24px;
       margin: 24px 0;
     }
+    /* Columna central: las 3 capas horizontales apiladas */
+    .fabric-stack__core { display: flex; flex-direction: column; gap: 10px; }
     .fabric-stack__layer {
       padding: 14px 18px;
-      margin: 8px 0;
       border-radius: 10px;
       font-weight: 700;
       display: flex;
       align-items: center;
       gap: 10px;
+      height: 100%;
     }
-    .fabric-stack__layer--copilot { background: linear-gradient(135deg, #FFE5F1, #FFF0E5); border-left: 4px solid var(--color-coral); }
     .fabric-stack__layer--workloads { background: var(--color-rose); border-left: 4px solid var(--color-peach); }
     .fabric-stack__layer--onelake { background: #E8F4FD; border-left: 4px solid #4A90E2; }
     .fabric-stack__layer--capacity { background: #F0E8FD; border-left: 4px solid #8B5CF6; }
@@ -193,6 +198,33 @@
       letter-spacing: 0.05em;
       color: var(--color-slate);
       margin-left: auto;
+    }
+    /* Bandas verticales que cruzan todas las capas (transversales) */
+    .fabric-stack__band {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      padding: 16px 10px;
+      border-radius: 10px;
+    }
+    .fabric-stack__band--copilot { background: linear-gradient(160deg, #FFE5F1, #FFF0E5); border: 2px solid var(--color-coral); }
+    .fabric-stack__band--gov { background: linear-gradient(160deg, #EAF7F1, #E8F0FD); border: 2px solid var(--color-success); }
+    .fabric-stack__band-icon { font-size: 1.6rem; line-height: 1; }
+    .fabric-stack__band-text {
+      writing-mode: vertical-rl;
+      transform: rotate(180deg);
+      font-weight: 800;
+      font-size: 0.9rem;
+      letter-spacing: 0.02em;
+      color: var(--color-dark);
+      white-space: nowrap;
+    }
+    @media (max-width: 768px) {
+      .fabric-stack { grid-template-columns: 1fr; }
+      .fabric-stack__band { flex-direction: row; }
+      .fabric-stack__band-text { writing-mode: horizontal-tb; transform: none; }
     }
 
     /* ----- Código inline ----- */
@@ -218,7 +250,7 @@
   <!-- SIDEBAR -->
   <aside class="site-sidebar">
     <div class="site-sidebar__profile">
-      <img src="../assets/images/avatar Sara.png" alt="Sara Lozano Martí" class="site-sidebar__avatar" />
+      <img src="../assets/images/avatar-sara.png" alt="Sara Lozano Martí" class="site-sidebar__avatar" />
       <p class="site-sidebar__name">Sara Lozano Martí</p>
       <p class="site-sidebar__subtitle">Power BI Expert</p>
     </div>
@@ -269,17 +301,17 @@
       </a>
       <div class="site-sidebar__social">
         <a href="https://www.linkedin.com/in/saralozanomarti" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
-          <img src="../assets/images/logo linkedIN.png" alt="LinkedIn" class="site-sidebar__social-icon" />
+          <img src="../assets/images/logo-linkedin.png" alt="LinkedIn" class="site-sidebar__social-icon" />
         </a>
         <a href="https://www.youtube.com/@KawaiiPowerBI" target="_blank" rel="noopener noreferrer" aria-label="YouTube">
-          <img src="../assets/images/logo youtube.png" alt="YouTube" class="site-sidebar__social-icon" />
+          <img src="../assets/images/logo-youtube.png" alt="YouTube" class="site-sidebar__social-icon" />
         </a>
         <a href="https://github.com/KawaiiBI" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
-          <img src="../assets/images/logo github.png" alt="GitHub" class="site-sidebar__social-icon" />
+          <img src="../assets/images/logo-github.png" alt="GitHub" class="site-sidebar__social-icon" />
         </a>
       </div>
       <div class="site-sidebar__logo-bottom">
-        <img src="../assets/images/Logo Kawaii.jpg" alt="Kawaii BI" class="site-sidebar__logo-img" />
+        <img src="../assets/images/logo-kawaii.jpg" alt="Kawaii BI" class="site-sidebar__logo-img" />
       </div>
       <p class="site-sidebar__copyright">
         Power BI Guide 🌸<br>
@@ -314,6 +346,7 @@
               <span class="badge badge--intermediate">Intermedio</span>
               <span class="badge badge--advanced">Avanzado</span>
             </div>
+            <p class="topic-header__updated">🗓️ Última revisión: septiembre de 2026</p>
           </div>
         </div>
 
@@ -363,39 +396,63 @@
           </div>
 
           <p style="font-size: 16px; line-height: 1.75; margin-bottom: 20px;">
-            Visualmente es útil pensar en Fabric como una tarta de 4 capas. Cada una se apoya
-            en la de debajo y todas juntas conforman la plataforma:
+            Visualmente es útil pensar en Fabric como <strong>3 capas horizontales</strong>
+            que se apoyan una en otra, más <strong>2 bandas verticales</strong> — Copilot y
+            la gobernanza y seguridad — que las <strong>cruzan de arriba a abajo</strong>
+            porque no son un piso más, sino algo transversal a toda la plataforma:
           </p>
 
           <div class="fabric-stack">
-            <div class="fabric-stack__layer fabric-stack__layer--copilot">
-              <span style="font-size: 1.5rem;">🤖</span>
-              <span>Copilot e IA</span>
-              <span class="fabric-stack__label">Asistente transversal</span>
+            <div class="fabric-stack__band fabric-stack__band--copilot">
+              <span class="fabric-stack__band-icon">🤖</span>
+              <span class="fabric-stack__band-text">Copilot e IA · transversal</span>
             </div>
-            <div class="fabric-stack__layer fabric-stack__layer--workloads">
-              <span style="font-size: 1.5rem;">🧰</span>
-              <span>Experiencias (Workloads)</span>
-              <span class="fabric-stack__label">Data Factory · Engineering · Warehouse · Science · RTI · Power BI</span>
+
+            <div class="fabric-stack__core">
+              <div class="fabric-stack__layer fabric-stack__layer--workloads">
+                <span style="font-size: 1.5rem;">🧰</span>
+                <span>Experiencias (Workloads)</span>
+                <span class="fabric-stack__label">Data Factory · Engineering · Warehouse · Science · RTI · Power BI</span>
+              </div>
+              <div class="fabric-stack__layer fabric-stack__layer--onelake">
+                <span style="font-size: 1.5rem;">🪣</span>
+                <span>OneLake</span>
+                <span class="fabric-stack__label">Almacén único, formato Delta Lake</span>
+              </div>
+              <div class="fabric-stack__layer fabric-stack__layer--capacity">
+                <span style="font-size: 1.5rem;">⚙️</span>
+                <span>Capacidad (F SKU)</span>
+                <span class="fabric-stack__label">Cómputo unificado facturado por segundo</span>
+              </div>
             </div>
-            <div class="fabric-stack__layer fabric-stack__layer--onelake">
-              <span style="font-size: 1.5rem;">🪣</span>
-              <span>OneLake</span>
-              <span class="fabric-stack__label">Almacén único, formato Delta Parquet</span>
-            </div>
-            <div class="fabric-stack__layer fabric-stack__layer--capacity">
-              <span style="font-size: 1.5rem;">⚙️</span>
-              <span>Capacidad (F SKU)</span>
-              <span class="fabric-stack__label">Cómputo unificado facturado por segundo</span>
+
+            <div class="fabric-stack__band fabric-stack__band--gov">
+              <span class="fabric-stack__band-icon">🔒</span>
+              <span class="fabric-stack__band-text">Gobernanza y seguridad · transversal</span>
             </div>
           </div>
 
           <p style="font-size: 15px; line-height: 1.7; color: var(--color-slate); margin-top: 16px;">
             De abajo hacia arriba: compras una <strong>capacidad</strong> (cómputo), que da
             servicio a un <strong>OneLake</strong> (almacenamiento), sobre el cual corren las
-            <strong>experiencias</strong> (las herramientas de trabajo), todas ellas
-            potenciadas por <strong>Copilot</strong> (la capa de IA generativa).
+            <strong>experiencias</strong> (las herramientas de trabajo). Y cruzando las tres
+            capas, como bandas verticales, están <strong>Copilot</strong> (la IA generativa) y
+            la <strong>gobernanza y seguridad</strong> (Purview, permisos, RLS): no son un
+            piso más, sino que atraviesan toda la plataforma de arriba a abajo.
           </p>
+
+          <div class="note note--tip">
+            <strong>💡 ¿Delta Lake, no "Delta Parquet"?</strong>
+            En Fabric las tablas gestionadas se guardan en <strong>Delta Lake</strong>, no en
+            Parquet "pelado". Parquet es solo el archivo físico columnar de Apache; por sí
+            solo no da ACID, time travel, control de esquema ni <code>MERGE</code>. Todo eso
+            lo aporta <strong>Delta Lake</strong>, la capa de tabla con log de transacciones
+            (<code>_delta_log</code>) que vive encima del Parquet y es lo que convierte a
+            OneLake en un verdadero <em>lakehouse</em> — y lo que hace posible Direct Lake.
+            Dato kawaii 🌸: Delta lo creó <strong>Databricks</strong> (open source, bajo la
+            Linux Foundation), no Microsoft. Y hoy OneLake también interopera con
+            <strong>Apache Iceberg</strong>, otro formato abierto de tabla.
+          </div>
         </section>
 
         <!-- ================================================
@@ -418,7 +475,7 @@
               <h3 class="pillar-card__title">1. OneLake</h3>
               <p>
                 Un <strong>único lago de datos</strong> por organización, en formato abierto
-                Delta Parquet, accesible desde todas las herramientas. El "OneDrive de los
+                <strong>Delta Lake</strong>, accesible desde todas las herramientas. El "OneDrive de los
                 datos": una sola copia, muchos consumidores. Sin silos, sin duplicación,
                 sin export/import entre servicios.
               </p>
@@ -532,6 +589,17 @@
             Data Warehouse es visible y consultable desde un Notebook de Data Engineering,
             desde Power BI, o desde Real-Time Intelligence, sin mover un solo byte.
           </div>
+
+          <div class="note note--tip">
+            <strong>🆕 Más allá de la analítica: Databases y Fabric IQ</strong>
+            A las 6 experiencias analíticas se suma <strong>Databases</strong>, ya una carga
+            de trabajo de primera clase: desde Ignite (noviembre de 2025) la
+            <strong>SQL database en Fabric</strong> está en disponibilidad general y aporta la
+            pieza <strong>transaccional (OLTP)</strong> dentro de Fabric — operar y analizar
+            sobre el mismo lago, sin mover datos. Y en preview llega <strong>Fabric IQ</strong>,
+            la capa de <em>semántica de negocio</em> que da a la IA un modelo común de tus
+            datos. Fabric ya no es solo analítica: también es transaccional. 🌸
+          </div>
         </section>
 
         <!-- ================================================
@@ -558,9 +626,10 @@
                 (≈ 40%).</li>
             <li><strong>Trial:</strong> 60 días gratis con una capacidad equivalente a F64,
                 perfecta para aprender y prototipar.</li>
-            <li><strong>P SKUs (Power BI Premium):</strong> los antiguos P1/P2/P3 se han
-                fusionado en el mismo modelo — una capacidad P incluye todas las experiencias
-                de Fabric.</li>
+            <li><strong>P SKUs (Power BI Premium) — legacy en retiro:</strong> los antiguos
+                P1/P2/P3 <em>no</em> se fusionaron: están en proceso de retirada. Sin
+                Enterprise Agreement, su fin de vida fue el <strong>1 de enero de 2026</strong>,
+                y la recomendación oficial es <strong>migrar a SKUs F</strong>.</li>
           </ul>
 
           <div class="note note--tip">
@@ -595,12 +664,12 @@
               </div>
               <p class="category-card__desc">
                 El lago de datos único de Fabric. Aprende la jerarquía tenant → workspace →
-                item, el concepto OneCopy, el formato abierto Delta Parquet, los shortcuts
+                item, el concepto OneCopy, el formato abierto Delta Lake, los shortcuts
                 para conectar con ADLS, S3 y GCS sin mover datos, y el explorador de archivos
                 integrado en Windows.
               </p>
               <p class="category-card__topics">
-                📌 Jerarquía · OneCopy · Delta Parquet · Shortcuts · File Explorer · Dominios · Admin
+                📌 Jerarquía · OneCopy · Delta Lake · Shortcuts · File Explorer · Dominios · Admin
               </p>
               <div class="category-card__levels">
                 <span class="badge badge--intermediate">Intermedio</span>

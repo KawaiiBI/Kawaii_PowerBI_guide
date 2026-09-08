@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="OneLake: el lago de datos único de Microsoft Fabric. Jerarquía, OneCopy, formato Delta Parquet, shortcuts, file explorer y arquitectura.">
+  <meta name="description" content="OneLake: el lago de datos único de Microsoft Fabric. Jerarquía, OneCopy, formato Delta Lake, shortcuts, file explorer y arquitectura.">
   <title>OneLake — Microsoft Fabric | Power BI Guide by Kawaii BI</title>
 
   <!-- Google Fonts -->
@@ -279,7 +279,7 @@
   <!-- SIDEBAR -->
   <aside class="site-sidebar">
     <div class="site-sidebar__profile">
-      <img src="../../assets/images/avatar Sara.png" alt="Sara Lozano Martí" class="site-sidebar__avatar" />
+      <img src="../../assets/images/avatar-sara.png" alt="Sara Lozano Martí" class="site-sidebar__avatar" />
       <p class="site-sidebar__name">Sara Lozano Martí</p>
       <p class="site-sidebar__subtitle">Power BI Expert</p>
     </div>
@@ -330,17 +330,17 @@
       </a>
       <div class="site-sidebar__social">
         <a href="https://www.linkedin.com/in/saralozanomarti" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
-          <img src="../../assets/images/logo linkedIN.png" alt="LinkedIn" class="site-sidebar__social-icon" />
+          <img src="../../assets/images/logo-linkedin.png" alt="LinkedIn" class="site-sidebar__social-icon" />
         </a>
         <a href="https://www.youtube.com/@KawaiiPowerBI" target="_blank" rel="noopener noreferrer" aria-label="YouTube">
-          <img src="../../assets/images/logo youtube.png" alt="YouTube" class="site-sidebar__social-icon" />
+          <img src="../../assets/images/logo-youtube.png" alt="YouTube" class="site-sidebar__social-icon" />
         </a>
         <a href="https://github.com/KawaiiBI" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
-          <img src="../../assets/images/logo github.png" alt="GitHub" class="site-sidebar__social-icon" />
+          <img src="../../assets/images/logo-github.png" alt="GitHub" class="site-sidebar__social-icon" />
         </a>
       </div>
       <div class="site-sidebar__logo-bottom">
-        <img src="../../assets/images/Logo Kawaii.jpg" alt="Kawaii BI" class="site-sidebar__logo-img" />
+        <img src="../../assets/images/logo-kawaii.jpg" alt="Kawaii BI" class="site-sidebar__logo-img" />
       </div>
       <p class="site-sidebar__copyright">
         Power BI Guide 🌸<br>
@@ -371,7 +371,7 @@
             <p class="topic-header__subtitle">
               Un único lago de datos por organización, en formato abierto, accesible desde
               todas las experiencias de Fabric y desde fuera del ecosistema. Entiende su
-              jerarquía, el principio OneCopy, Delta Parquet, los shortcuts y la
+              jerarquía, el principio OneCopy, Delta Lake, los shortcuts y la
               integración con Windows. 🌸
             </p>
             <div class="topic-header__levels">
@@ -387,7 +387,7 @@
             <a href="#que-es" class="toc-box__link">🪣 ¿Qué es OneLake?</a>
             <a href="#jerarquia" class="toc-box__link">🌳 La jerarquía: tenant → workspace → item → folder</a>
             <a href="#onecopy" class="toc-box__link">♻️ OneCopy: una copia, muchos consumidores</a>
-            <a href="#delta-parquet" class="toc-box__link">📦 Formato abierto: Delta Parquet</a>
+            <a href="#delta-parquet" class="toc-box__link">📦 Formato abierto: Delta Lake</a>
             <a href="#shortcuts" class="toc-box__link">🔗 Shortcuts: conecta datos sin moverlos</a>
             <a href="#file-explorer" class="toc-box__link">💻 OneLake File Explorer</a>
             <a href="#apis" class="toc-box__link">🧪 APIs y acceso programático</a>
@@ -584,19 +584,20 @@ https://onelake.dfs.fabric.microsoft.com/Ventas/Bronze.Lakehouse/Tables/facturas
         </section>
 
         <!-- ================================================
-             SECCIÓN 4: DELTA PARQUET
+             SECCIÓN 4: DELTA LAKE
         ================================================ -->
         <section class="content-section" id="delta-parquet">
           <div class="section-header">
             <span class="section-icon">📦</span>
-            <h2>Formato abierto: Delta Parquet</h2>
+            <h2>Formato abierto: Delta Lake</h2>
           </div>
 
           <p class="text">
             OneLake no es un formato propietario. Todo lo que se guarda en el área
             <code>Tables/</code> se almacena como <strong>Delta Lake</strong>, un formato
-            open source estandarizado por la Linux Foundation. Esto tiene dos ventajas
-            enormes:
+            open source creado por <strong>Databricks</strong> y estandarizado por la Linux
+            Foundation (y hoy OneLake también interopera con <strong>Apache Iceberg</strong>,
+            otro formato abierto de tabla). Esto tiene dos ventajas enormes:
           </p>
 
           <ul style="font-size: 16px; line-height: 1.85; margin: 16px 0 24px; padding-left: 24px;">
