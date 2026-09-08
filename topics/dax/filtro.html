@@ -639,6 +639,18 @@ DIVIDE(
             <li><strong>ALLNOBLANKROW</strong> — Como ALL pero excluye la fila en blanco generada por relaciones inválidas</li>
             <li><strong>ALLCROSSFILTERED</strong> — Quita filtros incluyendo los que llegan por filtrado cruzado desde tablas relacionadas</li>
           </ul>
+
+          <div class="video-card">
+            <a class="video-card__media" href="https://www.youtube.com/watch?v=yCTrzXyY0rk" target="_blank" rel="noopener noreferrer" aria-label="Ver en YouTube: ALL vs ALLSELECTED vs ALLEXCEPT vs REMOVEFILTERS vs KEEPFILTERS">
+              <img class="video-card__thumb" src="https://i.ytimg.com/vi/yCTrzXyY0rk/hqdefault.jpg" alt="Miniatura del vídeo: ALL vs ALLSELECTED vs ALLEXCEPT vs REMOVEFILTERS vs KEEPFILTERS" loading="lazy" width="480" height="360">
+              <span class="video-card__play" aria-hidden="true"></span>
+            </a>
+            <div class="video-card__body">
+              <p class="video-card__eyebrow">🎬 Apréndelo en vídeo</p>
+              <p class="video-card__title">ALL vs ALLSELECTED vs ALLEXCEPT vs REMOVEFILTERS vs KEEPFILTERS en DAX</p>
+              <a class="video-card__link" href="https://www.youtube.com/watch?v=yCTrzXyY0rk" target="_blank" rel="noopener noreferrer">Ver en mi canal ↗</a>
+            </div>
+          </div>
         </section>
 
         <!-- SECCIÓN 3: REMOVEFILTERS -->
@@ -994,5 +1006,20 @@ CALCULATE([Ventas], FILTER(RELATEDTABLE('Clientes'), 'Clientes'[Segmento] = "Pre
     });
   </script>
   <script src="../../assets/js/cursor.js"></script>
+
+  <script type="application/ld+json">
+  [
+    {
+      "@context": "https://schema.org",
+      "@type": "VideoObject",
+      "name": "ALL vs ALLSELECTED vs ALLEXCEPT vs REMOVEFILTERS vs KEEPFILTERS en DAX",
+      "description": "Comparativa de las funciones de manipulación de filtros en DAX (ALL, ALLSELECTED, ALLEXCEPT, REMOVEFILTERS y KEEPFILTERS) y cuándo usar cada una en Power BI.",
+      "thumbnailUrl": "https://i.ytimg.com/vi/yCTrzXyY0rk/hqdefault.jpg",
+      "uploadDate": "2025-11-08",
+      "contentUrl": "https://www.youtube.com/watch?v=yCTrzXyY0rk",
+      "embedUrl": "https://www.youtube-nocookie.com/embed/yCTrzXyY0rk"
+    }
+  ]
+  </script>
 </body>
 </html>
