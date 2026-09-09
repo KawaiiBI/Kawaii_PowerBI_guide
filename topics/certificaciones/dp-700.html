@@ -45,6 +45,24 @@
     .concept-card p { font-size: 0.9375rem; line-height: 1.7; color: var(--color-dark); margin-bottom: 0.75rem; }
     .concept-card ul { padding-left: 1.25rem; font-size: 0.9375rem; line-height: 1.8; color: var(--color-dark); }
     .concept-card code { background: var(--color-blush); padding: 0.1em 0.4em; border-radius: 4px; font-family: 'Fira Code', monospace; font-size: 0.85em; color: var(--color-coral); }
+
+    .exam-info { display: flex; gap: 1rem; flex-wrap: wrap; margin: 1.5rem 0 0.5rem; }
+    .exam-info__item { flex: 1 1 200px; background: var(--color-rose); border: 1px solid var(--color-mauve); border-radius: var(--border-radius-sm); padding: 1rem 1.15rem; }
+    .exam-info__pct { font-size: 1.5rem; font-weight: 800; color: var(--color-coral); display: block; }
+    .exam-info__label { font-size: 0.8125rem; color: var(--color-slate); line-height: 1.4; }
+
+    .module-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1rem; margin-top: 1.25rem; }
+    .module-card { display: flex; gap: 1rem; align-items: flex-start; background: var(--color-white); border: 1.5px solid var(--color-mauve); border-radius: var(--border-radius); padding: 1.1rem 1.25rem; text-decoration: none; color: inherit; transition: var(--transition); }
+    .module-card:hover { border-color: var(--color-coral); transform: translateY(-3px); box-shadow: var(--shadow-md); text-decoration: none; }
+    .module-card__num { font-family: 'Fira Code', monospace; font-weight: 700; font-size: 1.05rem; color: #fff; background: linear-gradient(135deg, var(--color-coral), var(--color-peach)); border-radius: 10px; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .module-card__title { display: block; font-weight: 700; color: var(--color-dark); font-size: 1rem; margin-bottom: 0.2rem; }
+    .module-card__desc { display: block; font-size: 0.8125rem; color: var(--color-slate); line-height: 1.5; }
+
+    .tips-card { display: flex; gap: 1rem; align-items: center; background: linear-gradient(135deg, #FFF6F4, #FFF2F0); border: 2px dashed var(--color-coral); border-radius: var(--border-radius); padding: 1.5rem; text-decoration: none; color: inherit; transition: var(--transition); margin-top: 1.25rem; }
+    .tips-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); text-decoration: none; }
+    .tips-card__icon { font-size: 2.5rem; line-height: 1; flex-shrink: 0; }
+    .tips-card__title { font-weight: 800; color: var(--color-dark); font-size: 1.125rem; margin-bottom: 0.25rem; }
+    .tips-card__desc { font-size: 0.875rem; color: var(--color-slate); line-height: 1.55; }
   </style>
 </head>
 <body>
@@ -105,11 +123,194 @@
           </div>
         </header>
 
-        <!-- CONTENIDO DEL CURSO: se irá completando con los apuntes de Sara -->
+        <!-- Introducción al curso -->
+        <p style="font-size: 1.0625rem; line-height: 1.8; margin-bottom: 1rem;">
+          Bienvenida a mi curso kawaii para aprobar la <strong>DP-700 (Implementing Data Engineering
+          Solutions Using Microsoft Fabric)</strong> 🌸. Aquí tienes <strong>17 módulos</strong> con mis
+          apuntes: teoría clara, esquemas, ejemplos de código y lo que <em>de verdad</em> entra en
+          el examen. Cada módulo es una página independiente — entra al que quieras cuando quieras.
+        </p>
+
         <div class="note note--tip">
-          🚧 <strong>Curso en construcción</strong>
-          Estoy volcando aquí mis apuntes kawaii de la DP-700. ¡Vuelve pronto para el contenido completo! 🌸
+          💡 <strong>Cómo aprovecharlo:</strong> ve en orden si empiezas de cero, o salta al módulo que
+          necesites repasar. Y deja para el <strong>final</strong> el apartado de <em>Tips y Trampas</em>:
+          son las trampas típicas del examen, para rematar justo antes de presentarte. 🎀
         </div>
+
+        <!-- Info del examen -->
+        <div class="category-header">
+          <span class="category-header__icon">📋</span>
+          <h2 class="category-header__title">El examen de un vistazo</h2>
+        </div>
+        <div class="exam-info">
+          <div class="exam-info__item"><span class="exam-info__pct">30–35%</span><span class="exam-info__label">Implementar y gestionar una solución de analítica</span></div>
+          <div class="exam-info__item"><span class="exam-info__pct">30–35%</span><span class="exam-info__label">Ingerir y transformar datos</span></div>
+          <div class="exam-info__item"><span class="exam-info__pct">30–35%</span><span class="exam-info__label">Monitorizar y optimizar la solución</span></div>
+        </div>
+
+        <!-- Módulos -->
+        <div class="category-header">
+          <span class="category-header__icon">📚</span>
+          <h2 class="category-header__title">Los 17 módulos del curso</h2>
+        </div>
+        <div class="module-grid">
+
+          <a href="dp-700/modulo-1.html" class="module-card">
+            <span class="module-card__num">01</span>
+            <div class="module-card__body">
+              <span class="module-card__title">Introducción a Fabric</span>
+              <span class="module-card__desc">Analítica end-to-end, OneLake, shortcuts, mirroring, workspaces, roles y capacidad.</span>
+            </div>
+          </a>
+
+          <a href="dp-700/modulo-2.html" class="module-card">
+            <span class="module-card__num">02</span>
+            <div class="module-card__body">
+              <span class="module-card__title">Lakehouses en Fabric</span>
+              <span class="module-card__desc">Crear y organizar lakehouses, Tables vs Files, SQL analytics endpoint y carga de datos.</span>
+            </div>
+          </a>
+
+          <a href="dp-700/modulo-3.html" class="module-card">
+            <span class="module-card__num">03</span>
+            <div class="module-card__body">
+              <span class="module-card__title">Apache Spark en Fabric</span>
+              <span class="module-card__desc">Pools, notebooks, PySpark, configuración de Spark y procesamiento a escala.</span>
+            </div>
+          </a>
+
+          <a href="dp-700/modulo-4.html" class="module-card">
+            <span class="module-card__num">04</span>
+            <div class="module-card__body">
+              <span class="module-card__title">Delta Lake: tablas</span>
+              <span class="module-card__desc">Formato Delta, transacciones ACID, time travel, MERGE y optimización.</span>
+            </div>
+          </a>
+
+          <a href="dp-700/modulo-5.html" class="module-card">
+            <span class="module-card__num">05</span>
+            <div class="module-card__body">
+              <span class="module-card__title">Dataflows Gen2</span>
+              <span class="module-card__desc">Ingesta y transformación low-code con Power Query y destinos de datos.</span>
+            </div>
+          </a>
+
+          <a href="dp-700/modulo-6.html" class="module-card">
+            <span class="module-card__num">06</span>
+            <div class="module-card__body">
+              <span class="module-card__title">Pipelines y orquestación</span>
+              <span class="module-card__desc">Data pipelines, actividades, parámetros y orquestación de cargas.</span>
+            </div>
+          </a>
+
+          <a href="dp-700/modulo-7.html" class="module-card">
+            <span class="module-card__num">07</span>
+            <div class="module-card__body">
+              <span class="module-card__title">Arquitectura Medallion</span>
+              <span class="module-card__desc">Capas Bronze / Silver / Gold y buenas prácticas de diseño del lakehouse.</span>
+            </div>
+          </a>
+
+          <a href="dp-700/modulo-8.html" class="module-card">
+            <span class="module-card__num">08</span>
+            <div class="module-card__body">
+              <span class="module-card__title">Real-Time Intelligence: intro</span>
+              <span class="module-card__desc">Fundamentos de la analítica en tiempo real y sus componentes en Fabric.</span>
+            </div>
+          </a>
+
+          <a href="dp-700/modulo-9.html" class="module-card">
+            <span class="module-card__num">09</span>
+            <div class="module-card__body">
+              <span class="module-card__title">Eventstreams en tiempo real</span>
+              <span class="module-card__desc">Capturar, transformar y enrutar flujos de eventos hacia destinos en Fabric.</span>
+            </div>
+          </a>
+
+          <a href="dp-700/modulo-10.html" class="module-card">
+            <span class="module-card__num">10</span>
+            <div class="module-card__body">
+              <span class="module-card__title">Eventhouse y KQL</span>
+              <span class="module-card__desc">Eventhouse, KQL databases y consultas KQL para series temporales.</span>
+            </div>
+          </a>
+
+          <a href="dp-700/modulo-11.html" class="module-card">
+            <span class="module-card__num">11</span>
+            <div class="module-card__body">
+              <span class="module-card__title">Data Warehouse</span>
+              <span class="module-card__desc">Warehouse con T-SQL, ingesta, modelado relacional y consultas.</span>
+            </div>
+          </a>
+
+          <a href="dp-700/modulo-12.html" class="module-card">
+            <span class="module-card__num">12</span>
+            <div class="module-card__body">
+              <span class="module-card__title">SQL Database</span>
+              <span class="module-card__desc">SQL database en Fabric: la pieza transaccional (OLTP) dentro de la plataforma.</span>
+            </div>
+          </a>
+
+          <a href="dp-700/modulo-13.html" class="module-card">
+            <span class="module-card__num">13</span>
+            <div class="module-card__body">
+              <span class="module-card__title">GraphQL API</span>
+              <span class="module-card__desc">Exponer datos de Fabric mediante APIs GraphQL para aplicaciones.</span>
+            </div>
+          </a>
+
+          <a href="dp-700/modulo-14.html" class="module-card">
+            <span class="module-card__num">14</span>
+            <div class="module-card__body">
+              <span class="module-card__title">CI/CD</span>
+              <span class="module-card__desc">Git integration, deployment pipelines y despliegue de contenido sin dramas.</span>
+            </div>
+          </a>
+
+          <a href="dp-700/modulo-15.html" class="module-card">
+            <span class="module-card__num">15</span>
+            <div class="module-card__body">
+              <span class="module-card__title">Secure Data Access</span>
+              <span class="module-card__desc">Seguridad de acceso a datos: workspace, item, OneLake, RLS/CLS y más.</span>
+            </div>
+          </a>
+
+          <a href="dp-700/modulo-16.html" class="module-card">
+            <span class="module-card__num">16</span>
+            <div class="module-card__body">
+              <span class="module-card__title">Purview y gobernanza</span>
+              <span class="module-card__desc">Gobernanza de datos con Microsoft Purview: catálogo, linaje y cumplimiento.</span>
+            </div>
+          </a>
+
+          <a href="dp-700/modulo-17.html" class="module-card">
+            <span class="module-card__num">17</span>
+            <div class="module-card__body">
+              <span class="module-card__title">Monitorizar actividades</span>
+              <span class="module-card__desc">Monitor hub, capacity metrics, alertas y optimización de la solución.</span>
+            </div>
+          </a>
+
+        </div>
+
+        <!-- Apartado separado: Tips y Trampas (para el final) -->
+        <div class="category-header" style="margin-top: 2.5rem;">
+          <span class="category-header__icon">⚠️</span>
+          <h2 class="category-header__title">Para el final: Tips y Trampas de examen</h2>
+        </div>
+        <p style="font-size: 0.9375rem; color: var(--color-slate); line-height: 1.7;">
+          Este apartado va aparte <strong>a propósito</strong>: son las <strong>trampas típicas del
+          examen</strong> y los detalles que más se lían. Déjalo para el <strong>final</strong>, justo
+          antes de presentarte, cuando ya domines los 17 módulos. 🌸
+        </p>
+
+        <a href="dp-700/tips-y-trampas.html" class="tips-card">
+          <span class="tips-card__icon">🎯</span>
+          <div>
+            <div class="tips-card__title">Guía Maestra · Tips y Trampas</div>
+            <div class="tips-card__desc">Las trampas de examen, confusiones frecuentes y comparativas clave, todo junto para tu repaso final. ¡Que no te pillen! 🚀</div>
+          </div>
+        </a>
 
       </div>
     </main>

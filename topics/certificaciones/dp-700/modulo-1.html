@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="DP-700 Módulo 1: Introducción a la analítica end-to-end con Microsoft Fabric. OneLake, shortcuts, mirroring, workspaces, roles, capacidad y SKUs — con trampas de examen.">
+  <title>DP-700 · Módulo 1: Introducción a Fabric | Power BI Guide by Kawaii BI</title>
+  <link rel="canonical" href="https://kawaiibi.es/topics/certificaciones/dp-700/modulo-1.html">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Kawaii Power BI Guide">
+  <meta property="og:locale" content="es_ES">
+  <meta property="og:title" content="DP-700 · Módulo 1: Introducción a Fabric | Power BI Guide by Kawaii BI">
+  <meta property="og:description" content="DP-700 Módulo 1: analítica end-to-end con Microsoft Fabric. OneLake, shortcuts, mirroring, workspaces, roles, capacidad y SKUs — con trampas de examen.">
+  <meta property="og:url" content="https://kawaiibi.es/topics/certificaciones/dp-700/modulo-1.html">
+  <meta property="og:image" content="https://kawaiibi.es/assets/images/og-banner.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="1200">
+  <meta property="og:image:alt" content="Sara Lozano Marti - Kawaii Power BI">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="DP-700 · Módulo 1: Introducción a Fabric | Power BI Guide by Kawaii BI">
+  <meta name="twitter:description" content="DP-700 Módulo 1: analítica end-to-end con Microsoft Fabric. OneLake, shortcuts, mirroring, workspaces, roles y capacidad.">
+  <meta name="twitter:image" content="https://kawaiibi.es/assets/images/og-banner.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/prismjs@1/themes/prism-okaidia.min.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="../../../assets/css/main.css">
+  <link rel="stylesheet" href="../../../assets/css/themes.css">
+  <link rel="stylesheet" href="../../../assets/css/components.css">
+  <link rel="stylesheet" href="../../../assets/css/layout.css">
+
+  <style>
+    .topic-header { text-align: center; padding: 2.25rem 0 1.75rem; border-bottom: 2px solid var(--color-mauve); margin-bottom: 2rem; }
+    .topic-header__eyebrow { font-family: 'Fira Code', monospace; font-size: 0.8125rem; font-weight: 600; color: var(--color-coral); letter-spacing: 0.05em; }
+    .topic-header__icon { font-size: 3.5rem; margin: 0.5rem 0; display: block; }
+    .topic-header__title { font-size: clamp(1.75rem, 4vw, 2.25rem); font-weight: 800; color: var(--color-dark); margin-bottom: 0.625rem; line-height: 1.2; }
+    .topic-header__subtitle { font-size: 1rem; color: var(--color-slate); margin-bottom: 1.25rem; line-height: 1.55; max-width: 680px; margin-left: auto; margin-right: auto; }
+    .topic-header__levels { display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap; align-items: center; }
+
+    .toc { background: var(--color-rose); border-radius: var(--border-radius); padding: 1.25rem 1.5rem; margin-bottom: 2rem; border: 1.5px solid var(--color-mauve); }
+    .toc__title { font-size: 1rem; font-weight: 700; margin: 0 0 0.75rem; }
+    .toc__list { display: flex; flex-wrap: wrap; gap: 0.5rem; list-style: none; padding: 0; margin: 0; }
+    .toc__list a { font-size: 0.8125rem; color: var(--color-coral); text-decoration: none; padding: 0.25rem 0.625rem; background: var(--color-white); border-radius: 999px; border: 1px solid var(--color-mauve); }
+    .toc__list a:hover { background: var(--color-coral); color: #fff; }
+
+    .category-header { display: flex; align-items: center; gap: 0.75rem; margin: 2.5rem 0 1.25rem; padding: 0.875rem 1.25rem; background: var(--color-rose); border-radius: var(--border-radius-sm); border-left: 4px solid var(--color-coral); scroll-margin-top: 20px; }
+    .category-header__icon { font-size: 1.5rem; }
+    .category-header__title { font-size: 1.25rem; font-weight: 700; margin: 0; }
+
+    .concept-card { background: var(--color-white); border: 1.5px solid var(--color-mauve); border-radius: var(--border-radius); padding: 1.5rem 1.75rem; margin-bottom: 1.25rem; }
+    .concept-card h3 { font-size: 1.0625rem; font-weight: 700; color: var(--color-coral); margin: 0 0 0.6rem; }
+    .concept-card h4 { font-size: 0.9375rem; font-weight: 700; color: var(--color-dark); margin: 1.1rem 0 0.4rem; }
+    .concept-card p { font-size: 0.9375rem; line-height: 1.7; color: var(--color-dark); margin-bottom: 0.7rem; }
+    .concept-card ul, .concept-card ol { padding-left: 1.25rem; font-size: 0.9375rem; line-height: 1.75; color: var(--color-dark); margin: 0.4rem 0; }
+    .concept-card code { background: var(--color-blush); padding: 0.1em 0.4em; border-radius: 4px; font-family: 'Fira Code', monospace; font-size: 0.85em; color: var(--color-coral); }
+    .concept-card pre { margin: 0.75rem 0; }
+
+    .md-table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.84rem; }
+    .md-table th, .md-table td { border: 1px solid var(--color-mauve); padding: 0.5rem 0.7rem; text-align: left; vertical-align: top; }
+    .md-table th { background: var(--color-rose); font-weight: 700; color: var(--color-dark); }
+    .md-table tr:nth-child(even) td { background: var(--color-blush); }
+    .table-scroll { overflow-x: auto; }
+
+    .quiz-q { background: var(--color-white); border: 1.5px solid var(--color-mauve); border-left: 4px solid var(--color-coral); border-radius: var(--border-radius-sm); padding: 1rem 1.25rem; margin: 1rem 0; }
+    .quiz-q p { margin: 0 0 0.5rem; font-size: 0.9375rem; }
+    .quiz-q__num { font-weight: 700; color: var(--color-coral); }
+    .quiz-q ol { margin: 0; padding-left: 1.25rem; font-size: 0.9rem; line-height: 1.7; }
+
+    .course-nav { display: flex; justify-content: space-between; gap: 1rem; margin-top: 2.5rem; flex-wrap: wrap; }
+    .course-nav a { flex: 1 1 220px; display: block; background: var(--color-white); border: 1.5px solid var(--color-mauve); border-radius: var(--border-radius); padding: 1rem 1.25rem; text-decoration: none; color: inherit; transition: var(--transition); }
+    .course-nav a:hover { border-color: var(--color-coral); box-shadow: var(--shadow-md); text-decoration: none; }
+    .course-nav__label { font-size: 0.75rem; color: var(--color-slate); text-transform: uppercase; letter-spacing: 0.05em; }
+    .course-nav__title { font-weight: 700; color: var(--color-coral); }
+    .course-nav a.next { text-align: right; }
+  </style>
+</head>
+<body>
+
+  <aside class="site-sidebar">
+    <div class="site-sidebar__profile">
+      <img src="../../../assets/images/avatar-sara.png" alt="Sara Lozano Martí" class="site-sidebar__avatar">
+      <p class="site-sidebar__name">Sara Lozano Martí</p>
+      <p class="site-sidebar__subtitle">Power BI Expert</p>
+    </div>
+    <nav class="site-sidebar__nav" aria-label="Navegación principal">
+      <ul>
+        <li><a href="../../../index.html" class="site-sidebar__link"><span class="site-sidebar__icon">🏠</span> Inicio</a></li>
+        <li><a href="../../dax.html" class="site-sidebar__link"><span class="site-sidebar__icon">⚡</span> Funciones DAX</a></li>
+        <li><a href="../../power-query.html" class="site-sidebar__link"><span class="site-sidebar__icon">🔄</span> Power Query</a></li>
+        <li><a href="../../lenguaje-m.html" class="site-sidebar__link"><span class="site-sidebar__icon">〽️</span> Lenguaje M</a></li>
+        <li><a href="../../modelado.html" class="site-sidebar__link"><span class="site-sidebar__icon">🗄️</span> Modelado</a></li>
+        <li><a href="../../conceptos-powerbi.html" class="site-sidebar__link"><span class="site-sidebar__icon">📊</span> Conceptos Power BI</a></li>
+        <li><a href="../../fabric.html" class="site-sidebar__link"><span class="site-sidebar__icon">🧵</span> Microsoft Fabric</a></li>
+        <li><a href="../../tmdl.html" class="site-sidebar__link"><span class="site-sidebar__icon">📝</span> TMDL</a></li>
+        <li><a href="../../diseno-ux.html" class="site-sidebar__link"><span class="site-sidebar__icon">🎨</span> Diseño y UX</a></li>
+        <li><a href="../../gobernanza.html" class="site-sidebar__link"><span class="site-sidebar__icon">🔒</span> Gobernanza</a></li>
+        <li><a href="../../certificaciones.html" class="site-sidebar__link is-active"><span class="site-sidebar__icon">🎓</span> Certificaciones</a></li>
+      </ul>
+    </nav>
+    <div class="site-sidebar__divider"></div>
+    <div class="site-sidebar__footer">
+      <a href="../../../quien-soy.html" class="site-sidebar__link site-sidebar__link--highlight"><span class="site-sidebar__icon">👩‍💻</span> ¿Quién soy?</a>
+      <div class="site-sidebar__social">
+        <a href="https://www.linkedin.com/in/saralozanomarti" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><img src="../../../assets/images/logo-linkedin.png" alt="LinkedIn" class="site-sidebar__social-icon"></a>
+        <a href="https://www.youtube.com/@KawaiiPowerBI" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><img src="../../../assets/images/logo-youtube.png" alt="YouTube" class="site-sidebar__social-icon"></a>
+        <a href="https://github.com/KawaiiBI" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><img src="../../../assets/images/logo-github.png" alt="GitHub" class="site-sidebar__social-icon"></a>
+      </div>
+      <div class="site-sidebar__logo-bottom"><img src="../../../assets/images/logo-kawaii.jpg" alt="Kawaii BI" class="site-sidebar__logo-img"></div>
+      <p class="site-sidebar__copyright">Power BI Guide 🌸<br>© 2026 Kawaii BI</p>
+    </div>
+  </aside>
+
+  <div class="page-wrapper">
+    <main class="main-content">
+      <div class="topic-page">
+
+        <nav class="breadcrumb" aria-label="Ruta de navegación">
+          <span class="breadcrumb__item"><a href="../../../index.html">🏠 Inicio</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item"><a href="../../certificaciones.html">Certificaciones</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item"><a href="../dp-700.html">DP-700</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item">Módulo 1</span>
+        </nav>
+
+        <header class="topic-header">
+          <span class="topic-header__eyebrow">DP-700 · MÓDULO 1</span>
+          <span class="topic-header__icon">🌊</span>
+          <h1 class="topic-header__title">Introducción a la analítica end-to-end con Microsoft Fabric</h1>
+          <p class="topic-header__subtitle">La puerta de entrada a Fabric: OneLake, shortcuts, mirroring, workspaces, roles, capacidad y SKUs. Las bases arquitectónicas sobre las que se construye todo lo demás. 🌸</p>
+          <div class="topic-header__levels">
+            <span class="badge badge--intermediate">Intermedio</span>
+            <span class="badge badge--advanced">Avanzado</span>
+          </div>
+        </header>
+
+        <nav class="toc" aria-label="Índice del módulo">
+          <p class="toc__title">📑 En este módulo:</p>
+          <ul class="toc__list">
+            <li><a href="#objetivos">1. Objetivos y encaje</a></li>
+            <li><a href="#onelake">2. OneLake</a></li>
+            <li><a href="#shortcuts">3. Shortcuts</a></li>
+            <li><a href="#mirroring">4. Mirroring</a></li>
+            <li><a href="#workspaces">5. Workspaces</a></li>
+            <li><a href="#roles">6. Roles del workspace</a></li>
+            <li><a href="#workspace-settings">7. Configuraciones</a></li>
+            <li><a href="#catalog">8. OneLake Catalog</a></li>
+            <li><a href="#workloads">9. Workloads e items</a></li>
+            <li><a href="#ai">10. Fabric IQ y Copilot</a></li>
+            <li><a href="#capacity">11. Capacity y SKUs</a></li>
+            <li><a href="#data-team">12. Roles del equipo</a></li>
+            <li><a href="#trampas">13. Trampas típicas</a></li>
+            <li><a href="#comparativas">14. Comparativas clave</a></li>
+            <li><a href="#quiz">15. Mini-quiz</a></li>
+          </ul>
+        </nav>
+
+        <!-- ============ 1. OBJETIVOS ============ -->
+        <div class="category-header" id="objetivos">
+          <span class="category-header__icon">🎯</span>
+          <h2 class="category-header__title">1. Objetivos y encaje en el DP-700</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>¿Qué te enseña este módulo?</h3>
+          <p>Es la puerta de entrada a Fabric y <strong>sienta las bases arquitectónicas</strong> sobre las que se construye todo lo demás. La documentación oficial marca tres objetivos:</p>
+          <ol>
+            <li>Identificar las capacidades de Microsoft Fabric.</li>
+            <li>Implementar Fabric para cubrir necesidades analíticas empresariales.</li>
+            <li>Describir cómo Fabric soporta capacidades de IA a través de Copilot, data agents y Fabric IQ.</li>
+          </ol>
+
+          <h4>¿Qué peso tiene en el examen?</h4>
+          <p>No es "un dominio" por sí mismo, pero <strong>es transversal</strong>: OneLake, shortcuts, workspaces, roles y capacidades se cruzan con los tres dominios oficiales.</p>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Dominio del examen</th><th>%</th><th>Conceptos de este módulo</th></tr></thead>
+              <tbody>
+                <tr><td>Implement and manage an analytics solution</td><td>30–35%</td><td>Workspaces, roles, workspace settings, capacidad, OneLake</td></tr>
+                <tr><td>Ingest and transform data</td><td>30–35%</td><td>OneLake shortcuts, mirroring, items de ingesta</td></tr>
+                <tr><td>Monitor and optimize an analytics solution</td><td>30–35%</td><td>Capacity Units, F SKUs, throttling</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="note note--tip">
+            🎯 <strong>Por qué importa:</strong> casi cualquier pregunta escenario del DP-700 empieza con <em>"tienes un workspace…"</em> o <em>"tu organización usa una capacidad F64…"</em>. Sin este módulo dominado, no puedes contextualizar nada.
+          </div>
+
+          <h4>Diferencia respecto a la DP-600</h4>
+          <ul>
+            <li><strong>DP-600:</strong> "cómo consumes datos desde OneLake" 🍵</li>
+            <li><strong>DP-700:</strong> "cómo diseñas la arquitectura de OneLake, gestionas shortcuts, mirroring, capacidad y seguridad end-to-end" 🏗️</li>
+          </ul>
+        </article>
+
+        <!-- ============ 2. ONELAKE ============ -->
+        <div class="category-header" id="onelake">
+          <span class="category-header__icon">🌊</span>
+          <h2 class="category-header__title">2. OneLake: el corazón de Fabric</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>¿Qué es OneLake exactamente?</h3>
+          <p><strong>OneLake es el data lake unificado, lógico y a nivel de tenant</strong> que sirve como almacenamiento único para todos los workloads de Fabric.</p>
+          <p>Frases clave que te pueden preguntar textualmente:</p>
+          <ul>
+            <li>✅ <em>"Single logical data lake for the entire organization"</em></li>
+            <li>✅ <em>"Provisioned automatically with every Fabric tenant"</em></li>
+            <li>✅ <em>"Built on Azure Data Lake Storage Gen2 (ADLS Gen2)"</em></li>
+            <li>✅ <em>"One copy of data"</em></li>
+          </ul>
+
+          <h4>Arquitectura técnica</h4>
+          <ul>
+            <li><strong>Storage layer:</strong> ADLS Gen2</li>
+            <li><strong>Formato por defecto para datos tabulares:</strong> Delta Parquet</li>
+            <li><strong>Formatos soportados:</strong> Delta, Parquet, CSV, JSON y cualquier tipo de fichero</li>
+            <li><strong>APIs:</strong> soporta las APIs de ADLS Gen2 y Azure Blob Storage (SDKs, Storage Explorer, incluso Azure Databricks)</li>
+          </ul>
+
+          <h4>Jerarquía de OneLake</h4>
+          <p>Este esquema es <strong>CLAVE</strong> para entender permisos, dominios y organización:</p>
+          <pre><code class="language-plaintext">Tenant (uno por organización, es la raíz de OneLake)
+ └── Workspace 1
+      ├── Lakehouse A
+      │    ├── Tables (datos estructurados en Delta)
+      │    └── Files (datos no estructurados)
+      ├── Warehouse B
+      ├── Notebook C
+      └── ...
+ └── Workspace 2
+      └── ...</code></pre>
+          <ul>
+            <li>Un <strong>tenant</strong> = una organización de Microsoft Entra</li>
+            <li>Un <strong>workspace</strong> = contenedor lógico con su propia seguridad</li>
+            <li>Un <strong>item</strong> = lakehouse, warehouse, notebook, pipeline, semantic model, report…</li>
+          </ul>
+
+          <div class="note note--warning">
+            🎯 <strong>Un data lake por tenant, siempre:</strong> NO puedes tener múltiples OneLakes en un tenant. Es único, provisionado automáticamente. Lo que sí puedes tener son muchos workspaces dentro.
+          </div>
+
+          <h4>Cross-tenant data sharing</h4>
+          <p>Fabric soporta compartir datos <strong>entre tenants</strong> sin copiar (<em>external data sharing</em>): el propietario concede permisos OneLake a identidades externas y el receptor crea un <strong>shortcut</strong> al dato compartido. Las políticas de gobierno se aplican en el origen.</p>
+
+          <div class="note note--tip">
+            🌸 <strong>Analogía kawaii:</strong> OneLake es como <strong>OneDrive pero para datos</strong>. Un espacio compartido donde caben lakehouses, warehouses y eventhouses, y con shortcuts referencias datos de S3, ADLS u otros workspaces… sin copiar.
+          </div>
+        </article>
+
+        <!-- ============ 3. SHORTCUTS ============ -->
+        <div class="category-header" id="shortcuts">
+          <span class="category-header__icon">🔗</span>
+          <h2 class="category-header__title">3. Shortcuts: acceso a datos sin duplicar</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>Uno de los temas estrella del examen ⭐</h3>
+          <p>Un <strong>shortcut</strong> es una <strong>referencia lógica</strong> (un puntero) a datos que están en otra ubicación. Hacen que los datos aparezcan como si estuvieran en tu workspace local, <strong>sin copiarlos</strong>. Cualquier engine de Fabric (Spark, SQL, Power BI, KQL) puede leer un shortcut como si fuera local.</p>
+
+          <h4>🎯 Tipos de shortcuts</h4>
+          <p><strong>Internos (dentro de Fabric):</strong> Lakehouses, Warehouses, KQL databases, Mirrored databases, Mirrored Azure Databricks Catalogs, SQL databases, Semantic models. Autorización: identidad del <strong>usuario que llama</strong>.</p>
+          <p><strong>Externos (fuera de Fabric):</strong> ADLS Gen2, Azure Blob Storage, Amazon S3, S3 compatible (MinIO, Wasabi), Google Cloud Storage, Dataverse, OneDrive/SharePoint, Iceberg tables, on-premises (vía gateway). Autorización: <strong>cloud connection con credenciales guardadas</strong>.</p>
+
+          <h4>🎯 Shortcuts en Tables vs Files</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Ubicación</th><th>Restricción</th><th>Datos Delta</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Tables</strong></td><td>Solo top level, sin subcarpetas</td><td>Se registran automáticamente como tabla (SQL y Spark)</td></tr>
+                <tr><td><strong>Files</strong></td><td>Cualquier nivel de la jerarquía</td><td>NO se registran como tabla, pero Spark los lee</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <ul>
+            <li><strong>New table shortcut:</strong> apunta a una única tabla Delta</li>
+            <li><strong>New schema shortcut:</strong> apunta a una carpeta con varias tablas Delta → aparece como schema</li>
+            <li><strong>New shortcut (Files):</strong> para cualquier formato y estructura</li>
+          </ul>
+
+          <div class="note note--warning">
+            🎯 <strong>Shortcut caching (¡cae seguro!):</strong> retención configurable de <strong>1 a 28 días</strong>; cada acceso reinicia la retención; <strong>ficheros &gt; 1 GB no se cachean</strong>; soportado solo para <strong>GCS, S3, S3 compatible y on-premises gateway</strong>. Se activa en <em>Workspace settings → OneLake tab</em>.
+          </div>
+
+          <div class="note note--tip">
+            🎯 <strong>Pregunta típica:</strong> <em>"Un equipo quiere reducir egress costs de leer datos frecuentemente desde S3. ¿Qué configuras?"</em> → Shortcut cache en OneLake workspace settings.
+          </div>
+
+          <h4>🎯 Consumo de capacidad con shortcuts</h4>
+          <ul>
+            <li>El acceso consume CU en la <strong>capacidad del workspace donde vive el shortcut</strong> (el consumidor), NO la del origen.</li>
+            <li>Si apunta a un origen externo (ADLS, S3…), OneLake <strong>NO cuenta CU</strong> para esa petición externa → la factura el proveedor externo.</li>
+            <li><strong>Si pausas la capacidad donde vive el dato, los shortcuts en otras capacidades siguen funcionando.</strong></li>
+          </ul>
+
+          <h4>Cómo se leen los shortcuts</h4>
+          <pre><code class="language-python"># PySpark: un shortcut a una tabla Delta en Tables se lee como una tabla más
+df = spark.read.format("delta").load("Tables/MyShortcut")
+display(df)
+
+# Con Spark SQL
+df = spark.sql("SELECT * FROM MyLakehouse.MyShortcut LIMIT 1000")
+display(df)</code></pre>
+          <pre><code class="language-sql">-- T-SQL (SQL analytics endpoint): los shortcuts en Tables aparecen como tablas normales
+SELECT TOP (100) *
+FROM [MyLakehouse].[dbo].[MyShortcut]</code></pre>
+          <pre><code class="language-plaintext">// KQL (Eventhouse): los shortcuts se ven como external tables
+external_table('MyShortcut')
+| take 100</code></pre>
+
+          <h4>Shortcut security (modelo simplificado)</h4>
+          <p>Para acceder a datos vía un shortcut externo se requieren <strong>dos niveles de permisos</strong>: (1) la <strong>cloud connection</strong> autoriza al usuario que creó el shortcut, y (2) <strong>OneLake security</strong> autoriza al usuario que consulta. Los permisos de carpeta <strong>heredan recursivamente</strong>. Además, el usuario necesita <strong>Fabric Read</strong> sobre el item que contiene el shortcut.</p>
+        </article>
+
+        <!-- ============ 4. MIRRORING ============ -->
+        <div class="category-header" id="mirroring">
+          <span class="category-header__icon">🪞</span>
+          <h2 class="category-header__title">4. Mirroring: replicación en tiempo casi real</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>¿Qué es Mirroring?</h3>
+          <p><strong>Mirroring</strong> replica continuamente datos de una base de datos operacional externa a OneLake, <strong>sin pipelines ETL tradicionales</strong>. Bases soportadas: Azure SQL Database, SQL Server, Azure Cosmos DB, Snowflake. El dato replicado se guarda como <strong>Delta Parquet</strong>.</p>
+
+          <h4>🎯 Mirroring vs Shortcuts (te lo preguntan seguro)</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Aspecto</th><th>Shortcut</th><th>Mirroring</th></tr></thead>
+              <tbody>
+                <tr><td>¿Copia datos?</td><td>❌ No, referencia</td><td>✅ Sí, replica continua</td></tr>
+                <tr><td>Fuente ideal</td><td>Storage (S3, ADLS, GCS) u otro workspace Fabric</td><td>BBDD operacional (SQL, Cosmos, Snowflake)</td></tr>
+                <tr><td>Latencia</td><td>Live</td><td>Near real-time</td></tr>
+                <tr><td>Uso principal</td><td>Analítica sin duplicar storage</td><td>HTAP: analizar datos operacionales</td></tr>
+                <tr><td>Coste</td><td>Cero copia (solo egress si aplica)</td><td>Almacenamiento adicional (low-cost)</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="note note--tip">
+            🎯 <strong>Regla mnemotécnica:</strong> <em>"Storage → Shortcut. Base de datos operacional → Mirroring."</em>
+          </div>
+        </article>
+
+        <!-- ============ 5. WORKSPACES ============ -->
+        <div class="category-header" id="workspaces">
+          <span class="category-header__icon">🏢</span>
+          <h2 class="category-header__title">5. Workspaces: contenedores lógicos</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>¿Qué son?</h3>
+          <p>Los <strong>workspaces</strong> son entidades lógicas que agrupan items y <strong>dividen OneLake en contenedores</strong> securizables independientemente. Un workspace tiene su propio conjunto de permisos (roles), está asignado a <strong>una capacidad</strong>, puede tener <strong>Git integration</strong> y configuraciones específicas (Spark, OneLake, Dataflows Gen2, dominio).</p>
+
+          <h4>¿Qué NO es un workspace?</h4>
+          <ul>
+            <li>❌ NO es un tenant (el tenant es la organización entera)</li>
+            <li>❌ NO es una capacidad (la capacidad es el poder de cómputo)</li>
+            <li>❌ NO tiene su propio OneLake (todo vive en el OneLake único del tenant)</li>
+          </ul>
+
+          <h4>Herencia y agrupación</h4>
+          <ul>
+            <li>Puedes asignar roles a <strong>individuos</strong>, <strong>grupos de seguridad</strong> de Entra o <strong>service principals</strong>.</li>
+            <li>Si alguien está en varios grupos con distintos roles → <strong>hereda el rol de mayor permiso</strong>.</li>
+            <li>Los grupos anidados también heredan permisos.</li>
+          </ul>
+        </article>
+
+        <!-- ============ 6. ROLES ============ -->
+        <div class="category-header" id="roles">
+          <span class="category-header__icon">🔐</span>
+          <h2 class="category-header__title">6. Roles del workspace</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>Los 4 roles (casi de memoria)</h3>
+          <ol>
+            <li><strong>Admin:</strong> ver, modificar, compartir y gestionar todo, incluyendo permisos.</li>
+            <li><strong>Member:</strong> ver, modificar y compartir. Puede añadir contributors/viewers.</li>
+            <li><strong>Contributor:</strong> ver y modificar. NO puede compartir.</li>
+            <li><strong>Viewer:</strong> solo lectura.</li>
+          </ol>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Capability</th><th>Admin</th><th>Member</th><th>Contributor</th><th>Viewer</th></tr></thead>
+              <tbody>
+                <tr><td>Delete the workspace</td><td>✅</td><td>❌</td><td>❌</td><td>❌</td></tr>
+                <tr><td>Add admins</td><td>✅</td><td>❌</td><td>❌</td><td>❌</td></tr>
+                <tr><td>Add members</td><td>✅</td><td>✅</td><td>❌</td><td>❌</td></tr>
+                <tr><td>Connect workspace to Git</td><td>✅</td><td>❌</td><td>❌</td><td>❌</td></tr>
+                <tr><td>Write data / Create items</td><td>✅</td><td>✅</td><td>✅</td><td>❌</td></tr>
+                <tr><td>Read data via T-SQL / TDS (ReadData)</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td></tr>
+                <tr><td>Read via OneLake APIs y Spark (ReadAll)</td><td>✅</td><td>✅</td><td>✅</td><td>❌</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="note note--warning">
+            🎯 <strong>ReadData vs ReadAll (cae seguro):</strong> <strong>ReadData</strong> lee vía SQL analytics endpoint (TDS) y <strong>aplica RLS/CLS</strong>; <strong>ReadAll</strong> lee ficheros directamente desde OneLake (Spark/API) y <strong>bypasea RLS/CLS</strong>. Si el escenario dice <em>"analysts must only see the gold layer via T-SQL"</em> → ReadData. Si dice <em>"engineers must access files directly"</em> → ReadAll.
+          </div>
+
+          <h4>Detalles operacionales</h4>
+          <ul>
+            <li>El <strong>creador de un workspace es automáticamente Admin</strong>.</li>
+            <li>Los cambios de permisos surten efecto <strong>la próxima vez que el usuario inicie sesión</strong>.</li>
+            <li>Para RLS en Power BI, los usuarios Pro deben tener el rol <strong>Viewer</strong> (los otros roles bypasean RLS por diseño).</li>
+          </ul>
+        </article>
+
+        <!-- ============ 7. WORKSPACE SETTINGS ============ -->
+        <div class="category-header" id="workspace-settings">
+          <span class="category-header__icon">⚙️</span>
+          <h2 class="category-header__title">7. Configuraciones de workspace clave</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>Es un objetivo oficial del examen</h3>
+          <p>Se establecen a nivel workspace: <strong>License type</strong>, OneDrive access, ADLS Gen2 connection, <strong>Git integration</strong>, <strong>Spark settings</strong>, <strong>OneLake settings</strong> (incluye shortcut caching), <strong>Dataflows Gen2 settings</strong> y <strong>Domain assignment</strong>.</p>
+
+          <h4>🎯 Cuatro sub-tareas oficiales del DP-700</h4>
+          <ol>
+            <li><strong>Configure Spark workspace settings</strong> → pools, runtime, entorno</li>
+            <li><strong>Configure domain workspace settings</strong> → asignar workspace a un dominio</li>
+            <li><strong>Configure OneLake workspace settings</strong> → caching de shortcuts, storage</li>
+            <li><strong>Configure Dataflows Gen2 workspace settings</strong> → engine settings</li>
+          </ol>
+
+          <div class="note note--warning">
+            🎯 <strong>Trampa:</strong> hay cosas que NO van a nivel workspace: <strong>sensitivity labels</strong> y <strong>endorsement</strong> de un item van a nivel <em>item</em>; <strong>Copilot</strong> y capacity assignments van a nivel <em>tenant/capacity</em>.
+          </div>
+        </article>
+
+        <!-- ============ 8. CATALOG ============ -->
+        <div class="category-header" id="catalog">
+          <span class="category-header__icon">🗂️</span>
+          <h2 class="category-header__title">8. OneLake Catalog: descubrir y gobernar datos</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>¿Qué es?</h3>
+          <p>La interfaz de <strong>descubrimiento y gobierno</strong> de Fabric. Permite encontrar y conectar a data sources (respetando permisos), filtrar por workspace/dominio/tipo/keyword, y ver <strong>sensitivity labels, metadata y refresh status</strong>.</p>
+          <h4>List Shortcuts API</h4>
+          <pre><code class="language-http">GET https://api.fabric.microsoft.com/v1/workspaces/{workspaceId}/items/{itemId}/shortcuts</code></pre>
+          <p>Cada shortcut trae: path, target type (OneLake, ADLS Gen2, S3, GCS, S3 Compatible, Dataverse, External Data Share) y detalles de la ubicación destino.</p>
+        </article>
+
+        <!-- ============ 9. WORKLOADS ============ -->
+        <div class="category-header" id="workloads">
+          <span class="category-header__icon">🎨</span>
+          <h2 class="category-header__title">9. Workloads e items de Fabric</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>Experiencias organizadas en workloads</h3>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Workload</th><th>Items típicos</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Data Engineering</strong></td><td>Lakehouse, Notebook, Spark Job Definition, Environment</td></tr>
+                <tr><td><strong>Data Factory</strong></td><td>Data Pipeline, Dataflow Gen2, Copy Job</td></tr>
+                <tr><td><strong>Data Warehouse</strong></td><td>Warehouse</td></tr>
+                <tr><td><strong>Real-Time Intelligence</strong></td><td>Eventstream, Eventhouse, KQL Database, KQL Queryset, Real-Time Dashboard, Activator</td></tr>
+                <tr><td><strong>Data Science</strong></td><td>Notebook, ML Model, Experiment</td></tr>
+                <tr><td><strong>Databases</strong></td><td>SQL Database, Cosmos DB, Mirrored Database</td></tr>
+                <tr><td><strong>IQ (preview)</strong></td><td>Ontology</td></tr>
+                <tr><td><strong>Power BI</strong></td><td>Report, Semantic Model, Dashboard, Paginated Report</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <h4>Storage vs Compute items</h4>
+          <ul>
+            <li><strong>Storage</strong> (guardan datos en OneLake): Lakehouse, Warehouse, Eventhouse, SQL Database, Mirrored Database, Semantic Model.</li>
+            <li><strong>Compute/orquestación</strong> (procesan pero no almacenan): Notebook, Pipeline, Dataflow, Eventstream, Spark Job Definition.</li>
+          </ul>
+
+          <h4>🎯 Lakehouse vs Warehouse vs Eventhouse vs SQL Database</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Item</th><th>Cuándo usarlo</th><th>Motor</th><th>Formato</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Lakehouse</strong></td><td>Estructurados + no estructurados, big data</td><td>Spark + SQL endpoint</td><td>Delta Parquet + cualquier fichero</td></tr>
+                <tr><td><strong>Warehouse</strong></td><td>Analítica SQL relacional, T-SQL completo</td><td>T-SQL puro</td><td>Delta Parquet</td></tr>
+                <tr><td><strong>Eventhouse</strong></td><td>Streaming, telemetría, logs, tiempo real</td><td>KQL / Kusto</td><td>KQL DB + Delta</td></tr>
+                <tr><td><strong>SQL Database</strong></td><td>OLTP + analítica (mismo motor que Azure SQL DB)</td><td>T-SQL transaccional</td><td>Propio + espejo en OneLake</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </article>
+
+        <!-- ============ 10. IA ============ -->
+        <div class="category-header" id="ai">
+          <span class="category-header__icon">🔮</span>
+          <h2 class="category-header__title">10. Fabric IQ, Data Agents y Copilot</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>Nuevo respecto a la DP-600 (features 2025-2026)</h3>
+          <p><strong>Fabric IQ (preview):</strong> workload cuyo item central es la <strong>ontología</strong>, que define conceptos de negocio, sus relaciones y reglas, para que <strong>los AI agents razonen usando el lenguaje del negocio</strong>.</p>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Workload</th><th>Qué modela</th><th>Scope</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Fabric IQ</strong></td><td>Datos de negocio (ontologías, semantic models, graphs)</td><td>OneLake y Power BI</td></tr>
+                <tr><td><strong>Foundry IQ</strong></td><td>Estructurados y no estructurados con permisos</td><td>Azure, SharePoint, OneLake, web</td></tr>
+                <tr><td><strong>Work IQ</strong></td><td>Señales de colaboración</td><td>Docs, meetings, chats, workflows</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p><strong>Fabric Data Agents:</strong> interfaces conversacionales que traducen preguntas en NL a queries y consultan lakehouses, warehouses y semantic models. Con una ontología entienden el lenguaje del negocio.</p>
+          <p><strong>Copilot:</strong> asistente generativo transversal (code gen en notebooks, guía de transformación en Data Factory, generación de reports en Power BI).</p>
+
+          <div class="note note--warning">
+            🎯 <strong>Detalles administrativos:</strong> Copilot está <strong>habilitado por defecto</strong>; se desactiva en <strong>Admin portal → Tenant settings</strong>; se controla por security groups o a nivel capacity. Ver Power BI Free requiere <strong>F64+</strong>.
+          </div>
+        </article>
+
+        <!-- ============ 11. CAPACITY ============ -->
+        <div class="category-header" id="capacity">
+          <span class="category-header__icon">💳</span>
+          <h2 class="category-header__title">11. Capacity, SKUs y facturación</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>¿Qué es una capacity?</h3>
+          <p>Un <strong>pool de recursos computacionales</strong> que da servicio a workspaces. Todas las experiencias consumen de la <strong>misma capacity unificada</strong>. La unidad de medida es la <strong>Capacity Unit (CU)</strong>.</p>
+
+          <h4>🎯 Tabla de SKUs (memorízala)</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>SKU</th><th>CUs</th><th>Power BI equiv.</th><th>v-cores</th></tr></thead>
+              <tbody>
+                <tr><td>F2</td><td>2</td><td>–</td><td>0.25</td></tr>
+                <tr><td>F8</td><td>8</td><td>EM/A1</td><td>1</td></tr>
+                <tr><td>F32</td><td>32</td><td>EM3/A3</td><td>4</td></tr>
+                <tr><td><strong>F64</strong></td><td><strong>64</strong></td><td><strong>P1/A4</strong></td><td><strong>8</strong></td></tr>
+                <tr><td>F128</td><td>128</td><td>P2/A5</td><td>16</td></tr>
+                <tr><td>F256</td><td>256</td><td>P3/A6</td><td>32</td></tr>
+                <tr><td>F512</td><td>512</td><td>P4/A7</td><td>64</td></tr>
+                <tr><td>F2048</td><td>2048</td><td>–</td><td>256</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="note note--warning">
+            🎯 <strong>F64 es la frontera mágica:</strong> con F64+ los usuarios con <strong>Fabric Free</strong> pueden ver Power BI items (equivalente a Premium P1). Pregunta típica: <em>"quiero que usuarios sin Pro consuman reports, ¿SKU mínimo?"</em> → <strong>F64</strong>.
+          </div>
+
+          <h4>🎯 Bursting, Smoothing, Throttling</h4>
+          <ul>
+            <li><strong>Bursting:</strong> un job puede exceder temporalmente la CU disponible; los extras quedan como deuda.</li>
+            <li><strong>Smoothing:</strong> la deuda se distribuye en el tiempo (hasta 24h background, 5 min interactivos).</li>
+            <li><strong>Throttling:</strong> si la deuda excede límites, Fabric ralentiza o rechaza operaciones (3 niveles progresivos).</li>
+          </ul>
+
+          <h4>F SKU vs P SKU</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Feature</th><th>F SKU</th><th>P SKU</th></tr></thead>
+              <tbody>
+                <tr><td>Facturación</td><td>Per second</td><td>Monthly / yearly</td></tr>
+                <tr><td>Pause &amp; resume</td><td>✅</td><td>❌</td></tr>
+                <tr><td>Resize on-demand</td><td>✅</td><td>❌</td></tr>
+                <tr><td>ARM / Terraform</td><td>✅</td><td>❌</td></tr>
+                <tr><td>Autoscale Power BI</td><td>❌</td><td>✅</td></tr>
+                <tr><td>Roadmap</td><td>Recomendado</td><td>Retirándose</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>Al <strong>pausar</strong> una F SKU: el storage se sigue facturando (per GB) y las transacciones se rechazan, pero los <strong>shortcuts en otras capacidades siguen funcionando</strong>.</p>
+        </article>
+
+        <!-- ============ 12. EQUIPO ============ -->
+        <div class="category-header" id="data-team">
+          <span class="category-header__icon">👥</span>
+          <h2 class="category-header__title">12. Roles del equipo de datos</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>Contexto útil (menos "examinable")</h3>
+          <ul>
+            <li><strong>Data Engineer</strong> 👩‍🔧 — ingiere/transforma/carga a OneLake, usa Pipelines, Lakehouses y Notebooks. <em>¡Tú, ahora mismo!</em> 💕</li>
+            <li><strong>Analytics Engineer</strong> — bridge entre engineering y analysis, cura data assets y crea semantic models.</li>
+            <li><strong>Data Analyst</strong> — Dataflows, Direct Lake y reports en Power BI.</li>
+            <li><strong>Data Scientist</strong> — Notebooks (Python, Spark), modelos ML, Azure ML.</li>
+            <li><strong>Citizen developers</strong> — descubren datasets vía OneLake catalog y usan Copilot.</li>
+          </ul>
+        </article>
+
+        <!-- ============ 13. TRAMPAS ============ -->
+        <div class="category-header" id="trampas">
+          <span class="category-header__icon">⚠️</span>
+          <h2 class="category-header__title">13. Trampas típicas y confusiones frecuentes</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>Los errores clásicos del examen</h3>
+          <ul>
+            <li><strong>¿Cuántos OneLakes tengo?</strong> → <strong>Uno por tenant</strong>. Múltiples workspaces e items, un solo OneLake.</li>
+            <li><strong>"Los shortcuts copian datos"</strong> → ❌ NO copian, son referencias (salvo el caché, que no es copia persistente).</li>
+            <li><strong>Shortcut vs Mirroring</strong> → Shortcut = referencia a storage; Mirroring = replicación desde BBDD operacional.</li>
+            <li><strong>"Los Viewers leen datos vía Spark"</strong> → ❌ NO. Viewer solo tiene ReadData (TDS), no ReadAll (Spark/OneLake API).</li>
+            <li><strong>"Contributor puede añadir usuarios"</strong> → ❌ NO. Solo Admin añade Admins; Admin y Member añaden Contributors/Viewers.</li>
+            <li><strong>"Copilot se desactiva a nivel workspace"</strong> → ❌ NO. Es a nivel <strong>tenant</strong> (Admin portal).</li>
+            <li><strong>"F32 para Fabric Free"</strong> → ❌ Necesitas <strong>F64+</strong>.</li>
+            <li><strong>"El caching funciona para cualquier tipo"</strong> → ❌ Solo GCS, S3, S3 compatible y on-prem gateway.</li>
+            <li><strong>"Un shortcut consume CU de la capacidad origen"</strong> → ❌ Consume de la del <strong>consumidor</strong>.</li>
+            <li><strong>"Ficheros grandes se cachean"</strong> → ❌ Los <strong>&gt; 1 GB no se cachean</strong>.</li>
+          </ul>
+        </article>
+
+        <!-- ============ 14. COMPARATIVAS ============ -->
+        <div class="category-header" id="comparativas">
+          <span class="category-header__icon">🆚</span>
+          <h2 class="category-header__title">14. Comparativas clave (chuleta)</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>Tablas rápidas para repasar</h3>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Shortcut interno vs externo</th><th>Interno</th><th>Externo</th></tr></thead>
+              <tbody>
+                <tr><td>Origen</td><td>Otro item Fabric (mismo tenant)</td><td>Fuera de Fabric</td></tr>
+                <tr><td>Auth</td><td>Identidad del usuario que llama</td><td>Cloud connection (credenciales guardadas)</td></tr>
+                <tr><td>Caching</td><td>❌</td><td>✅ (S3, GCS, S3 compat, on-prem)</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>ReadData vs ReadAll</th><th>ReadData</th><th>ReadAll</th></tr></thead>
+              <tbody>
+                <tr><td>Endpoint</td><td>TDS (SQL analytics endpoint)</td><td>OneLake API / Spark</td></tr>
+                <tr><td>Aplica RLS/CLS</td><td>✅</td><td>❌ (bypasea)</td></tr>
+                <tr><td>Viewer lo tiene</td><td>✅</td><td>❌</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </article>
+
+        <!-- ============ 15. QUIZ ============ -->
+        <div class="category-header" id="quiz">
+          <span class="category-header__icon">🎀</span>
+          <h2 class="category-header__title">15. Mini-quiz de cierre</h2>
+        </div>
+
+        <p style="font-size: 0.9375rem; color: var(--color-slate); line-height: 1.7;">Responde con calma para autoevaluarte. Las respuestas correctas las repasamos en la <a href="tips-y-trampas.html">Guía Maestra de Tips y Trampas</a>. 💕</p>
+
+        <div class="quiz-q">
+          <p><span class="quiz-q__num">Pregunta 1.</span> Tu equipo tiene datos muy accedidos en un bucket de Amazon S3 y quiere reducir los <strong>egress costs</strong>. ¿Qué configuras?</p>
+          <ol type="A">
+            <li>Un pipeline con actividad Copy Data</li>
+            <li>Mirroring desde S3</li>
+            <li>Un shortcut con caching activado en Workspace settings → OneLake tab</li>
+            <li>Un shortcut sin caching</li>
+          </ol>
+        </div>
+        <div class="quiz-q">
+          <p><span class="quiz-q__num">Pregunta 2.</span> Un data engineer necesita <strong>leer directamente ficheros Delta desde Spark</strong> en un Lakehouse compartido. ¿Permiso mínimo a nivel item?</p>
+          <ol type="A"><li>ReadData</li><li>ReadAll</li><li>Build</li><li>Reshare</li></ol>
+        </div>
+        <div class="quiz-q">
+          <p><span class="quiz-q__num">Pregunta 3.</span> Quieres que usuarios con <strong>Fabric Free</strong> vean Power BI reports. ¿SKU mínimo?</p>
+          <ol type="A"><li>F8</li><li>F32</li><li>F64</li><li>F128</li></ol>
+        </div>
+        <div class="quiz-q">
+          <p><span class="quiz-q__num">Pregunta 4.</span> Datos operacionales en <strong>Azure Cosmos DB</strong> que cambian continuamente, quieres análisis casi en tiempo real sin pipelines ETL. ¿Qué usas?</p>
+          <ol type="A"><li>Un OneLake shortcut a Cosmos DB</li><li>Mirroring de Cosmos DB</li><li>Un Dataflow Gen2 con conector Cosmos DB</li><li>Un pipeline con Copy activity</li></ol>
+        </div>
+        <div class="quiz-q">
+          <p><span class="quiz-q__num">Pregunta 5.</span> Un usuario con rol <strong>Contributor</strong> intenta añadir a otro como Viewer. ¿Qué pasa?</p>
+          <ol type="A"><li>Puede, porque Contributor gestiona Viewers</li><li>No puede: solo Admin y Member añaden usuarios</li><li>Puede si tiene permiso de Reshare</li><li>Puede, pero solo como Contributor</li></ol>
+        </div>
+        <div class="quiz-q">
+          <p><span class="quiz-q__num">Pregunta 6.</span> Quieres desactivar Copilot para toda la organización. ¿Desde dónde?</p>
+          <ol type="A"><li>Workspace settings → Copilot tab</li><li>Admin portal → Tenant settings</li><li>Configuración de cada item</li><li>Fabric IQ settings</li></ol>
+        </div>
+        <div class="quiz-q">
+          <p><span class="quiz-q__num">BONUS (más chunga).</span> Un shortcut en Workspace_A (F16) apunta a datos en un Lakehouse de Workspace_B (F32). Un usuario ejecuta una consulta Spark sobre el shortcut. ¿En qué capacidad se consumen los CUs?</p>
+          <ol type="A"><li>F16 (Workspace_A, donde vive el shortcut)</li><li>F32 (Workspace_B, donde vive el dato)</li><li>Se reparte entre las dos</li><li>En el tenant, sin asignarse</li></ol>
+        </div>
+
+        <div class="note note--next">
+          🚀 <strong>¡Módulo 1 completado!</strong> Ya dominas las bases de Fabric. Sigue con el <a href="modulo-2.html">Módulo 2: Lakehouses</a> para empezar a construir sobre OneLake. 🌸
+        </div>
+
+        <!-- Navegación del curso -->
+        <div class="course-nav">
+          <a href="../dp-700.html">
+            <span class="course-nav__label">← Índice</span>
+            <span class="course-nav__title">Curso DP-700</span>
+          </a>
+          <a href="modulo-2.html" class="next">
+            <span class="course-nav__label">Siguiente →</span>
+            <span class="course-nav__title">Módulo 2 · Lakehouses</span>
+          </a>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <button id="back-to-top" class="back-to-top" aria-label="Volver arriba" title="Volver arriba">↑</button>
+
+  <script src="https://cdn.jsdelivr.net/npm/i18next@23/dist/umd/i18next.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1/prism.min.js"></script>
+  <script src="../../../assets/js/theme.js"></script>
+  <script src="../../../assets/js/main.js"></script>
+  <script src="../../../assets/js/cursor.js"></script>
+</body>
+</html>
