@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="DP-700 Módulo 6: orquestación con Pipelines de Data Factory en Fabric. Actividades, Copy Data vs Copy Job, control flow, parámetros, triggers event-based, monitoring y best practices.">
+  <meta name="description" content="DP-700 Módulo 6: orquestar procesos y movimiento de datos con Pipelines de Data Factory en Fabric. Actividades, Copy Data vs Copy Job, control flow, parámetros, triggers event-based, monitoring y best practices.">
   <title>DP-700 · Módulo 6: Pipelines y orquestación | Power BI Guide by Kawaii BI</title>
   <link rel="canonical" href="https://kawaiibi.es/topics/certificaciones/dp-700/modulo-6.html">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Kawaii Power BI Guide">
   <meta property="og:locale" content="es_ES">
   <meta property="og:title" content="DP-700 · Módulo 6: Pipelines y orquestación | Power BI Guide by Kawaii BI">
-  <meta property="og:description" content="DP-700 Módulo 6: Pipelines de Fabric. Actividades, Copy Data vs Copy Job, triggers event-based, parámetros y monitoring.">
+  <meta property="og:description" content="DP-700 Módulo 6: Pipelines de Fabric. Actividades, Copy Data vs Copy Job, control flow, parámetros, triggers event-based y monitoring.">
   <meta property="og:url" content="https://kawaiibi.es/topics/certificaciones/dp-700/modulo-6.html">
   <meta property="og:image" content="https://kawaiibi.es/assets/images/og-banner.png">
   <meta property="og:image:width" content="1200">
@@ -54,8 +54,11 @@
     .concept-card h4 { font-size: 0.9375rem; font-weight: 700; color: var(--color-dark); margin: 1.1rem 0 0.4rem; }
     .concept-card p { font-size: 0.9375rem; line-height: 1.7; color: var(--color-dark); margin-bottom: 0.7rem; }
     .concept-card ul, .concept-card ol { padding-left: 1.25rem; font-size: 0.9375rem; line-height: 1.75; color: var(--color-dark); margin: 0.4rem 0; }
+    .concept-card li { margin-bottom: 0.3rem; }
     .concept-card code { background: var(--color-blush); padding: 0.1em 0.4em; border-radius: 4px; font-family: 'Fira Code', monospace; font-size: 0.85em; color: var(--color-coral); }
     .concept-card pre { margin: 0.75rem 0; }
+    .concept-card pre code { background: transparent; padding: 0; color: inherit; }
+    .concept-card blockquote { border-left: 4px solid var(--color-peach); background: var(--color-blush); margin: 0.85rem 0; padding: 0.75rem 1rem; border-radius: 0 var(--border-radius-sm) var(--border-radius-sm) 0; font-size: 0.9rem; }
 
     .md-table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.84rem; }
     .md-table th, .md-table td { border: 1px solid var(--color-mauve); padding: 0.5rem 0.7rem; text-align: left; vertical-align: top; }
@@ -124,8 +127,8 @@
         <header class="topic-header">
           <span class="topic-header__eyebrow">DP-700 · MÓDULO 6</span>
           <span class="topic-header__icon">🎼</span>
-          <h1 class="topic-header__title">Orquestación con Pipelines en Fabric</h1>
-          <p class="topic-header__subtitle">El director de orquesta de Fabric: actividades, Copy Data vs Copy Job, control flow, parámetros y expressions, triggers event-based con Activator, monitoring y best practices. 🌸</p>
+          <h1 class="topic-header__title">Orquestar procesos y movimiento de datos</h1>
+          <p class="topic-header__subtitle">El director de orquesta de Fabric: los Pipelines de Data Factory. Actividades, Copy Data vs Copy Job, control flow, parámetros y expressions, triggers event-based con Activator, monitoring y best practices. 🌸</p>
           <div class="topic-header__levels">
             <span class="badge badge--intermediate">Intermedio</span>
             <span class="badge badge--advanced">Avanzado</span>
@@ -139,204 +142,1265 @@
             <li><a href="#que-es">2. ¿Qué es un pipeline?</a></li>
             <li><a href="#componentes">3. Componentes core</a></li>
             <li><a href="#categorias">4. 3 categorías de actividades</a></li>
-            <li><a href="#data-movement">5. Copy Data vs Copy Job</a></li>
-            <li><a href="#transformation">6. Actividades de transformación</a></li>
-            <li><a href="#control-flow">7. Control flow</a></li>
-            <li><a href="#parametros">8. Parámetros y expressions</a></li>
-            <li><a href="#runs">9. Runs y triggers</a></li>
-            <li><a href="#events">10. Triggers event-based</a></li>
-            <li><a href="#settings">11. Timeout, retries, secure I/O</a></li>
-            <li><a href="#invoke">12. Invoke y Approval</a></li>
-            <li><a href="#monitoring">13. Monitoring</a></li>
-            <li><a href="#adf">14. Fabric vs ADF</a></li>
-            <li><a href="#trampas">15. Trampas</a></li>
-            <li><a href="#comparativas">16. Comparativas</a></li>
+            <li><a href="#data-movement">5. Copy Data y Copy Job</a></li>
+            <li><a href="#transformation">6. Data transformation activities</a></li>
+            <li><a href="#control-flow">7. Control flow (catálogo)</a></li>
+            <li><a href="#notification">8. Teams y Outlook</a></li>
+            <li><a href="#copy-data">9. Copy Data a fondo</a></li>
+            <li><a href="#parametros">10. Parameters y expressions</a></li>
+            <li><a href="#runs">11. Pipeline runs</a></li>
+            <li><a href="#events">12. Event-based triggers</a></li>
+            <li><a href="#trigger-params">13. Trigger parameters</a></li>
+            <li><a href="#templates">14. Templates</a></li>
+            <li><a href="#general-settings">15. Timeout, retries, secure I/O</a></li>
+            <li><a href="#invoke">16. Invoke pipeline</a></li>
+            <li><a href="#approval">17. Approval activity</a></li>
+            <li><a href="#monitoring">18. Monitoring</a></li>
+            <li><a href="#notifications">19. Failure notifications</a></li>
+            <li><a href="#adf-vs-fabric">20. Fabric vs ADF</a></li>
+            <li><a href="#best-practices">21. Best practices</a></li>
+            <li><a href="#trampas">22. Trampas</a></li>
+            <li><a href="#comparativas">23. Comparativas</a></li>
           </ul>
         </nav>
 
+        <!-- 1 -->
         <div class="category-header" id="objetivos"><span class="category-header__icon">🎯</span><h2 class="category-header__title">1. Objetivos y encaje en el DP-700</h2></div>
         <article class="concept-card">
-          <p>Objetivos: describir capacidades de pipelines, usar Copy Data, crear desde templates y ejecutar/monitorizar. Aparecen <strong>transversalmente en los tres dominios</strong>.</p>
-          <div class="note note--tip">🎯 <strong>Crítico:</strong> actividades más usadas (Copy Data, Dataflow, Notebook, Lookup, Get Metadata, ForEach, If), elección Pipeline vs Dataflow vs Notebook, <strong>triggers event-based con Activator</strong>, parámetros y dynamic content, retry logic y Copy Job.</div>
-        </article>
-
-        <div class="category-header" id="que-es"><span class="category-header__icon">🎼</span><h2 class="category-header__title">2. ¿Qué es un pipeline?</h2></div>
-        <article class="concept-card">
-          <p>Un <strong>pipeline</strong> encapsula una secuencia de <strong>actividades</strong> para mover y procesar datos. Es el <strong>director de orquesta</strong>: no transforma datos por sí mismo, coordina las actividades. Se diseña en un <strong>canvas gráfico</strong>, sin código.</p>
-          <p>Puede: mover datos, ejecutar transformaciones (dataflows, notebooks, SQL), orquestar con dependencias (success/failure/completion), aplicar lógica de control, ejecutarse por schedule o eventos, parametrizarse y notificar (Teams, Outlook, webhooks).</p>
-        </article>
-
-        <div class="category-header" id="componentes"><span class="category-header__icon">🧩</span><h2 class="category-header__title">3. Componentes core</h2></div>
-        <article class="concept-card">
+          <h3>¿Qué te enseña este módulo?</h3>
+          <p>Este módulo es sobre el <strong>orquestador maestro</strong> de Fabric: los <strong>Pipelines de Data Factory</strong>. Los objetivos oficiales:</p>
+          <ol>
+            <li>Describir capabilities de pipelines en Microsoft Fabric.</li>
+            <li>Usar la actividad Copy Data en un pipeline.</li>
+            <li>Crear pipelines basados en templates predefinidos.</li>
+            <li>Ejecutar y monitorear pipelines.</li>
+          </ol>
+          <h4>Peso en el examen DP-700</h4>
+          <p>Los pipelines aparecen <strong>transversalmente en los tres dominios</strong>, pero especialmente en Dominio 1 y 2:</p>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Dominio</th><th>Cómo aparece pipelines</th></tr></thead>
+              <tbody>
+                <tr><td>Implement and manage (30-35%)</td><td><strong>Orchestration</strong>: elección entre Dataflow/Pipeline/Notebook, schedules, event-based triggers, parámetros y dynamic expressions</td></tr>
+                <tr><td>Ingest and transform (30-35%)</td><td>Copy Data, Copy Job, actividades de ingesta y transformación, patrones ELT</td></tr>
+                <tr><td>Monitor and optimize (30-35%)</td><td>Monitor Hub, troubleshooting de pipelines, alertas, retry logic</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <h4>🎯 Qué es CRÍTICO dominar</h4>
           <ul>
-            <li><strong>Actividades:</strong> tareas ejecutables. Cada una tiene un outcome (success, failure, completion, skipped) y se conectan según el outcome de la anterior.</li>
-            <li><strong>Parámetros:</strong> input externo, se pasan al ejecutar, <strong>inmutables</strong> durante el run.</li>
-            <li><strong>Variables:</strong> estado interno, <strong>mutables</strong>, se calculan durante el run.</li>
-            <li><strong>Pipeline runs:</strong> cada ejecución con ID único. On-demand, scheduled o event-based.</li>
+            <li>Las <strong>actividades más usadas</strong>: Copy Data, Dataflow, Notebook, Lookup, Get Metadata, ForEach, If Condition</li>
+            <li><strong>Cuándo elegir Pipeline vs Dataflow vs Notebook</strong> (pregunta clásica de escenario)</li>
+            <li><strong>Triggers event-based</strong> con Activator (feature moderna, muy examinable)</li>
+            <li><strong>Parameters y dynamic content</strong> (para pipelines reutilizables)</li>
+            <li><strong>Retry logic y failure handling</strong> (para producción real)</li>
+            <li><strong>Copy Job</strong> (alternativa moderna a Copy activity)</li>
           </ul>
         </article>
 
+        <!-- 2 -->
+        <div class="category-header" id="que-es"><span class="category-header__icon">🔧</span><h2 class="category-header__title">2. ¿Qué es un pipeline en Fabric?</h2></div>
+        <article class="concept-card">
+          <h3>2.1 · Definición</h3>
+          <p>Un <strong>pipeline</strong> en Microsoft Fabric es un contenedor que <strong>encapsula una secuencia de actividades</strong> que realizan tareas de movimiento y procesamiento de datos.</p>
+          <p>Piénsalo como el <strong>director de orquesta</strong> 🎼: no toca ningún instrumento (no transforma datos por sí mismo), pero <strong>coordina</strong> todos los instrumentos (actividades) para que suenen en el momento correcto y en el orden correcto.</p>
+          <h3>2.2 · Qué puede hacer un pipeline</h3>
+          <p>Un pipeline puede:</p>
+          <ul>
+            <li>✅ <strong>Mover datos</strong> entre sources y destinos.</li>
+            <li>✅ <strong>Ejecutar código de transformación</strong> (dataflows, notebooks, SQL, etc.).</li>
+            <li>✅ <strong>Orquestar múltiples actividades</strong> con dependencias (success/failure/completion).</li>
+            <li>✅ <strong>Aplicar lógica de control</strong>: condicionales, loops, ramificaciones.</li>
+            <li>✅ <strong>Ejecutarse por schedule o eventos</strong>.</li>
+            <li>✅ <strong>Parametrizarse</strong> para ser reutilizables.</li>
+            <li>✅ <strong>Notificar</strong> vía Teams, Outlook, webhooks.</li>
+          </ul>
+          <h3>2.3 · Interfaz: el pipeline canvas</h3>
+          <p>En Fabric, los pipelines se diseñan en un <strong>canvas gráfico</strong>:</p>
+          <ul>
+            <li><strong>Zona central</strong>: donde arrastras y conectas actividades.</li>
+            <li><strong>Barra de actividades</strong> (arriba): lista de actividades disponibles.</li>
+            <li><strong>Panel de propiedades</strong> (abajo al seleccionar actividad): configuración de la actividad activa.</li>
+            <li><strong>Ribbon</strong>: Home, Insert, Run, View, etc.</li>
+          </ul>
+          <p><strong>No requiere código</strong>. Todo se configura visualmente. Ideal para data engineers que quieren orquestación robusta sin escribir framework de scheduling desde cero.</p>
+        </article>
+
+        <!-- 3 -->
+        <div class="category-header" id="componentes"><span class="category-header__icon">🧩</span><h2 class="category-header__title">3. Componentes core: actividades, parámetros, runs</h2></div>
+        <article class="concept-card">
+          <p>Antes de meternos en el detalle, conviene entender los <strong>3 conceptos base</strong>:</p>
+          <h3>3.1 · Actividades (activities)</h3>
+          <p>Las <strong>actividades</strong> son las <strong>tareas ejecutables</strong> dentro de un pipeline. Cada actividad:</p>
+          <ul>
+            <li>Hace <strong>una cosa específica</strong> (copiar datos, ejecutar un notebook, esperar, etc.).</li>
+            <li>Puede tener un <strong>outcome</strong>: <code>success</code>, <code>failure</code>, <code>completion</code>, <code>skipped</code>.</li>
+            <li>Se <strong>conectan entre sí</strong> con flechas que definen el flujo.</li>
+          </ul>
+          <p>Las actividades siguientes se ejecutan <strong>según el outcome</strong> de la anterior. Ejemplos:</p>
+          <ul>
+            <li>Actividad B se ejecuta <strong>cuando A termina con success</strong>.</li>
+            <li>Actividad C se ejecuta <strong>cuando A falla</strong> (para manejar errores).</li>
+            <li>Actividad D se ejecuta <strong>siempre que A termine</strong> (success o failure).</li>
+          </ul>
+          <h3>3.2 · Parámetros y variables</h3>
+          <p><strong>Parámetros</strong>: valores que <strong>se pasan al pipeline</strong> al ejecutarlo. Hacen los pipelines reutilizables.</p>
+          <pre><code class="language-plaintext">Pipeline "IngestData" con parámetro folder_name:
+  - Llamada 1: folder_name = "sales"
+  - Llamada 2: folder_name = "products"</code></pre>
+          <p><strong>Variables</strong>: valores <strong>internos</strong> que se calculan durante la ejecución. Se usan para pasar datos entre actividades.</p>
+          <p>Diferencia clave: parámetros son <strong>input externo</strong>, variables son <strong>estado interno</strong>.</p>
+          <h3>3.3 · Pipeline runs</h3>
+          <p>Cada vez que se ejecuta un pipeline → se inicia un <strong>pipeline run</strong>.</p>
+          <ul>
+            <li>Cada run tiene un <strong>ID único</strong> para tracking.</li>
+            <li>Se puede iniciar de 3 formas:
+              <ol>
+                <li><strong>On-demand</strong> (botón Run manual).</li>
+                <li><strong>Scheduled</strong> (por horario).</li>
+                <li><strong>Event-based</strong> (por eventos como llegada de fichero).</li>
+              </ol>
+            </li>
+          </ul>
+          <p>Los runs pasados quedan en el <strong>historial</strong> para debugging y auditoría.</p>
+        </article>
+
+        <!-- 4 -->
         <div class="category-header" id="categorias"><span class="category-header__icon">🏷️</span><h2 class="category-header__title">4. Las 3 categorías de actividades</h2></div>
         <article class="concept-card">
+          <p>Fabric organiza las actividades en <strong>3 grandes grupos</strong>:</p>
+          <h3>4.1 · Data movement activities (mover datos)</h3>
+          <p>Actividades cuyo propósito principal es <strong>transferir datos</strong> de A a B:</p>
           <ul>
-            <li><strong>Data movement:</strong> Copy Data, Copy Job.</li>
-            <li><strong>Data transformation:</strong> Dataflow Gen2, Notebook, Spark Job Definition, Stored Procedure, SQL Script, Delete Data.</li>
-            <li><strong>Control flow:</strong> loops, condicionales, esperas, invocación de pipelines.</li>
+            <li><strong>Copy Data</strong>: la clásica para copiar entre cualquier source y destino soportado.</li>
+            <li><strong>Copy Job</strong>: método simplificado y moderno para movimiento rápido de datos.</li>
           </ul>
-          <div class="note note--tip">🎯 Novedades Fabric vs ADF: <strong>Outlook, Teams, Semantic model refresh, Dataflow Gen2, Refresh SQL Endpoint, Lakehouse Maintenance</strong>.</div>
+          <h3>4.2 · Data transformation activities (transformar datos)</h3>
+          <p>Actividades que <strong>procesan y transforman</strong> datos:</p>
+          <ul>
+            <li><strong>Copy Data</strong> (también cuenta aquí)</li>
+            <li><strong>Dataflow Gen2</strong> activity</li>
+            <li><strong>Fabric Notebook</strong> activity</li>
+            <li><strong>Spark Job Definition</strong> activity</li>
+            <li><strong>Stored Procedure</strong> activity</li>
+            <li><strong>SQL Script</strong> activity</li>
+            <li><strong>HDInsight</strong> activity</li>
+            <li><strong>Delete Data</strong> activity</li>
+          </ul>
+          <h3>4.3 · Control flow activities (controlar el flujo)</h3>
+          <p>Actividades que <strong>añaden lógica</strong>: loops, condicionales, esperas, invocación de otros pipelines. Estas son muchas, las vemos todas en la sección 7.</p>
+          <h3>4.4 · 🎯 Novedades Fabric vs ADF</h3>
+          <p>Fabric añade actividades nuevas que no existen en Azure Data Factory:</p>
+          <ul>
+            <li><strong>Outlook</strong> (notificaciones por email)</li>
+            <li><strong>Teams</strong> (mensajes en Teams)</li>
+            <li><strong>Semantic model refresh</strong> (refrescar modelos Power BI)</li>
+            <li><strong>Dataflow Gen2</strong> (obviamente, no existe en ADF)</li>
+          </ul>
         </article>
 
-        <div class="category-header" id="data-movement"><span class="category-header__icon">🚚</span><h2 class="category-header__title">5. Copy Data vs Copy Job</h2></div>
+        <!-- 5 -->
+        <div class="category-header" id="data-movement"><span class="category-header__icon">🚚</span><h2 class="category-header__title">5. Data movement activities: Copy Data y Copy Job</h2></div>
         <article class="concept-card">
-          <p><strong>Copy Data</strong> es la actividad más usada: mueve datos de un source a un destino Fabric, sin transformar (o mínimo). Update methods según destino (Append, Overwrite, Upsert, Merge). Copy behavior de ficheros: PreserveHierarchy, FlattenHierarchy, MergeFiles.</p>
+          <h3>5.1 · Copy Data activity (la clásica)</h3>
+          <p><strong>Copy Data</strong> es probablemente la actividad <strong>más usada</strong> de todo el examen.</p>
+          <p><strong>Uso típico</strong>: mover datos de una fuente externa (BBDD, ficheros, APIs, otra cloud) a un destino en Fabric (Lakehouse, Warehouse, SQL DB).</p>
+          <p><strong>Wizard visual</strong>: cuando la añades a un pipeline, un tool gráfico te guía por:</p>
+          <ol>
+            <li>Elegir source (conectar, autenticar, seleccionar dataset).</li>
+            <li>Elegir destino.</li>
+            <li>Mapear columnas (opcional).</li>
+            <li>Configurar settings (batch size, parallel copies, etc.).</li>
+          </ol>
+          <p><strong>Cuándo usar Copy Data</strong>:</p>
+          <ul>
+            <li>✅ Movimiento <strong>sin transformación</strong> (o transformación mínima).</li>
+            <li>✅ Ingesta <strong>raw</strong> para procesar después.</li>
+            <li>✅ Cuando otras herramientas de transformación no son necesarias.</li>
+          </ul>
+          <p><strong>Cuándo NO usar Copy Data</strong>:</p>
+          <ul>
+            <li>❌ Si necesitas transformaciones complejas → usa <strong>Dataflow Gen2</strong> o <strong>Notebook</strong>.</li>
+            <li>❌ Si necesitas merge/join de múltiples sources → usa <strong>Dataflow Gen2</strong>.</li>
+          </ul>
+          <h3>5.2 · Copy Job (la nueva alternativa)</h3>
+          <p><strong>Copy Job</strong> es un <strong>item independiente</strong> (no una actividad de pipeline, aunque puede usarse dentro de uno) diseñado para movimiento de datos simplificado.</p>
+          <p>Características:</p>
+          <ul>
+            <li>⚡ Método <strong>simplificado</strong> para movimiento rápido.</li>
+            <li>🔁 Soporta <strong>CDC (Change Data Capture)</strong> en preview.</li>
+            <li>🔀 Soporta <strong>SCD Type 1 y SCD Type 2</strong> como write methods.</li>
+            <li>📅 Ejecución por schedule o on-demand.</li>
+            <li>🎯 Optimizado para casos comunes de ingesta.</li>
+          </ul>
+          <h3>5.3 · Copy Data vs Copy Job</h3>
           <div class="table-scroll">
             <table class="md-table">
               <thead><tr><th>Aspecto</th><th>Copy Data</th><th>Copy Job</th></tr></thead>
               <tbody>
                 <tr><td>Tipo</td><td>Actividad de pipeline</td><td>Item independiente</td></tr>
-                <tr><td>CDC</td><td>⚠️ Setup manual</td><td>✅ Nativo (Preview)</td></tr>
-                <tr><td>SCD</td><td>⚠️ Lógica adicional</td><td>✅ Type 1 y Type 2</td></tr>
+                <tr><td>Configuración</td><td>Más flexible, más pasos</td><td>Simplificada</td></tr>
+                <tr><td>CDC support</td><td>⚠️ Requiere setup manual</td><td>✅ Nativo (Preview)</td></tr>
+                <tr><td>SCD support</td><td>⚠️ Requiere lógica adicional</td><td>✅ Type 1 y Type 2</td></tr>
                 <tr><td>Uso típico</td><td>Dentro de pipelines complejos</td><td>Movimiento standalone</td></tr>
               </tbody>
             </table>
           </div>
+          <h3>5.4 · Conectores de source</h3>
+          <p>Copy Data soporta <strong>cientos de conectores</strong>. Categorías:</p>
+          <ul>
+            <li><strong>Bases de datos</strong> (SQL Server, Oracle, PostgreSQL, MySQL, Cosmos DB, Snowflake, etc.)</li>
+            <li><strong>Ficheros</strong> (CSV, Parquet, JSON, XML, Excel)</li>
+            <li><strong>Storage</strong> (ADLS Gen2, Blob, S3, GCS)</li>
+            <li><strong>SaaS</strong> (Salesforce, Dynamics, SharePoint, ServiceNow)</li>
+            <li><strong>Web/API</strong> (REST, OData, HTTP)</li>
+            <li><strong>Fabric</strong> (Lakehouse, Warehouse, SQL DB)</li>
+            <li><strong>On-premises</strong> (con on-premises data gateway)</li>
+          </ul>
         </article>
 
-        <div class="category-header" id="transformation"><span class="category-header__icon">🔄</span><h2 class="category-header__title">6. Actividades de transformación</h2></div>
+        <!-- 6 -->
+        <div class="category-header" id="transformation"><span class="category-header__icon">🔄</span><h2 class="category-header__title">6. Data transformation activities</h2></div>
         <article class="concept-card">
-          <p>Cada una con su motor: Notebook y Spark Job Definition usan clusters Spark; Stored Procedure y SQL Script usan Azure SQL/Synapse/SQL Server/Warehouse; Copy Data, Dataflow y Delete Data usan compute de Fabric.</p>
-          <h4>Notebook activity (la más flexible)</h4>
-          <p>Ejecuta un notebook con <strong>base parameters</strong> que sobrescriben la celda con tag <code>parameters</code>. Notebook = interactivo (desarrollo); <strong>Spark Job Definition</strong> = script puro (producción).</p>
-        </article>
-
-        <div class="category-header" id="control-flow"><span class="category-header__icon">🔀</span><h2 class="category-header__title">7. Control flow (catálogo)</h2></div>
-        <article class="concept-card">
+          <p>Actividades que <strong>transforman</strong> los datos, cada una con su motor de compute:</p>
+          <h3>6.1 · Tabla completa</h3>
           <div class="table-scroll">
             <table class="md-table">
-              <thead><tr><th>Actividad</th><th>Para qué</th></tr></thead>
+              <thead><tr><th>Actividad</th><th>Compute environment</th></tr></thead>
               <tbody>
-                <tr><td><strong>If Condition</strong></td><td>if/else según expresión</td></tr>
-                <tr><td><strong>Switch</strong></td><td>switch/case, múltiples caminos</td></tr>
-                <tr><td><strong>ForEach</strong></td><td>Iterar colección (paralelo o secuencial, batch count 20)</td></tr>
-                <tr><td><strong>Until</strong></td><td>do/while hasta condición (requiere timeout)</td></tr>
-                <tr><td><strong>Wait</strong></td><td>Pausar N segundos</td></tr>
-                <tr><td><strong>Web / Webhook</strong></td><td>Llamar REST API (webhook espera callback)</td></tr>
-                <tr><td><strong>Lookup</strong></td><td>Leer un record/tabla para usar después</td></tr>
-                <tr><td><strong>Get Metadata</strong></td><td>Info de un dataset (existe, tamaño, timestamp)</td></tr>
-                <tr><td><strong>Set / Append Variable</strong></td><td>Asignar valor / acumular en array</td></tr>
-                <tr><td><strong>Filter</strong></td><td>Filtrar un array</td></tr>
-                <tr><td><strong>Invoke Pipeline</strong></td><td>Ejecutar otro pipeline</td></tr>
-                <tr><td><strong>Fail</strong></td><td>Fallo intencional con mensaje</td></tr>
-                <tr><td><strong>Refresh SQL Endpoint</strong></td><td>Sync metadata del SQL endpoint del lakehouse</td></tr>
-                <tr><td><strong>Lakehouse Maintenance</strong></td><td>OPTIMIZE + V-Order en tablas Delta</td></tr>
-                <tr><td><strong>Approval</strong></td><td>Pausa y pide aprobación humana</td></tr>
-                <tr><td><strong>Teams / Outlook</strong></td><td>Notificar (nuevas en Fabric)</td></tr>
-                <tr><td><strong>KQL</strong></td><td>Ejecutar KQL contra Eventhouse</td></tr>
+                <tr><td><strong>Copy Data</strong></td><td>Compute managed by Fabric</td></tr>
+                <tr><td><strong>Dataflow Gen2</strong></td><td>Compute managed by Fabric (mashup + fast copy)</td></tr>
+                <tr><td><strong>Delete Data</strong></td><td>Compute managed by Fabric</td></tr>
+                <tr><td><strong>Fabric Notebook</strong></td><td>Apache Spark clusters managed by Fabric</td></tr>
+                <tr><td><strong>HDInsight activity</strong></td><td>Apache Spark clusters managed by Fabric</td></tr>
+                <tr><td><strong>Spark Job Definition</strong></td><td>Apache Spark clusters managed by Fabric</td></tr>
+                <tr><td><strong>Stored Procedure</strong></td><td>Azure SQL, Synapse Analytics, o SQL Server</td></tr>
+                <tr><td><strong>SQL script</strong></td><td>Azure SQL, Synapse Analytics, o SQL Server</td></tr>
               </tbody>
             </table>
           </div>
+          <h3>6.2 · Notebook activity (💻 la más flexible)</h3>
+          <p>La actividad <strong>Notebook</strong> ejecuta un notebook de Fabric (Python, PySpark, Spark SQL, Scala, SparkR).</p>
+          <p><strong>Configuración típica:</strong></p>
+          <ul>
+            <li>Seleccionar el notebook a ejecutar.</li>
+            <li>Pasar <strong>parámetros</strong> al notebook (variables base).</li>
+            <li>Configurar <strong>timeout</strong> y <strong>retries</strong>.</li>
+            <li>Especificar el <strong>Spark pool</strong> (opcional).</li>
+          </ul>
+          <p><strong>Cómo se pasan parámetros al notebook:</strong></p>
+          <p>En el notebook, defines una celda con tag <code>parameters</code>:</p>
+          <pre><code class="language-python"># Celda con tag "parameters"
+folder_name = "default"
+process_date = "2026-01-01"</code></pre>
+          <p>En el pipeline, en la actividad Notebook → tab <strong>Settings</strong> → <strong>Base parameters</strong> → añades:</p>
+          <ul>
+            <li><code>folder_name</code> = "sales"</li>
+            <li><code>process_date</code> = <code>@utcnow()</code></li>
+          </ul>
+          <p>Los parámetros del pipeline <strong>sobrescriben</strong> los valores de la celda.</p>
+          <h3>6.3 · Spark Job Definition activity</h3>
+          <p>Ejecuta un <strong>Spark Job Definition</strong> (item de Fabric que empaqueta un script Python/JAR/Scala para ejecución batch).</p>
+          <p><strong>Diferencia vs Notebook activity:</strong></p>
+          <ul>
+            <li>Notebook: interactivo (celdas), ideal para desarrollo.</li>
+            <li>SJD: no interactivo (script puro), ideal para producción.</li>
+          </ul>
+          <p>Ambos usan Apache Spark clusters de Fabric.</p>
+          <h3>6.4 · Stored Procedure activity</h3>
+          <p>Ejecuta un <strong>stored procedure</strong> en:</p>
+          <ul>
+            <li>Azure SQL Database</li>
+            <li>Azure SQL Managed Instance</li>
+            <li>SQL Server</li>
+            <li>Azure Synapse Analytics</li>
+            <li><strong>Fabric Warehouse</strong> (a través del connector T-SQL)</li>
+          </ul>
+          <p>Puedes pasar parámetros al SP.</p>
+          <h3>6.5 · SQL Script activity</h3>
+          <p>Ejecuta <strong>T-SQL directo</strong> contra:</p>
+          <ul>
+            <li>Fabric Warehouse</li>
+            <li>SQL analytics endpoint del Lakehouse</li>
+            <li>Azure SQL, Synapse</li>
+            <li>On-premises SQL Server</li>
+          </ul>
+          <p>Útil para transformaciones SQL puras sin necesidad de SP.</p>
+          <h3>6.6 · Delete Data activity</h3>
+          <p>Borra ficheros o datos de:</p>
+          <ul>
+            <li>Lakehouse (folders o archivos)</li>
+            <li>ADLS Gen2</li>
+            <li>Blob Storage</li>
+            <li>Otros storage</li>
+          </ul>
+          <p>Uso típico: limpiar staging antes de una nueva carga.</p>
+          <h3>6.7 · Dataflow Gen2 activity</h3>
+          <p>Ejecuta un <strong>Dataflow Gen2</strong> desde el pipeline. Puedes pasar el dataflow como una step más de un flujo mayor.</p>
         </article>
 
-        <div class="category-header" id="parametros"><span class="category-header__icon">🎨</span><h2 class="category-header__title">8. Parámetros, variables y expressions</h2></div>
+        <!-- 7 -->
+        <div class="category-header" id="control-flow"><span class="category-header__icon">🔀</span><h2 class="category-header__title">7. Control flow activities (el catálogo completo)</h2></div>
         <article class="concept-card">
-          <p>Las expressions empiezan con <code>@</code>. Referenciar: <code>@pipeline().parameters.x</code>, <code>@variables('x')</code>, <code>@activity('Lookup1').output.value</code>, <code>@pipeline().RunId</code>.</p>
-          <pre><code class="language-plaintext">@utcnow()
+          <p>Estas son <strong>muchas</strong>. Vamos a verlas todas porque <strong>cualquiera puede aparecer</strong> en preguntas de escenario. Las organizo por familias.</p>
+          <h3>7.1 · Lógica condicional</h3>
+          <p><strong>If Condition activity</strong> 🎯 (muy examinable)</p>
+          <ul>
+            <li>Evalúa una expresión → si <code>true</code> ejecuta un set de actividades, si <code>false</code> ejecuta otro.</li>
+            <li>Como un <code>if/else</code> de programación.</li>
+          </ul>
+          <pre><code class="language-plaintext">If Condition: @equals(pipeline().parameters.env, 'PROD')
+  ├─ True: ejecutar validaciones estrictas
+  └─ False: ejecutar solo warnings</code></pre>
+          <p><strong>Switch activity</strong> 🎯</p>
+          <ul>
+            <li>Evalúa una expresión → múltiples caminos según el valor.</li>
+            <li>Como un <code>switch/case</code> de programación.</li>
+          </ul>
+          <pre><code class="language-plaintext">Switch: @pipeline().parameters.load_type
+  ├─ 'FULL': ejecutar carga completa
+  ├─ 'INCREMENTAL': ejecutar delta
+  └─ default: enviar alerta</code></pre>
+          <h3>7.2 · Loops</h3>
+          <p><strong>ForEach activity</strong> 🎯 (MUY examinable)</p>
+          <ul>
+            <li>Itera sobre una colección y ejecuta actividades para cada item.</li>
+            <li>Como un <code>for each</code> de programación.</li>
+            <li>Puede ejecutar iteraciones <strong>en paralelo</strong> (más rápido) o <strong>secuencial</strong> (más controlado).</li>
+          </ul>
+          <pre><code class="language-plaintext">ForEach: sobre lista de tablas
+  └─ Para cada tabla: ejecutar Copy Data + validación</code></pre>
+          <p><strong>Until activity</strong></p>
+          <ul>
+            <li>Ejecuta un bloque de actividades <strong>hasta que una condición sea true</strong>.</li>
+            <li>Como un <code>do while</code> de programación.</li>
+            <li>Requiere <strong>timeout</strong> para evitar loops infinitos.</li>
+          </ul>
+          <h3>7.3 · Espera</h3>
+          <p><strong>Wait activity</strong></p>
+          <ul>
+            <li>Pausa la ejecución un tiempo determinado (segundos).</li>
+            <li>Útil para esperar procesos externos o simplemente escalonar cargas.</li>
+          </ul>
+          <h3>7.4 · Llamadas externas</h3>
+          <p><strong>Web activity</strong> 🎯</p>
+          <ul>
+            <li>Llama a un <strong>REST API</strong> externo.</li>
+            <li>Puedes pasar headers, body, auth.</li>
+            <li>Recibe respuesta que puedes procesar en actividades siguientes.</li>
+          </ul>
+          <p><strong>Webhook activity</strong></p>
+          <ul>
+            <li>Llama a un endpoint y <strong>espera un callback</strong>.</li>
+            <li>El pipeline se pausa hasta que el endpoint invoca el callback URL.</li>
+          </ul>
+          <h3>7.5 · Metadata y lookup</h3>
+          <p><strong>Lookup activity</strong> 🎯 (MUY examinable)</p>
+          <ul>
+            <li>Lee <strong>un record o tabla</strong> de un source externo.</li>
+            <li>El output se puede referenciar en actividades siguientes.</li>
+            <li>Ejemplo: leer una lista de tablas de una BBDD de config → pasar al ForEach.</li>
+          </ul>
+          <p><strong>Get Metadata activity</strong> 🎯</p>
+          <ul>
+            <li>Recupera metadata de un dataset (existencia, tamaño, timestamp, structure).</li>
+            <li>Útil para checks previos: ¿existe el fichero? ¿es del tamaño esperado?</li>
+          </ul>
+          <h3>7.6 · Variables y filtros</h3>
+          <p><strong>Set Variable</strong> 🎯</p>
+          <ul>
+            <li>Asigna un valor a una variable existente.</li>
+            <li>Útil para pasar estado entre actividades.</li>
+          </ul>
+          <p><strong>Append Variable</strong></p>
+          <ul>
+            <li>Añade un valor a una <strong>variable de array</strong>.</li>
+            <li>Útil dentro de ForEach para acumular resultados.</li>
+          </ul>
+          <p><strong>Filter activity</strong></p>
+          <ul>
+            <li>Aplica una expresión de filtro a un array de input.</li>
+            <li>Devuelve el subset que cumple la condición.</li>
+          </ul>
+          <h3>7.7 · Invocar otros pipelines</h3>
+          <p><strong>Invoke Pipeline activity</strong> 🎯</p>
+          <ul>
+            <li>Ejecuta <strong>otro pipeline</strong> desde el actual.</li>
+            <li>Permite modularizar workflows complejos.</li>
+          </ul>
+          <h3>7.8 · Fallar controlado</h3>
+          <p><strong>Fail activity</strong></p>
+          <ul>
+            <li>Causa <strong>fallo intencional</strong> del pipeline con mensaje custom.</li>
+            <li>Útil para validaciones estrictas ("si no hay datos, falla").</li>
+          </ul>
+          <p><strong>Deactivate activity</strong></p>
+          <ul>
+            <li>Desactiva otra actividad (útil para debugging).</li>
+          </ul>
+          <h3>7.9 · 🎯 Actividades específicas de Fabric</h3>
+          <p><strong>Refresh SQL Endpoint activity</strong> 🎯 (MUY examinable)</p>
+          <ul>
+            <li><strong>Refresca el metadata del SQL analytics endpoint</strong> de un lakehouse.</li>
+            <li>Resuelve el problema clásico: "el Dataflow lee datos viejos porque el sync no ha terminado".</li>
+          </ul>
+          <p><strong>Refresh Materialized Lake View activity</strong></p>
+          <ul>
+            <li>Refresca una materialized lake view en un lakehouse.</li>
+          </ul>
+          <p><strong>Lakehouse Maintenance activity</strong> 🎯</p>
+          <ul>
+            <li>Ejecuta mantenimiento de rutina en tablas Delta de un Lakehouse.</li>
+            <li>Incluye OPTIMIZE y V-Order.</li>
+          </ul>
+          <h3>7.10 · Workflow / decisiones humanas</h3>
+          <p><strong>Approval activity</strong> 🎯</p>
+          <ul>
+            <li><strong>Pausa el pipeline</strong> y solicita <strong>aprobación humana</strong>.</li>
+            <li>Reviewers designados aprueban/rechazan desde Teams o email.</li>
+            <li>Basado en la decisión, el pipeline continúa por un camino u otro.</li>
+          </ul>
+          <h3>7.11 · Otras</h3>
+          <p><strong>Azure Batch, Azure Databricks, Azure Machine Learning activity</strong></p>
+          <ul>
+            <li>Integraciones con servicios Azure específicos.</li>
+          </ul>
+          <p><strong>Functions activity</strong></p>
+          <ul>
+            <li>Ejecuta una Azure Function.</li>
+          </ul>
+          <p><strong>KQL activity</strong> 🎯</p>
+          <ul>
+            <li>Ejecuta un <strong>KQL script</strong> contra una instancia de Kusto (Eventhouse).</li>
+          </ul>
+        </article>
+
+        <!-- 8 -->
+        <div class="category-header" id="notification"><span class="category-header__icon">📧</span><h2 class="category-header__title">8. Notification activities: Teams y Outlook</h2></div>
+        <article class="concept-card">
+          <p>Actividades nuevas de Fabric que <strong>NO existen en ADF</strong> originalmente.</p>
+          <h3>8.1 · Teams activity</h3>
+          <p>Publica un <strong>mensaje en un canal de Teams</strong> o en un chat de grupo.</p>
+          <p><strong>Uso típico:</strong></p>
+          <ul>
+            <li>Notificar éxito o fallo del pipeline.</li>
+            <li>Alertar sobre umbrales de datos.</li>
+            <li>Comunicar aprobaciones necesarias.</li>
+          </ul>
+          <p><strong>Configuración:</strong></p>
+          <ul>
+            <li>Team + Channel destino.</li>
+            <li>Mensaje (soporta markdown + variables dinámicas).</li>
+            <li>Adjuntos opcionales.</li>
+          </ul>
+          <h3>8.2 · Outlook activity</h3>
+          <p>Envía un <strong>email vía Outlook</strong>.</p>
+          <p><strong>Uso típico:</strong></p>
+          <ul>
+            <li>Reportes de estado por email a stakeholders.</li>
+            <li>Alertas críticas.</li>
+            <li>Adjuntar resultados.</li>
+          </ul>
+          <p><strong>Configuración:</strong></p>
+          <ul>
+            <li>Destinatarios (To, Cc, Bcc).</li>
+            <li>Asunto.</li>
+            <li>Body (HTML soportado).</li>
+            <li>Attachments opcionales.</li>
+          </ul>
+          <h3>8.3 · Combinación con Approval</h3>
+          <p>Muy común: <strong>Approval → notificar via Teams si aprobado, notificar via Outlook si rechazado</strong>.</p>
+        </article>
+
+        <!-- 9 -->
+        <div class="category-header" id="copy-data"><span class="category-header__icon">🚚</span><h2 class="category-header__title">9. Copy Data activity a fondo</h2></div>
+        <article class="concept-card">
+          <h3>9.1 · Anatomía de la actividad</h3>
+          <p>Al añadir Copy Data al canvas, tienes <strong>varios tabs</strong> en el panel de propiedades:</p>
+          <p><strong>Tab General</strong> (común a todas):</p>
+          <ul>
+            <li>Name, Description.</li>
+            <li>Timeout (default: 12h, max: 7 días).</li>
+            <li>Retry policy.</li>
+            <li>Secure input/output.</li>
+          </ul>
+          <p><strong>Tab Source:</strong></p>
+          <ul>
+            <li>Conexión al source.</li>
+            <li>Query o table seleccionada.</li>
+            <li>Query timeout, partitioning options.</li>
+          </ul>
+          <p><strong>Tab Destination:</strong></p>
+          <ul>
+            <li>Conexión al destino.</li>
+            <li>Table o folder destino.</li>
+            <li>Update method (append, replace, upsert).</li>
+          </ul>
+          <p><strong>Tab Mapping:</strong></p>
+          <ul>
+            <li>Mapeo columna a columna source → destino.</li>
+            <li>Type conversions.</li>
+          </ul>
+          <p><strong>Tab Settings:</strong></p>
+          <ul>
+            <li>Data integration units (DIU).</li>
+            <li>Parallel copies.</li>
+            <li>Retry on failures.</li>
+            <li>Fault tolerance.</li>
+            <li>Logging.</li>
+          </ul>
+          <h3>9.2 · Update methods según destino</h3>
+          <p>Según el destino, tienes distintas opciones:</p>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Destino</th><th>Update methods</th></tr></thead>
+              <tbody>
+                <tr><td>Lakehouse Tables</td><td>Append, Overwrite</td></tr>
+                <tr><td>Lakehouse Files</td><td>Append (nuevo file), Overwrite (reemplazar file)</td></tr>
+                <tr><td>Warehouse</td><td>Append, Upsert (via staging), Merge</td></tr>
+                <tr><td>SQL DB</td><td>Append, Upsert</td></tr>
+                <tr><td>Blob/ADLS</td><td>Append (nuevo file), Overwrite</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <h3>9.3 · Copy behavior for files</h3>
+          <p>Al copiar ficheros:</p>
+          <ul>
+            <li><strong>PreserveHierarchy</strong>: mantiene estructura de carpetas.</li>
+            <li><strong>FlattenHierarchy</strong>: aplana en una sola carpeta.</li>
+            <li><strong>MergeFiles</strong>: consolida en un solo fichero.</li>
+          </ul>
+          <h3>9.4 · Parallel copies y DIUs</h3>
+          <p><strong>Parallel copies</strong>: número de conexiones paralelas al source. Aumenta throughput pero puede saturar el source.</p>
+          <p><strong>DIUs (Data Integration Units)</strong>: unidad de compute para Copy Data. Más DIUs → más rápido pero más CU consumidas.</p>
+          <p>Para la mayoría de casos, dejar en <strong>Auto</strong> es suficiente.</p>
+          <h3>9.5 · Fault tolerance</h3>
+          <p>Puedes configurar cómo maneja errores:</p>
+          <ul>
+            <li><strong>Abort activity on first incompatible row</strong>: falla al primer error.</li>
+            <li><strong>Skip incompatible rows</strong> (y opcionalmente logear a un fichero).</li>
+          </ul>
+        </article>
+
+        <!-- 10 -->
+        <div class="category-header" id="parametros"><span class="category-header__icon">🎨</span><h2 class="category-header__title">10. Parameters, variables y expressions</h2></div>
+        <article class="concept-card">
+          <h3>10.1 · Parámetros del pipeline</h3>
+          <p><strong>Cómo crearlos</strong>:</p>
+          <ul>
+            <li>Pipeline canvas → tab <strong>Parameters</strong> → <strong>New</strong>.</li>
+            <li>Definir: <strong>Name, Type</strong> (String, Int, Float, Bool, Array, Object, SecureString), <strong>Default value</strong>.</li>
+          </ul>
+          <p><strong>Cómo referenciarlos</strong>:</p>
+          <pre><code class="language-plaintext">@pipeline().parameters.folder_name
+@pipeline().parameters.process_date</code></pre>
+          <p><strong>Cómo pasarles valor al ejecutar</strong>:</p>
+          <ul>
+            <li>On-demand run → dialog con inputs.</li>
+            <li>Scheduled → definidos en el schedule.</li>
+            <li>Event trigger → definidos en el trigger.</li>
+            <li>Invoke pipeline → definidos en la llamada.</li>
+          </ul>
+          <h3>10.2 · Variables del pipeline</h3>
+          <p><strong>Cómo crearlas</strong>:</p>
+          <ul>
+            <li>Pipeline canvas → tab <strong>Variables</strong> → <strong>New</strong>.</li>
+            <li>Definir: <strong>Name, Type, Default value</strong>.</li>
+          </ul>
+          <p><strong>Cómo asignarlas</strong>:</p>
+          <ul>
+            <li>Actividad <strong>Set Variable</strong>.</li>
+          </ul>
+          <p><strong>Cómo referenciarlas</strong>:</p>
+          <pre><code class="language-plaintext">@variables('my_variable')</code></pre>
+          <p><strong>Diferencia clave</strong> vs parámetros:</p>
+          <ul>
+            <li>Parámetros: <strong>inmutables</strong> durante el run, definidos al inicio.</li>
+            <li>Variables: <strong>mutables</strong>, se pueden cambiar durante el run.</li>
+          </ul>
+          <h3>10.3 · Expressions y functions</h3>
+          <p>Fabric pipelines usan un <strong>expression language</strong> para valores dinámicos. Empiezan con <code>@</code>:</p>
+          <p><strong>Referenciar valores:</strong></p>
+          <pre><code class="language-plaintext">@pipeline().parameters.env             -- parámetro
+@pipeline().RunId                       -- ID del run actual
+@pipeline().TriggerName                 -- nombre del trigger que lanzó
+@pipeline().TriggerTime                 -- momento del trigger
+@variables('x')                         -- variable
+@activity('Lookup1').output.value       -- output de actividad</code></pre>
+          <p><strong>Funciones de fecha:</strong></p>
+          <pre><code class="language-plaintext">@utcnow()                               -- ahora en UTC
 @formatDateTime(utcnow(), 'yyyy-MM-dd')
-@concat('Files/ingested/', pipeline().parameters.source_name, '/', formatDateTime(utcnow(), 'yyyy/MM/dd'), '/')
-@if(equals(x, y), 'igual', 'distinto')
-@length(myArray)   @contains(myArray, item)   @first(myArray)</code></pre>
-          <p>El <strong>Dynamic content builder</strong> (icono fx / <em>Add dynamic content</em>) te deja componer expressions visualmente.</p>
-        </article>
-
-        <div class="category-header" id="runs"><span class="category-header__icon">🏃</span><h2 class="category-header__title">9. Pipeline runs y triggers</h2></div>
-        <article class="concept-card">
+@addDays(utcnow(), -1)
+@dayOfWeek(utcnow())</code></pre>
+          <p><strong>Funciones de string:</strong></p>
+          <pre><code class="language-plaintext">@concat('Files/', pipeline().parameters.folder, '/', formatDateTime(utcnow(), 'yyyyMMdd'), '.csv')
+@toUpper('hello')
+@substring('hello world', 0, 5)
+@replace('hello', 'l', 'L')</code></pre>
+          <p><strong>Funciones lógicas:</strong></p>
+          <pre><code class="language-plaintext">@equals(x, y)
+@and(condition1, condition2)
+@or(condition1, condition2)
+@not(condition)
+@if(condition, valueIfTrue, valueIfFalse)</code></pre>
+          <p><strong>Funciones de colección:</strong></p>
+          <pre><code class="language-plaintext">@length(myArray)
+@contains(myArray, item)
+@first(myArray)
+@last(myArray)
+@indexOf(myArray, item)</code></pre>
+          <h3>10.4 · 🎯 Uso típico: nombres dinámicos de ficheros</h3>
+          <p>Ejemplo común: guardar el output en una carpeta con fecha:</p>
+          <pre><code class="language-plaintext">folder = @concat(
+    'Files/ingested/',
+    pipeline().parameters.source_name, '/',
+    formatDateTime(utcnow(), 'yyyy/MM/dd'), '/'
+)</code></pre>
+          <h3>10.5 · Dynamic content builder</h3>
+          <p>Fabric ofrece un <strong>expression builder visual</strong>:</p>
           <ul>
-            <li><strong>On-demand:</strong> botón Run (guarda antes de ejecutar).</li>
-            <li><strong>Scheduled:</strong> start/end date, time zone, frequency (Minute, Hour, Day, Week, Month) e interval.</li>
-            <li><strong>Event-based:</strong> por eventos (fichero, job, workspace) usando Activator (ver siguiente sección).</li>
+            <li>Cualquier campo que soporte expressions muestra un icono <strong>fx</strong> o link <strong>Add dynamic content</strong>.</li>
+            <li>Al hacer click, se abre un dialog con:
+              <ul>
+                <li>Funciones disponibles (categorizado).</li>
+                <li>Parámetros y variables del pipeline.</li>
+                <li>Output de actividades previas.</li>
+              </ul>
+            </li>
+            <li>Puedes componer la expression visualmente sin recordar sintaxis exacta.</li>
           </ul>
         </article>
 
-        <div class="category-header" id="events"><span class="category-header__icon">🚨</span><h2 class="category-header__title">10. Triggers event-based (Activator)</h2></div>
+        <!-- 11 -->
+        <div class="category-header" id="runs"><span class="category-header__icon">🏃</span><h2 class="category-header__title">11. Pipeline runs: on-demand, scheduled, event-based</h2></div>
         <article class="concept-card">
-          <p>Ejecutan un pipeline automáticamente ante un evento en OneLake, Azure Blob Storage, jobs de Fabric o workspace. Arquitectura: fichero llega → evento emitido → <strong>Eventstream</strong> capta → <strong>Activator</strong> evalúa → pipeline se ejecuta.</p>
-          <p>Eventos típicos: <code>Microsoft.Fabric.OneLake.FileCreated/FileDeleted</code>, <code>Microsoft.Storage.BlobCreated/BlobDeleted</code>. Filtros por folder path o file name pattern (vía Subject).</p>
-          <h4>🎯 Trigger parameters</h4>
-          <pre><code class="language-plaintext">@pipeline()?.TriggerEvent?.FileName
-@pipeline()?.TriggerEvent?.FolderPath</code></pre>
-          <div class="note note--warning">⚠️ El <code>?</code> es <strong>null-safe access</strong>: en run manual estos valores son NULL, y el <code>?</code> evita que el pipeline falle al testear.</div>
+          <h3>11.1 · On-demand runs</h3>
+          <p><strong>Cómo</strong>: en el pipeline editor → botón <strong>Run</strong> en el Home ribbon.</p>
+          <p><strong>Cuándo</strong>: desarrollo, testing, ejecuciones puntuales, re-ejecutar después de fix.</p>
+          <div class="note note--warning">⚠️ <strong>Ojo</strong>: <strong>hay que guardar</strong> cualquier cambio antes de que arranque.</div>
+          <h3>11.2 · Scheduled runs</h3>
+          <p><strong>Cómo</strong>: pipeline editor → botón <strong>Schedule</strong>.</p>
+          <p><strong>Configuración:</strong></p>
+          <ul>
+            <li><strong>Start date</strong>.</li>
+            <li><strong>End date</strong> (opcional).</li>
+            <li><strong>Time zone</strong>.</li>
+            <li><strong>Frequency</strong>: Minute, Hour, Day, Week, Month.</li>
+            <li><strong>Interval</strong>: cada cuántas unidades (cada 15 min, cada 2h, etc.).</li>
+          </ul>
+          <p>Ejemplo: "Every day at 06:00 AM Central European Time, starting 2026-01-01".</p>
+          <h3>11.3 · Event-based runs (los MÁS interesantes)</h3>
+          <p>Estos los vemos a fondo en la siguiente sección porque son bastante complejos y <strong>muy examinables</strong>.</p>
+          <p>Base: <strong>eventos</strong> como llegada de fichero → <strong>Activator</strong> capta el evento → <strong>dispara el pipeline</strong>.</p>
         </article>
 
-        <div class="category-header" id="settings"><span class="category-header__icon">⚙️</span><h2 class="category-header__title">11. Timeout, retries y secure I/O</h2></div>
+        <!-- 12 -->
+        <div class="category-header" id="events"><span class="category-header__icon">🚨</span><h2 class="category-header__title">12. Event-based triggers (OneLake + Blob Storage + Activator)</h2></div>
         <article class="concept-card">
+          <h3>12.1 · ¿Qué son los event-based triggers?</h3>
+          <p>Triggers que ejecutan un pipeline <strong>automáticamente cuando ocurre un evento</strong> en:</p>
+          <ul>
+            <li><strong>OneLake</strong> (fichero creado/borrado/modificado)</li>
+            <li><strong>Azure Blob Storage</strong> (fichero creado/borrado/modificado)</li>
+            <li><strong>Jobs de Fabric</strong> (pipeline succeeded/failed)</li>
+            <li><strong>Workspace events</strong></li>
+          </ul>
+          <h3>12.2 · Arquitectura</h3>
+          <pre><code class="language-plaintext">Fichero llega a OneLake/Blob
+  ↓
+Evento emitido (Microsoft.Fabric.OneLake.FileCreated)
+  ↓
+Eventstream capta el evento
+  ↓
+Activator evalúa la condición
+  ↓
+Pipeline se ejecuta con parámetros dinámicos</code></pre>
+          <p>Los componentes clave:</p>
+          <ul>
+            <li><strong>Eventstream</strong>: capa de captura de eventos.</li>
+            <li><strong>Activator</strong> (antes "Reflex"): capa de decisión y acción.</li>
+          </ul>
+          <h3>12.3 · 🎯 Por qué son tan poderosos</h3>
+          <ul>
+            <li>⚡ <strong>Real-time processing</strong>: no esperas al próximo schedule.</li>
+            <li>💰 <strong>Coste bajo</strong>: solo ejecutas cuando hay datos nuevos.</li>
+            <li>🤖 <strong>Automation total</strong>: sin intervención manual.</li>
+            <li>🔄 <strong>Data freshness</strong>: analytics siempre actualizadas.</li>
+          </ul>
+          <h3>12.4 · Cómo configurar un trigger de storage event</h3>
+          <p><strong>Paso 1</strong>: en el pipeline canvas → botón <strong>Trigger</strong> en Home ribbon.</p>
+          <p><strong>Paso 2</strong>: se abre el panel <strong>Set alert</strong> (usa Activator).</p>
+          <p><strong>Paso 3</strong>: seleccionar tipo de eventos:</p>
+          <ul>
+            <li><code>OneLake</code> events (para ficheros en OneLake)</li>
+            <li>Azure Blob Storage events</li>
+          </ul>
+          <p><strong>Paso 4</strong>: seleccionar el source:</p>
+          <ul>
+            <li>Para OneLake: workspace + lakehouse + folder.</li>
+            <li>Para Blob: Azure subscription + storage account.</li>
+          </ul>
+          <p><strong>Paso 5</strong>: elegir tipos de eventos:</p>
+          <ul>
+            <li><code>Microsoft.Fabric.OneLake.FileCreated</code></li>
+            <li><code>Microsoft.Fabric.OneLake.FileDeleted</code></li>
+            <li><code>Microsoft.Storage.BlobCreated</code></li>
+            <li><code>Microsoft.Storage.BlobDeleted</code></li>
+            <li>Y muchos más.</li>
+          </ul>
+          <p><strong>Paso 6</strong>: filtros (opcional):</p>
+          <ul>
+            <li>Filtrar por <strong>folder path</strong>.</li>
+            <li>Filtrar por <strong>file name pattern</strong>.</li>
+            <li>Filtrar por <strong>file type</strong>.</li>
+            <li>Se hace vía el campo <strong>Subject</strong>.</li>
+          </ul>
+          <p><strong>Paso 7</strong>: configurar la acción del trigger:</p>
+          <ul>
+            <li>Workspace destino.</li>
+            <li>Pipeline a ejecutar.</li>
+            <li>Nombre del Activator item (Reflex).</li>
+          </ul>
+          <p><strong>Paso 8</strong>: Create → trigger activo.</p>
+          <h3>12.5 · Ejemplo completo (tutorial oficial)</h3>
+          <p><strong>Escenario</strong>: cuando se sube un CSV a <code>Files/Source/</code> en un Lakehouse, procesar y cargar a una tabla.</p>
+          <p><strong>Setup</strong>:</p>
+          <ol>
+            <li>Crear Lakehouse <code>TutorialLakehouse</code> con subfolder <code>Source</code>.</li>
+            <li>Crear pipeline <code>TutorialPipeline</code> que procesa el CSV.</li>
+            <li>En Real-Time hub → Fabric Events → OneLake events → <strong>Set alert</strong>.</li>
+            <li>Configurar source como <code>TutorialLakehouse/Files/Source</code>.</li>
+            <li>Eventos: <code>FileCreated</code> y <code>FileDeleted</code>.</li>
+            <li>Action: <strong>Run a Fabric item</strong> → seleccionar <code>TutorialPipeline</code>.</li>
+            <li>Guardar activator como <code>TutorialActivator</code>.</li>
+          </ol>
+          <p><strong>Test</strong>:</p>
+          <ul>
+            <li>Subir un CSV a <code>Files/Source/</code>.</li>
+            <li>Automáticamente se dispara el <code>FileCreated</code> event.</li>
+            <li>Activator llama al pipeline.</li>
+            <li>Pipeline procesa y carga a Sales table.</li>
+            <li><strong>Sin refresh manual, sin esperar schedule</strong>.</li>
+          </ul>
+          <h3>12.6 · 🎯 Casos de uso comunes</h3>
+          <ul>
+            <li>📊 <strong>Data lake ingestion</strong>: nuevos ficheros → pipeline auto-procesa.</li>
+            <li>🧪 <strong>Trigger a Notebook</strong> para preprocessing ML.</li>
+            <li>🔔 <strong>Alertas</strong> cuando datasets críticos se modifican.</li>
+            <li>🔗 <strong>Forward events a webhooks</strong> para compliance.</li>
+            <li>📧 <strong>Notificaciones vía Teams/Email</strong> con el evento.</li>
+          </ul>
+        </article>
+
+        <!-- 13 -->
+        <div class="category-header" id="trigger-params"><span class="category-header__icon">🎯</span><h2 class="category-header__title">13. Trigger parameters</h2></div>
+        <article class="concept-card">
+          <p>Cuando un pipeline se ejecuta por un trigger de storage event, <strong>Fabric expone información del evento</strong> al pipeline vía parámetros built-in.</p>
+          <h3>13.1 · Parámetros disponibles</h3>
+          <pre><code class="language-plaintext">@pipeline()?.TriggerEvent?.FileName        -- nombre del fichero
+@pipeline()?.TriggerEvent?.FolderPath      -- ruta de la carpeta</code></pre>
+          <p><strong>Ojo con el <code>?</code></strong>: es sintaxis de "null-safe access". Necesario porque:</p>
+          <ul>
+            <li>Cuando el pipeline se dispara por evento → los valores están presentes.</li>
+            <li>Cuando el pipeline se ejecuta <strong>manualmente</strong> (test) → los valores son NULL.</li>
+            <li>El <code>?</code> evita que el pipeline falle en test manual.</li>
+          </ul>
+          <h3>13.2 · Uso en actividades</h3>
+          <p>Ejemplo: usar el nombre del fichero recibido para construir la ruta:</p>
+          <pre><code class="language-plaintext">input_file = @pipeline()?.TriggerEvent?.FileName
+target_table = @concat('processed_', formatDateTime(utcnow(), 'yyyyMMdd'))</code></pre>
+          <h3>13.3 · Estructura completa del evento</h3>
+          <p>Los eventos tienen esta estructura:</p>
           <div class="table-scroll">
             <table class="md-table">
-              <thead><tr><th>Setting</th><th>Default</th><th>Máximo</th></tr></thead>
+              <thead><tr><th>Property</th><th>Descripción</th><th>Ejemplo</th></tr></thead>
               <tbody>
-                <tr><td>Timeout (formato D.HH:MM:SS)</td><td>12 horas</td><td>7 días</td></tr>
-                <tr><td>Retries</td><td>0 (desactivado)</td><td>—</td></tr>
-                <tr><td>Retry interval</td><td>30 seg</td><td>—</td></tr>
-                <tr><td>Actividades por pipeline</td><td>—</td><td><strong>120</strong> (incluye anidadas)</td></tr>
+                <tr><td><code>source</code></td><td>Path del source</td><td><code>/subscriptions/.../storageAccounts/my-storage</code></td></tr>
+                <tr><td><code>subject</code></td><td>Path del sujeto (fichero)</td><td><code>/blobServices/default/containers/my-fs/blobs/new-file.txt</code></td></tr>
+                <tr><td><code>type</code></td><td>Tipo de evento</td><td><code>Microsoft.Storage.BlobCreated</code></td></tr>
+                <tr><td><code>time</code></td><td>Timestamp UTC</td><td><code>2026-06-26T18:41:00Z</code></td></tr>
+                <tr><td><code>id</code></td><td>ID único del evento</td><td><code>00000000-...</code></td></tr>
+                <tr><td><code>data</code></td><td>Payload del evento</td><td><code>{...}</code></td></tr>
               </tbody>
             </table>
           </div>
-          <p><strong>Secure input/output:</strong> el input/output no aparece en logs (para credenciales, tokens). Los datos siguen llegando al destino, solo se ocultan en logs.</p>
-        </article>
-
-        <div class="category-header" id="invoke"><span class="category-header__icon">🔗</span><h2 class="category-header__title">12. Invoke Pipeline y Approval</h2></div>
-        <article class="concept-card">
-          <p><strong>Invoke Pipeline:</strong> ejecuta otro pipeline (modularizar, reutilizar, escapar del límite de 120 actividades). Patrón master + workers: Lookup lista de sources → ForEach → Invoke Pipeline por cada source.</p>
-          <p><strong>Approval:</strong> pausa el pipeline y pide decisión humana (aprobar/rechazar) desde Teams o email. Approved → camino success; Rejected → failure. Queda auditable (quién y cuándo). Solo bloquea ese pipeline, no el workspace.</p>
-        </article>
-
-        <div class="category-header" id="monitoring"><span class="category-header__icon">📊</span><h2 class="category-header__title">13. Monitoring y notificaciones</h2></div>
-        <article class="concept-card">
-          <p>Monitoriza desde el tab <strong>Runs</strong> del pipeline, el <strong>Monitor Hub</strong> (todos los pipelines) y la lista del workspace. Real-time con indicadores por actividad (verde/rojo/amarillo/gris). Run history con timestamps, duración, input/output por actividad, trigger y parámetros.</p>
-          <p><strong>Failure notifications:</strong> por schedule (email), con Teams/Outlook activities en rama on-failure, o con Activator para acciones avanzadas.</p>
-        </article>
-
-        <div class="category-header" id="adf"><span class="category-header__icon">🆚</span><h2 class="category-header__title">14. Fabric vs Azure Data Factory</h2></div>
-        <article class="concept-card">
-          <p>El concepto de pipeline, actividades y expression language es casi idéntico. <strong>Fabric añade:</strong> Outlook, Teams, Semantic model refresh, Dataflow Gen2, Refresh SQL Endpoint, Lakehouse Maintenance, Copy Job. <strong>Fabric cambia:</strong> Wrangling Data Flow → Dataflow Gen2. Los features nuevos de Fabric <strong>no se backportan</strong> a ADF (roadmaps separados).</p>
-        </article>
-
-        <div class="category-header" id="trampas"><span class="category-header__icon">⚠️</span><h2 class="category-header__title">15. Trampas típicas</h2></div>
-        <article class="concept-card">
+          <h3>13.4 · Expression builder para trigger parameters</h3>
+          <p>En el expression builder del pipeline hay una <strong>tab específica</strong> para trigger parameters:</p>
           <ul>
-            <li><strong>"Pipeline = dataflow"</strong> → ❌ pipeline orquesta, dataflow transforma.</li>
-            <li><strong>"Copy Data es la única forma de mover datos"</strong> → ❌ también Copy Job, Dataflow, Notebook, Shortcuts, Mirroring.</li>
-            <li><strong>"500 actividades por pipeline"</strong> → ❌ máximo 120 (incluidas anidadas).</li>
-            <li><strong>"Retries automáticos"</strong> → ❌ desactivados por defecto.</li>
-            <li><strong>"Parámetros = variables"</strong> → ❌ parámetros inmutables/externos, variables mutables/internas.</li>
-            <li><strong>"Trigger parameters funcionan en run manual"</strong> → ❌ son NULL (por eso el <code>?</code>).</li>
-            <li><strong>"Timeout máximo 24h"</strong> → ❌ máximo 7 días (default 12h).</li>
-            <li><strong>"Refresh SQL Endpoint refresca datos"</strong> → ❌ refresca el metadata sync del SQL endpoint del lakehouse.</li>
-            <li><strong>"ForEach siempre en paralelo"</strong> → ❌ configurable (batch count default 20).</li>
-            <li><strong>"Event triggers solo con OneLake"</strong> → ❌ también Azure Blob Storage.</li>
-            <li><strong>"Secure I/O oculta datos en el destino"</strong> → ❌ solo en los logs.</li>
+            <li>Data Factory <strong>parsea automáticamente</strong> el fichero y la carpeta.</li>
+            <li>Puedes añadirlos a expressions dinámicamente.</li>
           </ul>
         </article>
 
-        <div class="category-header" id="comparativas"><span class="category-header__icon">🆚</span><h2 class="category-header__title">16. Comparativas clave (chuleta)</h2></div>
+        <!-- 14 -->
+        <div class="category-header" id="templates"><span class="category-header__icon">📋</span><h2 class="category-header__title">14. Templates de pipelines</h2></div>
         <article class="concept-card">
+          <p>Fabric incluye <strong>templates predefinidos</strong> para escenarios comunes. Te ahorran mucho tiempo si tu caso encaja.</p>
+          <h3>14.1 · Cómo usar un template</h3>
+          <ol>
+            <li>Crear nuevo pipeline.</li>
+            <li>En la pantalla inicial → tile <strong>Templates</strong>.</li>
+            <li>Explorar la biblioteca.</li>
+            <li>Seleccionar template → se crea un pipeline pre-configurado.</li>
+            <li>Editar y personalizar según necesidad.</li>
+          </ol>
+          <h3>14.2 · Categorías de templates</h3>
+          <p>Templates comunes:</p>
+          <ul>
+            <li><strong>Copy multiple files/tables</strong> desde un source.</li>
+            <li><strong>Incremental copy</strong> desde una BBDD.</li>
+            <li><strong>Ingest data from REST API</strong> con paginación.</li>
+            <li><strong>Consolidate multiple sources</strong> en un destino.</li>
+            <li><strong>Simple ETL</strong> de un flat file a una tabla.</li>
+          </ul>
+          <h3>14.3 · Beneficios</h3>
+          <ul>
+            <li>⚡ Setup rápido (patrones probados).</li>
+            <li>📚 Buena forma de <strong>aprender best practices</strong>.</li>
+            <li>🎯 Cubren la mayoría de escenarios comunes.</li>
+          </ul>
+        </article>
+
+        <!-- 15 -->
+        <div class="category-header" id="general-settings"><span class="category-header__icon">⚙️</span><h2 class="category-header__title">15. General settings: timeout, retries, secure I/O</h2></div>
+        <article class="concept-card">
+          <p>Todas las actividades tienen configuración <strong>General</strong> común.</p>
+          <h3>15.1 · Tabla completa</h3>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Setting</th><th>Descripción</th><th>Default</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Name</strong></td><td>Nombre único de la actividad</td><td>Obligatorio</td></tr>
+                <tr><td><strong>Description</strong></td><td>Descripción libre</td><td>Opcional</td></tr>
+                <tr><td><strong>Timeout</strong></td><td>Tiempo máximo de ejecución (formato <code>D.HH:MM:SS</code>)</td><td>12 horas</td></tr>
+                <tr><td><strong>Enable retries</strong></td><td>Reintentos automáticos si falla</td><td>Desactivado</td></tr>
+                <tr><td><strong>Retry</strong></td><td>Número de reintentos</td><td>1 (si activado)</td></tr>
+                <tr><td><strong>Retry conditions</strong> (Preview)</td><td>Condiciones específicas para retry</td><td>—</td></tr>
+                <tr><td><strong>Retry interval (sec)</strong></td><td>Segundos entre reintentos</td><td>30</td></tr>
+                <tr><td><strong>Secure output</strong></td><td>Output no aparece en logs</td><td>Desactivado</td></tr>
+                <tr><td><strong>Secure input</strong></td><td>Input no aparece en logs</td><td>Desactivado</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <h3>15.2 · 🎯 Timeout</h3>
+          <ul>
+            <li>Formato: <code>D.HH:MM:SS</code> (Days.Hours:Minutes:Seconds).</li>
+            <li><strong>Default: 12 horas</strong>.</li>
+            <li><strong>Máximo: 7 días</strong> (<code>7.00:00:00</code>).</li>
+            <li>Si se excede → la actividad <strong>falla con timeout error</strong>.</li>
+          </ul>
+          <h3>15.3 · 🎯 Retry logic</h3>
+          <p>Configurar retries es <strong>crítico para producción</strong>. Escenarios típicos que se benefician:</p>
+          <ul>
+            <li>Errores transitorios de red.</li>
+            <li>Servicios temporalmente no disponibles.</li>
+            <li>Rate limiting en APIs externas.</li>
+            <li>Timeouts intermitentes.</li>
+          </ul>
+          <p><strong>Consideraciones</strong>:</p>
+          <ul>
+            <li>No demasiados retries (3-5 suele bastar).</li>
+            <li>Retry interval razonable (30-60 seg típico).</li>
+            <li>Combinar con <strong>retry conditions</strong> para retry solo en errores específicos.</li>
+          </ul>
+          <h3>15.4 · 🎯 Secure input/output</h3>
+          <p>Cuando activas:</p>
+          <ul>
+            <li><strong>Secure output</strong>: el output de la actividad <strong>no se logea</strong>.</li>
+            <li><strong>Secure input</strong>: el input <strong>no se logea</strong>.</li>
+          </ul>
+          <p><strong>Uso típico</strong>: cuando la actividad maneja <strong>credenciales, tokens, o datos sensibles</strong> (LGPD, GDPR, HIPAA).</p>
+          <p>Ejemplo: si la actividad hace un <code>Web</code> call con un token de auth, activa Secure input para que el token no aparezca en logs.</p>
+          <h3>15.5 · ⚠️ Límite de actividades por pipeline</h3>
+          <p><strong>Máximo 120 actividades por pipeline</strong>, incluyendo actividades anidadas en containers (ForEach, If, Switch, Until).</p>
+          <p>Si necesitas más → <strong>modulariza con Invoke Pipeline</strong>.</p>
+        </article>
+
+        <!-- 16 -->
+        <div class="category-header" id="invoke"><span class="category-header__icon">🔗</span><h2 class="category-header__title">16. Invoke pipeline: pipelines anidados</h2></div>
+        <article class="concept-card">
+          <h3>16.1 · ¿Para qué?</h3>
+          <p>La actividad <strong>Invoke Pipeline</strong> permite que un pipeline <strong>ejecute otro pipeline</strong>.</p>
+          <p><strong>Beneficios</strong>:</p>
+          <ul>
+            <li>🧩 <strong>Modularizar</strong> workflows complejos.</li>
+            <li>♻️ <strong>Reutilizar</strong> lógica común entre múltiples pipelines.</li>
+            <li>📂 <strong>Organizar</strong> proyectos grandes.</li>
+            <li>🎯 <strong>Escapar del límite</strong> de 120 actividades por pipeline.</li>
+          </ul>
+          <h3>16.2 · Cómo funciona</h3>
+          <p><strong>Pipeline padre</strong>:</p>
+          <pre><code class="language-plaintext">Actividad A → Invoke Pipeline "SubPipeline_A" → Actividad B</code></pre>
+          <p>Al llegar a Invoke:</p>
+          <ol>
+            <li>Ejecuta <code>SubPipeline_A</code>.</li>
+            <li>Puede pasarle <strong>parámetros</strong>.</li>
+            <li>Espera a que termine (o continúa en async si se configura).</li>
+            <li>El output del subpipeline se puede referenciar.</li>
+            <li>Continúa con Actividad B.</li>
+          </ol>
+          <h3>16.3 · Configuración</h3>
+          <ul>
+            <li><strong>Invoked pipeline</strong>: pipeline a ejecutar.</li>
+            <li><strong>Parameters</strong>: valores pasados al subpipeline.</li>
+            <li><strong>Wait on completion</strong>: esperar a que termine (default) o async.</li>
+          </ul>
+          <h3>16.4 · Uso típico</h3>
+          <p><strong>Patrón master + workers</strong>:</p>
+          <pre><code class="language-plaintext">Master pipeline:
+  ├─ Lookup: obtener lista de sources
+  └─ ForEach source:
+       └─ Invoke Pipeline "ProcessSource" (para cada source)</code></pre>
+          <p>Cada <code>ProcessSource</code> es un pipeline independiente que hace su ETL específico.</p>
+        </article>
+
+        <!-- 17 -->
+        <div class="category-header" id="approval"><span class="category-header__icon">👥</span><h2 class="category-header__title">17. Approval activity: human-in-the-loop</h2></div>
+        <article class="concept-card">
+          <h3>17.1 · ¿Qué es?</h3>
+          <p><strong>Approval activity</strong> pausa el pipeline y <strong>solicita una decisión humana</strong> (aprobar/rechazar) a personas designadas.</p>
+          <h3>17.2 · Cuándo usarla</h3>
+          <ul>
+            <li>✅ Workflows que requieren <strong>sign-off manual</strong>.</li>
+            <li>✅ Compliance y auditoría.</li>
+            <li>✅ Decisiones que deben ser <strong>traceable y auditables</strong>.</li>
+            <li>✅ Data publishing a producción.</li>
+          </ul>
+          <h3>17.3 · Cómo funciona</h3>
+          <ol>
+            <li>El pipeline llega a la Approval activity.</li>
+            <li><strong>Se pausa</strong> la ejecución.</li>
+            <li><strong>Notificación</strong> a los aprobadores (por email, Teams).</li>
+            <li>Aprobadores revisan → aprobar o rechazar.</li>
+            <li>Según la decisión:
+              <ul>
+                <li><strong>Approved</strong> → sigue el camino success.</li>
+                <li><strong>Rejected</strong> → sigue el camino failure.</li>
+              </ul>
+            </li>
+            <li>La decisión queda <strong>auditable</strong> para siempre.</li>
+          </ol>
+          <h3>17.4 · Ejemplo: publicación con aprobación</h3>
+          <pre><code class="language-plaintext">Pipeline "PublishData":
+  ├─ Prepare + Validate data
+  ├─ Approval activity (business owner reviews)
+  ├─ If approved:
+  │    ├─ Publish results to production
+  │    └─ Teams notification "Published"
+  └─ If rejected:
+       ├─ Outlook notification "Feedback and rejection reason"
+       └─ Fail activity (stop pipeline)</code></pre>
+          <h3>17.5 · Auditoría</h3>
+          <p>Todos los pipelines con approvals son <strong>fully observable</strong> en Fabric Monitoring:</p>
+          <ul>
+            <li>Ver estado de aprobación pendiente.</li>
+            <li>Ver <strong>quién aprobó/rechazó</strong> y cuándo.</li>
+            <li>Ver comentarios de la decisión.</li>
+            <li>Diagnóstico de workflows con approvals pendientes.</li>
+          </ul>
+        </article>
+
+        <!-- 18 -->
+        <div class="category-header" id="monitoring"><span class="category-header__icon">📊</span><h2 class="category-header__title">18. Monitoring de pipeline runs</h2></div>
+        <article class="concept-card">
+          <h3>18.1 · Dónde monitorizar</h3>
+          <p>Hay <strong>varios sitios</strong> desde donde monitorizar:</p>
+          <p><strong>A) Pipeline canvas → tab Runs</strong></p>
+          <ul>
+            <li>Historial de runs del pipeline actual.</li>
+            <li>Detalles por run: duración, status, activity outputs.</li>
+          </ul>
+          <p><strong>B) Monitor Hub</strong></p>
+          <ul>
+            <li>Vista centralizada de todos los runs de todos los pipelines.</li>
+            <li>Filtros por workspace, tipo de item, status.</li>
+          </ul>
+          <p><strong>C) Workspace list</strong></p>
+          <ul>
+            <li>El pipeline item en la lista muestra el último estado.</li>
+          </ul>
+          <h3>18.2 · Real-time monitoring</h3>
+          <p>Mientras el pipeline corre:</p>
+          <ul>
+            <li><strong>Indicadores visuales</strong> de status por actividad.</li>
+            <li>Verde ✅ = success, Rojo ❌ = failure, Amarillo ⏸️ = in progress, Gris = skipped.</li>
+            <li>Puedes ver el output/input de cada actividad al pinchar.</li>
+          </ul>
+          <h3>18.3 · Run history</h3>
+          <p>Para cada run pasado:</p>
+          <ul>
+            <li><strong>Timestamp</strong> de inicio y fin.</li>
+            <li><strong>Duración total</strong>.</li>
+            <li><strong>Status</strong> general.</li>
+            <li><strong>Detalles por actividad</strong>: input, output, error messages.</li>
+            <li><strong>Trigger</strong> que lo lanzó.</li>
+            <li><strong>Parámetros</strong> con los que se ejecutó.</li>
+          </ul>
+          <h3>18.4 · Métricas de performance</h3>
+          <ul>
+            <li>Tiempo por actividad.</li>
+            <li>Rows copiadas (para Copy Data).</li>
+            <li>Throughput.</li>
+            <li>CU consumidas.</li>
+          </ul>
+          <p>Útil para identificar bottlenecks.</p>
+          <h3>18.5 · 🎯 Audit trail</h3>
+          <ul>
+            <li>Quién ejecutó qué pipeline y cuándo.</li>
+            <li>Logs detallados con timestamps.</li>
+            <li>Data lineage (rastreo desde origen hasta destino).</li>
+            <li>Error messages con contexto.</li>
+          </ul>
+          <p>Esencial para debugging y compliance.</p>
+        </article>
+
+        <!-- 19 -->
+        <div class="category-header" id="notifications"><span class="category-header__icon">📧</span><h2 class="category-header__title">19. Failure notifications</h2></div>
+        <article class="concept-card">
+          <h3>19.1 · Notificaciones básicas por schedule</h3>
+          <p>Para pipelines programados, puedes configurar <strong>failure notifications</strong>:</p>
+          <ol>
+            <li>Pipeline canvas → <strong>Schedule</strong> button.</li>
+            <li>Sección <strong>Failure notifications</strong>.</li>
+            <li>Añadir usuarios o grupos.</li>
+            <li>Cuando el pipeline falla → email automático.</li>
+          </ol>
+          <h3>19.2 · Notificaciones avanzadas con Teams/Outlook activities</h3>
+          <p>Para casos más complejos:</p>
+          <pre><code class="language-plaintext">Pipeline principal
+  ├─ Actividades de ETL
+  └─ Si falla cualquier actividad (rama on failure):
+       ├─ Set variable: error_message = detalles
+       ├─ Teams activity: post to #data-alerts
+       ├─ Outlook activity: email to data-team@company.com
+       └─ Fail activity (opcional, marca fail explícito)</code></pre>
+          <h3>19.3 · Con Activator</h3>
+          <p>Para eventos más avanzados:</p>
+          <ul>
+            <li>Activator detecta cuando pipeline falla.</li>
+            <li>Puede activar múltiples acciones:
+              <ul>
+                <li>Reenviar a Power Automate.</li>
+                <li>Escribir a un log centralizado.</li>
+                <li>Notificar a múltiples canales.</li>
+              </ul>
+            </li>
+          </ul>
+        </article>
+
+        <!-- 20 -->
+        <div class="category-header" id="adf-vs-fabric"><span class="category-header__icon">🆚</span><h2 class="category-header__title">20. Diferencias con Azure Data Factory</h2></div>
+        <article class="concept-card">
+          <p>Muchos vienen de <strong>Azure Data Factory</strong> (ADF) o <strong>Azure Synapse Pipelines</strong> y les interesa saber qué cambia.</p>
+          <h3>20.1 · Similitudes</h3>
+          <ul>
+            <li><strong>Concepto de pipeline</strong> y actividades: casi idéntico.</li>
+            <li><strong>Mayoría de actividades</strong> de ADF están en Fabric.</li>
+            <li><strong>Expression language</strong> es el mismo.</li>
+            <li><strong>Copy Data</strong> y conectores: muy similares.</li>
+          </ul>
+          <h3>20.2 · Diferencias clave</h3>
+          <p><strong>Fabric añade</strong> (no en ADF originalmente):</p>
+          <ul>
+            <li>✅ <strong>Outlook activity</strong> (email notifications).</li>
+            <li>✅ <strong>Teams activity</strong> (notifications en Teams).</li>
+            <li>✅ <strong>Semantic model refresh</strong> (para Power BI).</li>
+            <li>✅ <strong>Dataflow Gen2 activity</strong>.</li>
+            <li>✅ <strong>Refresh SQL Endpoint activity</strong>.</li>
+            <li>✅ <strong>Lakehouse Maintenance activity</strong>.</li>
+            <li>✅ <strong>Copy Job</strong> (item independiente).</li>
+          </ul>
+          <p><strong>Fabric quita</strong> (o cambia nombre):</p>
+          <ul>
+            <li>⚠️ <strong>Wrangling Data Flow</strong> → reemplazado por <strong>Dataflow Gen2</strong>.</li>
+            <li>⚠️ <strong>Some legacy connectors</strong> deprecated.</li>
+          </ul>
+          <p><strong>Fabric mejora</strong>:</p>
+          <ul>
+            <li>✅ Integración nativa con OneLake, Lakehouses, Warehouses.</li>
+            <li>✅ Trigger events con <strong>Activator</strong>.</li>
+            <li>✅ <strong>UI más moderna</strong> y coherente con el resto de Fabric.</li>
+          </ul>
+          <h3>20.3 · Migración ADF → Fabric</h3>
+          <p>Microsoft ofrece:</p>
+          <ul>
+            <li><strong>Compatibilidad de actividades</strong> (la mayoría se traduce directamente).</li>
+            <li><strong>Fabric Lakehouse/Warehouse connectors</strong> disponibles en ADF (para hybrid).</li>
+            <li><strong>Guía de migración</strong> de Mapping Data Flows a Dataflow Gen2.</li>
+            <li><strong>Roadmap</strong>: mount ADF resources en Fabric (para transición gradual).</li>
+          </ul>
+          <h3>20.4 · ⚠️ Featues NO backported</h3>
+          <p><strong>Los features nuevos de Fabric NO se traen a ADF</strong> (dos roadmaps separados).</p>
+        </article>
+
+        <!-- 21 -->
+        <div class="category-header" id="best-practices"><span class="category-header__icon">✨</span><h2 class="category-header__title">21. Best practices oficiales</h2></div>
+        <article class="concept-card">
+          <p>De la documentación oficial:</p>
+          <h3>21.1 · Diseño</h3>
+          <ol>
+            <li><strong>Start simple</strong>: empieza con data movement básico y añade complejidad gradualmente.</li>
+            <li><strong>Use parameters</strong>: parametriza connections y file paths para hacer pipelines reutilizables.</li>
+            <li><strong>Handle errors</strong>: plan de retry logic y paths alternativos.</li>
+            <li><strong>Monitor performance</strong>: revisa execution times y optimiza actividades lentas.</li>
+            <li><strong>Test thoroughly</strong>: valida con sample data antes de producción.</li>
+          </ol>
+          <h3>21.2 · Naming conventions</h3>
+          <ul>
+            <li>Usa nombres <strong>descriptivos y consistentes</strong>.</li>
+            <li>Convenciones: <code>pl_[dominio]_[accion]</code> (ej: <code>pl_sales_daily_ingest</code>).</li>
+            <li>Para actividades: <code>[verbo]_[objeto]</code> (ej: <code>Copy_Sales_Data</code>, <code>Validate_Row_Count</code>).</li>
+          </ul>
+          <h3>21.3 · Modularización</h3>
+          <ul>
+            <li>Pipelines grandes → dividir con <strong>Invoke Pipeline</strong>.</li>
+            <li>Lógica común → subpipelines reutilizables.</li>
+            <li>Un pipeline <strong>una responsabilidad clara</strong> (no "hace de todo").</li>
+          </ul>
+          <h3>21.4 · Error handling</h3>
+          <ul>
+            <li><strong>Retry logic</strong> en actividades propensas a errores transitorios (Web, Copy remote).</li>
+            <li><strong>Failure paths</strong> para notificaciones.</li>
+            <li><strong>Approval activities</strong> para gates críticos.</li>
+            <li><strong>Fail activity</strong> para validaciones estrictas.</li>
+          </ul>
+          <h3>21.5 · Performance</h3>
+          <ul>
+            <li><strong>Parallelize</strong> con ForEach cuando aplique.</li>
+            <li><strong>Copy activity</strong> con DIUs adecuados.</li>
+            <li><strong>Batching</strong> en Copy para reducir overhead.</li>
+            <li><strong>Incremental loads</strong> en vez de full cuando posible.</li>
+          </ul>
+          <h3>21.6 · Governance</h3>
+          <ul>
+            <li>Usa <strong>workspace folders</strong> para organizar.</li>
+            <li><strong>Git integration</strong> para versionado.</li>
+            <li><strong>Deployment pipelines</strong> para dev → test → prod.</li>
+            <li><strong>Secure input/output</strong> en actividades sensibles.</li>
+          </ul>
+        </article>
+
+        <!-- 22 -->
+        <div class="category-header" id="trampas"><span class="category-header__icon">⚠️</span><h2 class="category-header__title">22. Trampas típicas y confusiones frecuentes</h2></div>
+        <article class="concept-card">
+          <h4>Trampa 1: "Un pipeline es lo mismo que un dataflow"</h4>
+          <p>❌ NO. Un <strong>pipeline orquesta</strong> actividades. Un <strong>dataflow transforma</strong> datos. Un pipeline puede ejecutar un dataflow como una de sus actividades.</p>
+          <h4>Trampa 2: "Copy Data es la única forma de mover datos"</h4>
+          <p>❌ También hay <strong>Copy Job</strong>, <strong>Dataflow Gen2</strong>, <strong>Notebook</strong>, <strong>Shortcuts</strong>, <strong>Mirroring</strong>. Cada uno para su caso.</p>
+          <h4>Trampa 3: "Los eventos de OneLake son instantáneos"</h4>
+          <p>✅ Casi. Hay una <strong>latencia mínima</strong> de segundos entre el evento y la ejecución del pipeline. No es exactamente 0ms.</p>
+          <h4>Trampa 4: "Puedo tener 500 actividades en un pipeline"</h4>
+          <p>❌ <strong>Máximo 120 actividades</strong> por pipeline (incluyendo anidadas). Para más → usa Invoke Pipeline.</p>
+          <h4>Trampa 5: "Retries se aplican automáticamente"</h4>
+          <p>❌ Están <strong>desactivados por defecto</strong>. Hay que activarlos explícitamente en cada actividad.</p>
+          <h4>Trampa 6: "Los parámetros son iguales que las variables"</h4>
+          <p>❌ Parámetros: <strong>input externo, inmutables</strong> durante el run. Variables: <strong>estado interno, mutables</strong>.</p>
+          <h4>Trampa 7: "Trigger parameters funcionan en run manual"</h4>
+          <p>❌ <strong>NO</strong>. En run manual, <code>@pipeline()?.TriggerEvent?.FileName</code> es <strong>NULL</strong>. Por eso se usa el <code>?</code> de null-safe access.</p>
+          <h4>Trampa 8: "Approval activity bloquea todo el workspace"</h4>
+          <p>❌ Solo bloquea <strong>ese pipeline específico</strong>. Otros pipelines corren normal.</p>
+          <h4>Trampa 9: "El timeout máximo es 24 horas"</h4>
+          <p>❌ <strong>Máximo 7 días</strong> (<code>7.00:00:00</code>). Default: 12 horas.</p>
+          <h4>Trampa 10: "Fabric Data Factory = Azure Data Factory"</h4>
+          <p>❌ Son <strong>distintos</strong>. Fabric tiene features nuevas (Teams, Outlook, Semantic Model Refresh, Dataflow Gen2, Refresh SQL Endpoint, Lakehouse Maintenance). ADF no las tiene.</p>
+          <h4>Trampa 11: "Refresh SQL Endpoint activity refresca datos"</h4>
+          <p>❌ <strong>NO refresca los datos</strong>. Refresca el <strong>metadata sync</strong> del SQL analytics endpoint del lakehouse (para que las nuevas tablas/columnas aparezcan).</p>
+          <h4>Trampa 12: "Puedo usar Refresh SQL Endpoint sobre un Warehouse"</h4>
+          <p>❌ Es específico para <strong>SQL analytics endpoint de Lakehouse</strong>. Los Warehouses tienen su propia sincronización.</p>
+          <h4>Trampa 13: "ForEach siempre ejecuta en paralelo"</h4>
+          <p>❌ <strong>Puede ser paralelo o secuencial</strong>. Tú lo configuras. Batch count controla el paralelismo (default 20).</p>
+          <h4>Trampa 14: "Event triggers solo funcionan con OneLake"</h4>
+          <p>❌ También con <strong>Azure Blob Storage</strong> y otros sources.</p>
+          <h4>Trampa 15: "Secure input/output oculta los datos en el destino"</h4>
+          <p>❌ Solo los oculta en los <strong>logs</strong>. Los datos siguen viajando y llegando al destino normalmente.</p>
+        </article>
+
+        <!-- 23 -->
+        <div class="category-header" id="comparativas"><span class="category-header__icon">🆚</span><h2 class="category-header__title">23. Comparativas clave (chuleta)</h2></div>
+        <article class="concept-card">
+          <h3>Pipeline vs Dataflow vs Notebook (LA gran pregunta)</h3>
           <div class="table-scroll">
             <table class="md-table">
               <thead><tr><th>Necesito...</th><th>Herramienta</th></tr></thead>
               <tbody>
-                <tr><td>Orquestar pasos con dependencias / ejecución por eventos</td><td><strong>Pipeline</strong></td></tr>
-                <tr><td>Copiar datos raw sin transformar</td><td>Pipeline (Copy Data)</td></tr>
-                <tr><td>Transformación low-code visual</td><td>Dataflow Gen2 (como actividad)</td></tr>
-                <tr><td>Transformación con código Spark/Python</td><td>Notebook (como actividad)</td></tr>
+                <tr><td>Orquestar múltiples pasos con dependencias</td><td><strong>Pipeline</strong></td></tr>
+                <tr><td>Copiar datos raw sin transformar</td><td><strong>Pipeline (Copy Data)</strong></td></tr>
+                <tr><td>Transformación low-code visual (Power Query)</td><td><strong>Dataflow Gen2</strong> (como actividad en pipeline)</td></tr>
+                <tr><td>Transformación con código Spark/Python</td><td><strong>Notebook</strong> (como actividad en pipeline)</td></tr>
+                <tr><td>Ejecución programada con dependencias</td><td><strong>Pipeline</strong></td></tr>
+                <tr><td>Ejecución basada en eventos</td><td><strong>Pipeline con trigger</strong></td></tr>
               </tbody>
             </table>
           </div>
+          <h3>Copy Data vs Copy Job</h3>
           <div class="table-scroll">
             <table class="md-table">
-              <thead><tr><th>Trigger</th><th>Cuándo</th><th>Config</th></tr></thead>
+              <thead><tr><th></th><th>Copy Data</th><th>Copy Job</th></tr></thead>
               <tbody>
-                <tr><td>On-demand</td><td>Manual</td><td>Botón Run</td></tr>
-                <tr><td>Scheduled</td><td>Por horario</td><td>Frequency + interval</td></tr>
-                <tr><td>Event-based</td><td>Por evento</td><td>Con Activator</td></tr>
+                <tr><td>Tipo</td><td>Actividad de pipeline</td><td>Item independiente</td></tr>
+                <tr><td>CDC</td><td>Manual</td><td>Nativo (Preview)</td></tr>
+                <tr><td>SCD</td><td>Manual</td><td>Type 1 y Type 2 nativos</td></tr>
+                <tr><td>Uso típico</td><td>Dentro de pipelines complejos</td><td>Standalone copy</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <h3>3 tipos de trigger</h3>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Trigger</th><th>Cuándo se ejecuta</th><th>Config</th></tr></thead>
+              <tbody>
+                <tr><td><strong>On-demand</strong></td><td>Manual, botón Run</td><td>Instantáneo</td></tr>
+                <tr><td><strong>Scheduled</strong></td><td>Por horario</td><td>Frequency + interval</td></tr>
+                <tr><td><strong>Event-based</strong></td><td>Por evento (fichero, job, workspace)</td><td>Con Activator</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <h3>Actividades más usadas (chuleta rápida)</h3>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Actividad</th><th>Para qué</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Copy Data</strong></td><td>Mover datos A → B</td></tr>
+                <tr><td><strong>Notebook</strong></td><td>Transformar con Spark/Python</td></tr>
+                <tr><td><strong>Dataflow Gen2</strong></td><td>Transformar con Power Query</td></tr>
+                <tr><td><strong>Stored Procedure</strong></td><td>Ejecutar SP en SQL</td></tr>
+                <tr><td><strong>Lookup</strong></td><td>Leer un valor/tabla para usar después</td></tr>
+                <tr><td><strong>Get Metadata</strong></td><td>Info sobre un dataset</td></tr>
+                <tr><td><strong>ForEach</strong></td><td>Iterar sobre colección</td></tr>
+                <tr><td><strong>If Condition</strong></td><td>Ejecutar según condición</td></tr>
+                <tr><td><strong>Set Variable</strong></td><td>Guardar valor para usar después</td></tr>
+                <tr><td><strong>Wait</strong></td><td>Pausar N segundos</td></tr>
+                <tr><td><strong>Web</strong></td><td>Llamar a REST API</td></tr>
+                <tr><td><strong>Invoke Pipeline</strong></td><td>Ejecutar otro pipeline</td></tr>
+                <tr><td><strong>Approval</strong></td><td>Pedir aprobación humana</td></tr>
+                <tr><td><strong>Teams / Outlook</strong></td><td>Notificar</td></tr>
+                <tr><td><strong>Refresh SQL Endpoint</strong></td><td>Sync metadata del SQL endpoint</td></tr>
+                <tr><td><strong>Lakehouse Maintenance</strong></td><td>OPTIMIZE tables</td></tr>
+                <tr><td><strong>Fail</strong></td><td>Fallar controlado</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <h3>Parámetros vs Variables</h3>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th></th><th>Parameters</th><th>Variables</th></tr></thead>
+              <tbody>
+                <tr><td>Mutabilidad</td><td>Inmutables durante el run</td><td>Mutables</td></tr>
+                <tr><td>Origen</td><td>Externo (al ejecutar)</td><td>Interno (durante run)</td></tr>
+                <tr><td>Set con</td><td>Trigger, run dialog</td><td>Actividad Set Variable</td></tr>
+                <tr><td>Ref</td><td><code>@pipeline().parameters.x</code></td><td><code>@variables('x')</code></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <h3>General settings críticos</h3>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Setting</th><th>Default</th><th>Máximo</th></tr></thead>
+              <tbody>
+                <tr><td>Timeout</td><td>12 horas</td><td>7 días</td></tr>
+                <tr><td>Retries</td><td>0 (desactivado)</td><td>—</td></tr>
+                <tr><td>Retry interval</td><td>30 seg</td><td>—</td></tr>
+                <tr><td>Actividades por pipeline</td><td>—</td><td><strong>120</strong></td></tr>
               </tbody>
             </table>
           </div>
@@ -357,6 +1421,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/i18next@23/dist/umd/i18next.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/prismjs@1/prism.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1/components/prism-python.min.js"></script>
   <script src="../../../assets/js/theme.js"></script>
   <script src="../../../assets/js/main.js"></script>
   <script src="../../../assets/js/cursor.js"></script>
