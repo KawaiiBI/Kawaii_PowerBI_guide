@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="DP-700 Módulo 10: trabajar con datos real-time en un Eventhouse. KQL optimization (filter early, join order), materialized views, stored functions, update policies, RLS y todas las policies KQL.">
+  <meta name="description" content="DP-700 Módulo 10: trabajar con datos en tiempo real en un Eventhouse de Fabric. KQL databases, ingesta, optimización de queries, materialized views, stored functions, update policies y todas las policies KQL.">
   <title>DP-700 · Módulo 10: Eventhouse y KQL | Power BI Guide by Kawaii BI</title>
   <link rel="canonical" href="https://kawaiibi.es/topics/certificaciones/dp-700/modulo-10.html">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Kawaii Power BI Guide">
   <meta property="og:locale" content="es_ES">
   <meta property="og:title" content="DP-700 · Módulo 10: Eventhouse y KQL | Power BI Guide by Kawaii BI">
-  <meta property="og:description" content="DP-700 Módulo 10: Eventhouse y KQL. Optimización de queries, materialized views, stored functions, update policies, RLS y policies.">
+  <meta property="og:description" content="DP-700 Módulo 10: Eventhouse y KQL. Optimización de queries, materialized views, stored functions, update policies y policies KQL.">
   <meta property="og:url" content="https://kawaiibi.es/topics/certificaciones/dp-700/modulo-10.html">
   <meta property="og:image" content="https://kawaiibi.es/assets/images/og-banner.png">
   <meta property="og:image:width" content="1200">
@@ -18,7 +18,7 @@
   <meta property="og:image:alt" content="Sara Lozano Marti - Kawaii Power BI">
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="DP-700 · Módulo 10: Eventhouse y KQL | Power BI Guide by Kawaii BI">
-  <meta name="twitter:description" content="DP-700 Módulo 10: Eventhouse y KQL. Optimización, materialized views, update policies, RLS y policies.">
+  <meta name="twitter:description" content="DP-700 Módulo 10: Eventhouse y KQL. Materialized views, stored functions y policies.">
   <meta name="twitter:image" content="https://kawaiibi.es/assets/images/og-banner.png">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -63,12 +63,18 @@
     .md-table tr:nth-child(even) td { background: var(--color-blush); }
     .table-scroll { overflow-x: auto; }
 
+    .trap-list { list-style: none; padding: 0; margin: 0; }
+    .trap-list > li { background: var(--color-white); border: 1.5px solid var(--color-mauve); border-left: 4px solid var(--color-warning); border-radius: var(--border-radius-sm); padding: 0.875rem 1.125rem; margin-bottom: 0.75rem; font-size: 0.9375rem; line-height: 1.7; }
+    .trap-list strong.trap-title { display: block; color: var(--color-dark); margin-bottom: 0.25rem; }
+
     .course-nav { display: flex; justify-content: space-between; gap: 1rem; margin-top: 2.5rem; flex-wrap: wrap; }
     .course-nav a { flex: 1 1 220px; display: block; background: var(--color-white); border: 1.5px solid var(--color-mauve); border-radius: var(--border-radius); padding: 1rem 1.25rem; text-decoration: none; color: inherit; transition: var(--transition); }
     .course-nav a:hover { border-color: var(--color-coral); box-shadow: var(--shadow-md); text-decoration: none; }
     .course-nav__label { font-size: 0.75rem; color: var(--color-slate); text-transform: uppercase; letter-spacing: 0.05em; }
     .course-nav__title { font-weight: 700; color: var(--color-coral); }
     .course-nav a.next { text-align: right; }
+
+    .sources-list { font-size: 0.875rem; line-height: 1.9; word-break: break-word; }
   </style>
 </head>
 <body>
@@ -123,9 +129,9 @@
 
         <header class="topic-header">
           <span class="topic-header__eyebrow">DP-700 · MÓDULO 10</span>
-          <span class="topic-header__icon">💾</span>
-          <h1 class="topic-header__title">Eventhouse y KQL a fondo</h1>
-          <p class="topic-header__subtitle">El motor Kusto por dentro: optimización de queries (filter early, join order), materialized views, stored functions, update policies, RLS y todas las policies de las KQL databases. 🌸</p>
+          <span class="topic-header__icon">🔥</span>
+          <h1 class="topic-header__title">Trabajar con datos en tiempo real en un Eventhouse de Fabric</h1>
+          <p class="topic-header__subtitle">El motor Kusto por dentro: KQL databases, ingesta, optimización de queries, materialized views, stored functions, update policies y todas las policies que controlan el comportamiento. 🌸</p>
           <div class="topic-header__levels">
             <span class="badge badge--intermediate">Intermedio</span>
             <span class="badge badge--advanced">Avanzado</span>
@@ -135,234 +141,1279 @@
         <nav class="toc" aria-label="Índice del módulo">
           <p class="toc__title">📑 En este módulo:</p>
           <ul class="toc__list">
-            <li><a href="#eventhouse">1. Eventhouse y databases</a></li>
-            <li><a href="#ingesta">2. Ingesta y shortcuts</a></li>
-            <li><a href="#queryset">3. KQL Queryset y render</a></li>
-            <li><a href="#kql">4. KQL fundamental</a></li>
-            <li><a href="#case">5. Case sensitivity ⚠️</a></li>
-            <li><a href="#filter-early">6. Filter early</a></li>
-            <li><a href="#columns">7. Reduce columns</a></li>
-            <li><a href="#agg">8. Optimizar aggregations</a></li>
-            <li><a href="#joins">9. Optimizar joins</a></li>
-            <li><a href="#mv">10. Materialized views ⭐</a></li>
-            <li><a href="#functions">11. Stored functions</a></li>
-            <li><a href="#update">12. Update policies</a></li>
-            <li><a href="#policies">13. Todas las policies</a></li>
-            <li><a href="#rls">14. RLS y seguridad</a></li>
-            <li><a href="#trampas">15. Trampas</a></li>
-            <li><a href="#comparativas">16. Comparativas</a></li>
+            <li><a href="#objetivos">1. Objetivos y encaje</a></li>
+            <li><a href="#eventhouse">2. Anatomía del Eventhouse</a></li>
+            <li><a href="#databases">3. KQL databases</a></li>
+            <li><a href="#ingesta">4. Ingesta de datos</a></li>
+            <li><a href="#shortcuts">5. Database shortcuts</a></li>
+            <li><a href="#onelake">6. OneLake availability</a></li>
+            <li><a href="#queryset">7. KQL Queryset</a></li>
+            <li><a href="#kql-syntax">8. KQL syntax</a></li>
+            <li><a href="#case">9. Case sensitivity</a></li>
+            <li><a href="#best-practices">10. Best practices de queries</a></li>
+            <li><a href="#filter-early">11. Filter early</a></li>
+            <li><a href="#reduce-columns">12. Reduce columns early</a></li>
+            <li><a href="#optimize-agg">13. Optimizar aggregations</a></li>
+            <li><a href="#optimize-joins">14. Optimizar joins</a></li>
+            <li><a href="#materialized-views">15. Materialized views</a></li>
+            <li><a href="#mv-internals">16. Cómo funcionan por dentro</a></li>
+            <li><a href="#mv-usage">17. Crear y consultarlas</a></li>
+            <li><a href="#stored-functions">18. Stored functions</a></li>
+            <li><a href="#update-policies">19. Update policies</a></li>
+            <li><a href="#policies">20. Todas las policies</a></li>
+            <li><a href="#retention">21. Retention policy</a></li>
+            <li><a href="#cache">22. Cache policy</a></li>
+            <li><a href="#rls">23. Row-Level Security</a></li>
+            <li><a href="#restricted-view">24. Restricted view access</a></li>
+            <li><a href="#streaming-ingestion">25. Streaming ingestion</a></li>
+            <li><a href="#partitioning">26. Partitioning policy</a></li>
+            <li><a href="#merge">27. Merge policy</a></li>
+            <li><a href="#copilot">28. Copilot para KQL</a></li>
+            <li><a href="#trampas">29. Trampas típicas</a></li>
+            <li><a href="#comparativas">30. Comparativas clave</a></li>
+            <li><a href="#fuentes">31. Fuentes oficiales</a></li>
           </ul>
         </nav>
 
-        <div class="category-header" id="eventhouse"><span class="category-header__icon">🏛️</span><h2 class="category-header__title">1. Eventhouse y KQL databases</h2></div>
+        <!-- ============ 1. OBJETIVOS ============ -->
+        <div class="category-header" id="objetivos">
+          <span class="category-header__icon">🎯</span>
+          <h2 class="category-header__title">1. Objetivos y encaje en el DP-700</h2>
+        </div>
+
         <article class="concept-card">
-          <p>Un <strong>Eventhouse</strong> es un contenedor que hospeda una o más <strong>KQL databases</strong> (tables, stored functions, materialized views, data streams, shortcuts). Al crear un Eventhouse se crea automáticamente una <strong>default database</strong> con el mismo nombre; puedes crear más para separar dominios, permisos o retention distintos.</p>
-          <div class="note note--tip">🎯 <strong>Crítico:</strong> KQL optimization (filter early, project early, join order), materialized view vs stored function vs update policy, todas las policies, RLS, cache y retention.</div>
+          <h3>¿Qué te enseña este módulo?</h3>
+          <p>Este es el módulo del <strong>motor Kusto por dentro</strong>. Vamos a profundizar en:</p>
+          <ul>
+            <li>La estructura del Eventhouse.</li>
+            <li>Cómo escribir KQL efectivo y optimizado.</li>
+            <li>Features avanzadas: materialized views, stored functions, update policies.</li>
+            <li><strong>Todas las policies</strong> que controlan el comportamiento de las KQL databases.</li>
+          </ul>
+          <p>Los objetivos oficiales:</p>
+          <ol>
+            <li>Crear un Eventhouse en Microsoft Fabric.</li>
+            <li>Escribir <strong>queries KQL efectivas</strong>.</li>
+            <li>Entender cómo usar <strong>materialized views y stored functions</strong> en una KQL database.</li>
+          </ol>
+
+          <h4>Peso en el examen DP-700</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Dominio</th><th>Cómo aparece</th></tr></thead>
+              <tbody>
+                <tr><td>Implement and manage (30-35%)</td><td><strong>RLS/CLS/OLS en KQL</strong>, permisos, policies</td></tr>
+                <tr><td>Ingest and transform (30-35%)</td><td><strong>Queries KQL, update policies, ingestion policies, materialized views</strong></td></tr>
+                <tr><td>Monitor and optimize (30-35%)</td><td><strong>Optimización de queries, cache policy, retention, partitioning, materialized views para performance</strong></td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="note note--tip">
+            🎯 <strong>Qué es CRÍTICO dominar:</strong>
+            <ul>
+              <li><strong>Optimización de KQL</strong> (filter early, project early, orden de joins)</li>
+              <li><strong>Materialized views vs stored functions vs update policies</strong> — cuándo cada uno</li>
+              <li><strong>Todas las policies</strong> y su propósito (salen en preguntas de escenario)</li>
+              <li><strong>Row-Level Security</strong> en KQL</li>
+              <li><strong>Cache policy y retention policy</strong> (para performance y compliance)</li>
+            </ul>
+          </div>
         </article>
 
-        <div class="category-header" id="ingesta"><span class="category-header__icon">📥</span><h2 class="category-header__title">2. Ingesta y database shortcuts</h2></div>
+        <!-- ============ 2. EVENTHOUSE ============ -->
+        <div class="category-header" id="eventhouse">
+          <span class="category-header__icon">🏛️</span>
+          <h2 class="category-header__title">2. Anatomía del Eventhouse (repaso)</h2>
+        </div>
+
         <article class="concept-card">
-          <p>Formas de ingestar (menú <strong>Get Data</strong>): local files, Azure Storage/S3, Eventstream, Event Hubs/IoT Hub, OneLake, Data Factory Copy, Dataflows y connectors (Kafka, Flink, MQTT, Kinesis, Pub/Sub).</p>
-          <p><strong>Database shortcuts:</strong> referencias a KQL databases existentes (otros eventhouses o ADX) para consultar sin copiar. A diferencia de los OneLake shortcuts (apuntan a files/folders), los database shortcuts apuntan a <strong>KQL databases completas</strong>.</p>
+          <h4>Recordatorio</h4>
+          <p>Ya vimos el Eventhouse en el <a href="modulo-8.html">Módulo 8</a>. Repaso rápido: un <strong>Eventhouse</strong> es un contenedor que hospeda <strong>una o más KQL databases</strong>.</p>
+
+          <h4>Contenido de una KQL database</h4>
+          <p>Cada KQL database puede contener:</p>
+          <ul>
+            <li><strong>Tables</strong> (donde viven los datos)</li>
+            <li><strong>Stored procedures</strong></li>
+            <li><strong>Materialized views</strong></li>
+            <li><strong>Stored functions</strong></li>
+            <li><strong>Data streams</strong></li>
+            <li><strong>Shortcuts</strong> (a otras KQL databases o storage externo)</li>
+          </ul>
+
+          <h4>KQL queryset (embebido)</h4>
+          <p>Con cada KQL database viene un <strong>KQL queryset embebido</strong> para escribir y ejecutar queries.</p>
+
+          <div class="note note--warning">
+            ⚠️ <strong>Un Eventhouse ≠ una KQL database.</strong> Ojo cosita con esta distinción: el <strong>Eventhouse</strong> es el contenedor y la <strong>KQL database</strong> es el objeto donde viven los datos. Un Eventhouse puede tener varias KQL databases (para separar dominios, permisos, etc.).
+          </div>
         </article>
 
-        <div class="category-header" id="queryset"><span class="category-header__icon">📝</span><h2 class="category-header__title">3. KQL Queryset y render</h2></div>
+        <!-- ============ 3. DATABASES ============ -->
+        <div class="category-header" id="databases">
+          <span class="category-header__icon">💾</span>
+          <h2 class="category-header__title">3. KQL databases: default y adicionales</h2>
+        </div>
+
         <article class="concept-card">
-          <p>El queryset (embedded o standalone) permite save queries, multi-tab, share, KQL + T-SQL y <strong>visualizaciones inline</strong> con el operador <code>| render</code>.</p>
+          <h4>Database default automática</h4>
+          <p>Cuando creas un Eventhouse, se crea <strong>automáticamente una KQL database por defecto</strong> con el mismo nombre. Puedes usar esa o crear otras adicionales.</p>
+
+          <h4>Por qué varias databases en un Eventhouse</h4>
+          <ul>
+            <li><strong>Separar dominios</strong>: <code>sales_db</code>, <code>iot_db</code>, <code>logs_db</code>.</li>
+            <li><strong>Permisos distintos</strong>: cada database con sus roles.</li>
+            <li><strong>Retención distinta</strong>: unas con 30 días, otras con 5 años.</li>
+            <li><strong>Compartir capacidad</strong>: mismo Eventhouse, distintas DBs.</li>
+          </ul>
+
+          <h4>Cómo crear una database adicional</h4>
+          <p>Desde el Eventhouse:</p>
+          <ol>
+            <li>Click en <strong>New database</strong>.</li>
+            <li>Elegir tipo: <strong>KQL database estándar</strong> (con sus propios datos) o <strong>database shortcut</strong> (referencia a otra database).</li>
+            <li>Configurar nombre y descripción.</li>
+          </ol>
+        </article>
+
+        <!-- ============ 4. INGESTA ============ -->
+        <div class="category-header" id="ingesta">
+          <span class="category-header__icon">📥</span>
+          <h2 class="category-header__title">4. Ingesta de datos: todas las formas</h2>
+        </div>
+
+        <article class="concept-card">
+          <p>Hay muchísimas formas de ingestar datos en una KQL database:</p>
+
+          <h4>Local files</h4>
+          <p>Sube ficheros directamente desde tu equipo: CSV, TSV, JSON, Parquet, Avro, ORC, etc. Ideal para pruebas o cargas puntuales.</p>
+
+          <h4>Azure Storage</h4>
+          <ul>
+            <li><strong>Azure Blob Storage</strong> con SAS o managed identity.</li>
+            <li><strong>Azure Data Lake Storage Gen2</strong>.</li>
+          </ul>
+
+          <h4>Amazon S3</h4>
+          <p>Directamente desde buckets S3. Ingesta multi-cloud sin intermediarios.</p>
+
+          <h4>Fuentes de streaming</h4>
+          <ul>
+            <li><strong>Azure Event Hubs</strong></li>
+            <li><strong>Azure IoT Hub</strong></li>
+            <li><strong>Fabric Eventstream</strong> (el más común en Fabric)</li>
+            <li>Descubrimiento desde el <strong>Real-Time Hub</strong></li>
+          </ul>
+
+          <h4>OneLake</h4>
+          <p>Ingestar desde otros items de Fabric vía OneLake.</p>
+
+          <h4>Data Factory copy y Dataflows</h4>
+          <ul>
+            <li><strong>Copy Data activity</strong> desde pipelines.</li>
+            <li><strong>Dataflows Gen2</strong> como destino.</li>
+          </ul>
+
+          <h4>Conectores externos</h4>
+          <ul>
+            <li><strong>Apache Kafka</strong></li>
+            <li><strong>Confluent Cloud Kafka</strong></li>
+            <li><strong>Apache Flink</strong></li>
+            <li><strong>MQTT</strong> (Message Queuing Telemetry Transport)</li>
+            <li><strong>Amazon Kinesis</strong></li>
+            <li><strong>Google Cloud Pub/Sub</strong></li>
+          </ul>
+
+          <h4>Menú Get Data</h4>
+          <p>Todo se accede desde el menú <strong>Get Data</strong> de la KQL database. El asistente de la UI te guía por: elegir origen, configurar la conexión, definir la tabla destino (crear una nueva o usar existente), mapear el schema y configurar una transformación opcional.</p>
+
+          <h4>🎯 Comparativa rápida</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Necesito...</th><th>Método</th></tr></thead>
+              <tbody>
+                <tr><td>Carga puntual de un CSV</td><td><strong>Local file upload</strong></td></tr>
+                <tr><td>Ingesta continua de un stream</td><td><strong>Eventstream</strong> o <strong>Event Hubs source</strong></td></tr>
+                <tr><td>Batch periódico desde S3</td><td><strong>Data Factory pipeline</strong></td></tr>
+                <tr><td>Datos multi-cloud (Kafka on-prem)</td><td><strong>Kafka connector</strong></td></tr>
+                <tr><td>Datos de otro item de Fabric</td><td><strong>OneLake ingestion</strong></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </article>
+
+        <!-- ============ 5. SHORTCUTS ============ -->
+        <div class="category-header" id="shortcuts">
+          <span class="category-header__icon">🔗</span>
+          <h2 class="category-header__title">5. Database shortcuts</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>¿Qué son?</h3>
+          <p>Los <strong>database shortcuts</strong> son referencias a <strong>KQL databases existentes en otros eventhouses o en databases de Azure Data Explorer</strong>. La idea: consultar datos de KQL databases externas <strong>como si estuvieran almacenados localmente</strong>, sin copiarlos realmente.</p>
+
+          <h4>Casos de uso</h4>
+          <ul>
+            <li><strong>Analítica cross-workspace</strong>: analizar datos de varios workspaces sin duplicar.</li>
+            <li><strong>Migración gradual</strong>: exponer un ADX legacy en Fabric sin migrarlo.</li>
+            <li><strong>Data mesh</strong>: cada dominio tiene su database y otros la consumen vía shortcuts.</li>
+            <li><strong>Reducir costes de storage</strong>: no duplicar datos de acceso frecuente.</li>
+          </ul>
+
+          <div class="note note--warning">
+            ⚠️ <strong>Diferencia con los shortcuts de OneLake:</strong> los <strong>OneLake shortcuts</strong> (Módulo 1) apuntan a <strong>ficheros/carpetas</strong> (Delta, Parquet, CSV). Los <strong>database shortcuts</strong> (KQL) apuntan a <strong>KQL databases completas</strong> con todas sus tablas. Conceptos distintos, usos distintos.
+          </div>
+        </article>
+
+        <!-- ============ 6. ONELAKE ============ -->
+        <div class="category-header" id="onelake">
+          <span class="category-header__icon">🌊</span>
+          <h2 class="category-header__title">6. OneLake availability (repaso profundo)</h2>
+        </div>
+
+        <article class="concept-card">
+          <h4>Recordatorio</h4>
+          <p>Ya vimos la OneLake availability en el <a href="modulo-8.html">Módulo 8</a>. Es la <strong>feature del Eventhouse</strong> que hace que los datos KQL estén <strong>también disponibles en OneLake</strong> en formato Delta Parquet, para que otros workloads de Fabric los consuman.</p>
+
+          <h4>Activación</h4>
+          <p>Se activa <strong>a nivel de database completa</strong> o <strong>a nivel de tabla individual</strong>, desde el editor del Eventhouse.</p>
+
+          <h4>Adaptive Parquet file batching</h4>
+          <p>Para evitar muchos ficheros pequeños, el Eventhouse hace un batching adaptativo.</p>
+          <ul>
+            <li><strong>Por defecto</strong>: hasta 3 horas de delay, o hasta alcanzar ficheros óptimos (200-256 MB).</li>
+            <li><strong>Configurable</strong>: <code>TargetLatencyInMinutes</code> entre 5 minutos y 3 horas.</li>
+          </ul>
+          <p>⚠️ Bajar mucho el delay → muchos ficheros pequeños → <strong>lecturas ineficientes en OneLake</strong>. Y la tabla es <strong>read-only una vez creada</strong>.</p>
+
+          <h4>Integración cross-workload</h4>
+          <p>Cuando activas la OneLake availability, otros workloads de Fabric pueden consumir los datos:</p>
+          <ul>
+            <li><strong>Power BI Direct Lake</strong> sobre las tablas KQL.</li>
+            <li>El <strong>Lakehouse</strong> puede crear shortcuts a las tablas KQL.</li>
+            <li>El <strong>Warehouse</strong> puede hacer joins con datos KQL.</li>
+            <li>Los <strong>notebooks</strong> pueden leerlas con Spark.</li>
+          </ul>
+
+          <h4>🎯 Cuándo activarla</h4>
+          <p><strong>SÍ activar</strong>: cuando necesitas integración cross-Fabric, reports de Power BI con datos KQL o data mesh entre workloads.</p>
+          <p><strong>NO activar (default)</strong>: si solo usas KQL para queries, sin integración externa, y quieres minimizar el overhead de escritura.</p>
+        </article>
+
+        <!-- ============ 7. QUERYSET ============ -->
+        <div class="category-header" id="queryset">
+          <span class="category-header__icon">📝</span>
+          <h2 class="category-header__title">7. KQL Queryset</h2>
+        </div>
+
+        <article class="concept-card">
+          <h4>Recordatorio</h4>
+          <p>Cada KQL database viene con un <strong>queryset embebido</strong>. Es el espacio de trabajo para escribir queries.</p>
+
+          <h4>Features avanzadas</h4>
+          <p>Más allá de escribir queries, el queryset permite:</p>
+          <ul>
+            <li><strong>Guardar queries</strong> con nombre para uso futuro.</li>
+            <li><strong>Multi-tab</strong>: varias pestañas de query simultáneas.</li>
+            <li><strong>Compartir</strong> queries con otros usuarios para colaborar.</li>
+            <li><strong>Visualizaciones</strong>: renderizar los resultados como gráficos inline.</li>
+            <li>Soportar <strong>KQL y T-SQL</strong>.</li>
+          </ul>
+
+          <h4>Visualizaciones en el queryset</h4>
+          <p>Puedes convertir los resultados en bar charts, line charts, pie charts, column charts, time charts, cards y tablas. Se hace con el operador <strong><code>| render</code></strong>:</p>
           <pre><code class="language-kusto">TaxiTrips
 | summarize count() by taxi_id
 | top 10 by count_
 | render columnchart</code></pre>
+          <p>Se visualiza directamente como column chart.</p>
+
+          <h4>Querysets standalone</h4>
+          <p>Además del queryset embebido, puedes crear <strong>querysets standalone</strong> en el workspace. Ventajas: <strong>consultar varias databases</strong> desde un único queryset y compartir queries entre usuarios independientemente de las databases.</p>
         </article>
 
-        <div class="category-header" id="kql"><span class="category-header__icon">🌸</span><h2 class="category-header__title">4. KQL fundamental</h2></div>
+        <!-- ============ 8. KQL SYNTAX ============ -->
+        <div class="category-header" id="kql-syntax">
+          <span class="category-header__icon">🌸</span>
+          <h2 class="category-header__title">8. KQL syntax fundamental (repaso profundo)</h2>
+        </div>
+
         <article class="concept-card">
-          <p>Pipes (<code>|</code>) encadenan operaciones de izquierda a derecha. El orden importa.</p>
+          <h3>La filosofía de las pipes 🚰</h3>
+          <p>KQL usa <strong>pipes</strong> (<code>|</code>) para encadenar operaciones. Los datos fluyen de izquierda a derecha y de arriba a abajo.</p>
+          <pre><code class="language-kusto">tabla
+| operador1
+| operador2
+| operador3</code></pre>
+          <p>Cada operador <strong>trabaja sobre los resultados del anterior</strong>. El orden importa mucho.</p>
+
+          <h4>Ejemplo del concepto de embudo</h4>
+          <pre><code class="language-kusto">TaxiTrips
+| where fare_amount &gt; 20         -- Filtro 1
+| project trip_id, pickup_datetime, fare_amount  -- Selección
+| take 10                        -- Limit</code></pre>
+          <p><strong>Interpretación</strong>: empieza con toda la tabla <code>TaxiTrips</code>, filtra a los trips con fare &gt; 20 $, selecciona 3 columnas concretas y devuelve las 10 primeras filas que quedaron.</p>
+
+          <h4>Query mínima: solo la tabla</h4>
+          <pre><code class="language-kusto">TaxiTrips</code></pre>
+          <p>Devuelve <strong>todas las columnas</strong> de la tabla, con el <strong>número de filas limitado por el default de la herramienta</strong>.</p>
+
+          <h4><code>take</code> para muestreo</h4>
+          <pre><code class="language-kusto">TaxiTrips
+| take 100</code></pre>
+          <p>Devuelve 100 filas (<strong>sin orden garantizado</strong>). Útil para explorar la estructura sin procesar toda la tabla.</p>
+
+          <h4><code>summarize</code> para agregar</h4>
+          <pre><code class="language-kusto">TaxiTrips
+| summarize trip_count = count() by taxi_id</code></pre>
+          <p>Cuenta los trips por taxi_id. Devuelve una tabla resumen con dos columnas: <code>taxi_id</code> y <code>trip_count</code>.</p>
+
+          <h4>Los operadores más usados</h4>
           <div class="table-scroll">
             <table class="md-table">
               <thead><tr><th>Operador</th><th>Función</th></tr></thead>
               <tbody>
-                <tr><td><code>where</code></td><td>Filtrar rows</td></tr>
-                <tr><td><code>project</code></td><td>Seleccionar columnas</td></tr>
-                <tr><td><code>extend</code></td><td>Columnas calculadas</td></tr>
-                <tr><td><code>summarize</code></td><td>Agregar (GROUP BY)</td></tr>
-                <tr><td><code>top</code> / <code>take</code></td><td>Top N con orden / N rows</td></tr>
-                <tr><td><code>join</code> / <code>union</code></td><td>Unir tablas</td></tr>
+                <tr><td><strong><code>take</code></strong></td><td>N filas (sin orden garantizado)</td></tr>
+                <tr><td><strong><code>where</code></strong></td><td>Filtrar filas por condición</td></tr>
+                <tr><td><strong><code>project</code></strong></td><td>Seleccionar columnas concretas</td></tr>
+                <tr><td><strong><code>extend</code></strong></td><td>Añadir columnas calculadas</td></tr>
+                <tr><td><strong><code>summarize</code></strong></td><td>Agregar (equivalente a GROUP BY)</td></tr>
+                <tr><td><strong><code>sort by</code></strong> / <strong><code>order by</code></strong></td><td>Ordenar</td></tr>
+                <tr><td><strong><code>top</code></strong></td><td>Top N con orden</td></tr>
+                <tr><td><strong><code>limit</code></strong></td><td>Limitar el output</td></tr>
+                <tr><td><strong><code>join</code></strong></td><td>Unir tablas</td></tr>
+                <tr><td><strong><code>union</code></strong></td><td>Combinar tablas</td></tr>
+                <tr><td><strong><code>render</code></strong></td><td>Visualizar</td></tr>
+                <tr><td><strong><code>count</code></strong></td><td>Contar filas</td></tr>
+                <tr><td><strong><code>distinct</code></strong></td><td>Valores únicos</td></tr>
               </tbody>
             </table>
           </div>
-          <p>Funciones temporales: <code>ago(30min)</code>, <code>bin(timestamp, 5m)</code>. Strings: <code>has</code> (whole-word, indexado, <strong>más rápido</strong>) vs <code>contains</code> (substring).</p>
+
+          <h4>Funciones temporales críticas</h4>
+          <pre><code class="language-kusto">| where timestamp &gt; ago(30min)        // Últimos 30 min
+| where timestamp &gt; ago(1h)           // Última hora
+| where timestamp &gt; ago(1d)           // Último día
+| where timestamp &gt; ago(7d)           // Últimos 7 días
+| where timestamp between (datetime(2026-01-01) .. datetime(2026-01-31))</code></pre>
+          <p><strong><code>bin()</code></strong> para agrupar por bucket temporal:</p>
+          <pre><code class="language-kusto">| summarize count() by bin(timestamp, 5m)
+// Agrupa por bucket de 5 minutos</code></pre>
+          <p>También: <code>now()</code>, <code>ago(x)</code>, <code>startofday()</code>, <code>endofday()</code>, <code>startofweek()</code> y <code>startofmonth()</code>.</p>
+
+          <h4>Operadores de string</h4>
+          <pre><code class="language-kusto">| where name contains "kawaii"       // Contains (case-insensitive)
+| where name has "kawaii"            // Búsqueda por palabra completa (más rápido)
+| where name startswith "kaw"        // Empieza por
+| where name endswith "ii"           // Termina en
+| where name matches regex "^k.*i$"  // Regex</code></pre>
+          <p><code>has</code> es <strong>más eficiente</strong> que <code>contains</code> porque busca palabras completas usando el índice.</p>
         </article>
 
-        <div class="category-header" id="case"><span class="category-header__icon">🎯</span><h2 class="category-header__title">5. Case sensitivity (CRÍTICO)</h2></div>
+        <!-- ============ 9. CASE ============ -->
+        <div class="category-header" id="case">
+          <span class="category-header__icon">🎯</span>
+          <h2 class="category-header__title">9. Case sensitivity (CRÍTICO)</h2>
+        </div>
+
         <article class="concept-card">
-          <div class="note note--warning">⚠️ <strong>KQL es case-sensitive para TODO:</strong> table names, column names, function names, keywords y <strong>string values</strong>. Si la tabla es <code>TaxiTrips</code>, <code>taxitrips</code> falla. Para igualdad case-insensitive usa <code>=~</code>.</div>
-          <pre><code class="language-kusto">| where vendor_id == "VTS"   // match exacto
-| where vendor_id =~ "vts"   // case-insensitive</code></pre>
+          <p><strong>Este es un punto que pilla a MUCHA gente y cae en el examen</strong>.</p>
+
+          <div class="note note--warning">
+            ⚠️ <strong>KQL es case-sensitive para TODO</strong>: nombres de tablas, nombres de columnas, nombres de funciones, operadores, keywords y valores de string. Todos los identificadores deben coincidir <strong>exactamente</strong>.
+          </div>
+
+          <h4>Ejemplos de errores comunes</h4>
+          <pre><code class="language-kusto">-- ❌ ERROR: la tabla se llama TaxiTrips, no taxitrips
+taxitrips
+| take 10
+
+-- ✅ CORRECTO
+TaxiTrips
+| take 10</code></pre>
+          <pre><code class="language-kusto">-- ❌ ERROR: la columna es fare_amount, no Fare_Amount
+TaxiTrips
+| where Fare_Amount &gt; 20
+
+-- ✅ CORRECTO
+TaxiTrips
+| where fare_amount &gt; 20</code></pre>
+
+          <h4>Los valores de string también</h4>
+          <pre><code class="language-kusto">-- Estos son valores DISTINTOS
+| where vendor_id == "VTS"    -- Match exacto
+| where vendor_id == "vts"    -- No hace match (valor distinto)</code></pre>
+          <p>Si necesitas un matching case-insensitive:</p>
+          <pre><code class="language-kusto">| where vendor_id =~ "vts"    -- =~ es igualdad case-insensitive</code></pre>
+
+          <h4>Consecuencia práctica</h4>
+          <p>Sé <strong>muy consistente</strong> con el naming de tus schemas. Si defines una tabla como <code>TaxiTrips</code>, refiérete siempre a ella como <code>TaxiTrips</code>.</p>
         </article>
 
-        <div class="category-header" id="filter-early"><span class="category-header__icon">🔍</span><h2 class="category-header__title">6. Filter early</h2></div>
+        <!-- ============ 10. BEST PRACTICES ============ -->
+        <div class="category-header" id="best-practices">
+          <span class="category-header__icon">⚡</span>
+          <h2 class="category-header__title">10. Best practices de queries</h2>
+        </div>
+
         <article class="concept-card">
-          <p>Cuanto menos data procese la query, más rápido va. Filtra <strong>primero</strong> (sobre todo por tiempo, que usa el índice) y ordena los filtros por selectividad (el que elimina más, primero).</p>
+          <h4>Por qué importa la optimización</h4>
+          <p>El rendimiento en las KQL databases depende de <strong>la cantidad de datos procesados</strong>. Entender cómo KQL procesa los datos te permite escribir queries que:</p>
+          <ul>
+            <li>⚡ <strong>Van más rápido</strong>: reducen los datos escaneados (millones → miles).</li>
+            <li>💰 <strong>Usan menos recursos</strong>: seleccionar 3 columnas en vez de 50 reduce el overhead.</li>
+            <li>📈 <strong>Funcionan bien conforme crecen los datos</strong>: una query que hoy va bien con 1M de filas sigue yendo bien con 10M.</li>
+          </ul>
+          <div class="note note--practice">
+            📌 <strong>Principio clave:</strong> cuantos menos datos procese tu query, más rápido irá.
+          </div>
+
+          <h4>Los 4 pilares de la optimización</h4>
+          <ol>
+            <li><strong>Filtrar pronto y de forma efectiva</strong> (sección 11).</li>
+            <li><strong>Reducir columnas pronto</strong> (sección 12).</li>
+            <li><strong>Optimizar las aggregations</strong> (sección 13).</li>
+            <li><strong>Optimizar los joins</strong> (sección 14).</li>
+          </ol>
+        </article>
+
+        <!-- ============ 11. FILTER EARLY ============ -->
+        <div class="category-header" id="filter-early">
+          <span class="category-header__icon">🔍</span>
+          <h2 class="category-header__title">11. Filter early: reducir data escaneada</h2>
+        </div>
+
+        <article class="concept-card">
+          <h4>Idea central</h4>
+          <p><strong>Filtrar reduce la cantidad de datos</strong> que tienen que procesar las operaciones siguientes. Las KQL databases usan <strong>índices y técnicas de organización de datos</strong> que hacen el <strong>filtrado temprano especialmente eficiente</strong>.</p>
+
+          <h4>Filtrado temporal primero</h4>
+          <p>El <strong>filtrado por tiempo</strong> es especialmente efectivo porque los Eventhouses típicamente contienen datos de series temporales (indexados por tiempo).</p>
+          <p><strong>Bien</strong> ✅:</p>
           <pre><code class="language-kusto">TaxiTrips
-| where pickup_datetime > ago(1d)   // time filter primero
-| where vendor_id == "VTS"
-| where fare_amount > 0
-| summarize trip_count = count()</code></pre>
-        </article>
-
-        <div class="category-header" id="columns"><span class="category-header__icon">📏</span><h2 class="category-header__title">7. Reduce columns early</h2></div>
-        <article class="concept-card">
-          <p><code>project</code> solo las columnas que necesitas reduce el uso de recursos, sobre todo en wide tables. Combina filter early + project early.</p>
-          <pre><code class="language-kusto">TaxiTrips
-| where pickup_datetime > ago(30min)
-| project trip_id, vendor_id, fare_amount
+| where pickup_datetime &gt; ago(30min)   // Filtra primero: usa el índice temporal
+| project trip_id, vendor_id, pickup_datetime, fare_amount
 | summarize avg_fare = avg(fare_amount) by vendor_id</code></pre>
-        </article>
+          <p>El filtro temporal primero usa el índice de tiempo → salta cantidades enormes de datos.</p>
 
-        <div class="category-header" id="agg"><span class="category-header__icon">📊</span><h2 class="category-header__title">8. Optimizar aggregations</h2></div>
-        <article class="concept-card">
-          <p>Limita results al explorar, usa <code>top N</code> en vez de <code>sort + take</code> (está optimizado), y agrupa <strong>varias aggregations en un solo summarize</strong>.</p>
+          <h4>Ordenar por selectividad</h4>
+          <p><strong>Ordena los filtros por cuántos datos eliminan</strong>. Como un embudo: pon primero el filtro que elimina más filas y luego los más específicos sobre lo que queda.</p>
           <pre><code class="language-kusto">TaxiTrips
-| summarize trips = count(), avg_fare = avg(fare_amount), max_fare = max(fare_amount)
-  by vendor_id
-| top 10 by trips desc</code></pre>
+| where pickup_datetime &gt; ago(1d)     // Filtro temporal primero: elimina la mayoría
+| where vendor_id == "VTS"            // Vendor concreto: elimina más
+| where fare_amount &gt; 0               // Filtro de valor: elimina menos
+| summarize trip_count = count()</code></pre>
+
+          <h4>Antipatrón: filtrar tarde</h4>
+          <p><strong>Mal</strong> ❌:</p>
+          <pre><code class="language-kusto">TaxiTrips
+| project trip_id, pickup_datetime, fare_amount   // Proyecta primero
+| summarize avg_fare = avg(fare_amount) by vendor_id  // Agrega primero
+| where pickup_datetime &gt; ago(30min)   // Filtra al final ❌</code></pre>
+          <p>Aquí el filtro no evita el procesamiento de las filas antiguas: procesas todo antes de filtrar.</p>
         </article>
 
-        <div class="category-header" id="joins"><span class="category-header__icon">🔀</span><h2 class="category-header__title">9. Optimizar joins (el orden importa)</h2></div>
+        <!-- ============ 12. REDUCE COLUMNS ============ -->
+        <div class="category-header" id="reduce-columns">
+          <span class="category-header__icon">📏</span>
+          <h2 class="category-header__title">12. Reduce columns early</h2>
+        </div>
+
         <article class="concept-card">
-          <div class="note note--tip">🎯 <strong>Regla clave:</strong> la tabla <strong>más pequeña primero</strong> (KQL procesa la primera para hacer match con la segunda). Y <strong>filtra ambas antes del join</strong>.</div>
+          <h4>Idea central</h4>
+          <p><strong>Proyectar (seleccionar) solo las columnas que necesitas</strong> reduce el uso de recursos. Especialmente importante cuando trabajas con <strong>tablas anchas</strong> (muchas columnas).</p>
+
+          <h4>Ejemplo</h4>
+          <p><strong>Bien</strong> ✅:</p>
+          <pre><code class="language-kusto">TaxiTrips
+| project trip_id, pickup_datetime, fare_amount   // Selecciona columnas pronto
+| where pickup_datetime &gt; ago(1d)                  // Después filtra
+| summarize avg_fare = avg(fare_amount)</code></pre>
+          <p>Proyectar pronto → procesar solo 3 columnas en vez de 50.</p>
+
+          <h4>Cuándo combinarlo con el filtro</h4>
+          <p><strong>Mejor patrón</strong>: proyectar <strong>pronto</strong> + filtrar <strong>pronto</strong>, juntos. KQL lo optimizará bien.</p>
+          <pre><code class="language-kusto">TaxiTrips
+| where pickup_datetime &gt; ago(30min)              // Filtra primero
+| project trip_id, vendor_id, pickup_datetime, fare_amount   // Proyecta después
+| summarize avg_fare = avg(fare_amount) by vendor_id</code></pre>
+          <p>En la práctica el optimizador los combina, pero es mejor <strong>escribir explícitamente</strong> el project temprano.</p>
+        </article>
+
+        <!-- ============ 13. OPTIMIZE AGG ============ -->
+        <div class="category-header" id="optimize-agg">
+          <span class="category-header__icon">📊</span>
+          <h2 class="category-header__title">13. Optimizar aggregations</h2>
+        </div>
+
+        <article class="concept-card">
+          <h4>Limitar resultados al explorar</h4>
+          <p>Las aggregations son <strong>intensivas en recursos</strong> porque combinan muchos datos. Al explorar, limita los resultados:</p>
+          <pre><code class="language-kusto">TaxiTrips
+| where pickup_datetime &gt; ago(1d)
+| summarize trip_count = count() by trip_id, vendor_id
+| limit 1000                       // Limit para exploración</code></pre>
+          <p>Sin <code>limit</code>, si hay muchas combinaciones, puedes tener millones de filas en el output.</p>
+
+          <h4>Usar <code>top</code> en vez de <code>sort + limit</code></h4>
+          <p><strong>Bien</strong> ✅:</p>
+          <pre><code class="language-kusto">TaxiTrips
+| summarize count() by vendor_id
+| top 10 by count_ desc</code></pre>
+          <p><strong>Menos eficiente</strong>:</p>
+          <pre><code class="language-kusto">TaxiTrips
+| summarize count() by vendor_id
+| sort by count_ desc
+| take 10</code></pre>
+          <p><code>top</code> está optimizado exactamente para este caso de uso.</p>
+
+          <h4>Varias aggregations en un solo summarize</h4>
+          <p><strong>Mejor</strong> ✅:</p>
+          <pre><code class="language-kusto">TaxiTrips
+| summarize
+    trip_count = count(),
+    avg_fare = avg(fare_amount),
+    max_fare = max(fare_amount),
+    total = sum(fare_amount)
+  by vendor_id</code></pre>
+          <p>En vez de hacer 4 queries separadas.</p>
+        </article>
+
+        <!-- ============ 14. OPTIMIZE JOINS ============ -->
+        <div class="category-header" id="optimize-joins">
+          <span class="category-header__icon">🔀</span>
+          <h2 class="category-header__title">14. Optimizar joins (el orden importa)</h2>
+        </div>
+
+        <article class="concept-card">
+          <div class="note note--practice">
+            📌 <strong>🎯 Regla clave: la tabla más PEQUEÑA primero.</strong> Cuando haces join de tablas, pon la más pequeña primero. Razón: KQL procesa la <strong>primera tabla para hacer match con la segunda</strong>. Empezar con una tabla pequeña significa menos filas que procesar → join más eficiente.
+          </div>
+
+          <h4>Ejemplo</h4>
+          <p><strong>Bien</strong> ✅ (tabla pequeña primero):</p>
+          <pre><code class="language-kusto">// VendorInfo es pequeña (1000 vendors), TaxiTrips es grande (10M trips)
+VendorInfo
+| join kind=inner TaxiTrips on vendor_id</code></pre>
+          <p><strong>Evitar</strong> ❌:</p>
+          <pre><code class="language-kusto">// Empezar con la grande es menos eficiente
+TaxiTrips
+| join kind=inner VendorInfo on vendor_id</code></pre>
+
+          <h4>Filtrar ANTES del join</h4>
+          <p>Otra optimización crucial: <strong>filtrar cada tabla antes de hacer el join</strong>.</p>
+          <p><strong>Bien</strong> ✅:</p>
           <pre><code class="language-kusto">VendorInfo
-| where region == "NY"
+| where region == "NY"                     // Filtra la tabla pequeña
 | join kind=inner (
     TaxiTrips
-    | where pickup_datetime > ago(1d)
+    | where pickup_datetime &gt; ago(1d)      // Filtra la tabla grande
 ) on vendor_id</code></pre>
-          <p>Tipos: <code>inner</code> (default), <code>leftouter</code>, <code>fullouter</code>, <code>leftanti</code>/<code>rightanti</code>, <code>leftsemi</code>, <code>innerunique</code>.</p>
+          <p><strong>Menos eficiente</strong>:</p>
+          <pre><code class="language-kusto">VendorInfo
+| join kind=inner TaxiTrips on vendor_id
+| where region == "NY"                     // Filtra tarde ❌
+| where pickup_datetime &gt; ago(1d)          // Filtra tarde ❌</code></pre>
+
+          <h4>Tipos de join</h4>
+          <p>KQL soporta varios <code>kind=</code>:</p>
+          <ul>
+            <li><strong><code>inner</code></strong> (default): solo los matches (menos filas).</li>
+            <li><strong><code>leftouter</code></strong>: todos los de la izquierda + los matches de la derecha.</li>
+            <li><strong><code>rightouter</code></strong>: todos los de la derecha + los matches de la izquierda.</li>
+            <li><strong><code>fullouter</code></strong>: todos los de ambas.</li>
+            <li><strong><code>leftanti</code></strong>: filas de la izquierda que NO tienen match en la derecha.</li>
+            <li><strong><code>rightanti</code></strong>: filas de la derecha que NO tienen match en la izquierda.</li>
+            <li><strong><code>leftsemi</code></strong>: filas de la izquierda que SÍ tienen match (sin columnas de la derecha).</li>
+            <li><strong><code>rightsemi</code></strong>: filas de la derecha que SÍ tienen match.</li>
+            <li><strong><code>innerunique</code></strong>: deduplicado automático en la izquierda.</li>
+          </ul>
         </article>
 
-        <div class="category-header" id="mv"><span class="category-header__icon">⭐</span><h2 class="category-header__title">10. Materialized views a fondo</h2></div>
+        <!-- ============ 15. MATERIALIZED VIEWS ============ -->
+        <div class="category-header" id="materialized-views">
+          <span class="category-header__icon">⭐</span>
+          <h2 class="category-header__title">15. Materialized views a fondo</h2>
+        </div>
+
         <article class="concept-card">
-          <p>Precomputan aggregations que se <strong>actualizan automáticamente</strong> conforme llega data. Consisten en dos partes: <strong>materialized part</strong> (precomputada) y <strong>delta</strong> (data nueva). Al consultar, el sistema combina ambas → resultado <strong>siempre current</strong>. Un background process mueve delta → materialized.</p>
+          <p><strong>Este es un tema estrella del módulo y del examen</strong>. Presta atención especial 💕</p>
+
+          <h4>El problema que resuelven</h4>
+          <p>Las KQL databases de los eventhouses contienen a menudo <strong>millones o miles de millones de filas</strong> de datos en streaming (IoT, logs, eventos). Ejecutar queries de agregación sobre esos datasets <strong>cada vez que las consultas</strong> consume mucho tiempo y cómputo.</p>
+
+          <h4>La solución: materialized views</h4>
+          <p>Las <strong>materialized views</strong> son agregaciones precomputadas que se <strong>actualizan automáticamente</strong> conforme llegan datos nuevos. En vez de recalcular las métricas desde toda la historia en cada query, la materialized view <strong>mantiene los resultados precomputados</strong> y solo procesa los datos nuevos para actualizarse.</p>
+          <p><strong>Resultado</strong>: queries <strong>instantáneas</strong> en dashboards y reports, incluso con datasets enormes.</p>
+
+          <div class="note note--tip">
+            🌸 <strong>Analogía kawaii:</strong> piensa en un <strong>contador de galletas</strong> en la cafetería. Sin materialized view, cada vez que alguien pregunta "¿cuántas galletas hay?", vas y las cuentas todas. Con materialized view, mantienes un cartel actualizado con el recuento y, cuando llega una galleta nueva, sumas 1. Preguntar el recuento es <strong>instantáneo</strong>.
+          </div>
+        </article>
+
+        <!-- ============ 16. MV INTERNALS ============ -->
+        <div class="category-header" id="mv-internals">
+          <span class="category-header__icon">⚙️</span>
+          <h2 class="category-header__title">16. Cómo funcionan por dentro</h2>
+        </div>
+
+        <article class="concept-card">
+          <h4>Las dos partes</h4>
+          <p>Una materialized view consta de <strong>dos partes</strong> que trabajan juntas:</p>
+          <p><strong>A) Materialized part</strong> 💾 — los resultados <strong>precomputados</strong> de los datos ya procesados, guardados en una "tabla oculta" interna.</p>
+          <p><strong>B) Delta</strong> ⏱️ — los <strong>datos nuevos</strong> que han llegado desde la última actualización en background. Se procesan al vuelo al consultar.</p>
+
+          <h4>Al consultar</h4>
+          <p>Cuando <strong>haces una query</strong> a la materialized view, el sistema <strong>combina automáticamente ambas partes</strong> en tiempo de query y devuelve <strong>resultados frescos y actualizados</strong>.</p>
+          <p>Esto significa que las <strong>materialized views SIEMPRE devuelven datos actuales</strong>, independientemente de cuándo se ejecutó la última materialización en background.</p>
+
+          <h4>Proceso en background</h4>
+          <p>Mientras tanto, un <strong>proceso en background</strong> mueve periódicamente los datos de la <strong>parte delta</strong> a la <strong>parte materializada</strong>, manteniendo actualizados los resultados precomputados.</p>
+          <p>Este enfoque da la <strong>velocidad de los resultados precomputados</strong> con la <strong>frescura de los datos en tiempo real</strong>.</p>
+
+          <h4>Diagrama mental</h4>
+          <pre><code class="language-plaintext">Streaming ingesta continua
+        ↓
+    Base table (raw)
+        ↓
+    ┌───┴───┐
+    │       │
+Materialized  Delta
+   part      part
+    (viejo)   (nuevo)
+    │       │
+    └───┬───┘
+        ↓
+   Query result (fresh!)</code></pre>
+          <p>El sistema <strong>combina ambas al consultar</strong> → resultado siempre actual.</p>
+        </article>
+
+        <!-- ============ 17. MV USAGE ============ -->
+        <div class="category-header" id="mv-usage">
+          <span class="category-header__icon">🛠️</span>
+          <h2 class="category-header__title">17. Crear y consultar materialized views</h2>
+        </div>
+
+        <article class="concept-card">
+          <h4>Sintaxis para crearlas</h4>
+          <p>Una materialized view <strong>encapsula un statement <code>summarize</code> de KQL</strong> que se auto-actualiza.</p>
           <pre><code class="language-kusto">.create materialized-view TripsByVendor on table TaxiTrips
 {
     TaxiTrips
-    | summarize trips = count(), avg_fare = avg(fare_amount) by vendor_id
+    | summarize
+        trips = count(),
+        avg_fare = avg(fare_amount),
+        total_revenue = sum(fare_amount)
+      by vendor_id, pickup_date = format_datetime(pickup_datetime, "yyyy-MM-dd")
 }</code></pre>
-          <p>Se consulta como una tabla normal. El query dentro debe ser un <strong><code>summarize</code></strong>.</p>
-          <div class="note note--tip">🌸 Como un contador de galletas: en vez de contarlas todas cada vez, mantienes el cartel actualizado y sumas 1 cuando llega una nueva. Preguntar es instantáneo.</div>
+          <p><strong>Interpretación</strong>: crea una materialized view llamada <code>TripsByVendor</code>, basada en la tabla <code>TaxiTrips</code>, que precomputa el recuento de trips, la tarifa media y el revenue total, agrupado por vendor y fecha.</p>
+
+          <h4>Consultar una materialized view</h4>
+          <p>Una vez creada, se <strong>consulta como una tabla normal</strong>:</p>
+          <pre><code class="language-kusto">TripsByVendor
+| where pickup_date &gt;= ago(7d)
+| project pickup_date, vendor_id, trips, avg_fare, total_revenue
+| sort by pickup_date desc, total_revenue desc</code></pre>
+          <p>Sintaxis idéntica a la de una tabla. El motor sabe combinar la parte materializada y la delta de forma transparente.</p>
+
+          <h4>Cuándo usar materialized views</h4>
+          <p><strong>SÍ</strong>: agregaciones pesadas sobre datos en streaming, dashboards con métricas que se consultan con frecuencia, y cuando es aceptable un <strong>retardo de milisegundos</strong> por el refresh en background.</p>
+          <p><strong>NO</strong>: queries ad-hoc únicas, agregaciones muy complejas con lógica cambiante, o cuando necesitas <strong>tiempo real exacto</strong> milisegundo a milisegundo.</p>
+
+          <div class="note note--warning">
+            ⚠️ <strong>Limitaciones:</strong> la <strong>query</strong> dentro de la materialized view debe ser un <strong><code>summarize</code></strong>; los cambios en el schema de la tabla origen pueden <strong>romper</strong> la view; y consume <strong>storage adicional</strong> para la parte materializada.
+          </div>
         </article>
 
-        <div class="category-header" id="functions"><span class="category-header__icon">🔧</span><h2 class="category-header__title">11. Stored functions</h2></div>
+        <!-- ============ 18. STORED FUNCTIONS ============ -->
+        <div class="category-header" id="stored-functions">
+          <span class="category-header__icon">🔧</span>
+          <h2 class="category-header__title">18. Stored functions</h2>
+        </div>
+
         <article class="concept-card">
-          <p>Encapsulan query logic reutilizable (con parámetros). <strong>No almacenan resultados</strong>, re-ejecutan cada llamada.</p>
+          <h3>¿Qué son?</h3>
+          <p>KQL permite <strong>encapsular una query como una función</strong> para facilitar su reutilización. Puedes especificar <strong>parámetros</strong> para que la función acepte valores variables.</p>
+
+          <h4>Por qué usarlas</h4>
+          <p>En eventhouses con datos en streaming y <strong>varios usuarios escribiendo queries</strong>:</p>
+          <ul>
+            <li>Evitas escribir la <strong>misma lógica de filtrado/transformación</strong> una y otra vez.</li>
+            <li>Defines <strong>una vez</strong> y reutilizas en muchas queries.</li>
+            <li>Aseguras <strong>cálculos consistentes</strong> cuando varias personas del equipo aplican la misma lógica.</li>
+          </ul>
+
+          <h4>Crear una función</h4>
           <pre><code class="language-kusto">.create-or-alter function trips_by_min_passenger_count(num_passengers:long)
 {
     TaxiTrips
-    | where passenger_count >= num_passengers
+    | where passenger_count &gt;= num_passengers
     | project trip_id, pickup_datetime
-}
-// Llamar:
-trips_by_min_passenger_count(3) | take 10</code></pre>
+}</code></pre>
+          <p><strong>Interpretación</strong>: crea (o actualiza) una función llamada <code>trips_by_min_passenger_count</code>, que acepta un parámetro <code>num_passengers</code> de tipo <code>long</code>, filtra los trips con ≥ N pasajeros y proyecta trip_id y pickup_datetime.</p>
+
+          <h4>Llamar a la función</h4>
+          <p>Se llama <strong>como si fuera una tabla</strong>:</p>
+          <pre><code class="language-kusto">trips_by_min_passenger_count(3)
+| take 10</code></pre>
+          <p>Encuentra 10 trips con al menos 3 pasajeros.</p>
+
+          <h4>Casos de uso</h4>
+          <ul>
+            <li><strong>Lógica de negocio centralizada</strong>: "definir un customer VIP", "definir un evento crítico".</li>
+            <li><strong>Cálculos complejos reutilizables</strong>: convertir temperaturas, calcular distancia haversine.</li>
+            <li><strong>Patrones de acceso comunes</strong>: "top productos del último mes por región".</li>
+            <li><strong>Consistencia de equipo</strong>: todos usan la misma función = mismo resultado.</li>
+          </ul>
+
+          <h4>🎯 Materialized view vs stored function</h4>
+          <p>Este contraste es <strong>muy examinable</strong>:</p>
           <div class="table-scroll">
             <table class="md-table">
               <thead><tr><th></th><th>Materialized view</th><th>Stored function</th></tr></thead>
               <tbody>
-                <tr><td>Almacena resultado</td><td>✅ Sí (precomputed)</td><td>❌ No</td></tr>
-                <tr><td>Re-ejecuta al llamar</td><td>❌ No (combina partes)</td><td>✅ Sí</td></tr>
-                <tr><td>Ideal para</td><td>Aggregations frecuentes</td><td>Query logic reutilizable</td></tr>
+                <tr><td>Almacena el resultado</td><td>✅ Sí (precomputado)</td><td>❌ No</td></tr>
+                <tr><td>Re-ejecuta al llamarla</td><td>❌ No (combina partes)</td><td>✅ Sí (en cada llamada)</td></tr>
+                <tr><td>Se actualiza automáticamente</td><td>✅ Sí</td><td>N/A</td></tr>
+                <tr><td>Coste de storage</td><td>Sí</td><td>No</td></tr>
+                <tr><td>Coste de cómputo</td><td>Bajo (al consultar)</td><td>Alto (reejecuta la query)</td></tr>
+                <tr><td>Ideal para</td><td>Agregaciones frecuentes</td><td>Lógica de query reutilizable</td></tr>
               </tbody>
             </table>
           </div>
         </article>
 
-        <div class="category-header" id="update"><span class="category-header__icon">🔄</span><h2 class="category-header__title">12. Update policies</h2></div>
-        <article class="concept-card">
-          <p>Automation que se <strong>triggerea al ingestar data</strong> a una source table: ejecuta una query para transformar y guarda el resultado en una destination table. No es schedule-based.</p>
-          <pre><code class="language-json">[{
-  "IsEnabled": true,
-  "Source": "RawLogs",
-  "Query": "RawLogs | extend timestamp = todatetime(parse_json(payload).timestamp) | project timestamp, level, message",
-  "IsTransactional": true
-}]</code></pre>
-          <div class="note note--warning">⚠️ Con <code>.set-or-replace</code> la data en las derived tables también se reemplaza y <strong>puede perderse data</strong>. Recomendación: usa <code>.set-or-append</code>. Si la tabla tiene RLS, la update policy necesita <code>ManagedIdentity</code>.</div>
-        </article>
+        <!-- ============ 19. UPDATE POLICIES ============ -->
+        <div class="category-header" id="update-policies">
+          <span class="category-header__icon">🔄</span>
+          <h2 class="category-header__title">19. Update policies</h2>
+        </div>
 
-        <div class="category-header" id="policies"><span class="category-header__icon">📚</span><h2 class="category-header__title">13. Todas las policies</h2></div>
         <article class="concept-card">
+          <h3>¿Qué son?</h3>
+          <p>Las <strong>update policies</strong> son <strong>mecanismos de automatización</strong> que <strong>se disparan cuando se ingiere data</strong> en una tabla origen. Ejecutan una query para <strong>transformar</strong> los datos ingeridos y guardan el resultado en una <strong>tabla destino</strong>.</p>
+
+          <h4>Uso típico</h4>
+          <p>Recibes <strong>logs raw</strong> en una tabla origen; la update policy se dispara, parsea el JSON, extrae campos y aplica lógica; y el resultado procesado va a la <strong>tabla destino</strong>. <strong>Beneficio</strong>: automatización en el momento de la ingesta, sin schedule externo.</p>
+
+          <h4>Sintaxis básica</h4>
+          <pre><code class="language-kusto">.alter table CleanLogs policy update</code></pre>
+          <pre><code class="language-json">@'[{
+    "IsEnabled": true,
+    "Source": "RawLogs",
+    "Query": "RawLogs | extend timestamp = todatetime(parse_json(payload).timestamp) | project timestamp, level, message",
+    "IsTransactional": true,
+    "PropagateIngestionProperties": false
+}]'</code></pre>
+          <p><strong>Interpretación</strong>: cuando lleguen filas nuevas a <code>RawLogs</code>, ejecuta la query definida y guarda el resultado en <code>CleanLogs</code>.</p>
+
+          <h4>Management commands</h4>
           <div class="table-scroll">
             <table class="md-table">
-              <thead><tr><th>Policy</th><th>Propósito clave</th></tr></thead>
+              <thead><tr><th>Comando</th><th>Función</th></tr></thead>
               <tbody>
-                <tr><td><strong>Retention</strong></td><td>Eliminar data vieja automáticamente (SoftDeletePeriod)</td></tr>
-                <tr><td><strong>Cache</strong></td><td>Qué va en premium cache (hot = 7d)</td></tr>
-                <tr><td><strong>Row-level security</strong></td><td>Filtrar rows por user</td></tr>
-                <tr><td><strong>Restricted view access</strong></td><td>Capa extra de permisos</td></tr>
-                <tr><td><strong>Update</strong></td><td>Auto-transform al ingerir</td></tr>
-                <tr><td><strong>Streaming ingestion</strong></td><td>Data queryable casi inmediata (más overhead)</td></tr>
-                <tr><td><strong>Partitioning</strong></td><td>Divide data para pruning</td></tr>
-                <tr><td><strong>Merge</strong></td><td>Consolida extents pequeños (como OPTIMIZE de Delta)</td></tr>
-                <tr><td><strong>Sharding / Ingestion time / Managed identity</strong></td><td>Cómo se crean extents / timestamp auto / control de MI</td></tr>
+                <tr><td><code>.show table X policy update</code></td><td>Ver la policy actual</td></tr>
+                <tr><td><code>.alter table X policy update</code></td><td>Definir la policy</td></tr>
+                <tr><td><code>.alter-merge table X policy update</code></td><td>Añadir a la policy existente</td></tr>
+                <tr><td><code>.delete table X policy update</code></td><td>Eliminar la policy</td></tr>
               </tbody>
             </table>
           </div>
-          <div class="note note--tip">🎯 <strong>Cache ≠ Retention:</strong> la cache policy controla qué está en el premium cache (performance); la <strong>retention policy</strong> es la que elimina datos. La cache no borra nada.</div>
-        </article>
 
-        <div class="category-header" id="rls"><span class="category-header__icon">🔐</span><h2 class="category-header__title">14. Row-Level Security y seguridad</h2></div>
-        <article class="concept-card">
-          <p>RLS filtra las rows visibles por user con una query (normalmente una stored function). Force temporal para testing: <code>set query_force_row_level_security;</code>. Requiere Table Admin.</p>
-          <div class="note note--warning">⚠️ RLS <strong>no</strong> funciona en External Tables, no puede referenciar otras tablas con RLS ni de otras databases, y es <strong>mutuamente excluyente</strong> con Restricted view access policy. En Fabric KQL solo hay <strong>filter predicates</strong> (no block).</div>
-        </article>
+          <h4>Cuándo se disparan</h4>
+          <p>Las update policies <strong>surten efecto</strong> cuando se ingieren o mueven datos a la tabla origen. Comandos que las disparan:</p>
+          <ol>
+            <li><code>.ingest (pull)</code> — desde storage.</li>
+            <li><code>.ingest (inline)</code> — datos literales.</li>
+            <li><code>.set</code> | <code>.append</code> | <code>.set-or-append</code> | <code>.set-or-replace</code>.</li>
+            <li><code>.move extents</code>.</li>
+            <li><code>.replace extents</code>.</li>
+          </ol>
 
-        <div class="category-header" id="trampas"><span class="category-header__icon">⚠️</span><h2 class="category-header__title">15. Trampas típicas</h2></div>
-        <article class="concept-card">
+          <div class="note note--warning">
+            ⚠️ <strong>Warning importante con <code>.set-or-replace</code>:</strong> por defecto, los datos de las tablas derivadas se <strong>reemplazan igual que en la tabla origen</strong>, y <strong>pueden perderse datos</strong> en tablas con relación de update policy. <strong>Recomendación</strong>: usa <code>.set-or-append</code> siempre que sea posible.
+          </div>
+
+          <h4>Opciones avanzadas</h4>
           <ul>
-            <li><strong>"KQL es case-insensitive"</strong> → ❌ case-sensitive para TODO.</li>
-            <li><strong>"Materialized views se actualizan al schedule"</strong> → ❌ automáticamente al llegar data.</li>
-            <li><strong>"Materialized views devuelven data desactualizada"</strong> → ❌ siempre current (materialized + delta).</li>
-            <li><strong>"Update policies corren en schedule"</strong> → ❌ triggerean al ingestar.</li>
-            <li><strong>"Stored functions almacenan resultados"</strong> → ❌ almacenan la query logic.</li>
-            <li><strong>"RLS + restricted view access juntos"</strong> → ❌ mutuamente excluyentes.</li>
-            <li><strong>"RLS funciona en External Tables"</strong> → ❌ no.</li>
-            <li><strong>"Cache policy elimina datos"</strong> → ❌ eso es la retention policy.</li>
-            <li><strong>"En joins el orden no importa"</strong> → ❌ tabla pequeña primero.</li>
-            <li><strong>"Streaming ingestion siempre mejor"</strong> → ❌ más overhead; batch es más barato.</li>
-            <li><strong>"Cada Eventhouse tiene una sola KQL database"</strong> → ❌ puede tener varias.</li>
-            <li><strong>"has y contains son iguales"</strong> → ❌ has es whole-word indexado (más rápido).</li>
-            <li><strong>"Materialized view sobre cualquier query"</strong> → ❌ debe ser summarize.</li>
+            <li><strong><code>IsTransactional</code></strong>: si es true, la ingesta y la update policy son atómicas.</li>
+            <li><strong><code>PropagateIngestionProperties</code></strong>: propaga las ingestion properties al destino.</li>
+            <li><strong><code>ManagedIdentity</code></strong>: usa managed identity para la query (obligatorio si la tabla tiene RLS).</li>
           </ul>
         </article>
 
-        <div class="category-header" id="comparativas"><span class="category-header__icon">🆚</span><h2 class="category-header__title">16. Comparativas clave (chuleta)</h2></div>
+        <!-- ============ 20. POLICIES ============ -->
+        <div class="category-header" id="policies">
+          <span class="category-header__icon">📚</span>
+          <h2 class="category-header__title">20. Policies overview: todas las policies</h2>
+        </div>
+
         <article class="concept-card">
+          <p><strong>Este es un tema muy examinable</strong>. Vamos a ver <strong>todas las policies</strong> que existen en las KQL databases con su propósito.</p>
+
+          <h4>Tabla oficial completa</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Policy</th><th>Propósito</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Ingestion time policy</strong></td><td>Añade una columna oculta datetime con la hora de ingesta</td></tr>
+                <tr><td><strong>ManagedIdentity policy</strong></td><td>Controla qué managed identities pueden usarse y para qué</td></tr>
+                <tr><td><strong>Merge policy</strong></td><td>Reglas para fusionar datos de distintos extents en uno solo</td></tr>
+                <tr><td><strong>Mirroring policy</strong></td><td>Gestionar la mirroring policy y sus operaciones</td></tr>
+                <tr><td><strong>Partitioning policy</strong></td><td>Reglas de particionado de extents para una tabla o materialized view</td></tr>
+                <tr><td><strong>Retention policy</strong></td><td>Mecanismo que elimina automáticamente datos de tablas o materialized views</td></tr>
+                <tr><td><strong>Restricted view access policy</strong></td><td>Capa extra de requisitos de permiso para acceder a la tabla</td></tr>
+                <tr><td><strong>Row level security policy</strong></td><td>Reglas de acceso a filas según pertenencia a grupos o contexto de ejecución</td></tr>
+                <tr><td><strong>Row order policy</strong></td><td>Mantiene un orden específico de filas dentro de un extent</td></tr>
+                <tr><td><strong>Sandbox policy</strong></td><td>Controla el uso y el comportamiento de los sandboxes (entornos aislados)</td></tr>
+                <tr><td><strong>Sharding policy</strong></td><td>Reglas de cómo se crean los extents</td></tr>
+                <tr><td><strong>Streaming ingestion policy</strong></td><td>Configuración de la ingesta de datos en streaming</td></tr>
+                <tr><td><strong>Update policy</strong></td><td>Permite añadir datos a una tabla destino cuando se añaden a la origen</td></tr>
+                <tr><td><strong>Query weak consistency policy</strong></td><td>Controla el nivel de consistencia de los resultados de query</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="note note--tip">
+            🎯 <strong>Cuáles son las MÁS examinables:</strong> <strong>Retention policy</strong> (limpieza), <strong>Cache policy</strong> (performance), <strong>Row-level security policy</strong> (seguridad), <strong>Restricted view access policy</strong> (seguridad), <strong>Update policy</strong> (transformación), <strong>Streaming ingestion policy</strong> (ingesta), <strong>Partitioning policy</strong> (performance) y <strong>Merge policy</strong> (performance). Las vemos una a una 💕
+          </div>
+        </article>
+
+        <!-- ============ 21. RETENTION ============ -->
+        <div class="category-header" id="retention">
+          <span class="category-header__icon">⏳</span>
+          <h2 class="category-header__title">21. Retention policy</h2>
+        </div>
+
+        <article class="concept-card">
+          <h4>¿Qué hace?</h4>
+          <p>La <strong>retention policy</strong> define <strong>cuánto tiempo se guardan los datos</strong> en una tabla antes de eliminarse automáticamente. Es el equivalente KQL a un TTL (Time-To-Live).</p>
+
+          <h4>Configuración</h4>
+          <p>Se configura por tabla:</p>
+          <pre><code class="language-kusto">.alter table MyTable policy retention
+'{
+    "SoftDeletePeriod": "30.00:00:00",
+    "Recoverability": "Enabled"
+}'</code></pre>
+          <ul>
+            <li><strong><code>SoftDeletePeriod</code></strong>: cuánto tiempo antes de borrar (formato <code>días.horas:minutos:segundos</code>). Ejemplo: <code>30.00:00:00</code> = 30 días.</li>
+            <li><strong><code>Recoverability</code></strong>: si se puede recuperar tras eliminar.</li>
+          </ul>
+
+          <h4>Casos de uso</h4>
+          <ul>
+            <li><strong>Logs</strong>: retención típica de 30-90 días.</li>
+            <li><strong>Telemetría IoT</strong>: 7-30 días para el hot, y mover a Lakehouse para el cold.</li>
+            <li><strong>Compliance</strong>: retener 7+ años en tablas concretas.</li>
+            <li><strong>Reducir costes de storage</strong>: eliminar datos antiguos sin uso.</li>
+          </ul>
+
+          <h4>Automático vs manual</h4>
+          <p>La retention policy hace la limpieza <strong>automáticamente</strong> en background. No tienes que hacer nada manual.</p>
+        </article>
+
+        <!-- ============ 22. CACHE ============ -->
+        <div class="category-header" id="cache">
+          <span class="category-header__icon">⚡</span>
+          <h2 class="category-header__title">22. Cache policy</h2>
+        </div>
+
+        <article class="concept-card">
+          <h4>¿Qué hace?</h4>
+          <p>La <strong>cache policy</strong> controla <strong>cuántos datos se mantienen en la caché</strong> (premium storage rápido). Datos en caché = <strong>queries rapidísimas</strong>. Datos fuera de la caché (standard storage) = queries más lentas.</p>
+
+          <h4>Configuración</h4>
+          <pre><code class="language-kusto">.alter table MyTable policy caching hot = 7d</code></pre>
+          <p>Aquí: mantén los últimos 7 días en <strong>hot cache</strong>.</p>
+
+          <h4>Cómo elegir el periodo de caché</h4>
+          <p><strong>Regla</strong>: <strong>cachea lo que consultas con frecuencia</strong>. Si tus dashboards consultan los últimos 30 días → cache = 30d. Si consultas históricos rara vez → caché pequeña y retención larga en standard.</p>
+
+          <h4>Relación con los storage tiers</h4>
+          <p>Recuerda del Módulo 8: el <strong>OneLake Cache Storage</strong> (premium) da queries rápidas y es más caro; el <strong>OneLake Standard Storage</strong> es persistente y más barato. La cache policy determina <strong>qué va en la caché</strong>.</p>
+
+          <h4>Ejemplo real</h4>
+          <p>Tabla <code>IoT_Logs</code> con retention policy de 1 año y cache policy de 30 días:</p>
+          <ul>
+            <li>Últimos 30 días → caché → queries <strong>instantáneas</strong>.</li>
+            <li>Días 31-365 → standard storage → queries <strong>más lentas pero accesibles</strong>.</li>
+            <li>Más de 365 días → <strong>eliminados</strong>.</li>
+          </ul>
+        </article>
+
+        <!-- ============ 23. RLS ============ -->
+        <div class="category-header" id="rls">
+          <span class="category-header__icon">🔐</span>
+          <h2 class="category-header__title">23. Row-Level Security en KQL</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>¿Qué es?</h3>
+          <p><strong>Row-Level Security (RLS)</strong> = mecanismo que <strong>filtra las filas visibles</strong> a un usuario según su identidad o pertenencia a grupos. Cada usuario ve <strong>solo las filas que le corresponden</strong>, incluso ejecutando la misma query.</p>
+
+          <h4>Cómo funciona en KQL</h4>
+          <p>Se define una <strong>query de RLS</strong> que actúa como filtro implícito. La query devuelve las filas que el usuario actual puede ver.</p>
+          <pre><code class="language-kusto">.alter table SalesData policy row_level_security enable
+'AnonymizeSensitiveData'</code></pre>
+          <p>Donde <code>AnonymizeSensitiveData</code> es una <strong>stored function</strong> que define la lógica:</p>
+          <pre><code class="language-kusto">.create function AnonymizeSensitiveData() {
+    SalesData
+    | where region in ((current_principal_details().userPrincipalName |
+                       lookup MyRegionMapping on user))
+}</code></pre>
+
+          <h4>Forzar RLS temporalmente</h4>
+          <p><strong>Cuando la policy está deshabilitada</strong>, puedes forzarla en una query concreta:</p>
+          <pre><code class="language-kusto">set query_force_row_level_security;
+SalesData
+| take 100</code></pre>
+          <p>Útil para <strong>testear</strong> queries de RLS sin activarla para todos los usuarios.</p>
+
+          <h4>Permisos requeridos</h4>
+          <p>Para activar/desactivar la RLS policy: permiso <strong>Table Admin</strong> como mínimo.</p>
+
+          <div class="note note--warning">
+            ⚠️ <strong>Limitaciones importantes:</strong>
+            <ol>
+              <li><strong>No hay límite</strong> en el número de tablas con RLS.</li>
+              <li><strong>NO se puede configurar en External Tables</strong>.</li>
+              <li><strong>NO se puede activar RLS en tablas</strong> que: son referenciadas por una <strong>update policy sin managed identity</strong>, son referenciadas por un <strong>continuous export</strong> sin impersonation, o tienen configurada una <strong>restricted view access policy</strong>.</li>
+              <li>La query de RLS <strong>NO puede referenciar</strong> otras tablas que también tengan RLS.</li>
+              <li>La query de RLS <strong>NO puede referenciar</strong> tablas de otras databases.</li>
+            </ol>
+          </div>
+
+          <h4>Filter predicates vs block predicates</h4>
+          <p>En KQL de Fabric <strong>solo se soportan los filter predicates</strong> — filtran las filas silenciosamente. (En SQL Server tradicional existen los block predicates para bloquear escrituras, pero en KQL de Fabric solo hay filter.)</p>
+        </article>
+
+        <!-- ============ 24. RESTRICTED VIEW ============ -->
+        <div class="category-header" id="restricted-view">
+          <span class="category-header__icon">🚫</span>
+          <h2 class="category-header__title">24. Restricted view access policy</h2>
+        </div>
+
+        <article class="concept-card">
+          <h4>¿Qué hace?</h4>
+          <p>Añade una <strong>capa extra de requisitos de permiso</strong> para acceder a la tabla. Con esta policy activa, incluso los usuarios con permiso normal <strong>necesitan un permiso adicional específico</strong> para ver la tabla.</p>
+
+          <h4>Cuándo usarla</h4>
+          <ul>
+            <li>Datos <strong>muy sensibles</strong> que requieren una aprobación extra.</li>
+            <li>Cumplimiento de requisitos de seguridad estrictos.</li>
+            <li>Tablas con datos financieros o PII.</li>
+          </ul>
+
+          <div class="note note--warning">
+            ⚠️ <strong>Compatibilidad:</strong> el RLS y la restricted view access policy son <strong>mutuamente excluyentes</strong>. No puedes activar ambos en la misma tabla.
+          </div>
+        </article>
+
+        <!-- ============ 25. STREAMING INGESTION ============ -->
+        <div class="category-header" id="streaming-ingestion">
+          <span class="category-header__icon">🌊</span>
+          <h2 class="category-header__title">25. Streaming ingestion policy</h2>
+        </div>
+
+        <article class="concept-card">
+          <h4>¿Qué hace?</h4>
+          <p>Configura la <strong>ingesta de datos en streaming</strong>. Con la streaming ingestion activada, los datos son <strong>consultables casi de inmediato</strong> (segundos) tras ser ingeridos, en vez de por lotes.</p>
+
+          <h4>Cómo activarla</h4>
+          <p>A nivel database:</p>
+          <pre><code class="language-kusto">.alter database MyDatabase policy streamingingestion enable</code></pre>
+          <p>O a nivel tabla:</p>
+          <pre><code class="language-kusto">.alter table MyTable policy streamingingestion enable</code></pre>
+
+          <h4>Trade-offs</h4>
+          <p><strong>Con streaming ingestion activada</strong>: ✅ los datos están disponibles para consulta <strong>más rápido</strong>, pero ⚠️ hay <strong>más overhead</strong> de cómputo por fila y es <strong>más caro</strong> por fila.</p>
+          <p><strong>Sin streaming (batch)</strong>: ✅ <strong>más barato</strong> por fila y optimizado para alto volumen, pero ⚠️ con un retardo de segundos-minutos antes de poder consultar.</p>
+
+          <h4>Cuándo usar cada uno</h4>
+          <ul>
+            <li><strong>Streaming ingestion</strong>: dashboards en tiempo real, alertas críticas.</li>
+            <li><strong>Batch ingestion</strong>: cargas masivas, analítica batch, optimización de costes.</li>
+          </ul>
+        </article>
+
+        <!-- ============ 26. PARTITIONING ============ -->
+        <div class="category-header" id="partitioning">
+          <span class="category-header__icon">🧩</span>
+          <h2 class="category-header__title">26. Partitioning policy</h2>
+        </div>
+
+        <article class="concept-card">
+          <h4>¿Qué hace?</h4>
+          <p>Define las <strong>reglas para particionar los extents</strong> de una tabla o materialized view. <strong>Beneficio</strong>: las queries que filtran por la partition key son <strong>mucho más rápidas</strong> (partition pruning).</p>
+
+          <h4>Uso típico</h4>
+          <p>Particionar por <strong>customer_id</strong> (si las queries filtran por customer), por <strong>tenant_id</strong> en escenarios multi-tenant, o por <strong>date</strong> / <strong>month</strong> para análisis de series temporales.</p>
+
+          <h4>Ejemplo</h4>
+          <pre><code class="language-kusto">.alter table SalesData policy partitioning
+'{
+    "PartitionKeys": [
+        {
+            "ColumnName": "customer_id",
+            "Kind": "Hash",
+            "Properties": {
+                "Function": "XxHash64",
+                "MaxPartitionCount": 128
+            }
+        }
+    ]
+}'</code></pre>
+
+          <h4>Cuándo NO particionar</h4>
+          <ul>
+            <li><strong>Baja cardinalidad</strong>: pocas partition keys → poco beneficio.</li>
+            <li><strong>Cardinalidad muy alta</strong>: demasiadas partition keys → overhead.</li>
+            <li><strong>Las queries no filtran por la key</strong>: sin filtro no hay pruning.</li>
+          </ul>
+        </article>
+
+        <!-- ============ 27. MERGE ============ -->
+        <div class="category-header" id="merge">
+          <span class="category-header__icon">🔀</span>
+          <h2 class="category-header__title">27. Merge policy</h2>
+        </div>
+
+        <article class="concept-card">
+          <h4>¿Qué hace?</h4>
+          <p>Define las <strong>reglas para fusionar datos</strong> de distintos extents en uno solo. En KQL los datos se almacenan en <strong>extents</strong> (bloques); muchos extents pequeños → mal rendimiento. El <strong>merge</strong> los consolida.</p>
+
+          <h4>Similar al OPTIMIZE de Delta</h4>
+          <p>Es un <strong>concepto parecido</strong> al <code>OPTIMIZE</code> de Delta Lake que vimos en el Módulo 4: consolidar ficheros pequeños en grandes. La diferencia: el OPTIMIZE de Delta es manual o programado, mientras que el merge de KQL es un <strong>proceso automático en background</strong> (configurable).</p>
+
+          <h4>Configuración</h4>
+          <pre><code class="language-kusto">.alter table MyTable policy merge
+'{
+    "AllowRebuild": true,
+    "AllowMerge": true,
+    "MaxRangeInHours": 8,
+    "MinExtentsCountForMerge": 2,
+    "Lookback": "Default"
+}'</code></pre>
+          <p>Los valores por defecto <strong>suelen funcionar bien</strong>. Solo tócalos si tienes casos específicos.</p>
+        </article>
+
+        <!-- ============ 28. COPILOT ============ -->
+        <div class="category-header" id="copilot">
+          <span class="category-header__icon">🤖</span>
+          <h2 class="category-header__title">28. Copilot para KQL</h2>
+        </div>
+
+        <article class="concept-card">
+          <h4>Copilot for Real-Time Intelligence</h4>
+          <p>Fabric incluye <strong>Copilot para RTI</strong>, que ayuda a <strong>generar queries KQL</strong> desde lenguaje natural, <strong>explicar queries</strong> existentes, <strong>sugerir optimizaciones</strong> y <strong>depurar</strong> queries que fallan.</p>
+
+          <h4>Habilitación</h4>
+          <p>Requiere que el <strong>admin habilite Copilot</strong> para el tenant/workspace. Una vez habilitado, aparece la opción en la <strong>barra de menú del queryset</strong>.</p>
+
+          <h4>Uso</h4>
+          <ol>
+            <li>Abrir el panel de Copilot.</li>
+            <li>Escribir la pregunta en lenguaje natural: <em>"Muéstrame las top 10 ventas del último día por región"</em>.</li>
+            <li>Copilot genera el KQL.</li>
+            <li>Puedes ejecutarlo directamente o editarlo antes.</li>
+          </ol>
+
+          <h4>NL2KQL</h4>
+          <p><strong>Natural Language to KQL</strong> es la feature específica que traduce lenguaje natural a KQL. Está integrada en Copilot. Especialmente útil si vienes de SQL y estás aprendiendo KQL.</p>
+        </article>
+
+        <!-- ============ 29. TRAMPAS ============ -->
+        <div class="category-header" id="trampas">
+          <span class="category-header__icon">⚠️</span>
+          <h2 class="category-header__title">29. Trampas típicas y confusiones frecuentes</h2>
+        </div>
+
+        <article class="concept-card">
+          <ul class="trap-list">
+            <li><strong class="trap-title">Trampa 1: "KQL es case-insensitive como SQL"</strong>
+              ❌ <strong>KQL ES CASE-SENSITIVE PARA TODO</strong>: tablas, columnas, funciones, keywords y valores de string. Fundamental.</li>
+            <li><strong class="trap-title">Trampa 2: "Las materialized views se actualizan por schedule"</strong>
+              ❌ Se actualizan <strong>automáticamente</strong> conforme llegan datos. No requieren schedule.</li>
+            <li><strong class="trap-title">Trampa 3: "Las materialized views devuelven datos desactualizados"</strong>
+              ❌ <strong>Siempre devuelven datos actuales</strong>, combinando la parte materializada y la delta.</li>
+            <li><strong class="trap-title">Trampa 4: "Las update policies se ejecutan por schedule"</strong>
+              ❌ <strong>Se disparan cuando se ingiere data</strong> en la tabla origen. No son schedule-based.</li>
+            <li><strong class="trap-title">Trampa 5: "Las stored functions almacenan resultados"</strong>
+              ❌ Almacenan la <strong>LÓGICA de la query</strong>, no los resultados. Se re-ejecutan en cada llamada.</li>
+            <li><strong class="trap-title">Trampa 6: "Puedo activar RLS y restricted view access policy a la vez"</strong>
+              ❌ Son <strong>mutuamente excluyentes</strong>. Solo uno por tabla.</li>
+            <li><strong class="trap-title">Trampa 7: "El RLS funciona en External Tables"</strong>
+              ❌ <strong>NO se puede configurar RLS en External Tables</strong>.</li>
+            <li><strong class="trap-title">Trampa 8: "El RLS puede referenciar otras tablas con RLS"</strong>
+              ❌ La query de RLS <strong>NO puede referenciar otras tablas con RLS habilitado</strong>.</li>
+            <li><strong class="trap-title">Trampa 9: "La cache policy elimina datos"</strong>
+              ❌ La cache policy solo controla <strong>qué está en la caché premium</strong>. NO elimina datos. La que elimina es la <strong>retention policy</strong>.</li>
+            <li><strong class="trap-title">Trampa 10: "La retention policy elimina datos instantáneamente"</strong>
+              ❌ Es un <strong>proceso en background</strong>. Puede tardar en eliminar. No es en tiempo real.</li>
+            <li><strong class="trap-title">Trampa 11: "Filtrar tarde es igual de eficiente"</strong>
+              ❌ <strong>Filtrar pronto es CRÍTICO</strong> para el rendimiento. El orden importa mucho.</li>
+            <li><strong class="trap-title">Trampa 12: "En los joins el orden no importa"</strong>
+              ❌ La <strong>tabla más pequeña PRIMERO</strong> para ser eficiente. Sí importa.</li>
+            <li><strong class="trap-title">Trampa 13: "El streaming ingestion siempre es mejor"</strong>
+              ❌ Tiene <strong>overhead extra</strong>. Para cargas masivas, el batch es más eficiente y barato.</li>
+            <li><strong class="trap-title">Trampa 14: "Cada Eventhouse tiene solo una KQL database"</strong>
+              ❌ Un Eventhouse puede tener <strong>varias KQL databases</strong>. La default se crea automáticamente, pero puedes crear más.</li>
+            <li><strong class="trap-title">Trampa 15: "<code>has</code> y <code>contains</code> son intercambiables"</strong>
+              ❌ <strong><code>has</code> busca palabras completas usando el índice → más rápido</strong>. <code>contains</code> busca la subcadena en cualquier posición. Usa <code>has</code> cuando aplique.</li>
+            <li><strong class="trap-title">Trampa 16: "Las update policies afectan igual a .set-or-replace que a .set-or-append"</strong>
+              ⚠️ Con <code>.set-or-replace</code> los datos de las tablas derivadas <strong>también se reemplazan</strong> — <strong>puede perderse data</strong>. Recomendación: <code>.set-or-append</code> siempre que se pueda.</li>
+            <li><strong class="trap-title">Trampa 17: "Una materialized view se puede basar en cualquier query"</strong>
+              ❌ Debe ser un statement <strong><code>summarize</code></strong>. Otros operadores no valen.</li>
+            <li><strong class="trap-title">Trampa 18: "Puedo cambiar el schema de la tabla origen libremente"</strong>
+              ⚠️ Los cambios en el schema del origen <strong>pueden romper las materialized views</strong> que dependen de él.</li>
+          </ul>
+        </article>
+
+        <!-- ============ 30. COMPARATIVAS ============ -->
+        <div class="category-header" id="comparativas">
+          <span class="category-header__icon">🆚</span>
+          <h2 class="category-header__title">30. Comparativas clave (chuleta)</h2>
+        </div>
+
+        <article class="concept-card">
+          <h4>Materialized view vs Stored function vs Update policy</h4>
           <div class="table-scroll">
             <table class="md-table">
               <thead><tr><th></th><th>Materialized view</th><th>Stored function</th><th>Update policy</th></tr></thead>
               <tbody>
-                <tr><td>Trigger</td><td>Background + query time</td><td>On-demand</td><td>Al ingerir</td></tr>
-                <tr><td>Almacena resultado</td><td>✅</td><td>❌</td><td>✅ (target table)</td></tr>
-                <tr><td>Query type</td><td>Solo summarize</td><td>Cualquiera</td><td>Cualquiera</td></tr>
-                <tr><td>Ideal para</td><td>Aggregations frecuentes</td><td>Logic reutilizable</td><td>Transformar al ingerir</td></tr>
+                <tr><td>Trigger</td><td>Auto en background + al consultar</td><td>On-demand (llamada)</td><td>Al ingerir datos</td></tr>
+                <tr><td>Almacena el resultado</td><td>✅ Sí</td><td>❌ No</td><td>✅ Sí (en la tabla destino)</td></tr>
+                <tr><td>Actualización</td><td>Automática (delta + materializada)</td><td>N/A</td><td>Automática al ingerir</td></tr>
+                <tr><td>Tipo de query</td><td>Solo <code>summarize</code></td><td>Cualquier query</td><td>Cualquier query</td></tr>
+                <tr><td>Coste de storage</td><td>Sí</td><td>No</td><td>Sí (2 tablas)</td></tr>
+                <tr><td>Ideal para</td><td>Agregaciones frecuentes</td><td>Lógica de query reutilizable</td><td>Transformación al ingerir</td></tr>
               </tbody>
             </table>
           </div>
+
+          <h4>Impacto de filtrar pronto</h4>
           <div class="table-scroll">
             <table class="md-table">
-              <thead><tr><th>Join order</th><th>Eficiencia</th></tr></thead>
+              <thead><tr><th>Posición del filtro</th><th>Datos procesados</th></tr></thead>
               <tbody>
-                <tr><td>Small table primero + filter previo</td><td>✅ Óptimo</td></tr>
-                <tr><td>Big table primero / sin filter</td><td>Menos eficiente</td></tr>
+                <tr><td><strong>Después del summarize</strong></td><td>Toda la tabla</td></tr>
+                <tr><td><strong>Después del project</strong></td><td>Menos, pero aún todo</td></tr>
+                <tr><td><strong>Al principio</strong> ✅</td><td>Solo lo relevante</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h4>Orden de los joins</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Orden</th><th>Eficiencia</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Tabla pequeña primero</strong> ✅</td><td>Óptimo</td></tr>
+                <tr><td><strong>Tabla grande primero</strong></td><td>Menos eficiente</td></tr>
+                <tr><td><strong>Sin filtro previo</strong></td><td>Malo</td></tr>
+                <tr><td><strong>Con filtro previo en ambas</strong> ✅</td><td>Óptimo</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h4>Todas las policies (chuleta rápida)</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Policy</th><th>Propósito clave</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Retention</strong></td><td>Eliminar datos antiguos</td></tr>
+                <tr><td><strong>Cache</strong></td><td>Qué va en la caché premium</td></tr>
+                <tr><td><strong>Row-level security</strong></td><td>Filtrar filas por usuario</td></tr>
+                <tr><td><strong>Restricted view access</strong></td><td>Capa extra de permisos</td></tr>
+                <tr><td><strong>Update policy</strong></td><td>Auto-transformar al ingerir</td></tr>
+                <tr><td><strong>Streaming ingestion</strong></td><td>Datos consultables de inmediato</td></tr>
+                <tr><td><strong>Partitioning</strong></td><td>Dividir datos para el pruning</td></tr>
+                <tr><td><strong>Merge</strong></td><td>Consolidar extents pequeños</td></tr>
+                <tr><td><strong>Sharding</strong></td><td>Cómo se crean los extents</td></tr>
+                <tr><td><strong>Ingestion time</strong></td><td>Añade el timestamp de ingesta</td></tr>
+                <tr><td><strong>Managed identity</strong></td><td>Control del uso de las MI</td></tr>
+                <tr><td><strong>Mirroring</strong></td><td>Gestiona el mirroring</td></tr>
+                <tr><td><strong>Row order</strong></td><td>Orden específico de filas</td></tr>
+                <tr><td><strong>Sandbox</strong></td><td>Entornos aislados</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h4>Métodos de ingesta</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Método</th><th>Cuándo</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Local file upload</strong></td><td>Carga manual puntual</td></tr>
+                <tr><td><strong>Azure Storage / S3</strong></td><td>Batch desde storage</td></tr>
+                <tr><td><strong>Eventstream</strong></td><td>Streaming continuo</td></tr>
+                <tr><td><strong>Event Hubs / IoT Hub</strong></td><td>Streaming de alto volumen</td></tr>
+                <tr><td><strong>Data Factory Copy</strong></td><td>Orquestado desde un pipeline</td></tr>
+                <tr><td><strong>Kafka connector</strong></td><td>Kafka on-prem o multi-cloud</td></tr>
+                <tr><td><strong>OneLake</strong></td><td>Cross-workload en Fabric</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h4>KQL vs T-SQL en una KQL DB</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th></th><th>KQL</th><th>T-SQL</th></tr></thead>
+              <tbody>
+                <tr><td>Case sensitivity</td><td>Sensible en TODO</td><td>Insensible</td></tr>
+                <tr><td>Filosofía</td><td>Pipes</td><td>Anidado</td></tr>
+                <tr><td>Funciones de series temporales</td><td>Nativas</td><td>Limitadas</td></tr>
+                <tr><td>Detección de anomalías</td><td>Nativa</td><td>❌</td></tr>
+                <tr><td>Aprendizaje</td><td>Nuevo</td><td>Ya conocido</td></tr>
+                <tr><td>Uso recomendado</td><td>✅ Preferido</td><td>Migración legacy</td></tr>
               </tbody>
             </table>
           </div>
         </article>
 
-        <div class="note note--next">🚀 <strong>¡Módulo 10 completado y Fase 2 al 100%!</strong> Ya dominas Real-Time Intelligence de punta a punta. Sigue con el <a href="modulo-11.html">Módulo 11: Data Warehouse</a>. 🌸</div>
+        <!-- ============ 31. FUENTES ============ -->
+        <div class="category-header" id="fuentes">
+          <span class="category-header__icon">📚</span>
+          <h2 class="category-header__title">31. Fuentes oficiales consultadas</h2>
+        </div>
 
+        <article class="concept-card">
+          <ul class="sources-list">
+            <li>Módulo Learn: <a href="https://learn.microsoft.com/training/modules/query-data-kql-database-microsoft-fabric/" target="_blank" rel="noopener noreferrer">query-data-kql-database-microsoft-fabric</a></li>
+            <li>KQL Overview: <a href="https://learn.microsoft.com/kusto/query/" target="_blank" rel="noopener noreferrer">kusto/query</a></li>
+            <li>Policies overview: <a href="https://learn.microsoft.com/kusto/management/policies?view=microsoft-fabric" target="_blank" rel="noopener noreferrer">management/policies</a></li>
+            <li>Update policy overview: <a href="https://learn.microsoft.com/kusto/management/update-policy?view=microsoft-fabric" target="_blank" rel="noopener noreferrer">update-policy</a></li>
+            <li>Row-level security policy: <a href="https://learn.microsoft.com/kusto/management/row-level-security-policy?view=microsoft-fabric" target="_blank" rel="noopener noreferrer">row-level-security-policy</a></li>
+            <li>.alter table policy row_level_security: <a href="https://learn.microsoft.com/kusto/management/alter-table-row-level-security-policy-command?view=microsoft-fabric" target="_blank" rel="noopener noreferrer">alter-table-row-level-security-policy-command</a></li>
+            <li>Restricted view access policy: <a href="https://learn.microsoft.com/kusto/management/restricted-view-access-policy?view=microsoft-fabric" target="_blank" rel="noopener noreferrer">restricted-view-access-policy</a></li>
+            <li>Retention policy: <a href="https://learn.microsoft.com/kusto/management/retention-policy?view=microsoft-fabric" target="_blank" rel="noopener noreferrer">retention-policy</a></li>
+            <li>Cache policy: <a href="https://learn.microsoft.com/kusto/management/cachepolicy?view=microsoft-fabric" target="_blank" rel="noopener noreferrer">cachepolicy</a></li>
+            <li>Streaming ingestion policy: <a href="https://learn.microsoft.com/kusto/management/streaming-ingestion-policy?view=microsoft-fabric" target="_blank" rel="noopener noreferrer">streaming-ingestion-policy</a></li>
+            <li>Merge policy: <a href="https://learn.microsoft.com/kusto/management/merge-policy?view=microsoft-fabric" target="_blank" rel="noopener noreferrer">merge-policy</a></li>
+            <li>Partitioning policy: <a href="https://learn.microsoft.com/kusto/management/partitioning-policy?view=microsoft-fabric" target="_blank" rel="noopener noreferrer">partitioning-policy</a></li>
+            <li>Materialized views overview: <a href="https://learn.microsoft.com/kusto/management/materialized-views/materialized-view-overview?view=microsoft-fabric" target="_blank" rel="noopener noreferrer">materialized-view-overview</a></li>
+            <li>Stored functions: <a href="https://learn.microsoft.com/kusto/query/schema-entities/stored-functions?view=microsoft-fabric" target="_blank" rel="noopener noreferrer">stored-functions</a></li>
+            <li>Ingestion time policy: <a href="https://learn.microsoft.com/kusto/management/ingestion-time-policy?view=microsoft-fabric" target="_blank" rel="noopener noreferrer">ingestion-time-policy</a></li>
+            <li>Copilot for Real-Time Intelligence: <a href="https://learn.microsoft.com/fabric/real-time-intelligence/copilot-writing-queries" target="_blank" rel="noopener noreferrer">copilot-writing-queries</a></li>
+          </ul>
+        </article>
+
+        <div class="note note--next">
+          🚀 <strong>¡Módulo 10 completado!</strong> Ya dominas el motor Kusto por dentro y cierras la Fase 2 de Real-Time Intelligence. Sigue con el <a href="modulo-11.html">Módulo 11: Data Warehouse</a>. 🌸
+        </div>
+
+        <!-- Navegación del curso -->
         <div class="course-nav">
-          <a href="modulo-9.html"><span class="course-nav__label">← Anterior</span><span class="course-nav__title">Módulo 9 · Eventstreams</span></a>
-          <a href="modulo-11.html" class="next"><span class="course-nav__label">Siguiente →</span><span class="course-nav__title">Módulo 11 · Data Warehouse</span></a>
+          <a href="modulo-9.html">
+            <span class="course-nav__label">← Anterior</span>
+            <span class="course-nav__title">Módulo 9 · Eventstreams</span>
+          </a>
+          <a href="modulo-11.html" class="next">
+            <span class="course-nav__label">Siguiente →</span>
+            <span class="course-nav__title">Módulo 11 · Data Warehouse</span>
+          </a>
         </div>
 
       </div>
