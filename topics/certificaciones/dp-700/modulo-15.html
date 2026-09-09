@@ -1,0 +1,1350 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="DP-700 Módulo 15: securizar el acceso a datos en Microsoft Fabric. Control plane vs data plane, workspace roles, Read/ReadData/ReadAll, OneLake Security, RLS, CLS, OLS, sensitivity labels y DLP.">
+  <title>DP-700 · Módulo 15: Secure Data Access | Power BI Guide by Kawaii BI</title>
+  <link rel="canonical" href="https://kawaiibi.es/topics/certificaciones/dp-700/modulo-15.html">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Kawaii Power BI Guide">
+  <meta property="og:locale" content="es_ES">
+  <meta property="og:title" content="DP-700 · Módulo 15: Secure Data Access | Power BI Guide by Kawaii BI">
+  <meta property="og:description" content="DP-700 Módulo 15: seguridad de datos en Fabric. Control plane vs data plane, OneLake Security, RLS/CLS/OLS y sensitivity labels.">
+  <meta property="og:url" content="https://kawaiibi.es/topics/certificaciones/dp-700/modulo-15.html">
+  <meta property="og:image" content="https://kawaiibi.es/assets/images/og-banner.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="1200">
+  <meta property="og:image:alt" content="Sara Lozano Marti - Kawaii Power BI">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="DP-700 · Módulo 15: Secure Data Access | Power BI Guide by Kawaii BI">
+  <meta name="twitter:description" content="DP-700 Módulo 15: seguridad en Fabric. OneLake Security, RLS/CLS/OLS y permisos de items.">
+  <meta name="twitter:image" content="https://kawaiibi.es/assets/images/og-banner.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/prismjs@1/themes/prism-okaidia.min.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="../../../assets/css/main.css">
+  <link rel="stylesheet" href="../../../assets/css/themes.css">
+  <link rel="stylesheet" href="../../../assets/css/components.css">
+  <link rel="stylesheet" href="../../../assets/css/layout.css">
+
+  <style>
+    .topic-header { text-align: center; padding: 2.25rem 0 1.75rem; border-bottom: 2px solid var(--color-mauve); margin-bottom: 2rem; }
+    .topic-header__eyebrow { font-family: 'Fira Code', monospace; font-size: 0.8125rem; font-weight: 600; color: var(--color-coral); letter-spacing: 0.05em; }
+    .topic-header__icon { font-size: 3.5rem; margin: 0.5rem 0; display: block; }
+    .topic-header__title { font-size: clamp(1.75rem, 4vw, 2.25rem); font-weight: 800; color: var(--color-dark); margin-bottom: 0.625rem; line-height: 1.2; }
+    .topic-header__subtitle { font-size: 1rem; color: var(--color-slate); margin-bottom: 1.25rem; line-height: 1.55; max-width: 680px; margin-left: auto; margin-right: auto; }
+    .topic-header__levels { display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap; align-items: center; }
+
+    .toc { background: var(--color-rose); border-radius: var(--border-radius); padding: 1.25rem 1.5rem; margin-bottom: 2rem; border: 1.5px solid var(--color-mauve); }
+    .toc__title { font-size: 1rem; font-weight: 700; margin: 0 0 0.75rem; }
+    .toc__list { display: flex; flex-wrap: wrap; gap: 0.5rem; list-style: none; padding: 0; margin: 0; }
+    .toc__list a { font-size: 0.8125rem; color: var(--color-coral); text-decoration: none; padding: 0.25rem 0.625rem; background: var(--color-white); border-radius: 999px; border: 1px solid var(--color-mauve); }
+    .toc__list a:hover { background: var(--color-coral); color: #fff; }
+
+    .category-header { display: flex; align-items: center; gap: 0.75rem; margin: 2.5rem 0 1.25rem; padding: 0.875rem 1.25rem; background: var(--color-rose); border-radius: var(--border-radius-sm); border-left: 4px solid var(--color-coral); scroll-margin-top: 20px; }
+    .category-header__icon { font-size: 1.5rem; }
+    .category-header__title { font-size: 1.25rem; font-weight: 700; margin: 0; }
+
+    .concept-card { background: var(--color-white); border: 1.5px solid var(--color-mauve); border-radius: var(--border-radius); padding: 1.5rem 1.75rem; margin-bottom: 1.25rem; }
+    .concept-card h3 { font-size: 1.0625rem; font-weight: 700; color: var(--color-coral); margin: 0 0 0.6rem; }
+    .concept-card h4 { font-size: 0.9375rem; font-weight: 700; color: var(--color-dark); margin: 1.1rem 0 0.4rem; }
+    .concept-card p { font-size: 0.9375rem; line-height: 1.7; color: var(--color-dark); margin-bottom: 0.7rem; }
+    .concept-card ul, .concept-card ol { padding-left: 1.25rem; font-size: 0.9375rem; line-height: 1.75; color: var(--color-dark); margin: 0.4rem 0; }
+    .concept-card code { background: var(--color-blush); padding: 0.1em 0.4em; border-radius: 4px; font-family: 'Fira Code', monospace; font-size: 0.85em; color: var(--color-coral); }
+    .concept-card pre { margin: 0.75rem 0; }
+
+    .md-table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.84rem; }
+    .md-table th, .md-table td { border: 1px solid var(--color-mauve); padding: 0.5rem 0.7rem; text-align: left; vertical-align: top; }
+    .md-table th { background: var(--color-rose); font-weight: 700; color: var(--color-dark); }
+    .md-table tr:nth-child(even) td { background: var(--color-blush); }
+    .table-scroll { overflow-x: auto; }
+
+    .trap-list { list-style: none; padding: 0; margin: 0; }
+    .trap-list > li { background: var(--color-white); border: 1.5px solid var(--color-mauve); border-left: 4px solid var(--color-warning); border-radius: var(--border-radius-sm); padding: 0.875rem 1.125rem; margin-bottom: 0.75rem; font-size: 0.9375rem; line-height: 1.7; }
+    .trap-list strong.trap-title { display: block; color: var(--color-dark); margin-bottom: 0.25rem; }
+
+    .course-nav { display: flex; justify-content: space-between; gap: 1rem; margin-top: 2.5rem; flex-wrap: wrap; }
+    .course-nav a { flex: 1 1 220px; display: block; background: var(--color-white); border: 1.5px solid var(--color-mauve); border-radius: var(--border-radius); padding: 1rem 1.25rem; text-decoration: none; color: inherit; transition: var(--transition); }
+    .course-nav a:hover { border-color: var(--color-coral); box-shadow: var(--shadow-md); text-decoration: none; }
+    .course-nav__label { font-size: 0.75rem; color: var(--color-slate); text-transform: uppercase; letter-spacing: 0.05em; }
+    .course-nav__title { font-weight: 700; color: var(--color-coral); }
+    .course-nav a.next { text-align: right; }
+
+    .sources-list { font-size: 0.875rem; line-height: 1.9; word-break: break-word; }
+  </style>
+</head>
+<body>
+
+  <aside class="site-sidebar">
+    <div class="site-sidebar__profile">
+      <img src="../../../assets/images/avatar-sara.png" alt="Sara Lozano Martí" class="site-sidebar__avatar">
+      <p class="site-sidebar__name">Sara Lozano Martí</p>
+      <p class="site-sidebar__subtitle">Power BI Expert</p>
+    </div>
+    <nav class="site-sidebar__nav" aria-label="Navegación principal">
+      <ul>
+        <li><a href="../../../index.html" class="site-sidebar__link"><span class="site-sidebar__icon">🏠</span> Inicio</a></li>
+        <li><a href="../../dax.html" class="site-sidebar__link"><span class="site-sidebar__icon">⚡</span> Funciones DAX</a></li>
+        <li><a href="../../power-query.html" class="site-sidebar__link"><span class="site-sidebar__icon">🔄</span> Power Query</a></li>
+        <li><a href="../../lenguaje-m.html" class="site-sidebar__link"><span class="site-sidebar__icon">〽️</span> Lenguaje M</a></li>
+        <li><a href="../../modelado.html" class="site-sidebar__link"><span class="site-sidebar__icon">🗄️</span> Modelado</a></li>
+        <li><a href="../../conceptos-powerbi.html" class="site-sidebar__link"><span class="site-sidebar__icon">📊</span> Conceptos Power BI</a></li>
+        <li><a href="../../fabric.html" class="site-sidebar__link"><span class="site-sidebar__icon">🧵</span> Microsoft Fabric</a></li>
+        <li><a href="../../tmdl.html" class="site-sidebar__link"><span class="site-sidebar__icon">📝</span> TMDL</a></li>
+        <li><a href="../../diseno-ux.html" class="site-sidebar__link"><span class="site-sidebar__icon">🎨</span> Diseño y UX</a></li>
+        <li><a href="../../gobernanza.html" class="site-sidebar__link"><span class="site-sidebar__icon">🔒</span> Gobernanza</a></li>
+        <li><a href="../../certificaciones.html" class="site-sidebar__link is-active"><span class="site-sidebar__icon">🎓</span> Certificaciones</a></li>
+      </ul>
+    </nav>
+    <div class="site-sidebar__divider"></div>
+    <div class="site-sidebar__footer">
+      <a href="../../../quien-soy.html" class="site-sidebar__link site-sidebar__link--highlight"><span class="site-sidebar__icon">👩‍💻</span> ¿Quién soy?</a>
+      <div class="site-sidebar__social">
+        <a href="https://www.linkedin.com/in/saralozanomarti" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><img src="../../../assets/images/logo-linkedin.png" alt="LinkedIn" class="site-sidebar__social-icon"></a>
+        <a href="https://www.youtube.com/@KawaiiPowerBI" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><img src="../../../assets/images/logo-youtube.png" alt="YouTube" class="site-sidebar__social-icon"></a>
+        <a href="https://github.com/KawaiiBI" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><img src="../../../assets/images/logo-github.png" alt="GitHub" class="site-sidebar__social-icon"></a>
+      </div>
+      <div class="site-sidebar__logo-bottom"><img src="../../../assets/images/logo-kawaii.jpg" alt="Kawaii BI" class="site-sidebar__logo-img"></div>
+      <p class="site-sidebar__copyright">Power BI Guide 🌸<br>© 2026 Kawaii BI</p>
+    </div>
+  </aside>
+
+  <div class="page-wrapper">
+    <main class="main-content">
+      <div class="topic-page">
+
+        <nav class="breadcrumb" aria-label="Ruta de navegación">
+          <span class="breadcrumb__item"><a href="../../../index.html">🏠 Inicio</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item"><a href="../../certificaciones.html">Certificaciones</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item"><a href="../dp-700.html">DP-700</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item">Módulo 15</span>
+        </nav>
+
+        <header class="topic-header">
+          <span class="topic-header__eyebrow">DP-700 · MÓDULO 15</span>
+          <span class="topic-header__icon">🔐</span>
+          <h1 class="topic-header__title">Asegurar el acceso a datos en Microsoft Fabric</h1>
+          <p class="topic-header__subtitle">Del workspace role hasta la fila y la columna: control plane vs data plane, Read/ReadData/ReadAll, OneLake Security con RLS, CLS y OLS, enforcement cross-engine, sensitivity labels y DLP. 🌸</p>
+          <div class="topic-header__levels">
+            <span class="badge badge--intermediate">Intermedio</span>
+            <span class="badge badge--advanced">Avanzado</span>
+          </div>
+        </header>
+
+        <nav class="toc" aria-label="Índice del módulo">
+          <p class="toc__title">📑 En este módulo:</p>
+          <ul class="toc__list">
+            <li><a href="#objetivos">1. Objetivos y encaje</a></li>
+            <li><a href="#multi-layer">2. Modelo multi-capa</a></li>
+            <li><a href="#planes">3. Control plane vs Data plane</a></li>
+            <li><a href="#workspace-roles">4. Workspace roles</a></li>
+            <li><a href="#capabilities">5. Matriz de capabilities</a></li>
+            <li><a href="#item-perms">6. Item permissions</a></li>
+            <li><a href="#read-permissions">7. Read / ReadData / ReadAll</a></li>
+            <li><a href="#write-share">8. Write y Share</a></li>
+            <li><a href="#sharing">9. Compartir items</a></li>
+            <li><a href="#onelake-security">10. OneLake Security</a></li>
+            <li><a href="#role-components">11. Los 4 componentes de un role</a></li>
+            <li><a href="#permissions-onelake">12. Read vs ReadWrite</a></li>
+            <li><a href="#default-reader">13. DefaultReader role</a></li>
+            <li><a href="#create-role">14. Crear un role paso a paso</a></li>
+            <li><a href="#ols-onelake">15. Object-level security</a></li>
+            <li><a href="#rls-onelake">16. Row-level security</a></li>
+            <li><a href="#cls-onelake">17. Column-level security</a></li>
+            <li><a href="#enforcement">18. Enforcement cross-engine</a></li>
+            <li><a href="#supported-items">19. Items soportados</a></li>
+            <li><a href="#direct-lake">20. Direct Lake security</a></li>
+            <li><a href="#sensitivity">21. Sensitivity labels</a></li>
+            <li><a href="#dlp">22. Data Loss Prevention</a></li>
+            <li><a href="#secure-tab">23. Secure tab</a></li>
+            <li><a href="#compute">24. Compute-level security</a></li>
+            <li><a href="#cross-workspace">25. Cross-workspace</a></li>
+            <li><a href="#least-privilege">26. Least privilege</a></li>
+            <li><a href="#trampas">27. Trampas típicas</a></li>
+            <li><a href="#comparativas">28. Comparativas clave</a></li>
+            <li><a href="#fuentes">29. Fuentes oficiales</a></li>
+          </ul>
+        </nav>
+
+        <!-- ============ 1. OBJETIVOS ============ -->
+        <div class="category-header" id="objetivos">
+          <span class="category-header__icon">🎯</span>
+          <h2 class="category-header__title">1. Objetivos y encaje en el DP-700</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>¿Qué te enseña este módulo?</h3>
+          <p>Este módulo cubre <strong>cómo securizar el acceso a datos en Fabric</strong> — desde los workspace roles hasta la nueva <strong>OneLake Security</strong>. Los objetivos oficiales:</p>
+          <ol>
+            <li>Describir el <strong>modelo de permisos</strong> en Microsoft Fabric.</li>
+            <li>Configurar <strong>workspace e item permissions</strong>.</li>
+            <li>Aplicar <strong>permisos granulares</strong> (OneLake security, RLS, CLS, OLS).</li>
+          </ol>
+
+          <h4>Peso en el examen DP-700</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Dominio</th><th>Cómo aparece</th></tr></thead>
+              <tbody>
+                <tr><td>Implement and manage (30-35%)</td><td><strong>⭐⭐⭐ TEMA CENTRAL</strong>: workspace/item permissions, OneLake Security, RLS/CLS/OLS, acceso a folders y files, permisos granulares</td></tr>
+                <tr><td>Ingest and transform (30-35%)</td><td>Poco directamente</td></tr>
+                <tr><td>Monitor and optimize (30-35%)</td><td>Auditoría de accesos</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="note note--tip">
+            🎯 <strong>Qué es CRÍTICO dominar:</strong>
+            <ul>
+              <li><strong>Control plane vs Data plane</strong> (concepto fundamental para entenderlo todo)</li>
+              <li><strong>Workspace roles</strong>: Admin, Member, Contributor, Viewer + sus capabilities</li>
+              <li><strong>Item permissions</strong>: Read, ReadData, ReadAll, Write, Share</li>
+              <li><strong>OneLake Security</strong> (feature nueva y muy examinable)</li>
+              <li><strong>Los 4 componentes</strong> de una OneLake security role</li>
+              <li><strong>DefaultReader role</strong> en lakehouses</li>
+              <li><strong>Row-level, Column-level y Object-level security</strong> en OneLake</li>
+              <li><strong>Enforcement cross-engine</strong></li>
+              <li><strong>SSO vs Fixed identities</strong> en Direct Lake</li>
+            </ul>
+          </div>
+
+          <div class="note note--tip">
+            🌸 <strong>Sobre este módulo:</strong> es <strong>denso pero fundamental</strong>. Presta atención especial a la distinción <strong>control plane vs data plane</strong>, a la diferencia <strong>Read / ReadData / ReadAll</strong> (cae constantemente) y a <strong>OneLake Security</strong>, que es el concepto nuevo y estrella 💕
+          </div>
+        </article>
+
+        <!-- ============ 2. MULTI-LAYER ============ -->
+        <div class="category-header" id="multi-layer">
+          <span class="category-header__icon">🏛️</span>
+          <h2 class="category-header__title">2. Multi-layer security model</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>La idea general</h3>
+          <p><strong>Microsoft Fabric usa un modelo de seguridad multi-capa</strong> con controles de acceso <strong>a distintos niveles</strong>. Cada capa añade <strong>control adicional</strong> sin reemplazar a las demás.</p>
+
+          <h4>Las capas (visión general)</h4>
+          <ul>
+            <li><strong>Layer 1: Tenant settings</strong> — configuración global del tenant, capabilities de Fabric admin.</li>
+            <li><strong>Layer 2: Capacity</strong> — quién puede consumir la Fabric capacity. SKUs (F2, F4, ..., F2048).</li>
+            <li><strong>Layer 3: Workspace</strong> — <strong>workspace roles</strong> (Admin, Member, Contributor, Viewer). Primer nivel práctico de seguridad.</li>
+            <li><strong>Layer 4: Item</strong> — <strong>item permissions</strong> (Read, ReadData, ReadAll, Write, Share). Granularidad por item.</li>
+            <li><strong>Layer 5: OneLake Security</strong> ⭐ — <strong>seguridad de data plane</strong>, granular hasta rows y columns.</li>
+            <li><strong>Layer 6: Compute-level</strong> — T-SQL security (RLS, CLS, OLS, DDM) en Warehouse/SQL DB, KQL RLS en Eventhouse, RLS de semantic model en Power BI.</li>
+          </ul>
+
+          <div class="note note--tip">
+            🌷 <strong>Analogía kawaii:</strong> como una <strong>casa con varias capas de seguridad</strong>: los <strong>muros de la urbanización</strong> (tenant), la <strong>puerta principal</strong> (capacity), las <strong>habitaciones y quién entra a cada una</strong> (workspace), los <strong>muebles con llave</strong> (items), los <strong>cajones dentro del mueble</strong> (OneLake Security) y el <strong>contenido cifrado dentro del cajón</strong> (compute-level). Cada capa añade <strong>más precisión</strong> sin quitar las anteriores 🏰
+          </div>
+
+          <h4>Filosofía: seguridad aplicada en TODOS los engines</h4>
+          <p><strong>Muy importante</strong>: la seguridad en Fabric se <strong>aplica en todos los compute engines</strong>. Si un usuario solo tiene acceso a <strong>ciertas rows</strong> de una tabla, las verá limitadas vía SQL, vía Spark notebooks, vía Power BI y vía KQL. Fabric mantiene <strong>una única verdad de seguridad</strong> que respeta cualquier engine.</p>
+        </article>
+
+        <!-- ============ 3. PLANES ============ -->
+        <div class="category-header" id="planes">
+          <span class="category-header__icon">🎯</span>
+          <h2 class="category-header__title">3. Control plane vs Data plane (concepto CRÍTICO)</h2>
+        </div>
+
+        <article class="concept-card">
+          <p><strong>Este es EL concepto fundamental</strong> que tienes que dominar. Se pregunta en el examen y aparece por todos lados.</p>
+
+          <h4>Los 2 planes</h4>
+          <p>OneLake aplica la seguridad en <strong>dos planos</strong>:</p>
+          <p><strong>A) Control plane permissions</strong> 🎛️</p>
+          <ul>
+            <li><strong>Gobiernan qué puedes HACER con un item</strong>: crear, configurar, compartir, gestionar, borrar.</li>
+            <li>Se establecen a nivel workspace (workspace roles) y a nivel item (item permissions).</li>
+          </ul>
+          <p><strong>B) Data plane permissions</strong> 📊</p>
+          <ul>
+            <li><strong>Gobiernan qué DATA puedes ver o cambiar</strong>.</li>
+            <li>Para OneLake, este plano es <strong>OneLake Security</strong>.</li>
+            <li>Define roles en un item y los acota a folders, tables, schemas, rows y columns.</li>
+          </ul>
+
+          <h4>Tabla comparativa oficial</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Eje</th><th>Control plane</th><th>Data plane</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Qué gobierna</strong></td><td>Acciones de gestión sobre items (crear, configurar, compartir, borrar)</td><td><strong>Acceso a la data en sí</strong> (read, write sobre tables/files)</td></tr>
+                <tr><td><strong>Dónde se define</strong></td><td>Workspace roles + item permissions</td><td>Sobre un item, acotado a folders/tables/rows/columns</td></tr>
+                <tr><td><strong>Granularidad</strong></td><td>Capabilities a nivel item</td><td>Hasta filas y columnas individuales</td></tr>
+                <tr><td><strong>A quién afecta</strong></td><td>Todos en el workspace</td><td>Principalmente <strong>Viewers</strong> o usuarios con permiso <strong>Read</strong></td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="note note--practice">
+            📌 <strong>Regla del pulgar:</strong> para controlar qué puede <strong>HACER</strong> alguien → <strong>control plane</strong> (workspace roles + item permissions). Para controlar <strong>QUÉ DATA concreta VE</strong> alguien → <strong>data plane</strong> (OneLake Security).
+          </div>
+
+          <h4>Los 3 niveles de la jerarquía</h4>
+          <p>OneLake es un <strong>data lake jerárquico</strong> como ADLS Gen2. Los planos aplican a <strong>distintos niveles</strong>:</p>
+          <ol>
+            <li><strong>Workspace</strong> — entorno colaborativo. Seguridad de control plane vía <strong>workspace roles</strong>.</li>
+            <li><strong>Item</strong> — capabilities agrupadas (lakehouse, warehouse, SQL DB). Hereda los permisos del workspace pero puede tener <strong>permisos adicionales de control plane</strong>. Aquí también defines los <strong>OneLake security roles</strong>.</li>
+            <li><strong>Folders y por debajo</strong> — folders (<code>Tables/</code>, <code>Files/</code>), tables, schemas, rows, columns. <strong>OneLake Security acota el acceso de data plane</strong> aquí.</li>
+          </ol>
+          <p>Los items siempre viven <strong>dentro de workspaces</strong>, y los workspaces siempre viven directamente <strong>bajo el namespace de OneLake</strong>.</p>
+
+          <h4>Ejemplo mental</h4>
+          <p><strong>Escenario</strong>: quiero que Sareta pueda <strong>VER una tabla pero no otras</strong>, y que <strong>NO pueda crear tablas nuevas</strong>:</p>
+          <ul>
+            <li><strong>Control plane</strong>: le doy el item permission Read (puede conectar al item).</li>
+            <li><strong>Data plane</strong>: creo un OneLake security role que concede Read solo a esa tabla concreta.</li>
+            <li><strong>NO le doy</strong> el workspace role Contributor (evita que cree tablas).</li>
+          </ul>
+          <p><strong>Resultado</strong>: puede ver una tabla concreta y nada más 🎯</p>
+        </article>
+
+        <!-- ============ 4. WORKSPACE ROLES ============ -->
+        <div class="category-header" id="workspace-roles">
+          <span class="category-header__icon">👥</span>
+          <h2 class="category-header__title">4. Workspace roles a fondo</h2>
+        </div>
+
+        <article class="concept-card">
+          <h4>Los 4 roles</h4>
+          <ol>
+            <li><strong>Viewer</strong> 👀 — puede <strong>ver todo el contenido</strong> del workspace, pero <strong>no modificarlo</strong>.</li>
+            <li><strong>Contributor</strong> ✏️ — puede <strong>ver y modificar</strong> todo el contenido.</li>
+            <li><strong>Member</strong> 🤝 — puede <strong>ver, modificar y compartir</strong> todo el contenido.</li>
+            <li><strong>Admin</strong> 👑 — puede <strong>ver, modificar, compartir y gestionar</strong> todo el contenido, incluida la <strong>gestión de permisos</strong>.</li>
+          </ol>
+
+          <h4>Confinamiento</h4>
+          <p>Los <strong>workspace roles están confinados a un workspace concreto</strong>. No aplican a <strong>otros workspaces</strong>, ni a la <strong>capacity</strong>, ni al <strong>tenant</strong>. Cada workspace tiene sus roles independientes.</p>
+
+          <h4>Usuarios sin rol</h4>
+          <p>Los <strong>usuarios que NO tienen ningún workspace role NO pueden acceder al workspace</strong>. Excepción: si el item se ha <strong>compartido</strong> con ellos individualmente (vía item permissions), pueden acceder al <strong>item concreto</strong> sin acceso al workspace.</p>
+
+          <h4>Asignación a grupos</h4>
+          <p>Puedes asignar roles a <strong>usuarios individuales</strong> (usuarios de Microsoft Entra), <strong>security groups</strong>, <strong>grupos de Microsoft 365</strong> y <strong>distribution lists</strong> (soporte limitado).</p>
+          <div class="note note--practice">
+            📌 <strong>Best practice:</strong> usa <strong>security groups</strong> para una gestión escalable.
+          </div>
+        </article>
+
+        <!-- ============ 5. CAPABILITIES ============ -->
+        <div class="category-header" id="capabilities">
+          <span class="category-header__icon">📋</span>
+          <h2 class="category-header__title">5. Capabilities matrix por rol</h2>
+        </div>
+
+        <article class="concept-card">
+          <h4>Tabla oficial resumen</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Capability</th><th>Admin</th><th>Member</th><th>Contributor</th><th>Viewer</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Borrar el workspace</strong></td><td>✅</td><td>❌</td><td>❌</td><td>❌</td></tr>
+                <tr><td><strong>Añadir admins</strong></td><td>✅</td><td>❌</td><td>❌</td><td>❌</td></tr>
+                <tr><td><strong>Añadir members</strong></td><td>✅</td><td>✅</td><td>❌</td><td>❌</td></tr>
+                <tr><td><strong>Escribir data</strong></td><td>✅</td><td>✅</td><td>✅</td><td>❌</td></tr>
+                <tr><td><strong>Crear items</strong></td><td>✅</td><td>✅</td><td>✅</td><td>❌</td></tr>
+                <tr><td><strong>Leer data</strong></td><td>✅</td><td>✅</td><td>✅</td><td>✅</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h4>Acceso a workloads</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Role</th><th>Workspace access</th><th>OneLake access</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Admin, Member, Contributor</strong></td><td>Pueden usar todos los items</td><td>✅ <strong>Sí</strong></td></tr>
+                <tr><td><strong>Viewer</strong></td><td>Puede ver todos los items</td><td>❌ <strong>No</strong></td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="note note--warning">
+            ⚠️ <strong>Nota crítica del examen:</strong> los Viewers <strong>pueden ejecutar queries SQL, DAX o MDX</strong> pero <strong>NO pueden</strong> acceder directamente a los items de Fabric ni ejecutar un notebook.
+          </div>
+
+          <h4>Detalles adicionales por item</h4>
+          <p><strong>Data warehouse (Warehouse)</strong>: Admin/Member/Contributor tienen full admin + full data access; el Viewer puede leer data y metadata y conectar.</p>
+          <p><strong>SQL database</strong>: similar al Warehouse.</p>
+          <p><strong>Lakehouse</strong>: Admin/Member/Contributor pueden escribir data (vía Spark); el Viewer <strong>no tiene acceso OneLake por defecto</strong> (necesita un OneLake security role o el item permission ReadAll).</p>
+          <p><strong>Eventhouse (KQL)</strong>: usa un <strong>modelo híbrido de control de acceso basado en roles</strong> — workspace roles + roles específicos de KQL.</p>
+
+          <h4>Notebooks</h4>
+          <p><strong>Muy examinable</strong>:</p>
+          <ul>
+            <li><strong>Admin, Member, Contributor</strong>: pueden hacer CRUD de notebooks <strong>vía API</strong>.</li>
+            <li><strong>Viewer</strong>: <strong>no puede</strong>.</li>
+          </ul>
+          <p><strong>Ejecución vía Job Scheduler API</strong>: Admin, Member y Contributor pueden <strong>iniciar y cancelar runs</strong>. <strong>Todos los roles, incluido Viewer</strong>, pueden <strong>monitorizar el estado del run</strong> y <strong>ver el output de la ejecución</strong> (metadata como estado y exit values).</p>
+        </article>
+
+        <!-- ============ 6. ITEM PERMS ============ -->
+        <div class="category-header" id="item-perms">
+          <span class="category-header__icon">🔐</span>
+          <h2 class="category-header__title">6. Item permissions overview</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>¿Qué son?</h3>
+          <p>Los <strong>item permissions</strong> controlan el acceso a <strong>items individuales de Fabric</strong> dentro de un workspace. Están <strong>confinados a un item concreto</strong>, no aplican a otros items, y se usan para conceder acceso a un único item sin dar acceso al workspace.</p>
+
+          <h4>Cuándo usarlas</h4>
+          <ul>
+            <li>Quieres compartir <strong>un item específico</strong> sin dar acceso al workspace entero.</li>
+            <li><strong>Consumo downstream</strong>: publicar un warehouse para reporting sin exponer el workspace de desarrollo.</li>
+            <li><strong>Sharing granular</strong> entre equipos.</li>
+          </ul>
+
+          <h4>Cómo compartir</h4>
+          <p>Cuando compartes un item con un usuario o grupo, puedes <strong>configurar los item permissions</strong>. <strong>Compartir un item concede permiso de lectura por defecto</strong>.</p>
+          <p><strong>⚠️ Los permisos Read permiten</strong>:</p>
+          <ul>
+            <li>✅ Ver los metadatos del item.</li>
+            <li>✅ Ver cualquier report asociado.</li>
+          </ul>
+          <p><strong>Los permisos Read NO permiten</strong>:</p>
+          <ul>
+            <li>❌ Acceder a la data subyacente en SQL o en OneLake.</li>
+          </ul>
+          <p>Para un <strong>acceso más profundo a la data</strong>, hay que conceder <strong>permisos adicionales a nivel compute</strong> a través del SQL analytics endpoint o de la seguridad del semantic model.</p>
+
+          <div class="note note--warning">
+            ⚠️ <strong>Ejemplo del examen:</strong> si compartes un <strong>report de Power BI que usa modo Direct Lake</strong>, el destinatario puede <strong>ver el report</strong>, pero <strong>también necesita permisos de datos en OneLake</strong> para consultar directamente las Delta tables subyacentes. Muy examinable esta distinción.
+          </div>
+
+          <h4>Los item permissions varían por item</h4>
+          <p><strong>Distintos items de Fabric tienen distintos permisos</strong>: los semantic models tienen los suyos; el Warehouse tiene Read, ReadData, ReadAll, Write y Share; el Lakehouse es similar al Warehouse; SQL Database, similar; los items de Data Factory tienen los suyos; los de Real-Time Intelligence usan roles KQL; y las mirrored databases tienen los suyos. <strong>Consulta la doc de cada item</strong> cuando trabajes con casos específicos.</p>
+        </article>
+
+        <!-- ============ 7. READ PERMISSIONS ============ -->
+        <div class="category-header" id="read-permissions">
+          <span class="category-header__icon">🎯</span>
+          <h2 class="category-header__title">7. Read vs ReadData vs ReadAll (CRÍTICO)</h2>
+        </div>
+
+        <article class="concept-card">
+          <p><strong>Este es EL punto más examinable</strong> de los item permissions. Domínalo bien.</p>
+
+          <h4>Los 3 permisos clave</h4>
+          <p>Para items como <strong>Warehouse, SQL Database y Lakehouse</strong>:</p>
+          <p><strong>A) Read</strong> 🔑</p>
+          <ul>
+            <li>Permite <strong>conectar al item</strong> (SQL analytics endpoint).</li>
+            <li><strong>Sin Read → la conexión FALLA del todo</strong>.</li>
+            <li><strong>NO da acceso a la data automáticamente</strong>.</li>
+          </ul>
+          <p><strong>B) ReadData</strong> 📊</p>
+          <ul>
+            <li>Permite <strong>leer data vía SQL</strong> (queries a tables/views).</li>
+            <li>Necesita también Read.</li>
+          </ul>
+          <p><strong>C) ReadAll</strong> 📂</p>
+          <ul>
+            <li>Permite <strong>leer los ficheros Parquet raw</strong> en OneLake directamente.</li>
+            <li>El más amplio en términos de acceso a ficheros raw.</li>
+          </ul>
+
+          <div class="note note--tip">
+            🎯 <strong>Ejemplos típicos del examen:</strong>
+            <ul>
+              <li><em>Un usuario necesita conectar al warehouse y hacer SELECT sobre las tablas. ¿Qué permisos necesita?</em> → <strong>Read + ReadData</strong>.</li>
+              <li><em>Un usuario necesita leer los ficheros Parquet raw desde un notebook de Spark. ¿Qué permisos?</em> → <strong>Read + ReadAll</strong>.</li>
+              <li><em>Un usuario tiene solo Read. ¿Puede consultar tablas?</em> → <strong>NO</strong>. Solo puede conectar. Necesita ReadData o ReadAll.</li>
+            </ul>
+          </div>
+
+          <h4>Tabla comparativa</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Permission</th><th>Da acceso a</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Read</strong></td><td>Conectar al SQL endpoint (nada más)</td></tr>
+                <tr><td><strong>ReadData</strong></td><td>Data vía SQL (tables, views)</td></tr>
+                <tr><td><strong>ReadAll</strong></td><td>Ficheros Parquet raw en OneLake</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h4>SQL Database específico</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Permission</th><th>Capability</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Read</strong></td><td>Conectar a la base de datos</td></tr>
+                <tr><td><strong>ReadData</strong></td><td>Leer data y metadata</td></tr>
+                <tr><td><strong>ReadAll</strong></td><td>Leer la mirrored data directamente de los ficheros de OneLake</td></tr>
+                <tr><td><strong>Share</strong></td><td>Compartir el item y gestionar sus permisos en Fabric</td></tr>
+                <tr><td><strong>Write</strong></td><td>Acceso administrativo completo y acceso completo a la data</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </article>
+
+        <!-- ============ 8. WRITE Y SHARE ============ -->
+        <div class="category-header" id="write-share">
+          <span class="category-header__icon">✏️</span>
+          <h2 class="category-header__title">8. Write y Share permissions</h2>
+        </div>
+
+        <article class="concept-card">
+          <h4>Write permission</h4>
+          <p><strong>Write</strong> = <strong>acceso administrativo completo y acceso completo a la data</strong>. Para items como Warehouse y SQL Database: full CRUD, crear/alterar/borrar objects y gestionar la seguridad dentro del item.</p>
+          <p><strong>Nota</strong>: si tienes el workspace role Admin/Member/Contributor, ya tienes acceso de escritura implícito.</p>
+
+          <h4>Share permission</h4>
+          <p><strong>Share</strong> permite <strong>compartir el item y gestionar sus item permissions</strong>. Es decir: puedes <strong>decidir a quién dar item permissions</strong> aunque no seas admin del workspace. <strong>Útil</strong> cuando delegas la gestión de acceso de un item concreto sin dar admin completo del workspace.</p>
+
+          <h4>Reshare permission</h4>
+          <p>En algunos items existe <strong>Reshare</strong> — permite <strong>compartir con otros</strong> un item que a su vez te compartieron a ti. Los <strong>Contributors y Viewers pueden compartir items</strong> de un workspace <strong>si tienen permisos de Reshare</strong>. Sin Reshare, no pueden extender el sharing.</p>
+
+          <h4>Otros permisos específicos</h4>
+          <p>Por tipo de item puede haber más:</p>
+          <ul>
+            <li><strong>Execute</strong> — para ejecutar notebooks/pipelines.</li>
+            <li><strong>Build</strong> — para crear reports contra semantic models.</li>
+            <li><strong>Monitor</strong> — ver ejecuciones.</li>
+            <li><strong>SubscribeOneLakeEvents</strong> — suscribirse a eventos de items (por defecto lo tienen Admin/Member/Contributor; el Viewer no, salvo concesión explícita).</li>
+          </ul>
+        </article>
+
+        <!-- ============ 9. SHARING ============ -->
+        <div class="category-header" id="sharing">
+          <span class="category-header__icon">🤝</span>
+          <h2 class="category-header__title">9. Compartir items en Fabric</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>La feature de sharing</h3>
+          <p>Puedes <strong>compartir items de Fabric</strong> con usuarios de tu organización que <strong>no tienen ningún workspace role</strong>. El <strong>sharing da acceso restringido</strong> — permite a los usuarios acceder solo al item compartido dentro del workspace.</p>
+
+          <h4>Cómo funciona</h4>
+          <ol>
+            <li>En el workspace, click en un item.</li>
+            <li>Botón <strong>Share</strong>.</li>
+            <li>Añadir usuarios o grupos.</li>
+            <li>Elegir qué permisos conceder.</li>
+            <li>Opcional: enviar email de notificación.</li>
+          </ol>
+          <p>Los usuarios reciben acceso al <strong>item concreto</strong>, no al workspace completo.</p>
+
+          <h4>Casos de uso típicos</h4>
+          <ul>
+            <li>Compartir un <strong>warehouse</strong> con el equipo de analytics.</li>
+            <li>Compartir un <strong>report de Power BI</strong> con usuarios de negocio.</li>
+            <li>Compartir un <strong>semantic model</strong> con los diseñadores de reports.</li>
+            <li>Compartir un <strong>lakehouse</strong> con data scientists.</li>
+          </ul>
+          <p>Sin que tengan que entrar al workspace de desarrollo.</p>
+
+          <h4>Página Manage permissions</h4>
+          <p>En cada item puedes ir a <strong>Manage permissions</strong> para ver quién tiene qué permiso, añadir o quitar item permissions individuales y revocar accesos. Cada tipo de item determina qué permisos están disponibles.</p>
+        </article>
+
+        <!-- ============ 10. ONELAKE SECURITY ============ -->
+        <div class="category-header" id="onelake-security">
+          <span class="category-header__icon">🌟</span>
+          <h2 class="category-header__title">10. OneLake Security (feature moderna)</h2>
+        </div>
+
+        <article class="concept-card">
+          <p><strong>Este es el gran tema del módulo</strong>. Feature relativamente nueva y muy examinable 💕</p>
+
+          <h3>¿Qué es?</h3>
+          <p><strong>OneLake Security</strong> provee <strong>seguridad granular basada en roles para la data almacenada en OneLake</strong> y <strong>aplica esa seguridad de forma consistente en todos los compute engines de Fabric</strong>. Es el <strong>modelo de seguridad de data plane</strong> para la data de OneLake.</p>
+
+          <h4>Por qué es importante</h4>
+          <p><strong>Antes</strong> (sin OneLake Security): seguridad a nivel workspace (todo o nada), a nivel item (Read/ReadData/ReadAll) y específica por compute — SQL RLS en Warehouse, políticas KQL en Eventhouse. Cada engine tenía su propio modelo de seguridad.</p>
+          <p><strong>Ahora</strong> (con OneLake Security): un <strong>único modelo de seguridad</strong> en OneLake, <strong>granular</strong> a nivel folder, table, schema, row y column, <strong>aplicado en TODOS los engines</strong> (SQL, Spark, KQL, Power BI). <strong>Defines una vez, aplica en todas partes</strong>.</p>
+
+          <h4>Beneficios</h4>
+          <ul>
+            <li>✅ <strong>Single source of truth</strong> para los permisos.</li>
+            <li>✅ <strong>Consistencia</strong> entre engines.</li>
+            <li>✅ <strong>Granularidad</strong> hasta rows y columns.</li>
+            <li>✅ <strong>Menos overhead</strong> de configuración.</li>
+            <li>✅ Los <strong>data owners mantienen el control</strong> incluso cuando la data pasa a otros workspaces.</li>
+          </ul>
+
+          <h4>Quién puede crear roles</h4>
+          <p>Los <strong>usuarios de Fabric con workspace role Admin o Member</strong> pueden crear OneLake security roles.</p>
+
+          <h4>A quién afectan</h4>
+          <p>Los <strong>OneLake security roles conceden acceso</strong> a los usuarios con <strong>workspace role Viewer</strong> y a los usuarios con <strong>permiso Read</strong> sobre el item.</p>
+          <p><strong>NO afectan a</strong> los <strong>Admins</strong>, <strong>Members</strong> ni <strong>Contributors</strong> del workspace, porque ellos ya tienen <strong>permisos de lectura y escritura</strong> sobre toda la data del workspace.</p>
+
+          <div class="note note--warning">
+            ⚠️ <strong>Grant model (importante):</strong> los OneLake security roles usan un <strong>modelo de GRANT</strong> para dar acceso. <strong>No puedes DENEGAR el acceso</strong> concedido a través de otro role o modelo de permisos. Es decir: OneLake Security <strong>añade permisos, no los quita</strong>.
+          </div>
+
+          <div class="note note--tip">
+            🌷 <strong>Analogía kawaii:</strong> piensa en <strong>añadir invitados a una fiesta</strong>. Los <strong>workspace admins</strong> son los organizadores (entran sí o sí). Los <strong>OneLake security roles</strong> son puertas específicas para ciertos invitados. Si un organizador quiere entrar, entra por cualquier puerta. Las puertas específicas son para <strong>invitados que no tienen acceso general</strong> pero sí a <strong>secciones concretas</strong> 🎉
+          </div>
+        </article>
+
+        <!-- ============ 11. ROLE COMPONENTS ============ -->
+        <div class="category-header" id="role-components">
+          <span class="category-header__icon">🎨</span>
+          <h2 class="category-header__title">11. Los 4 componentes de una OneLake security role</h2>
+        </div>
+
+        <article class="concept-card">
+          <h4>Componentes obligatorios</h4>
+          <ol>
+            <li><strong>Permissions</strong> 🔑 — los permisos que el role concede sobre la data. Opciones: <strong>Read</strong> o <strong>ReadWrite</strong>.</li>
+            <li><strong>Type</strong> 🎯 — el tipo de role. OneLake security <strong>solo soporta roles de tipo Grant</strong> (dan acceso a la data).</li>
+            <li><strong>Data in role</strong> 📊 — las <strong>tables, folders o schemas</strong> a los que el role da acceso. También puedes definir el acceso con <strong>row-level y column-level security</strong>.</li>
+            <li><strong>Members in role</strong> 👥 — las <strong>identidades de Microsoft Entra</strong> asignadas al role: usuarios, grupos o identidades no-usuario (service principals).</li>
+          </ol>
+
+          <h4>Ejemplo mental</h4>
+          <p><strong>Role</strong>: <code>Analytics_Team_Sales</code></p>
+          <ul>
+            <li><strong>Permissions</strong>: Read</li>
+            <li><strong>Type</strong>: Grant</li>
+            <li><strong>Data in role</strong>:
+              <ul>
+                <li>Tabla <code>sales_orders</code> (completa)</li>
+                <li>Tabla <code>customer_master</code> (con RLS: solo rows donde <code>region = "EU"</code>)</li>
+                <li>Columna <code>credit_card_number</code> <strong>excluida</strong> vía CLS</li>
+                <li>Folder <code>raw_files/2026/</code> completo</li>
+              </ul>
+            </li>
+            <li><strong>Members in role</strong>: grupo <code>Analytics_Team_EU</code>, usuario <code>sareta@kawaiibi.es</code> y service principal <code>SP-BI-Automation</code></li>
+          </ul>
+        </article>
+
+        <!-- ============ 12. PERMISSIONS ONELAKE ============ -->
+        <div class="category-header" id="permissions-onelake">
+          <span class="category-header__icon">🔐</span>
+          <h2 class="category-header__title">12. Permissions: Read vs ReadWrite</h2>
+        </div>
+
+        <article class="concept-card">
+          <h4>Los 2 tipos</h4>
+          <p><strong>A) Read</strong> 📖 — leer data. <strong>Puedes aplicar RLS y CLS</strong> a los roles Read.</p>
+          <p><strong>B) ReadWrite</strong> ✏️ — leer y escribir data. <strong>RLS y CLS NO están disponibles</strong> en los roles ReadWrite.</p>
+
+          <div class="note note--warning">
+            ⚠️ <strong>Nota crítica:</strong> puedes aplicar <strong>row-level security (RLS) y column-level security (CLS) solo a roles que conceden permiso Read</strong>. Para los roles que conceden ReadWrite, las opciones de RLS y CLS <strong>no están disponibles</strong>.
+          </div>
+
+          <h4>Cuándo cada uno</h4>
+          <p><strong>Read</strong> ✅ cuando el usuario solo debe consumir data, necesitas restringir a un subconjunto de rows/columns, o son consumidores de analytics y visualizadores de reports.</p>
+          <p><strong>ReadWrite</strong> ✅ cuando el usuario necesita <strong>escribir data</strong> a la tabla/folder, como data engineers que ingestan data, y sin restricciones granulares (sin RLS/CLS).</p>
+
+          <h4>⚠️ Nota sobre Lakehouse</h4>
+          <p>Según la doc oficial de lakehouse-sharing: <em>"OneLake security does not grant write permissions - it only provides granular control over read access for users who already have basic read access to the lakehouse. Write permissions must still be granted through workspace roles (Contributor or higher)."</em></p>
+          <p>Esta doc parece contradictoria con la general que menciona ReadWrite. La <strong>realidad matizada</strong>:</p>
+          <ul>
+            <li><strong>En lakehouses</strong>, OneLake security se usa <strong>principalmente para acceso READ a nivel folder</strong>.</li>
+            <li><strong>ReadWrite</strong> es una capability más nueva y limitada — para escribir en OneLake, los workspace roles siguen siendo el mecanismo principal.</li>
+          </ul>
+          <p>Para el examen: quédate con que <strong>Read es el uso primario</strong>, y ReadWrite es una capability adicional pero con restricciones.</p>
+
+          <h4>Escritura vía Spark, OneLake file explorer y APIs</h4>
+          <p>Cuando <strong>ReadWrite está disponible</strong>, esos permisos se utilizan a través de <strong>notebooks de Spark</strong>, el <strong>OneLake file explorer</strong> y las <strong>OneLake APIs</strong>. Las operaciones de escritura <strong>vía la UX del Lakehouse</strong> para viewers <strong>NO están soportadas actualmente</strong>.</p>
+        </article>
+
+        <!-- ============ 13. DEFAULT READER ============ -->
+        <div class="category-header" id="default-reader">
+          <span class="category-header__icon">🎀</span>
+          <h2 class="category-header__title">13. DefaultReader role</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>¿Qué es?</h3>
+          <p>El <strong>DefaultReader role</strong> existe <strong>en todos los lakehouses</strong> y da a <strong>cualquier usuario con permiso ReadAll</strong> acceso a la data del lakehouse.</p>
+
+          <h4>Comportamiento por defecto</h4>
+          <p>Cuando creas un lakehouse, el <strong>DefaultReader role</strong> se crea automáticamente, concede acceso a todos los usuarios con <strong>ReadAll</strong> a nivel item, y esos usuarios pueden ver <strong>toda la data</strong> del lakehouse.</p>
+
+          <h4>Cuándo modificarlo o borrarlo</h4>
+          <p>Si quieres <strong>restringir el acceso</strong> de forma más granular: <strong>borra el DefaultReader role</strong> o <strong>edítalo</strong> para modificar qué concede. <strong>Sin DefaultReader</strong>, los usuarios con ReadAll NO ven data automáticamente — necesitan un OneLake security role específico.</p>
+
+          <div class="note note--warning">
+            ⚠️ <strong>Warning importante:</strong> <strong>antes de añadir usuarios a un role con acceso restringido</strong>, <strong>verifica que el DefaultReader no les esté dando un acceso más amplio</strong>. Para restringir su acceso: <strong>quítalos del DefaultReader</strong>, o <strong>modifica o elimina el DefaultReader</strong>.
+          </div>
+
+          <h4>Ejemplo del examen</h4>
+          <p>Escenario: quieres que Sareta solo vea <strong>la tabla <code>sales_summary</code></strong>, no todas.</p>
+          <ol>
+            <li>Borra o modifica el <strong>DefaultReader</strong> para que no le dé acceso general.</li>
+            <li>Crea un nuevo <strong>OneLake security role</strong> con Read solo a <code>sales_summary</code>.</li>
+            <li>Añade a Sareta al role.</li>
+          </ol>
+          <p>Sin borrar el DefaultReader, Sareta seguiría viéndolo todo.</p>
+        </article>
+
+        <!-- ============ 14. CREATE ROLE ============ -->
+        <div class="category-header" id="create-role">
+          <span class="category-header__icon">🛠️</span>
+          <h2 class="category-header__title">14. Crear una OneLake security role paso a paso</h2>
+        </div>
+
+        <article class="concept-card">
+          <h4>Prerequisites</h4>
+          <p>Permisos <strong>Write o Reshare</strong> en Fabric (generalmente incluidos para los usuarios con workspace role Admin o Member).</p>
+
+          <h4>Items soportados</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Fabric item</th><th>Permisos soportados</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Lakehouse</strong></td><td>Read, ReadWrite</td></tr>
+                <tr><td><strong>Azure Databricks mirrored catalog</strong></td><td>Read</td></tr>
+                <tr><td><strong>Mirrored databases</strong></td><td>Read</td></tr>
+                <tr><td><strong>Mirrored catalogs</strong></td><td>Read</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p><strong>Nota</strong>: la lista puede crecer conforme Fabric evoluciona.</p>
+
+          <h4>Pasos completos</h4>
+          <p><strong>Paso 1</strong>: abrir el item de Fabric donde quieres controlar el acceso a los datos.</p>
+          <p><strong>Paso 2</strong>: seleccionar <strong>Manage OneLake security</strong> en el menú del item.</p>
+          <p><strong>Paso 3</strong>: en el <strong>panel de OneLake security</strong>, seleccionar <strong>New</strong>.</p>
+          <p><strong>Paso 4</strong>: rellenar la info del nuevo role:</p>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Parámetro</th><th>Valor</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Role name</strong></td><td>Caracteres alfanuméricos, empieza por letra, único (case insensitive), máximo 128 caracteres</td></tr>
+                <tr><td><strong>Type of role</strong></td><td><strong>Grant</strong> (único tipo soportado)</td></tr>
+                <tr><td><strong>Select Grant permissions</strong></td><td><strong>Read</strong> (mínimo) o <strong>ReadWrite</strong> (en algunos items)</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p><strong>Paso 5</strong>: <strong>Add data to your role</strong>. Define el scope:</p>
+          <ul>
+            <li><strong>All data</strong>: concede acceso a <strong>todas las tables y files</strong> del item, incluidos los folders que se añadan en el futuro.</li>
+            <li><strong>Selected data</strong>: concede acceso a un <strong>grupo seleccionado</strong> de tables y folders.</li>
+          </ul>
+          <p><strong>Paso 6</strong>: si elegiste <strong>Selected data</strong>:</p>
+          <ul>
+            <li><strong>Edit</strong> → expandir los directorios Tables y Files.</li>
+            <li>Marcar las casillas de tables y files.</li>
+            <li>Para aplicar RLS o CLS a una tabla, <strong>seleccionar el nombre de la tabla → Data access → elegir opción</strong>.</li>
+            <li><strong>Add data</strong> para añadir los items seleccionados al role.</li>
+          </ul>
+          <p><strong>Paso 7</strong>: <strong>Add members to your role</strong> — manualmente (nombres o emails) o con <strong>configuración avanzada</strong> para asignar miembros virtuales (basados en workspace role).</p>
+          <p><strong>Paso 8</strong>: <strong>Create</strong>.</p>
+
+          <div class="note note--warning">
+            ⚠️ <strong>Efecto inmediato:</strong> la creación del role y la asignación de miembros <strong>surten efecto en cuanto guardas</strong>. <strong>Verifica</strong> antes de añadir usuarios que el <strong>DefaultReader no les conceda un acceso más amplio</strong>.
+          </div>
+
+          <h4>Virtual members</h4>
+          <p>Feature poderosa: <strong>asignar miembros virtuales</strong> según el workspace role. Ejemplo: "cualquier usuario que sea <strong>Viewer</strong> en este workspace → se asigna automáticamente a este role". Perfecto para automation y consistencia.</p>
+        </article>
+
+        <!-- ============ 15. OLS ============ -->
+        <div class="category-header" id="ols-onelake">
+          <span class="category-header__icon">📚</span>
+          <h2 class="category-header__title">15. Object-level security (tables y folders)</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>¿Qué es OLS en OneLake?</h3>
+          <p><strong>Object-Level Security (OLS)</strong> = conceder acceso a <strong>tables o folders concretos</strong> de un data item. Con OLS creas permisos para <strong>data estructurada y no estructurada a nivel folder</strong>.</p>
+
+          <h4>Concepto clave</h4>
+          <p>Las <strong>tablas Delta Parquet en OneLake se representan como folders</strong>. Por eso puedes <strong>securizar las tablas igual que los folders</strong>. Los <strong>schemas también son folders</strong>, así que puedes securizarlos igual.</p>
+
+          <h4>Estructura OneLake típica</h4>
+          <pre><code class="language-plaintext">lakehouse/
+├── Tables/
+│   ├── sales_orders/          ← folder = table
+│   ├── customer_master/       ← folder = table
+│   └── product_catalog/       ← folder = table
+├── Files/
+│   ├── raw_2026/              ← folder
+│   │   ├── jan/
+│   │   ├── feb/
+│   │   └── mar/
+│   └── archive_2025/          ← folder</code></pre>
+          <p>Puedes conceder acceso a un <strong>folder</strong> concreto (<code>Files/raw_2026/jan/</code>), a una <strong>tabla</strong> concreta (<code>Tables/sales_orders/</code>) o a un <strong>schema</strong> completo (el folder que agrupa tablas).</p>
+
+          <h4>Uso típico</h4>
+          <p><strong>Escenario</strong>: el compliance requiere que Sareta acceda solo a <code>Files/archive_2025/</code> para una auditoría, pero no a la raw data.</p>
+          <ul>
+            <li>Data: <code>Files/archive_2025/</code></li>
+            <li>Permissions: Read</li>
+            <li>Members: sareta@kawaiibi.es</li>
+          </ul>
+          <p>Sin acceso a <code>Files/raw_2026/</code> ni a otras tablas.</p>
+
+          <h4>Herencia</h4>
+          <p>La <strong>seguridad de folder es heredable</strong> por todos los subfolders. Conceder acceso a <code>Files/2026/</code> lo aplica automáticamente a <code>Files/2026/jan/</code>, <code>Files/2026/feb/</code>, etc. Muy útil para <strong>organización jerárquica de datos</strong>.</p>
+        </article>
+
+        <!-- ============ 16. RLS ============ -->
+        <div class="category-header" id="rls-onelake">
+          <span class="category-header__icon">📏</span>
+          <h2 class="category-header__title">16. Row-level security en OneLake</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>¿Qué es?</h3>
+          <p><strong>Row-Level Security (RLS)</strong> = restringe qué <strong>rows</strong> puede ver un usuario en una tabla. Aplica a nivel fila, sin afectar a la estructura de la tabla.</p>
+
+          <h4>Cómo funciona en OneLake</h4>
+          <p>Defines las <strong>reglas de RLS dentro de un OneLake security role</strong> que concede permiso Read. Ejemplo: role <code>EU_Analysts</code> con Read sobre <code>sales_orders</code> y regla RLS <code>region = 'EU'</code> → los analistas solo ven las rows donde <code>region = 'EU'</code>.</p>
+
+          <div class="note note--tip">
+            ⭐ <strong>Beneficio cross-engine — aquí está la magia:</strong> la RLS se <strong>aplica en todos los engines</strong>. Si Sareta consulta <code>sales_orders</code>, verá solo las rows de EU tanto vía <strong>SQL analytics endpoint</strong>, como vía <strong>Spark notebook</strong>, como vía <strong>Power BI Direct Lake</strong>, como vía <strong>KQL</strong>. <strong>Sin duplicar la lógica</strong> entre engines.
+          </div>
+
+          <h4>Diferencia con el RLS de Power BI clásico</h4>
+          <p>El <strong>RLS clásico de Power BI</strong> vive <strong>solo en el semantic model</strong>. El <strong>RLS de OneLake Security</strong> vive <strong>en la data</strong> — cualquier engine lo respeta. Es una diferencia arquitectónica importante.</p>
+
+          <h4>Cómo definirlo</h4>
+          <p>Al crear o editar un OneLake security role:</p>
+          <ol>
+            <li>Añadir la tabla.</li>
+            <li>Seleccionar el nombre de la tabla → <strong>Data access</strong>.</li>
+            <li>Elegir <strong>Row-level security</strong>.</li>
+            <li>Definir la expresión de filtro.</li>
+            <li>Guardar.</li>
+          </ol>
+        </article>
+
+        <!-- ============ 17. CLS ============ -->
+        <div class="category-header" id="cls-onelake">
+          <span class="category-header__icon">🎨</span>
+          <h2 class="category-header__title">17. Column-level security en OneLake</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>¿Qué es?</h3>
+          <p><strong>Column-Level Security (CLS)</strong> = restringe qué <strong>columns</strong> son visibles para usuarios concretos.</p>
+
+          <h4>Uso típico</h4>
+          <p><strong>Escenario</strong>: la tabla <code>employees</code> tiene columnas <code>employee_id</code>, <code>name</code> y <code>department</code> (públicas) y <code>salary</code>, <code>ssn</code> y <code>personal_email</code> (sensibles).</p>
+          <p>Con CLS: el role <code>HR_Full</code> ve todas las columnas, y el role <code>HR_General</code> excluye <code>salary</code>, <code>ssn</code> y <code>personal_email</code>.</p>
+
+          <h4>Enforcement</h4>
+          <p><strong>Cross-engine igual que RLS</strong>: las queries SQL no devuelven las columnas restringidas, las lecturas de Spark las excluyen y los reports de Power BI no las muestran.</p>
+
+          <h4>Cómo definirlo</h4>
+          <ol>
+            <li>Añadir la tabla.</li>
+            <li>Data access → <strong>Column-level security</strong>.</li>
+            <li>Incluir/excluir columnas.</li>
+            <li>Guardar.</li>
+          </ol>
+        </article>
+
+        <!-- ============ 18. ENFORCEMENT ============ -->
+        <div class="category-header" id="enforcement">
+          <span class="category-header__icon">🌸</span>
+          <h2 class="category-header__title">18. Enforcement cross-engine</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>La filosofía</h3>
+          <p><strong>OneLake Security aplica la seguridad de forma consistente en todos los compute engines de Fabric</strong>. Es decir: <strong>defines la seguridad una vez</strong> y aplica <strong>en todas partes</strong>.</p>
+
+          <h4>Engines que respetan OneLake Security</h4>
+          <ul>
+            <li>✅ <strong>SQL analytics endpoint</strong> (Warehouse, Lakehouse).</li>
+            <li>✅ <strong>Spark notebooks</strong> (Fabric Notebooks).</li>
+            <li>✅ <strong>KQL queries</strong> (Eventhouse).</li>
+            <li>✅ <strong>Power BI</strong> (Direct Lake, DirectQuery, Import donde aplique).</li>
+            <li>✅ <strong>OneLake APIs</strong> (REST, SDKs).</li>
+            <li>✅ <strong>OneLake file explorer</strong>.</li>
+          </ul>
+
+          <h4>Enforcement en engines de terceros (preview)</h4>
+          <p>Feature más nueva: <strong>aplicar OneLake security en engines de terceros autorizados</strong> (preview). La idea es que los engines externos autorizados también respeten OneLake Security. Ejemplos potenciales: Snowflake consultando OneLake, o Databricks externo con la autenticación adecuada.</p>
+
+          <h4>Cómo trabaja bajo el capó</h4>
+          <p>Los engines <strong>consultan las políticas de OneLake Security</strong> al acceder a la data. <strong>El propio engine aplica los filtros</strong> según el usuario que llama: recupera las políticas aplicables al usuario y al item, aplica los filtros de RLS, las exclusiones de CLS y las concesiones de OLS, y devuelve solo lo permitido. Este flujo es <strong>automático y transparente</strong>.</p>
+        </article>
+
+        <!-- ============ 19. SUPPORTED ITEMS ============ -->
+        <div class="category-header" id="supported-items">
+          <span class="category-header__icon">🎯</span>
+          <h2 class="category-header__title">19. Fabric items soportados por OneLake security</h2>
+        </div>
+
+        <article class="concept-card">
+          <h4>Matriz de soporte actual</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Fabric item</th><th>Read</th><th>ReadWrite</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Lakehouse</strong></td><td>✅</td><td>✅</td></tr>
+                <tr><td><strong>Azure Databricks mirrored catalog</strong></td><td>✅</td><td>❌</td></tr>
+                <tr><td><strong>Mirrored databases</strong></td><td>✅</td><td>❌</td></tr>
+                <tr><td><strong>Mirrored catalogs</strong></td><td>✅</td><td>❌</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h4>Items que aún NO soportan</h4>
+          <p><strong>Actualmente NO soportados</strong> (usan otros mecanismos):</p>
+          <ul>
+            <li>❌ <strong>Warehouse</strong> (usa T-SQL security: OLS, RLS, CLS, DDM).</li>
+            <li>❌ <strong>SQL Database</strong> (usa T-SQL security).</li>
+            <li>❌ <strong>KQL Database</strong> (usa políticas KQL de RLS).</li>
+            <li>❌ <strong>Semantic models</strong> (usan RLS/OLS con DAX).</li>
+          </ul>
+          <p>Para estos items: usa la <strong>seguridad a nivel compute</strong> que ya vimos en módulos anteriores.</p>
+
+          <h4>Estrategia mixta</h4>
+          <p><strong>Muy común</strong>: mezclar OneLake Security + compute-level. Data en <strong>Lakehouse</strong> → OneLake Security roles. Data en <strong>Warehouse</strong> → T-SQL RLS/CLS. Data en <strong>KQL DB</strong> → políticas KQL de RLS. Data en <strong>Semantic Model</strong> → RLS con DAX. Cada engine con la seguridad que le corresponde.</p>
+
+          <h4>Roadmap</h4>
+          <p><strong>Se espera</strong> que el soporte para más items crezca. OneLake Security es la <strong>dirección estratégica</strong> para la seguridad en Fabric.</p>
+        </article>
+
+        <!-- ============ 20. DIRECT LAKE ============ -->
+        <div class="category-header" id="direct-lake">
+          <span class="category-header__icon">🎨</span>
+          <h2 class="category-header__title">20. Direct Lake security integration</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>Direct Lake y seguridad</h3>
+          <p><strong>Direct Lake</strong> lee la data directamente de OneLake sin importarla en memoria. Esto significa que <strong>aplica la seguridad del data source</strong>.</p>
+
+          <h4>Los 3 approaches para el control de acceso</h4>
+          <p><strong>A) Workspace roles</strong>: contributors, members y admins pueden leer data en OneLake. Simple pero poco fino.</p>
+          <p><strong>B) Item-level y compute permissions</strong>: conceder acceso granular vía item permissions y seguridad a nivel compute (RLS en Warehouse, etc.).</p>
+          <p><strong>C) OneLake Security</strong> ⭐: <strong>seguridad granular basada en roles</strong> en todos los compute engines de Fabric. <strong>Recomendado</strong> para setups modernos.</p>
+
+          <h4>SSO vs Fixed identities</h4>
+          <p><strong>A) Single Sign-On (SSO)</strong>: cada usuario accede con <strong>sus propias credenciales</strong>, con <strong>RLS/OLS por usuario real</strong>. Lo mejor para aplicar seguridad granular.</p>
+          <p><strong>B) Fixed identity</strong>: todos los usuarios acceden con <strong>un único principal</strong>. Sin RLS por usuario (se aplica al principal). Más simple pero menos seguro.</p>
+          <p><strong>Recomendación</strong>: <strong>SSO</strong> cuando necesitas seguridad granular; fixed identity para dashboards públicos o cuando los usuarios no están en el tenant.</p>
+
+          <h4>OLS y RLS en Direct Lake</h4>
+          <p><strong>Object-level security (OLS)</strong> y <strong>row-level security (RLS)</strong> están <strong>completamente soportados</strong> en Direct Lake. Los modelos con RLS/OLS en OneLake Security funcionan de forma natural con las queries Direct Lake desde Power BI.</p>
+
+          <div class="note note--warning">
+            ⚠️ <strong>Fallback a DirectQuery (importante para el examen):</strong> si defines seguridad <strong>tanto para SQL como para DAX</strong> en el mismo semantic model, <strong>Direct Lake hace fallback a DirectQuery</strong> para las tablas que tienen RLS en SQL. En ese fallback, los resultados de DAX o MDX quedan <strong>limitados a la identidad del usuario</strong> y la performance puede degradarse.
+            <br><strong>Recomendación</strong>: usa <strong>un solo mecanismo de enforcement</strong> por tabla para evitar el fallback.
+          </div>
+        </article>
+
+        <!-- ============ 21. SENSITIVITY ============ -->
+        <div class="category-header" id="sensitivity">
+          <span class="category-header__icon">🏷️</span>
+          <h2 class="category-header__title">21. Sensitivity labels</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>¿Qué son?</h3>
+          <p>Las <strong>sensitivity labels</strong> son una clasificación de datos que <strong>aplica cifrado o restricciones de acceso</strong>. Se aplican a los items de OneLake <strong>igual que a los documentos</strong>.</p>
+
+          <h4>Ejemplos de labels</h4>
+          <p>Típicamente definidas a nivel tenant/organización: <strong>Public</strong>, <strong>Internal</strong>, <strong>Confidential</strong>, <strong>Highly Confidential</strong>, <strong>Restricted</strong>. O labels custom del negocio (según industria/compliance).</p>
+
+          <h4>Propiedades</h4>
+          <p>Las sensitivity labels aplican <strong>cifrado</strong> automático, <strong>restricciones de acceso</strong> basadas en la label, <strong>marcas de agua</strong> en documentos, y hacen que las <strong>políticas DLP</strong> sean conscientes de las labels.</p>
+
+          <div class="note note--tip">
+            🎯 <strong>Herencia persistente (muy importante):</strong> las sensitivity labels <strong>aplican cifrado o restricciones de acceso</strong> incluso si la data se <strong>exporta a Excel u otra herramienta</strong>. Es decir: si exportas data etiquetada como "Confidential", el fichero resultante <strong>mantiene la label y el cifrado</strong>. La data no pierde protección cuando sale de Fabric.
+          </div>
+
+          <h4>Aplicar labels</h4>
+          <p>En el Fabric portal: click en el item → <strong>Sensitivity label</strong> → seleccionar la label apropiada → guardar. O configurar <strong>auto-labeling</strong> a nivel workspace/tenant.</p>
+        </article>
+
+        <!-- ============ 22. DLP ============ -->
+        <div class="category-header" id="dlp">
+          <span class="category-header__icon">🛡️</span>
+          <h2 class="category-header__title">22. Data Loss Prevention (DLP)</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>¿Qué es DLP?</h3>
+          <p><strong>Data Loss Prevention</strong> = <strong>políticas que detectan y previenen fugas de datos sensibles</strong>. Fabric se integra con las <strong>políticas DLP de Microsoft Purview</strong>.</p>
+
+          <h4>Qué detectan las políticas DLP</h4>
+          <ul>
+            <li><strong>Subidas de datos sensibles</strong> a OneLake.</li>
+            <li><strong>Descargas de datos sensibles</strong> de OneLake.</li>
+            <li><strong>Compartición con destinatarios externos</strong> que no deberían.</li>
+            <li><strong>Copia de datos</strong> a ubicaciones no aprobadas.</li>
+          </ul>
+
+          <h4>Acciones posibles</h4>
+          <p>Cuando una política DLP detecta una violación puede <strong>alertar</strong> al admin, <strong>bloquear</strong> la acción, <strong>notificar</strong> al usuario (con justificación) y <strong>registrar</strong> el evento para auditoría.</p>
+
+          <h4>Casos de uso</h4>
+          <ul>
+            <li><strong>Detección de PII</strong> en subidas.</li>
+            <li><strong>Números de tarjeta de crédito</strong> en tablas.</li>
+            <li><strong>Datos de salud</strong> con compliance HIPAA.</li>
+            <li><strong>Datos financieros</strong> en dashboards públicos.</li>
+          </ul>
+
+          <h4>Setup</h4>
+          <p>Las políticas DLP se configuran en el <strong>portal de compliance de Microsoft Purview</strong>, no en Fabric directamente. Fabric las <strong>aplica automáticamente</strong> cuando están activas.</p>
+        </article>
+
+        <!-- ============ 23. SECURE TAB ============ -->
+        <div class="category-header" id="secure-tab">
+          <span class="category-header__icon">🔍</span>
+          <h2 class="category-header__title">23. Secure tab en OneLake catalog</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>¿Qué es?</h3>
+          <p>El <strong>Secure tab</strong> del <strong>OneLake catalog</strong> es la ubicación central para <strong>ver, monitorizar y configurar los security roles entre workspaces e items</strong>.</p>
+
+          <h4>Qué muestra</h4>
+          <p>Centraliza en <strong>un solo sitio</strong>:</p>
+          <ol>
+            <li><strong>Vista de los workspace roles y permisos</strong> — para auditar el acceso a workspaces y datos.</li>
+            <li><strong>Vista de los OneLake security roles entre workspaces y tipos de item</strong> — los admins pueden <strong>crear, editar o borrar OneLake security roles</strong> desde una única ubicación.</li>
+          </ol>
+
+          <h4>Filtros</h4>
+          <p>El Secure tab muestra los <strong>items relevantes</strong>, incluidos los <strong>workspaces a los que tienes acceso</strong>. Se requieren los roles <strong>Admin y Member</strong> en un workspace para <strong>ver los datos</strong> de ese workspace. Los <strong>Contributors o Viewers</strong> de un workspace <strong>solo ven la info de su propio acceso</strong>.</p>
+
+          <h4>Página View security roles</h4>
+          <p>En la <strong>página View security roles</strong> puedes ver <strong>todos los OneLake security roles</strong> de los workspaces seleccionados. Cada fila es un role dentro de un item de Fabric.</p>
+          <p><strong>Detalles que puedes ver</strong>: nombre del <strong>item</strong>, <strong>nombre del role</strong>, <strong>tipo de role</strong> (solo OneLake security soportado), <strong>permiso</strong> concedido, <strong>ubicación</strong> (workspace) y <strong>data owner</strong>.</p>
+
+          <h4>Operaciones desde el Secure tab</h4>
+          <p><strong>Puedes</strong> ver los roles existentes, editarlos, borrarlos, crear nuevos y <strong>duplicar</strong> roles existentes. Todo desde <strong>una única página centralizada</strong> — muy útil para admins.</p>
+
+          <h4>Caso de uso de auditoría</h4>
+          <p><strong>Perfecto para auditar</strong>: "¿Qué OneLake security roles existen en producción?", "¿Quién tiene acceso a la tabla X?", "¿Este role sigue siendo necesario?". Sin tener que ir workspace por workspace.</p>
+        </article>
+
+        <!-- ============ 24. COMPUTE ============ -->
+        <div class="category-header" id="compute">
+          <span class="category-header__icon">⚙️</span>
+          <h2 class="category-header__title">24. Compute-level security (SQL/Spark)</h2>
+        </div>
+
+        <article class="concept-card">
+          <h4>Cuándo aplica</h4>
+          <p><strong>Cuando OneLake Security no cubre</strong> tu item (Warehouse, SQL DB, KQL DB, Semantic Models), usas la <strong>seguridad a nivel compute</strong> que ya vimos:</p>
+          <p><strong>Warehouse y SQL Database</strong>: seguridad T-SQL — OLS (GRANT/DENY sobre objects), RLS (security policies), CLS (DENY sobre columnas) y DDM (dynamic data masking).</p>
+          <p><strong>Eventhouse (KQL)</strong>: política de row-level security (funciones KQL) y política de restricted view access.</p>
+          <p><strong>Semantic Models (Power BI)</strong>: RLS con filtros DAX y OLS con TMDL/Tabular Editor.</p>
+
+          <h4>Layering</h4>
+          <p><strong>Muy común</strong>: <strong>seguridad por capas</strong>. El workspace role controla quién puede ver el item, el item permission controla qué operaciones puede hacer, y la seguridad a nivel compute controla <strong>qué data concreta</strong> ve. Todo funciona <strong>junto</strong>.</p>
+
+          <div class="note note--practice">
+            📌 <strong>Regla del pulgar para elegir mecanismo:</strong> data en <strong>Lakehouse</strong> → OneLake Security preferido. Data en <strong>Warehouse</strong> → seguridad T-SQL preferida (OneLake Security aún no soporta warehouses). Data en <strong>KQL DB</strong> → políticas KQL. Data en <strong>semantic model de Power BI</strong> → RLS con DAX. Para el examen: ten claro <strong>qué mecanismo va con qué item</strong>.
+          </div>
+        </article>
+
+        <!-- ============ 25. CROSS-WORKSPACE ============ -->
+        <div class="category-header" id="cross-workspace">
+          <span class="category-header__icon">🌍</span>
+          <h2 class="category-header__title">25. Cross-workspace scenarios</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>El desafío</h3>
+          <p><strong>Data en un workspace, usuarios en otro</strong>. ¿Cómo conceder acceso sin comprometer la seguridad?</p>
+
+          <h4>Approaches</h4>
+          <p><strong>A) Compartir items</strong>: compartir el warehouse/lakehouse con usuarios de otros workspaces, concediendo Read/ReadData según necesidad, sin dar workspace role.</p>
+          <p><strong>B) OneLake shortcuts</strong>: crear <strong>shortcuts</strong> desde el workspace consumidor al workspace productor. El usuario consume vía shortcut sin acceso directo al origen.</p>
+          <p><strong>C) Workspace membership</strong>: añadir usuarios a <strong>varios workspaces</strong> con los roles apropiados.</p>
+
+          <h4>Best practice del escenario oficial</h4>
+          <p><strong>Escenario del Learn oficial</strong>: arquitectura medallion con 3 workspaces (bronze, silver, gold).</p>
+          <p><strong>Setup</strong>:</p>
+          <ul>
+            <li>Data engineers con rol <strong>Contributor</strong> en los 3 workspaces (bronze, silver, gold).</li>
+            <li>Usuarios de negocio con <strong>acceso restringido</strong> solo a la capa gold, vía <strong>item permissions</strong> en el semantic model y <strong>RLS</strong> en el semantic model o en OneLake Security roles.</li>
+          </ul>
+          <p><strong>Resultado</strong>: los data engineers pueden ingestar y transformar data entre capas, y los usuarios de negocio solo ven la capa gold con las filas filtradas por RLS.</p>
+        </article>
+
+        <!-- ============ 26. LEAST PRIVILEGE ============ -->
+        <div class="category-header" id="least-privilege">
+          <span class="category-header__icon">🌸</span>
+          <h2 class="category-header__title">26. Least privilege best practices</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>El principio</h3>
+          <p><strong>Least privilege access</strong> = principio fundamental de seguridad. Restringir los permisos de los usuarios <strong>solo a lo necesario</strong> para sus tareas. Para OneLake: no sobre-aprovisionar usuarios, conceder permisos <strong>al nivel apropiado</strong> y reducir riesgo.</p>
+
+          <h4>Best practices oficiales</h4>
+          <p><strong>1. Comparte items individuales</strong> si los usuarios solo necesitan uno — usa la <strong>feature Share</strong> para dar acceso a un solo item, y asigna un workspace role <strong>solo si necesitan ver TODOS los items</strong>.</p>
+          <p><strong>2. Usa OneLake Security para restringir folders/tables</strong> — para data sensible, RLS o CLS aseguran que las filas o columnas queden ocultas.</p>
+          <p><strong>3. Elige el mecanismo apropiado para las escrituras</strong> — <strong>workspace roles</strong> (Admin/Member/Contributor) para escritura general, y <strong>OneLake Security ReadWrite</strong> para escritura granular a folders/tables concretos.</p>
+          <p><strong>4. Gestionar el acceso a datos requiere roles Admin o Member</strong> — para compartir items o configurar OneLake Security roles.</p>
+          <p><strong>5. Permiso SubscribeOneLakeEvents</strong> — los usuarios lo necesitan para suscribirse a eventos de un item de Fabric. Admin/Member/Contributor lo tienen por defecto; para el Viewer hay que añadirlo explícitamente si hace falta.</p>
+
+          <div class="note note--practice">
+            📌 <strong>Security groups sobre usuarios individuales:</strong> siempre que sea posible, usa <strong>security groups</strong> en vez de usuarios individuales. Es <strong>escalable</strong> (añades/quitas miembros del grupo, no del role), <strong>consistente</strong> con la gestión del directorio, con <strong>menos error humano</strong> y <strong>auditoría más fácil</strong>.
+          </div>
+
+          <h4>Revisiones periódicas</h4>
+          <p><strong>Best practice</strong>: <strong>revisar los roles y las membresías con regularidad</strong> — revisiones de seguridad trimestrales, eliminar ex-empleados, verificar que los accesos siguen siendo necesarios y borrar los roles sin uso.</p>
+        </article>
+
+        <!-- ============ 27. TRAMPAS ============ -->
+        <div class="category-header" id="trampas">
+          <span class="category-header__icon">⚠️</span>
+          <h2 class="category-header__title">27. Trampas típicas y confusiones frecuentes</h2>
+        </div>
+
+        <article class="concept-card">
+          <ul class="trap-list">
+            <li><strong class="trap-title">Trampa 1: "Control plane y data plane son lo mismo"</strong>
+              ❌ <strong>Distintos</strong>. Control plane = qué puedes HACER con el item. Data plane = qué DATA puedes ver/cambiar. Concepto <strong>fundamental</strong>.</li>
+            <li><strong class="trap-title">Trampa 2: "El workspace role Viewer permite acceder a OneLake"</strong>
+              ❌ <strong>El Viewer NO tiene acceso OneLake por defecto</strong>. Admin/Member/Contributor sí, Viewer no. Necesita un OneLake security role específico o un item permission.</li>
+            <li><strong class="trap-title">Trampa 3: "El permiso Read da acceso a la data"</strong>
+              ❌ <strong>Read solo permite CONECTAR</strong>. Necesitas también <strong>ReadData</strong> o <strong>ReadAll</strong> para ver data.</li>
+            <li><strong class="trap-title">Trampa 4: "ReadAll y ReadData son lo mismo"</strong>
+              ❌ <strong>ReadData</strong> = data vía SQL. <strong>ReadAll</strong> = ficheros Parquet raw en OneLake. Distintos.</li>
+            <li><strong class="trap-title">Trampa 5: "Compartir un item da acceso al workspace"</strong>
+              ❌ El sharing da acceso <strong>solo al item concreto</strong>, no al workspace.</li>
+            <li><strong class="trap-title">Trampa 6: "OneLake security afecta a los workspace admins"</strong>
+              ❌ <strong>NO afecta a Admin, Member ni Contributor</strong>. Solo a Viewers y a usuarios con permiso Read. Es un grant model, no un deny.</li>
+            <li><strong class="trap-title">Trampa 7: "OneLake security puede DENEGAR acceso"</strong>
+              ❌ Es <strong>solo grant model</strong>. No puede quitar acceso concedido en otro sitio.</li>
+            <li><strong class="trap-title">Trampa 8: "OneLake security funciona en el Warehouse"</strong>
+              ❌ <strong>Actualmente NO</strong>. El Warehouse usa seguridad T-SQL (RLS/CLS/OLS/DDM). OneLake Security aplica a Lakehouse y Mirrored DBs.</li>
+            <li><strong class="trap-title">Trampa 9: "El DefaultReader role no importa"</strong>
+              ❌ <strong>Muy importante</strong>. Concede acceso al lakehouse a los usuarios con ReadAll. <strong>Bórralo o modifícalo</strong> si quieres restringir.</li>
+            <li><strong class="trap-title">Trampa 10: "ReadWrite permite RLS y CLS"</strong>
+              ❌ <strong>NO</strong>. RLS y CLS <strong>solo están disponibles en roles con permiso Read</strong>. Con ReadWrite no puedes aplicar RLS/CLS.</li>
+            <li><strong class="trap-title">Trampa 11: "Las sensitivity labels no aplican fuera de Fabric"</strong>
+              ❌ Las labels <strong>persisten al exportar</strong> (Excel, etc.). El cifrado y las restricciones se mantienen.</li>
+            <li><strong class="trap-title">Trampa 12: "Puedo compartir un report de Power BI y el usuario lo ve todo"</strong>
+              ❌ Necesita también <strong>permisos de datos</strong> (OneLake o compute-level). El Read del report solo da metadata + vista del report.</li>
+            <li><strong class="trap-title">Trampa 13: "El Viewer puede ejecutar notebooks"</strong>
+              ❌ <strong>NO</strong>. Solo Admin/Member/Contributor pueden ejecutar notebooks. El Viewer puede monitorizar runs pero no iniciarlos.</li>
+            <li><strong class="trap-title">Trampa 14: "Los cambios en los OneLake security roles requieren refresh"</strong>
+              ❌ <strong>Surten efecto en cuanto se guardan</strong>. Sin refresh manual.</li>
+            <li><strong class="trap-title">Trampa 15: "Direct Lake ignora el RLS"</strong>
+              ❌ <strong>Respeta el RLS</strong> de OneLake Security. Si hay RLS en el modelo SQL, <strong>hace fallback a DirectQuery</strong>.</li>
+            <li><strong class="trap-title">Trampa 16: "Puedo usar single sign-on siempre"</strong>
+              ❌ El SSO requiere que <strong>los usuarios tengan acceso al data source</strong>. Para usuarios externos o casos donde no aplique, usa <strong>fixed identity</strong>.</li>
+            <li><strong class="trap-title">Trampa 17: "Los item permissions y los workspace roles son redundantes"</strong>
+              ❌ Son <strong>complementarios</strong>. Los item permissions dan <strong>acceso granular</strong> sin workspace role; los workspace roles dan <strong>acceso amplio</strong>.</li>
+            <li><strong class="trap-title">Trampa 18: "OneLake Security siempre está habilitada por defecto"</strong>
+              ❌ <strong>Debes crear los roles explícitamente</strong>. El DefaultReader existe, pero puedes borrarlo o modificarlo.</li>
+            <li><strong class="trap-title">Trampa 19: "El enforcement cross-engine es opcional"</strong>
+              ✅ Al contrario — <strong>es su fortaleza</strong>. Automático en SQL, Spark, KQL y Power BI.</li>
+            <li><strong class="trap-title">Trampa 20: "Solo los admins pueden ver el Secure tab"</strong>
+              ❌ <strong>Todos ven el Secure tab</strong>, pero Admin/Member ven los <strong>datos del workspace</strong> y Contributor/Viewer solo ven <strong>la info de su propio acceso</strong>.</li>
+          </ul>
+        </article>
+
+        <!-- ============ 28. COMPARATIVAS ============ -->
+        <div class="category-header" id="comparativas">
+          <span class="category-header__icon">🆚</span>
+          <h2 class="category-header__title">28. Comparativas clave (chuleta)</h2>
+        </div>
+
+        <article class="concept-card">
+          <h4>Los 4 workspace roles</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Role</th><th>Ver</th><th>Modificar</th><th>Compartir</th><th>Gestionar/Admin</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Viewer</strong></td><td>✅</td><td>❌</td><td>❌</td><td>❌</td></tr>
+                <tr><td><strong>Contributor</strong></td><td>✅</td><td>✅</td><td>❌ (con Reshare sí)</td><td>❌</td></tr>
+                <tr><td><strong>Member</strong></td><td>✅</td><td>✅</td><td>✅</td><td>❌</td></tr>
+                <tr><td><strong>Admin</strong></td><td>✅</td><td>✅</td><td>✅</td><td>✅</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h4>Acceso a OneLake por role</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Role</th><th>Acceso OneLake por defecto</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Admin/Member/Contributor</strong></td><td>✅ Sí</td></tr>
+                <tr><td><strong>Viewer</strong></td><td>❌ No (necesita OneLake role o item permission)</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h4>Item permissions (Warehouse/SQL DB/Lakehouse)</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Permission</th><th>Da acceso a</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Read</strong></td><td>Conectar al SQL endpoint</td></tr>
+                <tr><td><strong>ReadData</strong></td><td>Data vía SQL (tables/views)</td></tr>
+                <tr><td><strong>ReadAll</strong></td><td>Ficheros Parquet raw en OneLake</td></tr>
+                <tr><td><strong>Write</strong></td><td>Admin completo + acceso completo a data</td></tr>
+                <tr><td><strong>Share</strong></td><td>Compartir item + gestionar permisos</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h4>Control plane vs Data plane</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th></th><th>Control plane</th><th>Data plane</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Gobierna</strong></td><td>Acciones sobre items</td><td>La data en sí</td></tr>
+                <tr><td><strong>Dónde</strong></td><td>Workspace roles + item permissions</td><td>OneLake Security</td></tr>
+                <tr><td><strong>Granularidad</strong></td><td>Nivel item</td><td>Rows y columns</td></tr>
+                <tr><td><strong>Afecta a</strong></td><td>Todos</td><td>Principalmente Viewers/usuarios con Read</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h4>Componentes de un OneLake Security role</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Componente</th><th>Detalle</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Permissions</strong></td><td>Read o ReadWrite</td></tr>
+                <tr><td><strong>Type</strong></td><td>Grant (único soportado)</td></tr>
+                <tr><td><strong>Data in role</strong></td><td>Tables, folders, schemas + RLS/CLS</td></tr>
+                <tr><td><strong>Members</strong></td><td>Identidades de Entra (usuarios, grupos, SPs)</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h4>Soporte de RLS/CLS/OLS en OneLake Security</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th></th><th>Role Read</th><th>Role ReadWrite</th></tr></thead>
+              <tbody>
+                <tr><td><strong>OLS (folder/table)</strong></td><td>✅</td><td>✅</td></tr>
+                <tr><td><strong>RLS (row-level)</strong></td><td>✅</td><td>❌</td></tr>
+                <tr><td><strong>CLS (column-level)</strong></td><td>✅</td><td>❌</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h4>Items con soporte de OneLake Security</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Item</th><th>Read</th><th>ReadWrite</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Lakehouse</strong></td><td>✅</td><td>✅</td></tr>
+                <tr><td><strong>Azure Databricks mirrored catalog</strong></td><td>✅</td><td>❌</td></tr>
+                <tr><td><strong>Mirrored databases</strong></td><td>✅</td><td>❌</td></tr>
+                <tr><td><strong>Warehouse</strong></td><td>❌ (usa T-SQL)</td><td>❌</td></tr>
+                <tr><td><strong>SQL Database</strong></td><td>❌ (usa T-SQL)</td><td>❌</td></tr>
+                <tr><td><strong>KQL Database</strong></td><td>❌ (usa políticas KQL)</td><td>❌</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h4>Mecanismos de seguridad por engine</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Engine</th><th>Mecanismo de seguridad</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Lakehouse</strong></td><td>⭐ OneLake Security (moderno)</td></tr>
+                <tr><td><strong>Warehouse</strong></td><td>T-SQL: OLS, RLS, CLS, DDM</td></tr>
+                <tr><td><strong>SQL Database</strong></td><td>T-SQL: OLS, RLS, CLS, DDM</td></tr>
+                <tr><td><strong>KQL Database</strong></td><td>Políticas KQL de RLS</td></tr>
+                <tr><td><strong>Semantic Model</strong></td><td>RLS y OLS con DAX</td></tr>
+                <tr><td><strong>Mirrored DB</strong></td><td>OneLake Security (Read)</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h4>DefaultReader role</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Aspecto</th><th>Detalle</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Existe en</strong></td><td>Todos los lakehouses</td></tr>
+                <tr><td><strong>Concede</strong></td><td>Acceso a los usuarios con item permission ReadAll</td></tr>
+                <tr><td><strong>Puedes</strong></td><td>Borrarlo o editarlo</td></tr>
+                <tr><td><strong>Recomendado</strong></td><td>Modificarlo o borrarlo si quieres restringir</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h4>Opciones de seguridad en Direct Lake</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Opción</th><th>Ideal para</th></tr></thead>
+              <tbody>
+                <tr><td><strong>SSO</strong></td><td>RLS/OLS por usuario real</td></tr>
+                <tr><td><strong>Fixed identity</strong></td><td>Dashboards públicos, usuarios externos</td></tr>
+                <tr><td><strong>Workspace roles</strong></td><td>Setup simple</td></tr>
+                <tr><td><strong>OneLake Security</strong></td><td>Granular cross-engine</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </article>
+
+        <!-- ============ 29. FUENTES ============ -->
+        <div class="category-header" id="fuentes">
+          <span class="category-header__icon">📚</span>
+          <h2 class="category-header__title">29. Fuentes oficiales consultadas</h2>
+        </div>
+
+        <article class="concept-card">
+          <ul class="sources-list">
+            <li>Módulo Learn: <a href="https://learn.microsoft.com/training/modules/secure-data-access-in-fabric/" target="_blank" rel="noopener noreferrer">secure-data-access-in-fabric</a></li>
+            <li>Security overview: <a href="https://learn.microsoft.com/fabric/security/security-overview" target="_blank" rel="noopener noreferrer">security-overview</a></li>
+            <li>Permission model: <a href="https://learn.microsoft.com/fabric/security/permission-model" target="_blank" rel="noopener noreferrer">permission-model</a></li>
+            <li>Roles in workspaces: <a href="https://learn.microsoft.com/fabric/fundamentals/roles-workspaces" target="_blank" rel="noopener noreferrer">roles-workspaces</a></li>
+            <li>End-to-end security scenario: <a href="https://learn.microsoft.com/fabric/security/security-scenario" target="_blank" rel="noopener noreferrer">security-scenario</a></li>
+            <li>Data security in OneLake: <a href="https://learn.microsoft.com/fabric/onelake/security/get-started-security" target="_blank" rel="noopener noreferrer">get-started-security</a></li>
+            <li>Create and manage OneLake security roles: <a href="https://learn.microsoft.com/fabric/onelake/security/create-manage-roles" target="_blank" rel="noopener noreferrer">create-manage-roles</a></li>
+            <li>Table, column, and row-level security: <a href="https://learn.microsoft.com/fabric/onelake/security/table-column-row-security" target="_blank" rel="noopener noreferrer">table-column-row-security</a></li>
+            <li>Read data secured with OneLake security: <a href="https://learn.microsoft.com/fabric/onelake/security/read-secured-data" target="_blank" rel="noopener noreferrer">read-secured-data</a></li>
+            <li>Data access control model: <a href="https://learn.microsoft.com/fabric/onelake/security/data-access-control-model" target="_blank" rel="noopener noreferrer">data-access-control-model</a></li>
+            <li>SQL analytics endpoint OneLake security: <a href="https://learn.microsoft.com/fabric/onelake/security/sql-analytics-endpoint-onelake-security" target="_blank" rel="noopener noreferrer">sql-analytics-endpoint-onelake-security</a></li>
+            <li>Best practices OneLake security: <a href="https://learn.microsoft.com/fabric/onelake/security/best-practices-secure-data-in-onelake" target="_blank" rel="noopener noreferrer">best-practices-secure-data-in-onelake</a></li>
+            <li>Lakehouse sharing: <a href="https://learn.microsoft.com/fabric/data-engineering/lakehouse-sharing" target="_blank" rel="noopener noreferrer">lakehouse-sharing</a></li>
+            <li>Secure your Fabric data (Secure tab): <a href="https://learn.microsoft.com/fabric/governance/secure-your-data" target="_blank" rel="noopener noreferrer">secure-your-data</a></li>
+            <li>Direct Lake security integration: <a href="https://learn.microsoft.com/fabric/fundamentals/direct-lake-security-integration" target="_blank" rel="noopener noreferrer">direct-lake-security-integration</a></li>
+            <li>Authorization in SQL database: <a href="https://learn.microsoft.com/fabric/database/sql/authorization" target="_blank" rel="noopener noreferrer">database/sql/authorization</a></li>
+            <li>Share Fabric items: <a href="https://learn.microsoft.com/fabric/fundamentals/share-items" target="_blank" rel="noopener noreferrer">share-items</a></li>
+            <li>Give users access to workspaces: <a href="https://learn.microsoft.com/fabric/fundamentals/give-access-workspaces" target="_blank" rel="noopener noreferrer">give-access-workspaces</a></li>
+            <li>Troubleshoot restricted access: <a href="https://learn.microsoft.com/fabric/governance/troubleshoot-restricted-access" target="_blank" rel="noopener noreferrer">troubleshoot-restricted-access</a></li>
+            <li>Row-level security (Power BI service): <a href="https://learn.microsoft.com/fabric/security/service-admin-row-level-security" target="_blank" rel="noopener noreferrer">service-admin-row-level-security</a></li>
+            <li>Column-level security (Warehouse): <a href="https://learn.microsoft.com/fabric/data-warehouse/column-level-security" target="_blank" rel="noopener noreferrer">column-level-security</a></li>
+            <li>Object-level security: <a href="https://learn.microsoft.com/fabric/security/service-admin-object-level-security" target="_blank" rel="noopener noreferrer">service-admin-object-level-security</a></li>
+          </ul>
+        </article>
+
+        <div class="note note--next">
+          🚀 <strong>¡Módulo 15 completado!</strong> Ya sabes proteger tus datos desde el workspace hasta la columna. Sigue con el <a href="modulo-16.html">Módulo 16: Purview y gobernanza</a>. 🌸
+        </div>
+
+        <!-- Navegación del curso -->
+        <div class="course-nav">
+          <a href="modulo-14.html">
+            <span class="course-nav__label">← Anterior</span>
+            <span class="course-nav__title">Módulo 14 · CI/CD</span>
+          </a>
+          <a href="modulo-16.html" class="next">
+            <span class="course-nav__label">Siguiente →</span>
+            <span class="course-nav__title">Módulo 16 · Purview y gobernanza</span>
+          </a>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <button id="back-to-top" class="back-to-top" aria-label="Volver arriba" title="Volver arriba">↑</button>
+
+  <script src="https://cdn.jsdelivr.net/npm/i18next@23/dist/umd/i18next.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1/prism.min.js"></script>
+  <script src="../../../assets/js/theme.js"></script>
+  <script src="../../../assets/js/main.js"></script>
+  <script src="../../../assets/js/cursor.js"></script>
+</body>
+</html>

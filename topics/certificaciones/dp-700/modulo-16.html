@@ -1,0 +1,1271 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="DP-700 Módulo 16: gobernar datos en Microsoft Fabric con Purview. Domains, tags, OneLake catalog, endorsement (promoted, certified, master data), sensitivity labels, protection policies, DLP, audit, lineage y gobernanza para IA.">
+  <title>DP-700 · Módulo 16: Purview y gobernanza | Power BI Guide by Kawaii BI</title>
+  <link rel="canonical" href="https://kawaiibi.es/topics/certificaciones/dp-700/modulo-16.html">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Kawaii Power BI Guide">
+  <meta property="og:locale" content="es_ES">
+  <meta property="og:title" content="DP-700 · Módulo 16: Purview y gobernanza | Power BI Guide by Kawaii BI">
+  <meta property="og:description" content="DP-700 Módulo 16: gobernanza en Fabric con Purview. Endorsement, sensitivity labels, protection policies, DLP, audit y lineage.">
+  <meta property="og:url" content="https://kawaiibi.es/topics/certificaciones/dp-700/modulo-16.html">
+  <meta property="og:image" content="https://kawaiibi.es/assets/images/og-banner.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="1200">
+  <meta property="og:image:alt" content="Sara Lozano Marti - Kawaii Power BI">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="DP-700 · Módulo 16: Purview y gobernanza | Power BI Guide by Kawaii BI">
+  <meta name="twitter:description" content="DP-700 Módulo 16: gobernanza en Fabric con Purview. Endorsement, labels, DLP y lineage.">
+  <meta name="twitter:image" content="https://kawaiibi.es/assets/images/og-banner.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/prismjs@1/themes/prism-okaidia.min.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="../../../assets/css/main.css">
+  <link rel="stylesheet" href="../../../assets/css/themes.css">
+  <link rel="stylesheet" href="../../../assets/css/components.css">
+  <link rel="stylesheet" href="../../../assets/css/layout.css">
+
+  <style>
+    .topic-header { text-align: center; padding: 2.25rem 0 1.75rem; border-bottom: 2px solid var(--color-mauve); margin-bottom: 2rem; }
+    .topic-header__eyebrow { font-family: 'Fira Code', monospace; font-size: 0.8125rem; font-weight: 600; color: var(--color-coral); letter-spacing: 0.05em; }
+    .topic-header__icon { font-size: 3.5rem; margin: 0.5rem 0; display: block; }
+    .topic-header__title { font-size: clamp(1.75rem, 4vw, 2.25rem); font-weight: 800; color: var(--color-dark); margin-bottom: 0.625rem; line-height: 1.2; }
+    .topic-header__subtitle { font-size: 1rem; color: var(--color-slate); margin-bottom: 1.25rem; line-height: 1.55; max-width: 680px; margin-left: auto; margin-right: auto; }
+    .topic-header__levels { display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap; align-items: center; }
+
+    .toc { background: var(--color-rose); border-radius: var(--border-radius); padding: 1.25rem 1.5rem; margin-bottom: 2rem; border: 1.5px solid var(--color-mauve); }
+    .toc__title { font-size: 1rem; font-weight: 700; margin: 0 0 0.75rem; }
+    .toc__list { display: flex; flex-wrap: wrap; gap: 0.5rem; list-style: none; padding: 0; margin: 0; }
+    .toc__list a { font-size: 0.8125rem; color: var(--color-coral); text-decoration: none; padding: 0.25rem 0.625rem; background: var(--color-white); border-radius: 999px; border: 1px solid var(--color-mauve); }
+    .toc__list a:hover { background: var(--color-coral); color: #fff; }
+
+    .category-header { display: flex; align-items: center; gap: 0.75rem; margin: 2.5rem 0 1.25rem; padding: 0.875rem 1.25rem; background: var(--color-rose); border-radius: var(--border-radius-sm); border-left: 4px solid var(--color-coral); scroll-margin-top: 20px; }
+    .category-header__icon { font-size: 1.5rem; }
+    .category-header__title { font-size: 1.25rem; font-weight: 700; margin: 0; }
+
+    .concept-card { background: var(--color-white); border: 1.5px solid var(--color-mauve); border-radius: var(--border-radius); padding: 1.5rem 1.75rem; margin-bottom: 1.25rem; }
+    .concept-card h3 { font-size: 1.0625rem; font-weight: 700; color: var(--color-coral); margin: 0 0 0.6rem; }
+    .concept-card h4 { font-size: 0.9375rem; font-weight: 700; color: var(--color-dark); margin: 1.1rem 0 0.4rem; }
+    .concept-card p { font-size: 0.9375rem; line-height: 1.7; color: var(--color-dark); margin-bottom: 0.7rem; }
+    .concept-card ul, .concept-card ol { padding-left: 1.25rem; font-size: 0.9375rem; line-height: 1.75; color: var(--color-dark); margin: 0.4rem 0; }
+    .concept-card code { background: var(--color-blush); padding: 0.1em 0.4em; border-radius: 4px; font-family: 'Fira Code', monospace; font-size: 0.85em; color: var(--color-coral); }
+    .concept-card pre { margin: 0.75rem 0; }
+
+    .md-table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.84rem; }
+    .md-table th, .md-table td { border: 1px solid var(--color-mauve); padding: 0.5rem 0.7rem; text-align: left; vertical-align: top; }
+    .md-table th { background: var(--color-rose); font-weight: 700; color: var(--color-dark); }
+    .md-table tr:nth-child(even) td { background: var(--color-blush); }
+    .table-scroll { overflow-x: auto; }
+
+    .trap-list { list-style: none; padding: 0; margin: 0; }
+    .trap-list > li { background: var(--color-white); border: 1.5px solid var(--color-mauve); border-left: 4px solid var(--color-warning); border-radius: var(--border-radius-sm); padding: 0.875rem 1.125rem; margin-bottom: 0.75rem; font-size: 0.9375rem; line-height: 1.7; }
+    .trap-list strong.trap-title { display: block; color: var(--color-dark); margin-bottom: 0.25rem; }
+
+    .course-nav { display: flex; justify-content: space-between; gap: 1rem; margin-top: 2.5rem; flex-wrap: wrap; }
+    .course-nav a { flex: 1 1 220px; display: block; background: var(--color-white); border: 1.5px solid var(--color-mauve); border-radius: var(--border-radius); padding: 1rem 1.25rem; text-decoration: none; color: inherit; transition: var(--transition); }
+    .course-nav a:hover { border-color: var(--color-coral); box-shadow: var(--shadow-md); text-decoration: none; }
+    .course-nav__label { font-size: 0.75rem; color: var(--color-slate); text-transform: uppercase; letter-spacing: 0.05em; }
+    .course-nav__title { font-weight: 700; color: var(--color-coral); }
+    .course-nav a.next { text-align: right; }
+
+    .sources-list { font-size: 0.875rem; line-height: 1.9; word-break: break-word; }
+  </style>
+</head>
+<body>
+
+  <aside class="site-sidebar">
+    <div class="site-sidebar__profile">
+      <img src="../../../assets/images/avatar-sara.png" alt="Sara Lozano Martí" class="site-sidebar__avatar">
+      <p class="site-sidebar__name">Sara Lozano Martí</p>
+      <p class="site-sidebar__subtitle">Power BI Expert</p>
+    </div>
+    <nav class="site-sidebar__nav" aria-label="Navegación principal">
+      <ul>
+        <li><a href="../../../index.html" class="site-sidebar__link"><span class="site-sidebar__icon">🏠</span> Inicio</a></li>
+        <li><a href="../../dax.html" class="site-sidebar__link"><span class="site-sidebar__icon">⚡</span> Funciones DAX</a></li>
+        <li><a href="../../power-query.html" class="site-sidebar__link"><span class="site-sidebar__icon">🔄</span> Power Query</a></li>
+        <li><a href="../../lenguaje-m.html" class="site-sidebar__link"><span class="site-sidebar__icon">〽️</span> Lenguaje M</a></li>
+        <li><a href="../../modelado.html" class="site-sidebar__link"><span class="site-sidebar__icon">🗄️</span> Modelado</a></li>
+        <li><a href="../../conceptos-powerbi.html" class="site-sidebar__link"><span class="site-sidebar__icon">📊</span> Conceptos Power BI</a></li>
+        <li><a href="../../fabric.html" class="site-sidebar__link"><span class="site-sidebar__icon">🧵</span> Microsoft Fabric</a></li>
+        <li><a href="../../tmdl.html" class="site-sidebar__link"><span class="site-sidebar__icon">📝</span> TMDL</a></li>
+        <li><a href="../../diseno-ux.html" class="site-sidebar__link"><span class="site-sidebar__icon">🎨</span> Diseño y UX</a></li>
+        <li><a href="../../gobernanza.html" class="site-sidebar__link"><span class="site-sidebar__icon">🔒</span> Gobernanza</a></li>
+        <li><a href="../../certificaciones.html" class="site-sidebar__link is-active"><span class="site-sidebar__icon">🎓</span> Certificaciones</a></li>
+      </ul>
+    </nav>
+    <div class="site-sidebar__divider"></div>
+    <div class="site-sidebar__footer">
+      <a href="../../../quien-soy.html" class="site-sidebar__link site-sidebar__link--highlight"><span class="site-sidebar__icon">👩‍💻</span> ¿Quién soy?</a>
+      <div class="site-sidebar__social">
+        <a href="https://www.linkedin.com/in/saralozanomarti" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><img src="../../../assets/images/logo-linkedin.png" alt="LinkedIn" class="site-sidebar__social-icon"></a>
+        <a href="https://www.youtube.com/@KawaiiPowerBI" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><img src="../../../assets/images/logo-youtube.png" alt="YouTube" class="site-sidebar__social-icon"></a>
+        <a href="https://github.com/KawaiiBI" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><img src="../../../assets/images/logo-github.png" alt="GitHub" class="site-sidebar__social-icon"></a>
+      </div>
+      <div class="site-sidebar__logo-bottom"><img src="../../../assets/images/logo-kawaii.jpg" alt="Kawaii BI" class="site-sidebar__logo-img"></div>
+      <p class="site-sidebar__copyright">Power BI Guide 🌸<br>© 2026 Kawaii BI</p>
+    </div>
+  </aside>
+
+  <div class="page-wrapper">
+    <main class="main-content">
+      <div class="topic-page">
+
+        <nav class="breadcrumb" aria-label="Ruta de navegación">
+          <span class="breadcrumb__item"><a href="../../../index.html">🏠 Inicio</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item"><a href="../../certificaciones.html">Certificaciones</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item"><a href="../dp-700.html">DP-700</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item">Módulo 16</span>
+        </nav>
+
+        <header class="topic-header">
+          <span class="topic-header__eyebrow">DP-700 · MÓDULO 16</span>
+          <span class="topic-header__icon">🏛️</span>
+          <h1 class="topic-header__title">Gobernar datos en Microsoft Fabric con Purview</h1>
+          <p class="topic-header__subtitle">Domains, tags, OneLake catalog, endorsement (promoted, certified, master data), sensitivity labels, protection policies, DLP, audit, lineage y gobernanza para IA. 🌸</p>
+          <div class="topic-header__levels">
+            <span class="badge badge--intermediate">Intermedio</span>
+            <span class="badge badge--advanced">Avanzado</span>
+          </div>
+        </header>
+
+        <nav class="toc" aria-label="Índice del módulo">
+          <p class="toc__title">📑 En este módulo:</p>
+          <ul class="toc__list">
+            <li><a href="#objetivos">1. Objetivos y encaje</a></li>
+            <li><a href="#que-es">2. ¿Qué es data governance?</a></li>
+            <li><a href="#fabric-native">3. Governance Fabric-native</a></li>
+            <li><a href="#purview">4. ¿Qué es Purview?</a></li>
+            <li><a href="#purview-fabric">5. Purview + Fabric</a></li>
+            <li><a href="#domains">6. Domains</a></li>
+            <li><a href="#tags">7. Tags</a></li>
+            <li><a href="#onelake-catalog">8. OneLake catalog</a></li>
+            <li><a href="#endorsement">9. Endorsement: los 3 tipos</a></li>
+            <li><a href="#promoted">10. Promoted</a></li>
+            <li><a href="#certified">11. Certified</a></li>
+            <li><a href="#master-data">12. Master data</a></li>
+            <li><a href="#sensitivity">13. Sensitivity labels</a></li>
+            <li><a href="#default-labels">14. Default label policies</a></li>
+            <li><a href="#protection">15. Protection policies</a></li>
+            <li><a href="#dlp">16. Data Loss Prevention</a></li>
+            <li><a href="#audit">17. Purview Audit</a></li>
+            <li><a href="#irm">18. Insider Risk Management</a></li>
+            <li><a href="#unified-catalog">19. Unified Catalog</a></li>
+            <li><a href="#data-products">20. Data products</a></li>
+            <li><a href="#lineage">21. Lineage end-to-end</a></li>
+            <li><a href="#impact">22. Impact analysis</a></li>
+            <li><a href="#external-sharing">23. External data sharing</a></li>
+            <li><a href="#governance-ai">24. Gobernanza para IA</a></li>
+            <li><a href="#best-practices">25. Best practices</a></li>
+            <li><a href="#trampas">26. Trampas típicas</a></li>
+            <li><a href="#comparativas">27. Comparativas clave</a></li>
+            <li><a href="#fuentes">28. Fuentes oficiales</a></li>
+          </ul>
+        </nav>
+
+        <!-- ============ 1. OBJETIVOS ============ -->
+        <div class="category-header" id="objetivos">
+          <span class="category-header__icon">🎯</span>
+          <h2 class="category-header__title">1. Objetivos y encaje en el DP-700</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>¿Qué te enseña este módulo?</h3>
+          <p>Este módulo cubre <strong>cómo gobernar datos en Fabric con Purview</strong> — tanto features Fabric-native como integraciones con Microsoft Purview. Los objetivos oficiales:</p>
+          <ol>
+            <li>Aplicar <strong>clasificación de datos y sensitivity labels</strong> a los items de Fabric.</li>
+            <li>Usar el <strong>endorsement</strong> (promoted, certified, master data) como mecanismo de gobernanza.</li>
+            <li>Implementar <strong>prácticas de documentación</strong> para la discoverability de los datos.</li>
+            <li>Describir cómo los controles de gobernanza afectan al <strong>consumo de datos por parte de los AI agents</strong>.</li>
+            <li>Usar las <strong>features del OneLake catalog</strong> para gestionar el data estate.</li>
+          </ol>
+
+          <h4>Peso en el examen DP-700</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Dominio</th><th>Cómo aparece</th></tr></thead>
+              <tbody>
+                <tr><td>Implement and manage (30-35%)</td><td><strong>⭐⭐⭐ Gobernanza central</strong>: sensitivity labels, endorsement, audit logs, protection policies, DLP</td></tr>
+                <tr><td>Ingest and transform (30-35%)</td><td>Poco directamente</td></tr>
+                <tr><td>Monitor and optimize (30-35%)</td><td>Audit logs, monitorización de accesos</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="note note--tip">
+            🎯 <strong>Qué es CRÍTICO dominar:</strong>
+            <ul>
+              <li>Los <strong>3 tipos de endorsement</strong> (Promoted, Certified, Master data) y quién los aplica</li>
+              <li><strong>Sensitivity labels</strong> (aplicación, herencia, persistencia)</li>
+              <li><strong>Protection policies</strong> vs <strong>DLP policies</strong> (la distinción)</li>
+              <li><strong>Purview Unified Catalog</strong> (live view vs scans)</li>
+              <li><strong>Lineage</strong> end-to-end</li>
+              <li><strong>Audit logs</strong> (Purview Audit)</li>
+              <li><strong>Domains y Tags</strong> para organizar</li>
+              <li><strong>External data sharing</strong> cross-tenant</li>
+              <li><strong>Gobernanza para IA</strong> (importante y examinable)</li>
+            </ul>
+          </div>
+
+          <div class="note note--tip">
+            🌸 <strong>Sobre este módulo:</strong> Purview y Fabric están <strong>cada vez más integrados</strong>. Muchas features de gobernanza están <strong>en Fabric directamente</strong> (Fabric-native), y otras <strong>requieren Purview</strong> (licenciamiento adicional). <strong>Distinguir qué es Fabric-native y qué necesita Purview</strong> es importante para el examen. Vamos allá 💕
+          </div>
+        </article>
+
+        <!-- ============ 2. QUÉ ES ============ -->
+        <div class="category-header" id="que-es">
+          <span class="category-header__icon">🏛️</span>
+          <h2 class="category-header__title">2. ¿Qué es data governance?</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>Definición</h3>
+          <p><strong>Data governance</strong> = el <strong>framework de políticas, procesos, roles y estándares</strong> para asegurar que los datos son <strong>precisos</strong>, <strong>fiables</strong>, <strong>disponibles</strong>, <strong>seguros</strong> y <strong>conformes</strong> con las regulaciones.</p>
+
+          <h4>Por qué importa</h4>
+          <p><strong>Sin governance</strong>: data duplicada dispersa por la organización, <strong>nadie sabe</strong> qué data es la autoritativa, data sensible expuesta sin control, violaciones de compliance (GDPR, HIPAA, LGPD) y AI/Copilot trabajando con data incorrecta.</p>
+          <p><strong>Con governance</strong>:</p>
+          <ul>
+            <li>✅ <strong>Single source of truth</strong>.</li>
+            <li>✅ <strong>Data sensible protegida</strong>.</li>
+            <li>✅ <strong>Compliance verificable</strong>.</li>
+            <li>✅ Los usuarios <strong>encuentran y confían</strong> en los datos.</li>
+            <li>✅ <strong>IA fiable</strong>.</li>
+          </ul>
+
+          <div class="note note--tip">
+            🌷 <strong>Analogía kawaii:</strong> piénsalo como una <strong>biblioteca kawaii</strong>: el <strong>catálogo</strong> (OneLake catalog / Purview Unified Catalog), las <strong>etiquetas</strong> (sensitivity labels, tags), los <strong>sellos de calidad</strong> (endorsement), las <strong>reglas de préstamo</strong> (protection policies, DLP), el <strong>registro de préstamos</strong> (audit logs) y los <strong>bibliotecarios</strong> (data stewards, domain owners).
+            <br>Sin biblioteca organizada, <strong>nadie encuentra libros y algunos se pierden</strong>. Con biblioteca kawaii → <strong>todo ordenado y accesible según el nivel</strong> 📚
+          </div>
+
+          <h4>Governance en Fabric = 2 approaches</h4>
+          <p><strong>A) Governance Fabric-native</strong>: features integradas en Fabric, sin licencia adicional de Purview. Por ejemplo OneLake catalog, domains, tags, endorsement y sensitivity labels básicas.</p>
+          <p><strong>B) Integración con Microsoft Purview</strong>: requiere <strong>licenciamiento de Microsoft Purview</strong> (Information Protection, DLP, Insider Risk, etc.). Gobernanza enterprise completa: protection policies, DLP, IRM, scans del Unified Catalog.</p>
+          <p>Ambos trabajan juntos. Puedes empezar con lo Fabric-native y <strong>añadir Purview</strong> cuando necesites más control.</p>
+        </article>
+
+        <!-- ============ 3. FABRIC NATIVE ============ -->
+        <div class="category-header" id="fabric-native">
+          <span class="category-header__icon">🌸</span>
+          <h2 class="category-header__title">3. Fabric-native governance features</h2>
+        </div>
+
+        <article class="concept-card">
+          <h4>Features integradas en Fabric</h4>
+          <p><strong>Sin necesidad de Purview</strong>, Fabric ofrece:</p>
+          <p><strong>Organización del data estate</strong>: <strong>Domains</strong> (agrupar data por área de negocio), <strong>Tags</strong> (taxonomía custom) y <strong>OneLake catalog</strong> (buscar y descubrir items).</p>
+          <p><strong>Endorsement</strong>: <strong>Promoted</strong> (cualquier usuario con permisos de escritura), <strong>Certified</strong> (requiere autorización) y <strong>Master data</strong> (requiere autorización).</p>
+          <p><strong>Data lineage</strong> integrado: ver las fuentes upstream y las dependencias downstream, e <strong>impact analysis</strong> antes de hacer cambios.</p>
+          <p><strong>Control de acceso básico</strong>: workspace roles, item permissions y OneLake Security.</p>
+          <p><strong>External data sharing</strong>: data de OneLake cross-tenant.</p>
+          <p><strong>UI de sensitivity labels</strong>: aplicar labels a los items (aunque las labels se definen en Purview).</p>
+
+          <h4>Features que requieren Purview</h4>
+          <p><strong>Requieren licenciamiento de Microsoft Purview</strong>: <strong>protection policies</strong> (controlar acceso por label), <strong>DLP policies</strong> (bloquear movimientos de datos arriesgados), <strong>Insider Risk Management</strong> (detectar comportamientos de riesgo), <strong>Unified Catalog</strong> (gobernanza central multi-cloud), los logs de <strong>Purview Audit</strong>, <strong>eDiscovery</strong> y <strong>data lifecycle management</strong>.</p>
+
+          <h4>Distinción clave para el examen</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Feature</th><th>Fabric-native</th><th>Requiere Purview</th></tr></thead>
+              <tbody>
+                <tr><td>Domains, Tags</td><td>✅</td><td></td></tr>
+                <tr><td>OneLake catalog</td><td>✅</td><td></td></tr>
+                <tr><td>Endorsement (Promoted/Certified/Master)</td><td>✅</td><td></td></tr>
+                <tr><td>Lineage básico</td><td>✅</td><td></td></tr>
+                <tr><td>Impact analysis</td><td>✅</td><td></td></tr>
+                <tr><td>Aplicar sensitivity labels</td><td>✅</td><td>(las labels se definen en Purview)</td></tr>
+                <tr><td>Protection policies</td><td></td><td>✅</td></tr>
+                <tr><td>DLP policies</td><td></td><td>✅</td></tr>
+                <tr><td>Insider Risk Management</td><td></td><td>✅</td></tr>
+                <tr><td>Purview Audit</td><td></td><td>✅</td></tr>
+                <tr><td>Unified Catalog</td><td></td><td>✅</td></tr>
+                <tr><td>eDiscovery</td><td></td><td>✅</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>Tener esto claro <strong>te ahorra muchos errores</strong> en el examen.</p>
+        </article>
+
+        <!-- ============ 4. PURVIEW ============ -->
+        <div class="category-header" id="purview">
+          <span class="category-header__icon">🎯</span>
+          <h2 class="category-header__title">4. ¿Qué es Microsoft Purview?</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>Definición</h3>
+          <p><strong>Microsoft Purview</strong> = <strong>familia de soluciones de data governance, riesgo y compliance</strong> que ayuda a las organizaciones a <strong>gobernar</strong> todo su data estate, <strong>proteger</strong> la data sensible y <strong>gestionar</strong> los requisitos de compliance.</p>
+
+          <h4>Alcance</h4>
+          <p>Purview provee <strong>cobertura integrada</strong> para <strong>Microsoft 365</strong> (Exchange, SharePoint, Teams, OneDrive), data <strong>on-premises</strong> (SQL Server, file shares), <strong>multi-cloud</strong> (Azure, AWS, GCP), <strong>servicios SaaS de datos</strong> y <strong>Microsoft Fabric</strong> ⭐. Es la solución <strong>enterprise-grade</strong> de Microsoft para gobernanza.</p>
+
+          <h4>Capabilities principales</h4>
+          <p>Microsoft Purview te ayuda a:</p>
+          <ol>
+            <li><strong>Proteger data sensible</strong> entre clouds, apps y dispositivos.</li>
+            <li><strong>Identificar riesgos de datos</strong> y gestionar los requisitos regulatorios.</li>
+            <li><strong>Empezar con el compliance regulatorio</strong>.</li>
+            <li><strong>Crear un mapa actualizado</strong> de todo tu data estate con clasificación de datos y lineage end-to-end.</li>
+            <li><strong>Identificar dónde se almacena la data sensible</strong> en tu estate.</li>
+            <li><strong>Crear un entorno seguro</strong> para que los consumidores encuentren data valiosa.</li>
+            <li><strong>Generar insights</strong> sobre cómo se almacena y se usa tu data.</li>
+          </ol>
+
+          <h4>Las dos ramas</h4>
+          <p><strong>A) Soluciones de riesgo y compliance</strong>: compliance manager, records management, data lifecycle management, eDiscovery, Insider Risk Management y communication compliance.</p>
+          <p><strong>B) Soluciones de gobernanza unificada de datos</strong>: Data Map, Data Catalog (Unified Catalog), Data Estate Insights, Data Sharing y Data Policy.</p>
+          <p>Para Fabric usamos principalmente features de ambas ramas.</p>
+        </article>
+
+        <!-- ============ 5. PURVIEW + FABRIC ============ -->
+        <div class="category-header" id="purview-fabric">
+          <span class="category-header__icon">🌸</span>
+          <h2 class="category-header__title">5. Purview + Fabric juntos</h2>
+        </div>
+
+        <article class="concept-card">
+          <p>Microsoft Purview + Microsoft Fabric = <strong>gobernanza completa end-to-end</strong>. Las integraciones principales:</p>
+
+          <h4>1. Microsoft Purview Unified Catalog 📚</h4>
+          <ul>
+            <li><strong>Ver automáticamente los metadatos</strong> de los items de Fabric en el Purview Unified Catalog.</li>
+            <li><strong>Live view</strong> en Purview (sin scanning tradicional).</li>
+            <li>O conectar vía <strong>scans</strong> (mismo tenant o cross-tenant).</li>
+            <li>Soporta <strong>data products</strong> y <strong>glossary terms</strong>.</li>
+            <li><strong>Data quality checks</strong> aplicables a assets no gobernados, incluida la data de Fabric.</li>
+          </ul>
+
+          <h4>2. Microsoft Purview Information Protection 🏷️</h4>
+          <ul>
+            <li><strong>Descubrir, clasificar y proteger</strong> la data de Fabric.</li>
+            <li><strong>Sensitivity labels</strong> aplicables a <strong>todos los items de Fabric</strong>.</li>
+            <li>La data sigue protegida al exportarse por las vías soportadas.</li>
+            <li>Los admins pueden <strong>monitorizar actividades</strong> sobre las sensitivity labels vía Purview Audit.</li>
+            <li><strong>Protection policies</strong> para controlar el acceso según la label.</li>
+          </ul>
+
+          <h4>3. Microsoft Purview Data Loss Prevention (DLP) 🛡️</h4>
+          <ul>
+            <li>Las <strong>políticas DLP soportan data estructurada</strong> en Fabric (lakehouses, warehouses, varias BBDD, semantic models).</li>
+            <li><strong>Detectan la subida</strong> de data sensible a OneLake.</li>
+            <li><strong>Aplican restricciones de acceso</strong> sobre assets sensibles en Fabric KQL Database, Fabric SQL Database y Fabric Data Warehouse.</li>
+            <li>Las políticas <strong>evalúan sensitivity labels y sensitive info types</strong> (tarjetas de crédito, SSN).</li>
+            <li><strong>Policy tips</strong> para los usuarios y <strong>alertas</strong> para los security admins.</li>
+            <li>Configurables para permitir el <strong>override</strong> de los workspace admins.</li>
+          </ul>
+
+          <h4>4. Microsoft Purview Audit 📝</h4>
+          <p><strong>Todas las actividades de usuario en Microsoft Fabric</strong> se registran y están disponibles en el audit log de Purview. Trazabilidad granular de qué hicieron los usuarios.</p>
+
+          <h4>5. Microsoft Purview Insider Risk Management (IRM) 🔒</h4>
+          <ul>
+            <li>Políticas de IRM con <strong>indicadores de riesgo listos para usar</strong> para Fabric (actividades de Power BI y de lakehouse).</li>
+            <li>Detectan potencial <strong>robo o fuga de datos</strong> en los assets de lakehouse y Power BI de Fabric.</li>
+            <li>Detecciones específicas para escenarios de <strong>exfiltración de datos</strong> en Fabric (exportar reports de Power BI, mover data desde lakehouse/warehouse).</li>
+          </ul>
+
+          <h4>6. Purview governance para Copilots y agents de Fabric 🤖</h4>
+          <ul>
+            <li>Controles de gobernanza y riesgo para Copilots y agents.</li>
+            <li><strong>Risk discovery</strong> en prompts y respuestas.</li>
+            <li><strong>Cobertura de auditoría</strong> para las interacciones con IA.</li>
+            <li><strong>Retención y eDiscovery</strong> aplicables al contenido generado por IA.</li>
+            <li>Detectar <strong>uso de IA no conforme o arriesgado</strong> en los workloads soportados de Fabric.</li>
+          </ul>
+
+          <div class="note note--tip">
+            🌸 <strong>OneLake catalog (transición):</strong> nota importante — los <strong>security insights que antes estaban en el Microsoft Purview Hub</strong> ahora están en el <strong>OneLake catalog</strong>. El <strong>tab Govern del OneLake catalog</strong> provee una vista centralizada de la data de Fabric y su estado de gobernanza <strong>directamente dentro de Fabric</strong>. Es decir: Fabric absorbe cada vez más features de gobernanza de forma nativa.
+          </div>
+        </article>
+
+        <!-- ============ 6. DOMAINS ============ -->
+        <div class="category-header" id="domains">
+          <span class="category-header__icon">🏛️</span>
+          <h2 class="category-header__title">6. Domains: organización por área de negocio</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>¿Qué es un domain?</h3>
+          <p><strong>Domain</strong> = agrupación de workspaces por <strong>área de negocio</strong>. Ejemplos: domain "Finance", "HR", "Sales" u "Operations".</p>
+
+          <h4>Beneficios</h4>
+          <ul>
+            <li><strong>Delegar la gobernanza</strong> a los <strong>domain owners</strong>.</li>
+            <li><strong>Organizar</strong> el data estate por función de negocio.</li>
+            <li><strong>Filtrar y buscar</strong> por domain.</li>
+            <li>Distintos <strong>defaults por domain</strong> (por ejemplo, sensitivity labels).</li>
+          </ul>
+
+          <h4>Domain administrators</h4>
+          <p><strong>Cada domain puede tener su propio administrador</strong>, que puede delegar la <strong>habilitación de la certificación</strong>, definir <strong>defaults específicos del domain</strong> y gestionar los workspaces del domain.</p>
+
+          <h4>Cuándo usarlos</h4>
+          <p><strong>Sí usarlos</strong> en organizaciones grandes con <strong>varias áreas de negocio</strong>, con distintos requisitos de gobernanza por área y con un modelo de <strong>gobernanza distribuida</strong>. <strong>No sobrecomplicar</strong> en organizaciones pequeñas o con un solo equipo.</p>
+        </article>
+
+        <!-- ============ 7. TAGS ============ -->
+        <div class="category-header" id="tags">
+          <span class="category-header__icon">🏷️</span>
+          <h2 class="category-header__title">7. Tags: taxonomía custom</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>¿Qué son?</h3>
+          <p>Los <strong>tags</strong> son una <strong>taxonomía custom</strong> que tu organización define para clasificar items. Ejemplos:</p>
+          <ul>
+            <li><strong>Códigos de proyecto</strong>: <code>PROJ-2026-001</code>, <code>PROJ-2026-002</code></li>
+            <li><strong>Niveles de sensibilidad</strong>: <code>Tier1</code>, <code>Tier2</code>, <code>Tier3</code></li>
+            <li><strong>Centros de coste</strong>: <code>CC-Marketing</code>, <code>CC-Finance</code></li>
+            <li><strong>Unidades de negocio</strong>: <code>BU-EU</code>, <code>BU-US</code></li>
+          </ul>
+
+          <h4>Diferencia con domains</h4>
+          <p>Los <strong>domains</strong> agrupan por área de negocio (más rígido, a nivel organización). Los <strong>tags</strong> son una clasificación flexible y transversal. Un item puede estar en <strong>un solo domain</strong> pero tener <strong>varios tags</strong>.</p>
+
+          <h4>Uso típico</h4>
+          <p>Buscar todos los items del proyecto X, filtrar por centro de coste, o identificar items con una label concreta combinada con un proyecto concreto.</p>
+
+          <h4>Cuándo usar cada uno</h4>
+          <p><strong>Domains</strong> ✅ para organización estructural (finance, HR), delegar la gobernanza y agrupaciones estables a largo plazo.</p>
+          <p><strong>Tags</strong> ✅ para clasificación transversal, agrupación por proyecto y taxonomías ad-hoc.</p>
+        </article>
+
+        <!-- ============ 8. ONELAKE CATALOG ============ -->
+        <div class="category-header" id="onelake-catalog">
+          <span class="category-header__icon">📚</span>
+          <h2 class="category-header__title">8. OneLake catalog</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>¿Qué es?</h3>
+          <p>El <strong>OneLake catalog</strong> es un <strong>catálogo buscable</strong> de todos los items del tenant. Permite <strong>buscar en todo el tenant</strong> un item concreto, <strong>filtrar</strong> por domain, workspace, endorsement o sensitivity label, y <strong>descubrir</strong> los items disponibles para ti.</p>
+
+          <h4>Los dos tabs principales</h4>
+          <p><strong>Explore tab</strong>: descubrir items, buscar y filtrar, ver los detalles del item.</p>
+          <p><strong>Govern tab</strong>: visión general de gobernanza de tus items, su estado de gobernanza y una vista agregada de los metadatos.</p>
+
+          <h4>Secure tab (visto en el Módulo 15)</h4>
+          <p>Ver y monitorizar los OneLake security roles. Admin/Member ven la data del workspace; Contributor/Viewer solo su propio acceso.</p>
+
+          <h4>Features de descubrimiento</h4>
+          <p>En el <strong>Explore tab</strong>: <strong>navegar por workspace</strong>, <strong>navegar por domain</strong>, <strong>filtrar por endorsement</strong>, <strong>filtrar por sensitivity label</strong>, <strong>filtrar por tags</strong> y <strong>búsqueda de texto</strong> en nombres y descripciones.</p>
+
+          <div class="note note--tip">
+            🔍 <strong>Analogía "Google Search de Fabric":</strong> piensa en el OneLake catalog como el <strong>buscador de Google de tu tenant de Fabric</strong>. En vez de navegar workspace por workspace, <strong>buscas globalmente</strong>. Útil sobre todo en empresas grandes con <strong>muchos workspaces distribuidos</strong>.
+          </div>
+        </article>
+
+        <!-- ============ 9. ENDORSEMENT ============ -->
+        <div class="category-header" id="endorsement">
+          <span class="category-header__icon">🌟</span>
+          <h2 class="category-header__title">9. Endorsement: los 3 tipos (CRÍTICO)</h2>
+        </div>
+
+        <article class="concept-card">
+          <p><strong>Feature muy examinable</strong>. Domina los 3 tipos y quién puede aplicarlos.</p>
+
+          <h3>¿Qué es el endorsement?</h3>
+          <p><strong>Endorsement</strong> = feature de <strong>Fabric y Power BI</strong> que facilita a los usuarios <strong>encontrar contenido y datos de alta calidad y confiables</strong>. Los items endorsados están claramente <strong>etiquetados con badges</strong> en la UI y, en algunas listas, <strong>tienen precedencia</strong> (aparecen primero).</p>
+
+          <h4>Los 3 badges</h4>
+          <p><strong>1. Promoted</strong> 🌟 — cualquier usuario con <strong>permisos de escritura</strong> puede promoverlo. Señala: "los creadores creen que esto está listo para compartirse y reutilizarse".</p>
+          <p><strong>2. Certified</strong> ✅ — solo los <strong>reviewers autorizados</strong> (definidos por el Fabric admin) pueden certificar. Señala: "un reviewer autorizado por la organización ha certificado que cumple los estándares de calidad".</p>
+          <p><strong>3. Master data</strong> 🎯 — solo los <strong>reviewers autorizados</strong> pueden aplicarlo. Señala: "data core, single-source-of-truth".</p>
+
+          <h4>Items que soportan endorsement</h4>
+          <p><strong>Promoted y Certified</strong>: todos los items de Fabric y Power BI <strong>EXCEPTO los dashboards de Power BI</strong>.</p>
+          <p><strong>Master data</strong>: <strong>solo items que contienen data</strong> — lakehouses, semantic models. No aplica a reports, dashboards, pipelines ni notebooks.</p>
+
+          <h4>Prerequisites</h4>
+          <p><strong>Certification y Master data</strong> están disponibles <strong>solo si el Fabric admin las ha habilitado</strong>. La <strong>habilitación de la certificación</strong> puede <strong>delegarse a los domain administrators</strong>, permitiendo un conjunto distinto de reviewers por domain.</p>
+
+          <h4>Tabla resumen crítica</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Badge</th><th>Quién puede aplicarlo</th><th>Items soportados</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Promoted</strong></td><td>Cualquier usuario con permiso de escritura</td><td>Todos excepto los dashboards de Power BI</td></tr>
+                <tr><td><strong>Certified</strong></td><td>Solo reviewers autorizados</td><td>Todos excepto los dashboards de Power BI</td></tr>
+                <tr><td><strong>Master data</strong></td><td>Solo reviewers autorizados</td><td>Solo items con data (lakehouses, semantic models)</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </article>
+
+        <!-- ============ 10. PROMOTED ============ -->
+        <div class="category-header" id="promoted">
+          <span class="category-header__icon">🌟</span>
+          <h2 class="category-header__title">10. Promoted a fondo</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>Concepto</h3>
+          <p>La <strong>promoción</strong> es la forma de <strong>destacar los items que consideras valiosos</strong> y que merece la pena que otros usen. <strong>Fomenta el uso colaborativo y la difusión</strong> del contenido dentro de la organización.</p>
+
+          <h4>Quién puede promover</h4>
+          <p><strong>Cualquier propietario del item</strong>, así como <strong>cualquiera con permisos de escritura</strong> sobre él. Es el endorsement <strong>más democrático</strong>.</p>
+
+          <h4>Cómo aplicarlo</h4>
+          <ol>
+            <li>Ir al <strong>workspace donde está el item</strong>.</li>
+            <li>Abrir los <strong>settings del item</strong>.</li>
+            <li>Expandir la sección <strong>Endorsement</strong>.</li>
+            <li>Seleccionar <strong>Promoted</strong>.</li>
+            <li><strong>Apply</strong>.</li>
+          </ol>
+
+          <h4>Uso típico</h4>
+          <p>Un <strong>creador de contenido</strong> cree que su item es útil → lo <strong>promueve</strong> para animar a otros a usarlo. Un <strong>team lead</strong> promueve los items del equipo para darles visibilidad. Es <strong>democrático</strong>: cualquiera con escritura puede.</p>
+
+          <div class="note note--practice">
+            📌 <strong>Best practice:</strong> no abuses. Promueve solo los items que <strong>realmente valen la pena</strong>; si no, la señal pierde valor.
+          </div>
+        </article>
+
+        <!-- ============ 11. CERTIFIED ============ -->
+        <div class="category-header" id="certified">
+          <span class="category-header__icon">✅</span>
+          <h2 class="category-header__title">11. Certified a fondo</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>Concepto</h3>
+          <p>La <strong>certificación</strong> indica que el <strong>item cumple los estándares de calidad de la organización</strong> y puede <strong>considerarse fiable, autoritativo y listo para usarse en toda la organización</strong>. Es el <strong>sello de aprobación oficial</strong>.</p>
+
+          <h4>Quién puede certificar</h4>
+          <p><strong>Solo los reviewers autorizados</strong> definidos por el <strong>administrador de Fabric</strong>. Los propietarios de items que <strong>quieren certificar</strong> y <strong>no están autorizados</strong> deben seguir las <strong>guías de la organización</strong> para solicitar la certificación con el botón <strong>Request certification</strong>.</p>
+
+          <h4>Cómo aplicarlo</h4>
+          <p>Si eres <strong>reviewer autorizado</strong>: workspace del item → settings del item → sección <strong>Endorsement</strong> → <strong>Certified</strong> → <strong>Apply</strong>.</p>
+          <p>Si <strong>NO estás autorizado</strong>: mismos pasos, pero el <strong>botón Certified aparecerá en gris</strong>. Selecciona el enlace correspondiente (<strong>How do I get content certified</strong>) y sigue el proceso de tu organización.</p>
+
+          <h4>Habilitación por domain</h4>
+          <p>El Fabric admin puede <strong>delegar la habilitación de la certificación a los domain administrators</strong>. Beneficio: distintos conjuntos de reviewers para cada domain (reviewers de finanzas para items de finanzas, de RRHH para los de RRHH, etc.).</p>
+
+          <h4>Uso típico</h4>
+          <p>Items de <strong>reporting ejecutivo</strong>, dashboards de <strong>analítica crítica</strong>, <strong>datos financieros</strong> para auditores e items <strong>regulatorios</strong>.</p>
+
+          <div class="note note--practice">
+            📌 <strong>Best practice:</strong> la certificación implica una <strong>revisión formal de gobernanza</strong>. Trátala como un proceso real: calidad de datos validada, lógica de negocio revisada, documentación completa y owner identificado. Si no, se convierte en un <strong>sello inútil</strong>.
+          </div>
+        </article>
+
+        <!-- ============ 12. MASTER DATA ============ -->
+        <div class="category-header" id="master-data">
+          <span class="category-header__icon">🎯</span>
+          <h2 class="category-header__title">12. Master data a fondo</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>Concepto</h3>
+          <p><strong>Master data</strong> indica que el item es <strong>data core, single-source-of-truth</strong>. Ejemplos: listas de clientes, códigos de producto, maestro de empleados y plan contable.</p>
+
+          <h4>Quién puede aplicarlo</h4>
+          <p>Igual que Certified: <strong>solo los reviewers autorizados</strong> definidos por el Fabric admin. Los propietarios que quieran el badge y no estén autorizados deben solicitarlo por el proceso de la organización.</p>
+
+          <h4>Prerequisitos para aplicarlo</h4>
+          <p><strong>Antes de aplicar el badge de master data</strong>:</p>
+          <ol>
+            <li>Estar <strong>autorizado por el administrador de Fabric</strong>.</li>
+            <li>Tener <strong>permisos de escritura</strong> sobre el item.</li>
+            <li><strong>Revisar cuidadosamente el item</strong> para determinar si es realmente data core y single-source-of-truth.</li>
+          </ol>
+          <p><strong>Es una responsabilidad significativa</strong>. Aplícalo solo si estás cualificada.</p>
+
+          <h4>Cómo aplicarlo</h4>
+          <p>Workspace del item → settings del item → sección <strong>Endorsement</strong> → <strong>Master data</strong> → <strong>Apply</strong>.</p>
+
+          <h4>Items que lo soportan</h4>
+          <p><strong>Solo items que contienen data</strong>:</p>
+          <ul>
+            <li>✅ <strong>Lakehouses</strong></li>
+            <li>✅ <strong>Semantic models</strong></li>
+            <li>✅ <strong>Warehouses</strong></li>
+            <li>✅ <strong>SQL Databases</strong></li>
+            <li>✅ <strong>KQL Databases</strong></li>
+            <li>❌ Reports, dashboards, pipelines, notebooks (no contienen data)</li>
+          </ul>
+
+          <h4>Master data vs Certified</h4>
+          <p><strong>Certified</strong>: el item está <strong>aprobado en calidad</strong>, es fiable. <strong>Master data</strong>: el item es <strong>LA fuente autoritativa</strong> para ese tipo de datos.</p>
+          <p>Un item puede estar <strong>certified</strong> sin ser master data (calidad validada pero no LA fuente). Un item que es master data <strong>típicamente</strong> también está certified.</p>
+        </article>
+
+        <!-- ============ 13. SENSITIVITY ============ -->
+        <div class="category-header" id="sensitivity">
+          <span class="category-header__icon">🏷️</span>
+          <h2 class="category-header__title">13. Sensitivity labels</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>¿Qué son?</h3>
+          <p>Las <strong>sensitivity labels</strong> son las <strong>labels de Microsoft Purview Information Protection</strong> que protegen el contenido sensible frente a accesos no autorizados y fugas de datos.</p>
+
+          <h4>Prerequisites para aplicarlas</h4>
+          <ul>
+            <li>Licencia <strong>Power BI Pro o Premium Per User (PPU)</strong>.</li>
+            <li><strong>Permisos de edición</strong> sobre el item a etiquetar.</li>
+          </ul>
+
+          <h4>Labels típicas</h4>
+          <p>Definidas a nivel <strong>tenant/organización</strong> por el equipo de compliance: <strong>Public</strong>, <strong>Internal</strong>, <strong>General</strong>, <strong>Confidential</strong>, <strong>Highly Confidential</strong>, <strong>Restricted</strong>. O labels custom del negocio.</p>
+
+          <h4>Cómo aplicarlas</h4>
+          <p><strong>A) Desde el menú flyout</strong>: seleccionar la <strong>indicación de sensibilidad</strong> en la cabecera del item; aparece el menú con las opciones.</p>
+          <p><strong>B) Desde los settings del item</strong>: abrir los settings, buscar la sección de <strong>sensitivity</strong> y elegir la label deseada.</p>
+
+          <h4>Labels en gris</h4>
+          <p>Si una label aparece <strong>en gris</strong>, es que <strong>no tienes permisos</strong> para usarla. Contacta con el soporte técnico de tu organización. Cada label tiene sus propios permisos configurados en Purview.</p>
+
+          <div class="note note--tip">
+            🎯 <strong>Persistencia al exportar (feature clave):</strong> las sensitivity labels <strong>aplican cifrado o restricciones de acceso</strong> incluso si la data se <strong>exporta a Excel u otra herramienta</strong>. La data no pierde protección al salir de Fabric. Ejemplo: exportar a Excel un semantic model con label "Confidential" → el fichero Excel <strong>también queda cifrado</strong>.
+          </div>
+
+          <h4>Herencia</h4>
+          <p>Las <strong>labels pueden heredarse</strong>: un report basado en un semantic model hereda la label del semantic model, y el output de un dataflow hereda la del origen. Es configurable a nivel tenant.</p>
+        </article>
+
+        <!-- ============ 14. DEFAULT LABELS ============ -->
+        <div class="category-header" id="default-labels">
+          <span class="category-header__icon">⚙️</span>
+          <h2 class="category-header__title">14. Default sensitivity label policies</h2>
+        </div>
+
+        <article class="concept-card">
+          <h4>Feature</h4>
+          <p>Fabric soporta el <strong>etiquetado por defecto</strong> a nivel <strong>tenant y workspace</strong>.</p>
+          <div class="note note--practice">
+            📌 <strong>Best practice:</strong> define una <strong>label por defecto a nivel tenant</strong> → todo nuevo item de Fabric recibe una clasificación aunque el usuario no haga nada. Y configura <strong>labels por defecto más estrictas a nivel workspace</strong> cuando ese workspace contiene habitualmente data sensible.
+          </div>
+
+          <h4>Downgrading</h4>
+          <p>Se <strong>requiere una acción intencionada</strong> para <strong>bajar el nivel de una label</strong>. Este enfoque <strong>evita que se propague data sin etiquetar</strong>. <strong>Best practice</strong>: <strong>defaults más estrictos y downgrade explícito</strong> con rastro de auditoría.</p>
+
+          <h4>Guía de decisión</h4>
+          <ul>
+            <li>Elige <strong>defaults conservadores</strong> cuando la sensibilidad de la data sea incierta.</li>
+            <li>Elige <strong>defaults más bajos</strong> solo en workspaces dedicados a outputs públicos o ampliamente compartidos.</li>
+            <li>Los defaults más altos <strong>aumentan la protección</strong> pero pueden <strong>añadir fricción</strong> al compartir.</li>
+          </ul>
+
+          <h4>Defaults por domain</h4>
+          <p>Cada <strong>domain</strong> puede tener su propia label por defecto. Ejemplo: domain <strong>Finance</strong> → default "Confidential"; domain <strong>Marketing</strong> → default "Internal".</p>
+        </article>
+
+        <!-- ============ 15. PROTECTION ============ -->
+        <div class="category-header" id="protection">
+          <span class="category-header__icon">🛡️</span>
+          <h2 class="category-header__title">15. Protection policies</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>¿Qué son?</h3>
+          <p>Las <strong>protection policies</strong> son <strong>políticas de Microsoft Purview</strong> que <strong>controlan qué pueden HACER los usuarios con la data etiquetada</strong>. El enforcement se basa en la sensitivity label.</p>
+          <p><strong>Requieren</strong>: licenciamiento de Microsoft Purview.</p>
+
+          <h4>Ejemplos de acciones controladas</h4>
+          <ul>
+            <li><strong>Restringir quién puede acceder a un item</strong> según su sensitivity label.</li>
+            <li>Permisos de <strong>solo lectura o control total</strong>.</li>
+            <li><strong>Bloquear el sharing</strong> con usuarios externos.</li>
+            <li><strong>Bloquear la descarga</strong> sin cifrar.</li>
+          </ul>
+
+          <h4>Enforcement en los items soportados de Fabric</h4>
+          <p>Las protection policies se aplican en Lakehouse, Warehouse, SQL Database, KQL Database, semantic models, reports y otros items soportados.</p>
+
+          <h4>Approach: solo labels vs protection policies</h4>
+          <p><strong>Solo labels</strong> (punto de partida): las labels son visibles pero sin enforcement. El foco está en la <strong>visibilidad y la educación del usuario</strong>. Implementación inicial <strong>más simple</strong>, pero <strong>depende de que los usuarios</strong> sigan las guías.</p>
+          <p><strong>Protection policies</strong> (madurez): configurar la <strong>protección basada en labels</strong> desde el principio. Garantiza que el usuario <strong>no pueda realizar acciones no permitidas</strong> (compartir públicamente, descargar sin cifrar). Requiere más esfuerzo de diseño y prueba, y puede <strong>bloquear algún acceso legítimo</strong> — hace falta un proceso de override.</p>
+
+          <h4>Cuándo cada uno</h4>
+          <p><strong>Solo labels</strong>: organizaciones que empiezan con la clasificación, o que necesitan cambio cultural antes del enforcement.</p>
+          <p><strong>Protection policies</strong>: cuando ya sabes que hay data sensible en OneLake o los requisitos de compliance son estrictos.</p>
+        </article>
+
+        <!-- ============ 16. DLP ============ -->
+        <div class="category-header" id="dlp">
+          <span class="category-header__icon">🚫</span>
+          <h2 class="category-header__title">16. Data Loss Prevention (DLP)</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>¿Qué es?</h3>
+          <p><strong>DLP</strong> = <strong>políticas que detectan y previenen fugas de datos sensibles</strong>. Se configuran en el <strong>portal de compliance de Microsoft Purview</strong> y Fabric las <strong>aplica automáticamente</strong>.</p>
+          <p><strong>Requieren</strong>: licenciamiento de Microsoft Purview.</p>
+
+          <h4>Qué detectan</h4>
+          <p>Las <strong>políticas DLP soportan data estructurada en Fabric</strong>: lakehouses, warehouses, varias bases de datos (SQL DB, KQL) y semantic models.</p>
+          <p><strong>Detectan</strong> la <strong>subida de data sensible a OneLake</strong> y <strong>aplican restricciones de acceso</strong> sobre assets sensibles en Fabric KQL Database, Fabric SQL Database y Fabric Data Warehouse.</p>
+
+          <h4>Cómo evalúan</h4>
+          <p>Las políticas <strong>evalúan</strong> las <strong>sensitivity labels</strong> de los assets y los <strong>sensitive info types</strong> (SITs): números de tarjeta de crédito, SSNs, etc.</p>
+          <p>Cuando detectan data sensible: <strong>policy tips para los usuarios</strong> (mensaje educativo), <strong>alertas para los security admins</strong> y opción configurable para permitir el <strong>override</strong> de los workspace admins.</p>
+
+          <h4>Casos de uso</h4>
+          <ul>
+            <li>Prevenir <strong>exportaciones de PII</strong> no autorizadas.</li>
+            <li>Detectar <strong>números de tarjeta</strong> en tablas inesperadas.</li>
+            <li>Bloquear el <strong>sharing con usuarios externos</strong> de contenido altamente confidencial.</li>
+            <li>Alertar sobre <strong>movimientos de data sensible</strong>.</li>
+          </ul>
+
+          <div class="note note--tip">
+            🎯 <strong>Diferencia con las protection policies:</strong> las <strong>protection policies</strong> controlan el <strong>acceso</strong> según la label y aplican <strong>reglas estáticas</strong>. Las <strong>políticas DLP</strong> <strong>detectan y previenen fugas</strong> de forma dinámica, evalúan el <strong>contenido</strong> (no solo las labels) y alertan o bloquean <strong>acciones concretas</strong>. Se <strong>complementan</strong>.
+          </div>
+        </article>
+
+        <!-- ============ 17. AUDIT ============ -->
+        <div class="category-header" id="audit">
+          <span class="category-header__icon">📝</span>
+          <h2 class="category-header__title">17. Purview Audit</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>¿Qué es?</h3>
+          <p><strong>Microsoft Purview Audit</strong>: <strong>todas las actividades de usuario en Microsoft Fabric</strong> se <strong>registran y están disponibles</strong> en el audit log de Microsoft Purview. Trazan qué hicieron los usuarios, cuándo y sobre qué items.</p>
+          <p><strong>Requiere</strong>: licenciamiento de Microsoft Purview (parte de la oferta de compliance).</p>
+
+          <h4>Qué se registra</h4>
+          <p><strong>Todas las actividades de usuario en Fabric</strong>: visualizaciones de items, creaciones/ediciones/borrados, acciones de sharing, aplicación de sensitivity labels, visualizaciones de reports, exportaciones de datos, ejecuciones de deployment pipelines y mucho más.</p>
+
+          <h4>Retención</h4>
+          <p>Los audit logs se retienen según la retención configurada en Purview (por defecto 90 días, configurable a más por compliance).</p>
+
+          <h4>Uso típico</h4>
+          <ul>
+            <li><strong>Auditorías de compliance</strong>: quién accedió a qué data.</li>
+            <li><strong>Investigaciones</strong> de incidentes.</li>
+            <li><strong>Analítica de uso</strong>: qué reports se usan más.</li>
+            <li><strong>Actividad sospechosa</strong>: un usuario descargando muchísimos datos.</li>
+          </ul>
+
+          <h4>Cómo se consulta</h4>
+          <p>Desde el <strong>portal de Microsoft Purview</strong> (UI de búsqueda del audit log), con <strong>PowerShell</strong> (<code>Search-UnifiedAuditLog</code>) o mediante <strong>APIs</strong> para automation.</p>
+
+          <h4>Diferencia con los activity logs nativos de Fabric</h4>
+          <p><strong>Fabric tiene su propio activity log</strong> (workspace de monitorización de admin). <strong>Purview Audit</strong> es <strong>más completo, con retenciones mayores y cross-service</strong>. Para compliance riguroso → Purview Audit.</p>
+        </article>
+
+        <!-- ============ 18. IRM ============ -->
+        <div class="category-header" id="irm">
+          <span class="category-header__icon">🔒</span>
+          <h2 class="category-header__title">18. Insider Risk Management (IRM)</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>¿Qué es?</h3>
+          <p><strong>Insider Risk Management</strong> = solución de <strong>Microsoft Purview</strong> que <strong>detecta potenciales robos o fugas de datos</strong> por parte de personas internas (empleados, contractors).</p>
+          <p><strong>Requiere</strong>: licenciamiento de Microsoft Purview (add-on de Insider Risk Management).</p>
+
+          <h4>Indicadores específicos de Fabric</h4>
+          <p>Las políticas de IRM soportan <strong>indicadores de riesgo listos para usar para Fabric</strong>: <strong>actividades de Power BI</strong> y <strong>actividades de lakehouse</strong>. Detectan descargas masivas, sharing sospechoso, patrones de acceso inusuales y actividades de exportación sospechosas.</p>
+
+          <h4>Política de data theft</h4>
+          <p>IRM incluye <strong>detecciones específicas</strong> para escenarios de exfiltración de datos en Fabric: <strong>exportar reports de Power BI</strong> y <strong>mover data desde assets de lakehouse y warehouse</strong>.</p>
+
+          <h4>Reporting</h4>
+          <p>El <strong>reporting de IRM</strong> monitoriza las actividades de riesgo y el uso relacionados con Fabric para identificar potenciales riesgos internos.</p>
+
+          <h4>Uso típico</h4>
+          <ul>
+            <li><strong>Empleado que se va</strong>: detectar si descarga datos antes de irse.</li>
+            <li><strong>Cuenta comprometida</strong>: patrones de acceso inusuales.</li>
+            <li><strong>Investigaciones de compliance</strong>: evidencia material de fugas.</li>
+          </ul>
+        </article>
+
+        <!-- ============ 19. UNIFIED CATALOG ============ -->
+        <div class="category-header" id="unified-catalog">
+          <span class="category-header__icon">📚</span>
+          <h2 class="category-header__title">19. Purview Unified Catalog + live view</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>¿Qué es?</h3>
+          <p>El <strong>Microsoft Purview Unified Catalog</strong> es el <strong>catálogo central</strong> de tu data estate, cross-cloud y cross-service.</p>
+
+          <h4>Live view en Purview</h4>
+          <p><strong>Ver automáticamente los metadatos</strong> de tus items de Fabric en el Purview Unified Catalog con <strong>live view</strong>. <strong>Beneficio</strong>: sin necesidad de configurar scans, los metadatos <strong>aparecen automáticamente</strong> en Purview.</p>
+
+          <h4>Conectar vía scans (alternativa)</h4>
+          <p>Alternativamente, puedes <strong>conectar el data catalog a Fabric</strong> en el <strong>mismo tenant</strong> o <strong>cross-tenant</strong> (varias cuentas de Purview). Los scans <strong>leen los metadatos periódicamente</strong> y pueblan Purview.</p>
+
+          <h4>Live view vs scans</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th></th><th>Live view</th><th>Scans</th></tr></thead>
+              <tbody>
+                <tr><td>Setup</td><td>✅ Automático, sin configurar scans</td><td>Requiere configuración</td></tr>
+                <tr><td>Tiempo real</td><td>✅ Sí</td><td>❌ Programado</td></tr>
+                <tr><td>Scope de tenant</td><td>Solo mismo tenant</td><td>Mismo + cross-tenant</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h4>Publicación de data products</h4>
+          <p>El Unified Catalog soporta <strong>flujos de publicación para data products y glossary terms</strong>.</p>
+
+          <h4>Data quality checks</h4>
+          <p>Los <strong>data quality checks</strong> pueden aplicarse a <strong>assets no gobernados</strong>, incluida la data de Fabric, <strong>incluso cuando esos assets no están vinculados a data products</strong>. Feature potente para asegurar la calidad de forma transversal.</p>
+        </article>
+
+        <!-- ============ 20. DATA PRODUCTS ============ -->
+        <div class="category-header" id="data-products">
+          <span class="category-header__icon">📦</span>
+          <h2 class="category-header__title">20. Data products en Purview</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>Concepto</h3>
+          <p>Los <strong>data products de Purview</strong> son una <strong>vista de nivel superior</strong> que <strong>agrupa assets en un ciclo de vida de producto gestionado</strong>. Un data product tiene <strong>nombre y descripción</strong>, <strong>owners</strong>, <strong>estado de calidad</strong> y <strong>assets relacionados</strong> (tablas, modelos, reports).</p>
+
+          <h4>Beneficio</h4>
+          <p>En vez de gestionar 50 tablas sueltas, tienes <strong>1 data product "Customer Analytics"</strong> que contiene esas 50 tablas más los items relacionados. Es el <strong>enfoque data mesh</strong>: los equipos son dueños de sus data products de punta a punta.</p>
+
+          <h4>Best practice oficial</h4>
+          <p>Crear una entrada de data product en Purview <strong>para cada data product publicado</strong>, incluyendo nombre, descripción, owners, estado de calidad y assets relacionados.</p>
+
+          <h4>Guía de decisión</h4>
+          <p><strong>Cobertura completa</strong> (un data product por cada asset publicado): cuando importa la visibilidad del portfolio. <strong>Cobertura selectiva</strong> (solo para productos estratégicos): cuando la capacidad de gobernanza es limitada.</p>
+        </article>
+
+        <!-- ============ 21. LINEAGE ============ -->
+        <div class="category-header" id="lineage">
+          <span class="category-header__icon">🌊</span>
+          <h2 class="category-header__title">21. Lineage end-to-end</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>¿Qué es?</h3>
+          <p>El <strong>data lineage</strong> es el mapa de <strong>cómo fluyen los datos</strong> por tu organización: las <strong>fuentes upstream</strong> (de dónde viene) y las <strong>dependencias downstream</strong> (quién lo consume).</p>
+
+          <h4>Lineage Fabric-native</h4>
+          <p><strong>Integrado en Fabric</strong>, sin necesidad de Purview: ver el lineage entre workspaces, trazar del origen al semantic model y al report, con un grafo visual.</p>
+
+          <h4>Fabric + Purview lineage</h4>
+          <p><strong>Combinado con Purview</strong>: lineage <strong>cross-service</strong> (Fabric + Azure + SaaS + on-prem), más granular y con seguimiento histórico.</p>
+
+          <h4>Cómo se usa</h4>
+          <p>Para un item: click en <strong>View lineage</strong> o similar. El grafo muestra el <strong>upstream</strong> (sources → dataflows → lakehouses) y el <strong>downstream</strong> (semantic models → reports → dashboards).</p>
+
+          <h4>Uso típico</h4>
+          <ul>
+            <li><strong>Depurar problemas de datos</strong>: "¿por qué este número está mal?" → trazar upstream.</li>
+            <li><strong>Impact analysis</strong>: "si cambio esta tabla, ¿qué se rompe?".</li>
+            <li><strong>Compliance</strong>: "¿de dónde viene esta data sujeta a GDPR?".</li>
+            <li><strong>Descubrimiento</strong>: "¿qué assets usan esta fuente?".</li>
+          </ul>
+        </article>
+
+        <!-- ============ 22. IMPACT ============ -->
+        <div class="category-header" id="impact">
+          <span class="category-header__icon">💥</span>
+          <h2 class="category-header__title">22. Impact analysis</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>¿Qué es?</h3>
+          <p>El <strong>impact analysis</strong> te permite <strong>previsualizar qué se rompe</strong> antes de cambiar o borrar un item.</p>
+
+          <h4>Cómo funciona</h4>
+          <p>Antes de borrar un item, renombrarlo o cambiar su schema, el <strong>impact analysis</strong> te muestra los <strong>items downstream</strong> que dependen de él, los <strong>reports</strong> que se romperán, los <strong>semantic models</strong> afectados y los <strong>notebooks</strong> que lo usan.</p>
+
+          <h4>Beneficio</h4>
+          <p><strong>Evita romper producción</strong> sin querer. Ejemplo: quieres borrar la tabla <code>sales_2020_archive</code>; el impact analysis te muestra que hay <strong>3 reports que aún la usan</strong>. Decides con toda la información.</p>
+
+          <div class="note note--practice">
+            📌 <strong>Cultura de best practice:</strong> ejecuta <strong>siempre el impact analysis</strong> antes de cualquier cambio destructivo (deletes, renames) en items compartidos.
+          </div>
+        </article>
+
+        <!-- ============ 23. EXTERNAL SHARING ============ -->
+        <div class="category-header" id="external-sharing">
+          <span class="category-header__icon">🌐</span>
+          <h2 class="category-header__title">23. External data sharing</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>Feature</h3>
+          <p>El <strong>external data sharing</strong> permite <strong>compartir data de OneLake con usuarios de otro tenant de Microsoft Entra sin mover la data</strong>.</p>
+
+          <h4>Beneficio</h4>
+          <ul>
+            <li>✅ <strong>Compartir con partners, proveedores y filiales</strong>.</li>
+            <li>✅ <strong>Sin copiar la data</strong> (sin duplicación).</li>
+            <li>✅ <strong>Sin perder el control</strong>.</li>
+            <li>✅ <strong>Revocar el acceso</strong> en cualquier momento.</li>
+          </ul>
+
+          <h4>Uso típico</h4>
+          <ul>
+            <li><strong>Colaboración con partners</strong>: compartir datos de ventas con un distribuidor.</li>
+            <li><strong>Entre filiales</strong>: la matriz comparte con una subsidiaria.</li>
+            <li><strong>Analítica B2B</strong>: los proveedores comparten datos con sus clientes.</li>
+          </ul>
+
+          <h4>Cómo funciona</h4>
+          <ol>
+            <li>El tenant origen habilita el <strong>external data sharing</strong> en el item.</li>
+            <li>Concede acceso a los usuarios externos (de otro tenant de Entra).</li>
+            <li>Los usuarios externos <strong>crean un shortcut</strong> a la data en su tenant.</li>
+            <li>Consumen <strong>data en vivo</strong> sin copiarla.</li>
+          </ol>
+
+          <h4>Gobernanza</h4>
+          <p>El external sharing tiene <strong>rastro de auditoría</strong> de qué se compartió y con quién, las <strong>sensitivity labels persisten</strong> cross-tenant, y puedes <strong>revocar</strong> en cualquier momento.</p>
+        </article>
+
+        <!-- ============ 24. GOVERNANCE AI ============ -->
+        <div class="category-header" id="governance-ai">
+          <span class="category-header__icon">🤖</span>
+          <h2 class="category-header__title">24. Governance para AI (Copilots y agents)</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>¿Por qué importa?</h3>
+          <p>Los AI agents (Copilot para Fabric, Fabric IQ data agents) <strong>consultan tu data</strong> para responder preguntas. <strong>Sin gobernanza</strong>, la IA podría exponer data sensible, dar respuestas basadas en data poco fiable y provocar violaciones de compliance.</p>
+
+          <h4>Cómo la gobernanza afecta a la IA</h4>
+          <p>Los <strong>controles de acceso aplican también a la IA</strong>: la IA <strong>respeta RLS, CLS y OLS</strong>, los usuarios <strong>NO ven vía IA data que no ven directamente</strong>, y las <strong>sensitivity labels se propagan</strong>.</p>
+
+          <div class="note note--tip">
+            🎯 <strong>El endorsement afecta a la accuracy de la IA (muy examinable):</strong> Copilot y los Fabric IQ data agents se apoyan en los <strong>nombres de tablas</strong>, los <strong>nombres de columnas</strong>, las <strong>descripciones</strong> y el <strong>endorsement</strong> (Certified &gt; Promoted &gt; sin badge) para <strong>interpretar las preguntas en lenguaje natural</strong> y <strong>generar SQL/DAX correctos</strong>. Los <strong>items certificados</strong> son <strong>fuentes preferidas</strong> para las respuestas de la IA.
+          </div>
+
+          <h4>Sensitivity labels</h4>
+          <p>Los usuarios <strong>no pueden obtener respuestas de IA a partir de data con una sensibilidad mayor</strong> que la de su acceso. Ejemplo: si Sareta no tiene acceso a datos salariales "Highly Confidential", Copilot <strong>no puede</strong> usar esa data para responderle, aunque exista.</p>
+
+          <h4>Purview governance para Copilots y agents</h4>
+          <p><strong>Microsoft Purview provee controles de gobernanza y riesgo</strong> para los Copilots y agents de Fabric:</p>
+          <ul>
+            <li><strong>Risk discovery</strong> en prompts y respuestas.</li>
+            <li><strong>Cobertura de auditoría</strong> para las interacciones con IA.</li>
+            <li><strong>Retención y eDiscovery</strong> aplicables al contenido generado por IA.</li>
+            <li>Detección de <strong>uso de IA no conforme o arriesgado</strong> en los workloads soportados de Fabric.</li>
+          </ul>
+
+          <h4>Best practices de gobernanza para IA</h4>
+          <ol>
+            <li><strong>Certificar los data products</strong> que usa la IA.</li>
+            <li><strong>Descripciones ricas</strong> en tablas y columnas.</li>
+            <li><strong>Sensitivity labels</strong> correctas.</li>
+            <li><strong>RLS</strong> para seguridad específica por usuario.</li>
+            <li><strong>Auditar las interacciones con IA</strong> vía Purview.</li>
+            <li><strong>Data quality</strong> checks.</li>
+            <li><strong>Endorsar</strong> los items para señalar a la IA las fuentes preferidas.</li>
+          </ol>
+        </article>
+
+        <!-- ============ 25. BEST PRACTICES ============ -->
+        <div class="category-header" id="best-practices">
+          <span class="category-header__icon">🌸</span>
+          <h2 class="category-header__title">25. Best practices oficiales</h2>
+        </div>
+
+        <article class="concept-card">
+          <h4>Organización del data estate</h4>
+          <ol>
+            <li><strong>Usa domains</strong> para agrupar la data por área de negocio.</li>
+            <li><strong>Usa tags</strong> para una taxonomía custom transversal.</li>
+            <li><strong>OneLake catalog</strong> para la búsqueda y el descubrimiento global.</li>
+          </ol>
+
+          <h4>Clasificación y protección</h4>
+          <ol>
+            <li><strong>Sensitivity labels</strong> en <strong>todos los items</strong> (con políticas de default).</li>
+            <li><strong>Protection policies</strong> basadas en labels.</li>
+            <li><strong>Políticas DLP</strong> para prevenir fugas.</li>
+            <li><strong>Integración con Microsoft Purview</strong> para gobernanza completa.</li>
+          </ol>
+
+          <h4>Endorsement y documentación</h4>
+          <ol>
+            <li><strong>Promueve</strong> los items que tu equipo recomienda.</li>
+            <li><strong>Certifica</strong> los items que han pasado una revisión formal de gobernanza.</li>
+            <li><strong>Master data</strong> solo cuando sea genuinamente autoritativo.</li>
+            <li><strong>Descripciones ricas</strong> en tablas, columnas e items.</li>
+            <li><strong>Metadatos de owner</strong> claros.</li>
+          </ol>
+
+          <h4>Lineage e impacto</h4>
+          <ol>
+            <li><strong>Revisa el lineage</strong> antes de hacer cambios.</li>
+            <li><strong>Ejecuta impact analysis</strong> antes de borrar o renombrar.</li>
+            <li><strong>Documenta</strong> los flujos de datos críticos.</li>
+          </ol>
+
+          <h4>External sharing</h4>
+          <ol>
+            <li><strong>External data sharing</strong> en vez de exportar ficheros.</li>
+            <li><strong>Audita</strong> quién tiene acceso a los shares externos.</li>
+            <li><strong>Revoca</strong> con prontitud cuando ya no haga falta.</li>
+            <li>Las <strong>sensitivity labels se propagan</strong> cross-tenant.</li>
+          </ol>
+
+          <h4>Gobernanza para IA</h4>
+          <ol>
+            <li><strong>Certifica</strong> los data products que usan la IA y Copilot.</li>
+            <li><strong>Descripciones</strong> completas para mejorar la accuracy de la IA.</li>
+            <li><strong>Sensitivity labels</strong> aplicadas correctamente.</li>
+            <li><strong>Gobernanza de Purview</strong> para los Copilots.</li>
+            <li><strong>Auditar las interacciones con IA</strong>.</li>
+          </ol>
+        </article>
+
+        <!-- ============ 26. TRAMPAS ============ -->
+        <div class="category-header" id="trampas">
+          <span class="category-header__icon">⚠️</span>
+          <h2 class="category-header__title">26. Trampas típicas y confusiones frecuentes</h2>
+        </div>
+
+        <article class="concept-card">
+          <ul class="trap-list">
+            <li><strong class="trap-title">Trampa 1: "Endorsement y sensitivity labels son lo mismo"</strong>
+              ❌ <strong>Distintos</strong>. Endorsement = señal de calidad (Promoted/Certified/Master data). Sensitivity label = clasificación de sensibilidad (Public/Confidential/etc.).</li>
+            <li><strong class="trap-title">Trampa 2: "Cualquiera puede certificar items"</strong>
+              ❌ Solo los <strong>reviewers autorizados</strong> definidos por el Fabric admin. Promoted sí lo puede aplicar cualquiera con permiso de escritura.</li>
+            <li><strong class="trap-title">Trampa 3: "Master data se aplica a cualquier item"</strong>
+              ❌ <strong>Solo items que contienen data</strong> (lakehouses, semantic models, warehouses, SQL DBs, KQL DBs). No a reports, dashboards ni pipelines.</li>
+            <li><strong class="trap-title">Trampa 4: "Promoted se puede aplicar a los dashboards de Power BI"</strong>
+              ❌ <strong>Todos los items EXCEPTO los dashboards de Power BI</strong>, tanto para Promoted como para Certified.</li>
+            <li><strong class="trap-title">Trampa 5: "Las sensitivity labels no persisten al exportar"</strong>
+              ❌ <strong>Persisten</strong>. Exportar a Excel mantiene el cifrado y las restricciones.</li>
+            <li><strong class="trap-title">Trampa 6: "Protection policies y DLP son lo mismo"</strong>
+              ❌ Distintos. Protection policies = controlar el acceso según la label. DLP = detectar y prevenir fugas dinámicamente.</li>
+            <li><strong class="trap-title">Trampa 7: "Purview Audit está incluido en Fabric"</strong>
+              ❌ <strong>Requiere licenciamiento de Microsoft Purview</strong>. Fabric tiene su propio activity log, pero es más limitado.</li>
+            <li><strong class="trap-title">Trampa 8: "Insider Risk Management es Fabric-native"</strong>
+              ❌ <strong>Requiere licenciamiento de Microsoft Purview</strong> (add-on de IRM).</li>
+            <li><strong class="trap-title">Trampa 9: "El live view del Purview Unified Catalog requiere configurar scans"</strong>
+              ❌ El <strong>live view es automático</strong>. Los scans son la alternativa para cross-tenant o scanning profundo.</li>
+            <li><strong class="trap-title">Trampa 10: "El endorsement no afecta a la IA/Copilot"</strong>
+              ❌ <strong>Sí afecta</strong>. Copilot prefiere los items certificados para dar respuestas precisas.</li>
+            <li><strong class="trap-title">Trampa 11: "Los items certified los certifica Microsoft"</strong>
+              ❌ Los certifica <strong>la propia organización</strong> — reviewers autorizados por el Fabric admin de la organización.</li>
+            <li><strong class="trap-title">Trampa 12: "Puedo dar master data a cualquier usuario"</strong>
+              ❌ Solo <strong>reviewers autorizados</strong>. Mismas reglas que certified.</li>
+            <li><strong class="trap-title">Trampa 13: "El OneLake catalog reemplaza a Purview"</strong>
+              ❌ Se <strong>complementan</strong>. El OneLake catalog es de scope Fabric; Purview es cross-service y enterprise.</li>
+            <li><strong class="trap-title">Trampa 14: "El external data sharing copia la data"</strong>
+              ❌ <strong>NO la copia</strong>. Los usuarios externos usan <strong>shortcuts</strong> a la data original.</li>
+            <li><strong class="trap-title">Trampa 15: "Las sensitivity labels son obligatorias para todo"</strong>
+              ❌ Son una <strong>best practice</strong> pero no un requisito técnico. Aun así, las políticas de label por defecto las aplican automáticamente.</li>
+            <li><strong class="trap-title">Trampa 16: "El impact analysis solo funciona en items Fabric-native"</strong>
+              ✅ Funciona en items de Fabric. La integración con Purview lo extiende cross-service.</li>
+            <li><strong class="trap-title">Trampa 17: "Los domain administrators pueden certificar por defecto"</strong>
+              ❌ El Fabric admin puede <strong>delegar la habilitación de la certificación</strong> a los domain admins, pero requiere habilitación explícita.</li>
+            <li><strong class="trap-title">Trampa 18: "El lineage requiere Purview"</strong>
+              ❌ El <strong>lineage Fabric-native está disponible sin Purview</strong>. Purview lo extiende cross-service.</li>
+            <li><strong class="trap-title">Trampa 19: "Las políticas DLP se configuran en Fabric"</strong>
+              ❌ Se configuran en el <strong>portal de compliance de Microsoft Purview</strong>. Fabric las aplica.</li>
+            <li><strong class="trap-title">Trampa 20: "Los badges de endorsement solo los ve el autor"</strong>
+              ❌ Son <strong>visibles para todos los usuarios</strong> al buscar items. Los badges aparecen claramente en la UI.</li>
+          </ul>
+        </article>
+
+        <!-- ============ 27. COMPARATIVAS ============ -->
+        <div class="category-header" id="comparativas">
+          <span class="category-header__icon">🆚</span>
+          <h2 class="category-header__title">27. Comparativas clave (chuleta)</h2>
+        </div>
+
+        <article class="concept-card">
+          <h4>Los 3 endorsement badges</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Badge</th><th>Quién lo aplica</th><th>Items soportados</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Promoted</strong> 🌟</td><td>Cualquier usuario con permiso de escritura</td><td>Todos excepto los dashboards de Power BI</td></tr>
+                <tr><td><strong>Certified</strong> ✅</td><td>Solo reviewers autorizados</td><td>Todos excepto los dashboards de Power BI</td></tr>
+                <tr><td><strong>Master data</strong> 🎯</td><td>Solo reviewers autorizados</td><td>Solo items con data</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h4>Fabric-native vs Requiere Purview</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Feature</th><th>Fabric-native</th><th>Requiere Purview</th></tr></thead>
+              <tbody>
+                <tr><td>Domains, Tags, OneLake catalog</td><td>✅</td><td></td></tr>
+                <tr><td>Endorsement</td><td>✅</td><td></td></tr>
+                <tr><td>Lineage básico e impact analysis</td><td>✅</td><td></td></tr>
+                <tr><td>Aplicar sensitivity labels</td><td>✅</td><td>(labels definidas en Purview)</td></tr>
+                <tr><td>Protection policies</td><td></td><td>✅</td></tr>
+                <tr><td>DLP policies</td><td></td><td>✅</td></tr>
+                <tr><td>Insider Risk Management</td><td></td><td>✅</td></tr>
+                <tr><td>Purview Audit</td><td></td><td>✅</td></tr>
+                <tr><td>Unified Catalog</td><td></td><td>✅</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h4>Protection policies vs DLP</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th></th><th>Protection policies</th><th>DLP policies</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Base</strong></td><td>Sensitivity labels</td><td>Contenido + labels</td></tr>
+                <tr><td><strong>Función</strong></td><td>Controlar acceso</td><td>Detectar y prevenir fugas</td></tr>
+                <tr><td><strong>Enforcement</strong></td><td>Reglas estáticas por label</td><td>Dinámico según el contenido</td></tr>
+                <tr><td><strong>Alertas</strong></td><td>❌ (bloquea en silencio)</td><td>✅ Alertas a admins</td></tr>
+                <tr><td><strong>Avisos al usuario</strong></td><td>⚠️ Limitados</td><td>✅ Policy tips</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h4>Live view vs Scans (Unified Catalog)</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th></th><th>Live view</th><th>Scans</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Setup</strong></td><td>Automático</td><td>Requiere configuración</td></tr>
+                <tr><td><strong>Tiempo real</strong></td><td>✅</td><td>❌ (programado)</td></tr>
+                <tr><td><strong>Scope de tenant</strong></td><td>Mismo tenant</td><td>Mismo + cross-tenant</td></tr>
+                <tr><td><strong>Coste</strong></td><td>Incluido</td><td>Adicional</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h4>Features de gobernanza por caso de uso</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Necesito...</th><th>Feature</th></tr></thead>
+              <tbody>
+                <tr><td>Agrupar data por área de negocio</td><td><strong>Domains</strong></td></tr>
+                <tr><td>Taxonomía custom</td><td><strong>Tags</strong></td></tr>
+                <tr><td>Buscar en todo el tenant</td><td><strong>OneLake catalog</strong></td></tr>
+                <tr><td>Señalar calidad</td><td><strong>Endorsement</strong></td></tr>
+                <tr><td>Clasificar sensibilidad</td><td><strong>Sensitivity labels</strong></td></tr>
+                <tr><td>Restringir acceso por sensibilidad</td><td><strong>Protection policies</strong></td></tr>
+                <tr><td>Prevenir fugas</td><td><strong>DLP policies</strong></td></tr>
+                <tr><td>Detectar riesgos internos</td><td><strong>IRM</strong></td></tr>
+                <tr><td>Trazar las actividades de usuario</td><td><strong>Purview Audit</strong></td></tr>
+                <tr><td>Trazar el flujo de datos</td><td><strong>Lineage</strong></td></tr>
+                <tr><td>Previsualizar cambios que rompen</td><td><strong>Impact analysis</strong></td></tr>
+                <tr><td>Compartir cross-tenant</td><td><strong>External data sharing</strong></td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h4>Gobernanza para IA</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Best practice</th><th>Beneficio</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Certificar data products</strong></td><td>La IA los prefiere para responder</td></tr>
+                <tr><td><strong>Descripciones ricas</strong></td><td>Mejor accuracy de la IA</td></tr>
+                <tr><td><strong>Sensitivity labels</strong></td><td>Protección de datos preservada</td></tr>
+                <tr><td><strong>RLS/CLS/OLS</strong></td><td>Seguridad específica por usuario</td></tr>
+                <tr><td><strong>Gobernanza de Purview</strong></td><td>Auditoría + controles de riesgo</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h4>Comportamiento de las sensitivity labels</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Aspecto</th><th>Detalle</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Aplicables a</strong></td><td>Todos los items de Fabric</td></tr>
+                <tr><td><strong>Requieren</strong></td><td>Power BI Pro/PPU + permiso de edición</td></tr>
+                <tr><td><strong>Persisten al exportar</strong></td><td>✅ Sí</td></tr>
+                <tr><td><strong>Herencia</strong></td><td>Configurable</td></tr>
+                <tr><td><strong>Labels por defecto</strong></td><td>Nivel tenant y workspace</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h4>Soporte de master data por item</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Tipo de item</th><th>Soporta master data</th></tr></thead>
+              <tbody>
+                <tr><td>Lakehouse</td><td>✅</td></tr>
+                <tr><td>Semantic model</td><td>✅</td></tr>
+                <tr><td>Warehouse</td><td>✅</td></tr>
+                <tr><td>SQL Database</td><td>✅</td></tr>
+                <tr><td>KQL Database</td><td>✅</td></tr>
+                <tr><td>Report</td><td>❌</td></tr>
+                <tr><td>Dashboard</td><td>❌</td></tr>
+                <tr><td>Pipeline</td><td>❌</td></tr>
+                <tr><td>Notebook</td><td>❌</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </article>
+
+        <!-- ============ 28. FUENTES ============ -->
+        <div class="category-header" id="fuentes">
+          <span class="category-header__icon">📚</span>
+          <h2 class="category-header__title">28. Fuentes oficiales consultadas</h2>
+        </div>
+
+        <article class="concept-card">
+          <ul class="sources-list">
+            <li>Módulo Learn: <a href="https://learn.microsoft.com/training/modules/fabric-data-governance-purview/" target="_blank" rel="noopener noreferrer">fabric-data-governance-purview</a></li>
+            <li>Governance overview: <a href="https://learn.microsoft.com/fabric/governance/get-started-with-fabric-governance" target="_blank" rel="noopener noreferrer">get-started-with-fabric-governance</a></li>
+            <li>Microsoft Purview + Fabric: <a href="https://learn.microsoft.com/fabric/governance/microsoft-purview-fabric" target="_blank" rel="noopener noreferrer">microsoft-purview-fabric</a></li>
+            <li>Endorsement overview: <a href="https://learn.microsoft.com/fabric/governance/endorsement-overview" target="_blank" rel="noopener noreferrer">endorsement-overview</a></li>
+            <li>Endorse Fabric items: <a href="https://learn.microsoft.com/fabric/fundamentals/endorsement-promote-certify" target="_blank" rel="noopener noreferrer">endorsement-promote-certify</a></li>
+            <li>Sensitivity labels apply: <a href="https://learn.microsoft.com/fabric/fundamentals/apply-sensitivity-labels" target="_blank" rel="noopener noreferrer">apply-sensitivity-labels</a></li>
+            <li>Information Protection en Fabric: <a href="https://learn.microsoft.com/fabric/governance/information-protection" target="_blank" rel="noopener noreferrer">information-protection</a></li>
+            <li>Protection policies overview: <a href="https://learn.microsoft.com/fabric/governance/protection-policies-overview" target="_blank" rel="noopener noreferrer">protection-policies-overview</a></li>
+            <li>Data Loss Prevention en Fabric: <a href="https://learn.microsoft.com/fabric/governance/data-loss-prevention-configure" target="_blank" rel="noopener noreferrer">data-loss-prevention-configure</a></li>
+            <li>Domains: <a href="https://learn.microsoft.com/fabric/governance/domains" target="_blank" rel="noopener noreferrer">domains</a></li>
+            <li>Tags: <a href="https://learn.microsoft.com/fabric/governance/tags-overview" target="_blank" rel="noopener noreferrer">tags-overview</a></li>
+            <li>OneLake catalog: <a href="https://learn.microsoft.com/fabric/governance/onelake-catalog-overview" target="_blank" rel="noopener noreferrer">onelake-catalog-overview</a></li>
+            <li>Govern Fabric data (OneLake catalog): <a href="https://learn.microsoft.com/fabric/governance/onelake-catalog-govern" target="_blank" rel="noopener noreferrer">onelake-catalog-govern</a></li>
+            <li>Lineage: <a href="https://learn.microsoft.com/fabric/governance/lineage" target="_blank" rel="noopener noreferrer">lineage</a></li>
+            <li>Impact analysis: <a href="https://learn.microsoft.com/fabric/governance/impact-analysis" target="_blank" rel="noopener noreferrer">impact-analysis</a></li>
+            <li>External data sharing: <a href="https://learn.microsoft.com/fabric/governance/external-data-sharing-overview" target="_blank" rel="noopener noreferrer">external-data-sharing-overview</a></li>
+            <li>Enable item certification: <a href="https://learn.microsoft.com/fabric/admin/endorsement-certification-enable" target="_blank" rel="noopener noreferrer">endorsement-certification-enable</a></li>
+            <li>Enable master data endorsement: <a href="https://learn.microsoft.com/fabric/admin/endorsement-master-data-enable" target="_blank" rel="noopener noreferrer">endorsement-master-data-enable</a></li>
+            <li>Track user activities: <a href="https://learn.microsoft.com/fabric/admin/track-user-activities" target="_blank" rel="noopener noreferrer">track-user-activities</a></li>
+            <li>Insider Risk Management indicators: <a href="https://learn.microsoft.com/purview/insider-risk-management-settings-policy-indicators" target="_blank" rel="noopener noreferrer">insider-risk-management-settings-policy-indicators</a></li>
+            <li>Purview governance for AI: <a href="https://learn.microsoft.com/purview/ai-microsoft-purview" target="_blank" rel="noopener noreferrer">ai-microsoft-purview</a></li>
+            <li>Default sensitivity label policy: <a href="https://learn.microsoft.com/fabric/governance/sensitivity-label-default-label-policy" target="_blank" rel="noopener noreferrer">sensitivity-label-default-label-policy</a></li>
+            <li>Data processing standards para IA y analytics: <a href="https://learn.microsoft.com/azure/cloud-adoption-framework/data/operational-standards-data-processing-standards-unify-data-platform" target="_blank" rel="noopener noreferrer">operational-standards-data-processing-standards</a></li>
+            <li>Fabric governance y security baselines: <a href="https://learn.microsoft.com/azure/cloud-adoption-framework/data/governance-security-baselines-fabric-data-lake-unify-data-platform" target="_blank" rel="noopener noreferrer">governance-security-baselines-fabric</a></li>
+          </ul>
+        </article>
+
+        <div class="note note--next">
+          🚀 <strong>¡Módulo 16 completado!</strong> Ya sabes gobernar tu data estate para que la gente (y la IA) encuentre datos fiables. Sigue con el <a href="modulo-17.html">Módulo 17: Monitorizar actividades</a>. 🌸
+        </div>
+
+        <!-- Navegación del curso -->
+        <div class="course-nav">
+          <a href="modulo-15.html">
+            <span class="course-nav__label">← Anterior</span>
+            <span class="course-nav__title">Módulo 15 · Secure Data Access</span>
+          </a>
+          <a href="modulo-17.html" class="next">
+            <span class="course-nav__label">Siguiente →</span>
+            <span class="course-nav__title">Módulo 17 · Monitorizar actividades</span>
+          </a>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <button id="back-to-top" class="back-to-top" aria-label="Volver arriba" title="Volver arriba">↑</button>
+
+  <script src="https://cdn.jsdelivr.net/npm/i18next@23/dist/umd/i18next.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1/prism.min.js"></script>
+  <script src="../../../assets/js/theme.js"></script>
+  <script src="../../../assets/js/main.js"></script>
+  <script src="../../../assets/js/cursor.js"></script>
+</body>
+</html>
