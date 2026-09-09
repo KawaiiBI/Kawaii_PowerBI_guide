@@ -63,12 +63,18 @@
     .md-table tr:nth-child(even) td { background: var(--color-blush); }
     .table-scroll { overflow-x: auto; }
 
+    .trap-list { list-style: none; padding: 0; margin: 0; }
+    .trap-list > li { background: var(--color-white); border: 1.5px solid var(--color-mauve); border-left: 4px solid var(--color-warning); border-radius: var(--border-radius-sm); padding: 0.875rem 1.125rem; margin-bottom: 0.75rem; font-size: 0.9375rem; line-height: 1.7; }
+    .trap-list strong.trap-title { display: block; color: var(--color-dark); margin-bottom: 0.25rem; }
+
     .course-nav { display: flex; justify-content: space-between; gap: 1rem; margin-top: 2.5rem; flex-wrap: wrap; }
     .course-nav a { flex: 1 1 220px; display: block; background: var(--color-white); border: 1.5px solid var(--color-mauve); border-radius: var(--border-radius); padding: 1rem 1.25rem; text-decoration: none; color: inherit; transition: var(--transition); }
     .course-nav a:hover { border-color: var(--color-coral); box-shadow: var(--shadow-md); text-decoration: none; }
     .course-nav__label { font-size: 0.75rem; color: var(--color-slate); text-transform: uppercase; letter-spacing: 0.05em; }
     .course-nav__title { font-weight: 700; color: var(--color-coral); }
     .course-nav a.next { text-align: right; }
+
+    .sources-list { font-size: 0.875rem; line-height: 1.9; word-break: break-word; }
   </style>
 </head>
 <body>
@@ -124,8 +130,8 @@
         <header class="topic-header">
           <span class="topic-header__eyebrow">DP-700 · MÓDULO 4</span>
           <span class="topic-header__icon">💎</span>
-          <h1 class="topic-header__title">Tablas Delta Lake en Microsoft Fabric</h1>
-          <p class="topic-header__subtitle">El módulo más importante de la Fase 1: anatomía de Delta, MERGE y SCD, schema evolution, time travel, OPTIMIZE, V-Order, VACUUM, particionado y streaming. 🌸</p>
+          <h1 class="topic-header__title">Trabajar con tablas Delta Lake en Microsoft Fabric</h1>
+          <p class="topic-header__subtitle">El módulo más importante de la Fase 1: la tecnología que sostiene todo el data engineering en Fabric. MERGE, SCD, schema evolution, time travel, OPTIMIZE, V-Order, VACUUM y streaming. 🌸</p>
           <div class="topic-header__levels">
             <span class="badge badge--intermediate">Intermedio</span>
             <span class="badge badge--advanced">Avanzado</span>
@@ -135,272 +141,1482 @@
         <nav class="toc" aria-label="Índice del módulo">
           <p class="toc__title">📑 En este módulo:</p>
           <ul class="toc__list">
-            <li><a href="#objetivos">1. Objetivos</a></li>
+            <li><a href="#objetivos">1. Objetivos y encaje</a></li>
             <li><a href="#que-es">2. ¿Qué es Delta Lake?</a></li>
             <li><a href="#anatomia">3. Anatomía de una tabla Delta</a></li>
-            <li><a href="#beneficios">4. Los 5 beneficios</a></li>
+            <li><a href="#beneficios">4. Los 5 grandes beneficios</a></li>
             <li><a href="#crear">5. Crear tablas Delta</a></li>
-            <li><a href="#managed">6. Managed vs External</a></li>
-            <li><a href="#operaciones">7. SELECT, INSERT, UPDATE, DELETE</a></li>
-            <li><a href="#merge">8. MERGE INTO y SCD</a></li>
-            <li><a href="#schema">9. Schema evolution</a></li>
-            <li><a href="#time-travel">10. Time travel</a></li>
-            <li><a href="#optimizacion">11. OptimizeWrite, OPTIMIZE, V-Order</a></li>
-            <li><a href="#vacuum">12. VACUUM</a></li>
-            <li><a href="#particionado">13. Particionado</a></li>
-            <li><a href="#streaming">14. Streaming</a></li>
-            <li><a href="#trampas">15. Trampas</a></li>
-            <li><a href="#comparativas">16. Comparativas</a></li>
+            <li><a href="#managed-external">6. Managed vs External</a></li>
+            <li><a href="#builder">7. DeltaTableBuilder API</a></li>
+            <li><a href="#save-only">8. Delta sin tabla</a></li>
+            <li><a href="#operaciones">9. SELECT, INSERT, UPDATE, DELETE</a></li>
+            <li><a href="#api-vs-sql">10. Delta API vs Spark SQL</a></li>
+            <li><a href="#merge">11. MERGE INTO</a></li>
+            <li><a href="#schema-evolution">12. Schema evolution</a></li>
+            <li><a href="#time-travel">13. Time travel</a></li>
+            <li><a href="#optimizacion">14. OPTIMIZE y V-Order</a></li>
+            <li><a href="#vacuum">15. VACUUM</a></li>
+            <li><a href="#particionado">16. Particionado</a></li>
+            <li><a href="#streaming">17. Streaming</a></li>
+            <li><a href="#trampas">18. Trampas típicas</a></li>
+            <li><a href="#comparativas">19. Comparativas clave</a></li>
+            <li><a href="#fuentes">20. Fuentes oficiales</a></li>
           </ul>
         </nav>
 
-        <!-- 1 -->
-        <div class="category-header" id="objetivos"><span class="category-header__icon">🎯</span><h2 class="category-header__title">1. Objetivos y encaje en el DP-700</h2></div>
+        <!-- ============ 1. OBJETIVOS ============ -->
+        <div class="category-header" id="objetivos">
+          <span class="category-header__icon">🎯</span>
+          <h2 class="category-header__title">1. Objetivos y encaje en el DP-700</h2>
+        </div>
+
         <article class="concept-card">
-          <h3>La tecnología que sostiene todo el data engineering</h3>
-          <p>Objetivos: entender Delta Lake, crear y gestionar tablas Delta con Spark, optimizarlas, consultarlas/transformarlas y usarlas con Structured Streaming. Aparece de forma transversal en todo el examen.</p>
-          <div class="note note--tip">🎯 <strong>Crítico para dominar:</strong> <strong>MERGE</strong> (upserts, SCD Type 1 y 2), <strong>time travel</strong>, <strong>OPTIMIZE + V-Order + VACUUM</strong>, <strong>streaming</strong> con Delta y <strong>schema evolution</strong>.</div>
+          <h3>¿Qué te enseña este módulo?</h3>
+          <p>Este es <strong>el módulo más importante de toda la Fase 1</strong>. Aquí aprendemos a fondo la tecnología que sostiene absolutamente todo el data engineering en Fabric. Los objetivos oficiales:</p>
+          <ol>
+            <li>Entender Delta Lake y las Delta tables en Microsoft Fabric.</li>
+            <li>Crear y gestionar tablas Delta usando Spark.</li>
+            <li>Optimizar tablas Delta.</li>
+            <li>Usar Spark para consultar y transformar datos en Delta tables.</li>
+            <li>Usar Delta tables con Spark Structured Streaming.</li>
+          </ol>
+
+          <h4>Peso en el examen DP-700</h4>
+          <p>Delta Lake aparece <strong>transversalmente en todo el examen</strong>, pero especialmente en:</p>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Dominio</th><th>Cómo aparece Delta</th></tr></thead>
+              <tbody>
+                <tr><td>Implement and manage (30-35%)</td><td>Diseño de tablas Delta en arquitecturas medallion, permisos sobre tablas</td></tr>
+                <tr><td>Ingest and transform (30-35%)</td><td><strong>MERGE, upsert, SCD, deduplicación, late-arriving data</strong> — todo con Delta</td></tr>
+                <tr><td>Monitor and optimize (30-35%)</td><td><strong>OPTIMIZE, VACUUM, V-Order, particionado, streaming Delta</strong> — todo el mantenimiento</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="note note--tip">
+            🎯 <strong>Qué es crítico para dominar:</strong>
+            <ul>
+              <li><strong>MERGE INTO</strong> para upserts, SCD Type 1 y Type 2</li>
+              <li><strong>Time travel</strong> (versionAsOf, timestampAsOf, DESCRIBE HISTORY)</li>
+              <li><strong>OPTIMIZE + V-Order + VACUUM</strong> para performance y limpieza</li>
+              <li><strong>Streaming</strong> con Delta como source/sink (Structured Streaming)</li>
+              <li><strong>Schema evolution</strong> para gestionar cambios de estructura</li>
+            </ul>
+          </div>
         </article>
 
-        <!-- 2 -->
-        <div class="category-header" id="que-es"><span class="category-header__icon">💎</span><h2 class="category-header__title">2. ¿Qué es Delta Lake exactamente?</h2></div>
+        <!-- ============ 2. QUÉ ES DELTA LAKE ============ -->
+        <div class="category-header" id="que-es">
+          <span class="category-header__icon">💎</span>
+          <h2 class="category-header__title">2. ¿Qué es Delta Lake exactamente?</h2>
+        </div>
+
         <article class="concept-card">
-          <h3>Semántica de base de datos sobre el data lake</h3>
-          <p><strong>Delta Lake</strong> es una storage layer open-source que hace que un montón de ficheros Parquet <strong>se comporten como una tabla de base de datos</strong> (transacciones, schema, versiones). En el Lakehouse explorer las tablas Delta llevan el <strong>icono triangular Δ</strong>. En Fabric, <strong>todas las tablas de un lakehouse son Delta por defecto</strong>.</p>
-          <div class="note note--tip">🌷 <strong>Analogía kawaii:</strong> Parquet son hojas sueltas; Delta Lake las encuaderna con un índice detallado y un registro de cambios. Ahora puedes actualizar, versionar y auditar.</div>
+          <h3>Definición</h3>
+          <p><strong>Delta Lake</strong> es una <strong>storage layer open-source</strong> que añade <strong>semántica de base de datos relacional</strong> al procesamiento data lake basado en Spark.</p>
+          <p>En cristiano: es el formato que hace que un montón de ficheros Parquet <strong>se comporten como una tabla de base de datos</strong> con transacciones, schema, versiones, etc. 🌸</p>
+
+          <h4>Dónde ves que una tabla es Delta</h4>
+          <p>En el Lakehouse explorer de Fabric, las tablas Delta se identifican por el <strong>icono triangular delta (Δ)</strong> al lado del nombre. Si no ves ese icono, esa "tabla" <strong>no es Delta</strong> y no tendrá las capacidades avanzadas.</p>
+
+          <h4>Delta en el ecosistema Fabric</h4>
+          <p>En Fabric, <strong>todas las tablas de un lakehouse son Delta tables por defecto</strong>. No tienes que hacer nada especial: cuando escribes datos a <code>Tables/</code>, se guardan en formato Delta automáticamente.</p>
+
+          <div class="note note--tip">
+            🌷 <strong>Analogía kawaii:</strong> piensa en Parquet como <strong>hojas sueltas</strong> de un libro. Delta Lake es como <strong>encuadernar esas hojas con un índice detallado y un registro de cambios</strong>. Ahora ese conjunto de hojas es un libro que puedes actualizar, versionar y auditar. 📖✨
+          </div>
         </article>
 
-        <!-- 3 -->
-        <div class="category-header" id="anatomia"><span class="category-header__icon">🩺</span><h2 class="category-header__title">3. Anatomía de una tabla Delta</h2></div>
+        <!-- ============ 3. ANATOMÍA ============ -->
+        <div class="category-header" id="anatomia">
+          <span class="category-header__icon">🩺</span>
+          <h2 class="category-header__title">3. Anatomía de una tabla Delta</h2>
+        </div>
+
         <article class="concept-card">
-          <h3>Datos (Parquet) + transaction log</h3>
+          <h3>Estructura física en OneLake</h3>
+          <p>Cada tabla Delta ocupa una <strong>carpeta</strong> con esta estructura:</p>
           <pre><code class="language-plaintext">Tables/mi_tabla_delta/
-├── part-00000-....snappy.parquet   ← Datos (Parquet, inmutables)
-├── part-00001-....snappy.parquet
-└── _delta_log/                     ← Transaction log
-    ├── 00000000000000000000.json   ← Cada operación = 1 JSON
-    └── ...checkpoint.parquet       ← Checkpoint cada N versiones</code></pre>
-          <p>Los <strong>Parquet</strong> son inmutables (cada cambio genera ficheros nuevos). El <code>_delta_log</code> registra qué ficheros están activos en cada versión.</p>
-          <h4>🎯 ¿Cómo se hace UPDATE si Parquet es inmutable?</h4>
-          <p>Delta usa <strong>copy-on-write</strong>: lee los ficheros afectados, escribe <strong>ficheros nuevos</strong> con las filas actualizadas y marca los viejos como removidos en el nuevo JSON del log. Por eso se acumulan ficheros pequeños (que resolvemos con OPTIMIZE), y los viejos habilitan time travel hasta que hagas VACUUM.</p>
+├── part-00000-abc123....snappy.parquet   ← Datos (Parquet)
+├── part-00001-def456....snappy.parquet
+├── part-00002-ghi789....snappy.parquet
+├── ...
+└── _delta_log/                            ← Transaction log
+    ├── 00000000000000000000.json          ← Cada operación = 1 JSON
+    ├── 00000000000000000001.json
+    ├── 00000000000000000002.json
+    ├── ...
+    └── 00000000000000000010.checkpoint.parquet   ← Checkpoint cada N versiones</code></pre>
+
+          <h4>Los dos ingredientes</h4>
+          <p><strong>A) Ficheros Parquet (datos)</strong></p>
+          <ul>
+            <li>Formato columnar comprimido.</li>
+            <li><strong>Inmutables</strong>: nunca se modifican en sitio. Cada cambio genera <strong>nuevos ficheros</strong>.</li>
+            <li>Contienen los valores reales de las filas.</li>
+          </ul>
+          <p><strong>B) Carpeta <code>_delta_log/</code> (metadatos)</strong></p>
+          <ul>
+            <li><strong>JSON por cada transacción</strong>: describe qué ficheros forman parte de la tabla en cada versión.</li>
+            <li>Contiene información de add, remove, schema, metadata.</li>
+            <li>Cada N versiones se genera un <strong>checkpoint</strong> en Parquet (para acelerar la lectura del log).</li>
+          </ul>
+
+          <h4>🎯 Cómo Delta sabe qué ficheros están "activos"</h4>
+          <p>Cuando lees una tabla Delta:</p>
+          <ol>
+            <li>Delta lee el <strong>último estado consolidado</strong> del <code>_delta_log</code>.</li>
+            <li>Ese estado dice: "los ficheros activos son X, Y, Z".</li>
+            <li>Delta lee <strong>solo esos ficheros</strong>.</li>
+            <li>Los ficheros viejos siguen físicamente ahí (hasta que hagas VACUUM) → <strong>habilitan time travel</strong>.</li>
+          </ol>
+
+          <h4>¿Cómo se hace UPDATE si Parquet es inmutable?</h4>
+          <p>Delta no modifica en sitio. Cuando haces <code>UPDATE</code>:</p>
+          <ol>
+            <li>Delta identifica los ficheros que contienen las filas afectadas.</li>
+            <li>Lee esos ficheros.</li>
+            <li>Aplica los cambios en memoria.</li>
+            <li><strong>Escribe nuevos ficheros</strong> con las filas actualizadas.</li>
+            <li><strong>Marca los ficheros viejos como removidos</strong> en el nuevo JSON del <code>_delta_log</code>.</li>
+            <li>Nuevas lecturas ven la nueva versión.</li>
+          </ol>
+          <p>Es "copy-on-write". Por eso a veces se acumulan muchos ficheros pequeños → <strong>problema del small files</strong>, que resolvemos con OPTIMIZE.</p>
         </article>
 
-        <!-- 4 -->
-        <div class="category-header" id="beneficios"><span class="category-header__icon">✨</span><h2 class="category-header__title">4. Los 5 grandes beneficios de Delta</h2></div>
+        <!-- ============ 4. BENEFICIOS ============ -->
+        <div class="category-header" id="beneficios">
+          <span class="category-header__icon">✨</span>
+          <h2 class="category-header__title">4. Los 5 grandes beneficios de Delta</h2>
+        </div>
+
         <article class="concept-card">
-          <h3>Los 5 puntos oficiales</h3>
+          <p>Estos son <strong>los 5 puntos oficiales de la doc</strong> de Microsoft. Apréndetelos porque salen en preguntas del tipo <em>"¿Cuáles son los beneficios de usar Delta?"</em>.</p>
+
+          <h4>🎯 A) Tablas relacionales con operaciones CRUD</h4>
+          <p>Con Spark puedes:</p>
           <ul>
-            <li>🎯 <strong>Tablas relacionales con CRUD:</strong> CREATE, SELECT, INSERT, UPDATE, DELETE, MERGE sobre tu data lake.</li>
-            <li>🎯 <strong>Transacciones ACID:</strong> varios notebooks escriben a la misma tabla sin corromperla.</li>
-            <li>🎯 <strong>Versionado y time travel:</strong> historial completo, consultar el pasado, auditar, recuperar errores.</li>
-            <li>🎯 <strong>Batch y streaming:</strong> Delta puede ser sink o source de un stream con la misma API.</li>
-            <li>🎯 <strong>Formato estándar:</strong> Parquet por debajo, interoperable con el SQL endpoint, Databricks, Snowflake, etc.</li>
+            <li><strong>CREATE</strong> tablas Delta</li>
+            <li><strong>SELECT</strong> filas</li>
+            <li><strong>INSERT</strong> nuevas filas</li>
+            <li><strong>UPDATE</strong> filas existentes</li>
+            <li><strong>DELETE</strong> filas</li>
+            <li><strong>MERGE</strong> (upsert)</li>
+          </ul>
+          <p>Es decir, <strong>como una BBDD relacional</strong>, pero encima de tu data lake.</p>
+
+          <h4>🎯 B) Transacciones ACID</h4>
+          <p>Delta implementa las 4 propiedades ACID sobre Spark:</p>
+          <ul>
+            <li><strong>Atomicity</strong>: una transacción se completa entera o no se aplica nada.</li>
+            <li><strong>Consistency</strong>: la tabla siempre queda en un estado válido.</li>
+            <li><strong>Isolation</strong>: procesos concurrentes no interfieren entre sí (serializable isolation).</li>
+            <li><strong>Durability</strong>: los cambios persisten aunque falle el sistema.</li>
+          </ul>
+          <p>Esto es lo que permite que <strong>varios notebooks escriban a la misma tabla simultáneamente sin corromperla</strong>.</p>
+
+          <h4>🎯 C) Versionado de datos y time travel</h4>
+          <p>Como todas las transacciones se registran, puedes:</p>
+          <ul>
+            <li>Ver el <strong>historial completo</strong> de cambios.</li>
+            <li>Consultar la tabla <strong>como estaba en un momento pasado</strong>.</li>
+            <li>Auditar cambios.</li>
+            <li>Recuperarte de errores accidentales.</li>
+          </ul>
+          <p>Ejemplos: <code>versionAsOf</code>, <code>timestampAsOf</code>, <code>DESCRIBE HISTORY</code>.</p>
+
+          <h4>🎯 D) Soporte para batch Y streaming</h4>
+          <p>Delta puede ser:</p>
+          <ul>
+            <li><strong>Sink</strong> (destino) de un stream → los datos que llegan se acumulan en la tabla.</li>
+            <li><strong>Source</strong> (fuente) de un stream → cambios en la tabla se procesan como stream.</li>
+          </ul>
+          <p>Con la <strong>misma API</strong> que para batch. Esto es súper potente para escenarios de IoT, logs, telemetría.</p>
+
+          <h4>🎯 E) Formato estándar e interoperabilidad</h4>
+          <p>Delta usa <strong>Parquet</strong> por debajo, que es <strong>el formato estándar</strong> en data lakes. Esto significa:</p>
+          <ul>
+            <li>Cualquier motor Parquet puede leerlo.</li>
+            <li>El <strong>SQL analytics endpoint</strong> puede consultar tablas Delta con T-SQL.</li>
+            <li>Interoperabilidad con Databricks, Synapse, Snowflake y otros que soporten Delta.</li>
           </ul>
         </article>
 
-        <!-- 5 -->
-        <div class="category-header" id="crear"><span class="category-header__icon">🛠️</span><h2 class="category-header__title">5. Crear tablas Delta: 5 formas</h2></div>
+        <!-- ============ 5. CREAR TABLAS ============ -->
+        <div class="category-header" id="crear">
+          <span class="category-header__icon">🛠️</span>
+          <h2 class="category-header__title">5. Crear tablas Delta: 5 formas distintas</h2>
+        </div>
+
         <article class="concept-card">
-          <pre><code class="language-python"># 1) saveAsTable desde un DataFrame (el más común, managed)
-df.write.format("delta").saveAsTable("mytable")
+          <p>Hay <strong>múltiples caminos</strong> para crear una tabla Delta. Cada uno tiene su caso de uso.</p>
 
-# 2) saveAsTable con path (external)
-df.write.format("delta").saveAsTable("myext", path="Files/myext")
+          <h3>Método 1: <code>saveAsTable()</code> desde un DataFrame (el más común)</h3>
+          <pre><code class="language-python"># Cargar datos en un DataFrame
+df = spark.read.load('Files/mydata.csv', format='csv', header=True)
 
-# 3) DeltaTableBuilder (tabla vacía con schema)
-from delta.tables import *
-DeltaTable.create(spark).tableName("products") \
-  .addColumn("ProductId", "INT").addColumn("Price", "FLOAT").execute()
+# Guardarlos como tabla Delta gestionada
+df.write.format("delta").saveAsTable("mytable")</code></pre>
+          <p><strong>Qué pasa</strong>:</p>
+          <ul>
+            <li>Los datos se guardan como Parquet en <code>Tables/mytable/</code></li>
+            <li>Se crea el <code>_delta_log/</code></li>
+            <li>La tabla aparece en el Lakehouse Explorer bajo <code>Tables</code></li>
+            <li>Es una tabla <strong>managed</strong> (Fabric gestiona todo)</li>
+          </ul>
 
-# 5) Escribir Delta sin registrar en el catálogo
-df.write.format("delta").save("Files/mydatatable")</code></pre>
-          <pre><code class="language-sql">-- 4) SQL CREATE TABLE
-CREATE TABLE salesorders (OrderId INT, SalesTotal FLOAT) USING DELTA;</code></pre>
-          <div class="note note--tip">✨ <strong>Automatic table discovery:</strong> si guardas Delta en <code>Tables/nombre/</code> (en vez de <code>Files/</code>), Fabric crea el metadata automáticamente, sin <code>saveAsTable</code>.</div>
-        </article>
+          <h3>Método 2: <code>saveAsTable()</code> con <code>path</code> para external table</h3>
+          <pre><code class="language-python"># Tabla external: metadata en el metastore, datos en Files/
+df.write.format("delta").saveAsTable(
+    "myexternaltable",
+    path="Files/myexternaltable"
+)</code></pre>
+          <p>O apuntando a ADLS externo:</p>
+          <pre><code class="language-python">df.write.format("delta").saveAsTable(
+    "myexternaltable",
+    path="abfss://container@storage.dfs.core.windows.net/myexternaltable"
+)</code></pre>
+          <div class="note note--warning">
+            ⚠️ <strong>Recuerda de módulos anteriores:</strong> en Fabric la <strong>recomendación oficial es usar shortcuts</strong> en lugar de external tables.
+          </div>
 
-        <!-- 6 -->
-        <div class="category-header" id="managed"><span class="category-header__icon">🔧</span><h2 class="category-header__title">6. Managed vs External</h2></div>
-        <article class="concept-card">
+          <h3>Método 3: DeltaTableBuilder API (crear tabla vacía con schema)</h3>
+          <pre><code class="language-python">from delta.tables import *
+
+DeltaTable.create(spark) \
+  .tableName("products") \
+  .addColumn("ProductId", "INT") \
+  .addColumn("ProductName", "STRING") \
+  .addColumn("Category", "STRING") \
+  .addColumn("Price", "FLOAT") \
+  .execute()</code></pre>
+          <p>Uso típico: cuando quieres <strong>preparar el schema</strong> primero y luego llenar la tabla con datos que vienen por otro camino (streaming, notebooks múltiples, etc.).</p>
+
+          <h3>Método 4: SQL <code>CREATE TABLE</code></h3>
+          <pre><code class="language-sql">%%sql
+CREATE TABLE salesorders
+(
+    OrderId INT NOT NULL,
+    OrderDate TIMESTAMP NOT NULL,
+    CustomerName STRING,
+    SalesTotal FLOAT NOT NULL
+)
+USING DELTA</code></pre>
+          <p>Sintaxis SQL clásica. Para external:</p>
+          <pre><code class="language-sql">%%sql
+CREATE TABLE MyExternalTable
+USING DELTA
+LOCATION 'Files/mydata'</code></pre>
+          <p>Cuando creas una external table con <code>CREATE TABLE ... LOCATION</code>, <strong>el schema se infiere de los ficheros Parquet ya presentes</strong> en esa ubicación.</p>
+
+          <h3>Método 5: Escribir Delta sin crear tabla en metastore</h3>
+          <p>A veces quieres <strong>guardar datos en formato Delta</strong> pero <strong>sin registrar la tabla</strong> en el metastore:</p>
+          <pre><code class="language-python">delta_path = "Files/mydatatable"
+df.write.format("delta").save(delta_path)</code></pre>
+          <p>Escribe ficheros Delta a esa ruta (con su <code>_delta_log/</code>), pero <strong>NO aparece como tabla en el catálogo</strong>.</p>
+
+          <div class="note note--tip">
+            ⚠️ <strong>Tip curioso:</strong> si usas esta técnica y guardas en la ruta <strong><code>Tables/</code></strong> en vez de <code>Files/</code>, Fabric usa <strong>automatic table discovery</strong> y crea el metadata automáticamente. Bam, tabla registrada sin <code>saveAsTable</code>. 🌸
+          </div>
+
+          <h4>Modos de escritura (<code>.mode()</code>)</h4>
+          <p>Aplican a <code>save()</code> y <code>saveAsTable()</code>:</p>
+          <pre><code class="language-python"># Sobrescribir cualquier fichero existente
+df.write.format("delta").mode("overwrite").save(delta_path)
+
+# Añadir filas nuevas a lo existente
+df.write.format("delta").mode("append").save(delta_path)</code></pre>
           <div class="table-scroll">
             <table class="md-table">
-              <thead><tr><th></th><th>Managed</th><th>External</th></tr></thead>
+              <thead><tr><th>Modo</th><th>Descripción</th></tr></thead>
               <tbody>
-                <tr><td>Ubicación datos</td><td><code>Tables/</code></td><td>Ruta que especificas (<code>path</code>/<code>LOCATION</code>)</td></tr>
-                <tr><td>DROP borra datos</td><td>✅ Sí</td><td>❌ Solo el metadata</td></tr>
-                <tr><td>Recomendado en Fabric</td><td>✅</td><td>Prefiere <strong>shortcuts</strong></td></tr>
+                <tr><td><code>overwrite</code></td><td>Borra lo existente y escribe de nuevo</td></tr>
+                <tr><td><code>append</code></td><td>Añade a lo existente</td></tr>
+                <tr><td><code>ignore</code></td><td>Si existe, no hace nada</td></tr>
+                <tr><td><code>error</code> (default)</td><td>Falla si ya existe</td></tr>
               </tbody>
             </table>
           </div>
-          <div class="note note--warning">⚠️ <strong>Oficial:</strong> los lakehouses soportan solo managed tables; <code>CREATE TABLE ... LOCATION</code> no está soportado. Para acceder a datos externos, la respuesta esperada en el examen es <strong>shortcuts</strong>.</div>
+
+          <h4>Comparativa rápida de métodos</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Método</th><th>Cuándo usarlo</th></tr></thead>
+              <tbody>
+                <tr><td><code>df.write.saveAsTable("t")</code></td><td>Tabla managed desde datos existentes</td></tr>
+                <tr><td><code>df.write.saveAsTable("t", path=...)</code></td><td>External table desde datos existentes</td></tr>
+                <tr><td><code>DeltaTable.create()</code></td><td>Tabla vacía con schema definido</td></tr>
+                <tr><td><code>CREATE TABLE ... USING DELTA</code></td><td>SQL clásico (managed o external)</td></tr>
+                <tr><td><code>df.write.save(path)</code></td><td>Datos Delta sin metadata en catálogo</td></tr>
+              </tbody>
+            </table>
+          </div>
         </article>
 
-        <!-- 7 -->
-        <div class="category-header" id="operaciones"><span class="category-header__icon">🔄</span><h2 class="category-header__title">7. Operaciones: SELECT, INSERT, UPDATE, DELETE</h2></div>
+        <!-- ============ 6. MANAGED VS EXTERNAL ============ -->
+        <div class="category-header" id="managed-external">
+          <span class="category-header__icon">🔧</span>
+          <h2 class="category-header__title">6. Managed vs External (repaso profundo)</h2>
+        </div>
+
         <article class="concept-card">
-          <h3>Relacional completo con Spark SQL o Delta API</h3>
-          <pre><code class="language-sql">SELECT * FROM products WHERE Category = 'Bikes';
-INSERT INTO products VALUES (1, 'Widget', 'Accessories', 2.99);
-UPDATE products SET ListPrice = 2.49 WHERE ProductId = 1;
-DELETE FROM products WHERE Discontinued = true;</code></pre>
+          <p>Este tema ya lo vimos en módulos anteriores, pero aquí lo vemos <strong>desde la perspectiva Delta</strong>.</p>
+
+          <h3>Managed table</h3>
+          <ul>
+            <li><strong>Definición</strong>: Fabric controla metadata + datos.</li>
+            <li><strong>Ubicación datos</strong>: <code>Tables/&lt;nombre_tabla&gt;/</code> en el lakehouse.</li>
+            <li><strong>Creación</strong>: sin especificar <code>path</code>.</li>
+            <li><strong>DROP</strong>: <strong>borra metadata Y datos</strong>.</li>
+          </ul>
+          <pre><code class="language-python"># Managed
+df.write.format("delta").saveAsTable("managed_products")
+
+# Al dropear...
+spark.sql("DROP TABLE managed_products")
+# ✅ Se borra el metadata
+# ✅ Se borran los ficheros Parquet + _delta_log de Tables/managed_products/</code></pre>
+
+          <h3>External table</h3>
+          <ul>
+            <li><strong>Definición</strong>: Fabric controla solo el metadata; los datos viven donde tú digas.</li>
+            <li><strong>Ubicación datos</strong>: la ruta que especificas con <code>path</code> o <code>LOCATION</code>.</li>
+            <li><strong>Creación</strong>: con <code>path=...</code> o <code>LOCATION '...'</code>.</li>
+            <li><strong>DROP</strong>: <strong>borra solo el metadata</strong>. Los datos permanecen.</li>
+          </ul>
+          <pre><code class="language-python"># External
+df.write.format("delta").saveAsTable(
+    "external_products",
+    path="Files/external_products"
+)
+
+# Al dropear...
+spark.sql("DROP TABLE external_products")
+# ✅ Se borra el metadata
+# ❌ Los ficheros Parquet + _delta_log de Files/external_products/ permanecen</code></pre>
+
+          <h4>🎯 Cuando el schema se infiere</h4>
+          <p>Cuando creas una external table con <code>LOCATION</code> <strong>apuntando a datos ya existentes</strong>:</p>
+          <pre><code class="language-sql">%%sql
+CREATE TABLE MyExternalTable
+USING DELTA
+LOCATION 'Files/mydata'</code></pre>
+          <p>El schema se <strong>infiere de los ficheros Parquet</strong> en <code>Files/mydata/</code>. No hace falta especificarlo.</p>
+
+          <div class="note note--warning">
+            ⚠️ <strong>Recomendación oficial en Fabric.</strong> Recordamos del Módulo 2:
+            <em>"Lakehouses support only managed tables. External tables with CREATE TABLE ... LOCATION aren't supported. To access Delta tables in other storage locations, use shortcuts instead."</em>
+            <ul>
+              <li>Managed tables → <strong>totalmente soportadas y recomendadas</strong> ✅</li>
+              <li>External tables con SQL DDL puro (<code>CREATE TABLE ... LOCATION</code>) → <strong>no oficialmente soportadas</strong>, pueden dar problemas</li>
+              <li>External tables con <code>df.write.saveAsTable(name, path=...)</code> → <strong>funcionan técnicamente</strong></li>
+              <li>Para acceder a datos externos → <strong>shortcuts</strong> ← 🎯 esta es LA respuesta esperada en el examen</li>
+            </ul>
+          </div>
+        </article>
+
+        <!-- ============ 7. DELTATABLEBUILDER ============ -->
+        <div class="category-header" id="builder">
+          <span class="category-header__icon">🔨</span>
+          <h2 class="category-header__title">7. DeltaTableBuilder API</h2>
+        </div>
+
+        <article class="concept-card">
+          <p>Esta API te permite crear tablas Delta <strong>programáticamente con control fino</strong>.</p>
+
+          <h4>Uso básico</h4>
           <pre><code class="language-python">from delta.tables import *
-# Por nombre (catálogo) o por ruta
-dt = DeltaTable.forName(spark, "products")
-dt.update(condition="Category = 'Accessories'", set={"Price": "Price * 0.9"})
-dt.delete(condition="Discontinued = true")</code></pre>
-          <p>Usa <strong>Spark SQL</strong> para catalog tables y lógica declarativa; usa la <strong>Delta API</strong> (<code>forPath</code>/<code>forName</code>) para datos por ruta y operaciones programáticas complejas.</p>
+
+DeltaTable.create(spark) \
+  .tableName("products") \
+  .addColumn("ProductId", "INT") \
+  .addColumn("ProductName", "STRING") \
+  .addColumn("Category", "STRING") \
+  .addColumn("Price", "FLOAT") \
+  .execute()</code></pre>
+
+          <h4>Con propiedades avanzadas</h4>
+          <pre><code class="language-python">from delta.tables import *
+from pyspark.sql.types import *
+
+DeltaTable.create(spark) \
+  .tableName("orders") \
+  .addColumn("OrderId", IntegerType(), nullable=False) \
+  .addColumn("OrderDate", TimestampType(), nullable=False) \
+  .addColumn("CustomerId", IntegerType()) \
+  .addColumn("Total", DecimalType(10,2)) \
+  .addColumn("Region", StringType(), comment="Sales region") \
+  .partitionedBy("Region") \
+  .property("description", "Orders table with region partitioning") \
+  .execute()</code></pre>
+
+          <h4><code>createIfNotExists</code> y <code>createOrReplace</code></h4>
+          <pre><code class="language-python"># Solo crea si no existe (no falla si ya está)
+DeltaTable.createIfNotExists(spark) \
+  .tableName("products") \
+  .addColumn("id", "INT") \
+  .execute()
+
+# Sobrescribe si existe
+DeltaTable.createOrReplace(spark) \
+  .tableName("products") \
+  .addColumn("id", "INT") \
+  .execute()</code></pre>
+
+          <h4>Cuándo usarlo vs SQL</h4>
+          <ul>
+            <li><strong>DeltaTableBuilder API</strong>: cuando construyes el schema programáticamente (por ejemplo, generado dinámicamente), o cuando tienes lógica condicional.</li>
+            <li><strong>SQL <code>CREATE TABLE</code></strong>: cuando conoces el schema de antemano y es más legible en SQL.</li>
+          </ul>
+          <p>Ambos son equivalentes en cuanto a lo que producen.</p>
         </article>
 
-        <!-- 8 -->
-        <div class="category-header" id="merge"><span class="category-header__icon">👑</span><h2 class="category-header__title">8. MERGE INTO: el rey del upsert</h2></div>
+        <!-- ============ 8. SAVE ONLY ============ -->
+        <div class="category-header" id="save-only">
+          <span class="category-header__icon">💾</span>
+          <h2 class="category-header__title">8. Guardar datos en formato Delta sin tabla</h2>
+        </div>
+
         <article class="concept-card">
-          <h3>INSERT + UPDATE + DELETE en una operación atómica</h3>
+          <p>A veces quieres <strong>persistir datos en formato Delta sin registrarlos como tabla</strong>. Usos típicos:</p>
+          <ul>
+            <li>Datos intermedios de un ETL que no necesitas exponer.</li>
+            <li>Datos que consumirás con la Delta API directamente por ruta.</li>
+            <li>Datos que luego "overlayarás" con una tabla definida.</li>
+          </ul>
+
+          <h4>Guardar directamente</h4>
+          <pre><code class="language-python">delta_path = "Files/mydatatable"
+
+# Escritura inicial
+df.write.format("delta").save(delta_path)
+
+# Sobrescribir
+new_df.write.format("delta").mode("overwrite").save(delta_path)
+
+# Append
+more_rows_df.write.format("delta").mode("append").save(delta_path)</code></pre>
+
+          <h4>Leer datos Delta por ruta</h4>
+          <pre><code class="language-python"># Sin necesidad de que exista en el metastore
+df = spark.read.format("delta").load("Files/mydatatable")
+display(df)</code></pre>
+
+          <h4>Usar la Delta API por ruta</h4>
+          <pre><code class="language-python">from delta.tables import *
+
+# Referenciar tabla Delta por ruta
+deltaTable = DeltaTable.forPath(spark, "Files/mydatatable")
+
+# Operar sobre ella
+deltaTable.update(
+    condition="Category = 'Discontinued'",
+    set={"Active": "false"}
+)</code></pre>
+
+          <h4>🎯 Tip: Automatic table discovery</h4>
+          <p>Si guardas datos Delta en <code>Tables/nombre/</code>, <strong>Fabric detecta automáticamente</strong> y crea el metadata:</p>
+          <pre><code class="language-python"># Los datos van a Files (no se registra como tabla)
+df.write.format("delta").save("Files/mydatatable")   # No aparece en Tables
+
+# Los datos van a Tables (Fabric detecta y registra automáticamente)
+df.write.format("delta").save("Tables/mydatatable")  # ✨ Aparece como tabla</code></pre>
+        </article>
+
+        <!-- ============ 9. OPERACIONES ============ -->
+        <div class="category-header" id="operaciones">
+          <span class="category-header__icon">🔄</span>
+          <h2 class="category-header__title">9. Operaciones de datos: SELECT, INSERT, UPDATE, DELETE</h2>
+        </div>
+
+        <article class="concept-card">
+          <p>Aquí es donde Delta brilla: puedes hacer <strong>operaciones relacionales completas</strong> sobre tu data lake.</p>
+
+          <h3>SELECT (leer)</h3>
+          <p><strong>Spark SQL:</strong></p>
+          <pre><code class="language-sql">%%sql
+SELECT * FROM products WHERE Category = 'Bikes'</code></pre>
+          <p><strong>PySpark con spark.sql:</strong></p>
+          <pre><code class="language-python">df = spark.sql("SELECT * FROM products WHERE Category = 'Bikes'")
+display(df)</code></pre>
+          <p><strong>PySpark con read.table:</strong></p>
+          <pre><code class="language-python">df = spark.read.table("products").filter("Category = 'Bikes'")
+display(df)</code></pre>
+
+          <h3>INSERT (añadir)</h3>
+          <p><strong>Con SQL directo:</strong></p>
+          <pre><code class="language-sql">%%sql
+INSERT INTO products VALUES (1, 'Widget', 'Accessories', 2.99)</code></pre>
+          <p><strong>Con embed en PySpark:</strong></p>
+          <pre><code class="language-python">spark.sql("INSERT INTO products VALUES (1, 'Widget', 'Accessories', 2.99)")</code></pre>
+          <p><strong>Con append de DataFrame:</strong></p>
+          <pre><code class="language-python">new_products_df.write.format("delta").mode("append").saveAsTable("products")</code></pre>
+
+          <h3>UPDATE (modificar)</h3>
+          <p><strong>Con SQL:</strong></p>
+          <pre><code class="language-sql">%%sql
+UPDATE products
+SET ListPrice = 2.49
+WHERE ProductId = 1</code></pre>
+          <p><strong>Con Delta API (por tabla):</strong></p>
+          <pre><code class="language-python">from delta.tables import *
+
+deltaTable = DeltaTable.forName(spark, "products")
+deltaTable.update(
+    condition="ProductId = 1",
+    set={"ListPrice": "2.49"}
+)</code></pre>
+          <p><strong>Con Delta API (por ruta):</strong></p>
+          <pre><code class="language-python">from delta.tables import *
+from pyspark.sql.functions import *
+
+delta_path = "Files/products"
+deltaTable = DeltaTable.forPath(spark, delta_path)
+
+# Reducir precio de accesorios un 10%
+deltaTable.update(
+    condition="Category == 'Accessories'",
+    set={"Price": "Price * 0.9"}
+)</code></pre>
+
+          <h3>DELETE (eliminar filas)</h3>
+          <p><strong>Con SQL:</strong></p>
+          <pre><code class="language-sql">%%sql
+DELETE FROM products WHERE Discontinued = true</code></pre>
+          <p><strong>Con Delta API:</strong></p>
+          <pre><code class="language-python">deltaTable = DeltaTable.forName(spark, "products")
+deltaTable.delete(condition="Discontinued = true")</code></pre>
+        </article>
+
+        <!-- ============ 10. API VS SQL ============ -->
+        <div class="category-header" id="api-vs-sql">
+          <span class="category-header__icon">🆚</span>
+          <h2 class="category-header__title">10. Delta API vs Spark SQL</h2>
+        </div>
+
+        <article class="concept-card">
+          <p>Ambos hacen lo mismo, pero tienen usos preferidos según el contexto.</p>
+
+          <h4>Cuándo usar cada uno</h4>
+          <p><strong>Spark SQL</strong> (<code>spark.sql(...)</code> o <code>%%sql</code>) es mejor cuando:</p>
+          <ul>
+            <li>Trabajas con <strong>catalog tables</strong> (<code>spark.sql("SELECT ...")</code>).</li>
+            <li>Vienes de background SQL.</li>
+            <li>La lógica es analítica pura (SELECT, JOIN, GROUP BY).</li>
+            <li>Quieres código más legible declarativo.</li>
+          </ul>
+          <p><strong>Delta API</strong> (<code>DeltaTable.forPath()</code> o <code>DeltaTable.forName()</code>) es mejor cuando:</p>
+          <ul>
+            <li>Trabajas con <strong>datos Delta por ruta</strong> sin tabla en el catálogo.</li>
+            <li>Necesitas operaciones complejas programáticas (MERGE dinámico).</li>
+            <li>Necesitas la API completa Delta (schema evolution, history, generateManifest, etc.).</li>
+            <li>Prefieres estilo programático.</li>
+          </ul>
+
+          <h4>Comparativa lado a lado</h4>
+          <p><strong>UPDATE con SQL:</strong></p>
+          <pre><code class="language-sql">UPDATE products SET ListPrice = ListPrice * 0.9 WHERE Category = 'Accessories'</code></pre>
+          <p><strong>UPDATE con Delta API:</strong></p>
+          <pre><code class="language-python">deltaTable.update(
+    condition="Category = 'Accessories'",
+    set={"ListPrice": "ListPrice * 0.9"}
+)</code></pre>
+          <p>Ambos hacen exactamente lo mismo. Elige lo que te sea más cómodo.</p>
+
+          <h4>Cargar la referencia de la tabla</h4>
+          <p><strong>Por nombre</strong> (necesita estar en el catálogo):</p>
+          <pre><code class="language-python">deltaTable = DeltaTable.forName(spark, "products")</code></pre>
+          <p><strong>Por ruta</strong> (funciona incluso sin catálogo):</p>
+          <pre><code class="language-python">deltaTable = DeltaTable.forPath(spark, "Files/products")</code></pre>
+        </article>
+
+        <!-- ============ 11. MERGE ============ -->
+        <div class="category-header" id="merge">
+          <span class="category-header__icon">👑</span>
+          <h2 class="category-header__title">11. MERGE INTO: el rey del upsert</h2>
+        </div>
+
+        <article class="concept-card">
+          <p><strong>MERGE INTO</strong> es probablemente <strong>la operación más importante</strong> de Delta Lake para casos reales. Combina INSERT, UPDATE y DELETE en una sola operación atómica basada en si las filas hacen match o no.</p>
+
+          <h4>Sintaxis básica</h4>
+          <pre><code class="language-sql">MERGE INTO target_table t
+USING source_table s
+ON t.key = s.key
+WHEN MATCHED THEN UPDATE SET t.value = s.value
+WHEN NOT MATCHED THEN INSERT (key, value) VALUES (s.key, s.value)</code></pre>
+          <p>En cristiano:</p>
+          <ul>
+            <li><strong>MERGE INTO target USING source</strong> → <em>"Voy a fusionar filas de source en target"</em></li>
+            <li><strong>ON condition</strong> → <em>"Considera que hacen match si..."</em></li>
+            <li><strong>WHEN MATCHED</strong> → <em>"Cuando una fila hace match..."</em></li>
+            <li><strong>WHEN NOT MATCHED</strong> → <em>"Cuando una fila del source NO existe en target..."</em></li>
+            <li><strong>WHEN NOT MATCHED BY SOURCE</strong> → <em>"Cuando una fila del target NO está en source..."</em> (útil para deletes)</li>
+          </ul>
+
+          <h3>Caso de uso 1: Upsert clásico</h3>
+          <p>Tienes una tabla <code>people10m</code> (target). Recibes actualizaciones diarias en <code>people10m_updates</code> (source). Quieres actualizar los que existen e insertar los nuevos.</p>
           <pre><code class="language-sql">MERGE INTO people10m t
 USING people10m_updates s
 ON t.id = s.id
+WHEN MATCHED THEN UPDATE SET *   -- Actualiza todas las columnas
+WHEN NOT MATCHED THEN INSERT *   -- Inserta todas las columnas</code></pre>
+          <p>El <code>*</code> funciona cuando ambos tienen las mismas columnas.</p>
+
+          <h3>Caso de uso 2: MERGE con lógica condicional</h3>
+          <pre><code class="language-sql">MERGE INTO products t
+USING product_updates s
+ON t.ProductId = s.ProductId
+WHEN MATCHED AND s.Category = 'Discontinued' THEN
+    DELETE
+WHEN MATCHED AND s.Price != t.Price THEN
+    UPDATE SET t.Price = s.Price, t.UpdatedAt = current_timestamp()
+WHEN NOT MATCHED AND s.Category IS NOT NULL THEN
+    INSERT (ProductId, Name, Category, Price)
+    VALUES (s.ProductId, s.Name, s.Category, s.Price)</code></pre>
+          <p>Aquí demostramos:</p>
+          <ul>
+            <li>MERGE que hace <strong>DELETE si la fila está discontinued</strong>.</li>
+            <li>MERGE que hace <strong>UPDATE solo si el precio cambió</strong>.</li>
+            <li>MERGE que hace <strong>INSERT solo si tiene categoría</strong>.</li>
+          </ul>
+
+          <h3>Caso de uso 3: Deduplicación</h3>
+          <p>Insertar filas nuevas de un source, ignorando las duplicadas:</p>
+          <pre><code class="language-sql">MERGE INTO orders t
+USING new_orders s
+ON t.OrderId = s.OrderId
+WHEN NOT MATCHED THEN
+    INSERT *</code></pre>
+          <p>Como no hay <code>WHEN MATCHED</code>, si el OrderId ya existe → no hace nada. Los duplicados se descartan silenciosamente. Muy útil para <strong>exactly-once semantics</strong> en pipelines de ingesta.</p>
+
+          <h3>Caso de uso 4: <code>WHEN NOT MATCHED BY SOURCE</code> (deletes)</h3>
+          <p>Quieres que target refleje exactamente lo que hay en source (útil para sincronización total):</p>
+          <pre><code class="language-sql">MERGE INTO customers t
+USING (SELECT * FROM customers_source WHERE updated_at &gt;= current_date() - INTERVAL '5' DAY) s
+ON t.id = s.id
 WHEN MATCHED THEN UPDATE SET *
-WHEN NOT MATCHED THEN INSERT *</code></pre>
-          <p>Cláusulas: <code>WHEN MATCHED</code>, <code>WHEN NOT MATCHED</code> y <code>WHEN NOT MATCHED BY SOURCE</code> (útil para deletes de sincronización). Con condiciones (<code>AND</code>) haces UPDATE/DELETE/INSERT selectivos. Sin <code>WHEN MATCHED</code>, el MERGE actúa como <strong>deduplicación</strong> (exactly-once).</p>
-          <h4>🎯 SCD Type 1 (sobrescribir) vs Type 2 (historial)</h4>
+WHEN NOT MATCHED THEN INSERT *
+WHEN NOT MATCHED BY SOURCE
+    AND t.updated_at &gt;= current_date() - INTERVAL '5' DAY
+    THEN DELETE</code></pre>
+          <p>Este pattern es genial para escenarios donde <strong>el source puede cambiar los últimos N días</strong> y tú quieres reflejar exactamente esos cambios en target.</p>
+
+          <h3>🎯 Caso de uso 5: SCD Type 1 (sobrescribir historial)</h3>
+          <p><strong>SCD Type 1</strong>: cada cambio <strong>sobrescribe</strong> el valor anterior, sin guardar historia. La tabla siempre refleja el estado actual.</p>
+          <pre><code class="language-sql">MERGE INTO dim_customer t
+USING staging_customer s
+ON t.CustomerKey = s.CustomerKey
+WHEN MATCHED THEN
+    UPDATE SET
+        t.Name = s.Name,
+        t.Email = s.Email,
+        t.State = s.State,
+        t.UpdatedAt = current_timestamp()
+WHEN NOT MATCHED THEN
+    INSERT (CustomerKey, Name, Email, State, CreatedAt)
+    VALUES (s.CustomerKey, s.Name, s.Email, s.State, current_timestamp())</code></pre>
+          <p>Fácil, eficiente. Cuando un cliente cambia de state, se sobrescribe.</p>
+
+          <h3>🎯 Caso de uso 6: SCD Type 2 (guardar historial)</h3>
+          <p><strong>SCD Type 2</strong>: cada cambio <strong>crea una nueva fila</strong> con validez temporal (<code>Valid_From</code>, <code>Valid_To</code>, <code>Is_Current</code>). La tabla guarda TODAS las versiones históricas.</p>
+          <p>Ejemplo del comportamiento:</p>
           <div class="table-scroll">
             <table class="md-table">
-              <thead><tr><th></th><th>SCD Type 1</th><th>SCD Type 2</th></tr></thead>
+              <thead><tr><th>CustomerKey</th><th>CustomerID</th><th>Name</th><th>State</th><th>Valid_From</th><th>Valid_To</th><th>Is_Current</th></tr></thead>
               <tbody>
-                <tr><td>Historial</td><td>❌ No preservado</td><td>✅ Preservado (filas versionadas con Valid_From/To, Is_Current)</td></tr>
-                <tr><td>Deletes</td><td>Físicos</td><td>Soft (Is_Current=false)</td></tr>
-                <tr><td>Complejidad</td><td>Baja</td><td>Alta</td></tr>
-                <tr><td>Uso típico</td><td>Reporting operacional</td><td>Auditoría, compliance</td></tr>
+                <tr><td>1001</td><td>C-123</td><td>Company</td><td>CA</td><td>2023-01-15</td><td>2026-02-20</td><td>No</td></tr>
+                <tr><td>1002</td><td>C-123</td><td>Company</td><td>NY</td><td>2026-02-20</td><td>NULL</td><td>Yes</td></tr>
               </tbody>
             </table>
           </div>
-          <div class="note note--warning">⚠️ Si el <strong>source tiene filas duplicadas</strong> que hacen match con la misma fila del target, MERGE <strong>falla</strong>. Deduplica el source antes: <code>source.dropDuplicates(["id"])</code>. En Fabric, <strong>Copy Job soporta SCD Type 2 nativamente</strong> (preview).</div>
+          <p>Implementación con MERGE en dos pasos.</p>
+          <p><strong>Paso 1</strong>: cerrar las filas actuales que han cambiado.</p>
+          <pre><code class="language-sql">MERGE INTO dim_customer_scd2 t
+USING (
+    SELECT s.CustomerID,
+           s.Name,
+           s.State,
+           current_date() AS effective_date
+    FROM staging_customer s
+) s
+ON t.CustomerID = s.CustomerID AND t.Is_Current = true AND t.State != s.State
+WHEN MATCHED THEN
+    UPDATE SET
+        t.Valid_To = s.effective_date,
+        t.Is_Current = false</code></pre>
+          <p><strong>Paso 2</strong>: insertar las nuevas versiones.</p>
+          <pre><code class="language-sql">INSERT INTO dim_customer_scd2 (CustomerID, Name, State, Valid_From, Valid_To, Is_Current)
+SELECT
+    s.CustomerID, s.Name, s.State,
+    current_date(), NULL, true
+FROM staging_customer s
+LEFT JOIN dim_customer_scd2 t
+    ON s.CustomerID = t.CustomerID AND t.Is_Current = true
+WHERE t.CustomerID IS NULL              -- No existía
+   OR t.State != s.State                -- O ha cambiado</code></pre>
+          <div class="note note--warning">
+            ⚠️ <strong>Ojo:</strong> SCD Type 2 con MERGE puro es tricky por las semánticas de match. En Fabric, <strong>Copy Job soporta SCD Type 2 nativamente</strong> (preview), simplificando esto.
+          </div>
+
+          <h4>🎯 Limitación importante</h4>
+          <p><em>"A merge operation can fail if multiple rows of the source dataset match and the merge attempts to update the same rows of the target Delta Lake table."</em></p>
+          <p>Es decir: si en el source hay <strong>filas duplicadas</strong> que hacen match con la misma fila del target, MERGE <strong>falla con error</strong> (por ambigüedad semántica).</p>
+          <p><strong>Solución</strong>: deduplicar el source antes de MERGE:</p>
+          <pre><code class="language-python">source_dedup = source_df.dropDuplicates(["id"])</code></pre>
+
+          <h4>SCD Type 1 vs SCD Type 2 (comparativa oficial)</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Feature</th><th>SCD Type 1 (Merge)</th><th>SCD Type 2</th></tr></thead>
+              <tbody>
+                <tr><td>Soporte en Copy Job de Fabric</td><td>✅</td><td>✅ (Preview)</td></tr>
+                <tr><td>Historia</td><td>No preservada</td><td>Preservada con filas versionadas</td></tr>
+                <tr><td>Estado destino</td><td>Refleja siempre el source actual</td><td>Contiene todas las versiones</td></tr>
+                <tr><td>Deletes</td><td>Filas físicamente eliminadas</td><td>Soft delete (Is_Current = false)</td></tr>
+                <tr><td>Caso de uso</td><td>Reporting operacional, sync realtime</td><td>Análisis histórico, auditoría, compliance</td></tr>
+                <tr><td>Complejidad</td><td>Baja</td><td>Alta</td></tr>
+              </tbody>
+            </table>
+          </div>
         </article>
 
-        <!-- 9 -->
-        <div class="category-header" id="schema"><span class="category-header__icon">🔀</span><h2 class="category-header__title">9. Schema evolution</h2></div>
+        <!-- ============ 12. SCHEMA EVOLUTION ============ -->
+        <div class="category-header" id="schema-evolution">
+          <span class="category-header__icon">🔀</span>
+          <h2 class="category-header__title">12. Schema evolution</h2>
+        </div>
+
         <article class="concept-card">
-          <h3>Modificar el schema sin romper compatibilidad</h3>
-          <pre><code class="language-python"># Añadir columnas nuevas del source al escribir
-new_df.write.format("delta").mode("append").option("mergeSchema", "true").saveAsTable("products")
-# Sobrescribir el schema completo (con cuidado)
-df.write.format("delta").mode("overwrite").option("overwriteSchema", "true").saveAsTable("products")</code></pre>
+          <p><strong>Schema evolution</strong> = capacidad de <strong>modificar el schema de una tabla Delta</strong> sin romper compatibilidad.</p>
+
+          <h4>Por qué importa</h4>
+          <p>En la vida real, los schemas cambian:</p>
+          <ul>
+            <li>Añades columnas nuevas.</li>
+            <li>Cambias tipos de datos.</li>
+            <li>Renombras (menos común).</li>
+          </ul>
+          <p>Delta permite gestionar estos cambios con seguridad.</p>
+
+          <h4>Añadir columnas al escribir</h4>
+          <p><strong>Con <code>mergeSchema</code> en escritura:</strong></p>
+          <pre><code class="language-python"># El source tiene columnas nuevas que no están en target
+new_df.write.format("delta") \
+    .mode("append") \
+    .option("mergeSchema", "true") \
+    .saveAsTable("products")</code></pre>
+          <p>Las columnas nuevas del source <strong>se añaden automáticamente</strong> al target. Las filas existentes tendrán <code>NULL</code> en esas columnas.</p>
+          <p>Sin <code>mergeSchema</code> → <strong>falla</strong> con error de schema mismatch (schema enforcement).</p>
+
+          <h4>Sobrescribir schema completamente</h4>
+          <p>Cuando cambias tipos o estructura radicalmente:</p>
+          <pre><code class="language-python">df.write.format("delta") \
+    .mode("overwrite") \
+    .option("overwriteSchema", "true") \
+    .saveAsTable("products")</code></pre>
+          <div class="note note--warning">
+            ⚠️ <strong>Cuidado:</strong> esto <strong>sobrescribe</strong> todo el schema. Úsalo solo cuando estés segura.
+          </div>
+
+          <h4>Schema evolution con MERGE</h4>
+          <p>Con <code>MERGE</code>, puedes usar <code>WITH SCHEMA EVOLUTION</code>:</p>
           <pre><code class="language-sql">MERGE WITH SCHEMA EVOLUTION INTO sales AS target
-USING staged_sales AS source ON target.order_id = source.order_id
-WHEN MATCHED THEN UPDATE SET * WHEN NOT MATCHED THEN INSERT *;</code></pre>
-          <div class="note note--warning">⚠️ Por defecto Delta <strong>enforcea schema</strong> (rechaza escrituras que no cumplen). Schema evolution hay que <strong>activarlo explícitamente</strong> con <code>mergeSchema=true</code> o config. Es buena práctica: solo actívalo cuando de verdad quieras cambios.</div>
+USING staged_sales AS source
+ON target.order_id = source.order_id
+WHEN MATCHED THEN UPDATE SET *
+WHEN NOT MATCHED THEN INSERT *</code></pre>
+          <p>Si <code>staged_sales</code> tiene columnas nuevas, se añaden automáticamente a <code>sales</code>.</p>
+
+          <h4>Activar globalmente</h4>
+          <p>Puedes activar schema evolution por sesión:</p>
+          <pre><code class="language-python">spark.conf.set("spark.databricks.delta.schema.autoMerge.enabled", "true")</code></pre>
+          <p>Cuando esté activo, cualquier MERGE hará schema evolution automáticamente.</p>
+
+          <h4>ALTER TABLE (cambios explícitos)</h4>
+          <pre><code class="language-sql">%%sql
+
+-- Añadir columna
+ALTER TABLE products ADD COLUMNS (Discount FLOAT)
+
+-- Cambiar comment
+ALTER TABLE products ALTER COLUMN Name COMMENT 'Product name'
+
+-- Renombrar (requiere propiedad especial habilitada)
+ALTER TABLE products RENAME COLUMN OldName TO NewName</code></pre>
+
+          <h4>Limitación: schema enforcement por defecto</h4>
+          <p><strong>Por defecto</strong>, Delta <strong>rechaza</strong> escrituras que no cumplen el schema:</p>
+          <ul>
+            <li>Columna de más en source → error</li>
+            <li>Tipo distinto → error</li>
+            <li>Columna faltante → puede o no fallar según el modo</li>
+          </ul>
+          <div class="note note--practice">
+            📌 <strong>Buena práctica:</strong> el schema enforcement por defecto es lo correcto. Activa schema evolution solo cuando realmente quieras cambios.
+          </div>
         </article>
 
-        <!-- 10 -->
-        <div class="category-header" id="time-travel"><span class="category-header__icon">⏰</span><h2 class="category-header__title">10. Time travel y DESCRIBE HISTORY</h2></div>
+        <!-- ============ 13. TIME TRAVEL ============ -->
+        <div class="category-header" id="time-travel">
+          <span class="category-header__icon">⏰</span>
+          <h2 class="category-header__title">13. Time travel y DESCRIBE HISTORY</h2>
+        </div>
+
         <article class="concept-card">
-          <pre><code class="language-sql">DESCRIBE HISTORY products;                       -- historial de versiones
-SELECT * FROM products VERSION AS OF 0;          -- por versión
-SELECT * FROM products TIMESTAMP AS OF '2026-01-01T00:00:00';  -- por timestamp
-RESTORE TABLE products TO VERSION AS OF 3;       -- rollback</code></pre>
-          <div class="note note--warning">⚠️ El time travel funciona <strong>mientras existan los ficheros viejos</strong>. Tras un VACUUM más allá del retention, ya no puedes viajar a esas versiones. Propiedades: <code>delta.logRetentionDuration</code> (30 días) y <code>delta.deletedFileRetentionDuration</code> (7 días).</div>
+          <p>Uno de los superpoderes más chulos de Delta. 🌸</p>
+
+          <h4>Ver el historial de una tabla</h4>
+          <p><strong>Por nombre:</strong></p>
+          <pre><code class="language-sql">%%sql
+DESCRIBE HISTORY products</code></pre>
+          <p><strong>Por ruta (external tables):</strong></p>
+          <pre><code class="language-sql">%%sql
+DESCRIBE HISTORY 'Files/mytable'</code></pre>
+          <p><strong>Resultado típico:</strong></p>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>version</th><th>timestamp</th><th>operation</th><th>operationParameters</th></tr></thead>
+              <tbody>
+                <tr><td>2</td><td>2026-04-04T21:46:43Z</td><td>UPDATE</td><td><code>{"predicate":"(ProductId = 1)"}</code></td></tr>
+                <tr><td>1</td><td>2026-04-04T21:42:48Z</td><td>WRITE</td><td><code>{"mode":"Append","partitionBy":"[]"}</code></td></tr>
+                <tr><td>0</td><td>2026-04-04T20:04:23Z</td><td>CREATE TABLE</td><td><code>{"isManaged":"true"}</code></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>Ves cada versión, el timestamp, la operación y los parámetros.</p>
+
+          <h4>Consultar una versión específica (por número)</h4>
+          <pre><code class="language-python"># Leer la tabla como estaba en la versión 0
+df = spark.read.format("delta") \
+    .option("versionAsOf", 0) \
+    .load("Files/mytable")
+
+display(df)</code></pre>
+          <p>O con SQL:</p>
+          <pre><code class="language-sql">%%sql
+SELECT * FROM products VERSION AS OF 0</code></pre>
+
+          <h4>Consultar por timestamp</h4>
+          <pre><code class="language-python"># La tabla como estaba en enero 2026
+df = spark.read.format("delta") \
+    .option("timestampAsOf", "2026-01-01") \
+    .load("Files/mytable")</code></pre>
+          <p>O con SQL:</p>
+          <pre><code class="language-sql">%%sql
+SELECT * FROM products TIMESTAMP AS OF '2026-01-01T00:00:00'</code></pre>
+
+          <h4>Casos de uso reales</h4>
+          <ul>
+            <li>🔍 <strong>Auditoría</strong>: "¿cómo estaba esta tabla el día antes del incidente?"</li>
+            <li>🔄 <strong>Revertir un error</strong>: "reescribe la tabla desde la versión X"</li>
+            <li>📊 <strong>Análisis histórico</strong>: comparar estado actual con estado hace un mes.</li>
+            <li>🐛 <strong>Debugging</strong>: reproducir un bug que se dio hace días.</li>
+          </ul>
+
+          <h4>🎯 Rollback: revertir a una versión anterior</h4>
+          <pre><code class="language-sql">%%sql
+-- Restaurar la tabla al estado de la versión 3
+RESTORE TABLE products TO VERSION AS OF 3</code></pre>
+          <p>O:</p>
+          <pre><code class="language-sql">%%sql
+RESTORE TABLE products TO TIMESTAMP AS OF '2026-04-01'</code></pre>
+          <p>⚠️ Requiere que los ficheros de esa versión <strong>aún existan</strong> (no hayan sido purgados por VACUUM).</p>
+
+          <div class="note note--warning">
+            ⚠️ <strong>Limitación crítica: retención.</strong> Time travel funciona <strong>mientras existan los ficheros Parquet viejos</strong>. Los ficheros viejos <strong>se purgan con VACUUM</strong> después del periodo de retención (default 7 días). Después de VACUUM, ya no puedes hacer time travel a versiones más viejas que el threshold.
+          </div>
+          <p>Puedes cambiar la retención:</p>
+          <pre><code class="language-sql">ALTER TABLE products SET TBLPROPERTIES ('delta.logRetentionDuration' = 'interval 30 days')</code></pre>
+
+          <h4>🎯 Propiedades relacionadas</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Propiedad</th><th>Descripción</th><th>Default</th></tr></thead>
+              <tbody>
+                <tr><td><code>delta.logRetentionDuration</code></td><td>Cuánto se guarda el transaction log</td><td>30 días</td></tr>
+                <tr><td><code>delta.deletedFileRetentionDuration</code></td><td>Cuánto se guardan los ficheros marcados como removidos</td><td>7 días</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>Después de estos periodos, VACUUM puede limpiar.</p>
         </article>
 
-        <!-- 11 -->
-        <div class="category-header" id="optimizacion"><span class="category-header__icon">⚡</span><h2 class="category-header__title">11. OptimizeWrite, OPTIMIZE y V-Order</h2></div>
+        <!-- ============ 14. OPTIMIZACIÓN ============ -->
+        <div class="category-header" id="optimizacion">
+          <span class="category-header__icon">⚡</span>
+          <h2 class="category-header__title">14. Optimización: OptimizeWrite, OPTIMIZE y V-Order</h2>
+        </div>
+
         <article class="concept-card">
-          <h3>El "small files problem" y sus soluciones</h3>
-          <p>Muchas escrituras pequeñas acumulan muchos ficheros minúsculos y ralentizan las lecturas. Tres features lo resuelven:</p>
+          <p>Tres features clave para mantener el rendimiento. Este apartado es <strong>súper examinable</strong>.</p>
+
+          <h4>El problema: "small files problem"</h4>
+          <p>Cada operación de escritura en Delta genera <strong>nuevos ficheros Parquet</strong>. Si haces muchas escrituras pequeñas (por ejemplo, streaming a alta frecuencia) → acumulas <strong>muchísimos ficheros pequeños</strong>.</p>
+          <p>Consecuencia:</p>
+          <ul>
+            <li>Lecturas más lentas (Spark tiene que abrir muchos ficheros).</li>
+            <li>Queries pueden fallar por overhead.</li>
+            <li>Costes más altos.</li>
+          </ul>
+          <p>Delta tiene 3 features para resolverlo.</p>
+
+          <h3>🎯 OptimizeWrite (prevención)</h3>
+          <p><strong>OptimizeWrite</strong> es una feature que <strong>al escribir</strong>, consolida datos en menos ficheros más grandes. Previene el problema antes de que ocurra.</p>
+          <p><strong>En Fabric está activada por defecto.</strong></p>
+          <pre><code class="language-python"># Desactivar
+spark.conf.set("spark.microsoft.delta.optimizeWrite.enabled", False)
+
+# Activar
+spark.conf.set("spark.microsoft.delta.optimizeWrite.enabled", True)
+
+# Consultar estado actual
+print(spark.conf.get("spark.microsoft.delta.optimizeWrite.enabled"))</code></pre>
+          <p>También configurable a nivel:</p>
+          <ul>
+            <li><strong>Table Properties</strong> (por tabla específica)</li>
+            <li><strong>Individual write commands</strong> (por escritura concreta)</li>
+          </ul>
+
+          <h3>🎯 OPTIMIZE (mantenimiento)</h3>
+          <p><strong>OPTIMIZE</strong> es un comando de <strong>mantenimiento</strong> que consolida ficheros Parquet pequeños en ficheros más grandes.</p>
+          <p><strong>Cuándo ejecutar</strong>:</p>
+          <ul>
+            <li>Después de cargar tablas grandes.</li>
+            <li>Periódicamente en tablas con muchas escrituras.</li>
+            <li>Cuando notas queries lentas.</li>
+          </ul>
+          <p><strong>Beneficios</strong>: menos ficheros, mejor compresión, mejor distribución en nodos y queries más rápidas.</p>
+          <p><strong>Cómo ejecutar (3 formas):</strong></p>
+          <p><strong>A) Desde el Lakehouse Explorer (UI):</strong> menú <code>...</code> junto a la tabla → <strong>Maintenance</strong> → <strong>Run OPTIMIZE command</strong> → opcionalmente marcar V-Order → <strong>Run now</strong>.</p>
+          <p><strong>B) Desde SQL:</strong></p>
+          <pre><code class="language-sql">%%sql
+OPTIMIZE products</code></pre>
+          <p><strong>C) Con Z-ORDER</strong> (co-localizar datos por columna):</p>
+          <pre><code class="language-sql">%%sql
+OPTIMIZE products ZORDER BY (Category)</code></pre>
+          <p><code>ZORDER</code> es una técnica avanzada que reordena los datos dentro de los ficheros para acelerar filtros por esa columna.</p>
+
+          <h3>🎯 V-Order (aceleración de lecturas)</h3>
+          <p><strong>V-Order</strong> es una feature <strong>exclusiva de Fabric</strong> que optimiza los ficheros Parquet para lecturas <strong>ultra rápidas</strong> desde motores de Fabric.</p>
+          <p><strong>Características clave:</strong></p>
+          <ul>
+            <li>✅ <strong>Activada por defecto</strong> en Fabric.</li>
+            <li>⚡ Habilita "lightning-fast reads" con acceso in-memory-like.</li>
+            <li>💰 Reduce recursos de red, disco y CPU en lecturas.</li>
+            <li>📈 Aplicada al escribir datos.</li>
+            <li>🐢 <strong>Overhead pequeño (~15%) en escritura</strong>, gran beneficio en lectura.</li>
+            <li>📊 Compatible con motores externos (100% Parquet compliant).</li>
+          </ul>
+          <p><strong>Cómo funciona técnicamente:</strong> aplica sorting especial, distribución de row groups optimizada, dictionary encoding y compresión.</p>
+          <p><strong>Efecto en distintos motores:</strong></p>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Motor</th><th>Beneficio</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Power BI</strong> (VertiScan)</td><td>Máximo aprovechamiento</td></tr>
+                <tr><td><strong>SQL analytics endpoint</strong> (VertiScan)</td><td>Máximo aprovechamiento</td></tr>
+                <tr><td><strong>Spark</strong></td><td>~10% más rápido (hasta 50%)</td></tr>
+                <tr><td><strong>Otros motores Parquet</strong></td><td>Aún leen sin problema, beneficio moderado</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p><strong>Cuándo desactivarlo:</strong> en <strong>write-intensive scenarios</strong> como staging bronze donde los datos se leen 1-2 veces solo, el overhead del 15% no se compensa. En esos casos, desactivar V-Order acelera la ingesta.</p>
+          <p><strong>Aplicar V-Order con OPTIMIZE</strong>: desde la UI en Table Maintenance → marcar checkbox "Apply V-order"; o automáticamente al escribir (si está activo por defecto).</p>
+
+          <h4>Comparativa de las 3 features</h4>
           <div class="table-scroll">
             <table class="md-table">
               <thead><tr><th>Feature</th><th>Cuándo actúa</th><th>Objetivo</th><th>Default en Fabric</th></tr></thead>
               <tbody>
                 <tr><td><strong>OptimizeWrite</strong></td><td>Al escribir</td><td>Prevenir small files</td><td>✅ ON</td></tr>
                 <tr><td><strong>OPTIMIZE</strong></td><td>Manual/scheduled</td><td>Consolidar ficheros existentes</td><td>Manual</td></tr>
-                <tr><td><strong>V-Order</strong></td><td>Al escribir</td><td>Acelerar lecturas</td><td>✅ ON</td></tr>
+                <tr><td><strong>V-Order</strong></td><td>Al escribir</td><td>Acelerar lecturas futuras</td><td>✅ ON</td></tr>
               </tbody>
             </table>
           </div>
-          <pre><code class="language-sql">OPTIMIZE products;
-OPTIMIZE products ZORDER BY (Category);   -- co-localizar por columna</code></pre>
-          <div class="note note--tip">🎯 <strong>V-Order:</strong> exclusivo de Fabric, activado por defecto. Overhead ~15% al escribir, gran beneficio en lecturas (Power BI y SQL endpoint lo aprovechan al máximo). Es 100% Parquet compliant. Desactívalo solo en staging bronze write-intensive.</div>
         </article>
 
-        <!-- 12 -->
-        <div class="category-header" id="vacuum"><span class="category-header__icon">🧹</span><h2 class="category-header__title">12. VACUUM: limpieza y sus peligros</h2></div>
+        <!-- ============ 15. VACUUM ============ -->
+        <div class="category-header" id="vacuum">
+          <span class="category-header__icon">🧹</span>
+          <h2 class="category-header__title">15. VACUUM: limpieza y sus peligros</h2>
+        </div>
+
         <article class="concept-card">
-          <h3>Elimina físicamente los ficheros obsoletos</h3>
-          <p><code>VACUUM</code> borra los Parquet ya no referenciados y más antiguos que el retention. <strong>No borra el transaction log</strong>. Default: <strong>7 días (168h)</strong>, y el sistema impide bajarlo por debajo.</p>
-          <pre><code class="language-sql">VACUUM products RETAIN 168 HOURS;   -- 7 días
-VACUUM products RETAIN 720 HOURS;   -- 30 días (más seguro)</code></pre>
-          <div class="note note--warning">⚠️ Bajar de 7 días rompe el time travel y puede corromper lecturas concurrentes. Solo se puede desactivando <code>retentionDurationCheck</code>, nunca en producción sin entender las consecuencias.</div>
+          <h4>¿Qué hace VACUUM?</h4>
+          <p><code>VACUUM</code> <strong>elimina físicamente los ficheros Parquet obsoletos</strong> de una tabla Delta:</p>
+          <ul>
+            <li>Ficheros que ya no están referenciados en el transaction log.</li>
+            <li>Ficheros más antiguos que el retention period.</li>
+          </ul>
+          <p><strong>IMPORTANTE</strong>: VACUUM <strong>NO borra el transaction log</strong>, solo los ficheros de datos. El historial de operaciones sigue en el <code>_delta_log/</code>.</p>
+
+          <div class="note note--warning">
+            🎯 <strong>Impacto en time travel:</strong> cuando ejecutas VACUUM, ya no puedes hacer time travel a versiones anteriores al retention period. Ejemplo: retention = 7 días, hoy es 2026-05-01, VACUUM borra ficheros de antes de 2026-04-24 → ya no puedes hacer <code>VERSION AS OF</code> a versiones que dependían de esos ficheros.
+          </div>
+
+          <h4>Retention period</h4>
+          <p><strong>Default: 7 días (168 horas).</strong></p>
+          <p>El sistema <strong>impide por defecto</strong> usar un retention menor a 7 días, porque puede causar problemas:</p>
+          <ul>
+            <li>Rompe time travel.</li>
+            <li>Puede corromper lecturas concurrentes (readers largos que aún referencian ficheros que se están borrando).</li>
+          </ul>
+
+          <h4>Cómo ejecutar VACUUM</h4>
+          <p><strong>Desde el Lakehouse Explorer:</strong> menú <code>...</code> junto a la tabla → <strong>Maintenance</strong> → <strong>Run VACUUM command using retention threshold</strong> → configurar threshold → <strong>Run now</strong>.</p>
+          <p><strong>Con SQL:</strong></p>
+          <pre><code class="language-sql">%%sql
+VACUUM products RETAIN 168 HOURS</code></pre>
+          <p><strong>Con <code>lakehouse.tabla</code>:</strong></p>
+          <pre><code class="language-sql">%%sql
+VACUUM lakehouse2.products RETAIN 168 HOURS</code></pre>
+          <p><strong>Con retention custom</strong> (más de 7 días, más seguro):</p>
+          <pre><code class="language-sql">%%sql
+VACUUM products RETAIN 720 HOURS   -- 30 días</code></pre>
+
+          <h4>⚠️ Cómo bajar el retention (peligroso)</h4>
+          <p>Si REALMENTE necesitas bajar de 7 días (raramente):</p>
+          <pre><code class="language-python"># Desactivar protección
+spark.conf.set("spark.databricks.delta.retentionDurationCheck.enabled", "false")
+
+# Ahora puedes:
+spark.sql("VACUUM products RETAIN 24 HOURS")</code></pre>
+          <div class="note note--warning">
+            ⚠️ <strong>NO lo hagas en producción</strong> sin entender las consecuencias.
+          </div>
+
+          <h4>Ver historial de VACUUM</h4>
+          <p>VACUUM se registra en el transaction log:</p>
+          <pre><code class="language-sql">%%sql
+DESCRIBE HISTORY products</code></pre>
+          <p>Verás entradas con <code>operation = VACUUM START</code> y <code>VACUUM END</code>.</p>
+
+          <h4>Cuándo ejecutar VACUUM</h4>
+          <ul>
+            <li><strong>Semanalmente/mensualmente</strong> en tablas con muchas modificaciones.</li>
+            <li><strong>Después de grandes DELETE/UPDATE</strong> en tablas grandes.</li>
+            <li><strong>Cuando el storage crece sin explicación</strong> (ficheros obsoletos acumulados).</li>
+            <li><strong>Como parte de un maintenance schedule</strong> automatizado.</li>
+          </ul>
+
+          <h4>Cómo elegir el retention</h4>
+          <p>Basado en: requisitos de retención de datos (compliance), tamaño y coste de storage, frecuencia de cambios y requisitos regulatorios (GDPR, HIPAA).</p>
+          <div class="note note--practice">
+            📌 <strong>Regla del pulgar:</strong> 7-30 días para la mayoría de tablas. 90+ días si tienes necesidad de auditoría.
+          </div>
         </article>
 
-        <!-- 13 -->
-        <div class="category-header" id="particionado"><span class="category-header__icon">📁</span><h2 class="category-header__title">13. Particionado en tablas Delta</h2></div>
+        <!-- ============ 16. PARTICIONADO ============ -->
+        <div class="category-header" id="particionado">
+          <span class="category-header__icon">📁</span>
+          <h2 class="category-header__title">16. Particionado en tablas Delta</h2>
+        </div>
+
         <article class="concept-card">
-          <pre><code class="language-python">df.write.format("delta").partitionBy("Category").saveAsTable("partitioned_products")</code></pre>
-          <p>Beneficio: <strong>partition pruning / data skipping</strong> (Delta lee solo las particiones relevantes al filtrar por la columna).</p>
-          <div class="note note--warning">⚠️ Particiona por <strong>baja cardinalidad</strong> (year, country, category), nunca por alta (user_id, order_id, timestamp): generas miles de ficheros pequeños. Regla: ~1 GB por partición, no más de unos cientos de particiones. Alternativas modernas: Liquid Clustering y Z-ORDER.</div>
+          <p>Ya vimos particionado en el Módulo 3, aquí lo profundizamos con específicos Delta.</p>
+
+          <h4>Recordatorio: qué es</h4>
+          <p>Particionar = dividir el output en subcarpetas basadas en el valor de una columna:</p>
+          <pre><code class="language-plaintext">Files/sales/
+├── year=2024/
+│   └── part-XXX.parquet
+├── year=2025/
+│   └── part-XXX.parquet
+└── year=2026/
+    └── part-XXX.parquet</code></pre>
+
+          <h4>Beneficio principal: data skipping</h4>
+          <p>Cuando filtras por la columna particionada, Delta hace <strong>partition pruning</strong>: solo lee las particiones relevantes.</p>
+          <pre><code class="language-python"># Delta lee solo la partición year=2026
+df = spark.read.format("delta").table("sales").filter("year = 2026")</code></pre>
+
+          <h4>Particionar al crear (Spark)</h4>
+          <pre><code class="language-python">df.write.format("delta") \
+    .partitionBy("Category") \
+    .saveAsTable("partitioned_products", path="Files/partitioned_products")</code></pre>
+          <p>Genera:</p>
+          <pre><code class="language-plaintext">Files/partitioned_products/
+├── Category=Bikes/
+├── Category=Accessories/
+├── Category=Clothing/
+└── _delta_log/</code></pre>
+
+          <h4>Particionar al crear (SQL)</h4>
+          <pre><code class="language-sql">%%sql
+CREATE TABLE partitioned_products (
+    ProductID INTEGER,
+    ProductName STRING,
+    Category STRING,
+    ListPrice DOUBLE
+)
+PARTITIONED BY (Category)</code></pre>
+
+          <h4>🎯 Cuándo particionar</h4>
+          <p><strong>SÍ particionar cuando:</strong></p>
+          <ul>
+            <li>Tienes <strong>muchos datos</strong> (cientos de GB o más).</li>
+            <li>Puedes dividir en <strong>pocas particiones grandes</strong> (no miles).</li>
+            <li>Las queries <strong>filtran frecuentemente por esa columna</strong>.</li>
+          </ul>
+          <p><strong>NO particionar cuando:</strong></p>
+          <ul>
+            <li>Los volúmenes son <strong>pequeños</strong> (&lt; 1GB total).</li>
+            <li>La columna tiene <strong>alta cardinalidad</strong> (muchos valores únicos).</li>
+            <li>Necesitarías <strong>múltiples niveles</strong> de particionado que no aportan.</li>
+          </ul>
+
+          <div class="note note--practice">
+            📌 <strong>Regla del pulgar:</strong> ~1 GB por partición es un buen tamaño y no más de unos cientos de particiones en total. Ejemplos buenos: <code>year</code>, <code>country</code>, <code>region</code>, <code>category</code> (baja cardinalidad). Ejemplos malos: <code>user_id</code>, <code>order_id</code>, <code>timestamp</code> a segundo.
+          </div>
+
+          <h4>Limitación importante</h4>
+          <p>Las particiones son un <strong>layout fijo</strong>. Cuando decides particionar por <code>year</code>, esa decisión afecta todos los patrones de query. <strong>No se adapta dinámicamente</strong>.</p>
+          <p>Alternativas modernas para agilidad:</p>
+          <ul>
+            <li><strong>Liquid Clustering</strong> (feature reciente de Delta) — más flexible.</li>
+            <li><strong>Z-ORDER</strong> con OPTIMIZE — reorganiza sin cambiar layout físico.</li>
+          </ul>
+
+          <h4>Trampa (repaso)</h4>
+          <p>Cuando lees directamente una partición:</p>
+          <pre><code class="language-python">road_bikes = spark.read.parquet("Files/bike_data/Category=Road Bikes")</code></pre>
+          <p>La columna <code>Category</code> <strong>desaparece del DataFrame</strong> (Spark ya sabe que todos son "Road Bikes"). Si haces <code>road_bikes.columns</code>, no verás <code>Category</code>.</p>
         </article>
 
-        <!-- 14 -->
-        <div class="category-header" id="streaming"><span class="category-header__icon">🌊</span><h2 class="category-header__title">14. Streaming: Delta como source y sink</h2></div>
+        <!-- ============ 17. STREAMING ============ -->
+        <div class="category-header" id="streaming">
+          <span class="category-header__icon">🌊</span>
+          <h2 class="category-header__title">17. Streaming: Delta como source y sink</h2>
+        </div>
+
         <article class="concept-card">
-          <h3>Structured Streaming con Delta</h3>
-          <pre><code class="language-python"># Delta como SINK (destino de un stream)
-stream_df.writeStream.format("delta") \
-    .option("checkpointLocation", "Files/checkpoints/iot") \
+          <p>Una de las características más potentes de Delta: <strong>se integra con Spark Structured Streaming</strong> para casos de streaming de datos.</p>
+
+          <h4>¿Qué es Spark Structured Streaming?</h4>
+          <p>Es una API de Spark para procesar <strong>streams de datos en tiempo real</strong>. La abstracción clave: un stream es un <strong>DataFrame ilimitado</strong> que va creciendo.</p>
+          <p>Con Spark Structured Streaming puedes leer de:</p>
+          <ul>
+            <li><strong>Ports de red</strong>.</li>
+            <li><strong>Sistemas de mensajería</strong>: Azure Event Hubs, Kafka.</li>
+            <li><strong>Ubicaciones de file system</strong> (poll files).</li>
+            <li><strong>Delta tables</strong> ← la que nos interesa.</li>
+          </ul>
+          <p>Y escribir a <strong>Delta tables</strong> ← la otra que nos interesa, y muchas otras.</p>
+
+          <h3>Delta como sink (destino de un stream)</h3>
+          <p><strong>Caso</strong>: capturar telemetría IoT y guardarla en una tabla Delta.</p>
+          <pre><code class="language-python"># Leer stream desde una fuente (por ejemplo Event Hubs)
+stream_df = spark.readStream.format("eventhubs") \
+    .options(**event_hub_conf) \
+    .load()
+
+# Escribir a Delta
+query = stream_df.writeStream \
+    .format("delta") \
+    .option("checkpointLocation", "Files/checkpoints/iot_stream") \
     .start("Tables/iot_readings")
 
-# Delta como SOURCE (leer una tabla como stream)
-s = spark.readStream.format("delta").option("ignoreChanges", "true").table("orders_in")</code></pre>
-          <div class="note note--warning">⚠️ Como source, por defecto solo procesa <strong>appends</strong>; para UPDATE/DELETE del source usa <code>ignoreChanges</code> o <code>ignoreDeletes</code>. El <strong><code>checkpointLocation</code> es crítico</strong>: único por stream, permite recuperarse de fallos. Para MERGE desde un stream, usa <code>foreachBatch</code> (con MERGE idempotente).</div>
-          <p>Output modes: <code>append</code> (default), <code>update</code>, <code>complete</code>. Casos: IoT, CDC, clickstream, log processing.</p>
-        </article>
+# Verificar
+print("Streaming to iot_readings...")</code></pre>
 
-        <!-- 15 -->
-        <div class="category-header" id="trampas"><span class="category-header__icon">⚠️</span><h2 class="category-header__title">15. Trampas típicas</h2></div>
-        <article class="concept-card">
+          <h3>Delta como source (leer una tabla como stream)</h3>
+          <p><strong>Caso</strong>: procesar en real time los cambios de una tabla Delta.</p>
+          <pre><code class="language-python"># Leer una tabla Delta como stream
+stream_df = spark.readStream.format("delta") \
+    .option("ignoreChanges", "true") \
+    .table("orders_in")
+
+# Verificar que es streaming
+print(stream_df.isStreaming)   # True</code></pre>
+          <div class="note note--warning">
+            ⚠️ <strong>Importante:</strong> cuando usas una tabla Delta como source, <strong>solo se pueden incluir operaciones append</strong> en el stream. Modificaciones causan error a menos que uses <code>ignoreChanges = true</code> (ignora cambios que no sean appends) o <code>ignoreDeletes = true</code> (ignora eliminaciones).
+          </div>
+
+          <h3>Ejemplo end-to-end completo</h3>
+          <p><strong>Paso 1</strong>: crear tabla source</p>
+          <pre><code class="language-sql">%%sql
+CREATE TABLE orders_in (
+    OrderID INT,
+    OrderDate DATE,
+    Customer STRING,
+    Product STRING,
+    Quantity INT,
+    Price DECIMAL
+) USING DELTA</code></pre>
+          <p><strong>Paso 2</strong>: insertar datos hipotéticos</p>
+          <pre><code class="language-sql">%%sql
+INSERT INTO orders_in VALUES
+    (3001, '2026-09-01', 'Yang', 'Road Bike Red', 1, 1200),
+    (3002, '2026-09-01', 'Carlson', 'Mountain Bike Silver', 1, 1500),
+    (3003, '2026-09-02', 'Wilson', 'Road Bike Yellow', 2, 1350),
+    (3004, '2026-09-02', 'Yang', 'Road Front Wheel', 1, 115),
+    (3005, '2026-09-02', 'Rai', 'Mountain Bike Black', 1, NULL)</code></pre>
+          <p><strong>Paso 3</strong>: leer como stream</p>
+          <pre><code class="language-python">stream_df = spark.readStream.format("delta") \
+    .option("ignoreChanges", "true") \
+    .table("orders_in")</code></pre>
+          <p><strong>Paso 4</strong>: transformar el stream</p>
+          <pre><code class="language-python">from pyspark.sql.functions import col, expr
+
+# Filtrar precios nulos y añadir columnas calculadas
+transformed_df = stream_df \
+    .filter(col("Price").isNotNull()) \
+    .withColumn('IsBike', expr("INSTR(Product, 'Bike') &gt; 0").cast('int')) \
+    .withColumn('Total', expr("Quantity * Price").cast('decimal'))</code></pre>
+          <p><strong>Paso 5</strong>: escribir el stream a otra tabla Delta</p>
+          <pre><code class="language-python">output_table_path = 'Tables/orders_processed'
+checkpoint_path = 'Files/delta/checkpoint'
+
+deltastream = transformed_df.writeStream \
+    .format("delta") \
+    .option("checkpointLocation", checkpoint_path) \
+    .start(output_table_path)
+
+print("Streaming to orders_processed...")</code></pre>
+          <p><strong>Paso 6</strong>: consultar el resultado</p>
+          <pre><code class="language-sql">%%sql
+SELECT * FROM orders_processed ORDER BY OrderID</code></pre>
+          <p><strong>Resultado esperado</strong> (nota: order 3005 excluido por NULL en Price):</p>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>OrderID</th><th>Customer</th><th>Product</th><th>Quantity</th><th>Price</th><th>IsBike</th><th>Total</th></tr></thead>
+              <tbody>
+                <tr><td>3001</td><td>Yang</td><td>Road Bike Red</td><td>1</td><td>1200</td><td>1</td><td>1200</td></tr>
+                <tr><td>3002</td><td>Carlson</td><td>Mountain Bike Silver</td><td>1</td><td>1500</td><td>1</td><td>1500</td></tr>
+                <tr><td>3003</td><td>Wilson</td><td>Road Bike Yellow</td><td>2</td><td>1350</td><td>1</td><td>2700</td></tr>
+                <tr><td>3004</td><td>Yang</td><td>Road Front Wheel</td><td>1</td><td>115</td><td>0</td><td>115</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p><strong>Paso 7</strong>: parar el stream (siempre importante)</p>
+          <pre><code class="language-python">deltastream.stop()</code></pre>
+
+          <h4>🎯 El famoso <code>checkpointLocation</code></h4>
+          <p>Este parámetro es <strong>absolutamente crítico</strong> en streaming:</p>
+          <pre><code class="language-python">.option("checkpointLocation", "Files/checkpoints/mi_stream")</code></pre>
+          <p><strong>Qué hace</strong>:</p>
           <ul>
-            <li><strong>"UPDATE modifica el Parquet en sitio"</strong> → ❌ los Parquet son inmutables; genera ficheros nuevos.</li>
-            <li><strong>"Time travel funciona para siempre"</strong> → ❌ solo mientras existan los ficheros viejos.</li>
-            <li><strong>"OPTIMIZE incluye VACUUM"</strong> → ❌ son operaciones distintas.</li>
-            <li><strong>"OptimizeWrite = OPTIMIZE"</strong> → ❌ OptimizeWrite es preventivo al escribir; OPTIMIZE es mantenimiento post-hoc.</li>
-            <li><strong>"V-Order hay que activarlo"</strong> → ❌ está activado por defecto.</li>
-            <li><strong>"MERGE acepta duplicados en el source"</strong> → ❌ falla; deduplica antes.</li>
-            <li><strong>"En streaming no necesito checkpointLocation"</strong> → ❌ es crítico; único por stream.</li>
-            <li><strong>"Un stream desde Delta procesa UPDATEs"</strong> → ❌ solo appends por defecto (usa ignoreChanges/ignoreDeletes).</li>
-            <li><strong>"Schema evolution es automático"</strong> → ❌ por defecto se enforcea; actívalo con mergeSchema.</li>
-            <li><strong>"DROP de una external borra los datos"</strong> → ❌ solo el metadata.</li>
-            <li><strong>"V-Order es propietario y no lo lee nadie más"</strong> → ❌ es 100% Parquet compliant.</li>
+            <li>Guarda el <strong>estado</strong> del procesamiento del stream.</li>
+            <li>Registra qué offset del source se ha procesado ya.</li>
+            <li>Permite <strong>recuperarse de fallos</strong>: si el stream se cae, puede continuar desde donde se quedó.</li>
+          </ul>
+          <p><strong>Reglas</strong>:</p>
+          <ul>
+            <li>Cada stream debe tener <strong>su propio checkpoint location único</strong>.</li>
+            <li><strong>Nunca</strong> reutilices un checkpoint entre streams distintos.</li>
+            <li>Nunca lo borres mientras el stream esté activo.</li>
+          </ul>
+
+          <h4>Modos de salida (output modes)</h4>
+          <p>Al escribir un stream, especificas <code>outputMode</code>:</p>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Mode</th><th>Descripción</th></tr></thead>
+              <tbody>
+                <tr><td><code>append</code></td><td>Solo nuevas filas se escriben (default en la mayoría)</td></tr>
+                <tr><td><code>update</code></td><td>Filas nuevas y actualizadas</td></tr>
+                <tr><td><code>complete</code></td><td>Toda la tabla se reescribe cada microbatch</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <pre><code class="language-python">.writeStream.outputMode("append").format("delta")...</code></pre>
+
+          <h4>MERGE en streaming: <code>foreachBatch</code></h4>
+          <p>Para hacer <strong>MERGE</strong> (upsert) desde un stream, usas <code>foreachBatch</code>:</p>
+          <pre><code class="language-python">def merge_batch(microbatch_df, batch_id):
+    # microbatch_df es un DataFrame estándar (no streaming)
+    # Puedes hacer MERGE aquí
+    microbatch_df.createOrReplaceTempView("updates")
+
+    spark.sql("""
+        MERGE INTO target t
+        USING updates s
+        ON t.id = s.id
+        WHEN MATCHED THEN UPDATE SET *
+        WHEN NOT MATCHED THEN INSERT *
+    """)
+
+# Aplicar la función a cada microbatch del stream
+stream_df.writeStream \
+    .foreachBatch(merge_batch) \
+    .option("checkpointLocation", "Files/checkpoints/merge_stream") \
+    .start()</code></pre>
+          <div class="note note--warning">
+            ⚠️ <strong>Idempotencia:</strong> asegúrate de que tu MERGE es idempotente (repetirlo con los mismos datos da el mismo resultado). Los restarts del stream pueden aplicar la misma batch múltiples veces.
+          </div>
+
+          <h4>Casos de uso reales</h4>
+          <ul>
+            <li>📱 <strong>IoT / telemetría</strong>: dispositivos → Event Hubs → Structured Streaming → Delta.</li>
+            <li>📊 <strong>CDC (Change Data Capture)</strong>: cambios de BBDD → Kafka → Streaming → Delta con MERGE.</li>
+            <li>🌐 <strong>Clickstream analytics</strong>: eventos web → tabla Delta → dashboards en tiempo casi real.</li>
+            <li>📝 <strong>Log processing</strong>: aplicaciones → logs → Delta particionada por hora.</li>
           </ul>
         </article>
 
-        <!-- 16 -->
-        <div class="category-header" id="comparativas"><span class="category-header__icon">🆚</span><h2 class="category-header__title">16. Comparativas clave (chuleta)</h2></div>
+        <!-- ============ 18. TRAMPAS ============ -->
+        <div class="category-header" id="trampas">
+          <span class="category-header__icon">⚠️</span>
+          <h2 class="category-header__title">18. Trampas típicas y confusiones frecuentes</h2>
+        </div>
+
         <article class="concept-card">
+          <ul class="trap-list">
+            <li><strong class="trap-title">Trampa 1: "Al hacer UPDATE, se modifica el fichero Parquet en sitio"</strong>
+              ❌ Los Parquet son <strong>inmutables</strong>. UPDATE genera <strong>nuevos ficheros</strong> y marca los viejos como removidos en el <code>_delta_log</code>.</li>
+            <li><strong class="trap-title">Trampa 2: "Time travel funciona para siempre"</strong>
+              ❌ Solo mientras los ficheros viejos existan. Después de VACUUM más allá del retention, ya no.</li>
+            <li><strong class="trap-title">Trampa 3: "Puedo hacer VACUUM RETAIN 0 HOURS para limpiar todo"</strong>
+              ⚠️ El sistema <strong>te lo impide por defecto</strong> (retention &lt; 7 días bloqueado). Y hacerlo puede corromper lecturas concurrentes y romper time travel.</li>
+            <li><strong class="trap-title">Trampa 4: "OPTIMIZE incluye VACUUM"</strong>
+              ❌ Son <strong>operaciones distintas</strong>. OPTIMIZE consolida ficheros pequeños en grandes. VACUUM borra ficheros obsoletos.</li>
+            <li><strong class="trap-title">Trampa 5: "V-Order hay que activarlo manualmente"</strong>
+              ❌ Está <strong>activado por defecto</strong> en Fabric. Solo lo desactivas explícitamente si tienes motivos (staging heavy-write).</li>
+            <li><strong class="trap-title">Trampa 6: "OptimizeWrite = OPTIMIZE"</strong>
+              ❌ Son distintos: <strong>OptimizeWrite</strong> es preventivo, al escribir (activo por defecto); <strong>OPTIMIZE</strong> es un comando de mantenimiento post-hoc (manual/scheduled).</li>
+            <li><strong class="trap-title">Trampa 7: "MERGE puede aceptar filas duplicadas en el source"</strong>
+              ❌ Si hay filas duplicadas en el source que hacen match con la misma fila del target → <strong>MERGE falla</strong>. Deduplica el source antes.</li>
+            <li><strong class="trap-title">Trampa 8: "En streaming, no necesito checkpointLocation"</strong>
+              ❌ Es <strong>crítico</strong> para recuperación tras fallo y para exactly-once semantics.</li>
+            <li><strong class="trap-title">Trampa 9: "Puedo compartir el mismo checkpoint entre streams"</strong>
+              ❌ <strong>NO</strong>. Cada stream necesita su propio checkpoint location único.</li>
+            <li><strong class="trap-title">Trampa 10: "Un stream desde Delta puede procesar UPDATEs del source"</strong>
+              ❌ Por defecto solo procesa <strong>appends</strong>. Para UPDATE/DELETE del source, activa <code>ignoreChanges</code> o <code>ignoreDeletes</code>.</li>
+            <li><strong class="trap-title">Trampa 11: "Schema evolution es automático siempre"</strong>
+              ❌ Por defecto Delta <strong>enforcea schema</strong> (rechaza escrituras que no cumplen). Schema evolution hay que <strong>activarlo explícitamente</strong> con <code>mergeSchema=true</code> o config.</li>
+            <li><strong class="trap-title">Trampa 12: "Particionar por columna de alta cardinalidad mejora performance"</strong>
+              ❌ Genera miles de ficheros pequeños → <strong>peor performance</strong>. Usa baja cardinalidad.</li>
+            <li><strong class="trap-title">Trampa 13: "DROP TABLE de una external borra los datos"</strong>
+              ❌ Solo borra el metadata. Los datos permanecen en la ubicación especificada.</li>
+            <li><strong class="trap-title">Trampa 14: "MERGE WITH SCHEMA EVOLUTION añade cualquier columna del source"</strong>
+              ✅ Sí, si tiene columnas nuevas se añaden. Los tipos deben ser compatibles.</li>
+            <li><strong class="trap-title">Trampa 15: "V-Order es propietario de Microsoft y no lo puede leer nadie más"</strong>
+              ❌ V-Order es <strong>100% Parquet compliant</strong>. Cualquier motor Parquet puede leerlo (Databricks, Snowflake, etc.). Solo que los motores de Fabric (VertiScan) lo aprovechan al máximo.</li>
+          </ul>
+        </article>
+
+        <!-- ============ 19. COMPARATIVAS ============ -->
+        <div class="category-header" id="comparativas">
+          <span class="category-header__icon">🆚</span>
+          <h2 class="category-header__title">19. Comparativas clave (chuleta)</h2>
+        </div>
+
+        <article class="concept-card">
+          <h4>OptimizeWrite vs OPTIMIZE vs V-Order</h4>
           <div class="table-scroll">
             <table class="md-table">
-              <thead><tr><th>Delta como stream</th><th>Como source</th><th>Como sink</th></tr></thead>
+              <thead><tr><th>Feature</th><th>Cuándo actúa</th><th>Objetivo</th><th>Default en Fabric</th></tr></thead>
               <tbody>
-                <tr><td>Sintaxis</td><td><code>.readStream...table()</code></td><td><code>.writeStream...start()</code></td></tr>
-                <tr><td>Requiere checkpoint</td><td>No (lectura)</td><td>✅ Sí</td></tr>
-                <tr><td>Restricción</td><td>Solo appends por defecto</td><td>ninguna</td></tr>
+                <tr><td>OptimizeWrite</td><td>Al escribir</td><td>Prevenir small files</td><td>✅ ON</td></tr>
+                <tr><td>OPTIMIZE</td><td>Manual/scheduled</td><td>Consolidar ficheros existentes</td><td>Manual</td></tr>
+                <tr><td>V-Order</td><td>Al escribir</td><td>Acelerar lecturas</td><td>✅ ON</td></tr>
               </tbody>
             </table>
           </div>
+
+          <h4>Managed vs External tables</h4>
           <div class="table-scroll">
             <table class="md-table">
-              <thead><tr><th>Retención</th><th>Default</th><th>Modificable</th></tr></thead>
+              <thead><tr><th></th><th>Managed</th><th>External</th></tr></thead>
               <tbody>
-                <tr><td>VACUUM retention</td><td>7 días (168h)</td><td>✅ (bloqueado por debajo)</td></tr>
-                <tr><td>logRetentionDuration</td><td>30 días</td><td>✅ ALTER TABLE</td></tr>
-                <tr><td>deletedFileRetentionDuration</td><td>7 días</td><td>✅ ALTER TABLE</td></tr>
+                <tr><td>Ubicación datos</td><td><code>Tables/</code></td><td>Donde tú digas</td></tr>
+                <tr><td>DROP borra datos</td><td>✅</td><td>❌</td></tr>
+                <tr><td>Recomendado en Fabric</td><td>✅</td><td>Prefiere shortcuts</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h4>SQL SELECT vs Delta API</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th></th><th>SQL / spark.sql()</th><th>Delta API</th></tr></thead>
+              <tbody>
+                <tr><td>Estilo</td><td>Declarativo</td><td>Programático</td></tr>
+                <tr><td>Trabajar con tablas del catálogo</td><td>✅ Excelente</td><td>✅ (<code>forName</code>)</td></tr>
+                <tr><td>Trabajar con ficheros por ruta</td><td>⚠️</td><td>✅ (<code>forPath</code>)</td></tr>
+                <tr><td>MERGE dinámico</td><td>Menos ergonómico</td><td>Mejor</td></tr>
+                <tr><td>Casos legibilidad</td><td>✅ Mejor</td><td>⚠️</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h4>SCD Type 1 vs Type 2</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th></th><th>SCD Type 1</th><th>SCD Type 2</th></tr></thead>
+              <tbody>
+                <tr><td>Historial</td><td>❌ No preservado</td><td>✅ Preservado</td></tr>
+                <tr><td>Deletes</td><td>Físicos</td><td>Soft (Is_Current=false)</td></tr>
+                <tr><td>Complejidad</td><td>Baja</td><td>Alta</td></tr>
+                <tr><td>Uso típico</td><td>Reporting operacional</td><td>Auditoría, compliance</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h4>Delta como source vs sink de stream</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th></th><th>Como source</th><th>Como sink</th></tr></thead>
+              <tbody>
+                <tr><td>Sintaxis</td><td><code>.readStream.format("delta").table(...)</code></td><td><code>.writeStream.format("delta").start(...)</code></td></tr>
+                <tr><td>Requiere checkpoint</td><td>No (para lectura)</td><td>✅ Sí (siempre)</td></tr>
+                <tr><td>Restricción</td><td>Solo appends por defecto</td><td>Ninguna</td></tr>
+                <tr><td>Options típicos</td><td><code>ignoreChanges</code>, <code>ignoreDeletes</code></td><td><code>checkpointLocation</code></td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h4>Retention y VACUUM</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Concepto</th><th>Valor default</th><th>Modificable</th></tr></thead>
+              <tbody>
+                <tr><td>VACUUM retention</td><td>7 días (168 h)</td><td>✅ pero bloqueado por debajo</td></tr>
+                <tr><td>logRetentionDuration</td><td>30 días</td><td>✅ con ALTER TABLE</td></tr>
+                <tr><td>deletedFileRetentionDuration</td><td>7 días</td><td>✅ con ALTER TABLE</td></tr>
               </tbody>
             </table>
           </div>
         </article>
 
-        <div class="note note--next">🚀 <strong>¡Módulo 4 completado!</strong> Ya dominas Delta Lake a fondo. Sigue con el <a href="modulo-5.html">Módulo 5: Dataflows Gen2</a>. 🌸</div>
+        <!-- ============ 20. FUENTES ============ -->
+        <div class="category-header" id="fuentes">
+          <span class="category-header__icon">📚</span>
+          <h2 class="category-header__title">20. Fuentes oficiales consultadas</h2>
+        </div>
 
+        <article class="concept-card">
+          <ul class="sources-list">
+            <li>Módulo Learn: <a href="https://learn.microsoft.com/training/modules/work-delta-lake-tables-fabric/" target="_blank" rel="noopener noreferrer">work-delta-lake-tables-fabric</a></li>
+            <li>Lakehouse and Delta tables: <a href="https://learn.microsoft.com/fabric/data-engineering/lakehouse-and-delta-tables" target="_blank" rel="noopener noreferrer">lakehouse-and-delta-tables</a></li>
+            <li>Delta Lake schema evolution: <a href="https://learn.microsoft.com/fabric/data-engineering/delta-lake-schema-evolution" target="_blank" rel="noopener noreferrer">delta-lake-schema-evolution</a></li>
+            <li>MERGE INTO syntax: <a href="https://learn.microsoft.com/azure/databricks/sql/language-manual/delta-merge-into" target="_blank" rel="noopener noreferrer">delta-merge-into</a></li>
+            <li>Upsert into Delta with MERGE: <a href="https://learn.microsoft.com/azure/databricks/delta/merge" target="_blank" rel="noopener noreferrer">delta/merge</a></li>
+            <li>Delta streaming reads and writes: <a href="https://learn.microsoft.com/azure/databricks/structured-streaming/delta-lake" target="_blank" rel="noopener noreferrer">structured-streaming/delta-lake</a></li>
+            <li>CDC in Copy Job (SCD Type 1 vs 2): <a href="https://learn.microsoft.com/fabric/data-factory/cdc-copy-job" target="_blank" rel="noopener noreferrer">cdc-copy-job</a></li>
+            <li>Slowly changing dimension type 2 tutorial: <a href="https://learn.microsoft.com/fabric/data-factory/slowly-changing-dimension-type-two" target="_blank" rel="noopener noreferrer">slowly-changing-dimension-type-two</a></li>
+            <li>Drop Delta tables and schemas: <a href="https://learn.microsoft.com/fabric/data-engineering/delta-lake-drop" target="_blank" rel="noopener noreferrer">delta-lake-drop</a></li>
+            <li>Delta Lake documentation (open source): <a href="https://docs.delta.io/latest/" target="_blank" rel="noopener noreferrer">docs.delta.io</a></li>
+          </ul>
+        </article>
+
+        <div class="note note--next">
+          🚀 <strong>¡Módulo 4 completado!</strong> Delta Lake es la base de todo el data engineering en Fabric, y ya lo tienes dominado. Sigue con el <a href="modulo-5.html">Módulo 5: Dataflows Gen2</a>. 🌸
+        </div>
+
+        <!-- Navegación del curso -->
         <div class="course-nav">
-          <a href="modulo-3.html"><span class="course-nav__label">← Anterior</span><span class="course-nav__title">Módulo 3 · Apache Spark</span></a>
-          <a href="modulo-5.html" class="next"><span class="course-nav__label">Siguiente →</span><span class="course-nav__title">Módulo 5 · Dataflows Gen2</span></a>
+          <a href="modulo-3.html">
+            <span class="course-nav__label">← Anterior</span>
+            <span class="course-nav__title">Módulo 3 · Apache Spark</span>
+          </a>
+          <a href="modulo-5.html" class="next">
+            <span class="course-nav__label">Siguiente →</span>
+            <span class="course-nav__title">Módulo 5 · Dataflows Gen2</span>
+          </a>
         </div>
 
       </div>

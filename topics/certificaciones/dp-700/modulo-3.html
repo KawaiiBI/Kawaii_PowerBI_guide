@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="DP-700 Módulo 3: Apache Spark en Microsoft Fabric. Spark pools, nodos, runtimes, environments, optimizaciones, notebooks vs Spark Job Definitions, DataFrames, particionado y Spark SQL.">
+  <meta name="description" content="DP-700 Módulo 3: usar Apache Spark en Microsoft Fabric. Arquitectura, pools, nodos, runtimes, environments, optimizaciones, notebooks vs SJD, DataFrames, particionado, Spark SQL y visualización.">
   <title>DP-700 · Módulo 3: Apache Spark en Fabric | Power BI Guide by Kawaii BI</title>
   <link rel="canonical" href="https://kawaiibi.es/topics/certificaciones/dp-700/modulo-3.html">
   <meta property="og:type" content="website">
@@ -54,8 +54,11 @@
     .concept-card h4 { font-size: 0.9375rem; font-weight: 700; color: var(--color-dark); margin: 1.1rem 0 0.4rem; }
     .concept-card p { font-size: 0.9375rem; line-height: 1.7; color: var(--color-dark); margin-bottom: 0.7rem; }
     .concept-card ul, .concept-card ol { padding-left: 1.25rem; font-size: 0.9375rem; line-height: 1.75; color: var(--color-dark); margin: 0.4rem 0; }
+    .concept-card li { margin-bottom: 0.3rem; }
     .concept-card code { background: var(--color-blush); padding: 0.1em 0.4em; border-radius: 4px; font-family: 'Fira Code', monospace; font-size: 0.85em; color: var(--color-coral); }
     .concept-card pre { margin: 0.75rem 0; }
+    .concept-card pre code { background: transparent; padding: 0; color: inherit; }
+    .concept-card blockquote { border-left: 4px solid var(--color-peach); background: var(--color-blush); margin: 0.85rem 0; padding: 0.75rem 1rem; border-radius: 0 var(--border-radius-sm) var(--border-radius-sm) 0; font-size: 0.9rem; }
 
     .md-table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.84rem; }
     .md-table th, .md-table td { border: 1px solid var(--color-mauve); padding: 0.5rem 0.7rem; text-align: left; vertical-align: top; }
@@ -124,8 +127,8 @@
         <header class="topic-header">
           <span class="topic-header__eyebrow">DP-700 · MÓDULO 3</span>
           <span class="topic-header__icon">🔥</span>
-          <h1 class="topic-header__title">Apache Spark en Microsoft Fabric</h1>
-          <p class="topic-header__subtitle">El motor de cómputo del data engineering: pools, nodos, runtimes, environments, optimizaciones exclusivas de Fabric, notebooks vs Spark Job Definitions, DataFrames, particionado y Spark SQL. 🌸</p>
+          <h1 class="topic-header__title">Usar Apache Spark en Microsoft Fabric</h1>
+          <p class="topic-header__subtitle">El motor de cómputo del data engineering: arquitectura, pools, nodos, runtimes, environments, optimizaciones, notebooks vs Spark Job Definitions, DataFrames, particionado, Spark SQL y visualización. 🌸</p>
           <div class="topic-header__levels">
             <span class="badge badge--intermediate">Intermedio</span>
             <span class="badge badge--advanced">Avanzado</span>
@@ -136,9 +139,9 @@
           <p class="toc__title">📑 En este módulo:</p>
           <ul class="toc__list">
             <li><a href="#objetivos">1. Objetivos</a></li>
-            <li><a href="#que-es">2. ¿Qué es Spark?</a></li>
-            <li><a href="#arquitectura">3. Driver, workers, executors</a></li>
-            <li><a href="#pools">4. Spark pools</a></li>
+            <li><a href="#que-es-spark">2. ¿Qué es Apache Spark?</a></li>
+            <li><a href="#arquitectura">3. Arquitectura</a></li>
+            <li><a href="#spark-pools">4. Spark pools</a></li>
             <li><a href="#nodos">5. Nodos y escalado</a></li>
             <li><a href="#runtimes">6. Runtimes</a></li>
             <li><a href="#environments">7. Environments</a></li>
@@ -159,102 +162,337 @@
         <!-- 1 -->
         <div class="category-header" id="objetivos"><span class="category-header__icon">🎯</span><h2 class="category-header__title">1. Objetivos y encaje en el DP-700</h2></div>
         <article class="concept-card">
-          <h3>El motor de cómputo del data engineering</h3>
-          <p>Objetivos: configurar Spark en el workspace, elegir entre notebooks y Spark jobs, usar <strong>DataFrames</strong> y <strong>Spark SQL</strong> para transformar y consultar, y visualizar en notebooks. Es fundamental para el <strong>Dominio 2 (Ingest and transform)</strong>.</p>
-          <div class="note note--tip">🎯 <strong>Novedades respecto a la DP-600:</strong> Native Execution Engine, High Concurrency Mode, Environments, Runtime 1.3 vs 2.0, elección de kernel Python vs Spark, NotebookUtils (antes MSSparkUtils) y Autotune.</div>
+          <h3>¿Qué te enseña este módulo?</h3>
+          <p>Este es <strong>el módulo donde aprendemos a usar el motor de cómputo</strong> del data engineering en Fabric. Los objetivos oficiales:</p>
+          <ol>
+            <li>Configurar Spark en un workspace de Fabric.</li>
+            <li>Identificar escenarios adecuados para notebooks Spark y Spark jobs.</li>
+            <li>Usar Spark <strong>dataframes</strong> para analizar y transformar datos.</li>
+            <li>Usar <strong>Spark SQL</strong> para consultar datos en tablas y vistas.</li>
+            <li>Visualizar datos en un notebook Spark.</li>
+          </ol>
+          <h4>Peso en el examen DP-700</h4>
+          <p>Este módulo es <strong>fundamental para el Dominio 2 (Ingest and transform)</strong> y aparece transversalmente en el resto:</p>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Dominio</th><th>Cómo aparece Spark</th></tr></thead>
+              <tbody>
+                <tr><td>Implement and manage (30-35%)</td><td>Configuración de pools, runtimes y environments a nivel workspace</td></tr>
+                <tr><td>Ingest and transform (30-35%)</td><td>PySpark y Spark SQL para transformar en notebooks, patrones de escritura Delta</td></tr>
+                <tr><td>Monitor and optimize (30-35%)</td><td>Optimizaciones de Spark (autoscale, dynamic allocation, native execution engine, autotune)</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <h4>🎯 Qué es NUEVO respecto a la DP-600</h4>
+          <p>En DP-600 se toca Spark de pasada (crear un notebook, hacer un <code>spark.read.load()</code>). En DP-700 <strong>hay que dominar la configuración</strong>, los <strong>conceptos de rendimiento</strong> y los <strong>matices de PySpark</strong>. Cosas que salen que antes no:</p>
+          <ul>
+            <li>🆕 <strong>Native Execution Engine</strong> (vectorized processing)</li>
+            <li>🆕 <strong>High Concurrency Mode</strong> (compartir sesiones)</li>
+            <li>🆕 <strong>Environments</strong> (custom Spark configs por workload)</li>
+            <li>🆕 <strong>Runtime 1.3 vs 2.0</strong> (versiones de Spark/Delta)</li>
+            <li>🆕 <strong>Elección Python kernel vs Spark kernel</strong></li>
+            <li>🆕 <strong>NotebookUtils</strong> (antes MSSparkUtils)</li>
+            <li>🆕 <strong>Autotune</strong> para optimización automática</li>
+          </ul>
         </article>
 
         <!-- 2 -->
-        <div class="category-header" id="que-es"><span class="category-header__icon">🔥</span><h2 class="category-header__title">2. ¿Qué es Apache Spark?</h2></div>
+        <div class="category-header" id="que-es-spark"><span class="category-header__icon">🔥</span><h2 class="category-header__title">2. ¿Qué es Apache Spark?</h2></div>
         <article class="concept-card">
-          <h3>Procesamiento distribuido</h3>
-          <p><strong>Apache Spark</strong> es un framework de procesamiento distribuido open-source. Cuando tienes muchísimos datos que no caben en una sola máquina, Spark <strong>distribuye el trabajo entre varios nodos</strong> y coordina la ejecución. En Fabric, ese conjunto de máquinas es un <strong>Spark pool</strong>.</p>
-          <p>Lenguajes: <strong>PySpark</strong> (el más popular), <strong>Spark SQL</strong>, Scala, SparkR y Java. En la práctica, PySpark y Spark SQL cubren el 95%.</p>
-          <p>El punto de entrada a todo es el objeto <code>spark</code> (una <code>SparkSession</code>), ya creado automáticamente en cada notebook.</p>
+          <h3>Definición</h3>
+          <p><strong>Apache Spark</strong> es un <strong>framework de procesamiento distribuido de datos</strong> open-source. Su gran idea: cuando tienes <strong>muchísimos datos</strong> que no caben ni se procesan bien en una sola máquina, Spark <strong>distribuye el trabajo entre varias máquinas (nodos)</strong> y coordina la ejecución.</p>
+          <p>En Fabric, ese conjunto de máquinas se llama un <strong>Spark pool</strong>.</p>
+          <h4>La filosofía "divide y vencerás"</h4>
+          <p>Piensa en Spark como una fábrica de galletas kawaii 🍪:</p>
+          <ul>
+            <li>Si tienes que hacer <strong>10 galletas</strong> → una persona sola, en su cocina, las hace.</li>
+            <li>Si tienes que hacer <strong>1 millón de galletas</strong> → necesitas repartir el trabajo entre muchos operarios en muchas cocinas trabajando en paralelo.</li>
+          </ul>
+          <p>Spark es "el gerente" que decide qué operario hace cada parte, recoge los resultados y te devuelve las galletas terminadas. 🌸</p>
+          <h4>Lenguajes soportados</h4>
+          <p>Spark ejecuta código escrito en varios lenguajes:</p>
+          <ul>
+            <li><strong>PySpark</strong> (Python) → el más popular</li>
+            <li><strong>Spark SQL</strong> → sintaxis SQL clásica</li>
+            <li><strong>Scala</strong> → el "nativo" de Spark</li>
+            <li><strong>SparkR</strong> → R</li>
+            <li><strong>Java</strong> → el más verboso, poco común</li>
+          </ul>
+          <p>En la práctica, <strong>PySpark y Spark SQL</strong> cubren el 95% de los casos.</p>
+          <h4>🎯 Notación clave</h4>
+          <p>Cuando escribes código Spark, casi siempre acabas invocando el objeto <strong><code>spark</code></strong> (una <code>SparkSession</code>). Es el punto de entrada a todo:</p>
+          <pre><code class="language-python">spark  # &lt;-- Objeto SparkSession, ya está creado automáticamente en cada notebook</code></pre>
+          <p>Desde <code>spark</code> puedes leer, escribir, ejecutar SQL, gestionar el catálogo, etc.</p>
         </article>
 
         <!-- 3 -->
-        <div class="category-header" id="arquitectura"><span class="category-header__icon">🏗️</span><h2 class="category-header__title">3. Arquitectura: driver, workers, executors</h2></div>
+        <div class="category-header" id="arquitectura"><span class="category-header__icon">🏗️</span><h2 class="category-header__title">3. Arquitectura: driver, workers y executors</h2></div>
         <article class="concept-card">
-          <h3>Los tres tipos de procesos</h3>
+          <p>Este apartado es más "conceptual" pero <strong>cae en preguntas de troubleshooting</strong>.</p>
+          <h3>Los tres tipos de "procesos" en Spark</h3>
+          <h4>A) Driver (uno solo)</h4>
           <ul>
-            <li><strong>Driver (uno):</strong> vive en el head node, es el cerebro que planifica y coordina. Contiene la <code>SparkSession</code>. Si se cae, la sesión entera se cae.</li>
-            <li><strong>Workers (varios):</strong> las máquinas que hacen el trabajo real. Cada worker es un nodo.</li>
-            <li><strong>Executors:</strong> los procesos que ejecutan tareas dentro de cada worker, en paralelo.</li>
+            <li>Vive en el <strong>head node</strong>.</li>
+            <li>Es el "cerebro": recibe tu código, lo compila, planifica cómo distribuirlo, y coordina.</li>
+            <li>Contiene la <strong>SparkSession</strong> (el objeto <code>spark</code>).</li>
+            <li>Si el driver se cae → <strong>la sesión entera se cae</strong>.</li>
           </ul>
-          <div class="note note--tip">🎯 <strong>Detalle de Fabric:</strong> la ratio nodos a executors es siempre <strong>1:1</strong>. Con N nodos, uno se reserva para el driver y los demás son executors. En single-node, driver y executor comparten recursos.</div>
+          <h4>B) Workers (varios)</h4>
+          <ul>
+            <li>Son las máquinas que hacen el trabajo real.</li>
+            <li>Cada worker es un <strong>nodo</strong> del pool.</li>
+          </ul>
+          <h4>C) Executors (uno o varios por worker)</h4>
+          <ul>
+            <li>Son los <strong>procesos que ejecutan tareas</strong> dentro de cada worker.</li>
+            <li>Pueden ejecutar múltiples tareas en paralelo (dependen de cores).</li>
+          </ul>
+          <h4>🎯 Detalle crítico en Fabric</h4>
+          <blockquote><strong>En Fabric, la ratio nodos a executors es siempre 1:1.</strong> Cuando configuras un pool con N nodos, uno se reserva para el driver y los demás son executors.</blockquote>
+          <p>Excepción: en configuración <strong>single-node</strong>, el driver y el executor comparten recursos (divididos por 2 aprox.).</p>
+          <h4>Diagrama mental</h4>
+          <pre><code class="language-plaintext">Head Node                    Worker Node 1        Worker Node 2
+┌──────────────┐             ┌─────────────┐      ┌─────────────┐
+│   DRIVER     │◄────────────┤  Executor 1 │      │  Executor 2 │
+│              │             │             │      │             │
+│  SparkSession│─────────────┤  Executor 1 │      │  Executor 2 │
+│              │             │             │      │             │
+│  Cluster mgr │─────────────┤   Tasks     │      │   Tasks     │
+└──────────────┘             └─────────────┘      └─────────────┘</code></pre>
         </article>
 
         <!-- 4 -->
-        <div class="category-header" id="pools"><span class="category-header__icon">🌊</span><h2 class="category-header__title">4. Spark pools en Fabric</h2></div>
+        <div class="category-header" id="spark-pools"><span class="category-header__icon">🌊</span><h2 class="category-header__title">4. Spark pools en Fabric</h2></div>
         <article class="concept-card">
-          <h3>Starter pool vs Custom pool</h3>
-          <p><strong>Starter pool:</strong> se crea automáticamente en cada workspace, está pre-hidratado (live), arranca en <strong>segundos</strong>. Ideal para desarrollo. Config limitada (medium) y sin private link.</p>
-          <p><strong>Custom pool:</strong> lo defines tú con node size, autoscale, dynamic allocation y private endpoint. Sin live mode tarda <strong>~3 min</strong> en arrancar; los <strong>custom live pools</strong> arrancan en ~5 seg.</p>
-          <div class="note note--warning">⚠️ <strong>Prerequisitos para custom pools:</strong> rol <strong>Admin</strong> en el workspace y que un capacity admin haya habilitado "Customized workspace pools". Sin eso, solo starter pool.</div>
-          <p>Ruta: Workspace settings → Data Engineering/Science → Spark settings.</p>
+          <p>Un <strong>Spark pool</strong> es el <strong>conjunto de nodos de cómputo</strong> que ejecuta el trabajo Spark. Fabric ofrece dos tipos:</p>
+          <h3>4.1 · Starter pool</h3>
+          <p>Un <strong>starter pool</strong> se <strong>crea automáticamente en cada workspace de Fabric</strong>. Es un pool <strong>pre-hidratado</strong> ("live pool"), lo que significa que los nodos ya están calentitos esperando.</p>
+          <p><strong>Ventajas:</strong></p>
+          <ul>
+            <li>⚡ Arranque <strong>muy rápido</strong> (~segundos) porque los nodos están live.</li>
+            <li>🚀 Ideal para desarrollo, exploración, casos ad-hoc.</li>
+            <li>💰 Compartido entre workloads.</li>
+          </ul>
+          <p><strong>Limitaciones:</strong></p>
+          <ul>
+            <li>Configuración limitada (medium size por defecto).</li>
+            <li>No permite ciertas configuraciones avanzadas como managed private endpoint o private link.</li>
+          </ul>
+          <h3>4.2 · Custom Spark pool</h3>
+          <p>Un <strong>custom Spark pool</strong> lo defines tú con configuración específica. Necesarios cuando:</p>
+          <ul>
+            <li>Tienes cargas de trabajo que necesitan <strong>más recursos</strong> o <strong>configuraciones específicas</strong>.</li>
+            <li>Necesitas <strong>Private Link / Managed Private Endpoint</strong>.</li>
+            <li>Quieres <strong>fine-tune del cost/performance</strong> para un workload concreto.</li>
+          </ul>
+          <p>Puedes configurar:</p>
+          <ul>
+            <li><strong>Node family</strong>: <code>Memory Optimized</code> (única disponible en Fabric).</li>
+            <li><strong>Node size</strong>: desde Small hasta XX-Large.</li>
+            <li><strong>Autoscale</strong>: rango min-max de nodos.</li>
+            <li><strong>Dynamic allocation of executors</strong>: rango min-max de executors.</li>
+          </ul>
+          <h3>4.3 · 🎯 Custom live pools (feature interesante)</h3>
+          <p>Los <strong>custom live pools</strong> son custom pools con <strong>arranque en ~5 segundos</strong> (como el starter pool). Requieren un environment con "Full mode for library publishing".</p>
+          <p>Sin esta configuración, un custom pool tarda <strong>~3 minutos</strong> en arrancar. Un starter pool ya está caliente.</p>
+          <h3>4.4 · Prerequisitos para crear custom pools</h3>
+          <p>Para crear un custom pool necesitas:</p>
+          <ol>
+            <li><strong>Rol Admin</strong> en el workspace.</li>
+            <li>Un <strong>capacity admin</strong> ha habilitado <strong>"Customized workspace pools"</strong> en Spark Compute settings de la capacidad.</li>
+          </ol>
+          <p>Si no tienes estos permisos → solo puedes usar el starter pool.</p>
+          <h3>4.5 · Cómo se accede a la configuración</h3>
+          <p><strong>Ruta</strong>: Workspace → <strong>Workspace settings</strong> → <strong>Data Engineering/Science</strong> → <strong>Spark settings</strong>.</p>
+          <p>Ahí verás:</p>
+          <ul>
+            <li>Tab <strong>Pool</strong>: gestionar starter pool o crear custom.</li>
+            <li>Tab <strong>Environment</strong>: entorno por defecto.</li>
+            <li>Tab <strong>Compute</strong>: configuración de compute.</li>
+          </ul>
         </article>
 
         <!-- 5 -->
         <div class="category-header" id="nodos"><span class="category-header__icon">📏</span><h2 class="category-header__title">5. Nodos, tamaños y escalado</h2></div>
         <article class="concept-card">
-          <h3>Tamaños de nodo</h3>
+          <h3>5.1 · Tamaños de nodo disponibles</h3>
+          <p>Cada nodo es una VM. Fabric ofrece estos tamaños:</p>
           <div class="table-scroll">
             <table class="md-table">
               <thead><tr><th>Size</th><th>vCores</th><th>Memoria</th></tr></thead>
               <tbody>
-                <tr><td>Small</td><td>4</td><td>32 GB</td></tr>
-                <tr><td>Medium</td><td>8</td><td>64 GB</td></tr>
-                <tr><td>Large</td><td>16</td><td>128 GB</td></tr>
-                <tr><td>X-Large</td><td>32</td><td>256 GB</td></tr>
-                <tr><td>XX-Large</td><td>64</td><td>512 GB</td></tr>
+                <tr><td><strong>Small</strong></td><td>4</td><td>32 GB</td></tr>
+                <tr><td><strong>Medium</strong></td><td>8</td><td>64 GB</td></tr>
+                <tr><td><strong>Large</strong></td><td>16</td><td>128 GB</td></tr>
+                <tr><td><strong>X-Large</strong></td><td>32</td><td>256 GB</td></tr>
+                <tr><td><strong>XX-Large</strong></td><td>64</td><td>512 GB</td></tr>
               </tbody>
             </table>
           </div>
-          <p>⚠️ X-Large y XX-Large solo en SKUs no-trial.</p>
-          <div class="note num-tip">
-            <div class="note note--warning">🎯 <strong>Autoscale vs Dynamic allocation (cae seguro):</strong> el <strong>autoscale</strong> escala <strong>nodos</strong> del pool según demanda global; la <strong>dynamic allocation</strong> escala <strong>executors</strong> dentro de un mismo job. Son independientes y se pueden combinar.</div>
+          <div class="note note--warning">⚠️ <strong>Restricción</strong>: X-Large y XX-Large <strong>solo se permiten en SKUs no-trial</strong> de Fabric.</div>
+          <h3>5.2 · Single-node clusters</h3>
+          <p>Puedes crear pools con <strong>1 solo nodo</strong>. En ese caso:</p>
+          <ul>
+            <li>Driver y executor <strong>comparten la misma máquina</strong>.</li>
+            <li>Los recursos se dividen aprox. entre los dos.</li>
+            <li>Ideal para workloads pequeños o desarrollo.</li>
+          </ul>
+          <h3>5.3 · Autoscale</h3>
+          <p><strong>Autoscale</strong> es el escalado automático del número de nodos según la carga:</p>
+          <ul>
+            <li>Configuras un <strong>min y max</strong> de nodos.</li>
+            <li>Si el pool está inactivo → puede reducir nodos.</li>
+            <li>Si hay picos de trabajo → sube nodos hasta el max.</li>
+            <li>Los nodos se pueden retirar cuando ya no se usan.</li>
+          </ul>
+          <p><strong>Configuración interna</strong>:</p>
+          <ul>
+            <li><code>spark.yarn.executor.decommission.enabled = true</code> (por defecto) → apaga nodos infrautilizados agresivamente.</li>
+            <li>Se puede desactivar si prefieres un escalado más suave.</li>
+          </ul>
+          <h3>5.4 · Dynamic allocation of executors</h3>
+          <p><strong>Dynamic allocation</strong> ajusta el número de <strong>executors</strong> (no de nodos) según la carga del job:</p>
+          <ul>
+            <li>Cuando la app Spark tiene muchas tareas pendientes → pide más executors.</li>
+            <li>Cuando la app está idle o terminó → libera executors.</li>
+            <li>Configuras un <strong>min y max</strong> de executors.</li>
+          </ul>
+          <p>Es muy útil porque las cargas de un job varían por fase (leer datos → shuffle → agregar → escribir). Los executors necesarios son distintos en cada fase.</p>
+          <h3>5.5 · 🎯 Diferencia autoscale vs dynamic allocation</h3>
+          <p>Esto es sutil pero cae en preguntas:</p>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th></th><th>Autoscale</th><th>Dynamic allocation</th></tr></thead>
+              <tbody>
+                <tr><td>Qué escala</td><td><strong>Nodos</strong> del pool</td><td><strong>Executors</strong> dentro de la app</td></tr>
+                <tr><td>Cuándo actúa</td><td>Entre jobs, según demanda global</td><td>Dentro de un mismo job</td></tr>
+                <tr><td>Configura</td><td>Min/max de nodos</td><td>Min/max de executors</td></tr>
+                <tr><td>Beneficio</td><td>Ahorro de coste</td><td>Optimizar recursos por fase del job</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>Puedes tener ambos activos → ajuste doble.</p>
+          <h3>5.6 · Right-sizing guidance (recomendaciones oficiales)</h3>
+          <p>De la doc oficial de best practices, según tu patrón de workload:</p>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Patrón</th><th>Recomendación</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Transform-heavy</strong> (shuffles, joins)</td><td>Nodos grandes (16-64 cores)</td></tr>
+                <tr><td><strong>Bursty o impredecible</strong></td><td>Autoscale + Dynamic Allocation</td></tr>
+                <tr><td><strong>Muchos jobs pequeños paralelos</strong></td><td>Nodos small/medium, <code>runMultiple()</code></td></tr>
+                <tr><td><strong>Serial pequeño / desarrollo</strong></td><td>Small/medium en single-node</td></tr>
+                <tr><td><strong>Jobs grandes con particionado conocido</strong></td><td>Pre-dimensionar manualmente</td></tr>
+              </tbody>
+            </table>
           </div>
         </article>
 
         <!-- 6 -->
-        <div class="category-header" id="runtimes"><span class="category-header__icon">🏃</span><h2 class="category-header__title">6. Runtimes de Spark</h2></div>
+        <div class="category-header" id="runtimes"><span class="category-header__icon">🏃</span><h2 class="category-header__title">6. Runtimes de Spark en Fabric</h2></div>
         <article class="concept-card">
-          <h3>Versión de Spark, Delta, Python y librerías</h3>
+          <h3>6.1 · ¿Qué es un runtime?</h3>
+          <p>El <strong>runtime</strong> determina qué versión de:</p>
+          <ul>
+            <li>Apache Spark</li>
+            <li>Delta Lake</li>
+            <li>Python</li>
+            <li>Librerías core</li>
+          </ul>
+          <p>…se usan en tu pool.</p>
+          <h3>6.2 · Runtimes actualmente soportados</h3>
+          <p>Fabric soporta actualmente estos runtimes:</p>
           <div class="table-scroll">
             <table class="md-table">
               <thead><tr><th>Runtime</th><th>Spark</th><th>Delta</th><th>Python</th></tr></thead>
               <tbody>
-                <tr><td>Runtime 1.3</td><td>3.5</td><td>3.1</td><td>3.11</td></tr>
-                <tr><td>Runtime 2.0</td><td>4.1</td><td>4.1</td><td>3.13+</td></tr>
+                <tr><td><strong>Runtime 1.3</strong></td><td>3.5</td><td>3.1</td><td>3.11</td></tr>
+                <tr><td><strong>Runtime 2.0</strong></td><td>4.1</td><td>4.1</td><td>3.13+</td></tr>
               </tbody>
             </table>
           </div>
-          <div class="note note--warning">⚠️ <strong>Fabric NO soporta Spark 3.4 ni anteriores.</strong> El mínimo es Spark 3.5. Y <strong>Autotune</strong> solo funcionaba en Runtime 1.2 (retirado), así que no está en runtimes actuales.</div>
+          <p><strong>Fabric NO soporta Spark 3.4 y anteriores.</strong> El mínimo es Spark 3.5.</p>
+          <h3>6.3 · Cómo elegir runtime</h3>
+          <ul>
+            <li><strong>Runtime 1.3</strong> → estable, mucha compatibilidad con librerías Python maduras.</li>
+            <li><strong>Runtime 2.0</strong> → última generación, mejor rendimiento, features nuevas.</li>
+          </ul>
+          <div class="note note--warning">⚠️ <strong>Autotune</strong> solo funciona en Runtime 1.2 (retirado) → <strong>no está disponible en runtimes actuales</strong> por defecto.</div>
+          <h3>6.4 · Cambiar el runtime</h3>
+          <p>Se configura en:</p>
+          <ul>
+            <li><strong>Workspace settings → Spark settings → Environment</strong>, o</li>
+            <li>Al crear un <strong>environment personalizado</strong>.</li>
+          </ul>
         </article>
 
         <!-- 7 -->
-        <div class="category-header" id="environments"><span class="category-header__icon">🎨</span><h2 class="category-header__title">7. Environments</h2></div>
+        <div class="category-header" id="environments"><span class="category-header__icon">🎨</span><h2 class="category-header__title">7. Environments (entornos personalizados)</h2></div>
         <article class="concept-card">
-          <h3>Un perfil reutilizable de runtime + librerías + config</h3>
-          <p>Un <strong>environment</strong> es un item que empaqueta un runtime, las <strong>librerías</strong> instaladas, configuración Spark, ficheros de recursos y un pool asignado. Se puede marcar como <strong>default del workspace</strong> y anular a nivel notebook.</p>
-          <p>Para una librería puntual en la sesión (no persistente):</p>
-          <pre><code class="language-python">%pip install pandas==2.1.3
+          <h3>7.1 · ¿Qué es un environment?</h3>
+          <p>Un <strong>environment</strong> es un <strong>item de Fabric</strong> que empaqueta:</p>
+          <ul>
+            <li>Una versión concreta de runtime.</li>
+            <li>Las <strong>librerías</strong> que quieres instaladas.</li>
+            <li><strong>Configuración de Spark</strong> personalizada.</li>
+            <li><strong>Ficheros de recursos</strong> que quieres disponibles.</li>
+            <li>Un <strong>pool</strong> asignado.</li>
+          </ul>
+          <p>Piensa en él como un <strong>"perfil personalizado"</strong> que puedes reutilizar entre notebooks y Spark jobs. 🎀</p>
+          <h3>7.2 · Por qué usar environments</h3>
+          <p>Casos típicos:</p>
+          <ul>
+            <li>Necesitas librerías Python específicas (<code>pandas 2.1.3</code>, <code>scikit-learn 1.4</code>, etc.).</li>
+            <li>Quieres una configuración Spark distinta para ETL grandes vs análisis interactivo.</li>
+            <li>Quieres estandarizar setup entre equipos.</li>
+            <li>Necesitas subir librerías privadas custom.</li>
+          </ul>
+          <h3>7.3 · Qué puedes configurar</h3>
+          <p>Al crear un environment puedes:</p>
+          <ul>
+            <li>✅ Especificar el <strong>runtime</strong>.</li>
+            <li>✅ Ver las librerías <strong>built-in</strong>.</li>
+            <li>✅ Instalar librerías <strong>públicas de PyPI</strong>.</li>
+            <li>✅ Instalar librerías <strong>custom</strong> subiendo un package file.</li>
+            <li>✅ Asignar un <strong>Spark pool</strong>.</li>
+            <li>✅ Configurar <strong>propiedades de Spark</strong> (override defaults).</li>
+            <li>✅ Subir <strong>ficheros de recursos</strong> (JSON de config, modelos ML, etc.).</li>
+          </ul>
+          <h3>7.4 · Environment por defecto del workspace</h3>
+          <p>Después de crear un environment, puedes marcarlo como <strong>default del workspace</strong>. Así, cualquier notebook nuevo lo usará automáticamente.</p>
+          <p>También puedes anular el default a nivel notebook:</p>
+          <ul>
+            <li>Tab del notebook → <strong>Workspace default</strong> dropdown → seleccionar otro environment.</li>
+          </ul>
+          <h3>7.5 · Instalación de librerías en línea (sesión)</h3>
+          <p>Si no quieres crear un environment y solo necesitas una librería para un notebook:</p>
+          <pre><code class="language-python"># Instalar una librería en la sesión actual (con %pip)
+%pip install pandas==2.1.3
+
+# Con conda
 %conda install seaborn=0.13.0</code></pre>
-          <div class="note note--warning">⚠️ La instalación en línea con <code>%pip</code>/<code>%conda</code> <strong>solo dura la sesión</strong>. Para persistencia, usa un environment.</div>
+          <div class="note note--warning">⚠️ La instalación en línea <strong>solo dura la sesión</strong>. Al terminar, se pierde. Para persistencia → environment.</div>
         </article>
 
         <!-- 8 -->
         <div class="category-header" id="optimizaciones"><span class="category-header__icon">⚡</span><h2 class="category-header__title">8. Optimizaciones exclusivas de Fabric</h2></div>
         <article class="concept-card">
-          <h3>Muy examinables</h3>
+          <p>Fabric tiene <strong>varias optimizaciones sobre Apache Spark open-source</strong> que son específicas de la plataforma. Son muy examinables.</p>
+          <h3>8.1 · 🎯 Native Execution Engine (NEE)</h3>
+          <p>Es un <strong>motor de procesamiento vectorizado</strong> que ejecuta operaciones Spark directamente sobre la infraestructura del lakehouse.</p>
+          <p><strong>Beneficios</strong>:</p>
           <ul>
-            <li>🎯 <strong>Native Execution Engine (NEE):</strong> motor vectorizado, mejor rendimiento sobre Parquet/Delta. <strong>NO está activado por defecto</strong>, hay que activarlo.</li>
-            <li>🎯 <strong>High Concurrency Mode:</strong> comparte una sesión Spark entre notebooks/usuarios (mismo lakehouse, environment y config). Reduce startup. Hay que activarlo en workspace settings.</li>
-            <li>🎯 <strong>V-Order:</strong> optimización de escritura Parquet, <strong>activada por defecto</strong>.</li>
-            <li><strong>Adaptive Query Execution (AQE):</strong> activada por defecto; ajusta shuffle partitions, joins y skew.</li>
-            <li><strong>Autotune:</strong> solo Runtime 1.2 (retirado).</li>
+            <li><strong>Rendimiento significativamente mejor</strong> para queries sobre datasets grandes en Parquet/Delta.</li>
+            <li>Vectorized processing → procesa muchos valores a la vez.</li>
+            <li>Elimina overhead del engine tradicional.</li>
           </ul>
+          <p><strong>Cómo activarlo (dos formas):</strong></p>
+          <p><strong>A) A nivel environment:</strong> configurar en el environment:</p>
+          <ul>
+            <li><code>spark.native.enabled = true</code></li>
+            <li><code>spark.shuffle.manager = org.apache.spark.shuffle.sort.ColumnarShuffleManager</code></li>
+          </ul>
+          <p><strong>B) A nivel notebook (per session):</strong></p>
           <pre><code class="language-json">%%configure
 {
     "conf": {
@@ -262,166 +500,769 @@
         "spark.shuffle.manager": "org.apache.spark.shuffle.sort.ColumnarShuffleManager"
     }
 }</code></pre>
-          <div class="note note--warning">⚠️ <code>%%configure</code> tiene que ser la <strong>primera celda</strong> del notebook para que aplique.</div>
+          <div class="note note--warning">⚠️ Ojo cosita: <code>%%configure</code> <strong>tiene que ser la primera celda del notebook</strong> para que aplique.</div>
+          <h3>8.2 · 🎯 High Concurrency Mode</h3>
+          <p><strong>Qué es</strong>: modo que permite <strong>compartir una sesión Spark entre múltiples notebooks/usuarios</strong> simultáneamente.</p>
+          <p><strong>Ventajas</strong>:</p>
+          <ul>
+            <li><strong>Reduce startup overhead</strong> (no arranca sesión nueva cada vez).</li>
+            <li><strong>Ahorro de recursos</strong> cuando hay muchos users trabajando en paralelo.</li>
+            <li>Mantiene <strong>isolation</strong>: variables de un notebook no afectan a otro.</li>
+          </ul>
+          <p><strong>Requisitos</strong> para compartir sesión:</p>
+          <ul>
+            <li>Mismo lakehouse</li>
+            <li>Mismo environment</li>
+            <li>Misma configuración Spark</li>
+          </ul>
+          <p><strong>Cómo activar</strong>: Workspace settings → <strong>Data Engineering/Science</strong> → activar toggle.</p>
+          <p>También aplicable a <strong>Spark jobs</strong> (no solo notebooks).</p>
+          <div class="note note--warning">⚠️ Sesiones activas <strong>acumulan CU utilization</strong>. Timeout por defecto: <strong>20 minutos</strong>. Parar sesiones cuando no las uses.</div>
+          <h3>8.3 · 🎯 V-Order</h3>
+          <p>Ya lo vimos en el Módulo 2. Recordamos:</p>
+          <ul>
+            <li>Optimización de escritura Parquet <strong>exclusiva de Fabric</strong>.</li>
+            <li><strong>Activado por defecto</strong> (<code>spark.sql.parquet.vorder.enabled = true</code>).</li>
+            <li>Reordena datos para acelerar lecturas desde motores columnar (Power BI, Warehouse).</li>
+            <li>Pequeño overhead al escribir, gran beneficio al leer.</li>
+          </ul>
+          <h3>8.4 · Autotune</h3>
+          <p><strong>Autotune</strong> es una feature que <strong>aprende automáticamente las mejores configuraciones Spark</strong> para tus queries recurrentes:</p>
+          <ul>
+            <li>Modela las queries que ejecutas.</li>
+            <li>Optimiza settings con cada iteración.</li>
+            <li>Necesita ~20-25 iteraciones para converger.</li>
+          </ul>
+          <div class="note note--warning">⚠️ <strong>Solo compatible con Runtime 1.2</strong> (retirado). No funciona en runtimes actuales. Si te aparece en preguntas de examen, ten en cuenta que puede estar desactualizado.</div>
+          <h3>8.5 · Automatic MLFlow logging</h3>
+          <p><strong>MLFlow</strong> es un tracking system open-source para machine learning. En Fabric:</p>
+          <ul>
+            <li>Se <strong>usa por defecto</strong> para loguear implícitamente actividad de experimentos ML.</li>
+            <li>No necesitas añadir código explícito.</li>
+            <li><strong>Se puede desactivar</strong> en workspace settings.</li>
+          </ul>
+          <h3>8.6 · Adaptive Query Execution (AQE)</h3>
+          <p>Habilitado por defecto en todos los runtimes de Fabric. Ajusta dinámicamente:</p>
+          <ul>
+            <li>Número de shuffle partitions.</li>
+            <li>Estrategias de join.</li>
+            <li>Manejo de skew (particiones desbalanceadas) → <code>spark.sql.adaptive.skewJoin.enabled</code>.</li>
+          </ul>
         </article>
 
         <!-- 9 -->
-        <div class="category-header" id="ejecucion"><span class="category-header__icon">📝</span><h2 class="category-header__title">9. Notebooks vs Spark Job Definitions</h2></div>
+        <div class="category-header" id="ejecucion"><span class="category-header__icon">📝</span><h2 class="category-header__title">9. Cómo ejecutar código Spark: notebooks vs Spark Job Definitions</h2></div>
         <article class="concept-card">
-          <h3>Dos formas de ejecutar código Spark</h3>
-          <p><strong>Notebook:</strong> interactivo, cell-by-cell, resultados inline, ideal para exploración, desarrollo y ML.</p>
-          <p><strong>Spark Job Definition (SJD):</strong> ejecuta un script Python/JAR no interactivo, on-demand o por schedule, ideal para <strong>producción y ETL automatizado</strong>.</p>
-          <div class="note note--tip">🎯 <strong>Regla:</strong> exploración/ML → Notebook. ETL programado en producción → SJD. Ojo: los notebooks también se orquestan desde pipelines (actividad Notebook), muy común en Fabric.</div>
+          <p>Hay <strong>dos formas principales</strong> de ejecutar código Spark en Fabric. <strong>Cae mucho en preguntas escenario</strong>.</p>
+          <h3>9.1 · Notebooks</h3>
+          <p><strong>Un notebook</strong> es un item interactivo web-based que:</p>
+          <ul>
+            <li>Combina <strong>celdas de código</strong> y <strong>celdas de markdown/texto</strong>.</li>
+            <li>Ejecuta código <strong>cell-by-cell</strong> interactivamente.</li>
+            <li>Muestra resultados <strong>inline</strong> (tablas, gráficos, texto).</li>
+            <li>Se comparte fácilmente.</li>
+            <li>Ideal para <strong>exploración, desarrollo, análisis interactivo, ML</strong>.</li>
+          </ul>
+          <h3>9.2 · Spark Job Definition</h3>
+          <p>Un <strong>Spark Job Definition</strong> (SJD) es un item que:</p>
+          <ul>
+            <li>Ejecuta un <strong>script Python/JAR</strong> de forma <strong>no interactiva</strong>.</li>
+            <li>Se puede ejecutar <strong>on-demand</strong> o <strong>por schedule</strong>.</li>
+            <li>Se referencia desde pipelines para automatización.</li>
+            <li>Puede especificar <strong>ficheros de referencia</strong> (código, config).</li>
+            <li>Ideal para <strong>producción y ETL automatizado</strong>.</li>
+          </ul>
+          <h3>9.3 · 🎯 Regla de decisión para el examen</h3>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Necesitas…</th><th>Usa</th></tr></thead>
+              <tbody>
+                <tr><td>Explorar datos interactivamente</td><td>Notebook</td></tr>
+                <tr><td>Prototipar transformaciones</td><td>Notebook</td></tr>
+                <tr><td>Machine learning con visualizaciones inline</td><td>Notebook</td></tr>
+                <tr><td>Colaborar con markdown y análisis</td><td>Notebook</td></tr>
+                <tr><td><strong>ETL programado en producción</strong></td><td><strong>Spark Job Definition</strong></td></tr>
+                <tr><td>Ejecutar un script Python puro sin UI</td><td>Spark Job Definition</td></tr>
+                <tr><td>Orquestar desde un pipeline</td><td><strong>Puede ser cualquiera</strong>, pero SJD es más "producción-ready"</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="note note--warning">⚠️ <strong>Ojo</strong>: notebooks TAMBIÉN se pueden orquestar desde pipelines (actividad "Notebook"). Es muy común en Fabric. Pero para código puramente batch sin UI → SJD es más limpio.</div>
+          <h3>9.4 · Estructura de un notebook</h3>
+          <p>Un notebook tiene:</p>
+          <ul>
+            <li><strong>Celdas de código</strong>: Python, Spark SQL, Scala, R, HTML, etc.</li>
+            <li><strong>Celdas markdown</strong>: documentación, título, imágenes.</li>
+            <li><strong>Un lenguaje primario</strong>: el default para todas las celdas nuevas.</li>
+            <li><strong>Un lakehouse asignado por defecto</strong>: para que <code>Files/</code> y <code>Tables/</code> funcionen sin path completo.</li>
+          </ul>
         </article>
 
         <!-- 10 -->
-        <div class="category-header" id="magic"><span class="category-header__icon">✨</span><h2 class="category-header__title">10. Magic commands</h2></div>
+        <div class="category-header" id="magic"><span class="category-header__icon">✨</span><h2 class="category-header__title">10. Magic commands en notebooks</h2></div>
         <article class="concept-card">
-          <h3>Comandos con <code>%</code> (line) y <code>%%</code> (cell)</h3>
+          <p>Los <strong>magic commands</strong> son comandos especiales que empiezan con <code>%</code> (line magic) o <code>%%</code> (cell magic). Sirven para cambiar comportamiento de una celda o del notebook completo.</p>
+          <h3>10.1 · 🎯 Magics de lenguaje (cambiar idioma de una celda)</h3>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Magic</th><th>Lenguaje</th><th>Descripción</th></tr></thead>
+              <tbody>
+                <tr><td><code>%%pyspark</code></td><td>Python</td><td>Ejecuta Python contra el Spark Context</td></tr>
+                <tr><td><code>%%spark</code></td><td>Scala</td><td>Ejecuta Scala contra el Spark Context</td></tr>
+                <tr><td><code>%%sql</code></td><td>Spark SQL</td><td>Ejecuta SQL contra el Spark Context</td></tr>
+                <tr><td><code>%%sparkr</code></td><td>R</td><td>Ejecuta R contra el Spark Context</td></tr>
+                <tr><td><code>%%html</code></td><td>HTML</td><td>Renderiza HTML</td></tr>
+                <tr><td><code>%%csharp</code></td><td>C#</td><td>Ejecuta .NET for Spark C#</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>Ejemplo:</p>
+          <pre><code class="language-python"># Celda en un notebook con lenguaje primario = PySpark
+
+%%sql
+SELECT * FROM my_delta_table LIMIT 10</code></pre>
+          <p>En esa celda concreta, Fabric ejecuta como SQL aunque el notebook sea PySpark. 🌸</p>
+          <h3>10.2 · 🎯 Magics útiles para configuración</h3>
           <div class="table-scroll">
             <table class="md-table">
               <thead><tr><th>Magic</th><th>Uso</th></tr></thead>
               <tbody>
-                <tr><td><code>%%pyspark</code> / <code>%%spark</code> / <code>%%sql</code> / <code>%%sparkr</code></td><td>Cambiar el lenguaje de la celda</td></tr>
-                <tr><td><code>%%configure</code></td><td>Configurar Spark (1ª celda)</td></tr>
-                <tr><td><code>%pip install X</code> / <code>%conda install X</code></td><td>Instalar librería en la sesión</td></tr>
-                <tr><td><code>%%time</code> / <code>%%timeit</code></td><td>Medir tiempo de la celda</td></tr>
+                <tr><td><code>%%configure</code></td><td>Configurar Spark (debe ser la 1ª celda)</td></tr>
+                <tr><td><code>%pip install X</code></td><td>Instalar librería PyPI en la sesión</td></tr>
+                <tr><td><code>%conda install X</code></td><td>Instalar con conda</td></tr>
               </tbody>
             </table>
           </div>
-          <div class="note note--warning">⚠️ <strong>En pipelines solo funcionan:</strong> <code>%%pyspark</code>, <code>%%spark</code>, <code>%%csharp</code>, <code>%%sql</code> y <code>%%configure</code>. Otros magics fallan.</div>
+          <p>Ejemplo de <code>%%configure</code> (activar Native Execution Engine):</p>
+          <pre><code class="language-json">%%configure
+{
+    "conf": {
+        "spark.native.enabled": "true",
+        "spark.executor.memory": "8g",
+        "spark.driver.memory": "4g"
+    }
+}</code></pre>
+          <h3>10.3 · Magics útiles del kernel IPython</h3>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Magic</th><th>Uso</th></tr></thead>
+              <tbody>
+                <tr><td><code>%%time</code></td><td>Tiempo total de ejecución de la celda</td></tr>
+                <tr><td><code>%%timeit</code></td><td>Ejecuta múltiples veces y da estadísticas</td></tr>
+                <tr><td><code>%%capture</code></td><td>Captura output</td></tr>
+                <tr><td><code>%%writefile</code></td><td>Escribe el contenido de la celda a un fichero</td></tr>
+                <tr><td><code>%%markdown</code></td><td>Renderiza como markdown</td></tr>
+                <tr><td><code>%%bash</code> / <code>%%sh</code></td><td>Ejecuta comandos de shell</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <h3>10.4 · ⚠️ Magics soportados en Fabric pipelines</h3>
+          <p>Cuando ejecutas un notebook desde un pipeline (actividad Notebook), <strong>solo estos magics están soportados</strong>:</p>
+          <ul>
+            <li><code>%%pyspark</code></li>
+            <li><code>%%spark</code></li>
+            <li><code>%%csharp</code></li>
+            <li><code>%%sql</code></li>
+            <li><code>%%configure</code></li>
+          </ul>
+          <p>Si usas otros → pueden fallar en pipeline.</p>
+          <h3>10.5 · Custom magic commands</h3>
+          <p>Puedes definir tus propios magic commands en un notebook y llamarlos desde otro. Útil para funcionalidades reutilizables.</p>
         </article>
 
         <!-- 11 -->
         <div class="category-header" id="notebookutils"><span class="category-header__icon">🛠️</span><h2 class="category-header__title">11. NotebookUtils (antes MSSparkUtils)</h2></div>
         <article class="concept-card">
-          <h3>Librería built-in para tareas comunes</h3>
-          <p>Maneja file system, environment variables, encadenado de notebooks, secrets y credentials. En 2024 se renombró de <code>mssparkutils</code> a <code>notebookutils</code> (el antiguo sigue funcionando por compatibilidad).</p>
+          <h3>11.1 · ¿Qué es NotebookUtils?</h3>
+          <p><strong>NotebookUtils</strong> (antes llamado <strong>MSSparkUtils</strong>) es una librería built-in para tareas comunes en notebooks:</p>
+          <ul>
+            <li>Manejar el file system.</li>
+            <li>Obtener environment variables.</li>
+            <li>Encadenar notebooks.</li>
+            <li>Manejar secrets.</li>
+            <li>Utilities de credentials.</li>
+          </ul>
+          <p>Está disponible en <strong>PySpark, Scala, SparkR notebooks y pipelines</strong>.</p>
+          <h3>11.2 · ⚠️ Renaming importante</h3>
+          <p>En 2024 se renombró oficialmente:</p>
+          <ul>
+            <li>Antes: <code>mssparkutils</code></li>
+            <li>Ahora: <code>notebookutils</code></li>
+          </ul>
+          <p>El código antiguo <strong>sigue funcionando</strong> (backward compatible), pero <strong>se recomienda migrar</strong>. El namespace <code>mssparkutils</code> se retirará en el futuro.</p>
+          <p>Requisito: <strong>Spark 3.4 (Runtime v1.2) o superior</strong>.</p>
+          <h3>11.3 · Uso básico</h3>
           <pre><code class="language-python">import notebookutils
 
-# File system
+# Ver ayuda de todos los comandos disponibles
+notebookutils.notebook.help()</code></pre>
+          <h3>11.4 · Ejemplos útiles</h3>
+          <p><strong>Trabajar con file system (<code>fs</code>):</strong></p>
+          <pre><code class="language-python"># Listar ficheros
 files = notebookutils.fs.ls("Files/my_folder")
+
+# Leer un fichero de texto
+content = notebookutils.fs.head("Files/config.json", 1024)  # Primeros 1024 bytes
+
+# Copiar entre ubicaciones
 notebookutils.fs.cp("Files/source.csv", "Files/backup/source.csv")
 
-# Encadenar notebooks
-result = notebookutils.notebook.run("path/to/other_notebook", timeout_seconds=60, args={"p": "v"})
+# Borrar
+notebookutils.fs.rm("Files/temp.txt")
 
-# Salir con valor
-notebookutils.notebook.exit("Success: 1000 rows")
+# Crear directorio
+notebookutils.fs.mkdirs("Files/new_folder")</code></pre>
+          <p><strong>Encadenar notebooks:</strong></p>
+          <pre><code class="language-python"># Ejecutar otro notebook y esperar
+result = notebookutils.notebook.run("path/to/other_notebook", timeout_seconds=60, args={"param1": "value1"})
 
-# Secret de Key Vault
+# Ejecutar múltiples notebooks en paralelo (DAG)
+notebookutils.notebook.runMultiple([
+    {"path": "notebook1"},
+    {"path": "notebook2", "dependencies": ["notebook1"]},
+    {"path": "notebook3", "dependencies": ["notebook1"]}
+])</code></pre>
+          <p><strong>Salir de un notebook con valor:</strong></p>
+          <pre><code class="language-python"># Sale del notebook devolviendo un valor al llamador
+notebookutils.notebook.exit("Success: 1000 rows processed")</code></pre>
+          <p><strong>Obtener credentials (secrets):</strong></p>
+          <pre><code class="language-python"># Obtener secret de un Azure Key Vault vinculado
 secret = notebookutils.credentials.getSecret("kv-name", "secret-name")</code></pre>
-          <div class="note note--tip">🎯 <code>notebookutils.notebook.runMultiple()</code> ejecuta notebooks con dependencias tipo <strong>DAG</strong>. Ideal para orquestar medallion (bronze → silver → gold).</div>
+          <h3>11.5 · 🎯 runMultiple() para DAGs</h3>
+          <p><code>notebookutils.notebook.runMultiple()</code> es SUPER poderoso: ejecuta notebooks con <strong>dependencias tipo DAG</strong>. Excelente para orquestar pipelines medallion (bronze → silver → gold).</p>
+          <p>Ejemplo:</p>
+          <pre><code class="language-python">DAG = {
+    "activities": [
+        {"name": "bronze_ingest", "path": "notebooks/01_bronze_ingest"},
+        {"name": "silver_transform", "path": "notebooks/02_silver_transform", "dependencies": ["bronze_ingest"]},
+        {"name": "gold_aggregate", "path": "notebooks/03_gold_aggregate", "dependencies": ["silver_transform"]}
+    ]
+}
+
+notebookutils.notebook.runMultiple(DAG)</code></pre>
         </article>
 
         <!-- 12 -->
         <div class="category-header" id="dataframes"><span class="category-header__icon">📊</span><h2 class="category-header__title">12. Trabajar con DataFrames</h2></div>
         <article class="concept-card">
-          <h3>El corazón de PySpark</h3>
-          <p>Un <strong>DataFrame</strong> es una tabla distribuida con filas y columnas, <strong>inmutable</strong>. Cargar datos con schema inferido o explícito (el explícito mejora el rendimiento):</p>
-          <pre><code class="language-python">from pyspark.sql.types import StructType, StructField, IntegerType, StringType, FloatType
+          <p>Este es el corazón de PySpark. Vamos a fondo con ejemplos comentados 💕</p>
+          <h3>12.1 · ¿Qué es un DataFrame?</h3>
+          <p>Un <strong>DataFrame</strong> es una <strong>tabla distribuida</strong> con filas y columnas. Es lo mismo que un DataFrame de Pandas pero optimizado para procesamiento distribuido.</p>
+          <p>Nativamente, Spark tiene RDDs (Resilient Distributed Datasets), pero <strong>DataFrames son el estándar moderno</strong>: más eficientes, con schema, y con API declarativa.</p>
+          <p><strong>En Fabric usamos DataFrames el 99% del tiempo.</strong></p>
+          <h3>12.2 · Cargar datos en un DataFrame</h3>
+          <p><strong>A) Con schema inferido (opción rápida)</strong></p>
+          <pre><code class="language-python">%%pyspark
+# Leer un CSV con schema inferido automáticamente por Spark
+df = spark.read.load(
+    'Files/data/products.csv',   # Ruta al fichero (relativa al lakehouse por defecto)
+    format='csv',                # Formato del fichero
+    header=True                  # La primera fila son los headers
+)
 
-schema = StructType([
-    StructField("ProductID", IntegerType()),
-    StructField("ProductName", StringType()),
-    StructField("Category", StringType()),
-    StructField("ListPrice", FloatType())
-])
-df = spark.read.load('Files/data/product-data.csv', format='csv', schema=schema, header=False)
+# Mostrar las primeras 10 filas en formato tabla
 display(df.limit(10))</code></pre>
-          <h4>Operaciones típicas (method chaining)</h4>
-          <pre><code class="language-python">from pyspark.sql.functions import col, count, avg
+          <p><strong>Equivalente en Scala:</strong></p>
+          <pre><code class="language-scala">%%spark
+val df = spark.read.format("csv").option("header", "true").load("Files/data/products.csv")
+display(df.limit(10))</code></pre>
+          <p><strong>B) Con schema explícito (mejor rendimiento y validación)</strong></p>
+          <pre><code class="language-python">%%pyspark
+from pyspark.sql.types import StructType, StructField, IntegerType, StringType, FloatType
 
-result = (df.select("ProductName", "Category", "ListPrice")
+# Definir schema explícito
+productSchema = StructType([
+    StructField("ProductID", IntegerType()),     # Columna entera
+    StructField("ProductName", StringType()),    # Columna texto
+    StructField("Category", StringType()),
+    StructField("ListPrice", FloatType())        # Columna decimal
+])
+
+# Cargar CSV con schema (sin header en este ejemplo)
+df = spark.read.load(
+    'Files/data/product-data.csv',
+    format='csv',
+    schema=productSchema,     # Se aplica el schema definido
+    header=False              # El CSV no tiene fila de cabecera
+)
+
+display(df.limit(10))</code></pre>
+          <blockquote>💡 <strong>Tip oficial</strong>: <em>"Specifying an explicit schema also improves performance!"</em> Cuando Spark no tiene que inferir el schema, es mucho más rápido.</blockquote>
+          <h3>12.3 · Formatos que puedes leer</h3>
+          <p>Spark en Fabric lee (<code>spark.read.format('X').load()</code>) prácticamente todo:</p>
+          <ul>
+            <li><code>delta</code> (formato preferido en Fabric)</li>
+            <li><code>parquet</code></li>
+            <li><code>csv</code></li>
+            <li><code>json</code></li>
+            <li><code>orc</code></li>
+            <li><code>text</code></li>
+            <li><code>xml</code> (con librería extra)</li>
+            <li><code>avro</code></li>
+          </ul>
+          <p>Y desde JDBC/ODBC para BBDD.</p>
+          <h3>12.4 · Operaciones típicas: filter, select, groupBy</h3>
+          <p><strong>Seleccionar columnas (<code>select</code>):</strong></p>
+          <pre><code class="language-python"># Solo las columnas que necesito
+pricelist_df = df.select("ProductID", "ListPrice")
+
+# Sintaxis alternativa (equivalente)
+pricelist_df = df["ProductID", "ListPrice"]</code></pre>
+          <p><strong>Filtrar filas (<code>where</code> o <code>filter</code>):</strong></p>
+          <pre><code class="language-python"># Sintaxis con where + notación de columna
+bikes_df = df.select("ProductName", "Category", "ListPrice") \
+             .where((df["Category"] == "Mountain Bikes") | (df["Category"] == "Road Bikes"))
+
+# Sintaxis con filter (equivalente)
+bikes_df = df.filter(df["Category"] == "Mountain Bikes")
+
+# Sintaxis con filter y col() (más "moderna")
+from pyspark.sql.functions import col
+bikes_df = df.filter((col("Category") == "Mountain Bikes") | (col("Category") == "Road Bikes"))
+
+display(bikes_df)</code></pre>
+          <p><strong>Agrupar y agregar (<code>groupBy</code>):</strong></p>
+          <pre><code class="language-python"># Cuántos productos hay por categoría
+counts_df = df.select("ProductID", "Category") \
+              .groupBy("Category") \
+              .count()
+
+display(counts_df)</code></pre>
+          <p><strong>Agregar con funciones específicas:</strong></p>
+          <pre><code class="language-python">from pyspark.sql.functions import sum, avg, max, min, count
+
+# Estadísticas por categoría
+stats_df = df.groupBy("Category").agg(
+    count("ProductID").alias("num_products"),
+    avg("ListPrice").alias("avg_price"),
+    max("ListPrice").alias("max_price"),
+    min("ListPrice").alias("min_price"),
+    sum("ListPrice").alias("total_price")
+)
+display(stats_df)</code></pre>
+          <h3>12.5 · 🎯 Method chaining</h3>
+          <p>En PySpark <strong>encadenas métodos</strong> con <code>.</code> en una sola expresión. Cada método devuelve un nuevo DataFrame (los DataFrames son <strong>inmutables</strong>).</p>
+          <pre><code class="language-python">result = (df.select("ProductName", "Category", "ListPrice")
             .where(col("Category").isin("Mountain Bikes", "Road Bikes"))
             .orderBy("ListPrice", ascending=False)
             .limit(20))
 
-stats = df.groupBy("Category").agg(
-    count("ProductID").alias("num_products"),
-    avg("ListPrice").alias("avg_price"))</code></pre>
-          <h4>Guardar</h4>
-          <pre><code class="language-python"># Delta gestionada (aparece en el catálogo)
+display(result)</code></pre>
+          <p>Análogo mental: es como componer un pipeline de Power Query paso a paso.</p>
+          <h3>12.6 · Guardar un DataFrame</h3>
+          <p><strong>Guardar como Parquet (formato analítico eficiente):</strong></p>
+          <pre><code class="language-python"># Sobrescribir cualquier fichero existente en esa ruta
+bikes_df.write.mode("overwrite").parquet('Files/product_data/bikes.parquet')</code></pre>
+          <p><strong>Modos de escritura (<code>.mode()</code>):</strong></p>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Modo</th><th>Descripción</th></tr></thead>
+              <tbody>
+                <tr><td><code>overwrite</code></td><td>Borra lo existente y escribe de nuevo</td></tr>
+                <tr><td><code>append</code></td><td>Añade a lo existente</td></tr>
+                <tr><td><code>ignore</code></td><td>No hace nada si ya existe</td></tr>
+                <tr><td><code>error</code> / <code>errorifexists</code> (default)</td><td>Falla si ya existe</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p><strong>Guardar como Delta (preferido en lakehouse):</strong></p>
+          <pre><code class="language-python"># Como tabla Delta gestionada (aparece en el catálogo del lakehouse)
 df.write.format("delta").saveAsTable("mi_tabla_delta")
-# Parquet a una ruta
-df.write.mode("overwrite").parquet('Files/product_data/bikes.parquet')</code></pre>
-          <p>Modos de escritura: <code>overwrite</code>, <code>append</code>, <code>ignore</code>, <code>error</code> (default).</p>
+
+# Como fichero Delta en una ruta específica
+df.write.format("delta").mode("overwrite").save("Files/my_delta_folder")</code></pre>
         </article>
 
         <!-- 13 -->
         <div class="category-header" id="particionado"><span class="category-header__icon">📁</span><h2 class="category-header__title">13. Particionado de datos</h2></div>
         <article class="concept-card">
-          <h3>Dividir el output en subcarpetas por columna</h3>
-          <pre><code class="language-python">sales_df.write.partitionBy("year", "month").mode("overwrite").parquet("Files/sales_data")</code></pre>
-          <p>Beneficios: <strong>predicate pushdown</strong> (Spark lee solo las particiones relevantes), paralelismo y mejor compresión.</p>
-          <div class="note note--warning">⚠️ <strong>NO particiones por columnas de alta cardinalidad</strong> (user_id, order_id, timestamp): generas miles de ficheros minúsculos y va peor. Usa columnas de baja cardinalidad (year, country, category). Regla: ~1 GB por partición.</div>
-          <div class="note note--tip">🎯 <strong>Trampa:</strong> al leer directamente una partición (<code>.../Category=Road Bikes</code>), la columna particionada <strong>desaparece</strong> del DataFrame.</div>
+          <p>El <strong>particionado</strong> es una técnica de optimización que permite a Spark <strong>procesar en paralelo mejor</strong> y <strong>filtrar datos más rápido</strong>.</p>
+          <h3>13.1 · Qué es particionar</h3>
+          <p><strong>Particionar</strong> = dividir el output en <strong>subcarpetas</strong> basadas en el valor de una o varias columnas.</p>
+          <p>Por ejemplo, si tienes datos de ventas y particionas por <code>year</code> y <code>month</code>, obtienes:</p>
+          <pre><code class="language-plaintext">Files/sales/
+├── year=2024/
+│   ├── month=01/
+│   │   └── part-00000.parquet
+│   ├── month=02/...
+│   └── month=12/...
+├── year=2025/
+│   ├── month=01/...
+│   └── ...
+└── year=2026/
+    └── ...</code></pre>
+          <h3>13.2 · Cómo particionar al escribir</h3>
+          <pre><code class="language-python"># Particionar por una columna
+bikes_df.write.partitionBy("Category").mode("overwrite").parquet("Files/bike_data")
+
+# Particionar por varias columnas (jerarquía)
+sales_df.write.partitionBy("year", "month").mode("overwrite").parquet("Files/sales_data")</code></pre>
+          <p>Las carpetas generadas siguen el formato <code>columna=valor/</code>, que es el estándar Hive-style.</p>
+          <h3>13.3 · Beneficios del particionado</h3>
+          <ul>
+            <li>⚡ <strong>Predicate pushdown</strong>: si filtras por la columna particionada, Spark <strong>lee solo las particiones relevantes</strong>, no todo el dataset.</li>
+            <li>🚀 <strong>Paralelismo</strong>: cada partición se puede procesar en un executor distinto.</li>
+            <li>💾 <strong>Compresión mejor</strong>: datos similares agrupados comprimen mejor.</li>
+          </ul>
+          <p>Ejemplo de filtro que se beneficia:</p>
+          <pre><code class="language-python"># Spark solo lee la partición year=2026
+df_2026 = spark.read.parquet("Files/sales_data/year=2026")</code></pre>
+          <p>O con filter automático:</p>
+          <pre><code class="language-python"># Spark hace "partition pruning" y solo lee la partición relevante
+df = spark.read.parquet("Files/sales_data").filter(col("year") == 2026)</code></pre>
+          <h3>13.4 · ⚠️ Cuándo NO particionar</h3>
+          <ul>
+            <li>Si tu columna tiene <strong>cardinalidad muy alta</strong> (miles/millones de valores únicos) → generas miles de particiones minúsculas. Es <strong>peor</strong> que no particionar.</li>
+            <li>Ejemplos malos: <code>user_id</code>, <code>order_id</code>, <code>timestamp</code> a nivel segundo.</li>
+            <li>Ejemplos buenos: <code>year</code>, <code>country</code>, <code>region</code>, <code>category</code> (poca cardinalidad).</li>
+          </ul>
+          <p><strong>Regla del pulgar</strong>: cada partición debería tener <strong>~1 GB</strong> aproximadamente. Ni menos ni muchísimo más.</p>
+          <h3>13.5 · Leer datos particionados</h3>
+          <p>Cuando lees, puedes:</p>
+          <p><strong>A) Leer todo el dataset:</strong></p>
+          <pre><code class="language-python">all_data = spark.read.parquet("Files/bike_data")</code></pre>
+          <p><strong>B) Leer una partición específica (más rápido):</strong></p>
+          <pre><code class="language-python">road_bikes = spark.read.parquet("Files/bike_data/Category=Road Bikes")</code></pre>
+          <p><strong>C) Con wildcards:</strong></p>
+          <pre><code class="language-python"># Todas las particiones 2024-2025
+some_data = spark.read.parquet("Files/sales_data/year=202[4-5]")</code></pre>
+          <div class="note note--warning">⚠️ <strong>Trampa</strong>: cuando lees directamente una partición (opción B), <strong>la columna particionada desaparece del DataFrame</strong> (porque Spark ya sabe que todo son "Road Bikes"). Si haces <code>road_bikes.columns</code>, no verás <code>Category</code>.</div>
         </article>
 
         <!-- 14 -->
-        <div class="category-header" id="spark-sql"><span class="category-header__icon">🗂️</span><h2 class="category-header__title">14. Spark SQL: catalog, views y tablas</h2></div>
+        <div class="category-header" id="spark-sql"><span class="category-header__icon">🗂️</span><h2 class="category-header__title">14. Spark SQL: catalog, temporary views y tablas</h2></div>
         <article class="concept-card">
-          <h3>El catalog y las vistas</h3>
-          <p>El <strong>Spark catalog</strong> registra databases, tables, views y functions. Una <strong>temporary view</strong> existe solo durante la sesión y hace queriable un DataFrame con SQL:</p>
-          <pre><code class="language-python">df.createOrReplaceTempView("products_view")
-result = spark.sql("SELECT * FROM products_view WHERE Category = 'Bikes'")</code></pre>
-          <div class="note note--warning">⚠️ <strong>Trampa:</strong> <code>%%sql</code> en un notebook corre en el <strong>Spark SQL engine del pool</strong>, NO en el SQL analytics endpoint. Son motores distintos.</div>
-          <div class="note note--tip">🎯 Usa <code>spark.sql()</code> cuando quieras el resultado en Python; usa <code>%%sql</code> cuando solo quieras ver el resultado. Delta es el formato preferido (otros no aparecen en el SQL endpoint).</div>
+          <p>Spark tiene un <strong>catalog</strong> (metastore) que registra objetos relacionales para consultarlos con SQL.</p>
+          <h3>14.1 · Catalog</h3>
+          <p>El <strong>Spark catalog</strong> es el metastore que registra:</p>
+          <ul>
+            <li><strong>Databases</strong> (schemas)</li>
+            <li><strong>Tables</strong> (managed o external)</li>
+            <li><strong>Views</strong> (persistentes o temporary)</li>
+            <li><strong>Functions</strong></li>
+          </ul>
+          <p>En Fabric, el catalog del lakehouse tiene tus tablas Delta bajo <code>dbo</code> (o schemas custom si tienes schema-enabled lakehouse).</p>
+          <h3>14.2 · Temporary views</h3>
+          <p>Una <strong>temporary view</strong> es una vista <strong>efímera</strong> que existe solo durante la sesión. Se autodestruye al cerrar la sesión.</p>
+          <p>Uso típico: <strong>hacer queriable un DataFrame con SQL sin persistirlo como tabla</strong>.</p>
+          <pre><code class="language-python"># Convierto un DataFrame en una vista temporal consultable
+df.createOrReplaceTempView("products_view")
+
+# Ahora puedo consultar con SQL
+result = spark.sql("SELECT * FROM products_view WHERE Category = 'Bikes'")
+display(result)
+
+# O directamente con magic
+%%sql
+SELECT * FROM products_view WHERE Category = 'Bikes'</code></pre>
+          <p>Al terminar la sesión → la vista desaparece. Los datos originales del DataFrame también desaparecen si no los guardaste.</p>
+          <h3>14.3 · Tablas managed</h3>
+          <p>Las <strong>tablas managed</strong> son las que Fabric gestiona completamente (metadata + datos). Los datos van a <code>Tables/</code> del lakehouse por defecto.</p>
+          <p><strong>Crear con <code>saveAsTable</code>:</strong></p>
+          <pre><code class="language-python"># Convierte el DataFrame en una tabla Delta gestionada
+df.write.format("delta").saveAsTable("products")
+
+# Con schema específico
+df.write.format("delta").saveAsTable("sales.orders")  # requiere schemas habilitados</code></pre>
+          <p><strong>Crear vacía con <code>spark.catalog</code>:</strong></p>
+          <pre><code class="language-python">from pyspark.sql.types import *
+
+schema = StructType([
+    StructField("id", IntegerType()),
+    StructField("name", StringType())
+])
+
+spark.catalog.createTable("empty_table", schema=schema, source="delta")</code></pre>
+          <div class="note note--warning">⚠️ <strong>Al borrar una tabla managed, se borran también los datos.</strong></div>
+          <h3>14.4 · Tablas external (matices ya vistos)</h3>
+          <p>Como vimos en el Módulo 2, en lakehouses de Fabric <strong>la recomendación es usar shortcuts</strong>, no external tables. Pero técnicamente:</p>
+          <pre><code class="language-python"># External table: apunta a datos en otra ubicación
+df.write.format("delta").saveAsTable(
+    "external_products",
+    path="Files/external/products"
+)</code></pre>
+          <p>Al borrar la tabla → solo se borra el metadata, los datos permanecen.</p>
+          <p><strong>API alternativa:</strong></p>
+          <pre><code class="language-python">spark.catalog.createExternalTable("external_products", "Files/external/products", source="delta")</code></pre>
+          <h3>14.5 · 🎯 Formato preferido en Fabric</h3>
+          <p><strong>Delta</strong> es el formato preferido en Fabric para tablas:</p>
+          <ul>
+            <li>Transacciones ACID</li>
+            <li>Time travel</li>
+            <li>Schema enforcement</li>
+            <li>V-Order</li>
+            <li>Aparece en SQL analytics endpoint</li>
+          </ul>
+          <p>Otros formatos (Parquet, CSV) <strong>NO aparecen en SQL analytics endpoint</strong>.</p>
+          <h3>14.6 · Consultar con Spark SQL</h3>
+          <p><strong>Con la API <code>spark.sql()</code>:</strong></p>
+          <pre><code class="language-python"># Devuelve un DataFrame
+bikes_df = spark.sql("""
+    SELECT ProductID, ProductName, ListPrice
+    FROM products
+    WHERE Category IN ('Mountain Bikes', 'Road Bikes')
+""")
+
+display(bikes_df)</code></pre>
+          <p><strong>Con magic <code>%%sql</code>:</strong></p>
+          <pre><code class="language-sql">%%sql
+SELECT Category, COUNT(ProductID) AS ProductCount
+FROM products
+GROUP BY Category
+ORDER BY Category</code></pre>
+          <p>Los resultados se muestran automáticamente como tabla en el notebook.</p>
+          <h3>14.7 · 🎯 Casos de uso</h3>
+          <ul>
+            <li><strong><code>spark.sql()</code></strong>: cuando quieres <strong>usar el resultado en Python</strong> (asignar a variable, seguir procesando).</li>
+            <li><strong><code>%%sql</code></strong>: cuando quieres <strong>solo ver el resultado</strong> en pantalla, exploración rápida.</li>
+          </ul>
+          <h3>14.8 · Referencias four-part namespace</h3>
+          <p>Si tienes schemas habilitados:</p>
+          <pre><code class="language-sql">-- Referencia completa
+SELECT * FROM my_workspace.my_lakehouse.sales.orders
+
+-- Referencia dentro del mismo workspace
+SELECT * FROM my_lakehouse.sales.orders
+
+-- Referencia dentro del mismo lakehouse (schema explícito)
+SELECT * FROM sales.orders
+
+-- Referencia al schema por defecto (dbo)
+SELECT * FROM orders</code></pre>
         </article>
 
         <!-- 15 -->
         <div class="category-header" id="visualizacion"><span class="category-header__icon">📈</span><h2 class="category-header__title">15. Visualización en notebooks</h2></div>
         <article class="concept-card">
-          <h3>Charts built-in, Matplotlib y Seaborn</h3>
-          <p>Los resultados se pueden ver como <strong>chart</strong> desde la UI (rápido pero limitado). Para gráficos ricos, Matplotlib y Seaborn necesitan datos en <strong>Pandas</strong>.</p>
+          <h3>15.1 · Charts built-in del notebook</h3>
+          <p>Cuando ejecutas una celda que devuelve un DataFrame o SQL query, el resultado sale como tabla. Puedes <strong>cambiar a modo chart</strong> desde la UI del notebook:</p>
+          <ul>
+            <li>Barra debajo de los resultados → botón <strong>Chart</strong>.</li>
+            <li>Configurar chart type, dimensiones, agregaciones desde la UI.</li>
+          </ul>
+          <p>Es rápido para exploración pero <strong>limitado</strong> en personalización.</p>
+          <h3>15.2 · Matplotlib</h3>
+          <p><strong>Matplotlib</strong> es la librería base de visualización en Python. Está pre-instalada en el runtime de Fabric.</p>
+          <p><strong>Requisito importante</strong>: Matplotlib <strong>necesita datos en Pandas DataFrame</strong>, no en Spark DataFrame.</p>
+          <p>Para convertir:</p>
+          <pre><code class="language-python"># Convertir de Spark a Pandas (¡cuidado con datasets grandes!)
+pandas_df = spark_df.toPandas()</code></pre>
+          <div class="note note--warning">⚠️ <strong>Ojo cosita</strong>: <code>.toPandas()</code> trae <strong>todos los datos al driver</strong> (a memoria local). Si el dataset es enorme → <strong>out of memory</strong>. Solo usa <code>.toPandas()</code> con datos ya agregados o pequeños.</div>
+          <p><strong>Ejemplo completo:</strong></p>
           <pre><code class="language-python">from matplotlib import pyplot as plt
-# 1) Agregar con Spark (distribuido)  2) toPandas() del resultado  3) graficar
-data = spark.sql("SELECT Category, COUNT(ProductID) AS n FROM products GROUP BY Category").toPandas()
-plt.bar(x=data['Category'], height=data['n'], color='orange')
+
+# 1. Agregar los datos con Spark (procesamiento distribuido)
+data = spark.sql("""
+    SELECT Category, COUNT(ProductID) AS ProductCount
+    FROM products
+    GROUP BY Category
+    ORDER BY Category
+""").toPandas()   # &lt;-- Convertimos a Pandas DESPUÉS de agregar
+
+# 2. Limpiar cualquier plot previo
+plt.clf()
+
+# 3. Crear la figura con tamaño personalizado
+fig = plt.figure(figsize=(12, 8))
+
+# 4. Crear el bar chart
+plt.bar(x=data['Category'], height=data['ProductCount'], color='orange')
+
+# 5. Personalizar
+plt.title('Product Counts by Category')
+plt.xlabel('Category')
+plt.ylabel('Products')
+plt.grid(color='#95a5a6', linestyle='--', linewidth=2, axis='y', alpha=0.7)
+plt.xticks(rotation=70)   # Rotar etiquetas del eje X
+
+# 6. Mostrar
 plt.show()</code></pre>
-          <div class="note note--warning">⚠️ <code>.toPandas()</code> trae <strong>todos los datos al driver</strong>. Con datasets grandes → out of memory. Úsalo solo tras agregar.</div>
+          <h3>15.3 · Seaborn (más bonito)</h3>
+          <p><strong>Seaborn</strong> está construido sobre Matplotlib pero con estilos más profesionales y bonitos:</p>
+          <pre><code class="language-python">import seaborn as sns
+import matplotlib.pyplot as plt
+
+# Setup del estilo
+sns.set_theme(style="whitegrid")
+
+# Convertir a Pandas
+data = spark.sql("SELECT * FROM sales").toPandas()
+
+# Ejemplo: scatter plot con color por categoría
+sns.scatterplot(data=data, x="ListPrice", y="Sales", hue="Category")
+plt.title("Precio vs Ventas por Categoría")
+plt.show()</code></pre>
+          <h3>15.4 · Otras librerías útiles</h3>
+          <p>Todas se instalan con <code>%pip install X</code> o vía environment:</p>
+          <ul>
+            <li><strong>Plotly</strong>: gráficos interactivos.</li>
+            <li><strong>Bokeh</strong>: gráficos interactivos web-based.</li>
+            <li><strong>Altair</strong>: gráficos declarativos.</li>
+          </ul>
+          <h3>15.5 · 🎯 Best practice</h3>
+          <p><strong>Regla del pulgar</strong>:</p>
+          <ol>
+            <li>Haz <strong>agregación</strong> en Spark (distribuido, escalable).</li>
+            <li><strong>Convierte a Pandas</strong> solo el resultado agregado (pequeño).</li>
+            <li><strong>Visualiza</strong> con Matplotlib/Seaborn/Plotly.</li>
+          </ol>
+          <p><strong>NO al revés</strong>: no traigas todo a Pandas y luego agregues. Perderás la ventaja de Spark.</p>
         </article>
 
         <!-- 16 -->
         <div class="category-header" id="kernel"><span class="category-header__icon">🎛️</span><h2 class="category-header__title">16. Elección de kernel: Python vs Spark</h2></div>
         <article class="concept-card">
-          <h3>Tres kernels: Python, Spark y T-SQL</h3>
+          <p>Los notebooks de Fabric soportan <strong>3 kernels</strong>:</p>
+          <ul>
+            <li><strong>Python</strong> (kernel puro Python, sin Spark)</li>
+            <li><strong>Spark</strong> (con soporte PySpark, SparkSQL, Scala, SparkR)</li>
+            <li><strong>T-SQL</strong> (T-SQL puro)</li>
+          </ul>
+          <p>Vamos a comparar <strong>Python vs Spark</strong> que es donde suele haber dudas.</p>
+          <h3>16.1 · Python kernel</h3>
+          <ul>
+            <li>Ejecuta <strong>Python puro</strong> (Pandas, NumPy, scikit-learn, etc.).</li>
+            <li><strong>Single-node</strong>: todo corre en una máquina, sin distribución.</li>
+            <li>Startup <strong>más rápido</strong>.</li>
+            <li>Ideal para: <strong>datasets pequeños-medianos</strong>, ML clásico, análisis exploratorio pequeño, scripts simples.</li>
+            <li><strong>NO puede</strong> acceder a features distribuidas de Spark.</li>
+          </ul>
+          <h3>16.2 · Spark kernel</h3>
+          <ul>
+            <li>Ejecuta <strong>PySpark, SparkSQL, Scala, SparkR</strong> — todos con el mismo compute.</li>
+            <li><strong>Multi-node</strong>: procesamiento distribuido.</li>
+            <li>Startup <strong>más lento</strong> (a menos que uses starter pool o live pool).</li>
+            <li>Ideal para: <strong>datasets grandes</strong>, ETL, Delta Lake, transformaciones distribuidas.</li>
+            <li><strong>Puede acceder</strong> al catalog del lakehouse, Delta features, escritura a Tables.</li>
+          </ul>
+          <h3>16.3 · 🎯 Consideraciones para el examen</h3>
+          <p>Microsoft es explícito en la doc: <em>"The choice of notebook kernel isn't simply about cost or data size."</em></p>
+          <p>Factores importantes:</p>
           <div class="table-scroll">
             <table class="md-table">
-              <thead><tr><th></th><th>Python kernel</th><th>Spark kernel</th></tr></thead>
+              <thead><tr><th>Factor</th><th>A favor de Python kernel</th><th>A favor de Spark kernel</th></tr></thead>
               <tbody>
-                <tr><td>Distribuido</td><td>❌ single-node</td><td>✅ multi-node</td></tr>
-                <tr><td>Startup</td><td>Rápido</td><td>Lento (salvo live)</td></tr>
-                <tr><td>Delta lakehouse</td><td>Limitado (sin catalog)</td><td>Completo</td></tr>
-                <tr><td>Ideal para</td><td>Datasets pequeños, ML clásico</td><td>ETL grandes, Delta</td></tr>
+                <tr><td>Volumen de datos</td><td>Pocos MB - GB</td><td>Cientos de GB - TB</td></tr>
+                <tr><td>Crecimiento futuro</td><td>Estable</td><td>Va a crecer mucho</td></tr>
+                <tr><td>Uso de Delta Lake features</td><td>Bajo</td><td>Alto (schema evolution, time travel, etc.)</td></tr>
+                <tr><td>Concurrencia</td><td>Baja</td><td>Alta</td></tr>
+                <tr><td>Librerías Python</td><td>Sí (mejor compatibilidad)</td><td>Sí, con matices</td></tr>
+                <tr><td>Cost</td><td>Menor overhead por sesión</td><td>Mayor overhead pero escalable</td></tr>
               </tbody>
             </table>
           </div>
-          <div class="note note--tip">🎯 Cualquier operación que <strong>escriba tablas Delta gestionadas</strong> del lakehouse necesita <strong>Spark kernel</strong> (Python puro no tiene acceso al catalog).</div>
+          <h3>16.4 · Reglas prácticas</h3>
+          <ul>
+            <li>Un <strong>notebook de exploración con pandas y matplotlib sobre 100 MB</strong> → Python kernel.</li>
+            <li>Un <strong>notebook de ETL bronze→silver con 500 GB de datos</strong> → Spark kernel.</li>
+            <li>Un <strong>notebook ML con 5 GB de features y XGBoost</strong> → puede ir en cualquiera, pero Python kernel + Pandas suele ser más simple.</li>
+            <li><strong>Cualquier operación que escribe tablas Delta gestionadas del lakehouse</strong> → <strong>Spark kernel</strong> (Python puro no tiene acceso al catalog).</li>
+          </ul>
         </article>
 
         <!-- 17 -->
-        <div class="category-header" id="trampas"><span class="category-header__icon">⚠️</span><h2 class="category-header__title">17. Trampas típicas</h2></div>
+        <div class="category-header" id="trampas"><span class="category-header__icon">⚠️</span><h2 class="category-header__title">17. Trampas típicas y confusiones frecuentes</h2></div>
         <article class="concept-card">
-          <ul>
-            <li><strong>"Pool = environment"</strong> → ❌ el pool es el compute; el environment es la config (runtime, libs, props).</li>
-            <li><strong>"Autoscale = dynamic allocation"</strong> → ❌ autoscale escala nodos, dynamic allocation escala executors.</li>
-            <li><strong>"El custom pool arranca al instante"</strong> → ❌ ~3 min (salvo custom live ~5 seg). El starter sí en segundos.</li>
-            <li><strong>"Native Execution Engine está por defecto"</strong> → ❌ hay que activarlo con <code>%%configure</code> o environment.</li>
-            <li><strong>"En Fabric hay Spark 3.4"</strong> → ❌ mínimo Spark 3.5 (Runtime 1.3) o 4.1 (Runtime 2.0).</li>
-            <li><strong>"<code>%%sql</code> corre en el SQL analytics endpoint"</strong> → ❌ corre en el Spark SQL engine.</li>
-            <li><strong>"<code>.toPandas()</code> es siempre seguro"</strong> → ❌ trae todo al driver, riesgo de OOM.</li>
-            <li><strong>"Todos los magics funcionan en pipelines"</strong> → ❌ solo pyspark/spark/csharp/sql/configure.</li>
-            <li><strong>"High concurrency mode está por defecto"</strong> → ❌ hay que activarlo.</li>
-          </ul>
+          <h4>Trampa 1: "El pool y el environment son lo mismo"</h4>
+          <p>❌ <strong>Distintos</strong>. El <strong>pool</strong> es el compute (nodos, memoria). El <strong>environment</strong> es la config (runtime, libraries, Spark props). Un environment usa un pool.</p>
+          <h4>Trampa 2: "Autoscale = Dynamic allocation"</h4>
+          <p>❌ Autoscale escala <strong>nodos</strong>. Dynamic allocation escala <strong>executors</strong>. Son independientes y se pueden combinar.</p>
+          <h4>Trampa 3: "El starter pool arranca al instante"</h4>
+          <p>✅ Sí (~segundos), pero <strong>custom pools sin live mode</strong> tardan ~3 min. Custom live pools ~5 seg.</p>
+          <h4>Trampa 4: "V-Order lo tengo que activar yo"</h4>
+          <p>❌ Está <strong>activado por defecto</strong> en Fabric. Solo lo desactivas si tienes un motivo específico.</p>
+          <h4>Trampa 5: "Native Execution Engine también está por defecto"</h4>
+          <p>❌ <strong>NO</strong>. Hay que activarlo explícitamente con <code>%%configure</code> o en el environment.</p>
+          <h4>Trampa 6: "En Fabric hay Spark 3.4"</h4>
+          <p>❌ <strong>Fabric NO soporta Spark 3.4 ni anteriores</strong>. Runtimes actuales: 1.3 (Spark 3.5) y 2.0 (Spark 4.1).</p>
+          <h4>Trampa 7: "Autotune está siempre disponible"</h4>
+          <p>❌ Autotune solo funciona en <strong>Runtime 1.2 (retirado)</strong>. No está en runtimes actuales.</p>
+          <h4>Trampa 8: "<code>%%sql</code> corre en el SQL analytics endpoint"</h4>
+          <p>❌ <strong>NO</strong>. <code>%%sql</code> en un notebook corre en el <strong>Spark SQL engine</strong> del pool, no en el SQL analytics endpoint. Son motores distintos.</p>
+          <h4>Trampa 9: ".toPandas() es siempre seguro"</h4>
+          <p>❌ Trae <strong>TODOS los datos al driver</strong>. Con datasets grandes → out of memory. Úsalo solo con datos ya agregados o pequeños.</p>
+          <h4>Trampa 10: "Puedo particionar por cualquier columna"</h4>
+          <p>❌ Particionar por columnas de alta cardinalidad genera miles de ficheros pequeños → <strong>peor performance</strong>. Usa columnas de baja cardinalidad.</p>
+          <h4>Trampa 11: "Cuando leo una partición específica, la columna sigue en el DataFrame"</h4>
+          <p>❌ La columna particionada <strong>desaparece</strong> del DataFrame cuando lees directamente una partición: <code>spark.read.parquet("Files/data/Category=Road Bikes")</code> → no verás la columna <code>Category</code>.</p>
+          <h4>Trampa 12: "Todos los magics funcionan en pipelines"</h4>
+          <p>❌ <strong>En pipelines solo funcionan</strong>: <code>%%pyspark, %%spark, %%csharp, %%sql, %%configure</code>. Otros fallan.</p>
+          <h4>Trampa 13: "MSSparkUtils y NotebookUtils son distintos"</h4>
+          <p>❌ Son <strong>el mismo paquete renombrado</strong>. <code>mssparkutils</code> seguirá funcionando por compatibilidad, pero <code>notebookutils</code> es el nuevo nombre oficial.</p>
+          <h4>Trampa 14: "High concurrency mode se activa por defecto"</h4>
+          <p>❌ Hay que <strong>activarlo manualmente</strong> en workspace settings.</p>
         </article>
 
         <!-- 18 -->
         <div class="category-header" id="comparativas"><span class="category-header__icon">🆚</span><h2 class="category-header__title">18. Comparativas clave (chuleta)</h2></div>
         <article class="concept-card">
+          <h3>Starter pool vs Custom pool</h3>
           <div class="table-scroll">
             <table class="md-table">
-              <thead><tr><th>Optimización de Fabric</th><th>¿Por defecto?</th><th>Cómo activar</th></tr></thead>
+              <thead><tr><th></th><th>Starter pool</th><th>Custom pool</th></tr></thead>
+              <tbody>
+                <tr><td>Creación</td><td>Automático por workspace</td><td>Manual</td></tr>
+                <tr><td>Arranque</td><td>~segundos</td><td>~3 min (o ~5 seg si es live)</td></tr>
+                <tr><td>Config</td><td>Predefinida (medium)</td><td>Total control</td></tr>
+                <tr><td>Private Link/Endpoint</td><td>❌</td><td>✅</td></tr>
+                <tr><td>Costs</td><td>Optimizado</td><td>Depende de config</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <h3>Notebook vs Spark Job Definition</h3>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th></th><th>Notebook</th><th>Spark Job Definition</th></tr></thead>
+              <tbody>
+                <tr><td>Interactividad</td><td>✅ Cell-by-cell</td><td>❌ Script completo</td></tr>
+                <tr><td>Visualización inline</td><td>✅</td><td>❌</td></tr>
+                <tr><td>Markdown/docs</td><td>✅</td><td>❌</td></tr>
+                <tr><td>Programación desde pipeline</td><td>✅</td><td>✅</td></tr>
+                <tr><td>Ideal para</td><td>Desarrollo, exploración, ML</td><td>Producción, batch ETL</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <h3>Autoscale vs Dynamic allocation</h3>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th></th><th>Autoscale</th><th>Dynamic allocation</th></tr></thead>
+              <tbody>
+                <tr><td>Escala</td><td>Nodos del pool</td><td>Executors dentro del job</td></tr>
+                <tr><td>Cuándo actúa</td><td>Entre jobs / global</td><td>Dentro de un mismo job</td></tr>
+                <tr><td>Config</td><td>Min/max nodos</td><td>Min/max executors</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <h3>Python kernel vs Spark kernel</h3>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th></th><th>Python</th><th>Spark</th></tr></thead>
+              <tbody>
+                <tr><td>Distribuido</td><td>❌</td><td>✅</td></tr>
+                <tr><td>Startup</td><td>Rápido</td><td>Lento (a menos que live)</td></tr>
+                <tr><td>Delta lakehouse</td><td>Limitado</td><td>Completo</td></tr>
+                <tr><td>Ideal para</td><td>Datasets pequeños, ML clásico</td><td>ETL grandes, Delta</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <h3>Magic commands útiles</h3>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Magic</th><th>Para qué</th></tr></thead>
+              <tbody>
+                <tr><td><code>%%pyspark</code></td><td>Cambiar celda a PySpark</td></tr>
+                <tr><td><code>%%sql</code></td><td>Cambiar celda a SparkSQL</td></tr>
+                <tr><td><code>%%spark</code></td><td>Cambiar celda a Scala</td></tr>
+                <tr><td><code>%%configure</code></td><td>Configurar Spark (1ª celda)</td></tr>
+                <tr><td><code>%pip install X</code></td><td>Instalar librería en sesión</td></tr>
+                <tr><td><code>%%time</code></td><td>Medir tiempo de la celda</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <h3>Optimizaciones de Fabric</h3>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Feature</th><th>Activada por defecto</th><th>Cómo activar</th></tr></thead>
               <tbody>
                 <tr><td>V-Order</td><td>✅</td><td>(ya activa)</td></tr>
                 <tr><td>Adaptive Query Execution</td><td>✅</td><td>(ya activa)</td></tr>
@@ -431,23 +1272,13 @@ plt.show()</code></pre>
               </tbody>
             </table>
           </div>
-          <div class="table-scroll">
-            <table class="md-table">
-              <thead><tr><th>Notebook vs SJD</th><th>Notebook</th><th>Spark Job Definition</th></tr></thead>
-              <tbody>
-                <tr><td>Interactividad / visualización</td><td>✅</td><td>❌</td></tr>
-                <tr><td>Programación desde pipeline</td><td>✅</td><td>✅</td></tr>
-                <tr><td>Ideal para</td><td>Desarrollo, ML</td><td>Producción, batch ETL</td></tr>
-              </tbody>
-            </table>
-          </div>
         </article>
 
-        <div class="note note--next">🚀 <strong>¡Módulo 3 completado!</strong> Ya dominas el motor Spark. Sigue con el <a href="modulo-4.html">Módulo 4: Delta Lake Tables</a>. 🌸</div>
+        <div class="note note--next">🚀 <strong>¡Módulo 3 completado!</strong> Ya dominas el motor Spark de Fabric. Sigue con el <a href="modulo-4.html">Módulo 4: Tablas Delta Lake</a>. 🌸</div>
 
         <div class="course-nav">
           <a href="modulo-2.html"><span class="course-nav__label">← Anterior</span><span class="course-nav__title">Módulo 2 · Lakehouses</span></a>
-          <a href="modulo-4.html" class="next"><span class="course-nav__label">Siguiente →</span><span class="course-nav__title">Módulo 4 · Delta Lake</span></a>
+          <a href="modulo-4.html" class="next"><span class="course-nav__label">Siguiente →</span><span class="course-nav__title">Módulo 4 · Tablas Delta Lake</span></a>
         </div>
 
       </div>
@@ -458,6 +1289,10 @@ plt.show()</code></pre>
 
   <script src="https://cdn.jsdelivr.net/npm/i18next@23/dist/umd/i18next.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/prismjs@1/prism.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1/components/prism-python.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1/components/prism-scala.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1/components/prism-sql.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1/components/prism-json.min.js"></script>
   <script src="../../../assets/js/theme.js"></script>
   <script src="../../../assets/js/main.js"></script>
   <script src="../../../assets/js/cursor.js"></script>
