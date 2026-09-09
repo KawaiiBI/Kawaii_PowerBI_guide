@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="DP-700 Módulo 3: Apache Spark en Microsoft Fabric. Spark pools, nodos, runtimes, environments, optimizaciones, notebooks vs Spark Job Definitions, DataFrames, particionado y Spark SQL.">
+  <title>DP-700 · Módulo 3: Apache Spark en Fabric | Power BI Guide by Kawaii BI</title>
+  <link rel="canonical" href="https://kawaiibi.es/topics/certificaciones/dp-700/modulo-3.html">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Kawaii Power BI Guide">
+  <meta property="og:locale" content="es_ES">
+  <meta property="og:title" content="DP-700 · Módulo 3: Apache Spark en Fabric | Power BI Guide by Kawaii BI">
+  <meta property="og:description" content="DP-700 Módulo 3: Apache Spark en Fabric. Pools, runtimes, environments, optimizaciones, DataFrames, particionado y Spark SQL.">
+  <meta property="og:url" content="https://kawaiibi.es/topics/certificaciones/dp-700/modulo-3.html">
+  <meta property="og:image" content="https://kawaiibi.es/assets/images/og-banner.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="1200">
+  <meta property="og:image:alt" content="Sara Lozano Marti - Kawaii Power BI">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="DP-700 · Módulo 3: Apache Spark en Fabric | Power BI Guide by Kawaii BI">
+  <meta name="twitter:description" content="DP-700 Módulo 3: Apache Spark en Fabric. Pools, runtimes, environments, DataFrames, particionado y Spark SQL.">
+  <meta name="twitter:image" content="https://kawaiibi.es/assets/images/og-banner.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/prismjs@1/themes/prism-okaidia.min.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="../../../assets/css/main.css">
+  <link rel="stylesheet" href="../../../assets/css/themes.css">
+  <link rel="stylesheet" href="../../../assets/css/components.css">
+  <link rel="stylesheet" href="../../../assets/css/layout.css">
+
+  <style>
+    .topic-header { text-align: center; padding: 2.25rem 0 1.75rem; border-bottom: 2px solid var(--color-mauve); margin-bottom: 2rem; }
+    .topic-header__eyebrow { font-family: 'Fira Code', monospace; font-size: 0.8125rem; font-weight: 600; color: var(--color-coral); letter-spacing: 0.05em; }
+    .topic-header__icon { font-size: 3.5rem; margin: 0.5rem 0; display: block; }
+    .topic-header__title { font-size: clamp(1.75rem, 4vw, 2.25rem); font-weight: 800; color: var(--color-dark); margin-bottom: 0.625rem; line-height: 1.2; }
+    .topic-header__subtitle { font-size: 1rem; color: var(--color-slate); margin-bottom: 1.25rem; line-height: 1.55; max-width: 680px; margin-left: auto; margin-right: auto; }
+    .topic-header__levels { display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap; align-items: center; }
+
+    .toc { background: var(--color-rose); border-radius: var(--border-radius); padding: 1.25rem 1.5rem; margin-bottom: 2rem; border: 1.5px solid var(--color-mauve); }
+    .toc__title { font-size: 1rem; font-weight: 700; margin: 0 0 0.75rem; }
+    .toc__list { display: flex; flex-wrap: wrap; gap: 0.5rem; list-style: none; padding: 0; margin: 0; }
+    .toc__list a { font-size: 0.8125rem; color: var(--color-coral); text-decoration: none; padding: 0.25rem 0.625rem; background: var(--color-white); border-radius: 999px; border: 1px solid var(--color-mauve); }
+    .toc__list a:hover { background: var(--color-coral); color: #fff; }
+
+    .category-header { display: flex; align-items: center; gap: 0.75rem; margin: 2.5rem 0 1.25rem; padding: 0.875rem 1.25rem; background: var(--color-rose); border-radius: var(--border-radius-sm); border-left: 4px solid var(--color-coral); scroll-margin-top: 20px; }
+    .category-header__icon { font-size: 1.5rem; }
+    .category-header__title { font-size: 1.25rem; font-weight: 700; margin: 0; }
+
+    .concept-card { background: var(--color-white); border: 1.5px solid var(--color-mauve); border-radius: var(--border-radius); padding: 1.5rem 1.75rem; margin-bottom: 1.25rem; }
+    .concept-card h3 { font-size: 1.0625rem; font-weight: 700; color: var(--color-coral); margin: 0 0 0.6rem; }
+    .concept-card h4 { font-size: 0.9375rem; font-weight: 700; color: var(--color-dark); margin: 1.1rem 0 0.4rem; }
+    .concept-card p { font-size: 0.9375rem; line-height: 1.7; color: var(--color-dark); margin-bottom: 0.7rem; }
+    .concept-card ul, .concept-card ol { padding-left: 1.25rem; font-size: 0.9375rem; line-height: 1.75; color: var(--color-dark); margin: 0.4rem 0; }
+    .concept-card code { background: var(--color-blush); padding: 0.1em 0.4em; border-radius: 4px; font-family: 'Fira Code', monospace; font-size: 0.85em; color: var(--color-coral); }
+    .concept-card pre { margin: 0.75rem 0; }
+
+    .md-table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.84rem; }
+    .md-table th, .md-table td { border: 1px solid var(--color-mauve); padding: 0.5rem 0.7rem; text-align: left; vertical-align: top; }
+    .md-table th { background: var(--color-rose); font-weight: 700; color: var(--color-dark); }
+    .md-table tr:nth-child(even) td { background: var(--color-blush); }
+    .table-scroll { overflow-x: auto; }
+
+    .course-nav { display: flex; justify-content: space-between; gap: 1rem; margin-top: 2.5rem; flex-wrap: wrap; }
+    .course-nav a { flex: 1 1 220px; display: block; background: var(--color-white); border: 1.5px solid var(--color-mauve); border-radius: var(--border-radius); padding: 1rem 1.25rem; text-decoration: none; color: inherit; transition: var(--transition); }
+    .course-nav a:hover { border-color: var(--color-coral); box-shadow: var(--shadow-md); text-decoration: none; }
+    .course-nav__label { font-size: 0.75rem; color: var(--color-slate); text-transform: uppercase; letter-spacing: 0.05em; }
+    .course-nav__title { font-weight: 700; color: var(--color-coral); }
+    .course-nav a.next { text-align: right; }
+  </style>
+</head>
+<body>
+
+  <aside class="site-sidebar">
+    <div class="site-sidebar__profile">
+      <img src="../../../assets/images/avatar-sara.png" alt="Sara Lozano Martí" class="site-sidebar__avatar">
+      <p class="site-sidebar__name">Sara Lozano Martí</p>
+      <p class="site-sidebar__subtitle">Power BI Expert</p>
+    </div>
+    <nav class="site-sidebar__nav" aria-label="Navegación principal">
+      <ul>
+        <li><a href="../../../index.html" class="site-sidebar__link"><span class="site-sidebar__icon">🏠</span> Inicio</a></li>
+        <li><a href="../../dax.html" class="site-sidebar__link"><span class="site-sidebar__icon">⚡</span> Funciones DAX</a></li>
+        <li><a href="../../power-query.html" class="site-sidebar__link"><span class="site-sidebar__icon">🔄</span> Power Query</a></li>
+        <li><a href="../../lenguaje-m.html" class="site-sidebar__link"><span class="site-sidebar__icon">〽️</span> Lenguaje M</a></li>
+        <li><a href="../../modelado.html" class="site-sidebar__link"><span class="site-sidebar__icon">🗄️</span> Modelado</a></li>
+        <li><a href="../../conceptos-powerbi.html" class="site-sidebar__link"><span class="site-sidebar__icon">📊</span> Conceptos Power BI</a></li>
+        <li><a href="../../fabric.html" class="site-sidebar__link"><span class="site-sidebar__icon">🧵</span> Microsoft Fabric</a></li>
+        <li><a href="../../tmdl.html" class="site-sidebar__link"><span class="site-sidebar__icon">📝</span> TMDL</a></li>
+        <li><a href="../../diseno-ux.html" class="site-sidebar__link"><span class="site-sidebar__icon">🎨</span> Diseño y UX</a></li>
+        <li><a href="../../gobernanza.html" class="site-sidebar__link"><span class="site-sidebar__icon">🔒</span> Gobernanza</a></li>
+        <li><a href="../../certificaciones.html" class="site-sidebar__link is-active"><span class="site-sidebar__icon">🎓</span> Certificaciones</a></li>
+      </ul>
+    </nav>
+    <div class="site-sidebar__divider"></div>
+    <div class="site-sidebar__footer">
+      <a href="../../../quien-soy.html" class="site-sidebar__link site-sidebar__link--highlight"><span class="site-sidebar__icon">👩‍💻</span> ¿Quién soy?</a>
+      <div class="site-sidebar__social">
+        <a href="https://www.linkedin.com/in/saralozanomarti" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><img src="../../../assets/images/logo-linkedin.png" alt="LinkedIn" class="site-sidebar__social-icon"></a>
+        <a href="https://www.youtube.com/@KawaiiPowerBI" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><img src="../../../assets/images/logo-youtube.png" alt="YouTube" class="site-sidebar__social-icon"></a>
+        <a href="https://github.com/KawaiiBI" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><img src="../../../assets/images/logo-github.png" alt="GitHub" class="site-sidebar__social-icon"></a>
+      </div>
+      <div class="site-sidebar__logo-bottom"><img src="../../../assets/images/logo-kawaii.jpg" alt="Kawaii BI" class="site-sidebar__logo-img"></div>
+      <p class="site-sidebar__copyright">Power BI Guide 🌸<br>© 2026 Kawaii BI</p>
+    </div>
+  </aside>
+
+  <div class="page-wrapper">
+    <main class="main-content">
+      <div class="topic-page">
+
+        <nav class="breadcrumb" aria-label="Ruta de navegación">
+          <span class="breadcrumb__item"><a href="../../../index.html">🏠 Inicio</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item"><a href="../../certificaciones.html">Certificaciones</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item"><a href="../dp-700.html">DP-700</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item">Módulo 3</span>
+        </nav>
+
+        <header class="topic-header">
+          <span class="topic-header__eyebrow">DP-700 · MÓDULO 3</span>
+          <span class="topic-header__icon">🔥</span>
+          <h1 class="topic-header__title">Apache Spark en Microsoft Fabric</h1>
+          <p class="topic-header__subtitle">El motor de cómputo del data engineering: pools, nodos, runtimes, environments, optimizaciones exclusivas de Fabric, notebooks vs Spark Job Definitions, DataFrames, particionado y Spark SQL. 🌸</p>
+          <div class="topic-header__levels">
+            <span class="badge badge--intermediate">Intermedio</span>
+            <span class="badge badge--advanced">Avanzado</span>
+          </div>
+        </header>
+
+        <nav class="toc" aria-label="Índice del módulo">
+          <p class="toc__title">📑 En este módulo:</p>
+          <ul class="toc__list">
+            <li><a href="#objetivos">1. Objetivos</a></li>
+            <li><a href="#que-es">2. ¿Qué es Spark?</a></li>
+            <li><a href="#arquitectura">3. Driver, workers, executors</a></li>
+            <li><a href="#pools">4. Spark pools</a></li>
+            <li><a href="#nodos">5. Nodos y escalado</a></li>
+            <li><a href="#runtimes">6. Runtimes</a></li>
+            <li><a href="#environments">7. Environments</a></li>
+            <li><a href="#optimizaciones">8. Optimizaciones de Fabric</a></li>
+            <li><a href="#ejecucion">9. Notebooks vs SJD</a></li>
+            <li><a href="#magic">10. Magic commands</a></li>
+            <li><a href="#notebookutils">11. NotebookUtils</a></li>
+            <li><a href="#dataframes">12. DataFrames</a></li>
+            <li><a href="#particionado">13. Particionado</a></li>
+            <li><a href="#spark-sql">14. Spark SQL</a></li>
+            <li><a href="#visualizacion">15. Visualización</a></li>
+            <li><a href="#kernel">16. Python vs Spark kernel</a></li>
+            <li><a href="#trampas">17. Trampas</a></li>
+            <li><a href="#comparativas">18. Comparativas</a></li>
+          </ul>
+        </nav>
+
+        <!-- 1 -->
+        <div class="category-header" id="objetivos"><span class="category-header__icon">🎯</span><h2 class="category-header__title">1. Objetivos y encaje en el DP-700</h2></div>
+        <article class="concept-card">
+          <h3>El motor de cómputo del data engineering</h3>
+          <p>Objetivos: configurar Spark en el workspace, elegir entre notebooks y Spark jobs, usar <strong>DataFrames</strong> y <strong>Spark SQL</strong> para transformar y consultar, y visualizar en notebooks. Es fundamental para el <strong>Dominio 2 (Ingest and transform)</strong>.</p>
+          <div class="note note--tip">🎯 <strong>Novedades respecto a la DP-600:</strong> Native Execution Engine, High Concurrency Mode, Environments, Runtime 1.3 vs 2.0, elección de kernel Python vs Spark, NotebookUtils (antes MSSparkUtils) y Autotune.</div>
+        </article>
+
+        <!-- 2 -->
+        <div class="category-header" id="que-es"><span class="category-header__icon">🔥</span><h2 class="category-header__title">2. ¿Qué es Apache Spark?</h2></div>
+        <article class="concept-card">
+          <h3>Procesamiento distribuido</h3>
+          <p><strong>Apache Spark</strong> es un framework de procesamiento distribuido open-source. Cuando tienes muchísimos datos que no caben en una sola máquina, Spark <strong>distribuye el trabajo entre varios nodos</strong> y coordina la ejecución. En Fabric, ese conjunto de máquinas es un <strong>Spark pool</strong>.</p>
+          <p>Lenguajes: <strong>PySpark</strong> (el más popular), <strong>Spark SQL</strong>, Scala, SparkR y Java. En la práctica, PySpark y Spark SQL cubren el 95%.</p>
+          <p>El punto de entrada a todo es el objeto <code>spark</code> (una <code>SparkSession</code>), ya creado automáticamente en cada notebook.</p>
+        </article>
+
+        <!-- 3 -->
+        <div class="category-header" id="arquitectura"><span class="category-header__icon">🏗️</span><h2 class="category-header__title">3. Arquitectura: driver, workers, executors</h2></div>
+        <article class="concept-card">
+          <h3>Los tres tipos de procesos</h3>
+          <ul>
+            <li><strong>Driver (uno):</strong> vive en el head node, es el cerebro que planifica y coordina. Contiene la <code>SparkSession</code>. Si se cae, la sesión entera se cae.</li>
+            <li><strong>Workers (varios):</strong> las máquinas que hacen el trabajo real. Cada worker es un nodo.</li>
+            <li><strong>Executors:</strong> los procesos que ejecutan tareas dentro de cada worker, en paralelo.</li>
+          </ul>
+          <div class="note note--tip">🎯 <strong>Detalle de Fabric:</strong> la ratio nodos a executors es siempre <strong>1:1</strong>. Con N nodos, uno se reserva para el driver y los demás son executors. En single-node, driver y executor comparten recursos.</div>
+        </article>
+
+        <!-- 4 -->
+        <div class="category-header" id="pools"><span class="category-header__icon">🌊</span><h2 class="category-header__title">4. Spark pools en Fabric</h2></div>
+        <article class="concept-card">
+          <h3>Starter pool vs Custom pool</h3>
+          <p><strong>Starter pool:</strong> se crea automáticamente en cada workspace, está pre-hidratado (live), arranca en <strong>segundos</strong>. Ideal para desarrollo. Config limitada (medium) y sin private link.</p>
+          <p><strong>Custom pool:</strong> lo defines tú con node size, autoscale, dynamic allocation y private endpoint. Sin live mode tarda <strong>~3 min</strong> en arrancar; los <strong>custom live pools</strong> arrancan en ~5 seg.</p>
+          <div class="note note--warning">⚠️ <strong>Prerequisitos para custom pools:</strong> rol <strong>Admin</strong> en el workspace y que un capacity admin haya habilitado "Customized workspace pools". Sin eso, solo starter pool.</div>
+          <p>Ruta: Workspace settings → Data Engineering/Science → Spark settings.</p>
+        </article>
+
+        <!-- 5 -->
+        <div class="category-header" id="nodos"><span class="category-header__icon">📏</span><h2 class="category-header__title">5. Nodos, tamaños y escalado</h2></div>
+        <article class="concept-card">
+          <h3>Tamaños de nodo</h3>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Size</th><th>vCores</th><th>Memoria</th></tr></thead>
+              <tbody>
+                <tr><td>Small</td><td>4</td><td>32 GB</td></tr>
+                <tr><td>Medium</td><td>8</td><td>64 GB</td></tr>
+                <tr><td>Large</td><td>16</td><td>128 GB</td></tr>
+                <tr><td>X-Large</td><td>32</td><td>256 GB</td></tr>
+                <tr><td>XX-Large</td><td>64</td><td>512 GB</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>⚠️ X-Large y XX-Large solo en SKUs no-trial.</p>
+          <div class="note num-tip">
+            <div class="note note--warning">🎯 <strong>Autoscale vs Dynamic allocation (cae seguro):</strong> el <strong>autoscale</strong> escala <strong>nodos</strong> del pool según demanda global; la <strong>dynamic allocation</strong> escala <strong>executors</strong> dentro de un mismo job. Son independientes y se pueden combinar.</div>
+          </div>
+        </article>
+
+        <!-- 6 -->
+        <div class="category-header" id="runtimes"><span class="category-header__icon">🏃</span><h2 class="category-header__title">6. Runtimes de Spark</h2></div>
+        <article class="concept-card">
+          <h3>Versión de Spark, Delta, Python y librerías</h3>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Runtime</th><th>Spark</th><th>Delta</th><th>Python</th></tr></thead>
+              <tbody>
+                <tr><td>Runtime 1.3</td><td>3.5</td><td>3.1</td><td>3.11</td></tr>
+                <tr><td>Runtime 2.0</td><td>4.1</td><td>4.1</td><td>3.13+</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="note note--warning">⚠️ <strong>Fabric NO soporta Spark 3.4 ni anteriores.</strong> El mínimo es Spark 3.5. Y <strong>Autotune</strong> solo funcionaba en Runtime 1.2 (retirado), así que no está en runtimes actuales.</div>
+        </article>
+
+        <!-- 7 -->
+        <div class="category-header" id="environments"><span class="category-header__icon">🎨</span><h2 class="category-header__title">7. Environments</h2></div>
+        <article class="concept-card">
+          <h3>Un perfil reutilizable de runtime + librerías + config</h3>
+          <p>Un <strong>environment</strong> es un item que empaqueta un runtime, las <strong>librerías</strong> instaladas, configuración Spark, ficheros de recursos y un pool asignado. Se puede marcar como <strong>default del workspace</strong> y anular a nivel notebook.</p>
+          <p>Para una librería puntual en la sesión (no persistente):</p>
+          <pre><code class="language-python">%pip install pandas==2.1.3
+%conda install seaborn=0.13.0</code></pre>
+          <div class="note note--warning">⚠️ La instalación en línea con <code>%pip</code>/<code>%conda</code> <strong>solo dura la sesión</strong>. Para persistencia, usa un environment.</div>
+        </article>
+
+        <!-- 8 -->
+        <div class="category-header" id="optimizaciones"><span class="category-header__icon">⚡</span><h2 class="category-header__title">8. Optimizaciones exclusivas de Fabric</h2></div>
+        <article class="concept-card">
+          <h3>Muy examinables</h3>
+          <ul>
+            <li>🎯 <strong>Native Execution Engine (NEE):</strong> motor vectorizado, mejor rendimiento sobre Parquet/Delta. <strong>NO está activado por defecto</strong>, hay que activarlo.</li>
+            <li>🎯 <strong>High Concurrency Mode:</strong> comparte una sesión Spark entre notebooks/usuarios (mismo lakehouse, environment y config). Reduce startup. Hay que activarlo en workspace settings.</li>
+            <li>🎯 <strong>V-Order:</strong> optimización de escritura Parquet, <strong>activada por defecto</strong>.</li>
+            <li><strong>Adaptive Query Execution (AQE):</strong> activada por defecto; ajusta shuffle partitions, joins y skew.</li>
+            <li><strong>Autotune:</strong> solo Runtime 1.2 (retirado).</li>
+          </ul>
+          <pre><code class="language-json">%%configure
+{
+    "conf": {
+        "spark.native.enabled": "true",
+        "spark.shuffle.manager": "org.apache.spark.shuffle.sort.ColumnarShuffleManager"
+    }
+}</code></pre>
+          <div class="note note--warning">⚠️ <code>%%configure</code> tiene que ser la <strong>primera celda</strong> del notebook para que aplique.</div>
+        </article>
+
+        <!-- 9 -->
+        <div class="category-header" id="ejecucion"><span class="category-header__icon">📝</span><h2 class="category-header__title">9. Notebooks vs Spark Job Definitions</h2></div>
+        <article class="concept-card">
+          <h3>Dos formas de ejecutar código Spark</h3>
+          <p><strong>Notebook:</strong> interactivo, cell-by-cell, resultados inline, ideal para exploración, desarrollo y ML.</p>
+          <p><strong>Spark Job Definition (SJD):</strong> ejecuta un script Python/JAR no interactivo, on-demand o por schedule, ideal para <strong>producción y ETL automatizado</strong>.</p>
+          <div class="note note--tip">🎯 <strong>Regla:</strong> exploración/ML → Notebook. ETL programado en producción → SJD. Ojo: los notebooks también se orquestan desde pipelines (actividad Notebook), muy común en Fabric.</div>
+        </article>
+
+        <!-- 10 -->
+        <div class="category-header" id="magic"><span class="category-header__icon">✨</span><h2 class="category-header__title">10. Magic commands</h2></div>
+        <article class="concept-card">
+          <h3>Comandos con <code>%</code> (line) y <code>%%</code> (cell)</h3>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Magic</th><th>Uso</th></tr></thead>
+              <tbody>
+                <tr><td><code>%%pyspark</code> / <code>%%spark</code> / <code>%%sql</code> / <code>%%sparkr</code></td><td>Cambiar el lenguaje de la celda</td></tr>
+                <tr><td><code>%%configure</code></td><td>Configurar Spark (1ª celda)</td></tr>
+                <tr><td><code>%pip install X</code> / <code>%conda install X</code></td><td>Instalar librería en la sesión</td></tr>
+                <tr><td><code>%%time</code> / <code>%%timeit</code></td><td>Medir tiempo de la celda</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="note note--warning">⚠️ <strong>En pipelines solo funcionan:</strong> <code>%%pyspark</code>, <code>%%spark</code>, <code>%%csharp</code>, <code>%%sql</code> y <code>%%configure</code>. Otros magics fallan.</div>
+        </article>
+
+        <!-- 11 -->
+        <div class="category-header" id="notebookutils"><span class="category-header__icon">🛠️</span><h2 class="category-header__title">11. NotebookUtils (antes MSSparkUtils)</h2></div>
+        <article class="concept-card">
+          <h3>Librería built-in para tareas comunes</h3>
+          <p>Maneja file system, environment variables, encadenado de notebooks, secrets y credentials. En 2024 se renombró de <code>mssparkutils</code> a <code>notebookutils</code> (el antiguo sigue funcionando por compatibilidad).</p>
+          <pre><code class="language-python">import notebookutils
+
+# File system
+files = notebookutils.fs.ls("Files/my_folder")
+notebookutils.fs.cp("Files/source.csv", "Files/backup/source.csv")
+
+# Encadenar notebooks
+result = notebookutils.notebook.run("path/to/other_notebook", timeout_seconds=60, args={"p": "v"})
+
+# Salir con valor
+notebookutils.notebook.exit("Success: 1000 rows")
+
+# Secret de Key Vault
+secret = notebookutils.credentials.getSecret("kv-name", "secret-name")</code></pre>
+          <div class="note note--tip">🎯 <code>notebookutils.notebook.runMultiple()</code> ejecuta notebooks con dependencias tipo <strong>DAG</strong>. Ideal para orquestar medallion (bronze → silver → gold).</div>
+        </article>
+
+        <!-- 12 -->
+        <div class="category-header" id="dataframes"><span class="category-header__icon">📊</span><h2 class="category-header__title">12. Trabajar con DataFrames</h2></div>
+        <article class="concept-card">
+          <h3>El corazón de PySpark</h3>
+          <p>Un <strong>DataFrame</strong> es una tabla distribuida con filas y columnas, <strong>inmutable</strong>. Cargar datos con schema inferido o explícito (el explícito mejora el rendimiento):</p>
+          <pre><code class="language-python">from pyspark.sql.types import StructType, StructField, IntegerType, StringType, FloatType
+
+schema = StructType([
+    StructField("ProductID", IntegerType()),
+    StructField("ProductName", StringType()),
+    StructField("Category", StringType()),
+    StructField("ListPrice", FloatType())
+])
+df = spark.read.load('Files/data/product-data.csv', format='csv', schema=schema, header=False)
+display(df.limit(10))</code></pre>
+          <h4>Operaciones típicas (method chaining)</h4>
+          <pre><code class="language-python">from pyspark.sql.functions import col, count, avg
+
+result = (df.select("ProductName", "Category", "ListPrice")
+            .where(col("Category").isin("Mountain Bikes", "Road Bikes"))
+            .orderBy("ListPrice", ascending=False)
+            .limit(20))
+
+stats = df.groupBy("Category").agg(
+    count("ProductID").alias("num_products"),
+    avg("ListPrice").alias("avg_price"))</code></pre>
+          <h4>Guardar</h4>
+          <pre><code class="language-python"># Delta gestionada (aparece en el catálogo)
+df.write.format("delta").saveAsTable("mi_tabla_delta")
+# Parquet a una ruta
+df.write.mode("overwrite").parquet('Files/product_data/bikes.parquet')</code></pre>
+          <p>Modos de escritura: <code>overwrite</code>, <code>append</code>, <code>ignore</code>, <code>error</code> (default).</p>
+        </article>
+
+        <!-- 13 -->
+        <div class="category-header" id="particionado"><span class="category-header__icon">📁</span><h2 class="category-header__title">13. Particionado de datos</h2></div>
+        <article class="concept-card">
+          <h3>Dividir el output en subcarpetas por columna</h3>
+          <pre><code class="language-python">sales_df.write.partitionBy("year", "month").mode("overwrite").parquet("Files/sales_data")</code></pre>
+          <p>Beneficios: <strong>predicate pushdown</strong> (Spark lee solo las particiones relevantes), paralelismo y mejor compresión.</p>
+          <div class="note note--warning">⚠️ <strong>NO particiones por columnas de alta cardinalidad</strong> (user_id, order_id, timestamp): generas miles de ficheros minúsculos y va peor. Usa columnas de baja cardinalidad (year, country, category). Regla: ~1 GB por partición.</div>
+          <div class="note note--tip">🎯 <strong>Trampa:</strong> al leer directamente una partición (<code>.../Category=Road Bikes</code>), la columna particionada <strong>desaparece</strong> del DataFrame.</div>
+        </article>
+
+        <!-- 14 -->
+        <div class="category-header" id="spark-sql"><span class="category-header__icon">🗂️</span><h2 class="category-header__title">14. Spark SQL: catalog, views y tablas</h2></div>
+        <article class="concept-card">
+          <h3>El catalog y las vistas</h3>
+          <p>El <strong>Spark catalog</strong> registra databases, tables, views y functions. Una <strong>temporary view</strong> existe solo durante la sesión y hace queriable un DataFrame con SQL:</p>
+          <pre><code class="language-python">df.createOrReplaceTempView("products_view")
+result = spark.sql("SELECT * FROM products_view WHERE Category = 'Bikes'")</code></pre>
+          <div class="note note--warning">⚠️ <strong>Trampa:</strong> <code>%%sql</code> en un notebook corre en el <strong>Spark SQL engine del pool</strong>, NO en el SQL analytics endpoint. Son motores distintos.</div>
+          <div class="note note--tip">🎯 Usa <code>spark.sql()</code> cuando quieras el resultado en Python; usa <code>%%sql</code> cuando solo quieras ver el resultado. Delta es el formato preferido (otros no aparecen en el SQL endpoint).</div>
+        </article>
+
+        <!-- 15 -->
+        <div class="category-header" id="visualizacion"><span class="category-header__icon">📈</span><h2 class="category-header__title">15. Visualización en notebooks</h2></div>
+        <article class="concept-card">
+          <h3>Charts built-in, Matplotlib y Seaborn</h3>
+          <p>Los resultados se pueden ver como <strong>chart</strong> desde la UI (rápido pero limitado). Para gráficos ricos, Matplotlib y Seaborn necesitan datos en <strong>Pandas</strong>.</p>
+          <pre><code class="language-python">from matplotlib import pyplot as plt
+# 1) Agregar con Spark (distribuido)  2) toPandas() del resultado  3) graficar
+data = spark.sql("SELECT Category, COUNT(ProductID) AS n FROM products GROUP BY Category").toPandas()
+plt.bar(x=data['Category'], height=data['n'], color='orange')
+plt.show()</code></pre>
+          <div class="note note--warning">⚠️ <code>.toPandas()</code> trae <strong>todos los datos al driver</strong>. Con datasets grandes → out of memory. Úsalo solo tras agregar.</div>
+        </article>
+
+        <!-- 16 -->
+        <div class="category-header" id="kernel"><span class="category-header__icon">🎛️</span><h2 class="category-header__title">16. Elección de kernel: Python vs Spark</h2></div>
+        <article class="concept-card">
+          <h3>Tres kernels: Python, Spark y T-SQL</h3>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th></th><th>Python kernel</th><th>Spark kernel</th></tr></thead>
+              <tbody>
+                <tr><td>Distribuido</td><td>❌ single-node</td><td>✅ multi-node</td></tr>
+                <tr><td>Startup</td><td>Rápido</td><td>Lento (salvo live)</td></tr>
+                <tr><td>Delta lakehouse</td><td>Limitado (sin catalog)</td><td>Completo</td></tr>
+                <tr><td>Ideal para</td><td>Datasets pequeños, ML clásico</td><td>ETL grandes, Delta</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="note note--tip">🎯 Cualquier operación que <strong>escriba tablas Delta gestionadas</strong> del lakehouse necesita <strong>Spark kernel</strong> (Python puro no tiene acceso al catalog).</div>
+        </article>
+
+        <!-- 17 -->
+        <div class="category-header" id="trampas"><span class="category-header__icon">⚠️</span><h2 class="category-header__title">17. Trampas típicas</h2></div>
+        <article class="concept-card">
+          <ul>
+            <li><strong>"Pool = environment"</strong> → ❌ el pool es el compute; el environment es la config (runtime, libs, props).</li>
+            <li><strong>"Autoscale = dynamic allocation"</strong> → ❌ autoscale escala nodos, dynamic allocation escala executors.</li>
+            <li><strong>"El custom pool arranca al instante"</strong> → ❌ ~3 min (salvo custom live ~5 seg). El starter sí en segundos.</li>
+            <li><strong>"Native Execution Engine está por defecto"</strong> → ❌ hay que activarlo con <code>%%configure</code> o environment.</li>
+            <li><strong>"En Fabric hay Spark 3.4"</strong> → ❌ mínimo Spark 3.5 (Runtime 1.3) o 4.1 (Runtime 2.0).</li>
+            <li><strong>"<code>%%sql</code> corre en el SQL analytics endpoint"</strong> → ❌ corre en el Spark SQL engine.</li>
+            <li><strong>"<code>.toPandas()</code> es siempre seguro"</strong> → ❌ trae todo al driver, riesgo de OOM.</li>
+            <li><strong>"Todos los magics funcionan en pipelines"</strong> → ❌ solo pyspark/spark/csharp/sql/configure.</li>
+            <li><strong>"High concurrency mode está por defecto"</strong> → ❌ hay que activarlo.</li>
+          </ul>
+        </article>
+
+        <!-- 18 -->
+        <div class="category-header" id="comparativas"><span class="category-header__icon">🆚</span><h2 class="category-header__title">18. Comparativas clave (chuleta)</h2></div>
+        <article class="concept-card">
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Optimización de Fabric</th><th>¿Por defecto?</th><th>Cómo activar</th></tr></thead>
+              <tbody>
+                <tr><td>V-Order</td><td>✅</td><td>(ya activa)</td></tr>
+                <tr><td>Adaptive Query Execution</td><td>✅</td><td>(ya activa)</td></tr>
+                <tr><td>Native Execution Engine</td><td>❌</td><td><code>%%configure</code> o environment</td></tr>
+                <tr><td>High Concurrency Mode</td><td>❌</td><td>Workspace settings</td></tr>
+                <tr><td>Autotune</td><td>⚠️</td><td>Solo Runtime 1.2 (retirado)</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Notebook vs SJD</th><th>Notebook</th><th>Spark Job Definition</th></tr></thead>
+              <tbody>
+                <tr><td>Interactividad / visualización</td><td>✅</td><td>❌</td></tr>
+                <tr><td>Programación desde pipeline</td><td>✅</td><td>✅</td></tr>
+                <tr><td>Ideal para</td><td>Desarrollo, ML</td><td>Producción, batch ETL</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </article>
+
+        <div class="note note--next">🚀 <strong>¡Módulo 3 completado!</strong> Ya dominas el motor Spark. Sigue con el <a href="modulo-4.html">Módulo 4: Delta Lake Tables</a>. 🌸</div>
+
+        <div class="course-nav">
+          <a href="modulo-2.html"><span class="course-nav__label">← Anterior</span><span class="course-nav__title">Módulo 2 · Lakehouses</span></a>
+          <a href="modulo-4.html" class="next"><span class="course-nav__label">Siguiente →</span><span class="course-nav__title">Módulo 4 · Delta Lake</span></a>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <button id="back-to-top" class="back-to-top" aria-label="Volver arriba" title="Volver arriba">↑</button>
+
+  <script src="https://cdn.jsdelivr.net/npm/i18next@23/dist/umd/i18next.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1/prism.min.js"></script>
+  <script src="../../../assets/js/theme.js"></script>
+  <script src="../../../assets/js/main.js"></script>
+  <script src="../../../assets/js/cursor.js"></script>
+</body>
+</html>
