@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="DP-700 Módulo 2: lakehouses en Microsoft Fabric. Tables vs Files, Delta Lake, managed vs external, schemas, ingesta, SQL analytics endpoint, Direct Lake y seguridad.">
+  <title>DP-700 · Módulo 2: Lakehouses en Fabric | Power BI Guide by Kawaii BI</title>
+  <link rel="canonical" href="https://kawaiibi.es/topics/certificaciones/dp-700/modulo-2.html">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Kawaii Power BI Guide">
+  <meta property="og:locale" content="es_ES">
+  <meta property="og:title" content="DP-700 · Módulo 2: Lakehouses en Fabric | Power BI Guide by Kawaii BI">
+  <meta property="og:description" content="DP-700 Módulo 2: lakehouses en Fabric. Tables vs Files, Delta Lake, schemas, ingesta, SQL analytics endpoint, Direct Lake y seguridad.">
+  <meta property="og:url" content="https://kawaiibi.es/topics/certificaciones/dp-700/modulo-2.html">
+  <meta property="og:image" content="https://kawaiibi.es/assets/images/og-banner.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="1200">
+  <meta property="og:image:alt" content="Sara Lozano Marti - Kawaii Power BI">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="DP-700 · Módulo 2: Lakehouses en Fabric | Power BI Guide by Kawaii BI">
+  <meta name="twitter:description" content="DP-700 Módulo 2: lakehouses en Fabric. Tables vs Files, Delta Lake, schemas, ingesta, SQL endpoint, Direct Lake y seguridad.">
+  <meta name="twitter:image" content="https://kawaiibi.es/assets/images/og-banner.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/prismjs@1/themes/prism-okaidia.min.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="../../../assets/css/main.css">
+  <link rel="stylesheet" href="../../../assets/css/themes.css">
+  <link rel="stylesheet" href="../../../assets/css/components.css">
+  <link rel="stylesheet" href="../../../assets/css/layout.css">
+
+  <style>
+    .topic-header { text-align: center; padding: 2.25rem 0 1.75rem; border-bottom: 2px solid var(--color-mauve); margin-bottom: 2rem; }
+    .topic-header__eyebrow { font-family: 'Fira Code', monospace; font-size: 0.8125rem; font-weight: 600; color: var(--color-coral); letter-spacing: 0.05em; }
+    .topic-header__icon { font-size: 3.5rem; margin: 0.5rem 0; display: block; }
+    .topic-header__title { font-size: clamp(1.75rem, 4vw, 2.25rem); font-weight: 800; color: var(--color-dark); margin-bottom: 0.625rem; line-height: 1.2; }
+    .topic-header__subtitle { font-size: 1rem; color: var(--color-slate); margin-bottom: 1.25rem; line-height: 1.55; max-width: 680px; margin-left: auto; margin-right: auto; }
+    .topic-header__levels { display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap; align-items: center; }
+
+    .toc { background: var(--color-rose); border-radius: var(--border-radius); padding: 1.25rem 1.5rem; margin-bottom: 2rem; border: 1.5px solid var(--color-mauve); }
+    .toc__title { font-size: 1rem; font-weight: 700; margin: 0 0 0.75rem; }
+    .toc__list { display: flex; flex-wrap: wrap; gap: 0.5rem; list-style: none; padding: 0; margin: 0; }
+    .toc__list a { font-size: 0.8125rem; color: var(--color-coral); text-decoration: none; padding: 0.25rem 0.625rem; background: var(--color-white); border-radius: 999px; border: 1px solid var(--color-mauve); }
+    .toc__list a:hover { background: var(--color-coral); color: #fff; }
+
+    .category-header { display: flex; align-items: center; gap: 0.75rem; margin: 2.5rem 0 1.25rem; padding: 0.875rem 1.25rem; background: var(--color-rose); border-radius: var(--border-radius-sm); border-left: 4px solid var(--color-coral); scroll-margin-top: 20px; }
+    .category-header__icon { font-size: 1.5rem; }
+    .category-header__title { font-size: 1.25rem; font-weight: 700; margin: 0; }
+
+    .concept-card { background: var(--color-white); border: 1.5px solid var(--color-mauve); border-radius: var(--border-radius); padding: 1.5rem 1.75rem; margin-bottom: 1.25rem; }
+    .concept-card h3 { font-size: 1.0625rem; font-weight: 700; color: var(--color-coral); margin: 0 0 0.6rem; }
+    .concept-card h4 { font-size: 0.9375rem; font-weight: 700; color: var(--color-dark); margin: 1.1rem 0 0.4rem; }
+    .concept-card p { font-size: 0.9375rem; line-height: 1.7; color: var(--color-dark); margin-bottom: 0.7rem; }
+    .concept-card ul, .concept-card ol { padding-left: 1.25rem; font-size: 0.9375rem; line-height: 1.75; color: var(--color-dark); margin: 0.4rem 0; }
+    .concept-card code { background: var(--color-blush); padding: 0.1em 0.4em; border-radius: 4px; font-family: 'Fira Code', monospace; font-size: 0.85em; color: var(--color-coral); }
+    .concept-card pre { margin: 0.75rem 0; }
+
+    .md-table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.84rem; }
+    .md-table th, .md-table td { border: 1px solid var(--color-mauve); padding: 0.5rem 0.7rem; text-align: left; vertical-align: top; }
+    .md-table th { background: var(--color-rose); font-weight: 700; color: var(--color-dark); }
+    .md-table tr:nth-child(even) td { background: var(--color-blush); }
+    .table-scroll { overflow-x: auto; }
+
+    .quiz-q { background: var(--color-white); border: 1.5px solid var(--color-mauve); border-left: 4px solid var(--color-coral); border-radius: var(--border-radius-sm); padding: 1rem 1.25rem; margin: 1rem 0; }
+    .quiz-q p { margin: 0 0 0.5rem; font-size: 0.9375rem; }
+    .quiz-q__num { font-weight: 700; color: var(--color-coral); }
+    .quiz-q ol { margin: 0; padding-left: 1.25rem; font-size: 0.9rem; line-height: 1.7; }
+
+    .course-nav { display: flex; justify-content: space-between; gap: 1rem; margin-top: 2.5rem; flex-wrap: wrap; }
+    .course-nav a { flex: 1 1 220px; display: block; background: var(--color-white); border: 1.5px solid var(--color-mauve); border-radius: var(--border-radius); padding: 1rem 1.25rem; text-decoration: none; color: inherit; transition: var(--transition); }
+    .course-nav a:hover { border-color: var(--color-coral); box-shadow: var(--shadow-md); text-decoration: none; }
+    .course-nav__label { font-size: 0.75rem; color: var(--color-slate); text-transform: uppercase; letter-spacing: 0.05em; }
+    .course-nav__title { font-weight: 700; color: var(--color-coral); }
+    .course-nav a.next { text-align: right; }
+  </style>
+</head>
+<body>
+
+  <aside class="site-sidebar">
+    <div class="site-sidebar__profile">
+      <img src="../../../assets/images/avatar-sara.png" alt="Sara Lozano Martí" class="site-sidebar__avatar">
+      <p class="site-sidebar__name">Sara Lozano Martí</p>
+      <p class="site-sidebar__subtitle">Power BI Expert</p>
+    </div>
+    <nav class="site-sidebar__nav" aria-label="Navegación principal">
+      <ul>
+        <li><a href="../../../index.html" class="site-sidebar__link"><span class="site-sidebar__icon">🏠</span> Inicio</a></li>
+        <li><a href="../../dax.html" class="site-sidebar__link"><span class="site-sidebar__icon">⚡</span> Funciones DAX</a></li>
+        <li><a href="../../power-query.html" class="site-sidebar__link"><span class="site-sidebar__icon">🔄</span> Power Query</a></li>
+        <li><a href="../../lenguaje-m.html" class="site-sidebar__link"><span class="site-sidebar__icon">〽️</span> Lenguaje M</a></li>
+        <li><a href="../../modelado.html" class="site-sidebar__link"><span class="site-sidebar__icon">🗄️</span> Modelado</a></li>
+        <li><a href="../../conceptos-powerbi.html" class="site-sidebar__link"><span class="site-sidebar__icon">📊</span> Conceptos Power BI</a></li>
+        <li><a href="../../fabric.html" class="site-sidebar__link"><span class="site-sidebar__icon">🧵</span> Microsoft Fabric</a></li>
+        <li><a href="../../tmdl.html" class="site-sidebar__link"><span class="site-sidebar__icon">📝</span> TMDL</a></li>
+        <li><a href="../../diseno-ux.html" class="site-sidebar__link"><span class="site-sidebar__icon">🎨</span> Diseño y UX</a></li>
+        <li><a href="../../gobernanza.html" class="site-sidebar__link"><span class="site-sidebar__icon">🔒</span> Gobernanza</a></li>
+        <li><a href="../../certificaciones.html" class="site-sidebar__link is-active"><span class="site-sidebar__icon">🎓</span> Certificaciones</a></li>
+      </ul>
+    </nav>
+    <div class="site-sidebar__divider"></div>
+    <div class="site-sidebar__footer">
+      <a href="../../../quien-soy.html" class="site-sidebar__link site-sidebar__link--highlight"><span class="site-sidebar__icon">👩‍💻</span> ¿Quién soy?</a>
+      <div class="site-sidebar__social">
+        <a href="https://www.linkedin.com/in/saralozanomarti" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><img src="../../../assets/images/logo-linkedin.png" alt="LinkedIn" class="site-sidebar__social-icon"></a>
+        <a href="https://www.youtube.com/@KawaiiPowerBI" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><img src="../../../assets/images/logo-youtube.png" alt="YouTube" class="site-sidebar__social-icon"></a>
+        <a href="https://github.com/KawaiiBI" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><img src="../../../assets/images/logo-github.png" alt="GitHub" class="site-sidebar__social-icon"></a>
+      </div>
+      <div class="site-sidebar__logo-bottom"><img src="../../../assets/images/logo-kawaii.jpg" alt="Kawaii BI" class="site-sidebar__logo-img"></div>
+      <p class="site-sidebar__copyright">Power BI Guide 🌸<br>© 2026 Kawaii BI</p>
+    </div>
+  </aside>
+
+  <div class="page-wrapper">
+    <main class="main-content">
+      <div class="topic-page">
+
+        <nav class="breadcrumb" aria-label="Ruta de navegación">
+          <span class="breadcrumb__item"><a href="../../../index.html">🏠 Inicio</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item"><a href="../../certificaciones.html">Certificaciones</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item"><a href="../dp-700.html">DP-700</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item">Módulo 2</span>
+        </nav>
+
+        <header class="topic-header">
+          <span class="topic-header__eyebrow">DP-700 · MÓDULO 2</span>
+          <span class="topic-header__icon">🏠</span>
+          <h1 class="topic-header__title">Lakehouses en Microsoft Fabric</h1>
+          <p class="topic-header__subtitle">El corazón del data engineering en Fabric: Tables vs Files, Delta Lake a fondo, managed vs external, schemas, ingesta, el SQL analytics endpoint y Direct Lake. 🌸</p>
+          <div class="topic-header__levels">
+            <span class="badge badge--intermediate">Intermedio</span>
+            <span class="badge badge--advanced">Avanzado</span>
+          </div>
+        </header>
+
+        <nav class="toc" aria-label="Índice del módulo">
+          <p class="toc__title">📑 En este módulo:</p>
+          <ul class="toc__list">
+            <li><a href="#objetivos">1. Objetivos</a></li>
+            <li><a href="#que-es">2. ¿Qué es un lakehouse?</a></li>
+            <li><a href="#items">3. Qué se crea (cambio 2025)</a></li>
+            <li><a href="#tables-files">4. Tables vs Files</a></li>
+            <li><a href="#delta">5. Delta Lake a fondo</a></li>
+            <li><a href="#managed">6. Managed vs External</a></li>
+            <li><a href="#schemas">7. Schemas</a></li>
+            <li><a href="#ingesta">8. Ingesta</a></li>
+            <li><a href="#shortcuts">9. Shortcuts</a></li>
+            <li><a href="#transformacion">10. Transformación</a></li>
+            <li><a href="#sql-endpoint">11. SQL analytics endpoint</a></li>
+            <li><a href="#spark">12. Query con Spark</a></li>
+            <li><a href="#power-bi">13. Direct Lake</a></li>
+            <li><a href="#seguridad">14. Seguridad</a></li>
+            <li><a href="#trampas">15. Trampas típicas</a></li>
+            <li><a href="#comparativas">16. Comparativas</a></li>
+            <li><a href="#quiz">17. Mini-quiz</a></li>
+          </ul>
+        </nav>
+
+        <!-- 1 -->
+        <div class="category-header" id="objetivos">
+          <span class="category-header__icon">🎯</span>
+          <h2 class="category-header__title">1. Objetivos y encaje en el DP-700</h2>
+        </div>
+        <article class="concept-card">
+          <h3>El lakehouse es el corazón de la DP-700</h3>
+          <p>Objetivos oficiales: describir las capacidades del lakehouse, crearlo, ingestar y transformar datos, y consultarlos con SQL y Spark. Aparece de forma transversal en los tres dominios del examen.</p>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Dominio</th><th>%</th><th>Cómo aparece el lakehouse</th></tr></thead>
+              <tbody>
+                <tr><td>Implement and manage</td><td>30–35%</td><td>Roles, item-level sharing, seguridad (RLS/CLS/OLS), CI/CD</td></tr>
+                <tr><td>Ingest and transform</td><td>30–35%</td><td>Ingesta a Tables/Files, notebooks, Dataflows, pipelines, shortcuts, mirroring</td></tr>
+                <tr><td>Monitor and optimize</td><td>30–35%</td><td>V-Order, OPTIMIZE, VACUUM, partitioning, rendimiento del SQL endpoint</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="note note--tip">🎯 <strong>Novedades respecto a la DP-600:</strong> managed vs external tables, schema-enabled lakehouses, metadata sync del SQL endpoint, Delta Lake profundo y el cambio de 2025 (los default semantic models ya no se crean solos).</div>
+        </article>
+
+        <!-- 2 -->
+        <div class="category-header" id="que-es">
+          <span class="category-header__icon">🏠</span>
+          <h2 class="category-header__title">2. ¿Qué es un lakehouse en Fabric?</h2>
+        </div>
+        <article class="concept-card">
+          <h3>Data lake + data warehouse en uno</h3>
+          <p>Un <strong>lakehouse</strong> es un <strong>item de storage</strong> que combina la <strong>flexibilidad del data lake</strong> (cualquier tipo de dato en su formato nativo) con la <strong>capacidad analítica del data warehouse</strong> (tablas con schema, transacciones ACID, consulta SQL). Puentea la brecha entre lake y warehouse trayendo capacidades de base de datos directamente sobre el data lake.</p>
+          <p>Vive en un <strong>workspace</strong> y sus datos se almacenan físicamente en <strong>OneLake</strong> (sobre ADLS Gen2).</p>
+          <h4>¿Qué lo diferencia de un data lake tradicional?</h4>
+          <ul>
+            <li>Un <strong>metastore</strong> que registra qué carpetas son tablas.</li>
+            <li>Un formato de tabla (<strong>Delta Lake</strong>) con ACID, schema, versionado y time travel.</li>
+            <li>Un <strong>SQL analytics endpoint</strong> para consultar con T-SQL sin configurar nada.</li>
+            <li>Integración nativa con Power BI, notebooks y pipelines.</li>
+          </ul>
+        </article>
+
+        <!-- 3 -->
+        <div class="category-header" id="items">
+          <span class="category-header__icon">🎁</span>
+          <h2 class="category-header__title">3. Qué se crea al crear un lakehouse (cambio 2025)</h2>
+        </div>
+        <article class="concept-card">
+          <h3>Aviso crítico: cambio de septiembre 2025</h3>
+          <div class="note note--warning">
+            ⚠️ <strong>Ya NO se crean 3 items.</strong> Desde el 5 de septiembre de 2025 los <em>default semantic models</em> ya no se crean automáticamente al crear un lakehouse, warehouse o mirrored item. Antes del 30 de noviembre de 2025 los existentes se desacoplaron como semantic models independientes.
+          </div>
+          <h4>Qué se crea AHORA (solo 2 items)</h4>
+          <ol>
+            <li>🏠 <strong>El lakehouse</strong> (Tables, Files y shortcuts).</li>
+            <li>🔎 <strong>El SQL analytics endpoint</strong> (auto-provisionado, read-only, T-SQL).</li>
+          </ol>
+          <p>Si quieres un semantic model, tienes que <strong>crearlo tú explícitamente</strong> después.</p>
+          <div class="note note--tip">🎯 <strong>En el examen:</strong> si una respuesta dice "se crean 3 items automáticamente", está desactualizada. Con la doc actual son <strong>2 items</strong>.</div>
+        </article>
+
+        <!-- 4 -->
+        <div class="category-header" id="tables-files">
+          <span class="category-header__icon">📂</span>
+          <h2 class="category-header__title">4. Estructura interna: Tables vs Files</h2>
+        </div>
+        <article class="concept-card">
+          <h3>Dos carpetas top-level</h3>
+          <p><strong>Tables:</strong> almacena <strong>tablas Delta Lake</strong> estructuradas y consultables. Soporta SQL vía endpoint, enforcea schema, ACID, Power BI y auto-optimización con V-Order. <strong>Automatic table discovery</strong>: cuando pones datos Delta en Tables, Fabric los registra solos. Limitación: <strong>solo formato Delta</strong> se registra como tabla.</p>
+          <p><strong>Files:</strong> almacena <strong>datos raw</strong> en cualquier formato (CSV, JSON, Parquet, imágenes, PDFs...). Flexible para exploración y staging. NO enforcea schema, NO aparece en el SQL endpoint, pero Spark los lee.</p>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Aspecto</th><th>Tables</th><th>Files</th></tr></thead>
+              <tbody>
+                <tr><td>Formato que se "ve como tabla"</td><td>Solo Delta</td><td>Cualquiera (no se registra)</td></tr>
+                <tr><td>Schema enforcement</td><td>✅</td><td>❌</td></tr>
+                <tr><td>Transacciones ACID</td><td>✅</td><td>❌</td></tr>
+                <tr><td>SQL analytics endpoint</td><td>✅</td><td>❌</td></tr>
+                <tr><td>Power BI Direct Lake</td><td>✅</td><td>❌</td></tr>
+                <tr><td>Uso típico</td><td>Curados, silver/gold</td><td>Raw, staging, bronze</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </article>
+
+        <!-- 5 -->
+        <div class="category-header" id="delta">
+          <span class="category-header__icon">🌊</span>
+          <h2 class="category-header__title">5. Delta Lake a fondo</h2>
+        </div>
+        <article class="concept-card">
+          <h3>La tecnología subyacente de todas las tablas</h3>
+          <p><strong>Delta Lake</strong> es un formato de tabla open-source (creado por Databricks) que aporta fiabilidad y capacidades relacionales sobre ficheros Parquet. En Fabric es el <strong>formato por defecto</strong> y la base de toda tabla del lakehouse.</p>
+          <h4>Estructura física de una Delta table</h4>
+          <pre><code class="language-plaintext">Tables/mi_tabla/
+├── part-00000-....parquet    ← Ficheros de datos (Parquet)
+├── part-00001-....parquet
+└── _delta_log/               ← Transaction log (JSON)
+    ├── 00000000000000000000.json
+    └── ...</code></pre>
+          <p>Los <strong>datos</strong> son Parquet (columnar, comprimido) y el <strong>transaction log</strong> (<code>_delta_log</code>) registra cada cambio. Cada operación genera una entrada nueva en el log.</p>
+          <h4>🌟 Los cuatro superpoderes de Delta Lake</h4>
+          <ul>
+            <li>🎯 <strong>ACID:</strong> atomicidad, consistencia, aislamiento y durabilidad. Escrituras concurrentes desde varios notebooks sin corromper.</li>
+            <li>🎯 <strong>Schema Enforcement:</strong> valida cada escritura; rechaza filas que no cumplen el schema. Previene schema drift.</li>
+            <li>🎯 <strong>Time Travel:</strong> consulta versiones pasadas por número o timestamp. Por defecto 30 días.</li>
+            <li>🎯 <strong>Updates/Deletes eficientes:</strong> <code>UPDATE</code>, <code>DELETE</code> y <code>MERGE INTO</code> (upsert).</li>
+          </ul>
+          <pre><code class="language-python"># Time travel por versión
+df = spark.read.format("delta").option("versionAsOf", 5).load("Tables/mi_tabla")</code></pre>
+          <pre><code class="language-sql">-- Time travel por timestamp
+SELECT * FROM mi_tabla TIMESTAMP AS OF '2026-04-01T10:00:00'</code></pre>
+          <div class="note note--tip">🎯 <strong>V-Order (exclusivo de Fabric):</strong> optimización de escritura que reordena y comprime los Parquet para acelerar lecturas columnar (VertiPaq, Warehouse). Está <strong>activado por defecto</strong>. Añade algo de overhead al escribir pero acelera mucho las lecturas.</div>
+          <h4>🎯 OPTIMIZE y VACUUM (mantenimiento)</h4>
+          <pre><code class="language-sql">OPTIMIZE mi_tabla;
+OPTIMIZE mi_tabla ZORDER BY (columna_frecuente);
+VACUUM mi_tabla RETAIN 168 HOURS;  -- retiene 7 días</code></pre>
+          <div class="note note--warning">⚠️ <strong>Trampa VACUUM:</strong> por defecto retiene <strong>7 días (168h)</strong>. No lo bajes por debajo: borrar ficheros recientes rompe el time travel y puede corromper lecturas concurrentes.</div>
+        </article>
+
+        <!-- 6 -->
+        <div class="category-header" id="managed">
+          <span class="category-header__icon">🔧</span>
+          <h2 class="category-header__title">6. Managed vs External tables</h2>
+        </div>
+        <article class="concept-card">
+          <h3>Managed (el caso normal)</h3>
+          <p>Fabric controla <strong>metadata y ficheros</strong>. Los datos van a <code>Tables/</code>, aparece en el explorer y si haces <code>DROP TABLE</code> se <strong>borran también los datos</strong>. Es el enfoque recomendado.</p>
+          <pre><code class="language-python">df.write.format("delta").saveAsTable("mi_tabla_managed")</code></pre>
+          <h3>External (con matices)</h3>
+          <p>Fabric controla solo el <strong>metadata</strong>; los datos viven en otra ubicación. Si haces <code>DROP TABLE</code> se borra solo el metadata, los ficheros permanecen.</p>
+          <div class="note note--warning">⚠️ <strong>Matiz oficial:</strong> los lakehouses soportan solo <em>managed tables</em>. <code>CREATE TABLE ... LOCATION</code> no está soportado. Para acceder a Delta tables en otro storage, la recomendación oficial es usar <strong>shortcuts</strong>, no external tables.</div>
+          <div class="note note--tip">🎯 <strong>Regla de oro:</strong> "¿cómo accedo a datos Delta en ADLS desde un lakehouse?" → <strong>shortcut</strong>. "¿qué pasa al dropear una tabla?" → managed borra datos, external no.</div>
+        </article>
+
+        <!-- 7 -->
+        <div class="category-header" id="schemas">
+          <span class="category-header__icon">🗄️</span>
+          <h2 class="category-header__title">7. Lakehouse schemas (schema-enabled)</h2>
+        </div>
+        <article class="concept-card">
+          <h3>Agrupar tablas en colecciones nombradas</h3>
+          <p>Los <strong>schemas</strong> agrupan tablas (como <code>sales</code>, <code>marketing</code>, <code>hr</code>), igual que en SQL Server. Al crear un lakehouse nuevo están <strong>habilitados por defecto</strong> y se crea el schema <code>dbo</code>.</p>
+          <h4>Beneficios clave</h4>
+          <ul>
+            <li>🎯 Organizar tablas por dominio.</li>
+            <li>🎯 Control de acceso a nivel schema (permisos, RLS/CLS).</li>
+            <li>🎯 Consultas cross-workspace con el <strong>four-part namespace</strong>: <code>workspace.lakehouse.schema.table</code>.</li>
+            <li>🎯 <strong>Schema shortcuts</strong> para mapear un schema entero a otra carpeta con tablas Delta.</li>
+            <li>🎯 Requisito de features avanzadas (materialized lake views).</li>
+          </ul>
+          <pre><code class="language-sql">-- Consulta cross-workspace con four-part namespace
+SELECT * FROM ws_ventas.lh_gold.sales.orders;</code></pre>
+          <div class="note note--warning">⚠️ <strong>Limitaciones:</strong> un schema-enabled lakehouse NO se puede compartir directamente vía workspace sharing (usa shortcuts); external tables sobre ADLS no soportadas directamente; los lakehouses antiguos no tienen migración automática (prepárate usando four-part naming en el código).</div>
+        </article>
+
+        <!-- 8 -->
+        <div class="category-header" id="ingesta">
+          <span class="category-header__icon">📥</span>
+          <h2 class="category-header__title">8. Ingesta de datos</h2>
+        </div>
+        <article class="concept-card">
+          <h3>Cinco métodos oficiales</h3>
+          <ul>
+            <li><strong>Upload manual:</strong> pruebas y ficheros pequeños (van a Files).</li>
+            <li><strong>Load to Table:</strong> CSV/Parquet a tabla Delta sin código (append u overwrite).</li>
+            <li><strong>Dataflows Gen2:</strong> transformación low-code con Power Query (300+ conectores).</li>
+            <li><strong>Notebooks:</strong> transformaciones complejas con código (PySpark, Spark SQL, Scala, R).</li>
+            <li><strong>Data Factory pipelines:</strong> mover datos de fuentes externas con orquestación (Copy Data).</li>
+          </ul>
+          <pre><code class="language-python"># Ingesta con notebook: CSV de Files a tabla Delta
+df = spark.read.option("header", "true").csv("Files/mi_csv.csv")
+df.write.format("delta").mode("overwrite").saveAsTable("mi_tabla")</code></pre>
+          <h4>🎯 Regla del pulgar (muy examinable)</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Necesito...</th><th>Herramienta óptima</th></tr></thead>
+              <tbody>
+                <tr><td>Mover datos de A a B sin transformar</td><td>Copy activity en pipeline</td></tr>
+                <tr><td>Transformación low-code con Power Query</td><td>Dataflow Gen2</td></tr>
+                <tr><td>Transformación con código (Python/Spark)</td><td>Notebook</td></tr>
+                <tr><td>Orquestar pasos con dependencias</td><td>Pipeline</td></tr>
+                <tr><td>Datos que ya viven en otro storage sin copiar</td><td>Shortcut</td></tr>
+                <tr><td>Datos de BBDD operacional con copia continua</td><td>Mirroring</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </article>
+
+        <!-- 9 -->
+        <div class="category-header" id="shortcuts">
+          <span class="category-header__icon">🔗</span>
+          <h2 class="category-header__title">9. Shortcuts en el lakehouse</h2>
+        </div>
+        <article class="concept-card">
+          <h3>Repaso de lo específico del lakehouse</h3>
+          <ul>
+            <li><strong>En Tables:</strong> solo top-level; si es Delta se registra como tabla automáticamente.</li>
+            <li><strong>En Files:</strong> cualquier nivel y formato, pero no se registra como tabla.</li>
+            <li>Tres tipos: <strong>table shortcut</strong> (una tabla Delta), <strong>schema shortcut</strong> (carpeta con varias tablas Delta) y <strong>Files shortcut</strong> (cualquier formato).</li>
+          </ul>
+          <p>Ventajas: consultar entre workspaces/tenants sin duplicar, acceder a ADLS/S3/GCS sin ingesta, combinar multi-fuente sin ETL y reducir costes de storage.</p>
+        </article>
+
+        <!-- 10 -->
+        <div class="category-header" id="transformacion">
+          <span class="category-header__icon">🔄</span>
+          <h2 class="category-header__title">10. Transformación: notebooks, dataflows, pipelines</h2>
+        </div>
+        <article class="concept-card">
+          <h3>Mismas herramientas, distinta filosofía</h3>
+          <ul>
+            <li><strong>Notebooks</strong> (favorito del data engineer): PySpark, Spark SQL, Scala, SparkR; interactivos; Copilot genera código. Ideal para lógica compleja y ML.</li>
+            <li><strong>Dataflows Gen2</strong> (favorito del analista): Power Query M, low-code visual, 300+ conectores.</li>
+            <li><strong>Pipelines</strong> (orquestación visual): Copy Data, Notebook, Dataflow, Stored Procedure con dependencias.</li>
+          </ul>
+          <div class="note note--tip">🎯 <strong>En el examen:</strong> "analistas familiarizados con Power Query que ingieren de SharePoint" → <strong>Dataflow Gen2</strong>. "data engineer con transformación Python + ML" → <strong>Notebook</strong>.</div>
+        </article>
+
+        <!-- 11 -->
+        <div class="category-header" id="sql-endpoint">
+          <span class="category-header__icon">🔎</span>
+          <h2 class="category-header__title">11. SQL analytics endpoint</h2>
+        </div>
+        <article class="concept-card">
+          <h3>Interfaz T-SQL read-only, auto-provisionada</h3>
+          <p>El <strong>SQL analytics endpoint</strong> es una interfaz <strong>T-SQL read-only</strong> sobre las tablas Delta. Se auto-provisiona con cada lakehouse y corre en el <strong>mismo motor que el Warehouse</strong>. También lo tienen Warehouses, Mirrored databases, SQL databases y Cosmos DB en Fabric.</p>
+          <h4>🎯 Es read-only sobre las tablas Delta</h4>
+          <p><strong>Puedes:</strong> SELECT, CREATE VIEW, CREATE FUNCTION, CREATE PROCEDURE, aplicar seguridad SQL (RLS, CLS, OLS). <strong>No puedes:</strong> INSERT/UPDATE/DELETE/MERGE ni CREATE/DROP TABLE sobre las auto-generadas. Para modificar datos, usa <strong>Spark</strong>.</p>
+          <p>Solo aparecen las <strong>tablas Delta</strong>. Los shortcuts en Tables que apuntan a datos Delta también aparecen.</p>
+          <h4>🎯 Metadata sync (importantísimo)</h4>
+          <p>Cuando cambias las tablas Delta desde Spark, un <strong>proceso background</strong> sincroniza el schema SQL. Es automático, con latencia de segundos a menos de un minuto, y se detiene tras <strong>15 minutos de inactividad</strong>.</p>
+          <div class="note note--warning">⚠️ <strong>Delays significativos:</strong> muchos lakehouses en el mismo workspace, muchos ficheros pequeños (fragmentación), alto volumen de cambios simultáneos o alta cardinalidad de particiones. Soluciones: separar lakehouses por workspace, <code>OPTIMIZE</code> regular y particiones de menor cardinalidad (~1 GB por partición).</div>
+          <h4>🎯 Forzar refresh del metadata</h4>
+          <p>Desde el portal (botón <strong>Refresh</strong>), vía REST API o con un stored procedure T-SQL.</p>
+          <pre><code class="language-http">POST https://api.fabric.microsoft.com/v1/workspaces/{workspaceId}/sqlEndpoints/{sqlEndpointId}/refreshMetadata</code></pre>
+          <div class="note note--tip">🎯 <strong>Patrón de pipeline:</strong> en <em>Copy Data → Lakehouse → Dataflow que lee vía SQL endpoint</em>, el dataflow puede leer datos viejos. Workaround oficial: añadir una <strong>Script activity</strong> entre la Copy y el Dataflow para forzar el sync.</div>
+        </article>
+
+        <!-- 12 -->
+        <div class="category-header" id="spark">
+          <span class="category-header__icon">💻</span>
+          <h2 class="category-header__title">12. Query con Spark notebooks</h2>
+        </div>
+        <article class="concept-card">
+          <h3>Spark SQL vs PySpark</h3>
+          <pre><code class="language-python">%%sql
+SELECT * FROM sales.orders WHERE order_date >= '2026-01-01'</code></pre>
+          <pre><code class="language-python">from pyspark.sql.functions import col
+df = spark.table("sales.orders").filter(col("order_date") >= "2026-01-01")
+display(df)</code></pre>
+          <p><strong>Spark SQL</strong> para lógica analítica pura; <strong>PySpark</strong> para lógica programática, funciones Python personalizadas y ML. Con schemas habilitados puedes hacer joins <strong>cross-workspace</strong> con el four-part namespace.</p>
+        </article>
+
+        <!-- 13 -->
+        <div class="category-header" id="power-bi">
+          <span class="category-header__icon">📊</span>
+          <h2 class="category-header__title">13. Power BI: Direct Lake y DirectQuery fallback</h2>
+        </div>
+        <article class="concept-card">
+          <h3>Direct Lake (modo por defecto)</h3>
+          <p><strong>Direct Lake</strong> lee directamente los Parquet de Delta <strong>sin importar ni copiar</strong>: rendimiento de Import, sin refresh y sin duplicar storage. Requiere capacidad Fabric (F SKUs) o Premium.</p>
+          <h4>🎯 Direct Lake on SQL vs on OneLake</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th></th><th>on SQL endpoints</th><th>on OneLake</th></tr></thead>
+              <tbody>
+                <tr><td>Ruta</td><td>Via SQL endpoint</td><td>Directo a ficheros Delta</td></tr>
+                <tr><td>Fallback a DirectQuery</td><td>✅ Sí</td><td>❌ NO</td></tr>
+                <tr><td>Si excede guardrails</td><td>Fallback silencioso</td><td>Error explícito (visuals fallan)</td></tr>
+                <tr><td>Recomendado para nuevos modelos</td><td>Solo si necesitas fallback</td><td>✅ Sí</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <h4>🎯 Qué provoca DirectQuery fallback</h4>
+          <p>RLS, DDM u OLS a nivel SQL en el endpoint; tabla basada en una SQL view no materializada; exceder los guardrails de la capacity; o no haber hecho refresh (framing) tras modificar la tabla Delta.</p>
+          <div class="note note--tip">🎯 <strong>DirectLakeBehavior:</strong> <code>Automatic</code> (fallback silencioso, producción), <code>DirectLakeOnly</code> (error si falla, desarrollo), <code>DirectQueryOnly</code> (siempre DQ). Diagnostica con <code>EVALUATE TABLETRAITS()</code>.</div>
+        </article>
+
+        <!-- 14 -->
+        <div class="category-header" id="seguridad">
+          <span class="category-header__icon">🔐</span>
+          <h2 class="category-header__title">14. Seguridad del lakehouse</h2>
+        </div>
+        <article class="concept-card">
+          <h3>Niveles de acceso</h3>
+          <ul>
+            <li><strong>Workspace roles:</strong> Admin, Member, Contributor, Viewer (todo el workspace).</li>
+            <li><strong>Item-level sharing:</strong> acceso solo a un lakehouse concreto (ideal para analistas).</li>
+            <li>Sobre el SQL endpoint: <strong>RLS, CLS, OLS y Dynamic Data Masking (DDM)</strong>.</li>
+            <li>Con schemas: permisos <strong>por schema</strong>.</li>
+            <li><strong>Sensitivity labels</strong> de Purview que se propagan a items downstream.</li>
+          </ul>
+          <div class="note note--warning">⚠️ Aplicar RLS/CLS/OLS/DDM en el SQL endpoint puede provocar <strong>DirectQuery fallback</strong> en modelos Direct Lake on SQL. Si es posible, mueve la seguridad al <strong>semantic model</strong>.</div>
+        </article>
+
+        <!-- 15 -->
+        <div class="category-header" id="trampas">
+          <span class="category-header__icon">⚠️</span>
+          <h2 class="category-header__title">15. Trampas típicas y confusiones</h2>
+        </div>
+        <article class="concept-card">
+          <h3>Los errores clásicos del examen</h3>
+          <ul>
+            <li><strong>"Al crear un lakehouse se crean 3 items"</strong> → desde sept 2025 solo <strong>2</strong> (lakehouse + SQL endpoint).</li>
+            <li><strong>"Parquet o CSV en Tables se ven como tabla"</strong> → ❌ solo Delta. Hay que convertir (o Load to Table).</li>
+            <li><strong>"Puedo modificar datos desde el SQL endpoint"</strong> → ❌ es read-only. Para escribir, Spark.</li>
+            <li><strong>"Los cambios aparecen al instante en el SQL endpoint"</strong> → ❌ hay metadata sync; fuerza refresh si lo necesitas ya.</li>
+            <li><strong>"External tables es la forma recomendada de acceder a datos externos"</strong> → ❌ la recomendación es <strong>shortcuts</strong>.</li>
+            <li><strong>"Direct Lake siempre funciona"</strong> → ❌ puede hacer fallback a DirectQuery.</li>
+            <li><strong>"V-Order hay que activarlo"</strong> → ❌ está activado por defecto.</li>
+            <li><strong>"VACUUM se puede bajar de 7 días"</strong> → ⚠️ se puede pero rompe el time travel.</li>
+            <li><strong>"Puedo compartir un schema-enabled lakehouse directamente"</strong> → ❌ usa shortcuts.</li>
+          </ul>
+        </article>
+
+        <!-- 16 -->
+        <div class="category-header" id="comparativas">
+          <span class="category-header__icon">🆚</span>
+          <h2 class="category-header__title">16. Comparativas clave (chuleta)</h2>
+        </div>
+        <article class="concept-card">
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Lakehouse vs Warehouse</th><th>Lakehouse</th><th>Warehouse</th></tr></thead>
+              <tbody>
+                <tr><td>Storage</td><td>Delta + Files</td><td>Delta (solo tablas)</td></tr>
+                <tr><td>Ingesta con código</td><td>✅ Spark nativo</td><td>⚠️ Preferentemente T-SQL</td></tr>
+                <tr><td>Ficheros no estructurados</td><td>✅</td><td>❌</td></tr>
+                <tr><td>Escritura T-SQL</td><td>❌ Read-only endpoint</td><td>✅ Total</td></tr>
+                <tr><td>Ideal para</td><td>Data engineering, ML</td><td>BI relacional, DWH</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Tables vs Files</th><th>Tables</th><th>Files</th></tr></thead>
+              <tbody>
+                <tr><td>Formato</td><td>Solo Delta se registra</td><td>Cualquiera</td></tr>
+                <tr><td>SQL endpoint</td><td>✅</td><td>❌</td></tr>
+                <tr><td>ACID / Schema</td><td>✅</td><td>❌</td></tr>
+                <tr><td>Uso típico</td><td>Silver/Gold</td><td>Bronze/staging</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </article>
+
+        <!-- 17 -->
+        <div class="category-header" id="quiz">
+          <span class="category-header__icon">🎀</span>
+          <h2 class="category-header__title">17. Mini-quiz de cierre</h2>
+        </div>
+        <p style="font-size: 0.9375rem; color: var(--color-slate); line-height: 1.7;">Autoevalúate con calma. Las soluciones las repasamos en la <a href="tips-y-trampas.html">Guía Maestra de Tips y Trampas</a>. 💕</p>
+        <div class="quiz-q"><p><span class="quiz-q__num">Pregunta 1.</span> Creas un lakehouse hoy (2026). ¿Cuántos items se crean automáticamente y cuáles?</p><ol type="A"><li>3: lakehouse, SQL endpoint y default semantic model</li><li>2: lakehouse y SQL analytics endpoint</li><li>1: solo el lakehouse</li><li>4: lakehouse, SQL endpoint, semantic model y report</li></ol></div>
+        <div class="quiz-q"><p><span class="quiz-q__num">Pregunta 2.</span> Una tabla creada con <code>saveAsTable(..., path="Files/mi_tabla")</code>. Ejecutas <code>DROP TABLE</code>. ¿Qué pasa?</p><ol type="A"><li>Se borran metadata y ficheros</li><li>Se borra solo el metadata, los ficheros permanecen</li><li>Falla porque no se pueden dropear external tables</li><li>Solo si el usuario es Contributor</li></ol></div>
+        <div class="quiz-q"><p><span class="quiz-q__num">Pregunta 3.</span> Aplicas RLS a nivel SQL sobre una tabla consumida por Power BI en Direct Lake. ¿Qué ocurre?</p><ol type="A"><li>El report falla con error de permisos</li><li>La query hace fallback a DirectQuery automáticamente</li><li>Sigue en Direct Lake ignorando el RLS</li><li>Pide autenticación adicional</li></ol></div>
+        <div class="quiz-q"><p><span class="quiz-q__num">Pregunta 4.</span> Tras un Copy Data de 1M filas, un Dataflow lee datos viejos vía SQL endpoint. ¿Causa y workaround?</p><ol type="A"><li>El pipeline falló. Reintentar</li><li>El SQL endpoint está pausado. Iniciar sesión manual</li><li>El metadata sync no ha terminado. Añadir Script activity para forzar sync</li><li>Faltan permisos ReadData. Añadir Contributor</li></ol></div>
+        <div class="quiz-q"><p><span class="quiz-q__num">Pregunta 5.</span> Sintaxis para consultar <code>orders</code> del schema <code>sales</code> en <code>lh_gold</code> del workspace <code>ws_ventas</code> desde otro workspace:</p><ol type="A"><li><code>lh_gold.sales.orders</code></li><li><code>ws_ventas.lh_gold.sales.orders</code></li><li><code>ws_ventas..sales.orders</code></li><li><code>ws_ventas/lh_gold/sales/orders</code></li></ol></div>
+        <div class="quiz-q"><p><span class="quiz-q__num">Pregunta 6.</span> Datos Delta en ADLS Gen2, quieres consultarlos sin copiar y con la recomendación oficial. ¿Qué haces?</p><ol type="A"><li>External table con CREATE TABLE ... LOCATION</li><li>Pipeline con Copy Data</li><li>Un shortcut a la carpeta ADLS en la sección Tables</li><li>Dataflow Gen2 con conector ADLS</li></ol></div>
+        <div class="quiz-q"><p><span class="quiz-q__num">Pregunta 7.</span> Tras un <code>VACUUM</code> en una tabla grande, las lecturas concurrentes fallan con "file not found". ¿Causa más probable?</p><ol type="A"><li>La tabla no es Delta</li><li>Ejecutaste VACUUM RETAIN &lt; 168h y borraste ficheros aún referenciados</li><li>VACUUM requiere modo exclusivo</li><li>Faltan permisos ReadAll</li></ol></div>
+        <div class="quiz-q"><p><span class="quiz-q__num">BONUS.</span> Un modelo en <strong>Direct Lake on OneLake</strong> referencia una tabla con RLS a nivel SQL. Un usuario abre un report. ¿Qué ocurre?</p><ol type="A"><li>Fallback silencioso a DirectQuery, todo funciona más lento</li><li>Se ejecuta en Direct Lake ignorando el RLS</li><li>Los visuals fallan con error: Direct Lake on OneLake NO soporta fallback</li><li>Se muestra el report con RLS aplicado</li></ol></div>
+
+        <div class="note note--next">🚀 <strong>¡Módulo 2 completado!</strong> Ya construyes sobre OneLake. Sigue con el <a href="modulo-3.html">Módulo 3: Apache Spark en Fabric</a>. 🌸</div>
+
+        <div class="course-nav">
+          <a href="modulo-1.html">
+            <span class="course-nav__label">← Anterior</span>
+            <span class="course-nav__title">Módulo 1 · Introducción</span>
+          </a>
+          <a href="modulo-3.html" class="next">
+            <span class="course-nav__label">Siguiente →</span>
+            <span class="course-nav__title">Módulo 3 · Apache Spark</span>
+          </a>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <button id="back-to-top" class="back-to-top" aria-label="Volver arriba" title="Volver arriba">↑</button>
+
+  <script src="https://cdn.jsdelivr.net/npm/i18next@23/dist/umd/i18next.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1/prism.min.js"></script>
+  <script src="../../../assets/js/theme.js"></script>
+  <script src="../../../assets/js/main.js"></script>
+  <script src="../../../assets/js/cursor.js"></script>
+</body>
+</html>
