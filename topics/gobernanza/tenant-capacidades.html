@@ -4,12 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Tenant settings y capacidades en Power BI / Fabric: SKUs Pro / PPU / Premium / F, workloads, asignación de workspaces y configuración del Admin Portal.">
-  <title>Tenant Settings y Capacidades — Gobernanza | Power BI Guide by Kawaii BI</title>
+  <title>Tenant Settings y Capacidades, Gobernanza | Power BI Guide by Kawaii BI</title>
   <link rel="canonical" href="https://kawaiibi.es/topics/gobernanza/tenant-capacidades.html">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Kawaii Power BI Guide">
   <meta property="og:locale" content="es_ES">
-  <meta property="og:title" content="Tenant Settings y Capacidades — Gobernanza | Power BI Guide by Kawaii BI">
+  <meta property="og:title" content="Tenant Settings y Capacidades, Gobernanza | Power BI Guide by Kawaii BI">
   <meta property="og:description" content="Tenant settings y capacidades en Power BI / Fabric: SKUs Pro / PPU / Premium / F, workloads, asignación de workspaces y configuración del Admin Portal.">
   <meta property="og:url" content="https://kawaiibi.es/topics/gobernanza/tenant-capacidades.html">
   <meta property="og:image" content="https://kawaiibi.es/assets/images/og-banner.png">
@@ -17,7 +17,7 @@
   <meta property="og:image:height" content="1200">
   <meta property="og:image:alt" content="Sara Lozano Marti - Kawaii Power BI">
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="Tenant Settings y Capacidades — Gobernanza | Power BI Guide by Kawaii BI">
+  <meta name="twitter:title" content="Tenant Settings y Capacidades, Gobernanza | Power BI Guide by Kawaii BI">
   <meta name="twitter:description" content="Tenant settings y capacidades en Power BI / Fabric: SKUs Pro / PPU / Premium / F, workloads, asignación de workspaces y configuración del Admin Portal.">
   <meta name="twitter:image" content="https://kawaiibi.es/assets/images/og-banner.png">
 
@@ -138,7 +138,7 @@
           <ul>
             <li><strong>Tenant settings:</strong> ~100 switches que controlan qué pueden hacer los usuarios (publicar Apps, exportar, usar AI features, etc.)</li>
             <li><strong>Capacity settings:</strong> capacidades Premium / Fabric, su asignación a workspaces, workloads habilitados</li>
-            <li><strong>Workspaces:</strong> lista global de todos los workspaces del tenant — útil para auditar huérfanos</li>
+            <li><strong>Workspaces:</strong> lista global de todos los workspaces del tenant, útil para auditar huérfanos</li>
             <li><strong>Usage metrics y Audit logs:</strong> acceso al activity log y métricas</li>
             <li><strong>Embed codes y organizational visuals:</strong> control de qué se publica externamente</li>
             <li><strong>Information protection:</strong> activación de sensitivity labels y DLP</li>
@@ -191,9 +191,9 @@
 
           <h4>Apuntes prácticos</h4>
           <ul>
-            <li>F SKU es ya el camino estándar — los P SKU están en transición</li>
+            <li>F SKU es ya el camino estándar, los P SKU están en transición</li>
             <li>F64 es la SKU mínima para consumidores Power BI Free (equivalente a P1 en consumo de visualización)</li>
-            <li>F SKU se pueden <strong>pausar</strong> fuera de horas laborales para reducir coste — esto no se puede con P SKU</li>
+            <li>F SKU se pueden <strong>pausar</strong> fuera de horas laborales para reducir coste, esto no se puede con P SKU</li>
             <li>PPU es la mejor opción de "Premium económico" para equipos &lt; 20 usuarios</li>
           </ul>
         </article>
@@ -230,14 +230,14 @@
 
           <h4>Decisiones típicas de gobernanza</h4>
           <ul>
-            <li><strong>Capacidad por dominio:</strong> Finance, Sales, Ops — facilita capacity throttling fino por área</li>
-            <li><strong>Capacidad por entorno:</strong> Dev, Test, Prod separados — Dev pausable fuera de horas</li>
+            <li><strong>Capacidad por dominio:</strong> Finance, Sales, Ops, facilita capacity throttling fino por área</li>
+            <li><strong>Capacidad por entorno:</strong> Dev, Test, Prod separados, Dev pausable fuera de horas</li>
             <li><strong>Capacidad CoE compartida:</strong> datasets certificados que sirven a múltiples áreas</li>
           </ul>
 
           <h4>Reglas de oro</h4>
           <ul>
-            <li>No mezcles workloads heavy (lakehouse + spark + pipeline) con consumo BI en la misma capacidad si puedes evitarlo — la noisy neighbor te puede arruinar el rendimiento de los informes</li>
+            <li>No mezcles workloads heavy (lakehouse + spark + pipeline) con consumo BI en la misma capacidad si puedes evitarlo, la noisy neighbor te puede arruinar el rendimiento de los informes</li>
             <li>Asegura que el admin del workspace tenga al menos un permiso sobre la capacidad para reasignar si fuera necesario</li>
             <li>Documenta qué workspace vive en qué capacidad y por qué</li>
           </ul>
@@ -251,15 +251,15 @@
         <article class="concept-card">
           <h3>Las que más impacto tienen en gobernanza</h3>
           <ul>
-            <li><strong>Allow specific users to turn on external data sharing</strong> — restringir compartir fuera del tenant a un grupo concreto</li>
-            <li><strong>Block public Internet access</strong> — fuerza el acceso vía red privada (relevante en sectores regulados)</li>
-            <li><strong>Allow users to apply sensitivity labels for content</strong> — habilita las MIP labels</li>
-            <li><strong>Make certified content discoverable</strong> — clave para que el Data Hub funcione</li>
-            <li><strong>Export to Excel / CSV / PDF</strong> — cada export tiene su switch independiente</li>
-            <li><strong>Print dashboards and reports</strong> — sí, esto es un switch separado</li>
-            <li><strong>Publish to web</strong> — DESACTIVADO POR DEFAULT — gobierna explícitamente quién puede publicar contenido al internet abierto</li>
-            <li><strong>Allow service principals to use Power BI APIs</strong> — necesario para automatizaciones, restringir a un grupo</li>
-            <li><strong>Tenant-level audit log</strong> — siempre ON</li>
+            <li><strong>Allow specific users to turn on external data sharing</strong>, restringir compartir fuera del tenant a un grupo concreto</li>
+            <li><strong>Block public Internet access</strong>, fuerza el acceso vía red privada (relevante en sectores regulados)</li>
+            <li><strong>Allow users to apply sensitivity labels for content</strong>, habilita las MIP labels</li>
+            <li><strong>Make certified content discoverable</strong>, clave para que el Data Hub funcione</li>
+            <li><strong>Export to Excel / CSV / PDF</strong>, cada export tiene su switch independiente</li>
+            <li><strong>Print dashboards and reports</strong>, sí, esto es un switch separado</li>
+            <li><strong>Publish to web</strong>, DESACTIVADO POR DEFAULT, gobierna explícitamente quién puede publicar contenido al internet abierto</li>
+            <li><strong>Allow service principals to use Power BI APIs</strong>, necesario para automatizaciones, restringir a un grupo</li>
+            <li><strong>Tenant-level audit log</strong>, siempre ON</li>
           </ul>
 
           <h4>Patrón recomendado</h4>
@@ -290,7 +290,7 @@
           <ul>
             <li>Capacity overload &gt; X minutos consecutivos</li>
             <li>Throttling activo</li>
-            <li>Dataset que consume &gt; 30% de la capacidad regularmente — candidato a optimización</li>
+            <li>Dataset que consume &gt; 30% de la capacidad regularmente, candidato a optimización</li>
           </ul>
         </article>
 
@@ -299,7 +299,7 @@
         </div>
 
         <div class="note note--next" style="margin-top: 2rem;">
-          🚀 <strong>Siguiente paso:</strong> Cierra la sección con <a href="coe-adopcion.html">CoE y Adopción</a> — la pieza humana que pone en marcha todo lo técnico que acabas de ver.
+          🚀 <strong>Siguiente paso:</strong> Cierra la sección con <a href="coe-adopcion.html">CoE y Adopción</a>, la pieza humana que pone en marcha todo lo técnico que acabas de ver.
         </div>
 
       </div>

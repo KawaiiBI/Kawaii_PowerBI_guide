@@ -4,12 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Data Loss Prevention (DLP) en Power BI: políticas de Microsoft Purview para detectar y bloquear exportaciones de información sensible.">
-  <title>DLP y Protección de Datos — Gobernanza | Power BI Guide by Kawaii BI</title>
+  <title>DLP y Protección de Datos, Gobernanza | Power BI Guide by Kawaii BI</title>
   <link rel="canonical" href="https://kawaiibi.es/topics/gobernanza/dlp.html">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Kawaii Power BI Guide">
   <meta property="og:locale" content="es_ES">
-  <meta property="og:title" content="DLP y Protección de Datos — Gobernanza | Power BI Guide by Kawaii BI">
+  <meta property="og:title" content="DLP y Protección de Datos, Gobernanza | Power BI Guide by Kawaii BI">
   <meta property="og:description" content="Data Loss Prevention (DLP) en Power BI: políticas de Microsoft Purview para detectar y bloquear exportaciones de información sensible.">
   <meta property="og:url" content="https://kawaiibi.es/topics/gobernanza/dlp.html">
   <meta property="og:image" content="https://kawaiibi.es/assets/images/og-banner.png">
@@ -17,7 +17,7 @@
   <meta property="og:image:height" content="1200">
   <meta property="og:image:alt" content="Sara Lozano Marti - Kawaii Power BI">
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="DLP y Protección de Datos — Gobernanza | Power BI Guide by Kawaii BI">
+  <meta name="twitter:title" content="DLP y Protección de Datos, Gobernanza | Power BI Guide by Kawaii BI">
   <meta name="twitter:description" content="Data Loss Prevention (DLP) en Power BI: políticas de Microsoft Purview para detectar y bloquear exportaciones de información sensible.">
   <meta name="twitter:image" content="https://kawaiibi.es/assets/images/og-banner.png">
 
@@ -228,7 +228,7 @@
           <p>Las <a href="sensitivity-labels.html">sensitivity labels</a> dicen <em>"este dato es confidencial"</em>. DLP es lo que hace que esa etiqueta tenga consecuencias.</p>
           <ul>
             <li>Sin DLP, la sensitivity label es solo un indicador visual (y la herencia)</li>
-            <li>Sin sensitivity labels, DLP tiene que detectar todo desde patrones — más caro y más falsos positivos</li>
+            <li>Sin sensitivity labels, DLP tiene que detectar todo desde patrones, más caro y más falsos positivos</li>
             <li>Combinadas: si el dataset tiene "Highly Confidential", DLP bloquea exports a destinos externos automáticamente</li>
           </ul>
 
@@ -249,7 +249,7 @@
           <ul>
             <li>DLP en Power BI escanea <strong>datasets</strong>; no escanea informes, dashboards ni dataflows en el mismo nivel de detalle</li>
             <li>Solo disponible con <strong>capacidades Premium / PPU / Fabric</strong>; no aplica a workspaces en capacidad Pro compartida</li>
-            <li>El escaneo no es instantáneo — puede tardar minutos u horas tras un cambio</li>
+            <li>El escaneo no es instantáneo, puede tardar minutos u horas tras un cambio</li>
             <li>Custom SITs requieren ajuste fino para evitar falsos positivos (regex demasiado permisivos son enemigos)</li>
             <li>El override con justificación se registra en el log, pero no se notifica en tiempo real al admin a menos que lo configures explícitamente</li>
             <li>Algunos eventos (consumo en Mobile, exports vía API) tienen cobertura DLP limitada</li>

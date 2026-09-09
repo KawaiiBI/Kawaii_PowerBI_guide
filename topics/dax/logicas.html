@@ -4,13 +4,13 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<meta content="Funciones Lógicas en DAX — IF, SWITCH, AND, OR, COALESCE, IFERROR y operadores de bits" name="description"/>
-<title>Funciones Lógicas — Funciones DAX | Power BI Guide</title>
+<meta content="Funciones Lógicas en DAX, IF, SWITCH, AND, OR, COALESCE, IFERROR y operadores de bits" name="description"/>
+<title>Funciones Lógicas, Funciones DAX | Power BI Guide</title>
   <link rel="canonical" href="https://kawaiibi.es/topics/dax/logicas.html">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Kawaii Power BI Guide">
   <meta property="og:locale" content="es_ES">
-  <meta property="og:title" content="Funciones Lógicas — Funciones DAX | Power BI Guide">
+  <meta property="og:title" content="Funciones Lógicas, Funciones DAX | Power BI Guide">
   <meta property="og:description" content="Guia kawaii de Power BI, DAX, Lenguaje M y Microsoft Fabric.">
   <meta property="og:url" content="https://kawaiibi.es/topics/dax/logicas.html">
   <meta property="og:image" content="https://kawaiibi.es/assets/images/og-banner.png">
@@ -18,7 +18,7 @@
   <meta property="og:image:height" content="1200">
   <meta property="og:image:alt" content="Sara Lozano Marti - Kawaii Power BI">
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="Funciones Lógicas — Funciones DAX | Power BI Guide">
+  <meta name="twitter:title" content="Funciones Lógicas, Funciones DAX | Power BI Guide">
   <meta name="twitter:description" content="Guia kawaii de Power BI, DAX, Lenguaje M y Microsoft Fabric.">
   <meta name="twitter:image" content="https://kawaiibi.es/assets/images/og-banner.png">
 <!-- Google Fonts -->
@@ -78,7 +78,7 @@
       align-items: center;
     }
 
-    /* TOC — Table of contents */
+    /* TOC, Table of contents */
     .toc {
       background: var(--color-rose);
       border: 1.5px solid var(--color-mauve);
@@ -118,7 +118,7 @@
       text-decoration: underline;
     }
 
-    /* Category header — separadores entre categorías */
+    /* Category header, separadores entre categorías */
     .category-header {
       display: flex;
       align-items: center;
@@ -139,7 +139,7 @@
       margin: 0;
     }
 
-    /* Function card — tarjeta individual para cada función */
+    /* Function card, tarjeta individual para cada función */
     .function-card {
       background: var(--color-white);
       border: 1.5px solid var(--color-mauve);
@@ -174,7 +174,7 @@
       margin-bottom: 1rem;
     }
 
-    /* Function table — tabla compacta con ejemplos */
+    /* Function table, tabla compacta con ejemplos */
     .function-table {
       width: 100%;
       border-collapse: collapse;
@@ -326,7 +326,7 @@
         <header class="topic-header">
 <span class="topic-header__icon">🔀</span>
 <h1 class="topic-header__title">Funciones Lógicas</h1>
-<p class="topic-header__subtitle">IF, SWITCH, AND, OR, COALESCE, IFERROR y los operadores de bits — toda la lógica condicional de DAX</p>
+<p class="topic-header__subtitle">IF, SWITCH, AND, OR, COALESCE, IFERROR y los operadores de bits, toda la lógica condicional de DAX</p>
 <div class="topic-header__levels">
 <span class="badge badge--beginner">Principiante</span>
 <span class="badge badge--intermediate">Intermedio</span>
@@ -346,10 +346,10 @@
 <h2 class="toc__title">📑 En esta página</h2>
 <ul class="toc__list">
 <li><a class="toc__link" href="#if">IF e IF.EAGER</a></li>
-<li><a class="toc__link" href="#switch">SWITCH — el IF múltiple</a></li>
+<li><a class="toc__link" href="#switch">SWITCH, el IF múltiple</a></li>
 <li><a class="toc__link" href="#and-or">AND, OR, NOT y operadores &amp;&amp; ||</a></li>
 <li><a class="toc__link" href="#iferror">IFERROR e ISERROR</a></li>
-<li><a class="toc__link" href="#coalesce">COALESCE — la joya escondida</a></li>
+<li><a class="toc__link" href="#coalesce">COALESCE, la joya escondida</a></li>
 <li><a class="toc__link" href="#true-false">TRUE() y FALSE()</a></li>
 <li><a class="toc__link" href="#bits">BITAND, BITOR, BITXOR, BITLSHIFT, BITRSHIFT</a></li>
 <li><a class="toc__link" href="#patrones">Patrones de lógica condicional</a></li>
@@ -368,7 +368,7 @@
               La función condicional básica. Evalúa una condición y devuelve uno de dos valores. Si el valor_si_falso se omite, devuelve BLANK cuando la condición es FALSE.
             </div>
 <h4>Comportamiento lazy (evaluación perezosa):</h4>
-<p>IF es <strong>LAZY</strong> — solo evalúa la rama que va a devolver. Si la condición es TRUE, no evalúa el valor_si_falso. Esto es importante para evitar errores y mejorar el rendimiento.</p>
+<p>IF es <strong>LAZY</strong>, solo evalúa la rama que va a devolver. Si la condición es TRUE, no evalúa el valor_si_falso. Esto es importante para evitar errores y mejorar el rendimiento.</p>
 <h4>Ejemplo básico:</h4>
 <div class="code-block">
 <button class="code-block__copy">Copiar</button>
@@ -387,7 +387,7 @@ IF(
 Alerta Stock = IF('Productos'[Stock] &lt; 10, "⚠️ Stock bajo")
 // Cuando Stock &gt;= 10 → BLANK (la celda aparece vacía)</code></pre>
 </div>
-<h4>IF anidados (úsalos con moderación — SWITCH es mejor para múltiples condiciones):</h4>
+<h4>IF anidados (úsalos con moderación, SWITCH es mejor para múltiples condiciones):</h4>
 <div class="code-block">
 <button class="code-block__copy">Copiar</button>
 <pre><code class="language-javascript">Segmento =
@@ -419,7 +419,7 @@ IF(
 <div class="function-card__name">IF.EAGER(&lt;condición&gt;, &lt;valor_si_verdadero&gt;, [&lt;valor_si_falso&gt;])</div>
 <div class="function-card__level">Avanzado</div>
 <div class="function-card__description">
-              Versión EAGER (ansiosa) de IF — evalúa AMBAS ramas siempre, independientemente de la condición. En algunos escenarios puede ser más eficiente que IF cuando ambas ramas necesitarían calcularse de todos modos.
+              Versión EAGER (ansiosa) de IF, evalúa AMBAS ramas siempre, independientemente de la condición. En algunos escenarios puede ser más eficiente que IF cuando ambas ramas necesitarían calcularse de todos modos.
             </div>
 <h4>Cuándo usar IF.EAGER vs IF:</h4>
 <ul>
@@ -438,15 +438,15 @@ Margen % = IF.EAGER(ISBLANK([Ventas]), BLANK(), DIVIDE([Margen], [Ventas]))
 </section><!-- SECCIÓN 2: SWITCH --><section id="switch">
 <div class="category-header">
 <span class="category-header__icon">🔄</span>
-<h2 class="category-header__title">SWITCH — el IF múltiple</h2>
+<h2 class="category-header__title">SWITCH, el IF múltiple</h2>
 </div>
 <div class="function-card">
 <div class="function-card__name">SWITCH(&lt;expresión&gt;, &lt;valor1&gt;, &lt;resultado1&gt;, &lt;valor2&gt;, &lt;resultado2&gt;, ..., [&lt;resultado_por_defecto&gt;])</div>
-<div class="function-card__level">Principiante — Intermedio</div>
+<div class="function-card__level">Principiante, Intermedio</div>
 <div class="function-card__description">
               Evalúa una expresión y devuelve el resultado correspondiente al primer valor que coincida. Mucho más legible que los IF anidados para múltiples condiciones. Existe en dos modos: coincidencia de valor y modo TRUE().
             </div>
-<h4>Modo 1 — coincidencia de valor (como un switch/case):</h4>
+<h4>Modo 1, coincidencia de valor (como un switch/case):</h4>
 <div class="code-block">
 <button class="code-block__copy">Copiar</button>
 <pre><code class="language-javascript">// Nombre completo del mes según número
@@ -472,7 +472,7 @@ SWITCH(
     "❓"
 )</code></pre>
 </div>
-<h4>Modo 2 — con TRUE() para rangos y condiciones (el más potente):</h4>
+<h4>Modo 2, con TRUE() para rangos y condiciones (el más potente):</h4>
 <div class="code-block">
 <button class="code-block__copy">Copiar</button>
 <pre><code class="language-javascript">// SWITCH(TRUE(), ...) evalúa cada condición en orden
@@ -553,7 +553,7 @@ No Premium = 'Clientes'[Segmento] &lt;&gt; "Premium"</code></pre>
 </div>
 <div class="note note--tip">
 <strong>💡 Tip</strong><br/>
-            Cuando necesitas combinar más de 2 condiciones con AND, usa los operadores &amp;&amp; encadenados: <code>condA &amp;&amp; condB &amp;&amp; condC</code>. La función AND() solo acepta exactamente 2 argumentos — para más condiciones necesitas anidar o usar &amp;&amp;.
+            Cuando necesitas combinar más de 2 condiciones con AND, usa los operadores &amp;&amp; encadenados: <code>condA &amp;&amp; condB &amp;&amp; condC</code>. La función AND() solo acepta exactamente 2 argumentos, para más condiciones necesitas anidar o usar &amp;&amp;.
           </div>
 </section><!-- SECCIÓN 4: IFERROR e ISERROR --><section id="iferror">
 <div class="category-header">
@@ -562,7 +562,7 @@ No Premium = 'Clientes'[Segmento] &lt;&gt; "Premium"</code></pre>
 </div>
 <div class="function-card">
 <div class="function-card__name">IFERROR(&lt;valor&gt;, &lt;valor_si_error&gt;)</div>
-<div class="function-card__level">Principiante — Intermedio</div>
+<div class="function-card__level">Principiante, Intermedio</div>
 <div class="function-card__description">
               Si la expresión produce un error, devuelve el valor alternativo. Si no hay error, devuelve el resultado normal. Esencial para manejar divisiones por cero, conversiones fallidas y referencias a valores inexistentes.
             </div>
@@ -583,7 +583,7 @@ Categoría = IFERROR(
 </div>
 <div class="note note--warning">
 <strong>⚠️ IFERROR es EAGER</strong><br/>
-              IFERROR evalúa siempre AMBAS expresiones (es EAGER). Esto significa que si el valor_si_error es costoso de calcular, puede impactar el rendimiento incluso cuando no hay error. Para divisiones por cero, usa siempre DIVIDE() en lugar de IFERROR — es más eficiente y legible.
+              IFERROR evalúa siempre AMBAS expresiones (es EAGER). Esto significa que si el valor_si_error es costoso de calcular, puede impactar el rendimiento incluso cuando no hay error. Para divisiones por cero, usa siempre DIVIDE() en lugar de IFERROR, es más eficiente y legible.
             </div>
 </div>
 <div class="function-card">
@@ -603,7 +603,7 @@ Precio Limpio = IF(ISERROR(VALUE('Productos'[PrecioTexto])), 0, VALUE('Productos
 </section><!-- SECCIÓN 5: COALESCE --><section id="coalesce">
 <div class="category-header">
 <span class="category-header__icon">💎</span>
-<h2 class="category-header__title">COALESCE — la joya escondida</h2>
+<h2 class="category-header__title">COALESCE, la joya escondida</h2>
 </div>
 <div class="function-card">
 <div class="function-card__name">COALESCE(&lt;valor1&gt;, &lt;valor2&gt;, ..., &lt;valorN&gt;)</div>
@@ -614,7 +614,7 @@ Precio Limpio = IF(ISERROR(VALUE('Productos'[PrecioTexto])), 0, VALUE('Productos
 <h4>Por qué es tan útil:</h4>
 <div class="code-block">
 <button class="code-block__copy">Copiar</button>
-<pre><code class="language-javascript">// ❌ Sin COALESCE — verbose y difícil de leer:
+<pre><code class="language-javascript">// ❌ Sin COALESCE, verbose y difícil de leer:
 Precio Final =
 IF(NOT(ISBLANK('Productos'[PrecioOferta])),
     'Productos'[PrecioOferta],
@@ -624,7 +624,7 @@ IF(NOT(ISBLANK('Productos'[PrecioOferta])),
     )
 )
 
-// ✅ Con COALESCE — limpio y elegante:
+// ✅ Con COALESCE, limpio y elegante:
 Precio Final = COALESCE('Productos'[PrecioOferta], 'Productos'[PrecioEspecial], 'Productos'[PrecioBásico])
 // Devuelve PrecioOferta si no es BLANK, sino PrecioEspecial, sino PrecioBásico</code></pre>
 </div>
@@ -655,7 +655,7 @@ Ventas Mostrar = COALESCE([Ventas Reales], [Ventas Estimadas], 0)
 </section><!-- SECCIÓN 7: Operadores de bits --><section id="bits">
 <div class="category-header">
 <span class="category-header__icon">💻</span>
-<h2 class="category-header__title">BITAND, BITOR, BITXOR — operaciones de bits</h2>
+<h2 class="category-header__title">BITAND, BITOR, BITXOR, operaciones de bits</h2>
 </div>
 <p>Estas funciones realizan operaciones a nivel de bits sobre enteros. Son funciones de nicho, muy usadas en integración con sistemas que codifican flags/permisos como campos de bits (sistemas legacy, Active Directory, etc.).</p>
 <h3>Tabla de funciones:</h3>
@@ -701,7 +701,7 @@ Ventas Mostrar = COALESCE([Ventas Reales], [Ventas Estimadas], 0)
 </tr>
 </tbody>
 </table>
-<h3>Ejemplo real — decodificar permisos de Active Directory:</h3>
+<h3>Ejemplo real, decodificar permisos de Active Directory:</h3>
 <div class="code-block">
 <button class="code-block__copy">Copiar</button>
 <pre><code class="language-javascript">// Un campo "Permisos" almacena flags en bits:
@@ -723,7 +723,7 @@ Puede Administrar = IF(BITAND('Usuarios'[Permisos], 4) = 4, TRUE, FALSE)</code><
 <span class="category-header__icon">🛠️</span>
 <h2 class="category-header__title">Patrones de lógica condicional</h2>
 </div>
-<h3>Patrón 1 — Clasificador con SWITCH(TRUE()):</h3>
+<h3>Patrón 1, Clasificador con SWITCH(TRUE()):</h3>
 <div class="code-block">
 <button class="code-block__copy">Copiar</button>
 <pre><code class="language-javascript">Segmento RFM =
@@ -736,7 +736,7 @@ SWITCH(
     "📊 Normal"
 )</code></pre>
 </div>
-<h3>Patrón 2 — Valor por defecto en cascada con COALESCE:</h3>
+<h3>Patrón 2, Valor por defecto en cascada con COALESCE:</h3>
 <div class="code-block">
 <button class="code-block__copy">Copiar</button>
 <pre><code class="language-javascript">Precio Aplicado =
@@ -746,7 +746,7 @@ COALESCE(
     'Precios'[PrecioTarifa]       -- precio de tarifa general
 )</code></pre>
 </div>
-<h3>Patrón 3 — Mensaje de estado amigable:</h3>
+<h3>Patrón 3, Mensaje de estado amigable:</h3>
 <div class="code-block">
 <button class="code-block__copy">Copiar</button>
 <pre><code class="language-javascript">Estado Display =
@@ -754,7 +754,7 @@ SWITCH(
     SELECTEDVALUE('Pedidos'[Estado]),
     "P", "⏳ Pendiente de procesar",
     "E", "🔄 En preparación",
-    "S", "📦 Enviado — en camino",
+    "S", "📦 Enviado, en camino",
     "D", "✅ Entregado",
     "C", "❌ Cancelado",
     IF(ISBLANK(SELECTEDVALUE('Pedidos'[Estado])), "Selecciona un pedido", "Estado desconocido")

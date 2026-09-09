@@ -4,12 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Microsoft Fabric: plataforma SaaS unificada de analítica. Aprende OneLake, artefactos, experiencias y cómo encaja todo en un único producto.">
-  <title>Microsoft Fabric — Plataforma unificada | Power BI Guide by Kawaii BI</title>
+  <title>Microsoft Fabric, Plataforma unificada | Power BI Guide by Kawaii BI</title>
   <link rel="canonical" href="https://kawaiibi.es/topics/fabric.html">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Kawaii Power BI Guide">
   <meta property="og:locale" content="es_ES">
-  <meta property="og:title" content="Microsoft Fabric — Plataforma unificada | Power BI Guide by Kawaii BI">
+  <meta property="og:title" content="Microsoft Fabric, Plataforma unificada | Power BI Guide by Kawaii BI">
   <meta property="og:description" content="Microsoft Fabric: plataforma SaaS unificada de analítica. Aprende OneLake, artefactos, experiencias y cómo encaja todo en un único producto.">
   <meta property="og:url" content="https://kawaiibi.es/topics/fabric.html">
   <meta property="og:image" content="https://kawaiibi.es/assets/images/og-banner.png">
@@ -17,7 +17,7 @@
   <meta property="og:image:height" content="1200">
   <meta property="og:image:alt" content="Sara Lozano Marti - Kawaii Power BI">
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="Microsoft Fabric — Plataforma unificada | Power BI Guide by Kawaii BI">
+  <meta name="twitter:title" content="Microsoft Fabric, Plataforma unificada | Power BI Guide by Kawaii BI">
   <meta name="twitter:description" content="Microsoft Fabric: plataforma SaaS unificada de analítica. Aprende OneLake, artefactos, experiencias y cómo encaja todo en un único producto.">
   <meta name="twitter:image" content="https://kawaiibi.es/assets/images/og-banner.png">
 
@@ -37,7 +37,7 @@
 
   <style>
     /* ============================================================
-       ESTILOS — MICROSOFT FABRIC (ÍNDICE)
+       ESTILOS, MICROSOFT FABRIC (ÍNDICE)
     ============================================================ */
 
     .topic-header {
@@ -413,8 +413,8 @@
 
           <p style="font-size: 16px; line-height: 1.75; margin-bottom: 20px;">
             Visualmente es útil pensar en Fabric como <strong>3 capas horizontales</strong>
-            que se apoyan una en otra, más <strong>2 bandas verticales</strong> — Copilot y
-            la gobernanza y seguridad — que las <strong>cruzan de arriba a abajo</strong>
+            que se apoyan una en otra, más <strong>2 bandas verticales</strong>, Copilot y
+            la gobernanza y seguridad, que las <strong>cruzan de arriba a abajo</strong>
             porque no son un piso más, sino algo transversal a toda la plataforma:
           </p>
 
@@ -458,13 +458,13 @@
           </p>
 
           <div class="note note--tip">
-            <strong>💡 ¿Delta Lake, no "Delta Parquet"?</strong>
+            <strong>💡 Delta Lake, no solo Parquet</strong>
             En Fabric las tablas gestionadas se guardan en <strong>Delta Lake</strong>, no en
             Parquet "pelado". Parquet es solo el archivo físico columnar de Apache; por sí
             solo no da ACID, time travel, control de esquema ni <code>MERGE</code>. Todo eso
             lo aporta <strong>Delta Lake</strong>, la capa de tabla con log de transacciones
             (<code>_delta_log</code>) que vive encima del Parquet y es lo que convierte a
-            OneLake en un verdadero <em>lakehouse</em> — y lo que hace posible Direct Lake.
+            OneLake en un verdadero <em>lakehouse</em>, y lo que hace posible Direct Lake.
             Dato kawaii 🌸: Delta lo creó <strong>Databricks</strong> (open source, bajo la
             Linux Foundation), no Microsoft. Y hoy OneLake también interopera con
             <strong>Apache Iceberg</strong>, otro formato abierto de tabla.
@@ -601,7 +601,7 @@
           <div class="note note--best-practice">
             <strong>✨ Todas comparten lo mismo</strong>
             La clave es que las 6 experiencias no son silos: comparten workspaces,
-            capacidad, permisos y — lo más importante — OneLake. Un Warehouse creado en
+            capacidad, permisos y, lo más importante, OneLake. Un Warehouse creado en
             Data Warehouse es visible y consultable desde un Notebook de Data Engineering,
             desde Power BI, o desde Real-Time Intelligence, sin mover un solo byte.
           </div>
@@ -611,7 +611,7 @@
             A las 6 experiencias analíticas se suma <strong>Databases</strong>, ya una carga
             de trabajo de primera clase: desde Ignite (noviembre de 2025) la
             <strong>SQL database en Fabric</strong> está en disponibilidad general y aporta la
-            pieza <strong>transaccional (OLTP)</strong> dentro de Fabric — operar y analizar
+            pieza <strong>transaccional (OLTP)</strong> dentro de Fabric, operar y analizar
             sobre el mismo lago, sin mover datos. Y en preview llega <strong>Fabric IQ</strong>,
             la capa de <em>semántica de negocio</em> que da a la IA un modelo común de tus
             datos. Fabric ya no es solo analítica: también es transaccional. 🌸
@@ -642,7 +642,7 @@
                 (≈ 40%).</li>
             <li><strong>Trial:</strong> 60 días gratis con una capacidad equivalente a F64,
                 perfecta para aprender y prototipar.</li>
-            <li><strong>P SKUs (Power BI Premium) — legacy en retiro:</strong> los antiguos
+            <li><strong>P SKUs (Power BI Premium), legacy en retiro:</strong> los antiguos
                 P1/P2/P3 <em>no</em> se fusionaron: están en proceso de retirada. Sin
                 Enterprise Agreement, su fin de vida fue el <strong>1 de enero de 2026</strong>,
                 y la recomendación oficial es <strong>migrar a SKUs F</strong>.</li>
@@ -776,7 +776,7 @@
           <div class="note note--next">
             <strong>🚀 ¿Por dónde empezar?</strong>
             Si es tu primer contacto con Fabric, ve primero a
-            <a href="fabric/onelake.html">OneLake</a> — entender dónde se guardan los
+            <a href="fabric/onelake.html">OneLake</a>, entender dónde se guardan los
             datos es la base de todo lo demás. Luego, cuando tengas claro el lago,
             salta a <a href="fabric/artefactos.html">Artefactos</a> para ver qué puedes
             crear encima. ¡Paso a paso! 🌸

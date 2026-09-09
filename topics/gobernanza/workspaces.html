@@ -4,12 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Workspaces y roles en Power BI: tipos de workspace, los 4 roles (Admin, Member, Contributor, Viewer), permisos efectivos y cómo estructurar un tenant.">
-  <title>Workspaces y Roles — Gobernanza | Power BI Guide by Kawaii BI</title>
+  <title>Workspaces y Roles, Gobernanza | Power BI Guide by Kawaii BI</title>
   <link rel="canonical" href="https://kawaiibi.es/topics/gobernanza/workspaces.html">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Kawaii Power BI Guide">
   <meta property="og:locale" content="es_ES">
-  <meta property="og:title" content="Workspaces y Roles — Gobernanza | Power BI Guide by Kawaii BI">
+  <meta property="og:title" content="Workspaces y Roles, Gobernanza | Power BI Guide by Kawaii BI">
   <meta property="og:description" content="Workspaces y roles en Power BI: tipos de workspace, los 4 roles (Admin, Member, Contributor, Viewer), permisos efectivos y cómo estructurar un tenant.">
   <meta property="og:url" content="https://kawaiibi.es/topics/gobernanza/workspaces.html">
   <meta property="og:image" content="https://kawaiibi.es/assets/images/og-banner.png">
@@ -17,7 +17,7 @@
   <meta property="og:image:height" content="1200">
   <meta property="og:image:alt" content="Sara Lozano Marti - Kawaii Power BI">
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="Workspaces y Roles — Gobernanza | Power BI Guide by Kawaii BI">
+  <meta name="twitter:title" content="Workspaces y Roles, Gobernanza | Power BI Guide by Kawaii BI">
   <meta name="twitter:description" content="Workspaces y roles en Power BI: tipos de workspace, los 4 roles (Admin, Member, Contributor, Viewer), permisos efectivos y cómo estructurar un tenant.">
   <meta name="twitter:image" content="https://kawaiibi.es/assets/images/og-banner.png">
 
@@ -136,7 +136,7 @@
         <article class="concept-card">
           <h3>Un contenedor con permisos comunes</h3>
           <p>Un <strong>workspace</strong> es el contenedor donde viven datasets, informes, dashboards, dataflows, lakehouses, notebooks y demás artefactos. Es la unidad mínima de organización y de permisos en Power BI / Fabric.</p>
-          <p>Todo lo que está dentro de un workspace comparte los permisos del workspace. No puedes dar acceso a "solo este informe" desde el workspace — para eso existen otras vías (Apps, sharing directo, certificación).</p>
+          <p>Todo lo que está dentro de un workspace comparte los permisos del workspace. No puedes dar acceso a "solo este informe" desde el workspace, para eso existen otras vías (Apps, sharing directo, certificación).</p>
 
           <h4>Cada workspace tiene:</h4>
           <ul>
@@ -187,13 +187,13 @@
             </thead>
             <tbody>
               <tr><td>Ver informes y dashboards</td><td class="ok">✓</td><td class="ok">✓</td><td class="ok">✓</td><td class="ok">✓</td></tr>
-              <tr><td>Leer datos (Build con permisos)</td><td class="no">—</td><td class="ok">✓</td><td class="ok">✓</td><td class="ok">✓</td></tr>
-              <tr><td>Publicar / editar contenido</td><td class="no">—</td><td class="ok">✓</td><td class="ok">✓</td><td class="ok">✓</td></tr>
-              <tr><td>Programar actualizaciones</td><td class="no">—</td><td class="ok">✓</td><td class="ok">✓</td><td class="ok">✓</td></tr>
-              <tr><td>Publicar / actualizar la App</td><td class="no">—</td><td class="no">—</td><td class="ok">✓</td><td class="ok">✓</td></tr>
-              <tr><td>Compartir contenido / dataset</td><td class="no">—</td><td class="no">—</td><td class="ok">✓</td><td class="ok">✓</td></tr>
-              <tr><td>Añadir miembros (excepto admins)</td><td class="no">—</td><td class="no">—</td><td class="ok">✓</td><td class="ok">✓</td></tr>
-              <tr><td>Añadir admins, eliminar workspace</td><td class="no">—</td><td class="no">—</td><td class="no">—</td><td class="ok">✓</td></tr>
+              <tr><td>Leer datos (Build con permisos)</td><td class="no">, </td><td class="ok">✓</td><td class="ok">✓</td><td class="ok">✓</td></tr>
+              <tr><td>Publicar / editar contenido</td><td class="no">, </td><td class="ok">✓</td><td class="ok">✓</td><td class="ok">✓</td></tr>
+              <tr><td>Programar actualizaciones</td><td class="no">, </td><td class="ok">✓</td><td class="ok">✓</td><td class="ok">✓</td></tr>
+              <tr><td>Publicar / actualizar la App</td><td class="no">, </td><td class="no">, </td><td class="ok">✓</td><td class="ok">✓</td></tr>
+              <tr><td>Compartir contenido / dataset</td><td class="no">, </td><td class="no">, </td><td class="ok">✓</td><td class="ok">✓</td></tr>
+              <tr><td>Añadir miembros (excepto admins)</td><td class="no">, </td><td class="no">, </td><td class="ok">✓</td><td class="ok">✓</td></tr>
+              <tr><td>Añadir admins, eliminar workspace</td><td class="no">, </td><td class="no">, </td><td class="no">, </td><td class="ok">✓</td></tr>
             </tbody>
           </table>
 
@@ -281,7 +281,7 @@
           <ul>
             <li>Prefijo <code>WS_</code> para distinguirlos en listas mezcladas</li>
             <li>Indicar dominio y, opcionalmente, etapa (Dev/Test/Prod)</li>
-            <li>Sin abreviaturas crípticas — el nombre lo lee todo el mundo</li>
+            <li>Sin abreviaturas crípticas, el nombre lo lee todo el mundo</li>
           </ul>
 
           <h4>Para Deployment Pipelines</h4>

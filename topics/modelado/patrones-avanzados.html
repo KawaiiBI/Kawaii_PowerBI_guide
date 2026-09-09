@@ -4,12 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Patrones avanzados de modelado en Power BI: role-playing dimensions, slowly changing dimensions (SCD), snapshots, factless fact tables y bridge tables para Many-to-Many.">
-  <title>Patrones Avanzados — Modelado de Datos | Power BI Guide by Kawaii BI</title>
+  <title>Patrones Avanzados, Modelado de Datos | Power BI Guide by Kawaii BI</title>
   <link rel="canonical" href="https://kawaiibi.es/topics/modelado/patrones-avanzados.html">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Kawaii Power BI Guide">
   <meta property="og:locale" content="es_ES">
-  <meta property="og:title" content="Patrones Avanzados — Modelado de Datos | Power BI Guide by Kawaii BI">
+  <meta property="og:title" content="Patrones Avanzados, Modelado de Datos | Power BI Guide by Kawaii BI">
   <meta property="og:description" content="Patrones avanzados de modelado en Power BI: role-playing dimensions, slowly changing dimensions (SCD), snapshots, factless fact tables y bridge tables para Many-to-Many.">
   <meta property="og:url" content="https://kawaiibi.es/topics/modelado/patrones-avanzados.html">
   <meta property="og:image" content="https://kawaiibi.es/assets/images/og-banner.png">
@@ -17,7 +17,7 @@
   <meta property="og:image:height" content="1200">
   <meta property="og:image:alt" content="Sara Lozano Marti - Kawaii Power BI">
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="Patrones Avanzados — Modelado de Datos | Power BI Guide by Kawaii BI">
+  <meta name="twitter:title" content="Patrones Avanzados, Modelado de Datos | Power BI Guide by Kawaii BI">
   <meta name="twitter:description" content="Patrones avanzados de modelado en Power BI: role-playing dimensions, slowly changing dimensions (SCD), snapshots, factless fact tables y bridge tables para Many-to-Many.">
   <meta name="twitter:image" content="https://kawaiibi.es/assets/images/og-banner.png">
 
@@ -104,7 +104,7 @@
         <header class="topic-header">
           <span class="topic-header__icon">🎯</span>
           <h1 class="topic-header__title">Patrones Avanzados de Modelado</h1>
-          <p class="topic-header__subtitle">Role-playing dimensions, SCD, snapshots, factless fact tables y bridge tables — los patrones que marcan la diferencia en proyectos Power BI empresariales</p>
+          <p class="topic-header__subtitle">Role-playing dimensions, SCD, snapshots, factless fact tables y bridge tables, los patrones que marcan la diferencia en proyectos Power BI empresariales</p>
           <div class="topic-header__levels">
             <span class="badge badge--advanced">Avanzado</span>
           </div>
@@ -152,7 +152,7 @@ CALCULATE(
 )</code></pre>
 
           <h4>Alternativa: copias de DimFecha</h4>
-          <p>En lugar de relaciones inactivas, puedes crear copias de DimFecha con nombres distintos (DimFechaPedido, DimFechaEnvio, DimFechaEntrega) — cada una con una relación activa. Ventaja: DAX más simple, sin USERELATIONSHIP. Desventaja: el modelo ocupa más memoria con tablas duplicadas.</p>
+          <p>En lugar de relaciones inactivas, puedes crear copias de DimFecha con nombres distintos (DimFechaPedido, DimFechaEnvio, DimFechaEntrega), cada una con una relación activa. Ventaja: DAX más simple, sin USERELATIONSHIP. Desventaja: el modelo ocupa más memoria con tablas duplicadas.</p>
         </article>
 
         <div class="category-header" id="scd">
@@ -164,9 +164,9 @@ CALCULATE(
           <h3>¿Qué pasa cuando los atributos de una dimensión cambian?</h3>
           <p>Los <strong>Slowly Changing Dimensions (SCD)</strong> son dimensiones cuyos atributos cambian con el tiempo. Ejemplo: un cliente cambia de región, un producto cambia de categoría, un empleado cambia de departamento. ¿Cómo tratas el histórico?</p>
 
-          <h4>SCD Tipo 1 — Sobreescribir (el más simple)</h4>
+          <h4>SCD Tipo 1, Sobreescribir (el más simple)</h4>
           <pre><code class="language-javascript">// Simplemente actualizas el valor actual.
-// No hay histórico — solo el estado actual.
+// No hay histórico, solo el estado actual.
 DimCliente:
 IDCliente | Nombre | Region
 1042      | Ana    | Sur    ← era "Norte", ahora es "Sur"
@@ -174,7 +174,7 @@ IDCliente | Nombre | Region
 // Útil cuando no importa el histórico.
 // Ejemplo: corrección de errores de datos, cambios sin impacto analítico.</code></pre>
 
-          <h4>SCD Tipo 2 — Histórico completo (el más usado)</h4>
+          <h4>SCD Tipo 2, Histórico completo (el más usado)</h4>
           <pre><code class="language-javascript">// Añades una nueva fila por cada cambio.
 // La fila anterior cierra su vigencia y la nueva la abre.
 DimCliente:
@@ -182,11 +182,11 @@ IDCliente | NaturalKey | Nombre | Region | FechaInicio | FechaFin   | EsActual
 1         | 1042       | Ana    | Norte  | 2020-01-01  | 2024-03-14 | FALSE
 2         | 1042       | Ana    | Sur    | 2024-03-15  | NULL       | TRUE
 
-// Ventaja: análisis histórico correcto — las ventas de 2022 muestran
+// Ventaja: análisis histórico correcto, las ventas de 2022 muestran
 // "Ana de la región Norte" aunque ahora esté en "Sur".
 // Desventaja: más complejo de cargar y mantener.</code></pre>
 
-          <h4>SCD Tipo 3 — Columna histórica</h4>
+          <h4>SCD Tipo 3, Columna histórica</h4>
           <pre><code class="language-javascript">// Añades columnas para el valor actual y el anterior.
 // Solo guarda UN nivel de histórico.
 DimCliente:
@@ -203,9 +203,9 @@ IDCliente | Nombre | RegionActual | RegionAnterior
 
         <article class="concept-card">
           <h3>Foto del estado en un momento del tiempo</h3>
-          <p>Un <strong>snapshot</strong> (instantánea periódica) es una tabla de hechos que registra el estado de algo en un momento específico — no un evento, sino un estado. Ejemplos: inventario a final de día, saldo de cuenta a fin de mes, pipeline de ventas semanal.</p>
+          <p>Un <strong>snapshot</strong> (instantánea periódica) es una tabla de hechos que registra el estado de algo en un momento específico, no un evento, sino un estado. Ejemplos: inventario a final de día, saldo de cuenta a fin de mes, pipeline de ventas semanal.</p>
 
-          <pre><code class="language-javascript">// FactInventarioSnapshot — estado del inventario cada día
+          <pre><code class="language-javascript">// FactInventarioSnapshot, estado del inventario cada día
 IDFecha | IDProducto | IDAlmacen | UnidadesStock | ValorStock
 
 // Diferente a FactMovimientosInventario (tabla de eventos):
@@ -225,7 +225,7 @@ Stock Fin Mes = CALCULATE(
 )</code></pre>
 
           <div class="note note--warning">
-            ⚠️ <strong>Ojo con esto:</strong> Las tablas de snapshot crecen rápido — si tienes 10.000 productos en 500 almacenes y haces snapshot diario, son 5M de filas por día. A un año serán 1.825M de filas. Evalúa la granularidad (diaria, semanal, mensual) según tus necesidades de análisis.
+            ⚠️ <strong>Ojo con esto:</strong> Las tablas de snapshot crecen rápido, si tienes 10.000 productos en 500 almacenes y haces snapshot diario, son 5M de filas por día. A un año serán 1.825M de filas. Evalúa la granularidad (diaria, semanal, mensual) según tus necesidades de análisis.
           </div>
         </article>
 
@@ -236,12 +236,12 @@ Stock Fin Mes = CALCULATE(
 
         <article class="concept-card">
           <h3>Tablas de hechos sin métricas numéricas</h3>
-          <p>Una <strong>factless fact table</strong> (tabla de hechos sin métricas) registra la ocurrencia de un evento sin ningún valor numérico. Solo tiene claves foráneas que documentan QUÉ ocurrió, CUÁNDO, QUIÉN y DÓNDE — sin un "cuánto".</p>
+          <p>Una <strong>factless fact table</strong> (tabla de hechos sin métricas) registra la ocurrencia de un evento sin ningún valor numérico. Solo tiene claves foráneas que documentan QUÉ ocurrió, CUÁNDO, QUIÉN y DÓNDE, sin un "cuánto".</p>
 
           <h4>Ejemplos de factless fact tables:</h4>
           <ul>
-            <li><strong>Asistencia a clase:</strong> IDFecha, IDEstudiante, IDClase — "el estudiante asistió"</li>
-            <li><strong>Cobertura de producto:</strong> IDFecha, IDProducto, IDTienda — "el producto estaba disponible en la tienda"</li>
+            <li><strong>Asistencia a clase:</strong> IDFecha, IDEstudiante, IDClase, "el estudiante asistió"</li>
+            <li><strong>Cobertura de producto:</strong> IDFecha, IDProducto, IDTienda, "el producto estaba disponible en la tienda"</li>
             <li><strong>Interacciones de cliente:</strong> IDFecha, IDCliente, IDCanal, IDTipoInteraccion</li>
           </ul>
 
@@ -299,7 +299,7 @@ CALCULATE(
         </article>
 
         <div class="note note--next" style="margin-top: 2rem;">
-          🚀 <strong>¡Patrones avanzados dominados!</strong> Con estos patrones en tu arsenal, estás equipado para abordar cualquier desafío de modelado empresarial. Para complementar esta sección, revisa los <a href="errores-comunes.html">Errores Comunes en Modelado</a> — conocer los errores te ahorrará horas de depuración.
+          🚀 <strong>¡Patrones avanzados dominados!</strong> Con estos patrones en tu arsenal, estás equipado para abordar cualquier desafío de modelado empresarial. Para complementar esta sección, revisa los <a href="errores-comunes.html">Errores Comunes en Modelado</a>, conocer los errores te ahorrará horas de depuración.
         </div>
 
       </div>

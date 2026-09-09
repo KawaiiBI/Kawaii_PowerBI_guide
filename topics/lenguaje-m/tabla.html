@@ -4,13 +4,13 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<meta content="Funciones de Tabla en Lenguaje M — Table.AddColumn, Table.SelectRows, Table.Group, Table.Join y más de 50 funciones para manipular tablas en Power Query" name="description"/>
-<title>Funciones de Tabla (Table.*) — Lenguaje M | Power BI Guide by Kawaii BI</title>
+<meta content="Funciones de Tabla en Lenguaje M, Table.AddColumn, Table.SelectRows, Table.Group, Table.Join y más de 50 funciones para manipular tablas en Power Query" name="description"/>
+<title>Funciones de Tabla (Table.*), Lenguaje M | Power BI Guide by Kawaii BI</title>
   <link rel="canonical" href="https://kawaiibi.es/topics/lenguaje-m/tabla.html">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Kawaii Power BI Guide">
   <meta property="og:locale" content="es_ES">
-  <meta property="og:title" content="Funciones de Tabla (Table.*) — Lenguaje M | Power BI Guide by Kawaii BI">
+  <meta property="og:title" content="Funciones de Tabla (Table.*), Lenguaje M | Power BI Guide by Kawaii BI">
   <meta property="og:description" content="Guia kawaii de Power BI, DAX, Lenguaje M y Microsoft Fabric.">
   <meta property="og:url" content="https://kawaiibi.es/topics/lenguaje-m/tabla.html">
   <meta property="og:image" content="https://kawaiibi.es/assets/images/og-banner.png">
@@ -18,7 +18,7 @@
   <meta property="og:image:height" content="1200">
   <meta property="og:image:alt" content="Sara Lozano Marti - Kawaii Power BI">
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="Funciones de Tabla (Table.*) — Lenguaje M | Power BI Guide by Kawaii BI">
+  <meta name="twitter:title" content="Funciones de Tabla (Table.*), Lenguaje M | Power BI Guide by Kawaii BI">
   <meta name="twitter:description" content="Guia kawaii de Power BI, DAX, Lenguaje M y Microsoft Fabric.">
   <meta name="twitter:image" content="https://kawaiibi.es/assets/images/og-banner.png">
 <!-- Google Fonts -->
@@ -456,7 +456,7 @@ Table.SelectRows(
 <div class="note note--tip">
             💡 <strong>Tip kawaii:</strong> <code>Table.SelectRows</code> soporta <em>query folding</em>
             cuando se aplica cerca del origen de datos (SQL, SharePoint, etc.). Esto significa que el
-            filtro se ejecuta en el servidor, no en Power Query — ¡mucho más rápido!
+            filtro se ejecuta en el servidor, no en Power Query, ¡mucho más rápido!
           </div>
 </article><!-- ======================================
              SECCIÓN: Agrupar y agregar
@@ -543,11 +543,11 @@ Table.Group(
 <div class="function-card__params">
 <h4>Tipos de Join disponibles</h4>
 <ul>
-<li><code>JoinKind.Inner</code> — Solo filas con coincidencia en ambas tablas</li>
-<li><code>JoinKind.LeftOuter</code> — Todas las filas de tabla1, con NULLs de tabla2</li>
-<li><code>JoinKind.RightOuter</code> — Todas las filas de tabla2, con NULLs de tabla1</li>
-<li><code>JoinKind.FullOuter</code> — Todas las filas de ambas tablas</li>
-<li><code>JoinKind.LeftAnti</code> — Solo filas de tabla1 SIN coincidencia en tabla2</li>
+<li><code>JoinKind.Inner</code>, Solo filas con coincidencia en ambas tablas</li>
+<li><code>JoinKind.LeftOuter</code>, Todas las filas de tabla1, con NULLs de tabla2</li>
+<li><code>JoinKind.RightOuter</code>, Todas las filas de tabla2, con NULLs de tabla1</li>
+<li><code>JoinKind.FullOuter</code>, Todas las filas de ambas tablas</li>
+<li><code>JoinKind.LeftAnti</code>, Solo filas de tabla1 SIN coincidencia en tabla2</li>
 </ul>
 </div>
 <div class="function-card__example">
@@ -576,7 +576,7 @@ in
 <div class="note note--tip">
             💡 <strong>Tip kawaii:</strong> Si solo necesitas traer columnas de una tabla relacionada
             (lookup), considera <code>Table.AddColumn</code> con <code>Table.SelectRows</code> y
-            <code>List.First</code> — a veces es más legible que un NestedJoin + ExpandTableColumn.
+            <code>List.First</code>, a veces es más legible que un NestedJoin + ExpandTableColumn.
           </div>
 </article><!-- Table.Combine --><article class="function-card" id="combinewith">
 <header class="function-card__header">
@@ -762,7 +762,7 @@ Table.Sort(
 <div class="note note--warning">
             ⚠️ <strong>Ojo con esto:</strong> En la mayoría de casos, el orden de las filas en
             Power BI no importa (DAX no depende del orden de las tablas). Evita <code>Table.Sort</code>
-            si no es estrictamente necesario — añade tiempo de procesamiento sin beneficio real.
+            si no es estrictamente necesario, añade tiempo de procesamiento sin beneficio real.
           </div>
 </article><!-- Nota final --><div class="note note--next" style="margin-top: 2.5rem;">
           🚀 <strong>¡Vas genial!</strong> Las funciones de tabla son el core de M. El siguiente paso

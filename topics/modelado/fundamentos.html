@@ -4,12 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Fundamentos del modelado de datos en Power BI: tablas de hechos y dimensiones, granularidad, cardinalidad y normalización con ejemplos reales.">
-  <title>Fundamentos del Modelado — Modelado de Datos | Power BI Guide by Kawaii BI</title>
+  <title>Fundamentos del Modelado, Modelado de Datos | Power BI Guide by Kawaii BI</title>
   <link rel="canonical" href="https://kawaiibi.es/topics/modelado/fundamentos.html">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Kawaii Power BI Guide">
   <meta property="og:locale" content="es_ES">
-  <meta property="og:title" content="Fundamentos del Modelado — Modelado de Datos | Power BI Guide by Kawaii BI">
+  <meta property="og:title" content="Fundamentos del Modelado, Modelado de Datos | Power BI Guide by Kawaii BI">
   <meta property="og:description" content="Fundamentos del modelado de datos en Power BI: tablas de hechos y dimensiones, granularidad, cardinalidad y normalización con ejemplos reales.">
   <meta property="og:url" content="https://kawaiibi.es/topics/modelado/fundamentos.html">
   <meta property="og:image" content="https://kawaiibi.es/assets/images/og-banner.png">
@@ -17,7 +17,7 @@
   <meta property="og:image:height" content="1200">
   <meta property="og:image:alt" content="Sara Lozano Marti - Kawaii Power BI">
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="Fundamentos del Modelado — Modelado de Datos | Power BI Guide by Kawaii BI">
+  <meta name="twitter:title" content="Fundamentos del Modelado, Modelado de Datos | Power BI Guide by Kawaii BI">
   <meta name="twitter:description" content="Fundamentos del modelado de datos en Power BI: tablas de hechos y dimensiones, granularidad, cardinalidad y normalización con ejemplos reales.">
   <meta name="twitter:image" content="https://kawaiibi.es/assets/images/og-banner.png">
 
@@ -127,7 +127,7 @@
         <header class="topic-header">
           <span class="topic-header__icon">📐</span>
           <h1 class="topic-header__title">Fundamentos del Modelado de Datos</h1>
-          <p class="topic-header__subtitle">Tablas de hechos y dimensiones, granularidad, cardinalidad y normalización — los conceptos que todo profesional Power BI debe dominar antes de tocar DAX</p>
+          <p class="topic-header__subtitle">Tablas de hechos y dimensiones, granularidad, cardinalidad y normalización, los conceptos que todo profesional Power BI debe dominar antes de tocar DAX</p>
           <div class="topic-header__levels">
             <span class="badge badge--beginner">Principiante</span>
           </div>
@@ -153,7 +153,7 @@
 
         <article class="concept-card">
           <h3>¿Qué son las tablas de hechos?</h3>
-          <p>Las <strong>tablas de hechos</strong> contienen las <em>métricas cuantitativas</em> de tu negocio — los números que quieres analizar. Representan eventos o transacciones: ventas, pedidos, llamadas, pagos, clicks.</p>
+          <p>Las <strong>tablas de hechos</strong> contienen las <em>métricas cuantitativas</em> de tu negocio, los números que quieres analizar. Representan eventos o transacciones: ventas, pedidos, llamadas, pagos, clicks.</p>
 
           <h4>Características de una tabla de hechos:</h4>
           <ul>
@@ -170,7 +170,7 @@ IDFecha | IDCliente | IDProducto | IDTienda | Cantidad | PrecioUnitario | Descue
 
         <article class="concept-card">
           <h3>¿Qué son las tablas de dimensiones?</h3>
-          <p>Las <strong>tablas de dimensiones</strong> contienen el <em>contexto descriptivo</em> de los hechos — las perspectivas desde las que quieres analizar: qué producto, qué cliente, cuándo, dónde.</p>
+          <p>Las <strong>tablas de dimensiones</strong> contienen el <em>contexto descriptivo</em> de los hechos, las perspectivas desde las que quieres analizar: qué producto, qué cliente, cuándo, dónde.</p>
 
           <h4>Características de una tabla de dimensiones:</h4>
           <ul>
@@ -225,7 +225,7 @@ IDFecha | IDCliente | IDProducto | IDTienda | Cantidad | PrecioUnitario | Descue
           </ul>
 
           <h4>¿Cuál elegir?</h4>
-          <p>Siempre el nivel de detalle <strong>más granular que necesites</strong>. Un modelo a nivel de línea de pedido puede agruparse para ver ventas diarias, mensuales o anuales. Al revés no es posible — no puedes desagregar datos ya agregados.</p>
+          <p>Siempre el nivel de detalle <strong>más granular que necesites</strong>. Un modelo a nivel de línea de pedido puede agruparse para ver ventas diarias, mensuales o anuales. Al revés no es posible, no puedes desagregar datos ya agregados.</p>
         </article>
 
         <div class="note note--warning">
@@ -244,7 +244,7 @@ IDFecha | IDCliente | IDProducto | IDTienda | Cantidad | PrecioUnitario | Descue
 
           <h4>Alta cardinalidad (problemática):</h4>
           <ul>
-            <li>Columnas como <code>IDTransaccion</code>, <code>FechaHora</code>, <code>Email</code> — cada fila es única</li>
+            <li>Columnas como <code>IDTransaccion</code>, <code>FechaHora</code>, <code>Email</code>, cada fila es única</li>
             <li>El motor VertiPaq no comprime bien estas columnas</li>
             <li>El archivo PBIX crece y las consultas son más lentas</li>
           </ul>

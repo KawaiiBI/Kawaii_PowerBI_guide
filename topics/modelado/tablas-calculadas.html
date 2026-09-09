@@ -4,12 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Tablas calculadas en Power BI con DAX: cuándo usarlas, patrones de tablas de desconexión, parámetros what-if y cuándo evitarlas por impacto en rendimiento.">
-  <title>Tablas Calculadas — Modelado de Datos | Power BI Guide by Kawaii BI</title>
+  <title>Tablas Calculadas, Modelado de Datos | Power BI Guide by Kawaii BI</title>
   <link rel="canonical" href="https://kawaiibi.es/topics/modelado/tablas-calculadas.html">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Kawaii Power BI Guide">
   <meta property="og:locale" content="es_ES">
-  <meta property="og:title" content="Tablas Calculadas — Modelado de Datos | Power BI Guide by Kawaii BI">
+  <meta property="og:title" content="Tablas Calculadas, Modelado de Datos | Power BI Guide by Kawaii BI">
   <meta property="og:description" content="Tablas calculadas en Power BI con DAX: cuándo usarlas, patrones de tablas de desconexión, parámetros what-if y cuándo evitarlas por impacto en rendimiento.">
   <meta property="og:url" content="https://kawaiibi.es/topics/modelado/tablas-calculadas.html">
   <meta property="og:image" content="https://kawaiibi.es/assets/images/og-banner.png">
@@ -17,7 +17,7 @@
   <meta property="og:image:height" content="1200">
   <meta property="og:image:alt" content="Sara Lozano Marti - Kawaii Power BI">
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="Tablas Calculadas — Modelado de Datos | Power BI Guide by Kawaii BI">
+  <meta name="twitter:title" content="Tablas Calculadas, Modelado de Datos | Power BI Guide by Kawaii BI">
   <meta name="twitter:description" content="Tablas calculadas en Power BI con DAX: cuándo usarlas, patrones de tablas de desconexión, parámetros what-if y cuándo evitarlas por impacto en rendimiento.">
   <meta name="twitter:image" content="https://kawaiibi.es/assets/images/og-banner.png">
 
@@ -134,7 +134,7 @@
           <h4>Diferencias con tablas cargadas desde Power Query:</h4>
           <ul>
             <li>Se definen con DAX en la vista de datos o mediante el menú "Nueva tabla"</li>
-            <li>No tienen conexión con el origen de datos — se calculan a partir del modelo</li>
+            <li>No tienen conexión con el origen de datos, se calculan a partir del modelo</li>
             <li>Pueden referenciar otras tablas del modelo en su definición</li>
             <li>Se recalculan en cada actualización del modelo</li>
             <li>Aparecen con un icono especial (calculadora) en el panel de campos</li>
@@ -256,7 +256,7 @@ Ventas con Descuento =
 [Ventas Totales] * (1 - [Valor Tasa Descuento])</code></pre>
 
           <div class="note note--practice">
-            📌 <strong>Buena práctica:</strong> Puedes crear parámetros what-if manualmente con <code>GENERATESERIES</code> en lugar de usar el asistente — te da más control sobre el formato y el nombre. El asistente es útil para empezar rápido, pero el resultado es el mismo.
+            📌 <strong>Buena práctica:</strong> Puedes crear parámetros what-if manualmente con <code>GENERATESERIES</code> en lugar de usar el asistente, te da más control sobre el formato y el nombre. El asistente es útil para empezar rápido, pero el resultado es el mismo.
           </div>
         </article>
 

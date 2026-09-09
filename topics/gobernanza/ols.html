@@ -4,12 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Object-Level Security (OLS) en Power BI: ocultar tablas y columnas sensibles con Tabular Editor, casos de uso, diferencias con RLS y limitaciones.">
-  <title>Object-Level Security (OLS) — Gobernanza | Power BI Guide by Kawaii BI</title>
+  <title>Object-Level Security (OLS), Gobernanza | Power BI Guide by Kawaii BI</title>
   <link rel="canonical" href="https://kawaiibi.es/topics/gobernanza/ols.html">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Kawaii Power BI Guide">
   <meta property="og:locale" content="es_ES">
-  <meta property="og:title" content="Object-Level Security (OLS) — Gobernanza | Power BI Guide by Kawaii BI">
+  <meta property="og:title" content="Object-Level Security (OLS), Gobernanza | Power BI Guide by Kawaii BI">
   <meta property="og:description" content="Object-Level Security (OLS) en Power BI: ocultar tablas y columnas sensibles con Tabular Editor, casos de uso, diferencias con RLS y limitaciones.">
   <meta property="og:url" content="https://kawaiibi.es/topics/gobernanza/ols.html">
   <meta property="og:image" content="https://kawaiibi.es/assets/images/og-banner.png">
@@ -17,7 +17,7 @@
   <meta property="og:image:height" content="1200">
   <meta property="og:image:alt" content="Sara Lozano Marti - Kawaii Power BI">
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="Object-Level Security (OLS) — Gobernanza | Power BI Guide by Kawaii BI">
+  <meta name="twitter:title" content="Object-Level Security (OLS), Gobernanza | Power BI Guide by Kawaii BI">
   <meta name="twitter:description" content="Object-Level Security (OLS) en Power BI: ocultar tablas y columnas sensibles con Tabular Editor, casos de uso, diferencias con RLS y limitaciones.">
   <meta name="twitter:image" content="https://kawaiibi.es/assets/images/og-banner.png">
 
@@ -134,7 +134,7 @@
 
         <article class="concept-card">
           <h3>"Esa columna no existe para ti"</h3>
-          <p><strong>Object-Level Security</strong> permite ocultar <em>tablas completas o columnas concretas</em> a determinados roles de seguridad. No se trata de hacerlas invisibles en la UI — se trata de hacerlas <em>literalmente inexistentes</em> para el motor cuando ese usuario consulta el modelo.</p>
+          <p><strong>Object-Level Security</strong> permite ocultar <em>tablas completas o columnas concretas</em> a determinados roles de seguridad. No se trata de hacerlas invisibles en la UI, se trata de hacerlas <em>literalmente inexistentes</em> para el motor cuando ese usuario consulta el modelo.</p>
           <p>Cualquier visual, medida o consulta DAX que referencie un objeto restringido devolverá un error de "objeto no encontrado" para quien no tenga permiso. Es la forma más fuerte de proteger metadatos sensibles.</p>
         </article>
 
@@ -251,7 +251,7 @@
           <h3>Cuándo OLS es la respuesta correcta</h3>
           <ul>
             <li><strong>Datos sensibles de RRHH:</strong> salarios, valoraciones, datos médicos visibles solo para People Ops</li>
-            <li><strong>Información financiera restringida:</strong> márgenes, costes unitarios, comisiones — visibles solo para Finanzas</li>
+            <li><strong>Información financiera restringida:</strong> márgenes, costes unitarios, comisiones, visibles solo para Finanzas</li>
             <li><strong>Tablas de seguridad o auditoría:</strong> el propio mapeo de usuarios a permisos no debe ser visible para nadie</li>
             <li><strong>Información regulatoria:</strong> PII, datos de salud, datos financieros bajo SOX/GDPR/HIPAA</li>
             <li><strong>Datasets compartidos entre departamentos:</strong> un único modelo que cada área consume con su propia visión "recortada"</li>

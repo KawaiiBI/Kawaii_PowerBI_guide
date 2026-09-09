@@ -4,13 +4,13 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<meta content="Funciones de Agregación en DAX — SUM, COUNT, AVERAGE, MIN, MAX y todas sus variantes" name="description"/>
-<title>Funciones de Agregación — Power BI Guide</title>
+<meta content="Funciones de Agregación en DAX, SUM, COUNT, AVERAGE, MIN, MAX y todas sus variantes" name="description"/>
+<title>Funciones de Agregación, Power BI Guide</title>
   <link rel="canonical" href="https://kawaiibi.es/topics/dax/agregacion.html">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Kawaii Power BI Guide">
   <meta property="og:locale" content="es_ES">
-  <meta property="og:title" content="Funciones de Agregación — Power BI Guide">
+  <meta property="og:title" content="Funciones de Agregación, Power BI Guide">
   <meta property="og:description" content="Guia kawaii de Power BI, DAX, Lenguaje M y Microsoft Fabric.">
   <meta property="og:url" content="https://kawaiibi.es/topics/dax/agregacion.html">
   <meta property="og:image" content="https://kawaiibi.es/assets/images/og-banner.png">
@@ -18,7 +18,7 @@
   <meta property="og:image:height" content="1200">
   <meta property="og:image:alt" content="Sara Lozano Marti - Kawaii Power BI">
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="Funciones de Agregación — Power BI Guide">
+  <meta name="twitter:title" content="Funciones de Agregación, Power BI Guide">
   <meta name="twitter:description" content="Guia kawaii de Power BI, DAX, Lenguaje M y Microsoft Fabric.">
   <meta name="twitter:image" content="https://kawaiibi.es/assets/images/og-banner.png">
 <!-- Google Fonts -->
@@ -78,7 +78,7 @@
       align-items: center;
     }
 
-    /* TOC — Table of contents */
+    /* TOC, Table of contents */
     .toc {
       background: var(--color-rose);
       border: 1.5px solid var(--color-mauve);
@@ -118,7 +118,7 @@
       text-decoration: underline;
     }
 
-    /* Category header — separadores entre categorías */
+    /* Category header, separadores entre categorías */
     .category-header {
       display: flex;
       align-items: center;
@@ -139,7 +139,7 @@
       margin: 0;
     }
 
-    /* Function card — tarjeta individual para cada función */
+    /* Function card, tarjeta individual para cada función */
     .function-card {
       background: var(--color-white);
       border: 1.5px solid var(--color-mauve);
@@ -174,7 +174,7 @@
       margin-bottom: 1rem;
     }
 
-    /* Function table — tabla compacta con ejemplos */
+    /* Function table, tabla compacta con ejemplos */
     .function-table {
       width: 100%;
       border-collapse: collapse;
@@ -326,7 +326,7 @@
         <header class="topic-header">
 <span class="topic-header__icon">📊</span>
 <h1 class="topic-header__title">Funciones de Agregación</h1>
-<p class="topic-header__subtitle">SUM, COUNT, AVERAGE, MIN, MAX y todas sus variantes — los cimientos de cualquier modelo DAX</p>
+<p class="topic-header__subtitle">SUM, COUNT, AVERAGE, MIN, MAX y todas sus variantes, los cimientos de cualquier modelo DAX</p>
 <div class="topic-header__levels">
 <span class="badge badge--beginner">Principiante</span>
 <span class="badge badge--intermediate">Intermedio</span>
@@ -362,8 +362,8 @@
 <p>Las funciones de agregación toman una columna (o una expresión evaluada fila a fila) y devuelven un <strong>único valor escalar</strong>. Son el primer tipo de función que aprende cualquier persona en DAX porque son imprescindibles para construir medidas.</p>
 <h3>La distinción más importante desde el principio: funciones simples vs iteradoras X</h3>
 <ul>
-<li><strong><code>SUM([Ventas])</code></strong> — agrega directamente una columna numérica</li>
-<li><strong><code>SUMX(Tabla, Expresión)</code></strong> — itera fila a fila, calcula la expresión, y luego agrega</li>
+<li><strong><code>SUM([Ventas])</code></strong>, agrega directamente una columna numérica</li>
+<li><strong><code>SUMX(Tabla, Expresión)</code></strong>, itera fila a fila, calcula la expresión, y luego agrega</li>
 </ul>
 <div class="note note--tip">
 <strong>Analogía kawaii 🌸</strong><br/>
@@ -376,7 +376,7 @@
 </section><!-- SECCIÓN 1: SUM y SUMX --><section id="suma">
 <div class="category-header">
 <span class="category-header__icon">➕</span>
-<h2 class="category-header__title">SUM — La función más usada en DAX</h2>
+<h2 class="category-header__title">SUM, La función más usada en DAX</h2>
 </div>
 <div class="function-card">
 <div class="function-card__name">SUM(&lt;columna&gt;)</div>
@@ -399,11 +399,11 @@ Total Ventas = SUM('Ventas'[Importe])
 <pre><code class="language-javascript">// SUM siempre respeta el contexto de filtro automáticamente
 // Si tienes un slicer de País seleccionado en "Francia":
 Total Ventas = SUM('Ventas'[Importe])  -- devuelve solo ventas de Francia
-// No hace falta escribir nada especial — CALCULATE hace eso automáticamente</code></pre>
+// No hace falta escribir nada especial, CALCULATE hace eso automáticamente</code></pre>
 </div>
 <div class="note note--warning">
 <strong>⚠️ Importante</strong><br/>
-              SUM solo funciona con columnas numéricas. Para sumar en base a una expresión por fila (ej: precio × cantidad), necesitas SUMX. Y nunca uses SUM dentro de CALCULATE como primer argumento — ahí va una medida o expresión.
+              SUM solo funciona con columnas numéricas. Para sumar en base a una expresión por fila (ej: precio × cantidad), necesitas SUMX. Y nunca uses SUM dentro de CALCULATE como primer argumento, ahí va una medida o expresión.
             </div>
 </div>
 <div class="function-card">
@@ -412,7 +412,7 @@ Total Ventas = SUM('Ventas'[Importe])  -- devuelve solo ventas de Francia
 <div class="function-card__description">
               Itera cada fila de la tabla, evalúa la expresión en el contexto de esa fila, y suma todos los resultados. Imprescindible cuando no tienes una columna con el importe ya calculado.
             </div>
-<h4>Ejemplo — cuando no existe columna de importe:</h4>
+<h4>Ejemplo, cuando no existe columna de importe:</h4>
 <div class="code-block">
 <button class="code-block__copy">Copiar</button>
 <pre><code class="language-javascript">// Tabla Ventas tiene: Cantidad y PrecioUnitario, pero NO Importe
@@ -451,7 +451,7 @@ SUMX(
 </section><!-- SECCIÓN 2: Funciones de CONTEO --><section id="conteo">
 <div class="category-header">
 <span class="category-header__icon">🔢</span>
-<h2 class="category-header__title">COUNT y familia — contar con criterio</h2>
+<h2 class="category-header__title">COUNT y familia, contar con criterio</h2>
 </div>
 <h3>Tabla rápida de referencia:</h3>
 <table class="function-table">
@@ -531,7 +531,7 @@ Productos Sin Precio = COUNTBLANK('Productos'[Precio])
 <div class="function-card__name">COUNTROWS(&lt;tabla&gt;)</div>
 <div class="function-card__level">Principiante</div>
 <div class="function-card__description">
-              La más usada para contar filas — no depende del tipo de dato.
+              La más usada para contar filas, no depende del tipo de dato.
             </div>
 <h4>Ejemplos:</h4>
 <div class="code-block">
@@ -567,11 +567,11 @@ COUNTX(
 </section><!-- SECCIÓN 3: DISTINCTCOUNT --><section id="distinctcount">
 <div class="category-header">
 <span class="category-header__icon">🎯</span>
-<h2 class="category-header__title">DISTINCTCOUNT — Contar únicos</h2>
+<h2 class="category-header__title">DISTINCTCOUNT, Contar únicos</h2>
 </div>
 <div class="function-card">
 <div class="function-card__name">DISTINCTCOUNT(&lt;columna&gt;)</div>
-<div class="function-card__level">Principiante — Intermedio</div>
+<div class="function-card__level">Principiante, Intermedio</div>
 <div class="function-card__description">
               Cuenta los valores únicos (distintos) de una columna, ignorando duplicados. Equivale a COUNT(DISTINCT columna) en SQL. Imprescindible para métricas como "número de clientes únicos" o "SKUs vendidos".
             </div>
@@ -608,7 +608,7 @@ DISTINCTCOUNTNOBLANK('Ventas'[Región]) -- resultado: 2 (Norte, Sur)</code></pre
 </section><!-- SECCIÓN 4: AVERAGE --><section id="media">
 <div class="category-header">
 <span class="category-header__icon">📏</span>
-<h2 class="category-header__title">AVERAGE — Medias y promedios</h2>
+<h2 class="category-header__title">AVERAGE, Medias y promedios</h2>
 </div>
 <div class="function-card">
 <div class="function-card__name">AVERAGE(&lt;columna&gt;)</div>
@@ -636,7 +636,7 @@ Ticket Medio Con Ceros = DIVIDE(SUM('Ventas'[Importe]), COUNTROWS('Ventas'))
 <div class="function-card__name">AVERAGEA(&lt;columna&gt;)</div>
 <div class="function-card__level">Principiante</div>
 <div class="function-card__description">
-              Como AVERAGE pero también procesa columnas no numéricas. Convierte TRUE=1, FALSE=0, texto=0. Raramente necesaria en Power BI — AVERAGE es suficiente para casi todo.
+              Como AVERAGE pero también procesa columnas no numéricas. Convierte TRUE=1, FALSE=0, texto=0. Raramente necesaria en Power BI, AVERAGE es suficiente para casi todo.
             </div>
 </div>
 <div class="function-card">
@@ -645,7 +645,7 @@ Ticket Medio Con Ceros = DIVIDE(SUM('Ventas'[Importe]), COUNTROWS('Ventas'))
 <div class="function-card__description">
               Versión iteradora de AVERAGE. Calcula la expresión por fila y luego promedia los resultados.
             </div>
-<h4>Ejemplo — Margen medio por pedido:</h4>
+<h4>Ejemplo, Margen medio por pedido:</h4>
 <div class="code-block">
 <button class="code-block__copy">Copiar</button>
 <pre><code class="language-javascript">// Media del margen de cada pedido (no el margen total / nº pedidos)
@@ -662,7 +662,7 @@ AVERAGEX(
 </section><!-- SECCIÓN 5: MIN y MAX --><section id="minmax">
 <div class="category-header">
 <span class="category-header__icon">🎢</span>
-<h2 class="category-header__title">MIN y MAX — Valores extremos</h2>
+<h2 class="category-header__title">MIN y MAX, Valores extremos</h2>
 </div>
 <h3>Tabla de referencia:</h3>
 <table class="function-table">
@@ -744,15 +744,15 @@ Precio Aplicado = MIN('Productos'[Precio], 'Productos'[PrecioOferta])</code></pr
 </section><!-- SECCIÓN 6: PRODUCT --><section id="producto">
 <div class="category-header">
 <span class="category-header__icon">✖️</span>
-<h2 class="category-header__title">PRODUCT y PRODUCTX — Multiplicación acumulada</h2>
+<h2 class="category-header__title">PRODUCT y PRODUCTX, Multiplicación acumulada</h2>
 </div>
 <div class="function-card">
 <div class="function-card__name">PRODUCT(&lt;columna&gt;) | PRODUCTX(&lt;tabla&gt;, &lt;expresión&gt;)</div>
-<div class="function-card__level">Intermedio — Avanzado</div>
+<div class="function-card__level">Intermedio, Avanzado</div>
 <div class="function-card__description">
               Multiplica todos los valores de una columna (o expresión). Poco usada en business intelligence general, pero muy útil en finanzas para cálculos de rendimientos compuestos.
             </div>
-<h4>Ejemplo — Rendimiento compuesto:</h4>
+<h4>Ejemplo, Rendimiento compuesto:</h4>
 <div class="code-block">
 <button class="code-block__copy">Copiar</button>
 <pre><code class="language-javascript">// Si tienes una tabla con la variación mensual en %:
@@ -770,7 +770,7 @@ PRODUCTX(
 </section><!-- SECCIÓN 7: APPROXIMATEDISTINCTCOUNT --><section id="approximated">
 <div class="category-header">
 <span class="category-header__icon">⚡</span>
-<h2 class="category-header__title">APPROXIMATEDISTINCTCOUNT — Velocidad vs Precisión</h2>
+<h2 class="category-header__title">APPROXIMATEDISTINCTCOUNT, Velocidad vs Precisión</h2>
 </div>
 <div class="function-card">
 <div class="function-card__name">APPROXIMATEDISTINCTCOUNT(&lt;columna&gt;)</div>
@@ -798,7 +798,7 @@ Visitantes Únicos APPROX = APPROXIMATEDISTINCTCOUNT('WebLogs'[UserID])</code></
 <span class="category-header__icon">🧐</span>
 <h2 class="category-header__title">Errores típicos y cómo evitarlos</h2>
 </div>
-<h3>Error 1 — Usar SUM donde debería ir SUMX:</h3>
+<h3>Error 1, Usar SUM donde debería ir SUMX:</h3>
 <div class="code-block">
 <button class="code-block__copy">Copiar</button>
 <pre><code class="language-javascript">// ❌ Error: no puedes multiplicar columnas dentro de SUM
@@ -807,7 +807,7 @@ Total = SUM('Ventas'[Precio] * 'Ventas'[Cantidad])  -- ERROR de sintaxis
 // ✅ Correcto:
 Total = SUMX('Ventas', 'Ventas'[Precio] * 'Ventas'[Cantidad])</code></pre>
 </div>
-<h3>Error 2 — AVERAGE no es lo mismo que Total/Conteo cuando hay blancos:</h3>
+<h3>Error 2, AVERAGE no es lo mismo que Total/Conteo cuando hay blancos:</h3>
 <div class="code-block">
 <button class="code-block__copy">Copiar</button>
 <pre><code class="language-javascript">// Si el 30% de tus filas tienen BLANK en Importe:
@@ -816,7 +816,7 @@ DIVIDE(SUM('Ventas'[Importe]), COUNTROWS('Ventas'))  -- divide entre el 100%
 
 // ¿Cuál es correcta? Depende de tu lógica de negocio. ¡Decídelo conscientemente!</code></pre>
 </div>
-<h3>Error 3 — DISTINCTCOUNT incluye BLANK:</h3>
+<h3>Error 3, DISTINCTCOUNT incluye BLANK:</h3>
 <div class="code-block">
 <button class="code-block__copy">Copiar</button>
 <pre><code class="language-javascript">// Si quieres solo IDs reales sin contar filas sin ID:
@@ -824,7 +824,7 @@ DISTINCTCOUNTNOBLANK('Ventas'[ID_Cliente])  -- más seguro</code></pre>
 </div>
 <div class="note note--next">
 <strong>🚀 Siguiente paso</strong><br/>
-            ¡Ya dominas las agregaciones! Son la base de todo. El siguiente gran salto es entender cómo CALCULATE modifica el contexto en el que se evalúan estas funciones — eso es lo que hace DAX único y potente.
+            ¡Ya dominas las agregaciones! Son la base de todo. El siguiente gran salto es entender cómo CALCULATE modifica el contexto en el que se evalúan estas funciones, eso es lo que hace DAX único y potente.
           </div>
 </section>
 

@@ -4,12 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Optimización del rendimiento en Power BI: reducción de cardinalidad, Import vs DirectQuery, Performance Analyzer, DAX Studio y VertiPaq Analyzer.">
-  <title>Optimización de Rendimiento — Modelado de Datos | Power BI Guide by Kawaii BI</title>
+  <title>Optimización de Rendimiento, Modelado de Datos | Power BI Guide by Kawaii BI</title>
   <link rel="canonical" href="https://kawaiibi.es/topics/modelado/optimizacion.html">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Kawaii Power BI Guide">
   <meta property="og:locale" content="es_ES">
-  <meta property="og:title" content="Optimización de Rendimiento — Modelado de Datos | Power BI Guide by Kawaii BI">
+  <meta property="og:title" content="Optimización de Rendimiento, Modelado de Datos | Power BI Guide by Kawaii BI">
   <meta property="og:description" content="Optimización del rendimiento en Power BI: reducción de cardinalidad, Import vs DirectQuery, Performance Analyzer, DAX Studio y VertiPaq Analyzer.">
   <meta property="og:url" content="https://kawaiibi.es/topics/modelado/optimizacion.html">
   <meta property="og:image" content="https://kawaiibi.es/assets/images/og-banner.png">
@@ -17,7 +17,7 @@
   <meta property="og:image:height" content="1200">
   <meta property="og:image:alt" content="Sara Lozano Marti - Kawaii Power BI">
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="Optimización de Rendimiento — Modelado de Datos | Power BI Guide by Kawaii BI">
+  <meta name="twitter:title" content="Optimización de Rendimiento, Modelado de Datos | Power BI Guide by Kawaii BI">
   <meta name="twitter:description" content="Optimización del rendimiento en Power BI: reducción de cardinalidad, Import vs DirectQuery, Performance Analyzer, DAX Studio y VertiPaq Analyzer.">
   <meta name="twitter:image" content="https://kawaiibi.es/assets/images/og-banner.png">
 
@@ -136,10 +136,10 @@
           <p><strong>VertiPaq</strong> es el motor de almacenamiento columnar en memoria de Power BI (compartido con Analysis Services y Power Pivot). Almacena los datos por columnas y los comprime usando dos técnicas principales:</p>
 
           <h4>Codificación por valor (Value Encoding):</h4>
-          <p>Para columnas numéricas con valores predecibles. Muy eficiente — puede comprimir 100:1 en columnas de pocos valores distintos.</p>
+          <p>Para columnas numéricas con valores predecibles. Muy eficiente, puede comprimir 100:1 en columnas de pocos valores distintos.</p>
 
           <h4>Codificación por hash (Hash Encoding):</h4>
-          <p>Para columnas con alta variedad de valores (texto, fechas precisas, IDs únicos). Menos eficiente — difícil de comprimir.</p>
+          <p>Para columnas con alta variedad de valores (texto, fechas precisas, IDs únicos). Menos eficiente, difícil de comprimir.</p>
 
           <h4>Implicación práctica:</h4>
           <p>Las columnas con <strong>pocos valores únicos</strong> (cardinalidad baja) se comprimen muy bien. Las columnas con <strong>muchos valores únicos</strong> (alta cardinalidad) se comprimen mal y consumen mucha RAM. Tu objetivo como diseñador de modelos es maximizar las primeras y minimizar las segundas.</p>
@@ -223,7 +223,7 @@ IF(
           <h4>Modo Import (recomendado por defecto):</h4>
           <ul>
             <li>Los datos se cargan y almacenan en el modelo VertiPaq</li>
-            <li>Consultas muy rápidas — todo está en memoria</li>
+            <li>Consultas muy rápidas, todo está en memoria</li>
             <li>DAX completo disponible (todas las funciones)</li>
             <li>Actualización programada (hasta 48 veces/día en Premium)</li>
             <li>Límite de tamaño de dataset (1 GB en Pro, mayor en Premium)</li>
@@ -231,10 +231,10 @@ IF(
 
           <h4>Modo DirectQuery:</h4>
           <ul>
-            <li>Los datos permanecen en la fuente — Power BI genera SQL en tiempo real</li>
-            <li>Sin límite de tamaño — ideal para Big Data</li>
+            <li>Los datos permanecen en la fuente, Power BI genera SQL en tiempo real</li>
+            <li>Sin límite de tamaño, ideal para Big Data</li>
             <li>Datos siempre actualizados (latencia mínima)</li>
-            <li>DAX limitado — no todas las funciones disponibles</li>
+            <li>DAX limitado, no todas las funciones disponibles</li>
             <li>Rendimiento dependiente de la fuente (SQL Server, Synapse, etc.)</li>
             <li>Sin columnas calculadas en tablas DirectQuery</li>
           </ul>
@@ -276,7 +276,7 @@ IF(
           <p>Muestra el tamaño de cada tabla y columna, la cardinalidad, la ratio de compresión y el tamaño en memoria. Indispensable para identificar qué columnas están consumiendo más recursos.</p>
 
           <div class="note note--tip">
-            💡 <strong>Tip kawaii:</strong> El primer análisis que hago siempre en un modelo lento es VertiPaq Analyzer. Ordena las columnas por "Size (bytes)" descendente — casi siempre la culpable del 80% del problema está en las primeras 5 columnas. Elimínalas o redúcelas y el modelo vuela. 🌸
+            💡 <strong>Tip kawaii:</strong> El primer análisis que hago siempre en un modelo lento es VertiPaq Analyzer. Ordena las columnas por "Size (bytes)" descendente, casi siempre la culpable del 80% del problema está en las primeras 5 columnas. Elimínalas o redúcelas y el modelo vuela. 🌸
           </div>
         </article>
 
@@ -288,7 +288,7 @@ IF(
         <article class="concept-card">
           <h3>Antes de publicar tu modelo, verifica:</h3>
           <ul class="checklist">
-            <li>Esquema estrella implementado — sin tablas de hechos con dimensiones anidadas</li>
+            <li>Esquema estrella implementado, sin tablas de hechos con dimensiones anidadas</li>
             <li>Eliminadas todas las columnas que no se usan en visuals, relaciones o DAX</li>
             <li>Fechas de tipo Date (no DateTime) en columnas de fecha</li>
             <li>Claves de relación son enteros, no texto</li>
@@ -296,8 +296,8 @@ IF(
             <li>Sin relaciones bidireccionales innecesarias</li>
             <li>Tabla de fechas marcada correctamente como tabla de fechas</li>
             <li>Sin columnas de alta cardinalidad sin justificación (emails, IDs únicos no usados como claves)</li>
-            <li>Columnas con muchos valores nulos revisadas — ¿son necesarias?</li>
-            <li>Performance Analyzer ejecutado — ningún visual tarda más de 3 segundos</li>
+            <li>Columnas con muchos valores nulos revisadas, ¿son necesarias?</li>
+            <li>Performance Analyzer ejecutado, ningún visual tarda más de 3 segundos</li>
           </ul>
         </article>
 

@@ -4,12 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Row-Level Security (RLS) en Power BI: seguridad a nivel de fila estática y dinámica, roles DAX, USERNAME(), USERPRINCIPALNAME() y cómo probar RLS correctamente.">
-  <title>Seguridad a Nivel de Fila (RLS) — Modelado de Datos | Power BI Guide by Kawaii BI</title>
+  <title>Seguridad a Nivel de Fila (RLS), Modelado de Datos | Power BI Guide by Kawaii BI</title>
   <link rel="canonical" href="https://kawaiibi.es/topics/modelado/rls.html">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Kawaii Power BI Guide">
   <meta property="og:locale" content="es_ES">
-  <meta property="og:title" content="Seguridad a Nivel de Fila (RLS) — Modelado de Datos | Power BI Guide by Kawaii BI">
+  <meta property="og:title" content="Seguridad a Nivel de Fila (RLS), Modelado de Datos | Power BI Guide by Kawaii BI">
   <meta property="og:description" content="Row-Level Security (RLS) en Power BI: seguridad a nivel de fila estática y dinámica, roles DAX, USERNAME(), USERPRINCIPALNAME() y cómo probar RLS correctamente.">
   <meta property="og:url" content="https://kawaiibi.es/topics/modelado/rls.html">
   <meta property="og:image" content="https://kawaiibi.es/assets/images/og-banner.png">
@@ -17,7 +17,7 @@
   <meta property="og:image:height" content="1200">
   <meta property="og:image:alt" content="Sara Lozano Marti - Kawaii Power BI">
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="Seguridad a Nivel de Fila (RLS) — Modelado de Datos | Power BI Guide by Kawaii BI">
+  <meta name="twitter:title" content="Seguridad a Nivel de Fila (RLS), Modelado de Datos | Power BI Guide by Kawaii BI">
   <meta name="twitter:description" content="Row-Level Security (RLS) en Power BI: seguridad a nivel de fila estática y dinámica, roles DAX, USERNAME(), USERPRINCIPALNAME() y cómo probar RLS correctamente.">
   <meta name="twitter:image" content="https://kawaiibi.es/assets/images/og-banner.png">
 
@@ -137,7 +137,7 @@
             <li>Se definen <strong>roles</strong> con filtros DAX que determinan qué filas son visibles</li>
             <li>Cada usuario (o grupo) se asigna a uno o más roles en el Power BI Service</li>
             <li>Cuando el usuario abre el informe, el motor aplica los filtros del rol como contexto de filtro inicial</li>
-            <li>Todas las medidas DAX se evalúan respetando esos filtros — el usuario no puede ver datos que no le corresponden</li>
+            <li>Todas las medidas DAX se evalúan respetando esos filtros, el usuario no puede ver datos que no le corresponden</li>
           </ul>
 
           <div class="note note--warning">
@@ -191,7 +191,7 @@
 
         <article class="concept-card">
           <h3>Un solo rol para todos los usuarios</h3>
-          <p>El RLS dinámico usa las funciones <code>USERNAME()</code> o <code>USERPRINCIPALNAME()</code> para identificar al usuario activo y filtrar datos basándose en una tabla de seguridad del modelo. Un único rol sirve para todos los usuarios — la tabla de seguridad determina qué ve cada uno.</p>
+          <p>El RLS dinámico usa las funciones <code>USERNAME()</code> o <code>USERPRINCIPALNAME()</code> para identificar al usuario activo y filtrar datos basándose en una tabla de seguridad del modelo. Un único rol sirve para todos los usuarios, la tabla de seguridad determina qué ve cada uno.</p>
 
           <h4>Paso 1: Crea una tabla de seguridad</h4>
           <pre><code class="language-javascript">// Tabla cargada desde Excel/SharePoint con los permisos:
@@ -211,7 +211,7 @@ TablaSeguridad:
           <p>Crea una relación entre <code>TablaSeguridad[Region]</code> y <code>DimTienda[Region]</code>. Esta puede ser una relación inactiva si ya tienes otra relación activa.</p>
 
           <h4>Paso 3: Crea el rol dinámico</h4>
-          <pre><code class="language-javascript">// Rol "RLS Dinamico" — filtro en TablaSeguridad:
+          <pre><code class="language-javascript">// Rol "RLS Dinamico", filtro en TablaSeguridad:
 [Email] = USERPRINCIPALNAME()
 
 // Cuando Ana inicia sesión:
@@ -221,7 +221,7 @@ TablaSeguridad:
 //   → FactVentas solo muestra la región Norte</code></pre>
 
           <div class="note note--tip">
-            💡 <strong>Tip kawaii:</strong> El patrón de RLS dinámico con tabla de seguridad es el más escalable. Para añadir o cambiar permisos, solo actualizas el Excel — sin tocar el modelo ni republicar. Ideal para organizaciones con muchos usuarios o permisos que cambian frecuentemente. 🌸
+            💡 <strong>Tip kawaii:</strong> El patrón de RLS dinámico con tabla de seguridad es el más escalable. Para añadir o cambiar permisos, solo actualizas el Excel, sin tocar el modelo ni republicar. Ideal para organizaciones con muchos usuarios o permisos que cambian frecuentemente. 🌸
           </div>
         </article>
 
@@ -233,17 +233,17 @@ TablaSeguridad:
         <article class="concept-card">
           <h3>¿Cuál usar?</h3>
 
-          <pre><code class="language-javascript">// USERNAME() — devuelve el nombre de usuario en formato DOMINIO\usuario
+          <pre><code class="language-javascript">// USERNAME(), devuelve el nombre de usuario en formato DOMINIO\usuario
 USERNAME() = "EMPRESA\ana.garcia"
 
-// USERPRINCIPALNAME() — devuelve el email UPN del usuario de Azure AD
+// USERPRINCIPALNAME(), devuelve el email UPN del usuario de Azure AD
 USERPRINCIPALNAME() = "ana.garcia@empresa.com"</code></pre>
 
           <h4>Diferencias clave:</h4>
           <ul>
             <li><code>USERNAME()</code>: formato DOMAIN\username (Active Directory clásico). En Power BI Service con cuentas Microsoft 365 devuelve el mismo valor que UPN.</li>
             <li><code>USERPRINCIPALNAME()</code>: formato email (Azure AD / Microsoft 365). Es la recomendación actual de Microsoft para RLS en Power BI Service.</li>
-            <li>En Power BI Desktop: ambas devuelven el usuario de Windows que ejecuta Desktop — útil para probar.</li>
+            <li>En Power BI Desktop: ambas devuelven el usuario de Windows que ejecuta Desktop, útil para probar.</li>
           </ul>
 
           <div class="note note--practice">
@@ -288,7 +288,7 @@ USERPRINCIPALNAME() = "ana.garcia@empresa.com"</code></pre>
           <h3>RLS y rendimiento</h3>
           <p>El RLS añade filtros al contexto de cada consulta, lo que puede impactar el rendimiento. Para modelos grandes:</p>
           <ul>
-            <li>Los filtros RLS se evalúan para cada consulta — asegúrate de que la tabla de seguridad es pequeña y la relación es eficiente</li>
+            <li>Los filtros RLS se evalúan para cada consulta, asegúrate de que la tabla de seguridad es pequeña y la relación es eficiente</li>
             <li>Evita lógica RLS compleja con múltiples CALCULATE y FILTER anidados</li>
             <li>Si tienes RLS en múltiples tablas, verifica que los filtros no se propagan de formas inesperadas</li>
           </ul>

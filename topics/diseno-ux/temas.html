@@ -4,12 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Temas en Power BI: estructura del JSON, paletas personalizadas, tipografías corporativas, estilos de visuals, cómo crear y distribuir un tema de marca consistente en toda la organización.">
-  <title>Temas en Power BI — Diseño y UX | Power BI Guide by Kawaii BI</title>
+  <title>Temas en Power BI, Diseño y UX | Power BI Guide by Kawaii BI</title>
   <link rel="canonical" href="https://kawaiibi.es/topics/diseno-ux/temas.html">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Kawaii Power BI Guide">
   <meta property="og:locale" content="es_ES">
-  <meta property="og:title" content="Temas en Power BI — Diseño y UX | Power BI Guide by Kawaii BI">
+  <meta property="og:title" content="Temas en Power BI, Diseño y UX | Power BI Guide by Kawaii BI">
   <meta property="og:description" content="Temas en Power BI: estructura del JSON, paletas personalizadas, tipografías corporativas, estilos de visuals, cómo crear y distribuir un tema de marca consistente en toda la organización.">
   <meta property="og:url" content="https://kawaiibi.es/topics/diseno-ux/temas.html">
   <meta property="og:image" content="https://kawaiibi.es/assets/images/og-banner.png">
@@ -17,7 +17,7 @@
   <meta property="og:image:height" content="1200">
   <meta property="og:image:alt" content="Sara Lozano Marti - Kawaii Power BI">
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="Temas en Power BI — Diseño y UX | Power BI Guide by Kawaii BI">
+  <meta name="twitter:title" content="Temas en Power BI, Diseño y UX | Power BI Guide by Kawaii BI">
   <meta name="twitter:description" content="Temas en Power BI: estructura del JSON, paletas personalizadas, tipografías corporativas, estilos de visuals, cómo crear y distribuir un tema de marca consistente en toda la organización.">
   <meta name="twitter:image" content="https://kawaiibi.es/assets/images/og-banner.png">
 
@@ -174,7 +174,7 @@
         <header class="topic-header">
           <span class="topic-header__icon">🎭</span>
           <h1 class="topic-header__title">Temas en Power BI</h1>
-          <p class="topic-header__subtitle">El tema JSON es tu arma secreta para la consistencia. Define colores, fuentes y estilos una vez — y todos los visuals de tu informe (y de tu organización) los heredan automáticamente</p>
+          <p class="topic-header__subtitle">El tema JSON es tu arma secreta para la consistencia. Define colores, fuentes y estilos una vez, y todos los visuals de tu informe (y de tu organización) los heredan automáticamente</p>
           <div class="topic-header__levels">
             <span class="badge badge--intermediate">Intermedio</span>
             <span class="badge badge--advanced">Avanzado</span>
@@ -210,7 +210,7 @@
             Un <strong>tema de Power BI</strong> es un archivo <code>.json</code> que define
             los colores, fuentes y estilos predeterminados de todos los visuals de un informe.
             Cuando lo aplicas, cada visual nuevo que añadas hereda automáticamente esos estilos
-            — sin que tengas que formatear nada manualmente.
+, sin que tengas que formatear nada manualmente.
           </p>
           <p>
             Es la herramienta más potente para garantizar la <strong>consistencia visual</strong>
@@ -222,7 +222,7 @@
           <h4>Dos formas de crear un tema</h4>
           <ul>
             <li><strong>Visual (sin código):</strong> View → Themes → Customize current theme. Un editor visual donde ajustas colores, fuentes y fondos. Genera el JSON automáticamente.</li>
-            <li><strong>JSON manual (control total):</strong> Creas o editas el archivo <code>.json</code> directamente. Más potente — permite personalizar propiedades de visuals específicos que el editor visual no cubre.</li>
+            <li><strong>JSON manual (control total):</strong> Creas o editas el archivo <code>.json</code> directamente. Más potente, permite personalizar propiedades de visuals específicos que el editor visual no cubre.</li>
           </ul>
 
           <div class="note note--tip">
@@ -241,7 +241,7 @@
         <div class="concept-card">
           <h3>Anatomía de un tema Power BI</h3>
           <p>
-            El JSON de un tema tiene varias secciones principales. No todas son obligatorias —
+            El JSON de un tema tiene varias secciones principales. No todas son obligatorias, 
             puedes empezar con solo <code>name</code> y <code>dataColors</code> y añadir más
             propiedades según las necesites.
           </p>
@@ -364,7 +364,7 @@
           </ol>
 
           <div class="note note--practice">
-            📌 <strong>Buena práctica:</strong> Sustituye los colores <code>dataColors</code> por los de tu marca corporativa. El primer color del array es el más importante — es el que Power BI asigna por defecto a la primera serie de datos. Haz que sea tu color principal de marca.
+            📌 <strong>Buena práctica:</strong> Sustituye los colores <code>dataColors</code> por los de tu marca corporativa. El primer color del array es el más importante, es el que Power BI asigna por defecto a la primera serie de datos. Haz que sea tu color principal de marca.
           </div>
         </div>
 
@@ -377,7 +377,7 @@
         </div>
 
         <div class="concept-card">
-          <h3>dataColors — tu paleta de serie de datos</h3>
+          <h3>dataColors, tu paleta de serie de datos</h3>
           <p>
             El array <code>dataColors</code> define los colores que Power BI asigna automáticamente
             a las series de datos. El primer color se usa para la primera serie, el segundo para
@@ -385,13 +385,13 @@
             de escenarios.
           </p>
           <ul>
-            <li><strong>Posición 1:</strong> Color principal de marca — la serie más importante</li>
-            <li><strong>Posición 2:</strong> Color secundario — la serie de comparación</li>
+            <li><strong>Posición 1:</strong> Color principal de marca, la serie más importante</li>
+            <li><strong>Posición 2:</strong> Color secundario, la serie de comparación</li>
             <li><strong>Posiciones 3-5:</strong> Colores complementarios armónicos</li>
-            <li><strong>Posiciones 6-8:</strong> Colores de reserva — grises y tonos suaves</li>
+            <li><strong>Posiciones 6-8:</strong> Colores de reserva, grises y tonos suaves</li>
           </ul>
 
-          <h3 style="margin-top: 1.5rem;">textClasses — jerarquía tipográfica automatizada</h3>
+          <h3 style="margin-top: 1.5rem;">textClasses, jerarquía tipográfica automatizada</h3>
           <p>
             Las <code>textClasses</code> definen 4 niveles de texto que Power BI aplica
             automáticamente:
@@ -403,7 +403,7 @@
             <li><strong>label:</strong> Etiquetas de eje, leyendas, texto secundario (10pt)</li>
           </ul>
 
-          <h3 style="margin-top: 1.5rem;">good / neutral / bad — colores semánticos</h3>
+          <h3 style="margin-top: 1.5rem;">good / neutral / bad, colores semánticos</h3>
           <p>
             Estas tres propiedades definen los colores que Power BI usa en los visuals de KPI
             y en el formato condicional por defecto. Mapeando directamente a la Regla 1-1-1:
@@ -428,11 +428,11 @@
           <p>
             La sección <code>visualStyles</code> permite definir estilos específicos para cada
             tipo de visual de Power BI. Puedes cambiar el padding, los bordes, los títulos,
-            el fondo y prácticamente cualquier propiedad de formato — todo desde el JSON.
+            el fondo y prácticamente cualquier propiedad de formato, todo desde el JSON.
           </p>
 
           <div class="code-block">
-            <span class="code-block__label">JSON — visualStyles</span>
+            <span class="code-block__label">JSON, visualStyles</span>
             <pre><code class="language-json">{
   "visualStyles": {
     "*": {
@@ -517,7 +517,7 @@
           <p>
             Un tema no sirve de nada si solo lo usas tú. El verdadero valor aparece cuando
             <strong>todos los informes de la organización</strong> comparten el mismo tema
-            — y cada dashboard tiene un aspecto consistente y profesional.
+, y cada dashboard tiene un aspecto consistente y profesional.
           </p>
 
           <h4>Opciones de distribución</h4>
@@ -571,8 +571,8 @@
 
           <ul class="checklist">
             <li>El JSON tiene al menos 8 colores en <code>dataColors</code> que incluyen el color principal de marca</li>
-            <li>El color <code>foreground</code> no es negro puro — usa #2C2C2C o similar</li>
-            <li>El color <code>background</code> no es blanco puro — usa #F5F5F5 o similar</li>
+            <li>El color <code>foreground</code> no es negro puro, usa #2C2C2C o similar</li>
+            <li>El color <code>background</code> no es blanco puro, usa #F5F5F5 o similar</li>
             <li>Las <code>textClasses</code> definen los 4 niveles tipográficos (callout, title, header, label)</li>
             <li>Los colores <code>good</code>, <code>neutral</code> y <code>bad</code> están definidos y tienen significado semántico claro</li>
             <li>Todos los colores de la paleta pasan contraste WCAG AA contra el fondo del informe</li>

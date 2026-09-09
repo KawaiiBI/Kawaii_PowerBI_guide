@@ -3,22 +3,22 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Filtro y Contexto en DAX — CALCULATE, ALL, FILTER, KEEPFILTERS y el control del contexto">
-  <title>Filtro y Contexto — Funciones DAX | Power BI Guide</title>
+  <meta name="description" content="Filtro y Contexto en DAX, CALCULATE, ALL, FILTER, KEEPFILTERS y el control del contexto">
+  <title>Filtro y Contexto, Funciones DAX | Power BI Guide</title>
   <link rel="canonical" href="https://kawaiibi.es/topics/dax/filtro.html">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Kawaii Power BI Guide">
   <meta property="og:locale" content="es_ES">
-  <meta property="og:title" content="Filtro y Contexto — Funciones DAX | Power BI Guide">
-  <meta property="og:description" content="Filtro y Contexto en DAX — CALCULATE, ALL, FILTER, KEEPFILTERS y el control del contexto">
+  <meta property="og:title" content="Filtro y Contexto, Funciones DAX | Power BI Guide">
+  <meta property="og:description" content="Filtro y Contexto en DAX, CALCULATE, ALL, FILTER, KEEPFILTERS y el control del contexto">
   <meta property="og:url" content="https://kawaiibi.es/topics/dax/filtro.html">
   <meta property="og:image" content="https://kawaiibi.es/assets/images/og-banner.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="1200">
   <meta property="og:image:alt" content="Sara Lozano Marti - Kawaii Power BI">
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="Filtro y Contexto — Funciones DAX | Power BI Guide">
-  <meta name="twitter:description" content="Filtro y Contexto en DAX — CALCULATE, ALL, FILTER, KEEPFILTERS y el control del contexto">
+  <meta name="twitter:title" content="Filtro y Contexto, Funciones DAX | Power BI Guide">
+  <meta name="twitter:description" content="Filtro y Contexto en DAX, CALCULATE, ALL, FILTER, KEEPFILTERS y el control del contexto">
   <meta name="twitter:image" content="https://kawaiibi.es/assets/images/og-banner.png">
 
   <!-- Google Fonts -->
@@ -82,7 +82,7 @@
       align-items: center;
     }
 
-    /* TOC — Table of contents */
+    /* TOC, Table of contents */
     .toc {
       background: var(--color-rose);
       border: 1.5px solid var(--color-mauve);
@@ -122,7 +122,7 @@
       text-decoration: underline;
     }
 
-    /* Category header — separadores entre categorías */
+    /* Category header, separadores entre categorías */
     .category-header {
       display: flex;
       align-items: center;
@@ -143,7 +143,7 @@
       margin: 0;
     }
 
-    /* Function card — tarjeta individual para cada función */
+    /* Function card, tarjeta individual para cada función */
     .function-card {
       background: var(--color-white);
       border: 1.5px solid var(--color-mauve);
@@ -178,7 +178,7 @@
       margin-bottom: 1rem;
     }
 
-    /* Function table — tabla compacta con ejemplos */
+    /* Function table, tabla compacta con ejemplos */
     .function-table {
       width: 100%;
       border-collapse: collapse;
@@ -352,7 +352,7 @@
         <header class="topic-header">
           <span class="topic-header__icon">🎯</span>
           <h1 class="topic-header__title">Filtro y Contexto</h1>
-          <p class="topic-header__subtitle">CALCULATE, ALL, FILTER, KEEPFILTERS, TREATAS y toda la maquinaria que hace DAX único — domina el contexto y dominas DAX</p>
+          <p class="topic-header__subtitle">CALCULATE, ALL, FILTER, KEEPFILTERS, TREATAS y toda la maquinaria que hace DAX único, domina el contexto y dominas DAX</p>
           <div class="topic-header__levels">
             <span class="badge badge--intermediate">Intermedio</span>
             <span class="badge badge--advanced">Avanzado</span>
@@ -380,15 +380,15 @@
         <nav class="toc">
           <h2 class="toc__title">📑 En esta página</h2>
           <ul class="toc__list">
-            <li><a href="#contexto" class="toc__link">Contexto de filtro vs contexto de fila — el concepto más importante</a></li>
-            <li><a href="#calculate" class="toc__link">CALCULATE y CALCULATETABLE — el corazón de DAX</a></li>
+            <li><a href="#contexto" class="toc__link">Contexto de filtro vs contexto de fila, el concepto más importante</a></li>
+            <li><a href="#calculate" class="toc__link">CALCULATE y CALCULATETABLE, el corazón de DAX</a></li>
             <li><a href="#all-family" class="toc__link">ALL, ALLEXCEPT, ALLSELECTED, ALLNOBLANKROW, ALLCROSSFILTERED</a></li>
             <li><a href="#removefilters" class="toc__link">REMOVEFILTERS</a></li>
             <li><a href="#keepfilters" class="toc__link">KEEPFILTERS</a></li>
-            <li><a href="#filter" class="toc__link">FILTER — filtrar tablas</a></li>
-            <li><a href="#values" class="toc__link">VALUES, DISTINCT, IN — obtener valores únicos</a></li>
-            <li><a href="#selectedvalue" class="toc__link">SELECTEDVALUE — leer slicers</a></li>
-            <li><a href="#treatas" class="toc__link">TREATAS — relaciones virtuales</a></li>
+            <li><a href="#filter" class="toc__link">FILTER, filtrar tablas</a></li>
+            <li><a href="#values" class="toc__link">VALUES, DISTINCT, IN, obtener valores únicos</a></li>
+            <li><a href="#selectedvalue" class="toc__link">SELECTEDVALUE, leer slicers</a></li>
+            <li><a href="#treatas" class="toc__link">TREATAS, relaciones virtuales</a></li>
             <li><a href="#patrones" class="toc__link">Patrones avanzados</a></li>
           </ul>
         </nav>
@@ -441,7 +441,7 @@ CALCULATE(SUM('Ventas'[Importe]))
         <section id="calculate">
           <div class="category-header">
             <span class="category-header__icon">❤️</span>
-            <h2 class="category-header__title">CALCULATE — La función más importante de DAX</h2>
+            <h2 class="category-header__title">CALCULATE, La función más importante de DAX</h2>
           </div>
 
           <div class="function-card">
@@ -461,7 +461,7 @@ CALCULATE(SUM('Ventas'[Importe]))
 // 4. Devuelve el resultado</code></pre>
             </div>
 
-            <h4>Ejemplo básico — filtrar por un valor:</h4>
+            <h4>Ejemplo básico, filtrar por un valor:</h4>
             <div class="code-block">
               <button class="code-block__copy">Copiar</button>
               <pre><code class="language-javascript">// Total de ventas SOLO de España (independiente de lo que filtre el visual)
@@ -471,7 +471,7 @@ Ventas España = CALCULATE(SUM('Ventas'[Importe]), 'Clientes'[País] = "España"
 // y devuelve las ventas de España</code></pre>
             </div>
 
-            <h4>Ejemplo — añadir un filtro:</h4>
+            <h4>Ejemplo, añadir un filtro:</h4>
             <div class="code-block">
               <button class="code-block__copy">Copiar</button>
               <pre><code class="language-javascript">// Ventas de productos de la categoría "Electrónica" (se añade al filtro existente)
@@ -484,7 +484,7 @@ CALCULATE(
 // Si el visual ya filtra por "España" → resultado = ventas de España + Electrónica</code></pre>
             </div>
 
-            <h4>Ejemplo — múltiples filtros (AND implícito):</h4>
+            <h4>Ejemplo, múltiples filtros (AND implícito):</h4>
             <div class="code-block">
               <button class="code-block__copy">Copiar</button>
               <pre><code class="language-javascript">// Ventas de Electrónica en España en 2024
@@ -499,7 +499,7 @@ CALCULATE(
 // Los filtros de CALCULATE se combinan con AND entre ellos</code></pre>
             </div>
 
-            <h4>Ejemplo — OR dentro de CALCULATE:</h4>
+            <h4>Ejemplo, OR dentro de CALCULATE:</h4>
             <div class="code-block">
               <button class="code-block__copy">Copiar</button>
               <pre><code class="language-javascript">// Ventas de Electrónica O Informática
@@ -548,7 +548,7 @@ COUNTROWS(
         <section id="all-family">
           <div class="category-header">
             <span class="category-header__icon">🧹</span>
-            <h2 class="category-header__title">ALL y familia — eliminar filtros selectivamente</h2>
+            <h2 class="category-header__title">ALL y familia, eliminar filtros selectivamente</h2>
           </div>
 
           <p>La familia ALL es el complemento perfecto de CALCULATE. Si CALCULATE <strong>AÑADE</strong> filtros, ALL los <strong>QUITA</strong>. Juntos te dan control total sobre qué está filtrado y qué no.</p>
@@ -560,7 +560,7 @@ COUNTROWS(
               Elimina todos los filtros de la tabla o columna indicada. Como modificador de CALCULATE, también puede eliminar filtros de todo el contexto. Fundamental para calcular porcentajes sobre totales.
             </div>
 
-            <h4>Ejemplo 1 — % sobre el total general:</h4>
+            <h4>Ejemplo 1, % sobre el total general:</h4>
             <div class="code-block">
               <button class="code-block__copy">Copiar</button>
               <pre><code class="language-javascript">// ¿Qué porcentaje representan las ventas actuales sobre el total?
@@ -574,7 +574,7 @@ DIVIDE(
 // → siempre devuelve el total absoluto, sin importar qué filtre el slicer</code></pre>
             </div>
 
-            <h4>Ejemplo 2 — % sobre el total de categoría:</h4>
+            <h4>Ejemplo 2, % sobre el total de categoría:</h4>
             <div class="code-block">
               <button class="code-block__copy">Copiar</button>
               <pre><code class="language-javascript">// % dentro de la categoría (sin perder el filtro de categoría)
@@ -586,7 +586,7 @@ DIVIDE(
 )</code></pre>
             </div>
 
-            <h4>Ejemplo 3 — ALL con tabla completa vs columna:</h4>
+            <h4>Ejemplo 3, ALL con tabla completa vs columna:</h4>
             <div class="code-block">
               <button class="code-block__copy">Copiar</button>
               <pre><code class="language-javascript">ALL('Ventas')              -- quita TODOS los filtros de la tabla Ventas
@@ -597,12 +597,12 @@ ALL('Productos'[Categoría], 'Productos'[Producto])  -- quita filtros de dos col
 
           <div class="function-card">
             <div class="function-card__name">ALLEXCEPT(&lt;tabla&gt;, &lt;columna1&gt;, &lt;columna2&gt;, ...)</div>
-            <div class="function-card__level">Intermedio — Avanzado</div>
+            <div class="function-card__level">Intermedio, Avanzado</div>
             <div class="function-card__description">
               Quita todos los filtros de la tabla EXCEPTO los de las columnas especificadas. Muy útil cuando quieres el total de grupo manteniendo un nivel de jerarquía.
             </div>
 
-            <h4>Ejemplo — Total por categoría (manteniendo el filtro de categoría):</h4>
+            <h4>Ejemplo, Total por categoría (manteniendo el filtro de categoría):</h4>
             <div class="code-block">
               <button class="code-block__copy">Copiar</button>
               <pre><code class="language-javascript">// En una tabla con Categoría > Producto:
@@ -620,7 +620,7 @@ CALCULATE(
 
             <div class="note note--warning">
               <strong>⚠️ Cuidado con filtros cruzados</strong><br>
-              ALLEXCEPT puede dar resultados inesperados cuando hay filtros cruzados desde otras tablas. En esos casos, la combinación ALL(...) + VALUES(...) suele ser más predecible. Es uno de los temas más avanzados de DAX — si los resultados no cuadran, revisa los artículos de SQLBI sobre ALLxxx.
+              ALLEXCEPT puede dar resultados inesperados cuando hay filtros cruzados desde otras tablas. En esos casos, la combinación ALL(...) + VALUES(...) suele ser más predecible. Es uno de los temas más avanzados de DAX, si los resultados no cuadran, revisa los artículos de SQLBI sobre ALLxxx.
             </div>
           </div>
 
@@ -631,7 +631,7 @@ CALCULATE(
               Quita los filtros directos del contexto pero MANTIENE los filtros de los slicers y filtros de página (el "shadow filter context"). Perfecta para calcular % respecto a la selección actual del usuario.
             </div>
 
-            <h4>Ejemplo — % sobre la selección visible (no sobre el total absoluto):</h4>
+            <h4>Ejemplo, % sobre la selección visible (no sobre el total absoluto):</h4>
             <div class="code-block">
               <button class="code-block__copy">Copiar</button>
               <pre><code class="language-javascript">// El usuario filtra por "2024" con un slicer de año
@@ -646,14 +646,14 @@ DIVIDE(
 
             <div class="note note--warning">
               <strong>⚠️ La función más compleja de DAX</strong><br>
-              ALLSELECTED es probablemente la función más compleja de entender en DAX — incluso para expertos. Su comportamiento en modelos compuestos y composite models puede ser sorprendente. Si puedes lograr el resultado con ALL + SELECTEDVALUE, hazlo así.
+              ALLSELECTED es probablemente la función más compleja de entender en DAX, incluso para expertos. Su comportamiento en modelos compuestos y composite models puede ser sorprendente. Si puedes lograr el resultado con ALL + SELECTEDVALUE, hazlo así.
             </div>
           </div>
 
           <h3>Menciones breves:</h3>
           <ul>
-            <li><strong>ALLNOBLANKROW</strong> — Como ALL pero excluye la fila en blanco generada por relaciones inválidas</li>
-            <li><strong>ALLCROSSFILTERED</strong> — Quita filtros incluyendo los que llegan por filtrado cruzado desde tablas relacionadas</li>
+            <li><strong>ALLNOBLANKROW</strong>, Como ALL pero excluye la fila en blanco generada por relaciones inválidas</li>
+            <li><strong>ALLCROSSFILTERED</strong>, Quita filtros incluyendo los que llegan por filtrado cruzado desde tablas relacionadas</li>
           </ul>
 
           <div class="video-card">
@@ -680,7 +680,7 @@ DIVIDE(
             <div class="function-card__name">REMOVEFILTERS(&lt;tabla_o_columna&gt;)</div>
             <div class="function-card__level">Intermedio</div>
             <div class="function-card__description">
-              Alias más legible de ALL cuando se usa como modificador de CALCULATE. No devuelve tabla — solo se usa dentro de CALCULATE para quitar filtros. Mejora la legibilidad del código.
+              Alias más legible de ALL cuando se usa como modificador de CALCULATE. No devuelve tabla, solo se usa dentro de CALCULATE para quitar filtros. Mejora la legibilidad del código.
             </div>
 
             <h4>Ejemplo:</h4>
@@ -709,7 +709,7 @@ CALCULATE([Ventas], REMOVEFILTERS('Productos'))
               Modificador de CALCULATE que cambia cómo se combina el nuevo filtro con el existente. Sin KEEPFILTERS, CALCULATE REEMPLAZA el filtro existente. Con KEEPFILTERS, lo INTERSECTA (AND con el filtro existente).
             </div>
 
-            <h4>Ejemplo crucial — la diferencia:</h4>
+            <h4>Ejemplo crucial, la diferencia:</h4>
             <div class="code-block">
               <button class="code-block__copy">Copiar</button>
               <pre><code class="language-javascript">// El visual tiene un slicer con "España" seleccionado
@@ -735,7 +735,7 @@ Ventas Francia KF = CALCULATE([Ventas], KEEPFILTERS('Clientes'[País] = "Francia
         <section id="filter">
           <div class="category-header">
             <span class="category-header__icon">🔍</span>
-            <h2 class="category-header__title">FILTER — filtrar tablas</h2>
+            <h2 class="category-header__title">FILTER, filtrar tablas</h2>
           </div>
 
           <div class="function-card">
@@ -759,7 +759,7 @@ CALCULATE(
 )</code></pre>
             </div>
 
-            <h4>Ejemplo — FILTER con referencias a medidas (acceso a contexto externo):</h4>
+            <h4>Ejemplo, FILTER con referencias a medidas (acceso a contexto externo):</h4>
             <div class="code-block">
               <button class="code-block__copy">Copiar</button>
               <pre><code class="language-javascript">// Productos cuyas ventas superan la media
@@ -784,7 +784,7 @@ CALCULATE(
         <section id="values">
           <div class="category-header">
             <span class="category-header__icon">📋</span>
-            <h2 class="category-header__title">VALUES, DISTINCT, IN — obtener valores únicos</h2>
+            <h2 class="category-header__title">VALUES, DISTINCT, IN, obtener valores únicos</h2>
           </div>
 
           <div class="function-card">
@@ -855,7 +855,7 @@ CALCULATE(
         <section id="selectedvalue">
           <div class="category-header">
             <span class="category-header__icon">🎚️</span>
-            <h2 class="category-header__title">SELECTEDVALUE — leer slicers</h2>
+            <h2 class="category-header__title">SELECTEDVALUE, leer slicers</h2>
           </div>
 
           <div class="function-card">
@@ -865,7 +865,7 @@ CALCULATE(
               Si hay exactamente UN valor seleccionado en el contexto para esa columna, lo devuelve. Si hay varios o ninguno, devuelve el valor alternativo (por defecto BLANK). Imprescindible para leer qué tiene seleccionado el usuario en un slicer.
             </div>
 
-            <h4>Ejemplo básico — leer un slicer:</h4>
+            <h4>Ejemplo básico, leer un slicer:</h4>
             <div class="code-block">
               <button class="code-block__copy">Copiar</button>
               <pre><code class="language-javascript">// Mostrar el país seleccionado en el título del visual
@@ -876,7 +876,7 @@ País Seleccionado = SELECTEDVALUE('Clientes'[País], "Todos los países")
 // Sin slicer → "Todos los países"</code></pre>
             </div>
 
-            <h4>Ejemplo — lógica condicional basada en slicer:</h4>
+            <h4>Ejemplo, lógica condicional basada en slicer:</h4>
             <div class="code-block">
               <button class="code-block__copy">Copiar</button>
               <pre><code class="language-javascript">// Slicer de tipo de análisis: "Ventas" o "Margen"
@@ -890,7 +890,7 @@ SWITCH(
 )</code></pre>
             </div>
 
-            <h4>Ejemplo — HASONEVALUE (complemento de SELECTEDVALUE):</h4>
+            <h4>Ejemplo, HASONEVALUE (complemento de SELECTEDVALUE):</h4>
             <div class="code-block">
               <button class="code-block__copy">Copiar</button>
               <pre><code class="language-javascript">// HASONEVALUE devuelve TRUE/FALSE
@@ -905,7 +905,7 @@ Tiene Un País = HASONEVALUE('Clientes'[País])
         <section id="treatas">
           <div class="category-header">
             <span class="category-header__icon">🔗</span>
-            <h2 class="category-header__title">TREATAS — relaciones virtuales</h2>
+            <h2 class="category-header__title">TREATAS, relaciones virtuales</h2>
           </div>
 
           <div class="function-card">
@@ -915,7 +915,7 @@ Tiene Un País = HASONEVALUE('Clientes'[País])
               Aplica los valores de una tabla como filtros de otras columnas, creando una "relación virtual" para el contexto de ese cálculo. Muy útil para hacer filtrajes cruzados entre tablas sin crear relaciones físicas en el modelo.
             </div>
 
-            <h4>Ejemplo — pasar un filtro de una tabla a otra sin relación:</h4>
+            <h4>Ejemplo, pasar un filtro de una tabla a otra sin relación:</h4>
             <div class="code-block">
               <button class="code-block__copy">Copiar</button>
               <pre><code class="language-javascript">// Quieres filtrar Ventas por los productos que aparecen en una lista externa
@@ -928,7 +928,7 @@ CALCULATE(
 )</code></pre>
             </div>
 
-            <h4>Ejemplo — usar los valores de un parámetro What-If como filtro:</h4>
+            <h4>Ejemplo, usar los valores de un parámetro What-If como filtro:</h4>
             <div class="code-block">
               <button class="code-block__copy">Copiar</button>
               <pre><code class="language-javascript">// Caso más realista
@@ -951,25 +951,25 @@ CALCULATE(
             <h2 class="category-header__title">Los 5 patrones más usados con CALCULATE</h2>
           </div>
 
-          <h3>Patrón 1 — Porcentaje sobre el total:</h3>
+          <h3>Patrón 1, Porcentaje sobre el total:</h3>
           <div class="code-block">
             <button class="code-block__copy">Copiar</button>
             <pre><code class="language-javascript">% Total = DIVIDE([Ventas], CALCULATE([Ventas], ALL('Tabla')))</code></pre>
           </div>
 
-          <h3>Patrón 2 — Porcentaje sobre el padre en una jerarquía:</h3>
+          <h3>Patrón 2, Porcentaje sobre el padre en una jerarquía:</h3>
           <div class="code-block">
             <button class="code-block__copy">Copiar</button>
             <pre><code class="language-javascript">% del Padre = DIVIDE([Ventas], CALCULATE([Ventas], ALLEXCEPT('Productos','Productos'[Categoría])))</code></pre>
           </div>
 
-          <h3>Patrón 3 — Valor del año anterior:</h3>
+          <h3>Patrón 3, Valor del año anterior:</h3>
           <div class="code-block">
             <button class="code-block__copy">Copiar</button>
             <pre><code class="language-javascript">Ventas Año Anterior = CALCULATE([Ventas], SAMEPERIODLASTYEAR('Calendario'[Fecha]))</code></pre>
           </div>
 
-          <h3>Patrón 4 — Medida dinámica por slicer:</h3>
+          <h3>Patrón 4, Medida dinámica por slicer:</h3>
           <div class="code-block">
             <button class="code-block__copy">Copiar</button>
             <pre><code class="language-javascript">Medida Dinámica =
@@ -980,7 +980,7 @@ SWITCH(SELECTEDVALUE('KPI'[Nombre]),
     [Total Ventas])</code></pre>
           </div>
 
-          <h3>Patrón 5 — Filtro sobre tabla relacionada:</h3>
+          <h3>Patrón 5, Filtro sobre tabla relacionada:</h3>
           <div class="code-block">
             <button class="code-block__copy">Copiar</button>
             <pre><code class="language-javascript">Ventas Clientes Premium =

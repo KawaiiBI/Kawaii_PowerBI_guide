@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="DP-700 Módulo 1: Introducción a la analítica end-to-end con Microsoft Fabric. OneLake, shortcuts, mirroring, workspaces, roles, capacidad y SKUs — con trampas de examen.">
+  <meta name="description" content="DP-700 Módulo 1: Introducción a la analítica end-to-end con Microsoft Fabric. OneLake, shortcuts, mirroring, workspaces, roles, capacidad y SKUs, con trampas de examen.">
   <title>DP-700 · Módulo 1: Introducción a Fabric | Power BI Guide by Kawaii BI</title>
   <link rel="canonical" href="https://kawaiibi.es/topics/certificaciones/dp-700/modulo-1.html">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Kawaii Power BI Guide">
   <meta property="og:locale" content="es_ES">
   <meta property="og:title" content="DP-700 · Módulo 1: Introducción a Fabric | Power BI Guide by Kawaii BI">
-  <meta property="og:description" content="DP-700 Módulo 1: analítica end-to-end con Microsoft Fabric. OneLake, shortcuts, mirroring, workspaces, roles, capacidad y SKUs — con trampas de examen.">
+  <meta property="og:description" content="DP-700 Módulo 1: analítica end-to-end con Microsoft Fabric. OneLake, shortcuts, mirroring, workspaces, roles, capacidad y SKUs, con trampas de examen.">
   <meta property="og:url" content="https://kawaiibi.es/topics/certificaciones/dp-700/modulo-1.html">
   <meta property="og:image" content="https://kawaiibi.es/assets/images/og-banner.png">
   <meta property="og:image:width" content="1200">
@@ -217,7 +217,7 @@
           <h4>Arquitectura técnica</h4>
           <ul>
             <li><strong>Storage layer:</strong> ADLS Gen2</li>
-            <li><strong>Formato por defecto para datos tabulares:</strong> Delta Parquet</li>
+            <li><strong>Formato por defecto para datos tabulares:</strong> Delta Lake</li>
             <li><strong>Formatos soportados:</strong> Delta, Parquet, CSV, JSON y cualquier tipo de fichero</li>
             <li><strong>APIs:</strong> soporta las APIs de ADLS Gen2 y Azure Blob Storage (SDKs, Storage Explorer, incluso Azure Databricks)</li>
           </ul>
@@ -324,7 +324,7 @@ external_table('MyShortcut')
 
         <article class="concept-card">
           <h3>¿Qué es Mirroring?</h3>
-          <p><strong>Mirroring</strong> replica continuamente datos de una base de datos operacional externa a OneLake, <strong>sin pipelines ETL tradicionales</strong>. Bases soportadas: Azure SQL Database, SQL Server, Azure Cosmos DB, Snowflake. El dato replicado se guarda como <strong>Delta Parquet</strong>.</p>
+          <p><strong>Mirroring</strong> replica continuamente datos de una base de datos operacional externa a OneLake, <strong>sin pipelines ETL tradicionales</strong>. Bases soportadas: Azure SQL Database, SQL Server, Azure Cosmos DB, Snowflake. El dato replicado se guarda como <strong>Delta Lake</strong>.</p>
 
           <h4>🎯 Mirroring vs Shortcuts (te lo preguntan seguro)</h4>
           <div class="table-scroll">
@@ -481,8 +481,8 @@ external_table('MyShortcut')
             <table class="md-table">
               <thead><tr><th>Item</th><th>Cuándo usarlo</th><th>Motor</th><th>Formato</th></tr></thead>
               <tbody>
-                <tr><td><strong>Lakehouse</strong></td><td>Estructurados + no estructurados, big data</td><td>Spark + SQL endpoint</td><td>Delta Parquet + cualquier fichero</td></tr>
-                <tr><td><strong>Warehouse</strong></td><td>Analítica SQL relacional, T-SQL completo</td><td>T-SQL puro</td><td>Delta Parquet</td></tr>
+                <tr><td><strong>Lakehouse</strong></td><td>Estructurados + no estructurados, big data</td><td>Spark + SQL endpoint</td><td>Delta Lake + cualquier fichero</td></tr>
+                <tr><td><strong>Warehouse</strong></td><td>Analítica SQL relacional, T-SQL completo</td><td>T-SQL puro</td><td>Delta Lake</td></tr>
                 <tr><td><strong>Eventhouse</strong></td><td>Streaming, telemetría, logs, tiempo real</td><td>KQL / Kusto</td><td>KQL DB + Delta</td></tr>
                 <tr><td><strong>SQL Database</strong></td><td>OLTP + analítica (mismo motor que Azure SQL DB)</td><td>T-SQL transaccional</td><td>Propio + espejo en OneLake</td></tr>
               </tbody>
@@ -581,11 +581,11 @@ external_table('MyShortcut')
         <article class="concept-card">
           <h3>Contexto útil (menos "examinable")</h3>
           <ul>
-            <li><strong>Data Engineer</strong> 👩‍🔧 — ingiere/transforma/carga a OneLake, usa Pipelines, Lakehouses y Notebooks. <em>¡Tú, ahora mismo!</em> 💕</li>
-            <li><strong>Analytics Engineer</strong> — bridge entre engineering y analysis, cura data assets y crea semantic models.</li>
-            <li><strong>Data Analyst</strong> — Dataflows, Direct Lake y reports en Power BI.</li>
-            <li><strong>Data Scientist</strong> — Notebooks (Python, Spark), modelos ML, Azure ML.</li>
-            <li><strong>Citizen developers</strong> — descubren datasets vía OneLake catalog y usan Copilot.</li>
+            <li><strong>Data Engineer</strong> 👩‍🔧, ingiere/transforma/carga a OneLake, usa Pipelines, Lakehouses y Notebooks. <em>¡Tú, ahora mismo!</em> 💕</li>
+            <li><strong>Analytics Engineer</strong>, bridge entre engineering y analysis, cura data assets y crea semantic models.</li>
+            <li><strong>Data Analyst</strong>, Dataflows, Direct Lake y reports en Power BI.</li>
+            <li><strong>Data Scientist</strong>, Notebooks (Python, Spark), modelos ML, Azure ML.</li>
+            <li><strong>Citizen developers</strong>, descubren datasets vía OneLake catalog y usan Copilot.</li>
           </ul>
         </article>
 

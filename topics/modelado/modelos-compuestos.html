@@ -4,12 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Modelos compuestos en Power BI: combinar Import y DirectQuery, modos de almacenamiento (Import/DirectQuery/Dual), islas de datos y cuándo usarlos.">
-  <title>Modelos Compuestos — Modelado de Datos | Power BI Guide by Kawaii BI</title>
+  <title>Modelos Compuestos, Modelado de Datos | Power BI Guide by Kawaii BI</title>
   <link rel="canonical" href="https://kawaiibi.es/topics/modelado/modelos-compuestos.html">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Kawaii Power BI Guide">
   <meta property="og:locale" content="es_ES">
-  <meta property="og:title" content="Modelos Compuestos — Modelado de Datos | Power BI Guide by Kawaii BI">
+  <meta property="og:title" content="Modelos Compuestos, Modelado de Datos | Power BI Guide by Kawaii BI">
   <meta property="og:description" content="Modelos compuestos en Power BI: combinar Import y DirectQuery, modos de almacenamiento (Import/DirectQuery/Dual), islas de datos y cuándo usarlos.">
   <meta property="og:url" content="https://kawaiibi.es/topics/modelado/modelos-compuestos.html">
   <meta property="og:image" content="https://kawaiibi.es/assets/images/og-banner.png">
@@ -17,7 +17,7 @@
   <meta property="og:image:height" content="1200">
   <meta property="og:image:alt" content="Sara Lozano Marti - Kawaii Power BI">
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="Modelos Compuestos — Modelado de Datos | Power BI Guide by Kawaii BI">
+  <meta name="twitter:title" content="Modelos Compuestos, Modelado de Datos | Power BI Guide by Kawaii BI">
   <meta name="twitter:description" content="Modelos compuestos en Power BI: combinar Import y DirectQuery, modos de almacenamiento (Import/DirectQuery/Dual), islas de datos y cuándo usarlos.">
   <meta name="twitter:image" content="https://kawaiibi.es/assets/images/og-banner.png">
 
@@ -200,7 +200,7 @@
           <h3>El problema de mezclar tablas sin modo Dual</h3>
           <p>Una <strong>isla de datos</strong> ocurre cuando tienes tablas DirectQuery y tablas Import que no están conectadas a través de una tabla en modo Dual o Import. Power BI no puede combinar los resultados de ambas islas en una sola consulta SQL, lo que fuerza consultas separadas y puede producir resultados incorrectos o lentos.</p>
 
-          <pre><code class="language-javascript">// PROBLEMA — Dos islas separadas:
+          <pre><code class="language-javascript">// PROBLEMA, Dos islas separadas:
 DimProducto (Import) ─── FactVentas (DirectQuery)  // isla DirectQuery
 DimCliente  (Import)                                 // isla Import
 
@@ -208,7 +208,7 @@ DimCliente  (Import)                                 // isla Import
 // → Power BI no puede crear un solo query SQL
 // → Comportamientos inesperados en los visuals
 
-// SOLUCIÓN — Usar modo Dual para las dimensiones compartidas:
+// SOLUCIÓN, Usar modo Dual para las dimensiones compartidas:
 DimProducto (Dual) ─── FactVentas (DirectQuery)    // dimensión en ambas islas
 DimCliente  (Dual) ─── FactVentas (DirectQuery)    // dimensión en ambas islas
 // → Power BI puede incluir las dimensiones en el SQL enviado al origen</code></pre>
@@ -258,13 +258,13 @@ FactVentas  (DirectQuery)  ← 5B filas en Azure Synapse
           <ul>
             <li><strong>Complejidad:</strong> Los modelos compuestos son más difíciles de depurar y mantener que los modelos puramente Import</li>
             <li><strong>No todas las funciones DAX funcionan:</strong> Algunas funciones (como SUMMARIZECOLUMNS con filtros complejos) pueden no optimizarse bien en DirectQuery</li>
-            <li><strong>Seguridad de datos:</strong> Los datos de diferentes fuentes pueden tener diferentes niveles de privacidad — configura correctamente los niveles de privacidad en la fuente</li>
-            <li><strong>Actualizaciones:</strong> Las tablas Import necesitan actualización programada; las DirectQuery son siempre frescas — planifica los tiempos de actualización</li>
+            <li><strong>Seguridad de datos:</strong> Los datos de diferentes fuentes pueden tener diferentes niveles de privacidad, configura correctamente los niveles de privacidad en la fuente</li>
+            <li><strong>Actualizaciones:</strong> Las tablas Import necesitan actualización programada; las DirectQuery son siempre frescas, planifica los tiempos de actualización</li>
             <li><strong>Gateway requerido:</strong> Para fuentes on-premise en DirectQuery necesitas un Data Gateway instalado y configurado</li>
           </ul>
 
           <div class="note note--warning">
-            ⚠️ <strong>Ojo con esto:</strong> Los modelos compuestos son una tecnología avanzada. No los uses por defecto — evalúa primero si Import puro con optimizaciones es suficiente. La complejidad extra solo se justifica cuando el volumen de datos o la necesidad de tiempo real son reales y no pueden resolverse de otra manera.
+            ⚠️ <strong>Ojo con esto:</strong> Los modelos compuestos son una tecnología avanzada. No los uses por defecto, evalúa primero si Import puro con optimizaciones es suficiente. La complejidad extra solo se justifica cuando el volumen de datos o la necesidad de tiempo real son reales y no pueden resolverse de otra manera.
           </div>
         </article>
 

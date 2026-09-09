@@ -4,12 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Deployment Pipelines en Power BI: Dev → Test → Prod, reglas de dataset, parámetros, comparación entre etapas y mejores prácticas de despliegue.">
-  <title>Deployment Pipelines — Gobernanza | Power BI Guide by Kawaii BI</title>
+  <title>Deployment Pipelines, Gobernanza | Power BI Guide by Kawaii BI</title>
   <link rel="canonical" href="https://kawaiibi.es/topics/gobernanza/deployment-pipelines.html">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Kawaii Power BI Guide">
   <meta property="og:locale" content="es_ES">
-  <meta property="og:title" content="Deployment Pipelines — Gobernanza | Power BI Guide by Kawaii BI">
+  <meta property="og:title" content="Deployment Pipelines, Gobernanza | Power BI Guide by Kawaii BI">
   <meta property="og:description" content="Deployment Pipelines en Power BI: Dev → Test → Prod, reglas de dataset, parámetros, comparación entre etapas y mejores prácticas de despliegue.">
   <meta property="og:url" content="https://kawaiibi.es/topics/gobernanza/deployment-pipelines.html">
   <meta property="og:image" content="https://kawaiibi.es/assets/images/og-banner.png">
@@ -17,7 +17,7 @@
   <meta property="og:image:height" content="1200">
   <meta property="og:image:alt" content="Sara Lozano Marti - Kawaii Power BI">
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="Deployment Pipelines — Gobernanza | Power BI Guide by Kawaii BI">
+  <meta name="twitter:title" content="Deployment Pipelines, Gobernanza | Power BI Guide by Kawaii BI">
   <meta name="twitter:description" content="Deployment Pipelines en Power BI: Dev → Test → Prod, reglas de dataset, parámetros, comparación entre etapas y mejores prácticas de despliegue.">
   <meta name="twitter:image" content="https://kawaiibi.es/assets/images/og-banner.png">
 
@@ -136,7 +136,7 @@
 
         <article class="concept-card">
           <h3>Promover contenido entre workspaces sin abrir Desktop</h3>
-          <p>Una <strong>Deployment Pipeline</strong> es una herramienta nativa del Service que conecta tres workspaces — uno por cada etapa del ciclo de vida — y permite <em>promover</em> el contenido de una etapa a la siguiente con un par de clics, manteniendo las conexiones, las identidades de dataset y los permisos limpios.</p>
+          <p>Una <strong>Deployment Pipeline</strong> es una herramienta nativa del Service que conecta tres workspaces, uno por cada etapa del ciclo de vida, y permite <em>promover</em> el contenido de una etapa a la siguiente con un par de clics, manteniendo las conexiones, las identidades de dataset y los permisos limpios.</p>
           <p>Requiere capacidad <strong>Premium per User (PPU)</strong>, Premium o Fabric. No está disponible en Pro standalone.</p>
         </article>
 
@@ -167,7 +167,7 @@
             <li>Un workspace solo puede estar asociado a una pipeline a la vez</li>
             <li>Los nombres internos de los artefactos se mantienen al promocionar (las URLs sobreviven)</li>
             <li>Los permisos del workspace NO se copian; cada etapa tiene los suyos</li>
-            <li>La conexión a orígenes y los parámetros sí pueden cambiar entre etapas — esa es la función de las reglas</li>
+            <li>La conexión a orígenes y los parámetros sí pueden cambiar entre etapas, esa es la función de las reglas</li>
           </ul>
         </article>
 
@@ -259,7 +259,7 @@ in
         <article class="concept-card">
           <h3>Lo que diferencia un equipo maduro</h3>
           <ul>
-            <li><strong>Parametriza siempre conexiones y nombres de base de datos</strong> — incluso si arrancas con un único entorno</li>
+            <li><strong>Parametriza siempre conexiones y nombres de base de datos</strong>, incluso si arrancas con un único entorno</li>
             <li><strong>Cada pipeline cubre una iniciativa o dominio</strong>, no "toda la organización"</li>
             <li><strong>Despliegues siempre acompañados de notas</strong> con tickets / motivos</li>
             <li><strong>Revisión obligatoria antes de promover a Prod</strong>: refresh exitoso en Test, RLS validado, performance probada</li>
@@ -269,10 +269,10 @@ in
 
           <h4>Errores frecuentes</h4>
           <ul>
-            <li>Mezclar Dev/Test/Prod en el mismo workspace y usar carpetas para "separar" — no es lo mismo</li>
-            <li>Hardcodear conexiones en M sin parámetros — al promocionar todo apunta al Dev</li>
+            <li>Mezclar Dev/Test/Prod en el mismo workspace y usar carpetas para "separar", no es lo mismo</li>
+            <li>Hardcodear conexiones en M sin parámetros, al promocionar todo apunta al Dev</li>
             <li>Olvidar configurar credenciales y refresh schedules en Test/Prod después del primer despliegue</li>
-            <li>No promocionar dataset y informe juntos — el informe queda apuntando al dataset Dev</li>
+            <li>No promocionar dataset y informe juntos, el informe queda apuntando al dataset Dev</li>
           </ul>
         </article>
 

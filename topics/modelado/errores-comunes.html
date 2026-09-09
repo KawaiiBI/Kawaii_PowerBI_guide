@@ -4,12 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Los 10 errores más frecuentes en modelado Power BI: relaciones bidireccionales innecesarias, cardinalidad alta, tablas desnormalizadas y cómo evitarlos.">
-  <title>Errores Comunes en Modelado — Modelado de Datos | Power BI Guide by Kawaii BI</title>
+  <title>Errores Comunes en Modelado, Modelado de Datos | Power BI Guide by Kawaii BI</title>
   <link rel="canonical" href="https://kawaiibi.es/topics/modelado/errores-comunes.html">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Kawaii Power BI Guide">
   <meta property="og:locale" content="es_ES">
-  <meta property="og:title" content="Errores Comunes en Modelado — Modelado de Datos | Power BI Guide by Kawaii BI">
+  <meta property="og:title" content="Errores Comunes en Modelado, Modelado de Datos | Power BI Guide by Kawaii BI">
   <meta property="og:description" content="Los 10 errores más frecuentes en modelado Power BI: relaciones bidireccionales innecesarias, cardinalidad alta, tablas desnormalizadas y cómo evitarlos.">
   <meta property="og:url" content="https://kawaiibi.es/topics/modelado/errores-comunes.html">
   <meta property="og:image" content="https://kawaiibi.es/assets/images/og-banner.png">
@@ -17,7 +17,7 @@
   <meta property="og:image:height" content="1200">
   <meta property="og:image:alt" content="Sara Lozano Marti - Kawaii Power BI">
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="Errores Comunes en Modelado — Modelado de Datos | Power BI Guide by Kawaii BI">
+  <meta name="twitter:title" content="Errores Comunes en Modelado, Modelado de Datos | Power BI Guide by Kawaii BI">
   <meta name="twitter:description" content="Los 10 errores más frecuentes en modelado Power BI: relaciones bidireccionales innecesarias, cardinalidad alta, tablas desnormalizadas y cómo evitarlos.">
   <meta name="twitter:image" content="https://kawaiibi.es/assets/images/og-banner.png">
 
@@ -113,7 +113,7 @@
         <header class="topic-header">
           <span class="topic-header__icon">⚠️</span>
           <h1 class="topic-header__title">Errores Comunes en Modelado</h1>
-          <p class="topic-header__subtitle">Los 10 errores más frecuentes que hacen que un modelo Power BI sea lento, incorrecto o difícil de mantener — y cómo evitarlos desde el principio</p>
+          <p class="topic-header__subtitle">Los 10 errores más frecuentes que hacen que un modelo Power BI sea lento, incorrecto o difícil de mantener, y cómo evitarlos desde el principio</p>
           <div class="topic-header__levels">
             <span class="badge badge--beginner">Principiante</span>
             <span class="badge badge--intermediate">Intermedio</span>
@@ -172,7 +172,7 @@
           <div class="error-card__number">#4</div>
           <div class="error-card__content">
             <h3>Todo en una sola tabla desnormalizada</h3>
-            <p>Cargar un Excel o CSV con todos los atributos y métricas en una sola tabla "plana" — cliente, producto, fecha, región y métricas todo mezclado. Esto produce alta cardinalidad en todas las columnas, mal rendimiento y DAX imposible de escribir.</p>
+            <p>Cargar un Excel o CSV con todos los atributos y métricas en una sola tabla "plana", cliente, producto, fecha, región y métricas todo mezclado. Esto produce alta cardinalidad en todas las columnas, mal rendimiento y DAX imposible de escribir.</p>
             <div class="error-card__fix"><strong>Solución:</strong> Separa siempre hechos de dimensiones. Una tabla plana con todas las ventas incluyendo nombre de cliente, producto, categoría, etc. debe transformarse en Power Query en: FactVentas + DimCliente + DimProducto + DimFecha.</div>
           </div>
         </div>
@@ -190,7 +190,7 @@
           <div class="error-card__number">#6</div>
           <div class="error-card__content">
             <h3>Columnas calculadas donde deberían ser medidas</h3>
-            <p>Crear columnas calculadas para totales, ratios o cálculos que dependen del contexto del informe: <code>Total Ventas = SUM(FactVentas[Importe])</code> como columna calculada. El resultado no varía según los filtros del visual — siempre muestra el total global.</p>
+            <p>Crear columnas calculadas para totales, ratios o cálculos que dependen del contexto del informe: <code>Total Ventas = SUM(FactVentas[Importe])</code> como columna calculada. El resultado no varía según los filtros del visual, siempre muestra el total global.</p>
             <div class="error-card__fix"><strong>Solución:</strong> Usa medidas para cualquier cálculo que deba responder a filtros o slicers. Recuerda: si la fórmula termina en SUM, COUNT, AVERAGE u otra agregación → medida. Si describe un atributo fijo por fila → columna calculada o mejor hacerlo en Power Query.</div>
           </div>
         </div>
@@ -208,7 +208,7 @@
           <div class="error-card__number">#8</div>
           <div class="error-card__content">
             <h3>Columnas DateTime sin separar fecha y hora</h3>
-            <p>Mantener columnas de tipo DateTime (fecha + hora) cuando solo necesitas la fecha, o mantener la precisión de segundos cuando solo necesitas la hora. Cada valor único de DateTime cuenta para la cardinalidad — una columna con marcas de tiempo únicas puede tener millones de valores distintos.</p>
+            <p>Mantener columnas de tipo DateTime (fecha + hora) cuando solo necesitas la fecha, o mantener la precisión de segundos cuando solo necesitas la hora. Cada valor único de DateTime cuenta para la cardinalidad, una columna con marcas de tiempo únicas puede tener millones de valores distintos.</p>
             <div class="error-card__fix"><strong>Solución:</strong> En Power Query, divide la columna en dos: <code>Date.From([FechaHora])</code> para la fecha y <code>Time.Hour([FechaHora])</code> para la hora (o elimina la hora si no la necesitas). Luego elimina la columna DateTime original.</div>
           </div>
         </div>
@@ -227,7 +227,7 @@
           <div class="error-card__content">
             <h3>Relaciones ambiguas o rutas de filtro conflictivas</h3>
             <p>Crear múltiples caminos de relación entre las mismas tablas (por ejemplo, FactVentas relacionada con DimCliente directamente Y también indirectamente a través de DimPedido). Esto crea ambigüedad en el contexto de filtro y DAX puede producir resultados incorrectos o errores.</p>
-            <div class="error-card__fix"><strong>Solución:</strong> En un esquema estrella bien diseñado, las tablas de hechos y dimensiones se conectan directamente — sin caminos alternativos. Si necesitas filtrar una tabla de hechos por atributos de dos caminos posibles, diseña explícitamente cuál usar y aplica relaciones inactivas con USERELATIONSHIP cuando sea necesario.</div>
+            <div class="error-card__fix"><strong>Solución:</strong> En un esquema estrella bien diseñado, las tablas de hechos y dimensiones se conectan directamente, sin caminos alternativos. Si necesitas filtrar una tabla de hechos por atributos de dos caminos posibles, diseña explícitamente cuál usar y aplica relaciones inactivas con USERELATIONSHIP cuando sea necesario.</div>
           </div>
         </div>
 

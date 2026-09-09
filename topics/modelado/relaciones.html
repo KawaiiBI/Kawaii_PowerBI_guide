@@ -4,12 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Relaciones entre tablas en Power BI: tipos 1:N, 1:1 y N:N, dirección de filtro, bidireccionalidad, relaciones activas e inactivas y cómo usar USERELATIONSHIP.">
-  <title>Relaciones entre Tablas — Modelado de Datos | Power BI Guide by Kawaii BI</title>
+  <title>Relaciones entre Tablas, Modelado de Datos | Power BI Guide by Kawaii BI</title>
   <link rel="canonical" href="https://kawaiibi.es/topics/modelado/relaciones.html">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Kawaii Power BI Guide">
   <meta property="og:locale" content="es_ES">
-  <meta property="og:title" content="Relaciones entre Tablas — Modelado de Datos | Power BI Guide by Kawaii BI">
+  <meta property="og:title" content="Relaciones entre Tablas, Modelado de Datos | Power BI Guide by Kawaii BI">
   <meta property="og:description" content="Relaciones entre tablas en Power BI: tipos 1:N, 1:1 y N:N, dirección de filtro, bidireccionalidad, relaciones activas e inactivas y cómo usar USERELATIONSHIP.">
   <meta property="og:url" content="https://kawaiibi.es/topics/modelado/relaciones.html">
   <meta property="og:image" content="https://kawaiibi.es/assets/images/og-banner.png">
@@ -17,7 +17,7 @@
   <meta property="og:image:height" content="1200">
   <meta property="og:image:alt" content="Sara Lozano Marti - Kawaii Power BI">
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="Relaciones entre Tablas — Modelado de Datos | Power BI Guide by Kawaii BI">
+  <meta name="twitter:title" content="Relaciones entre Tablas, Modelado de Datos | Power BI Guide by Kawaii BI">
   <meta name="twitter:description" content="Relaciones entre tablas en Power BI: tipos 1:N, 1:1 y N:N, dirección de filtro, bidireccionalidad, relaciones activas e inactivas y cómo usar USERELATIONSHIP.">
   <meta name="twitter:image" content="https://kawaiibi.es/assets/images/og-banner.png">
 
@@ -115,7 +115,7 @@
         <header class="topic-header">
           <span class="topic-header__icon">🔗</span>
           <h1 class="topic-header__title">Relaciones entre Tablas</h1>
-          <p class="topic-header__subtitle">Tipos de relaciones, dirección de filtro, bidireccionalidad, relaciones activas e inactivas — el motor que conecta tu modelo de datos</p>
+          <p class="topic-header__subtitle">Tipos de relaciones, dirección de filtro, bidireccionalidad, relaciones activas e inactivas, el motor que conecta tu modelo de datos</p>
           <div class="topic-header__levels">
             <span class="badge badge--beginner">Principiante</span>
             <span class="badge badge--intermediate">Intermedio</span>
@@ -187,11 +187,11 @@
 DimCliente [IDCliente=42] ──► FactVentas [IDCliente=42]
                                // Solo se ven las ventas del cliente 42</code></pre>
 
-          <h4>Dirección Única (Single — recomendado)</h4>
+          <h4>Dirección Única (Single, recomendado)</h4>
           <p>El filtro va de la dimensión a los hechos. Es la configuración por defecto y la más predecible. Los valores del lado "uno" filtran al lado "muchos".</p>
 
-          <h4>Dirección Doble (Both — usar con cautela)</h4>
-          <p>El filtro fluye en ambas direcciones. Puede producir resultados inesperados y afectar al rendimiento. Solo úsala cuando sea estrictamente necesario — por ejemplo, en relaciones N:N o en ciertos patrones de seguridad RLS.</p>
+          <h4>Dirección Doble (Both, usar con cautela)</h4>
+          <p>El filtro fluye en ambas direcciones. Puede producir resultados inesperados y afectar al rendimiento. Solo úsala cuando sea estrictamente necesario, por ejemplo, en relaciones N:N o en ciertos patrones de seguridad RLS.</p>
         </article>
 
         <!-- Bidireccional -->
@@ -234,7 +234,7 @@ DimCliente [IDCliente=42] ──► FactVentas [IDCliente=42]
           <p>Entre dos tablas solo puede haber <strong>una relación activa</strong> (representada con línea sólida en el diagrama). Las relaciones adicionales quedan <strong>inactivas</strong> (línea discontinua) y no se usan automáticamente.</p>
 
           <h4>Caso de uso clásico: múltiples fechas en FactVentas</h4>
-          <p>Una tabla de ventas puede tener varias columnas de fecha: <code>FechaPedido</code>, <code>FechaEnvio</code>, <code>FechaEntrega</code>. Solo puedes tener una relación activa con <code>DimFecha</code> — generalmente <code>FechaPedido</code>. Las otras se crean como relaciones inactivas y se activan con <code>USERELATIONSHIP</code> cuando las necesitas.</p>
+          <p>Una tabla de ventas puede tener varias columnas de fecha: <code>FechaPedido</code>, <code>FechaEnvio</code>, <code>FechaEntrega</code>. Solo puedes tener una relación activa con <code>DimFecha</code>, generalmente <code>FechaPedido</code>. Las otras se crean como relaciones inactivas y se activan con <code>USERELATIONSHIP</code> cuando las necesitas.</p>
 
           <pre><code class="language-javascript">// Relaciones con DimFecha:
 FactVentas[FechaPedido]  ──── DimFecha[Fecha]  (ACTIVA ✅)
@@ -252,11 +252,11 @@ FactVentas[FechaEntrega]- - - DimFecha[Fecha]  (inactiva)</code></pre>
           <h3>Activar una relación inactiva en una medida</h3>
           <p><code>USERELATIONSHIP</code> es la función DAX que te permite usar una relación inactiva dentro del contexto de una medida. Se usa siempre dentro de <code>CALCULATE</code>.</p>
 
-          <pre><code class="language-javascript">// Medida usando la fecha de pedido (relación activa — comportamiento normal)
+          <pre><code class="language-javascript">// Medida usando la fecha de pedido (relación activa, comportamiento normal)
 Ventas por Fecha Pedido =
 SUM(FactVentas[Importe])
 
-// Medida usando la fecha de envío (relación inactiva — activada con USERELATIONSHIP)
+// Medida usando la fecha de envío (relación inactiva, activada con USERELATIONSHIP)
 Ventas por Fecha Envio =
 CALCULATE(
     SUM(FactVentas[Importe]),
@@ -266,13 +266,13 @@ CALCULATE(
           <h4>Puntos clave sobre USERELATIONSHIP:</h4>
           <ul>
             <li>Solo funciona dentro de <code>CALCULATE</code> (o funciones que lo llaman internamente)</li>
-            <li>La relación inactiva debe existir en el modelo — no puedes inventarla en DAX</li>
+            <li>La relación inactiva debe existir en el modelo, no puedes inventarla en DAX</li>
             <li>Temporalmente "desactiva" la relación activa y "activa" la especificada</li>
             <li>Muy útil para análisis de inteligencia de tiempo con múltiples dimensiones de fecha</li>
           </ul>
 
           <div class="note note--tip">
-            💡 <strong>Tip kawaii:</strong> El patrón "role-playing dimensions" — una sola tabla DimFecha relacionada varias veces con FactVentas mediante relaciones activas/inactivas — es uno de los más elegantes y eficientes en Power BI. ¡Aprende a dominarlo! 🌸
+            💡 <strong>Tip kawaii:</strong> El patrón "role-playing dimensions", una sola tabla DimFecha relacionada varias veces con FactVentas mediante relaciones activas/inactivas, es uno de los más elegantes y eficientes en Power BI. ¡Aprende a dominarlo! 🌸
           </div>
         </article>
 

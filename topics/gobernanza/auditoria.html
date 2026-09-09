@@ -4,12 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Auditoría en Power BI: Activity Log, Unified Audit Log de Microsoft 365, Purview audit y patrones para montar dashboards de uso y adopción.">
-  <title>Auditoría y Activity Log — Gobernanza | Power BI Guide by Kawaii BI</title>
+  <title>Auditoría y Activity Log, Gobernanza | Power BI Guide by Kawaii BI</title>
   <link rel="canonical" href="https://kawaiibi.es/topics/gobernanza/auditoria.html">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Kawaii Power BI Guide">
   <meta property="og:locale" content="es_ES">
-  <meta property="og:title" content="Auditoría y Activity Log — Gobernanza | Power BI Guide by Kawaii BI">
+  <meta property="og:title" content="Auditoría y Activity Log, Gobernanza | Power BI Guide by Kawaii BI">
   <meta property="og:description" content="Auditoría en Power BI: Activity Log, Unified Audit Log de Microsoft 365, Purview audit y patrones para montar dashboards de uso y adopción.">
   <meta property="og:url" content="https://kawaiibi.es/topics/gobernanza/auditoria.html">
   <meta property="og:image" content="https://kawaiibi.es/assets/images/og-banner.png">
@@ -17,7 +17,7 @@
   <meta property="og:image:height" content="1200">
   <meta property="og:image:alt" content="Sara Lozano Marti - Kawaii Power BI">
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="Auditoría y Activity Log — Gobernanza | Power BI Guide by Kawaii BI">
+  <meta name="twitter:title" content="Auditoría y Activity Log, Gobernanza | Power BI Guide by Kawaii BI">
   <meta name="twitter:description" content="Auditoría en Power BI: Activity Log, Unified Audit Log de Microsoft 365, Purview audit y patrones para montar dashboards de uso y adopción.">
   <meta name="twitter:image" content="https://kawaiibi.es/assets/images/og-banner.png">
 
@@ -166,12 +166,12 @@
           <h3>Tipos de eventos más útiles</h3>
           <ul>
             <li><strong>ViewReport / ViewDashboard:</strong> consumo real, base de cualquier métrica de adopción</li>
-            <li><strong>ExportReport / ExportDataset:</strong> alertas de fuga potencial — sobre todo si la sensitivity label no debería permitirlo</li>
+            <li><strong>ExportReport / ExportDataset:</strong> alertas de fuga potencial, sobre todo si la sensitivity label no debería permitirlo</li>
             <li><strong>ShareReport / ShareDashboard:</strong> quién comparte qué con quién (incluyendo external sharing)</li>
             <li><strong>CreateDataset / DeleteDataset / RepublishContent:</strong> ciclo de vida</li>
             <li><strong>UpdateDataSources:</strong> cambios en orígenes (cruciales tras incidentes)</li>
             <li><strong>RefreshSemanticModel:</strong> refresh manual o programado (éxito / fallo)</li>
-            <li><strong>TenantSettingChanged:</strong> cambios en configuración global — siempre vigilados</li>
+            <li><strong>TenantSettingChanged:</strong> cambios en configuración global, siempre vigilados</li>
             <li><strong>AddedAdminAsMemberOfWorkspace:</strong> cambios de permisos sensibles</li>
           </ul>
         </article>
@@ -187,7 +187,7 @@
           <h4>1. Manual desde el portal (rápido y puntual)</h4>
           <ul>
             <li>Microsoft Purview / Compliance → <em>Audit</em> → Buscar por workload "PowerBI"</li>
-            <li>Exporta a CSV — bien para auditorías de un día concreto</li>
+            <li>Exporta a CSV, bien para auditorías de un día concreto</li>
             <li>Limitación: depende del retention configurado</li>
           </ul>
 
@@ -210,7 +210,7 @@ Get-PowerBIActivityEvent `
         </article>
 
         <div class="note note--practice">
-          📌 <strong>Buena práctica:</strong> Activity Log retiene solo 30 días. Si no lo <em>copias</em> a un almacén propio cada noche, mañana no habrá historia. Considéralo el "log de seguridad" — necesitas archivo.
+          📌 <strong>Buena práctica:</strong> Activity Log retiene solo 30 días. Si no lo <em>copias</em> a un almacén propio cada noche, mañana no habrá historia. Considéralo el "log de seguridad", necesitas archivo.
         </div>
 
         <div class="category-header" id="dashboard">
@@ -225,14 +225,14 @@ Get-PowerBIActivityEvent `
           <ul>
             <li>Usuarios activos por mes (DAU / MAU)</li>
             <li>Top 10 informes más vistos</li>
-            <li>Informes sin visualizaciones en 60 días — candidatos a archivar</li>
+            <li>Informes sin visualizaciones en 60 días, candidatos a archivar</li>
             <li>Informes Certified vs no certificados (uso comparado)</li>
           </ul>
 
           <h4>Seguridad y compliance</h4>
           <ul>
             <li>Exports por sensitivity label (alertas en Highly Confidential)</li>
-            <li>External sharing — usuarios fuera del tenant que reciben contenido</li>
+            <li>External sharing, usuarios fuera del tenant que reciben contenido</li>
             <li>Cambios en tenant settings (auditoría de configuración)</li>
             <li>Refresh fallidos por workspace</li>
           </ul>
@@ -257,7 +257,7 @@ Get-PowerBIActivityEvent `
         <article class="concept-card">
           <h3>Cuánto guardar y por qué</h3>
           <ul>
-            <li><strong>30 días</strong> en Activity Log Power BI — fijo, no configurable</li>
+            <li><strong>30 días</strong> en Activity Log Power BI, fijo, no configurable</li>
             <li><strong>90 días / 1 año / 10 años</strong> en Audit Log M365 según SKU y configuración</li>
             <li>Para retención más allá, hay que <strong>archivar a un almacén propio</strong> (storage, lakehouse) y aplicar tu propia política</li>
           </ul>

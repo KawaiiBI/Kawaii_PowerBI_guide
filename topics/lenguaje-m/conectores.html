@@ -5,12 +5,12 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <meta content="Excel.Workbook, Csv.Document, Web.Contents, Sql.Database y más conectores del Lenguaje M." name="description"/>
-<title>Conectores de Datos — Lenguaje M | Power BI Guide by Kawaii BI</title>
+<title>Conectores de Datos, Lenguaje M | Power BI Guide by Kawaii BI</title>
   <link rel="canonical" href="https://kawaiibi.es/topics/lenguaje-m/conectores.html">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Kawaii Power BI Guide">
   <meta property="og:locale" content="es_ES">
-  <meta property="og:title" content="Conectores de Datos — Lenguaje M | Power BI Guide by Kawaii BI">
+  <meta property="og:title" content="Conectores de Datos, Lenguaje M | Power BI Guide by Kawaii BI">
   <meta property="og:description" content="Guia kawaii de Power BI, DAX, Lenguaje M y Microsoft Fabric.">
   <meta property="og:url" content="https://kawaiibi.es/topics/lenguaje-m/conectores.html">
   <meta property="og:image" content="https://kawaiibi.es/assets/images/og-banner.png">
@@ -18,7 +18,7 @@
   <meta property="og:image:height" content="1200">
   <meta property="og:image:alt" content="Sara Lozano Marti - Kawaii Power BI">
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="Conectores de Datos — Lenguaje M | Power BI Guide by Kawaii BI">
+  <meta name="twitter:title" content="Conectores de Datos, Lenguaje M | Power BI Guide by Kawaii BI">
   <meta name="twitter:description" content="Guia kawaii de Power BI, DAX, Lenguaje M y Microsoft Fabric.">
   <meta name="twitter:image" content="https://kawaiibi.es/assets/images/og-banner.png">
 <!-- Google Fonts -->
@@ -338,9 +338,9 @@ in
 </div>
 <div class="function-card__params"><h4>Parámetros del record de opciones</h4>
 <ul>
-<li><code>Delimiter</code> — Separador: <code>","</code>, <code>";"</code>, <code>"\t"</code> (tabulador)</li>
-<li><code>Encoding</code> — Codificación: <code>1252</code> (Windows-1252), <code>65001</code> (UTF-8)</li>
-<li><code>QuoteStyle</code> — <code>QuoteStyle.Csv</code> (por defecto)</li>
+<li><code>Delimiter</code>, Separador: <code>","</code>, <code>";"</code>, <code>"\t"</code> (tabulador)</li>
+<li><code>Encoding</code>, Codificación: <code>1252</code> (Windows-1252), <code>65001</code> (UTF-8)</li>
+<li><code>QuoteStyle</code>, <code>QuoteStyle.Csv</code> (por defecto)</li>
 </ul>
 </div>
 <div class="function-card__example"><h4>Ejemplo</h4>
@@ -401,11 +401,11 @@ in tabla</code></pre>
 </div>
 <div class="function-card__params"><h4>Opciones principales</h4>
 <ul>
-<li><code>Headers</code> — Record con cabeceras HTTP (Authorization, Content-Type, etc.)</li>
-<li><code>Query</code> — Record con parámetros de query string</li>
-<li><code>Content</code> — Binary para peticiones POST</li>
-<li><code>RelativePath</code> — Ruta relativa a la URL base</li>
-<li><code>Timeout</code> — Duración máxima de espera</li>
+<li><code>Headers</code>, Record con cabeceras HTTP (Authorization, Content-Type, etc.)</li>
+<li><code>Query</code>, Record con parámetros de query string</li>
+<li><code>Content</code>, Binary para peticiones POST</li>
+<li><code>RelativePath</code>, Ruta relativa a la URL base</li>
+<li><code>Timeout</code>, Duración máxima de espera</li>
 </ul>
 </div>
 <div class="function-card__example"><h4>Ejemplo</h4>
@@ -440,7 +440,7 @@ let
 in datos</code></pre>
 </div>
 <div class="note note--warning">
-            ⚠️ <strong>Ojo con esto:</strong> Para que Power BI Service pueda actualizar datos de <code>Web.Contents</code>, la URL base debe ser fija (no dinámica). Si construyes la URL dinámicamente, usa <code>RelativePath</code> y <code>Query</code> para la parte variable — así PBI puede hacer query folding y gestionar la autenticación correctamente.
+            ⚠️ <strong>Ojo con esto:</strong> Para que Power BI Service pueda actualizar datos de <code>Web.Contents</code>, la URL base debe ser fija (no dinámica). Si construyes la URL dinámicamente, usa <code>RelativePath</code> y <code>Query</code> para la parte variable, así PBI puede hacer query folding y gestionar la autenticación correctamente.
           </div>
 </article><article class="function-card" id="paginated-api">
 <header class="function-card__header">
@@ -615,7 +615,7 @@ in combinado</code></pre>
 <div class="function-card__description"><h4>¿Qué hace?</h4>
 <p>Puedes crear parámetros de Power Query (tipo Parámetro) o leer valores de una tabla de configuración para hacer las conexiones dinámicas y fácilmente configurables sin tocar el código M.</p>
 </div>
-<div class="function-card__example"><h4>Ejemplo — Tabla de parámetros</h4>
+<div class="function-card__example"><h4>Ejemplo, Tabla de parámetros</h4>
 <pre><code class="language-javascript">// 1. Crear tabla de parámetros en el modelo:
 //    Nombre         | Valor
 //    Servidor       | prodserver\sql2022

@@ -79,7 +79,7 @@
       align-items: center;
     }
 
-    /* TOC — Table of contents */
+    /* TOC, Table of contents */
     .toc {
       background: var(--color-rose);
       border: 1.5px solid var(--color-mauve);
@@ -452,7 +452,7 @@
         <header class="topic-header">
 <span class="topic-header__icon">📈</span>
 <h1 class="topic-header__title">Funciones Estadísticas</h1>
-<p class="topic-header__subtitle">MEDIAN, PERCENTILE, STDEV, RANKX, distribuciones estadísticas y regresión lineal — el análisis estadístico completo en DAX</p>
+<p class="topic-header__subtitle">MEDIAN, PERCENTILE, STDEV, RANKX, distribuciones estadísticas y regresión lineal, el análisis estadístico completo en DAX</p>
 <div class="topic-header__levels">
 <span class="badge badge--intermediate">Intermedio</span>
 <span class="badge badge--advanced">Avanzado</span>
@@ -521,13 +521,13 @@
 </table>
 <div class="note note--tip">
 <strong>💡 Contexto de uso en Power BI</strong><br/>
-            En la práctica, el <strong>95% del uso estadístico en Power BI es descriptivo</strong> — mediana, percentiles, desviación estándar.
+            En la práctica, el <strong>95% del uso estadístico en Power BI es descriptivo</strong>, mediana, percentiles, desviación estándar.
             Las distribuciones estadísticas y la regresión son para usuarios avanzados que integran análisis estadístico directamente en sus informes.
           </div>
 </section><!-- Sección 1: Medidas de posición --><section id="posicion">
 <div class="category-header">
 <span class="category-header__icon">📏</span>
-<h2 class="category-header__title">Medidas de posición — dónde están los datos</h2>
+<h2 class="category-header__title">Medidas de posición, dónde están los datos</h2>
 </div>
 <!-- MEDIAN / MEDIANX -->
 <div class="function-card">
@@ -546,7 +546,7 @@ Salario Medio = AVERAGE('Empleados'[Salario])
 // Resultado: 58.200€ (el CEO infla la media)
 
 Salario Mediano = MEDIAN('Empleados'[Salario])
-// Resultado: 24.000€ (el valor central real — mucho más representativo)</code></pre>
+// Resultado: 24.000€ (el valor central real, mucho más representativo)</code></pre>
 </div>
 <h4>Ejemplos prácticos</h4>
 <div class="code-block">
@@ -556,7 +556,7 @@ Ticket Mediano = MEDIAN('Ventas'[Importe])
 Ticket Medio = AVERAGE('Ventas'[Importe])
 // Si hay ventas atípicas muy grandes, Ticket Mediano es más representativo
 
-// ✅ MEDIANX — mediana de una expresión calculada
+// ✅ MEDIANX, mediana de una expresión calculada
 Margen Mediano =
 MEDIANX(
     'Pedidos',
@@ -582,7 +582,7 @@ Q2 Ventas = PERCENTILE.INC('Ventas'[Importe], 0.50)  -- mediana
 Q3 Ventas = PERCENTILE.INC('Ventas'[Importe], 0.75)  -- 75% inferior
 P90 Ventas = PERCENTILE.INC('Ventas'[Importe], 0.90) -- top 10%
 
-// ✅ Rango intercuartílico (IQR — medida de dispersión robusta)
+// ✅ Rango intercuartílico (IQR, medida de dispersión robusta)
 IQR =
     PERCENTILE.INC('Ventas'[Importe], 0.75) -
     PERCENTILE.INC('Ventas'[Importe], 0.25)
@@ -606,7 +606,7 @@ OR(
 <div class="function-card__name">PERCENTILEX.INC / PERCENTILEX.EXC</div>
 <div class="function-card__level badge--advanced">Avanzado</div>
 <div class="function-card__description">
-              Versión iteradora de PERCENTILE — calcula el percentil de una expresión evaluada fila a fila.
+              Versión iteradora de PERCENTILE, calcula el percentil de una expresión evaluada fila a fila.
             </div>
 <div class="code-block">
 <button class="code-block__copy">Copiar</button>
@@ -625,7 +625,7 @@ PERCENTILEX.INC(
 </section><!-- Sección 2: Dispersión --><section id="dispersion">
 <div class="category-header">
 <span class="category-header__icon">📊</span>
-<h2 class="category-header__title">Dispersión — cómo de dispersos están los datos</h2>
+<h2 class="category-header__title">Dispersión, cómo de dispersos están los datos</h2>
 </div>
 <h3>Tabla comparativa de funciones de dispersión</h3>
 <table class="function-table">
@@ -705,14 +705,14 @@ Consistencia Ventas = STDEV.S('Ventas'[Importe])
 // Alta → ventas muy variables día a día (riesgo)
 // Baja → ventas estables y predecibles
 
-// ✅ Coeficiente de variación (CV) — dispersión relativa
+// ✅ Coeficiente de variación (CV), dispersión relativa
 // Comparable entre medidas con diferentes escalas
 CV Ventas = DIVIDE(STDEV.S('Ventas'[Importe]), AVERAGE('Ventas'[Importe]))
 // 0.1 = 10% de variación (muy estable)
 // 0.5 = 50% de variación (muy variable)
 // Permite comparar variabilidad entre métricas con distintas escalas
 
-// ✅ Z-Score — a cuántas desviaciones estándar está cada venta de la media
+// ✅ Z-Score, a cuántas desviaciones estándar está cada venta de la media
 'Ventas'[Z-Score] =
 DIVIDE(
     'Ventas'[Importe] - AVERAGE('Ventas'[Importe]),
@@ -732,7 +732,7 @@ DIVIDE(
 </section><!-- Sección 3: Rankings --><section id="ranking">
 <div class="category-header">
 <span class="category-header__icon">🏅</span>
-<h2 class="category-header__title">Rankings — RANKX y RANK.EQ</h2>
+<h2 class="category-header__title">Rankings, RANKX y RANK.EQ</h2>
 </div>
 <!-- RANKX -->
 <div class="function-card">
@@ -740,7 +740,7 @@ DIVIDE(
 <div class="function-card__level badge--intermediate">Intermedio</div>
 <div class="function-card__level badge--advanced">Avanzado</div>
 <div class="function-card__description">
-              Calcula el ranking de un valor dentro de una tabla. Es un iterador — evalúa la expresión para cada fila de la tabla y determina la posición del valor actual.
+              Calcula el ranking de un valor dentro de una tabla. Es un iterador, evalúa la expresión para cada fila de la tabla y determina la posición del valor actual.
               <strong>La función de ranking más usada en Power BI</strong> para rankings dinámicos.
             </div>
 <h3>Parámetros de RANKX</h3>
@@ -795,7 +795,7 @@ RETURN
 <div class="function-card__name">RANK.EQ</div>
 <div class="function-card__level badge--advanced">Avanzado</div>
 <div class="function-card__description">
-              Versión simplificada de ranking — busca la posición de un valor específico dentro de una columna. No es iteradora. Menos flexible que RANKX pero más directa para casos simples.
+              Versión simplificada de ranking, busca la posición de un valor específico dentro de una columna. No es iteradora. Menos flexible que RANKX pero más directa para casos simples.
             </div>
 <div class="code-block">
 <button class="code-block__copy">Copiar</button>
@@ -833,7 +833,7 @@ SAMPLE(10, 'Ventas', 'Ventas'[Importe], ASC)
 <div class="function-card__name">GEOMEAN / GEOMEANX</div>
 <div class="function-card__level badge--advanced">Avanzado</div>
 <div class="function-card__description">
-              Media geométrica — la raíz N-ésima del producto de N valores.
+              Media geométrica, la raíz N-ésima del producto de N valores.
               <strong>Perfecta para promediar tasas de crecimiento, rendimientos compuestos y ratios multiplicativos.</strong>
 </div>
 <h3>¿Cuándo usar media geométrica vs aritmética?</h3>
@@ -864,7 +864,7 @@ GEOMEANX('Crecimientos', 1 + 'Crecimientos'[Tasa]) - 1</code></pre>
 </section><!-- Sección 5: Regresión lineal --><section id="regresion">
 <div class="category-header">
 <span class="category-header__icon">📉</span>
-<h2 class="category-header__title">LINEST y LINESTX — regresión lineal en DAX</h2>
+<h2 class="category-header__title">LINEST y LINESTX, regresión lineal en DAX</h2>
 </div>
 <p>
             Sí, DAX puede hacer regresión lineal. Quizás no al nivel de Python con scikit-learn, pero sí lo suficiente para calcular tendencias,
@@ -928,11 +928,11 @@ RETURN Pendiente
 </section><!-- Sección 6: Distribuciones estadísticas --><section id="distribuciones">
 <div class="category-header">
 <span class="category-header__icon">🔔</span>
-<h2 class="category-header__title">Distribuciones estadísticas — para análisis avanzado</h2>
+<h2 class="category-header__title">Distribuciones estadísticas, para análisis avanzado</h2>
 </div>
 <p>
             Estas funciones son el territorio de las personas con formación en estadística. Si eres analista de datos, ingeniera o científica de datos, las reconocerás inmediatamente.
-            Si no tienes ese background, no te preocupes — la mayoría de proyectos de BI no las necesitan. Pero están aquí para cuando las necesites.
+            Si no tienes ese background, no te preocupes, la mayoría de proyectos de BI no las necesitan. Pero están aquí para cuando las necesites.
           </p>
 <h3>Tabla de todas las distribuciones disponibles</h3>
 <table class="function-table">
@@ -1102,7 +1102,7 @@ RETURN
 </div>
 </section><!-- Note: Next Steps --><div class="note note--next">
 <strong>🚀 Siguiente paso</strong><br/>
-          ¡Impresionante — ya manejas estadística en DAX! Ahora pasamos a algo más visual y muy usado en el día a día:
+          ¡Impresionante, ya manejas estadística en DAX! Ahora pasamos a algo más visual y muy usado en el día a día:
           las <strong><a href="texto.html" style="color: var(--color-lavender);">funciones de texto</a></strong>
           para formatear, limpiar y transformar cadenas de caracteres. 🚀
         </div>

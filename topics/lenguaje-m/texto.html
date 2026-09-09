@@ -5,12 +5,12 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <meta content="Text.Upper, Text.Lower, Text.Split, Text.Replace y más funciones de texto del Lenguaje M de Power Query." name="description"/>
-<title>Funciones de Texto (Text.*) — Lenguaje M | Power BI Guide by Kawaii BI</title>
+<title>Funciones de Texto (Text.*), Lenguaje M | Power BI Guide by Kawaii BI</title>
   <link rel="canonical" href="https://kawaiibi.es/topics/lenguaje-m/texto.html">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Kawaii Power BI Guide">
   <meta property="og:locale" content="es_ES">
-  <meta property="og:title" content="Funciones de Texto (Text.*) — Lenguaje M | Power BI Guide by Kawaii BI">
+  <meta property="og:title" content="Funciones de Texto (Text.*), Lenguaje M | Power BI Guide by Kawaii BI">
   <meta property="og:description" content="Guia kawaii de Power BI, DAX, Lenguaje M y Microsoft Fabric.">
   <meta property="og:url" content="https://kawaiibi.es/topics/lenguaje-m/texto.html">
   <meta property="og:image" content="https://kawaiibi.es/assets/images/og-banner.png">
@@ -18,7 +18,7 @@
   <meta property="og:image:height" content="1200">
   <meta property="og:image:alt" content="Sara Lozano Marti - Kawaii Power BI">
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="Funciones de Texto (Text.*) — Lenguaje M | Power BI Guide by Kawaii BI">
+  <meta name="twitter:title" content="Funciones de Texto (Text.*), Lenguaje M | Power BI Guide by Kawaii BI">
   <meta name="twitter:description" content="Guia kawaii de Power BI, DAX, Lenguaje M y Microsoft Fabric.">
   <meta name="twitter:image" content="https://kawaiibi.es/assets/images/og-banner.png">
 <!-- Google Fonts -->
@@ -424,9 +424,9 @@ Table.TransformColumns(tabla, {{"Descripcion", Text.Clean}})</code></pre>
 </div>
 <div class="function-card__params"><h4>Parámetros</h4>
 <ul>
-<li><code>text</code> — Texto donde buscar</li>
-<li><code>substring</code> — Subcadena a buscar</li>
-<li><code>comparer</code> — Comparador opcional (ej. <code>Comparer.OrdinalIgnoreCase</code>)</li>
+<li><code>text</code>, Texto donde buscar</li>
+<li><code>substring</code>, Subcadena a buscar</li>
+<li><code>comparer</code>, Comparador opcional (ej. <code>Comparer.OrdinalIgnoreCase</code>)</li>
 </ul>
 </div>
 <div class="function-card__example"><h4>Ejemplo</h4>
@@ -709,7 +709,7 @@ Text.From(#date(2024,1,15)) // "2024-01-15"</code></pre>
 <div class="function-card__example"><h4>Ejemplo</h4>
 <pre><code class="language-javascript">Number.FromText("1234.56")            // 1234.56
 Number.FromText("1.234,56", "es-ES")  // 1234.56 (formato español)
-Number.FromText("€1.234,56", "es-ES") // Error — quita el símbolo primero</code></pre>
+Number.FromText("€1.234,56", "es-ES") // Error, quita el símbolo primero</code></pre>
 </div>
 </article><div class="category-header" id="format">
 <span class="category-header__icon">🎨</span>

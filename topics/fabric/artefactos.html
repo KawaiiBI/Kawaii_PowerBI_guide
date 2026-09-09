@@ -4,12 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Artefactos de Microsoft Fabric: Lakehouse, Warehouse, Notebook, Pipeline, Dataflow Gen2, Eventstream, KQL Database, Semantic Model, Activator y más. Qué hace cada uno y cuándo usarlo.">
-  <title>Artefactos de Fabric — Microsoft Fabric | Power BI Guide by Kawaii BI</title>
+  <title>Artefactos de Fabric, Microsoft Fabric | Power BI Guide by Kawaii BI</title>
   <link rel="canonical" href="https://kawaiibi.es/topics/fabric/artefactos.html">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Kawaii Power BI Guide">
   <meta property="og:locale" content="es_ES">
-  <meta property="og:title" content="Artefactos de Fabric — Microsoft Fabric | Power BI Guide by Kawaii BI">
+  <meta property="og:title" content="Artefactos de Fabric, Microsoft Fabric | Power BI Guide by Kawaii BI">
   <meta property="og:description" content="Artefactos de Microsoft Fabric: Lakehouse, Warehouse, Notebook, Pipeline, Dataflow Gen2, Eventstream, KQL Database, Semantic Model, Activator y más. Qué hace cada uno y cuándo usarlo.">
   <meta property="og:url" content="https://kawaiibi.es/topics/fabric/artefactos.html">
   <meta property="og:image" content="https://kawaiibi.es/assets/images/og-banner.png">
@@ -17,7 +17,7 @@
   <meta property="og:image:height" content="1200">
   <meta property="og:image:alt" content="Sara Lozano Marti - Kawaii Power BI">
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="Artefactos de Fabric — Microsoft Fabric | Power BI Guide by Kawaii BI">
+  <meta name="twitter:title" content="Artefactos de Fabric, Microsoft Fabric | Power BI Guide by Kawaii BI">
   <meta name="twitter:description" content="Artefactos de Microsoft Fabric: Lakehouse, Warehouse, Notebook, Pipeline, Dataflow Gen2, Eventstream, KQL Database, Semantic Model, Activator y más. Qué hace cada uno y cuándo usarlo.">
   <meta name="twitter:image" content="https://kawaiibi.es/assets/images/og-banner.png">
 
@@ -37,7 +37,7 @@
 
   <style>
     /* ============================================================
-       ESTILOS — ARTEFACTOS FABRIC
+       ESTILOS, ARTEFACTOS FABRIC
     ============================================================ */
 
     /* Topic header */
@@ -402,7 +402,7 @@
             <a href="#data-science" class="toc-box__link">🔬 Data Science</a>
             <a href="#real-time" class="toc-box__link">⚡ Real-Time Intelligence</a>
             <a href="#power-bi" class="toc-box__link">📊 Power BI</a>
-            <a href="#decision" class="toc-box__link">🎯 ¿Cuándo uso qué? — guía de decisión</a>
+            <a href="#decision" class="toc-box__link">🎯 ¿Cuándo uso qué?, guía de decisión</a>
             <a href="#lakehouse-vs-warehouse" class="toc-box__link">🥊 Lakehouse vs Warehouse</a>
           </div>
         </div>
@@ -428,18 +428,18 @@
           </p>
 
           <ul style="font-size: 16px; line-height: 1.85; margin: 16px 0 24px; padding-left: 24px;">
-            <li><strong>Vive en un workspace</strong> — que a su vez vive en una capacidad.</li>
-            <li><strong>Tiene un tipo</strong> — Lakehouse, Notebook, Semantic Model, etc.
+            <li><strong>Vive en un workspace</strong>, que a su vez vive en una capacidad.</li>
+            <li><strong>Tiene un tipo</strong>, Lakehouse, Notebook, Semantic Model, etc.
                 Cada tipo tiene sus propias pestañas, acciones y experiencia de edición.</li>
-            <li><strong>Tiene representación en OneLake</strong> — los items de datos
+            <li><strong>Tiene representación en OneLake</strong>, los items de datos
                 (Lakehouse, Warehouse, KQL DB) reservan una carpeta en el lago con el
                 sufijo del tipo (<code>MiItem.Lakehouse</code>).</li>
-            <li><strong>Tiene permisos propios</strong> — que se heredan del workspace por
+            <li><strong>Tiene permisos propios</strong>, que se heredan del workspace por
                 defecto, pero pueden ajustarse a nivel item o incluso a nivel tabla.</li>
           </ul>
 
           <p class="text">
-            En las secciones siguientes los agrupamos por <strong>experiencia</strong> —
+            En las secciones siguientes los agrupamos por <strong>experiencia</strong>, 
             la misma organización que verás en el selector de abajo a la izquierda del
             portal Fabric. Empezamos por los más fundamentales.
           </p>
@@ -528,7 +528,7 @@
               </p>
               <p>
                 También hay <strong>Data Wrangler</strong>, una UI low-code que genera
-                código PySpark/Pandas a partir de clics para limpiar datos — perfecta para
+                código PySpark/Pandas a partir de clics para limpiar datos, perfecta para
                 explorar antes de escribir el pipeline definitivo.
               </p>
               <div class="item-card__when">
@@ -552,8 +552,8 @@
             <div class="item-card__body">
               <p>
                 A diferencia del Notebook (que es interactivo), un <strong>Spark Job
-                Definition</strong> apunta a un fichero de código — un <code>.py</code>,
-                un <code>.jar</code> o un <code>.R</code> — que vive en tu Lakehouse, y
+                Definition</strong> apunta a un fichero de código, un <code>.py</code>,
+                un <code>.jar</code> o un <code>.R</code>, que vive en tu Lakehouse, y
                 define cómo ejecutarlo: argumentos, ficheros de referencia, main class…
                 Es la pieza para <em>despliegues serios</em> de pipelines Spark con código
                 externo bien versionado.
@@ -608,7 +608,7 @@
             <span class="section-icon">🏭</span>
             <h2>Data Factory</h2>
           </div>
-          <p class="section-subtitle">Ingesta, movimiento y orquestación de datos — con dos sabores: low-code y code-first.</p>
+          <p class="section-subtitle">Ingesta, movimiento y orquestación de datos, con dos sabores: low-code y code-first.</p>
 
           <div class="experience-banner">
             <span class="experience-banner__icon">🏭</span>
@@ -637,7 +637,7 @@
               </p>
               <p>
                 Si vienes de Azure Data Factory o Synapse Pipelines, los Pipelines de
-                Fabric son <strong>prácticamente idénticos</strong> — misma UI, mismas
+                Fabric son <strong>prácticamente idénticos</strong>, misma UI, mismas
                 actividades, mismos conceptos. La mayor diferencia es que aquí todo vive
                 dentro de Fabric sin integration runtimes externos.
               </p>
@@ -706,7 +706,7 @@
             <div class="item-card__body">
               <p>
                 El <strong>Copy Job</strong> es un item nuevo y sorprendentemente útil:
-                hace una sola cosa — copiar datos de A a B — pero lo hace muy bien y con
+                hace una sola cosa, copiar datos de A a B, pero lo hace muy bien y con
                 features que antes requerían construir un pipeline complejo.
               </p>
               <p>
@@ -737,9 +737,9 @@
               <p>
                 <strong>Mirroring</strong> es quizá la pieza más interesante de todo
                 Fabric para ingeniería de datos. Conectas una base de datos operacional
-                — <strong>Azure SQL DB</strong>, <strong>Azure Cosmos DB</strong>,
+, <strong>Azure SQL DB</strong>, <strong>Azure Cosmos DB</strong>,
                 <strong>Azure SQL Managed Instance</strong>, <strong>Snowflake</strong>,
-                <strong>PostgreSQL</strong>, <strong>Databricks Unity Catalog</strong> —
+                <strong>PostgreSQL</strong>, <strong>Databricks Unity Catalog</strong>, 
                 y Fabric mantiene una réplica continua en OneLake, en formato Delta, con
                 latencia de segundos.
               </p>
@@ -825,7 +825,7 @@
             </div>
             <div class="item-card__body">
               <p>
-                El <strong>SQL analytics endpoint</strong> no se crea a mano — aparece
+                El <strong>SQL analytics endpoint</strong> no se crea a mano, aparece
                 automáticamente en cada Lakehouse y expone sus tablas Delta como si fueran
                 tablas de un warehouse. Puedes consultarlas con T-SQL desde SSMS, Azure
                 Data Studio, o cualquier cliente TDS. Es <em>read-only</em>: para escribir,
@@ -839,7 +839,7 @@
               <div class="item-card__when">
                 <strong>Úsalo cuando…</strong>
                 Ya tienes un Lakehouse y quieres que gente con skills SQL puedan
-                consultarlo sin aprender Spark. No es un item que crees por separado —
+                consultarlo sin aprender Spark. No es un item que crees por separado, 
                 es una <em>vista</em> del Lakehouse.
               </div>
             </div>
@@ -860,7 +860,7 @@
             <span class="experience-banner__icon">🔬</span>
             <div>
               <div class="experience-banner__name">Data Science</div>
-              <p class="experience-banner__desc">ML reproducible sobre los mismos datos de OneLake. MLflow está integrado de forma nativa — no necesitas montarlo tú.</p>
+              <p class="experience-banner__desc">ML reproducible sobre los mismos datos de OneLake. MLflow está integrado de forma nativa, no necesitas montarlo tú.</p>
             </div>
           </div>
 
@@ -905,7 +905,7 @@
             </div>
             <div class="item-card__body">
               <p>
-                Un <strong>Experiment</strong> agrupa <em>runs</em> — cada intento de
+                Un <strong>Experiment</strong> agrupa <em>runs</em>, cada intento de
                 entrenamiento con sus hiperparámetros, sus métricas y su artefacto. La UI
                 permite comparar runs en tabla o en gráficos, ver cuál tuvo mejor F1,
                 mejor MAE, etc., y promover el ganador a ML Model registrado.
@@ -1004,7 +1004,7 @@
               <div class="item-card__when">
                 <strong>Úsalo cuando…</strong>
                 Ingestas telemetría de IoT, logs de aplicación, eventos de clickstream,
-                datos de sensores — cualquier cosa con timestamp y alta cardinalidad.
+                datos de sensores, cualquier cosa con timestamp y alta cardinalidad.
               </div>
             </div>
           </div>
@@ -1051,7 +1051,7 @@
                 producción, seguimiento de logística en vivo.
               </p>
               <p>
-                No reemplaza a Power BI para análisis tradicional — es complementario.
+                No reemplaza a Power BI para análisis tradicional, es complementario.
                 Piensa en él para cuando la latencia importa más que la pulcritud visual.
               </p>
               <div class="item-card__when">
@@ -1076,7 +1076,7 @@
                 <strong>Activator</strong> (antes "Reflex") es la pieza que cierra el
                 círculo de los datos en tiempo real: define reglas tipo <em>"cuando esta
                 métrica supere X durante Y minutos, haz Z"</em>, y Activator dispara la
-                acción — enviar un email, un mensaje de Teams, llamar a un webhook,
+                acción, enviar un email, un mensaje de Teams, llamar a un webhook,
                 lanzar un Power Automate flow…
               </p>
               <p>
@@ -1086,7 +1086,7 @@
               </p>
               <div class="item-card__when">
                 <strong>Úsalo cuando…</strong>
-                Necesitas alertas y automatización basadas en condiciones sobre datos —
+                Necesitas alertas y automatización basadas en condiciones sobre datos, 
                 sin construir un servicio externo que polee métricas.
               </div>
             </div>
@@ -1101,13 +1101,13 @@
             <span class="section-icon">📊</span>
             <h2>Power BI</h2>
           </div>
-          <p class="section-subtitle">Los items de Power BI siguen siendo los mismos — con algunas novedades por estar dentro de Fabric.</p>
+          <p class="section-subtitle">Los items de Power BI siguen siendo los mismos, con algunas novedades por estar dentro de Fabric.</p>
 
           <div class="experience-banner">
             <span class="experience-banner__icon">📊</span>
             <div>
               <div class="experience-banner__name">Power BI</div>
-              <p class="experience-banner__desc">La experiencia de consumo y visualización. En Fabric gana Direct Lake — lectura directa de OneLake sin importar ni copiar — y se integra con todo lo demás.</p>
+              <p class="experience-banner__desc">La experiencia de consumo y visualización. En Fabric gana Direct Lake, lectura directa de OneLake sin importar ni copiar, y se integra con todo lo demás.</p>
             </div>
           </div>
 
@@ -1117,7 +1117,7 @@
               <span class="item-card__icon">🧮</span>
               <div class="item-card__titleblock">
                 <h3 class="item-card__name">Semantic Model</h3>
-                <p class="item-card__tagline">El modelo tabular con tablas, medidas DAX y relaciones — antes "dataset"</p>
+                <p class="item-card__tagline">El modelo tabular con tablas, medidas DAX y relaciones, antes "dataset"</p>
               </div>
             </div>
             <div class="item-card__body">
@@ -1156,7 +1156,7 @@
               <p>
                 Un <strong>Report</strong> es un conjunto de páginas con visuales
                 conectados a un Semantic Model. Exactamente lo mismo que conoces de
-                Power BI Desktop — no cambia porque vivas en Fabric en lugar de en el
+                Power BI Desktop, no cambia porque vivas en Fabric en lugar de en el
                 servicio clásico.
               </p>
               <p>
@@ -1231,7 +1231,7 @@
         <section class="content-section" id="decision">
           <div class="section-header">
             <span class="section-icon">🎯</span>
-            <h2>¿Cuándo uso qué? — guía rápida de decisión</h2>
+            <h2>¿Cuándo uso qué?, guía rápida de decisión</h2>
           </div>
 
           <p class="text">
@@ -1291,7 +1291,7 @@
         <section class="content-section" id="lakehouse-vs-warehouse">
           <div class="section-header">
             <span class="section-icon">🥊</span>
-            <h2>Lakehouse vs Warehouse — el duelo eterno</h2>
+            <h2>Lakehouse vs Warehouse, el duelo eterno</h2>
           </div>
 
           <p class="lead">
@@ -1331,7 +1331,7 @@
               </tr>
               <tr>
                 <td><strong>Ficheros no estructurados</strong></td>
-                <td>✅ Sí — área <code>Files/</code></td>
+                <td>✅ Sí, área <code>Files/</code></td>
                 <td>❌ No, sólo tablas relacionales</td>
               </tr>
               <tr>

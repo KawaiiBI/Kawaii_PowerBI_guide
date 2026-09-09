@@ -5,12 +5,12 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <meta content="Funciones de Manipulación de Tablas en DAX - SUMMARIZECOLUMNS, ADDCOLUMNS, UNION, TOPN, GENERATE, TREATAS en Power BI" name="description"/>
-<title>Manipulación de Tablas — Funciones DAX | Power BI Guide</title>
+<title>Manipulación de Tablas, Funciones DAX | Power BI Guide</title>
   <link rel="canonical" href="https://kawaiibi.es/topics/dax/tablas.html">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Kawaii Power BI Guide">
   <meta property="og:locale" content="es_ES">
-  <meta property="og:title" content="Manipulación de Tablas — Funciones DAX | Power BI Guide">
+  <meta property="og:title" content="Manipulación de Tablas, Funciones DAX | Power BI Guide">
   <meta property="og:description" content="Guia kawaii de Power BI, DAX, Lenguaje M y Microsoft Fabric.">
   <meta property="og:url" content="https://kawaiibi.es/topics/dax/tablas.html">
   <meta property="og:image" content="https://kawaiibi.es/assets/images/og-banner.png">
@@ -18,7 +18,7 @@
   <meta property="og:image:height" content="1200">
   <meta property="og:image:alt" content="Sara Lozano Marti - Kawaii Power BI">
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="Manipulación de Tablas — Funciones DAX | Power BI Guide">
+  <meta name="twitter:title" content="Manipulación de Tablas, Funciones DAX | Power BI Guide">
   <meta name="twitter:description" content="Guia kawaii de Power BI, DAX, Lenguaje M y Microsoft Fabric.">
   <meta name="twitter:image" content="https://kawaiibi.es/assets/images/og-banner.png">
 <!-- Google Fonts -->
@@ -78,7 +78,7 @@
       align-items: center;
     }
 
-    /* TOC — Table of contents */
+    /* TOC, Table of contents */
     .toc {
       background: var(--color-rose);
       border: 1.5px solid var(--color-mauve);
@@ -118,7 +118,7 @@
       text-decoration: underline;
     }
 
-    /* Category header — separadores entre categorías */
+    /* Category header, separadores entre categorías */
     .category-header {
       display: flex;
       align-items: center;
@@ -139,7 +139,7 @@
       margin: 0;
     }
 
-    /* Function card — tarjeta individual para cada función */
+    /* Function card, tarjeta individual para cada función */
     .function-card {
       background: var(--color-white);
       border: 1.5px solid var(--color-mauve);
@@ -174,7 +174,7 @@
       margin-bottom: 1rem;
     }
 
-    /* Function table — tabla compacta con ejemplos */
+    /* Function table, tabla compacta con ejemplos */
     .function-table {
       width: 100%;
       border-collapse: collapse;
@@ -326,7 +326,7 @@
         <header class="topic-header">
 <span class="topic-header__icon">🗃️</span>
 <h1 class="topic-header__title">Manipulación de Tablas</h1>
-<p class="topic-header__subtitle">SUMMARIZECOLUMNS, ADDCOLUMNS, UNION, TOPN, GENERATE, TREATAS — construye y transforma tablas con todo el poder de DAX</p>
+<p class="topic-header__subtitle">SUMMARIZECOLUMNS, ADDCOLUMNS, UNION, TOPN, GENERATE, TREATAS, construye y transforma tablas con todo el poder de DAX</p>
 <div class="topic-header__levels">
 <span class="badge badge--intermediate">Intermedio</span>
 <span class="badge badge--advanced">Avanzado</span>
@@ -587,7 +587,7 @@ ADDCOLUMNS(
 </div>
 <div class="note note--tip">
 <strong>💡 Tip profesional</strong><br/>
-              ADDCOLUMNS respeta el contexto de fila automáticamente — puedes usar columnas de la tabla base directamente en las expresiones.
+              ADDCOLUMNS respeta el contexto de fila automáticamente, puedes usar columnas de la tabla base directamente en las expresiones.
               Cada expresión se evalúa fila por fila con el contexto de esa fila.
             </div>
 </div>
@@ -596,7 +596,7 @@ ADDCOLUMNS(
 <div class="function-card__level">Intermedio</div>
 <div class="function-card__description">
               Crea una nueva tabla seleccionando SOLO las columnas especificadas (y opcionalmente renombrándolas).
-              A diferencia de ADDCOLUMNS, SELECTCOLUMNS NO preserva las columnas originales — solo devuelve las que especifiques.
+              A diferencia de ADDCOLUMNS, SELECTCOLUMNS NO preserva las columnas originales, solo devuelve las que especifiques.
             </div>
 <h4>Sintaxis:</h4>
 <div class="code-block">
@@ -904,7 +904,7 @@ GROUPBY(
 <div class="function-card__level">Intermedio</div>
 <div class="function-card__description">
               Combina múltiples tablas verticalmente (una debajo de otra). Las tablas deben tener el mismo número de columnas
-              y tipos compatibles. No elimina duplicados automáticamente — conserva todas las filas.
+              y tipos compatibles. No elimina duplicados automáticamente, conserva todas las filas.
             </div>
 <h4>Sintaxis:</h4>
 <div class="code-block">
@@ -1115,7 +1115,7 @@ NATURALINNERJOIN(
 <div class="function-card__name">NATURALLEFTOUTERJOIN</div>
 <div class="function-card__level">Avanzado</div>
 <div class="function-card__description">
-              Como NATURALINNERJOIN pero tipo LEFT JOIN — conserva TODAS las filas de la primera tabla,
+              Como NATURALINNERJOIN pero tipo LEFT JOIN, conserva TODAS las filas de la primera tabla,
               aunque no tengan coincidencia en la segunda.
             </div>
 <h4>Ejemplo - Productos con categorías (incluyendo sin categoría):</h4>
@@ -1134,7 +1134,7 @@ NATURALLEFTOUTERJOIN(
 <div class="function-card__name">CROSSJOIN</div>
 <div class="function-card__level">Avanzado</div>
 <div class="function-card__description">
-              Crea el producto cartesiano de dos o más tablas — cada fila de la primera con cada fila de la segunda.
+              Crea el producto cartesiano de dos o más tablas, cada fila de la primera con cada fila de la segunda.
               ⚠️ Genera una tabla enorme (filas1 × filas2). Úsalo con cuidado y solo con tablas pequeñas.
             </div>
 <h4>Ejemplo - Matriz de todos los productos × regiones:</h4>
@@ -1254,7 +1254,7 @@ SUMX(
 <div class="note note--tip">
 <strong>💡 TOPN vs FILTER con RANKX</strong><br/>
               TOPN es mucho más eficiente que calcular RANKX para toda la tabla y luego filtrar. Si solo necesitas
-              los N primeros, siempre usa TOPN — es más rápido y usa menos memoria.
+              los N primeros, siempre usa TOPN, es más rápido y usa menos memoria.
             </div>
 </div>
 <div class="function-card">
@@ -1317,7 +1317,7 @@ ADDCOLUMNS(
 </section><!-- SECCIÓN 7: GENERATE --><section id="generate">
 <div class="category-header">
 <span class="category-header__icon">⚡</span>
-<h2 class="category-header__title">GENERATE y GENERATEALL — iteración avanzada</h2>
+<h2 class="category-header__title">GENERATE y GENERATEALL, iteración avanzada</h2>
 </div>
 <div class="function-card">
 <div class="function-card__name">GENERATE</div>
@@ -1401,7 +1401,7 @@ GENERATE(
 <div class="function-card__name">GENERATEALL</div>
 <div class="function-card__level">Avanzado</div>
 <div class="function-card__description">
-              Como GENERATE pero con comportamiento LEFT OUTER JOIN — conserva TODAS las filas de la primera tabla
+              Como GENERATE pero con comportamiento LEFT OUTER JOIN, conserva TODAS las filas de la primera tabla
               aunque la segunda expresión devuelva una tabla vacía. Las columnas de la segunda tabla serán BLANK().
             </div>
 <h4>Ejemplo - Todas las categorías con sus productos (incluso sin ventas):</h4>
@@ -1434,7 +1434,7 @@ GENERATEALL(
 </section><!-- SECCIÓN 8: RollUp --><section id="rollup">
 <div class="category-header">
 <span class="category-header__icon">📈</span>
-<h2 class="category-header__title">ROLLUP y ROLLUPGROUP — subtotales automáticos</h2>
+<h2 class="category-header__title">ROLLUP y ROLLUPGROUP, subtotales automáticos</h2>
 </div>
 <div class="function-card">
 <div class="function-card__name">ROLLUP / ROLLUPGROUP</div>
@@ -1501,7 +1501,7 @@ ADDCOLUMNS(
 </section><!-- SECCIÓN 9: TREATAS --><section id="treatas">
 <div class="category-header">
 <span class="category-header__icon">🔗</span>
-<h2 class="category-header__title">TREATAS — relaciones virtuales</h2>
+<h2 class="category-header__title">TREATAS, relaciones virtuales</h2>
 </div>
 <div class="function-card">
 <div class="function-card__name">TREATAS</div>
@@ -1595,8 +1595,8 @@ CALCULATE(
 <div class="note note--warning">
 <strong>⚠️ Limitaciones de TREATAS</strong><br/>
               - Las columnas deben tener el mismo tipo de datos<br/>
-              - Es una relación "virtual" — no aprovecha las optimizaciones del motor de relaciones físicas<br/>
-              - Puede ser más lenta que una relación real — úsala solo cuando sea necesario<br/>
+              - Es una relación "virtual", no aprovecha las optimizaciones del motor de relaciones físicas<br/>
+              - Puede ser más lenta que una relación real, úsala solo cuando sea necesario<br/>
               - No funciona con bidireccionalidad como las relaciones físicas
             </div>
 </div>
@@ -1740,11 +1740,11 @@ ADDCOLUMNS(
 </div>
 <div class="note note--tip">
 <strong>💡 Tips finales para tablas calculadas</strong><br/>
-            1. Usa VAR para descomponer expresiones complejas — mejora legibilidad y a veces performance<br/>
+            1. Usa VAR para descomponer expresiones complejas, mejora legibilidad y a veces performance<br/>
             2. ADDCOLUMNS(SUMMARIZE(...)) es mejor que SUMMARIZE con agregaciones directas<br/>
             3. Para Top N por grupo: GENERATE + TOPN es más flexible que TOPNPERLEVEL<br/>
-            4. UNION no elimina duplicados — si necesitas valores únicos, usa DISTINCT después<br/>
-            5. TREATAS es poderoso pero lento — úsalo solo cuando no puedas crear relación física<br/>
+            4. UNION no elimina duplicados, si necesitas valores únicos, usa DISTINCT después<br/>
+            5. TREATAS es poderoso pero lento, úsalo solo cuando no puedas crear relación física<br/>
             6. Para tablas grandes, considera si Power Query es mejor opción que tabla calculada
           </div>
 <div class="video-card">
@@ -1774,7 +1774,7 @@ ADDCOLUMNS(
           ¡Las tablas calculadas ya no tienen secretos para ti! Con SUMMARIZECOLUMNS, GENERATE, UNION, INTERSECT y TREATAS puedes construir
           prácticamente cualquier estructura de datos que necesites. El siguiente paso es la
           <strong><a href="inteligencia-tiempo.html">Inteligencia de Tiempo</a></strong>
-          — el conjunto de funciones que más preguntas genera en la comunidad DAX.
+, el conjunto de funciones que más preguntas genera en la comunidad DAX.
         </div>
 
       </div>

@@ -3,22 +3,22 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Funciones de Fecha y Hora en DAX — DATE, DATEDIFF, EOMONTH, NETWORKDAYS y más">
-  <title>Funciones de Fecha y Hora — Funciones DAX | Power BI Guide</title>
+  <meta name="description" content="Funciones de Fecha y Hora en DAX, DATE, DATEDIFF, EOMONTH, NETWORKDAYS y más">
+  <title>Funciones de Fecha y Hora, Funciones DAX | Power BI Guide</title>
   <link rel="canonical" href="https://kawaiibi.es/topics/dax/fecha-hora.html">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Kawaii Power BI Guide">
   <meta property="og:locale" content="es_ES">
-  <meta property="og:title" content="Funciones de Fecha y Hora — Funciones DAX | Power BI Guide">
-  <meta property="og:description" content="Funciones de Fecha y Hora en DAX — DATE, DATEDIFF, EOMONTH, NETWORKDAYS y más">
+  <meta property="og:title" content="Funciones de Fecha y Hora, Funciones DAX | Power BI Guide">
+  <meta property="og:description" content="Funciones de Fecha y Hora en DAX, DATE, DATEDIFF, EOMONTH, NETWORKDAYS y más">
   <meta property="og:url" content="https://kawaiibi.es/topics/dax/fecha-hora.html">
   <meta property="og:image" content="https://kawaiibi.es/assets/images/og-banner.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="1200">
   <meta property="og:image:alt" content="Sara Lozano Marti - Kawaii Power BI">
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="Funciones de Fecha y Hora — Funciones DAX | Power BI Guide">
-  <meta name="twitter:description" content="Funciones de Fecha y Hora en DAX — DATE, DATEDIFF, EOMONTH, NETWORKDAYS y más">
+  <meta name="twitter:title" content="Funciones de Fecha y Hora, Funciones DAX | Power BI Guide">
+  <meta name="twitter:description" content="Funciones de Fecha y Hora en DAX, DATE, DATEDIFF, EOMONTH, NETWORKDAYS y más">
   <meta name="twitter:image" content="https://kawaiibi.es/assets/images/og-banner.png">
 
   <!-- Google Fonts -->
@@ -82,7 +82,7 @@
       align-items: center;
     }
 
-    /* TOC — Table of contents */
+    /* TOC, Table of contents */
     .toc {
       background: var(--color-rose);
       border: 1.5px solid var(--color-mauve);
@@ -122,7 +122,7 @@
       text-decoration: underline;
     }
 
-    /* Category header — separadores entre categorías */
+    /* Category header, separadores entre categorías */
     .category-header {
       display: flex;
       align-items: center;
@@ -143,7 +143,7 @@
       margin: 0;
     }
 
-    /* Function card — tarjeta individual para cada función */
+    /* Function card, tarjeta individual para cada función */
     .function-card {
       background: var(--color-white);
       border: 1.5px solid var(--color-mauve);
@@ -178,7 +178,7 @@
       margin-bottom: 1rem;
     }
 
-    /* Function table — tabla compacta con ejemplos */
+    /* Function table, tabla compacta con ejemplos */
     .function-table {
       width: 100%;
       border-collapse: collapse;
@@ -401,7 +401,7 @@
 
           <h3>Tipos importantes:</h3>
           <ul>
-            <li><strong>DateTime:</strong> fecha + hora (número decimal — la parte entera es la fecha, la decimal la hora)</li>
+            <li><strong>DateTime:</strong> fecha + hora (número decimal, la parte entera es la fecha, la decimal la hora)</li>
             <li><strong>Date:</strong> solo fecha (entero)</li>
             <li><strong>Time:</strong> solo hora (decimal entre 0 y 1)</li>
           </ul>
@@ -557,7 +557,7 @@ DATEVALUE("01/15/2024")  -- formato USA</code></pre>
           <h3>Ejemplos prácticos en columnas calculadas:</h3>
           <div class="code-block">
             <button class="code-block__copy">Copiar</button>
-            <pre><code class="language-javascript">// En tabla Calendario — columnas calculadas útiles:
+            <pre><code class="language-javascript">// En tabla Calendario, columnas calculadas útiles:
 'Calendario'[Año] = YEAR('Calendario'[Fecha])
 'Calendario'[Mes Num] = MONTH('Calendario'[Fecha])
 'Calendario'[Mes Nombre] = FORMAT('Calendario'[Fecha], "MMMM")
@@ -569,7 +569,7 @@ DATEVALUE("01/15/2024")  -- formato USA</code></pre>
 
           <div class="note note--tip">
             <strong>Nombres de mes en español 💡</strong><br>
-            Para el nombre del mes en español, usa FORMAT(fecha, 'MMMM') — DAX usará el idioma del locale de tu modelo. Si el modelo está en inglés pero quieres los meses en español, necesitarás una tabla de traducción o usar SWITCH(MONTH(fecha), 1, 'Enero', 2, 'Febrero', ...).
+            Para el nombre del mes en español, usa FORMAT(fecha, 'MMMM'), DAX usará el idioma del locale de tu modelo. Si el modelo está en inglés pero quieres los meses en español, necesitarás una tabla de traducción o usar SWITCH(MONTH(fecha), 1, 'Enero', 2, 'Febrero', ...).
           </div>
         </section>
 
@@ -582,7 +582,7 @@ DATEVALUE("01/15/2024")  -- formato USA</code></pre>
 
           <div class="function-card">
             <div class="function-card__name">DATEDIFF(&lt;fecha_inicio&gt;, &lt;fecha_fin&gt;, &lt;intervalo&gt;)</div>
-            <div class="function-card__level">Principiante — Intermedio</div>
+            <div class="function-card__level">Principiante, Intermedio</div>
             <div class="function-card__description">
               Calcula la diferencia entre dos fechas en el intervalo especificado. El intervalo puede ser: SECOND, MINUTE, HOUR, DAY, WEEK, MONTH, QUARTER, YEAR.
             </div>
@@ -627,7 +627,7 @@ Hace 1 Año = EDATE(TODAY(), -12)</code></pre>
 
           <div class="function-card">
             <div class="function-card__name">EOMONTH(&lt;fecha_inicio&gt;, &lt;meses&gt;)</div>
-            <div class="function-card__level">Principiante — Intermedio</div>
+            <div class="function-card__level">Principiante, Intermedio</div>
             <div class="function-card__description">
               Devuelve el ÚLTIMO DÍA del mes resultante de sumar N meses. Esencial para cálculos de períodos completos y cierres de mes.
             </div>
@@ -716,14 +716,14 @@ Antigüedad Exacta = YEARFRAC('Clientes'[FechaAlta], TODAY(), 1)
             <div class="function-card__level">Principiante</div>
             <div class="function-card__description">
               <ul>
-                <li><strong>TODAY()</strong> — Fecha actual sin hora (se actualiza en cada refresco)</li>
-                <li><strong>NOW()</strong> — Fecha y hora actuales</li>
-                <li><strong>UTCTODAY()</strong> — Fecha actual en UTC</li>
-                <li><strong>UTCNOW()</strong> — Fecha y hora actuales en UTC</li>
+                <li><strong>TODAY()</strong>, Fecha actual sin hora (se actualiza en cada refresco)</li>
+                <li><strong>NOW()</strong>, Fecha y hora actuales</li>
+                <li><strong>UTCTODAY()</strong>, Fecha actual en UTC</li>
+                <li><strong>UTCNOW()</strong>, Fecha y hora actuales en UTC</li>
               </ul>
             </div>
 
-            <h4>Ejemplo — Métricas relativas al día de hoy:</h4>
+            <h4>Ejemplo, Métricas relativas al día de hoy:</h4>
             <div class="code-block">
               <button class="code-block__copy">Copiar</button>
               <pre><code class="language-javascript">// Ventas de los últimos 30 días (ventana móvil)
@@ -742,7 +742,7 @@ Días Para Renovar = DATEDIFF(TODAY(), 'Contratos'[FechaRenovación], DAY)</code
 
             <div class="note note--warning">
               <strong>⚠️ Funciones volátiles</strong><br>
-              TODAY() y NOW() son funciones VOLÁTILES — se recalculan en cada refresco del informe. Esto está bien para métricas dinámicas, pero si necesitas la fecha de un proceso concreto (ej: cuándo se importaron los datos), guárdala en una columna de la tabla en lugar de usar NOW().
+              TODAY() y NOW() son funciones VOLÁTILES, se recalculan en cada refresco del informe. Esto está bien para métricas dinámicas, pero si necesitas la fecha de un proceso concreto (ej: cuándo se importaron los datos), guárdala en una columna de la tabla en lugar de usar NOW().
             </div>
           </div>
         </section>
@@ -793,7 +793,7 @@ ADDCOLUMNS(
 
           <div class="function-card">
             <div class="function-card__name">CALENDARAUTO([&lt;fin_de_mes_fiscal&gt;])</div>
-            <div class="function-card__level">Principiante — Intermedio</div>
+            <div class="function-card__level">Principiante, Intermedio</div>
             <div class="function-card__description">
               Genera automáticamente una tabla de calendario basándose en el rango de fechas de todas las tablas del modelo. ¡No necesitas definir el rango manualmente! DAX busca la fecha más antigua y más reciente en todo el modelo.
             </div>
@@ -811,7 +811,7 @@ Calendario Fiscal = CALENDARAUTO(3)
 
             <div class="note note--tip">
               <strong>CALENDAR vs CALENDARAUTO 💡</strong><br>
-              CALENDARAUTO es perfecta para empezar rápido. Pero para modelos en producción, CALENDAR con fechas explícitas es más recomendable — así tienes control total sobre el rango y no dependes de cómo cambien los datos.
+              CALENDARAUTO es perfecta para empezar rápido. Pero para modelos en producción, CALENDAR con fechas explícitas es más recomendable, así tienes control total sobre el rango y no dependes de cómo cambien los datos.
             </div>
           </div>
         </section>
@@ -823,7 +823,7 @@ Calendario Fiscal = CALENDARAUTO(3)
             <h2 class="category-header__title">Los patrones de fecha más usados en proyectos reales</h2>
           </div>
 
-          <h3>Patrón 1 — Tabla de calendario completa (tabla calculada):</h3>
+          <h3>Patrón 1, Tabla de calendario completa (tabla calculada):</h3>
           <div class="code-block">
             <button class="code-block__copy">Copiar</button>
             <pre><code class="language-javascript">Calendario =
@@ -847,7 +847,7 @@ ADDCOLUMNS(
 )</code></pre>
           </div>
 
-          <h3>Patrón 2 — Filtro dinámico de período reciente:</h3>
+          <h3>Patrón 2, Filtro dinámico de período reciente:</h3>
           <div class="code-block">
             <button class="code-block__copy">Copiar</button>
             <pre><code class="language-javascript">// Últimos N días (parámetro configurable)
@@ -860,7 +860,7 @@ CALCULATE(
 )</code></pre>
           </div>
 
-          <h3>Patrón 3 — Columna de antigüedad en segmentos:</h3>
+          <h3>Patrón 3, Columna de antigüedad en segmentos:</h3>
           <div class="code-block">
             <button class="code-block__copy">Copiar</button>
             <pre><code class="language-javascript">Segmento Antigüedad =
@@ -877,7 +877,7 @@ SWITCH(TRUE(),
 
           <div class="note note--next">
             <strong>🚀 Siguiente paso</strong><br>
-            ¡Ahora manejas las fechas como una pro! El siguiente nivel es la Inteligencia de Tiempo — funciones específicas para comparativas YTD, vs año anterior y medias móviles con tablas de calendario marcadas.
+            ¡Ahora manejas las fechas como una pro! El siguiente nivel es la Inteligencia de Tiempo, funciones específicas para comparativas YTD, vs año anterior y medias móviles con tablas de calendario marcadas.
           </div>
         </section>
 

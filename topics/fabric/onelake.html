@@ -4,12 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="OneLake: el lago de datos único de Microsoft Fabric. Jerarquía, OneCopy, formato Delta Lake, shortcuts, file explorer y arquitectura.">
-  <title>OneLake — Microsoft Fabric | Power BI Guide by Kawaii BI</title>
+  <title>OneLake, Microsoft Fabric | Power BI Guide by Kawaii BI</title>
   <link rel="canonical" href="https://kawaiibi.es/topics/fabric/onelake.html">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Kawaii Power BI Guide">
   <meta property="og:locale" content="es_ES">
-  <meta property="og:title" content="OneLake — Microsoft Fabric | Power BI Guide by Kawaii BI">
+  <meta property="og:title" content="OneLake, Microsoft Fabric | Power BI Guide by Kawaii BI">
   <meta property="og:description" content="OneLake: el lago de datos único de Microsoft Fabric. Jerarquía, OneCopy, formato Delta Lake, shortcuts, file explorer y arquitectura.">
   <meta property="og:url" content="https://kawaiibi.es/topics/fabric/onelake.html">
   <meta property="og:image" content="https://kawaiibi.es/assets/images/og-banner.png">
@@ -17,7 +17,7 @@
   <meta property="og:image:height" content="1200">
   <meta property="og:image:alt" content="Sara Lozano Marti - Kawaii Power BI">
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="OneLake — Microsoft Fabric | Power BI Guide by Kawaii BI">
+  <meta name="twitter:title" content="OneLake, Microsoft Fabric | Power BI Guide by Kawaii BI">
   <meta name="twitter:description" content="OneLake: el lago de datos único de Microsoft Fabric. Jerarquía, OneCopy, formato Delta Lake, shortcuts, file explorer y arquitectura.">
   <meta name="twitter:image" content="https://kawaiibi.es/assets/images/og-banner.png">
 
@@ -37,7 +37,7 @@
 
   <style>
     /* ============================================================
-       ESTILOS — ONELAKE
+       ESTILOS, ONELAKE
     ============================================================ */
 
     /* === Topic header === */
@@ -383,7 +383,7 @@
         <div class="topic-header">
           <div class="topic-header__icon">🪣</div>
           <div>
-            <h1 class="topic-header__title">OneLake — el OneDrive de los datos</h1>
+            <h1 class="topic-header__title">OneLake, el OneDrive de los datos</h1>
             <p class="topic-header__subtitle">
               Un único lago de datos por organización, en formato abierto, accesible desde
               todas las experiencias de Fabric y desde fuera del ecosistema. Entiende su
@@ -627,7 +627,7 @@ https://onelake.dfs.fabric.microsoft.com/Ventas/Bronze.Lakehouse/Tables/facturas
           <h3 class="subsection-title">Parquet vs Delta: qué es cada cosa</h3>
 
           <p class="text">
-            Delta no es un formato <em>separado</em> de Parquet — es una capa por encima.
+            Delta no es un formato <em>separado</em> de Parquet, es una capa por encima.
             Lo aclaramos rápido porque genera mucha confusión:
           </p>
 
@@ -669,8 +669,8 @@ https://onelake.dfs.fabric.microsoft.com/Ventas/Bronze.Lakehouse/Tables/facturas
             Fabric añade una optimización propietaria sobre Delta llamada <strong>V-Order</strong>:
             reordena internamente las filas y columnas para que el motor de Power BI
             (VertiPaq) pueda consumirlas con rendimiento casi nativo a través de Direct
-            Lake. Sigue siendo Parquet estándar — cualquier herramienta externa lo lee
-            normal — pero Power BI lo lee <em>más rápido</em>. Está activado por defecto.
+            Lake. Sigue siendo Parquet estándar, cualquier herramienta externa lo lee
+            normal, pero Power BI lo lee <em>más rápido</em>. Está activado por defecto.
           </p>
 
           <div class="note note--tip">
@@ -796,7 +796,7 @@ https://onelake.dfs.fabric.microsoft.com/Ventas/Bronze.Lakehouse/Tables/facturas
             <li>Abrir un <code>.csv</code> o <code>.parquet</code> con Excel o cualquier
                 editor local.</li>
             <li>Ver el contenido de tablas Delta sin abrir Fabric.</li>
-            <li>Sincronización bajo demanda — los ficheros se descargan sólo cuando los
+            <li>Sincronización bajo demanda, los ficheros se descargan sólo cuando los
                 abres, no ocupan disco mientras no los uses.</li>
           </ul>
 
@@ -810,7 +810,7 @@ https://onelake.dfs.fabric.microsoft.com/Ventas/Bronze.Lakehouse/Tables/facturas
           <div class="note note--tip">
             <strong>💡 Disponibilidad</strong>
             Disponible para Windows 10/11. La versión para macOS está en preview. Linux
-            se queda fuera por ahora — ahí usa las APIs REST o <code>azcopy</code>.
+            se queda fuera por ahora, ahí usa las APIs REST o <code>azcopy</code>.
           </div>
         </section>
 
@@ -857,7 +857,7 @@ df = spark.read.format(<span class="string">"delta"</span>).load(
 
           <p class="text">
             Dentro de Fabric los propios Notebooks ya tienen el contexto configurado y no
-            necesitas URLs completas — basta con <code>/lakehouse/default/Tables/facturas</code>
+            necesitas URLs completas, basta con <code>/lakehouse/default/Tables/facturas</code>
             o el shortcut correspondiente en el explorador de archivos del notebook.
           </p>
         </section>
@@ -894,8 +894,8 @@ df = spark.read.format(<span class="string">"delta"</span>).load(
               <span class="feature-card__icon">👥</span>
               <h3 class="feature-card__title">Delegación de admin</h3>
               <p>
-                El admin del tenant puede nombrar <strong>domain admins</strong> — por
-                ejemplo, el lead de datos de Finanzas — que gestionan sus workspaces sin
+                El admin del tenant puede nombrar <strong>domain admins</strong>, por
+                ejemplo, el lead de datos de Finanzas, que gestionan sus workspaces sin
                 tener permisos globales.
               </p>
             </div>
@@ -911,7 +911,7 @@ df = spark.read.format(<span class="string">"delta"</span>).load(
           </div>
 
           <p class="text" style="margin-top: 16px;">
-            Los dominios son opcionales — no los necesitas en una implementación pequeña.
+            Los dominios son opcionales, no los necesitas en una implementación pequeña.
             Empiezan a tener sentido cuando tu organización supera los 20–30 workspaces y
             necesitas delegar responsabilidades.
           </p>

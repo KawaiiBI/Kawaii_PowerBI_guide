@@ -3,22 +3,22 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Funciones INFO.VIEW en DAX — INFO.VIEW.TABLES, INFO.VIEW.COLUMNS, INFO.VIEW.MEASURES, INFO.VIEW.RELATIONSHIPS para auto-documentar tu modelo semántico">
-  <title>INFO.VIEW — Funciones DAX | Power BI Guide</title>
+  <meta name="description" content="Funciones INFO.VIEW en DAX, INFO.VIEW.TABLES, INFO.VIEW.COLUMNS, INFO.VIEW.MEASURES, INFO.VIEW.RELATIONSHIPS para auto-documentar tu modelo semántico">
+  <title>INFO.VIEW, Funciones DAX | Power BI Guide</title>
   <link rel="canonical" href="https://kawaiibi.es/topics/dax/info-view.html">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Kawaii Power BI Guide">
   <meta property="og:locale" content="es_ES">
-  <meta property="og:title" content="INFO.VIEW — Funciones DAX | Power BI Guide">
-  <meta property="og:description" content="Funciones INFO.VIEW en DAX — INFO.VIEW.TABLES, INFO.VIEW.COLUMNS, INFO.VIEW.MEASURES, INFO.VIEW.RELATIONSHIPS para auto-documentar tu modelo semántico">
+  <meta property="og:title" content="INFO.VIEW, Funciones DAX | Power BI Guide">
+  <meta property="og:description" content="Funciones INFO.VIEW en DAX, INFO.VIEW.TABLES, INFO.VIEW.COLUMNS, INFO.VIEW.MEASURES, INFO.VIEW.RELATIONSHIPS para auto-documentar tu modelo semántico">
   <meta property="og:url" content="https://kawaiibi.es/topics/dax/info-view.html">
   <meta property="og:image" content="https://kawaiibi.es/assets/images/og-banner.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="1200">
   <meta property="og:image:alt" content="Sara Lozano Marti - Kawaii Power BI">
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="INFO.VIEW — Funciones DAX | Power BI Guide">
-  <meta name="twitter:description" content="Funciones INFO.VIEW en DAX — INFO.VIEW.TABLES, INFO.VIEW.COLUMNS, INFO.VIEW.MEASURES, INFO.VIEW.RELATIONSHIPS para auto-documentar tu modelo semántico">
+  <meta name="twitter:title" content="INFO.VIEW, Funciones DAX | Power BI Guide">
+  <meta name="twitter:description" content="Funciones INFO.VIEW en DAX, INFO.VIEW.TABLES, INFO.VIEW.COLUMNS, INFO.VIEW.MEASURES, INFO.VIEW.RELATIONSHIPS para auto-documentar tu modelo semántico">
   <meta name="twitter:image" content="https://kawaiibi.es/assets/images/og-banner.png">
 
   <!-- Google Fonts -->
@@ -82,7 +82,7 @@
       align-items: center;
     }
 
-    /* TOC — Table of contents */
+    /* TOC, Table of contents */
     .toc {
       background: var(--color-rose);
       border: 1.5px solid var(--color-mauve);
@@ -122,7 +122,7 @@
       text-decoration: underline;
     }
 
-    /* Category header — separadores entre categorías */
+    /* Category header, separadores entre categorías */
     .category-header {
       display: flex;
       align-items: center;
@@ -143,7 +143,7 @@
       margin: 0;
     }
 
-    /* Function card — tarjeta individual para cada función */
+    /* Function card, tarjeta individual para cada función */
     .function-card {
       background: var(--color-white);
       border: 1.5px solid var(--color-mauve);
@@ -178,7 +178,7 @@
       margin-bottom: 1rem;
     }
 
-    /* Function table — tabla compacta con ejemplos */
+    /* Function table, tabla compacta con ejemplos */
     .function-table {
       width: 100%;
       border-collapse: collapse;
@@ -281,7 +281,7 @@
         <header class="topic-header">
           <span class="topic-header__icon">🗂️</span>
           <h1 class="topic-header__title">Funciones INFO.VIEW</h1>
-          <p class="topic-header__subtitle">INFO.VIEW.TABLES, INFO.VIEW.COLUMNS, INFO.VIEW.MEASURES, INFO.VIEW.RELATIONSHIPS — auto-documenta tu modelo semántico directamente desde DAX</p>
+          <p class="topic-header__subtitle">INFO.VIEW.TABLES, INFO.VIEW.COLUMNS, INFO.VIEW.MEASURES, INFO.VIEW.RELATIONSHIPS, auto-documenta tu modelo semántico directamente desde DAX</p>
           <div class="topic-header__levels">
             <span class="badge badge--intermediate">Intermedio</span>
             <span class="badge badge--advanced">Avanzado</span>
@@ -297,7 +297,7 @@
             <li><a href="#info-view-columns" class="toc__link">INFO.VIEW.COLUMNS</a></li>
             <li><a href="#info-view-measures" class="toc__link">INFO.VIEW.MEASURES</a></li>
             <li><a href="#info-view-relationships" class="toc__link">INFO.VIEW.RELATIONSHIPS</a></li>
-            <li><a href="#info-vs-infoview" class="toc__link">INFO.* vs INFO.VIEW.* — ¿cuál usar?</a></li>
+            <li><a href="#info-vs-infoview" class="toc__link">INFO.* vs INFO.VIEW.*, ¿cuál usar?</a></li>
             <li><a href="#patrones" class="toc__link">Patrones: auto-documentación del modelo</a></li>
           </ul>
         </nav>
@@ -309,7 +309,7 @@
             <h2 class="category-header__title">El modelo que se documenta a sí mismo</h2>
           </div>
 
-          <p>¿Alguna vez has llegado a un modelo de Power BI heredado y no sabías qué medidas había, qué significaban las columnas o cómo estaban relacionadas las tablas? Las funciones INFO.VIEW llegaron en octubre de 2024 para resolver exactamente eso: devuelven una tabla con metadatos de tu propio modelo — y lo mejor es que se actualizan solas cada vez que haces un refresh. 🙌</p>
+          <p>¿Alguna vez has llegado a un modelo de Power BI heredado y no sabías qué medidas había, qué significaban las columnas o cómo estaban relacionadas las tablas? Las funciones INFO.VIEW llegaron en octubre de 2024 para resolver exactamente eso: devuelven una tabla con metadatos de tu propio modelo, y lo mejor es que se actualizan solas cada vez que haces un refresh. 🙌</p>
 
           <div class="note note--best-practice">
             <strong>🏆 Qué tienen de especial</strong><br>
@@ -360,14 +360,14 @@
             </tbody>
           </table>
 
-          <p>Las funciones INFO.* sin VIEW (más de 50) solo funcionan en DAX Query View — son los equivalentes a los DMVs de Analysis Services y están pensadas para administradores avanzados. En esta página nos centramos en las 4 funciones INFO.VIEW que cualquier desarrolladora puede usar en su modelo.</p>
+          <p>Las funciones INFO.* sin VIEW (más de 50) solo funcionan en DAX Query View, son los equivalentes a los DMVs de Analysis Services y están pensadas para administradores avanzados. En esta página nos centramos en las 4 funciones INFO.VIEW que cualquier desarrolladora puede usar en su modelo.</p>
         </section>
 
         <!-- SECCIÓN 1: INFO.VIEW.TABLES -->
         <section id="info-view-tables">
           <div class="category-header">
             <span class="category-header__icon">📋</span>
-            <h2 class="category-header__title">INFO.VIEW.TABLES — todas las tablas del modelo</h2>
+            <h2 class="category-header__title">INFO.VIEW.TABLES, todas las tablas del modelo</h2>
           </div>
 
           <div class="function-card">
@@ -461,7 +461,7 @@ COUNTROWS(
         <section id="info-view-columns">
           <div class="category-header">
             <span class="category-header__icon">🔢</span>
-            <h2 class="category-header__title">INFO.VIEW.COLUMNS — todas las columnas del modelo</h2>
+            <h2 class="category-header__title">INFO.VIEW.COLUMNS, todas las columnas del modelo</h2>
           </div>
 
           <div class="function-card">
@@ -576,7 +576,7 @@ FILTER(
         <section id="info-view-measures">
           <div class="category-header">
             <span class="category-header__icon">📐</span>
-            <h2 class="category-header__title">INFO.VIEW.MEASURES — todas las medidas del modelo</h2>
+            <h2 class="category-header__title">INFO.VIEW.MEASURES, todas las medidas del modelo</h2>
           </div>
 
           <div class="function-card">
@@ -690,7 +690,7 @@ FILTER(
         <section id="info-view-relationships">
           <div class="category-header">
             <span class="category-header__icon">🔗</span>
-            <h2 class="category-header__title">INFO.VIEW.RELATIONSHIPS — todas las relaciones del modelo</h2>
+            <h2 class="category-header__title">INFO.VIEW.RELATIONSHIPS, todas las relaciones del modelo</h2>
           </div>
 
           <div class="function-card">
@@ -842,10 +842,10 @@ FILTER(
           <h3>Las INFO.* más útiles para DAX Query View:</h3>
           <div class="code-block">
             <button class="code-block__copy">Copiar</button>
-            <pre><code class="language-dax">// Ver medidas (versión INFO sin VIEW — solo en DAX Query View):
+            <pre><code class="language-dax">// Ver medidas (versión INFO sin VIEW, solo en DAX Query View):
 EVALUATE INFO.MEASURES()
 // Diferencia con INFO.VIEW.MEASURES(): usa TableID en lugar de
-// TableName — tienes que hacer un JOIN con INFO.TABLES() para obtener
+// TableName, tienes que hacer un JOIN con INFO.TABLES() para obtener
 // el nombre legible
 
 // Las más usadas en DAX Query View:
@@ -863,7 +863,7 @@ INFO.KPIS()              -- KPIs definidos en el modelo</code></pre>
 
           <div class="note note--tip">
             <strong>💡 Consejo</strong><br>
-            Para el trabajo del día a día, usa INFO.VIEW.* — son más simples y funcionan en tablas calculadas. Reserva INFO.* para consultas administrativas avanzadas en DAX Query View o DAX Studio.
+            Para el trabajo del día a día, usa INFO.VIEW.*, son más simples y funcionan en tablas calculadas. Reserva INFO.* para consultas administrativas avanzadas en DAX Query View o DAX Studio.
           </div>
         </section>
 
@@ -874,7 +874,7 @@ INFO.KPIS()              -- KPIs definidos en el modelo</code></pre>
             <h2 class="category-header__title">Patrones: auto-documentación del modelo</h2>
           </div>
 
-          <h3>Patrón 1 — Página de documentación automática completa</h3>
+          <h3>Patrón 1, Página de documentación automática completa</h3>
           <p>Crea una tabla calculada que combine las 4 funciones para tener una documentación automática del modelo completo.</p>
 
           <div class="code-block">
@@ -894,7 +894,7 @@ SELECTCOLUMNS(
 )</code></pre>
           </div>
 
-          <h3>Patrón 2 — Dashboard de calidad del modelo</h3>
+          <h3>Patrón 2, Dashboard de calidad del modelo</h3>
           <p>Estas medidas en un visual tipo scorecard dan una visión rápida del estado de documentación del modelo:</p>
 
           <div class="code-block">
@@ -920,7 +920,7 @@ Medidas con error =
 COUNTROWS(FILTER(INFO.VIEW.MEASURES(), [State] <> "Ready"))</code></pre>
           </div>
 
-          <h3>Patrón 3 — Exportar documentación a Excel</h3>
+          <h3>Patrón 3, Exportar documentación a Excel</h3>
           <p>En DAX Query View, puedes ejecutar esta query y copiar los resultados directamente a Excel con el botón Copiar:</p>
 
           <div class="code-block">
@@ -943,7 +943,7 @@ ORDER BY [Tabla], [Medida]</code></pre>
 
           <div class="note note--next">
             <strong>🚀 Siguiente paso</strong><br>
-            ¡Con INFO.VIEW ya puedes crear modelos que se documentan solos! Es una de las funcionalidades más prácticas de DAX para proyectos en equipo. Añade descripciones a tus tablas, columnas y medidas desde hoy — futuras tú y tu equipo os lo agradeceréis. 🌸🚀
+            ¡Con INFO.VIEW ya puedes crear modelos que se documentan solos! Es una de las funcionalidades más prácticas de DAX para proyectos en equipo. Añade descripciones a tus tablas, columnas y medidas desde hoy, futuras tú y tu equipo os lo agradeceréis. 🌸🚀
           </div>
         </section>
 

@@ -4,12 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Tablas Puente en Power BI: cómo resolver relaciones muchos a muchos sin duplicación de métricas ni ambigüedad de filtros. Casos reales, DAX y errores frecuentes.">
-  <title>Tablas Puente (Bridge Tables) — Modelado de Datos | Power BI Guide by Kawaii BI</title>
+  <title>Tablas Puente (Bridge Tables), Modelado de Datos | Power BI Guide by Kawaii BI</title>
   <link rel="canonical" href="https://kawaiibi.es/topics/modelado/tablas-puente.html">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Kawaii Power BI Guide">
   <meta property="og:locale" content="es_ES">
-  <meta property="og:title" content="Tablas Puente (Bridge Tables) — Modelado de Datos | Power BI Guide by Kawaii BI">
+  <meta property="og:title" content="Tablas Puente (Bridge Tables), Modelado de Datos | Power BI Guide by Kawaii BI">
   <meta property="og:description" content="Tablas Puente en Power BI: cómo resolver relaciones muchos a muchos sin duplicación de métricas ni ambigüedad de filtros. Casos reales, DAX y errores frecuentes.">
   <meta property="og:url" content="https://kawaiibi.es/topics/modelado/tablas-puente.html">
   <meta property="og:image" content="https://kawaiibi.es/assets/images/og-banner.png">
@@ -17,7 +17,7 @@
   <meta property="og:image:height" content="1200">
   <meta property="og:image:alt" content="Sara Lozano Marti - Kawaii Power BI">
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="Tablas Puente (Bridge Tables) — Modelado de Datos | Power BI Guide by Kawaii BI">
+  <meta name="twitter:title" content="Tablas Puente (Bridge Tables), Modelado de Datos | Power BI Guide by Kawaii BI">
   <meta name="twitter:description" content="Tablas Puente en Power BI: cómo resolver relaciones muchos a muchos sin duplicación de métricas ni ambigüedad de filtros. Casos reales, DAX y errores frecuentes.">
   <meta name="twitter:image" content="https://kawaiibi.es/assets/images/og-banner.png">
 
@@ -187,7 +187,7 @@
         </nav>
 
         <!-- ══════════════════════════════════════════
-             SECCIÓN 0 — ¿Qué es una tabla puente?
+             SECCIÓN 0, ¿Qué es una tabla puente?
         ══════════════════════════════════════════ -->
         <div class="category-header" id="intro">
           <span class="category-header__icon">🌉</span>
@@ -202,7 +202,7 @@
 
           <div class="note note--tip">
             💡 <strong>Analogía kawaii 🌸</strong>
-            <p style="margin: 8px 0 0; line-height: 1.7;">Imagina que tienes una lista de estudiantes 👩‍🎓 y una lista de clubs 🌸. Una estudiante puede pertenecer a varios clubs, y un club puede tener varias estudiantes. La tabla puente es la <strong>lista de inscripciones</strong>: quién está apuntada a qué club. Sin esa lista, ¿cómo sabrías qué clubs tiene cada estudiante? Exactamente — no podrías.</p>
+            <p style="margin: 8px 0 0; line-height: 1.7;">Imagina que tienes una lista de estudiantes 👩‍🎓 y una lista de clubs 🌸. Una estudiante puede pertenecer a varios clubs, y un club puede tener varias estudiantes. La tabla puente es la <strong>lista de inscripciones</strong>: quién está apuntada a qué club. Sin esa lista, ¿cómo sabrías qué clubs tiene cada estudiante? Exactamente, no podrías.</p>
           </div>
 
           <div class="note note--tip">
@@ -211,7 +211,7 @@
         </article>
 
         <!-- ══════════════════════════════════════════
-             SECCIÓN 1 — El problema muchos a muchos
+             SECCIÓN 1, El problema muchos a muchos
         ══════════════════════════════════════════ -->
         <div class="category-header" id="problema">
           <span class="category-header__icon">⚠️</span>
@@ -222,7 +222,7 @@
           <h3>Por qué la relación N:N directa es problemática</h3>
           <p>Supón que tienes productos y categorías con una relación muchos a muchos: un producto puede pertenecer a varias categorías, y una categoría puede contener varios productos.</p>
 
-          <h4>Sin tabla puente — relación N:N directa:</h4>
+          <h4>Sin tabla puente, relación N:N directa:</h4>
           <pre class="schema-diagram">
   <span class="hl-dim">'Productos'</span>                       <span class="hl-dim">'Categorias'</span>
   ┌──────────────────┐             ┌──────────────────┐
@@ -244,7 +244,7 @@
 </pre>
 
           <h4>El resultado incorrecto:</h4>
-          <p>Si una venta de Laptop Pro tiene <code>Importe = 1.000 €</code> y el producto aparece en 2 categorías, al filtrar por categoría y sumar <code>SUM(Ventas[Importe])</code> el motor puede — en determinados modelos y contextos — devolver <strong>2.000 €</strong> en lugar de 1.000 €, porque la fila de ventas aparece "visible" desde ambas categorías al mismo tiempo.</p>
+          <p>Si una venta de Laptop Pro tiene <code>Importe = 1.000 €</code> y el producto aparece en 2 categorías, al filtrar por categoría y sumar <code>SUM(Ventas[Importe])</code> el motor puede, en determinados modelos y contextos, devolver <strong>2.000 €</strong> en lugar de 1.000 €, porque la fila de ventas aparece "visible" desde ambas categorías al mismo tiempo.</p>
 
           <div class="note note--warning">
             ⚠️ <strong>Ojo con esto:</strong> La relación muchos a muchos nativa de Power BI <em>puede parecer</em> que funciona correctamente en los visuales básicos, pero en ciertos contextos de filtro cruzado produce <strong>duplicaciones silenciosas</strong>. El peligro es que los números parecen plausibles y nadie los cuestiona hasta que alguien cruza los datos con otra fuente. Siempre prueba tus métricas con valores conocidos antes de publicar.
@@ -252,7 +252,7 @@
         </article>
 
         <!-- ══════════════════════════════════════════
-             SECCIÓN 2 — La solución: tabla puente
+             SECCIÓN 2, La solución: tabla puente
         ══════════════════════════════════════════ -->
         <div class="category-header" id="solucion">
           <span class="category-header__icon">✅</span>
@@ -292,7 +292,7 @@
             <li>Contiene <strong>solo claves foráneas (FK)</strong>, nunca métricas ni atributos descriptivos</li>
             <li>Se relaciona con cada dimensión en <strong>N:1</strong> (muchos registros de puente → una dimensión)</li>
             <li>Se relaciona con la tabla de hechos de forma <strong>indirecta</strong>, pasando por la dimensión principal</li>
-            <li>No se usa directamente en visuales — es <strong>infraestructura invisible</strong> del modelo</li>
+            <li>No se usa directamente en visuales, es <strong>infraestructura invisible</strong> del modelo</li>
           </ul>
 
           <div class="note note--practice">
@@ -301,7 +301,7 @@
         </article>
 
         <!-- ══════════════════════════════════════════
-             SECCIÓN 3 — Caso real: productos multi-categoría
+             SECCIÓN 3, Caso real: productos multi-categoría
         ══════════════════════════════════════════ -->
         <div class="category-header" id="multicategoria">
           <span class="category-header__icon">🛍️</span>
@@ -355,7 +355,7 @@
           <p>Cuando el origen tiene las categorías como texto separado por comas, Power Query puede generar la tabla puente automáticamente:</p>
 
           <div class="code-block">
-            <p class="code-block__label">Power Query — M</p>
+            <p class="code-block__label">Power Query, M</p>
             <pre><code class="language-javascript">// Origen: columna "Categorias" contiene "Electrónica, Informática"
 // Queremos generar una fila por cada categoría asignada al producto
 
@@ -383,12 +383,12 @@ in
           </div>
 
           <div class="note note--tip">
-            💡 <strong>Tip kawaii:</strong> El patrón <code>Text.Split</code> + <code>ExpandListColumn</code> es uno de los más usados en Power Query para normalizar datos "sucios". Una columna con valores separados por comas se convierte en filas individuales en tres pasos. Guárdalo en tu repertorio — lo usarás constantemente.
+            💡 <strong>Tip kawaii:</strong> El patrón <code>Text.Split</code> + <code>ExpandListColumn</code> es uno de los más usados en Power Query para normalizar datos "sucios". Una columna con valores separados por comas se convierte en filas individuales en tres pasos. Guárdalo en tu repertorio, lo usarás constantemente.
           </div>
         </article>
 
         <!-- ══════════════════════════════════════════
-             SECCIÓN 4 — Caso real: empleados multi-rol
+             SECCIÓN 4, Caso real: empleados multi-rol
         ══════════════════════════════════════════ -->
         <div class="category-header" id="multirol">
           <span class="category-header__icon">👩‍💼</span>
@@ -456,7 +456,7 @@ in
         </article>
 
         <!-- ══════════════════════════════════════════
-             SECCIÓN 5 — DAX con tablas puente
+             SECCIÓN 5, DAX con tablas puente
         ══════════════════════════════════════════ -->
         <div class="category-header" id="dax">
           <span class="category-header__icon">⚡</span>
@@ -464,11 +464,11 @@ in
         </div>
 
         <article class="concept-card">
-          <h3>A) Medidas estándar — funcionan automáticamente</h3>
+          <h3>A) Medidas estándar, funcionan automáticamente</h3>
           <p>Con la tabla puente en su sitio y las relaciones correctamente definidas, las medidas básicas funcionan sin código DAX adicional. Power BI propaga el filtro a través de la cadena de relaciones de forma transparente.</p>
 
           <div class="code-block">
-            <p class="code-block__label">DAX — medida estándar</p>
+            <p class="code-block__label">DAX, medida estándar</p>
             <pre><code class="language-javascript">// Esta medida es suficiente. No necesitas nada especial.
 Total Ventas = SUM(Ventas[Importe])
 // Al filtrar por Categorias[NomCategoria]:
@@ -483,11 +483,11 @@ DISTINCTCOUNT(ProductoCategorias[IDProducto])
 // Compara este número con lo esperado en cada categoría.</code></pre>
           </div>
 
-          <h3>B) DAX explícito — casos avanzados</h3>
+          <h3>B) DAX explícito, casos avanzados</h3>
           <p>A veces necesitas filtrar la propia tabla puente o navegar la relación de forma explícita.</p>
 
           <div class="code-block">
-            <p class="code-block__label">DAX — filtro explícito sobre la tabla puente</p>
+            <p class="code-block__label">DAX, filtro explícito sobre la tabla puente</p>
             <pre><code class="language-javascript">// Ventas de productos que tienen AL MENOS UNA categoría
 // cuyo nombre empieza por "Elec" (ej: "Electrónica"):
 Ventas Electro =
@@ -514,7 +514,7 @@ CALCULATE(
           <p>Si no puedes generar la tabla puente en el origen, puedes crearla como tabla calculada en DAX. Úsalo solo como último recurso.</p>
 
           <div class="code-block">
-            <p class="code-block__label">DAX — tabla calculada (tabla puente)</p>
+            <p class="code-block__label">DAX, tabla calculada (tabla puente)</p>
             <pre><code class="language-javascript">// Tabla calculada que reconstruye la puente desde una tabla de mapeo:
 ProductoCategorias_Calc =
 SELECTCOLUMNS(
@@ -543,7 +543,7 @@ SELECTCOLUMNS(
         </article>
 
         <!-- ══════════════════════════════════════════
-             SECCIÓN 6 — Errores frecuentes
+             SECCIÓN 6, Errores frecuentes
         ══════════════════════════════════════════ -->
         <div class="category-header" id="errores">
           <span class="category-header__icon">🐛</span>
@@ -583,7 +583,7 @@ SELECTCOLUMNS(
         </article>
 
         <!-- ══════════════════════════════════════════
-             SECCIÓN 7 — Resumen y siguiente paso
+             SECCIÓN 7, Resumen y siguiente paso
         ══════════════════════════════════════════ -->
         <div class="category-header" id="siguiente">
           <span class="category-header__icon">🎯</span>
@@ -597,7 +597,7 @@ SELECTCOLUMNS(
             <h4>📋 Checklist tabla puente</h4>
             <ol>
               <li>Una tabla puente resuelve relaciones N:N <strong>sin duplicar métricas</strong> ni crear ambigüedades de filtro</li>
-              <li>Solo contiene <strong>claves foráneas (FK)</strong> — nunca métricas ni atributos descriptivos propios</li>
+              <li>Solo contiene <strong>claves foráneas (FK)</strong>, nunca métricas ni atributos descriptivos propios</li>
               <li>Créala en <strong>Power Query</strong> (o en el origen) siempre que sea posible; evita tablas calculadas DAX salvo necesidad</li>
               <li>Verifica el resultado con <code>DISTINCTCOUNT</code> y valores conocidos <strong>antes de publicar</strong></li>
             </ol>
@@ -605,7 +605,7 @@ SELECTCOLUMNS(
         </article>
 
         <div class="note note--next" style="margin-top: 2rem;">
-          🚀 <strong>¡Lo estás haciendo genial!</strong> Las tablas puente son uno de los patrones más profesionales del modelado de datos — no todo el mundo las domina. Ahora que las tienes bajo control, el siguiente paso natural es entender cuándo normalizar y cuándo desnormalizar tu modelo. Explora <a href="relaciones.html">Relaciones entre Tablas</a> para profundizar en la dirección de filtro y la bidireccionalidad, o revisa las <a href="esquema-estrella.html">buenas prácticas del Esquema Estrella</a> para ver cómo encajan las tablas puente en una arquitectura profesional. 🌸
+          🚀 <strong>¡Lo estás haciendo genial!</strong> Las tablas puente son uno de los patrones más profesionales del modelado de datos, no todo el mundo las domina. Ahora que las tienes bajo control, el siguiente paso natural es entender cuándo normalizar y cuándo desnormalizar tu modelo. Explora <a href="relaciones.html">Relaciones entre Tablas</a> para profundizar en la dirección de filtro y la bidireccionalidad, o revisa las <a href="esquema-estrella.html">buenas prácticas del Esquema Estrella</a> para ver cómo encajan las tablas puente en una arquitectura profesional. 🌸
         </div>
 
       </div>

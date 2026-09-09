@@ -4,12 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Columnas calculadas vs medidas en Power BI: diferencias fundamentales, cuándo usar cada una, impacto en rendimiento y memoria, y los errores más comunes.">
-  <title>Columnas Calculadas vs Medidas — Modelado de Datos | Power BI Guide by Kawaii BI</title>
+  <title>Columnas Calculadas vs Medidas, Modelado de Datos | Power BI Guide by Kawaii BI</title>
   <link rel="canonical" href="https://kawaiibi.es/topics/modelado/columnas-vs-medidas.html">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Kawaii Power BI Guide">
   <meta property="og:locale" content="es_ES">
-  <meta property="og:title" content="Columnas Calculadas vs Medidas — Modelado de Datos | Power BI Guide by Kawaii BI">
+  <meta property="og:title" content="Columnas Calculadas vs Medidas, Modelado de Datos | Power BI Guide by Kawaii BI">
   <meta property="og:description" content="Columnas calculadas vs medidas en Power BI: diferencias fundamentales, cuándo usar cada una, impacto en rendimiento y memoria, y los errores más comunes.">
   <meta property="og:url" content="https://kawaiibi.es/topics/modelado/columnas-vs-medidas.html">
   <meta property="og:image" content="https://kawaiibi.es/assets/images/og-banner.png">
@@ -17,7 +17,7 @@
   <meta property="og:image:height" content="1200">
   <meta property="og:image:alt" content="Sara Lozano Marti - Kawaii Power BI">
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="Columnas Calculadas vs Medidas — Modelado de Datos | Power BI Guide by Kawaii BI">
+  <meta name="twitter:title" content="Columnas Calculadas vs Medidas, Modelado de Datos | Power BI Guide by Kawaii BI">
   <meta name="twitter:description" content="Columnas calculadas vs medidas en Power BI: diferencias fundamentales, cuándo usar cada una, impacto en rendimiento y memoria, y los errores más comunes.">
   <meta name="twitter:image" content="https://kawaiibi.es/assets/images/og-banner.png">
 
@@ -153,7 +153,7 @@
 
         <article class="concept-card">
           <h3>¿Qué es una columna calculada?</h3>
-          <p>Una <strong>columna calculada</strong> es una columna nueva que añades a una tabla existente usando una fórmula DAX. Se calcula una vez durante la actualización de datos y su resultado se almacena en el modelo — ocupa espacio en memoria.</p>
+          <p>Una <strong>columna calculada</strong> es una columna nueva que añades a una tabla existente usando una fórmula DAX. Se calcula una vez durante la actualización de datos y su resultado se almacena en el modelo, ocupa espacio en memoria.</p>
 
           <h4>Características:</h4>
           <ul>
@@ -165,10 +165,10 @@
           </ul>
 
           <h4>Ejemplo:</h4>
-          <pre><code class="language-javascript">// Columna calculada en FactVentas — se almacena en el modelo
+          <pre><code class="language-javascript">// Columna calculada en FactVentas, se almacena en el modelo
 Importe Total = FactVentas[Cantidad] * FactVentas[PrecioUnitario]
 
-// Columna calculada con IF — categoriza cada fila
+// Columna calculada con IF, categoriza cada fila
 Segmento Precio =
 IF(
     FactVentas[PrecioUnitario] > 100,
@@ -176,7 +176,7 @@ IF(
     IF(FactVentas[PrecioUnitario] > 50, "Medio", "Básico")
 )
 
-// Columna calculada con RELATED — trae datos de otra tabla
+// Columna calculada con RELATED, trae datos de otra tabla
 Categoria Producto = RELATED(DimProducto[Categoria])</code></pre>
         </article>
 
@@ -188,29 +188,29 @@ Categoria Producto = RELATED(DimProducto[Categoria])</code></pre>
 
         <article class="concept-card">
           <h3>¿Qué es una medida?</h3>
-          <p>Una <strong>medida</strong> es una fórmula DAX que se evalúa dinámicamente en el momento de la consulta, respondiendo al contexto de filtro actual del visual o informe. No almacena datos — solo calcula cuando es necesario.</p>
+          <p>Una <strong>medida</strong> es una fórmula DAX que se evalúa dinámicamente en el momento de la consulta, respondiendo al contexto de filtro actual del visual o informe. No almacena datos, solo calcula cuando es necesario.</p>
 
           <h4>Características:</h4>
           <ul>
             <li>Se evalúa en <strong>contexto de filtro</strong> (no fila por fila)</li>
-            <li>No ocupa espacio en memoria — solo se calcula cuando se usa</li>
+            <li>No ocupa espacio en memoria, solo se calcula cuando se usa</li>
             <li>Se recalcula dinámicamente con cada cambio de filtro o slicer</li>
             <li>Puede usarse en la sección Valores de un visual</li>
             <li>Puede contener CALCULATE para modificar el contexto de filtro</li>
           </ul>
 
           <h4>Ejemplo:</h4>
-          <pre><code class="language-javascript">// Medida básica — se recalcula según los filtros del visual
+          <pre><code class="language-javascript">// Medida básica, se recalcula según los filtros del visual
 Ventas Totales = SUM(FactVentas[Importe Total])
 
-// Medida con CALCULATE — modifica el contexto de filtro
+// Medida con CALCULATE, modifica el contexto de filtro
 Ventas Año Anterior =
 CALCULATE(
     SUM(FactVentas[Importe Total]),
     SAMEPERIODLASTYEAR(DimFecha[Fecha])
 )
 
-// Medida de ratio — combina dos medidas
+// Medida de ratio, combina dos medidas
 % Margen =
 DIVIDE(
     SUM(FactVentas[Margen]),
@@ -315,7 +315,7 @@ DIVIDE(
           </ul>
 
           <div class="note note--tip">
-            💡 <strong>Regla de oro:</strong> Si tu cálculo termina con SUM, AVERAGE, COUNT, MAX, MIN o cualquier otra agregación — es una medida. Si describes un atributo de una fila específica (color, categoría, precio con descuento) — puede ser una columna calculada. Cuando tengas duda, elige la medida: es más flexible y eficiente. 🌸
+            💡 <strong>Regla de oro:</strong> Si tu cálculo termina con SUM, AVERAGE, COUNT, MAX, MIN o cualquier otra agregación, es una medida. Si describes un atributo de una fila específica (color, categoría, precio con descuento), puede ser una columna calculada. Cuando tengas duda, elige la medida: es más flexible y eficiente. 🌸
           </div>
         </article>
 
@@ -327,7 +327,7 @@ DIVIDE(
 
         <article class="concept-card">
           <h3>Error #1: Crear columnas calculadas para todo</h3>
-          <p>El error más frecuente es crear una columna calculada <code>Ventas = SUM(FactVentas[Importe])</code>. Esto no funciona como esperas — SUM en una columna calculada suma toda la tabla sin tener en cuenta los filtros del informe. Siempre crea medidas para las agregaciones.</p>
+          <p>El error más frecuente es crear una columna calculada <code>Ventas = SUM(FactVentas[Importe])</code>. Esto no funciona como esperas, SUM en una columna calculada suma toda la tabla sin tener en cuenta los filtros del informe. Siempre crea medidas para las agregaciones.</p>
 
           <h3 style="margin-top: 1.25rem;">Error #2: Columnas calculadas con alta cardinalidad innecesaria</h3>
           <p>Crear columnas calculadas que generan muchos valores únicos (como concatenar ID + fecha para crear un ID único) aumenta la cardinalidad del modelo y lo hace más lento. Si no necesitas esa columna para filtrar o como clave de relación, evítala.</p>

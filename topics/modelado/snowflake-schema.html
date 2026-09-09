@@ -4,12 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Esquema Copo de Nieve en Power BI: qué es, diferencias con star schema, ventajas, desventajas y por qué casi nunca se recomienda.">
-  <title>Esquema Copo de Nieve — Modelado de Datos | Power BI Guide by Kawaii BI</title>
+  <title>Esquema Copo de Nieve, Modelado de Datos | Power BI Guide by Kawaii BI</title>
   <link rel="canonical" href="https://kawaiibi.es/topics/modelado/snowflake-schema.html">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Kawaii Power BI Guide">
   <meta property="og:locale" content="es_ES">
-  <meta property="og:title" content="Esquema Copo de Nieve — Modelado de Datos | Power BI Guide by Kawaii BI">
+  <meta property="og:title" content="Esquema Copo de Nieve, Modelado de Datos | Power BI Guide by Kawaii BI">
   <meta property="og:description" content="Esquema Copo de Nieve en Power BI: qué es, diferencias con star schema, ventajas, desventajas y por qué casi nunca se recomienda.">
   <meta property="og:url" content="https://kawaiibi.es/topics/modelado/snowflake-schema.html">
   <meta property="og:image" content="https://kawaiibi.es/assets/images/og-banner.png">
@@ -17,7 +17,7 @@
   <meta property="og:image:height" content="1200">
   <meta property="og:image:alt" content="Sara Lozano Marti - Kawaii Power BI">
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="Esquema Copo de Nieve — Modelado de Datos | Power BI Guide by Kawaii BI">
+  <meta name="twitter:title" content="Esquema Copo de Nieve, Modelado de Datos | Power BI Guide by Kawaii BI">
   <meta name="twitter:description" content="Esquema Copo de Nieve en Power BI: qué es, diferencias con star schema, ventajas, desventajas y por qué casi nunca se recomienda.">
   <meta name="twitter:image" content="https://kawaiibi.es/assets/images/og-banner.png">
 
@@ -415,8 +415,8 @@
 
           <h4>¿Qué pasa cuando filtras por categoría?</h4>
           <ul>
-            <li><strong>Star Schema:</strong> <code>Fact_Sales → Dim_Product</code> — <strong>1 JOIN</strong>, directo, rápido</li>
-            <li><strong>Snowflake:</strong> <code>Fact_Sales → Dim_Product → Dim_Subcategory → Dim_Category</code> — <strong>3 JOINs</strong>, lento, más difícil de depurar</li>
+            <li><strong>Star Schema:</strong> <code>Fact_Sales → Dim_Product</code>, <strong>1 JOIN</strong>, directo, rápido</li>
+            <li><strong>Snowflake:</strong> <code>Fact_Sales → Dim_Product → Dim_Subcategory → Dim_Category</code>, <strong>3 JOINs</strong>, lento, más difícil de depurar</li>
           </ul>
 
           <div class="comparison-grid" style="margin-top: 1rem;">

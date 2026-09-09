@@ -3,22 +3,22 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Window Functions en DAX — WINDOW, OFFSET, INDEX, RANK, ROWNUMBER y el poder de SQL en DAX">
-  <title>Window Functions — Funciones DAX | Power BI Guide</title>
+  <meta name="description" content="Window Functions en DAX, WINDOW, OFFSET, INDEX, RANK, ROWNUMBER y el poder de SQL en DAX">
+  <title>Window Functions, Funciones DAX | Power BI Guide</title>
   <link rel="canonical" href="https://kawaiibi.es/topics/dax/window-functions.html">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Kawaii Power BI Guide">
   <meta property="og:locale" content="es_ES">
-  <meta property="og:title" content="Window Functions — Funciones DAX | Power BI Guide">
-  <meta property="og:description" content="Window Functions en DAX — WINDOW, OFFSET, INDEX, RANK, ROWNUMBER y el poder de SQL en DAX">
+  <meta property="og:title" content="Window Functions, Funciones DAX | Power BI Guide">
+  <meta property="og:description" content="Window Functions en DAX, WINDOW, OFFSET, INDEX, RANK, ROWNUMBER y el poder de SQL en DAX">
   <meta property="og:url" content="https://kawaiibi.es/topics/dax/window-functions.html">
   <meta property="og:image" content="https://kawaiibi.es/assets/images/og-banner.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="1200">
   <meta property="og:image:alt" content="Sara Lozano Marti - Kawaii Power BI">
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="Window Functions — Funciones DAX | Power BI Guide">
-  <meta name="twitter:description" content="Window Functions en DAX — WINDOW, OFFSET, INDEX, RANK, ROWNUMBER y el poder de SQL en DAX">
+  <meta name="twitter:title" content="Window Functions, Funciones DAX | Power BI Guide">
+  <meta name="twitter:description" content="Window Functions en DAX, WINDOW, OFFSET, INDEX, RANK, ROWNUMBER y el poder de SQL en DAX">
   <meta name="twitter:image" content="https://kawaiibi.es/assets/images/og-banner.png">
 
   <!-- Google Fonts -->
@@ -96,7 +96,7 @@
       margin-left: 0.5rem;
     }
 
-    /* TOC — Table of contents */
+    /* TOC, Table of contents */
     .toc {
       background: var(--color-rose);
       border: 1.5px solid var(--color-mauve);
@@ -136,7 +136,7 @@
       text-decoration: underline;
     }
 
-    /* Category header — separadores entre categorías */
+    /* Category header, separadores entre categorías */
     .category-header {
       display: flex;
       align-items: center;
@@ -157,7 +157,7 @@
       margin: 0;
     }
 
-    /* Function card — tarjeta individual para cada función */
+    /* Function card, tarjeta individual para cada función */
     .function-card {
       background: var(--color-white);
       border: 1.5px solid var(--color-mauve);
@@ -192,7 +192,7 @@
       margin-bottom: 1rem;
     }
 
-    /* Function table — tabla compacta con ejemplos */
+    /* Function table, tabla compacta con ejemplos */
     .function-table {
       width: 100%;
       border-collapse: collapse;
@@ -369,7 +369,7 @@
             Window Functions
             <span class="category-card__new">Nuevo</span>
           </h1>
-          <p class="topic-header__subtitle">WINDOW, OFFSET, INDEX, RANK, ROWNUMBER y sus funciones auxiliares — el poder de SQL en DAX</p>
+          <p class="topic-header__subtitle">WINDOW, OFFSET, INDEX, RANK, ROWNUMBER y sus funciones auxiliares, el poder de SQL en DAX</p>
           <div class="topic-header__levels">
             <span class="badge badge--advanced">Avanzado</span>
           </div>
@@ -397,10 +397,10 @@
           <h2 class="toc__title">📑 En esta página</h2>
           <ul class="toc__list">
             <li><a href="#que-son" class="toc__link">¿Qué son las Window Functions?</a></li>
-            <li><a href="#window" class="toc__link">WINDOW — La función base</a></li>
-            <li><a href="#offset" class="toc__link">OFFSET — Acceso relativo a filas</a></li>
-            <li><a href="#index" class="toc__link">INDEX — Acceso absoluto a filas</a></li>
-            <li><a href="#rank" class="toc__link">RANK y ROWNUMBER — Numeración y ranking</a></li>
+            <li><a href="#window" class="toc__link">WINDOW, La función base</a></li>
+            <li><a href="#offset" class="toc__link">OFFSET, Acceso relativo a filas</a></li>
+            <li><a href="#index" class="toc__link">INDEX, Acceso absoluto a filas</a></li>
+            <li><a href="#rank" class="toc__link">RANK y ROWNUMBER, Numeración y ranking</a></li>
             <li><a href="#auxiliares" class="toc__link">ORDERBY, PARTITIONBY, MATCHBY</a></li>
             <li><a href="#patrones" class="toc__link">Patrones de uso más comunes</a></li>
           </ul>
@@ -412,7 +412,7 @@
 
           <div class="note note--tip">
             <strong>Para quienes vienen de SQL 💡</strong><br>
-            Si vienes del mundo SQL, las Window Functions de DAX son exactamente lo mismo que las funciones de ventana de SQL (ROW_NUMBER, RANK, LAG, LEAD, SUM OVER PARTITION BY...). Si no vienes de SQL, no te preocupes — te lo explicamos desde cero con ejemplos de Power BI. 😊
+            Si vienes del mundo SQL, las Window Functions de DAX son exactamente lo mismo que las funciones de ventana de SQL (ROW_NUMBER, RANK, LAG, LEAD, SUM OVER PARTITION BY...). Si no vienes de SQL, no te preocupes, te lo explicamos desde cero con ejemplos de Power BI. 😊
           </div>
 
           <p><strong>Concepto clave:</strong> Las Window Functions operan sobre un conjunto ordenado de filas (una 'ventana') y pueden acceder a filas específicas de esa ventana. A diferencia de CALCULATE que modifica filtros, estas funciones trabajan con la posición de las filas.</p>
@@ -436,7 +436,7 @@
         <section id="window">
           <div class="category-header">
             <span class="category-header__icon">🪟</span>
-            <h2 class="category-header__title">WINDOW — La función base</h2>
+            <h2 class="category-header__title">WINDOW, La función base</h2>
           </div>
 
           <div class="function-card">
@@ -454,7 +454,7 @@
               <li><strong>ordenar_por:</strong> cómo ordenar las filas (clave para que los cálculos sean correctos)</li>
             </ul>
 
-            <h4>Ejemplo 1 — Total acumulado (implementado con WINDOW):</h4>
+            <h4>Ejemplo 1, Total acumulado (implementado con WINDOW):</h4>
             <div class="code-block">
               <button class="code-block__copy">Copiar</button>
               <pre><code class="language-javascript">// Ventas acumuladas desde la primera fila hasta la actual
@@ -470,7 +470,7 @@ SUMX(
 )</code></pre>
             </div>
 
-            <h4>Ejemplo 2 — Media móvil de 3 períodos (implementado con WINDOW):</h4>
+            <h4>Ejemplo 2, Media móvil de 3 períodos (implementado con WINDOW):</h4>
             <div class="code-block">
               <button class="code-block__copy">Copiar</button>
               <pre><code class="language-javascript">// Media de las 2 filas anteriores + la actual
@@ -497,7 +497,7 @@ AVERAGEX(
         <section id="offset">
           <div class="category-header">
             <span class="category-header__icon">↕️</span>
-            <h2 class="category-header__title">OFFSET — Acceso relativo a filas</h2>
+            <h2 class="category-header__title">OFFSET, Acceso relativo a filas</h2>
           </div>
 
           <div class="function-card">
@@ -515,10 +515,10 @@ AVERAGEX(
               <li><strong>partitionby:</strong> reiniciar el offset para cada grupo (como PARTITION BY en SQL)</li>
             </ul>
 
-            <h4>Ejemplo 1 — Variación vs mes anterior (desde el modelo):</h4>
+            <h4>Ejemplo 1, Variación vs mes anterior (desde el modelo):</h4>
             <div class="code-block">
               <button class="code-block__copy">Copiar</button>
-              <pre><code class="language-javascript">// En una medida normal (no Visual Calculation) — reutilizable en cualquier visual
+              <pre><code class="language-javascript">// En una medida normal (no Visual Calculation), reutilizable en cualquier visual
 Ventas Mes Anterior =
 CALCULATE(
     [Total Ventas],
@@ -533,7 +533,7 @@ Variación MoM = [Total Ventas] - [Ventas Mes Anterior]
 Variación MoM % = DIVIDE([Variación MoM], [Ventas Mes Anterior], BLANK())</code></pre>
             </div>
 
-            <h4>Ejemplo 2 — OFFSET con PARTITIONBY (variación dentro de cada región):</h4>
+            <h4>Ejemplo 2, OFFSET con PARTITIONBY (variación dentro de cada región):</h4>
             <div class="code-block">
               <button class="code-block__copy">Copiar</button>
               <pre><code class="language-javascript">// Variación vs mes anterior, reiniciando por región
@@ -585,7 +585,7 @@ CALCULATE(
         <section id="index">
           <div class="category-header">
             <span class="category-header__icon">🔢</span>
-            <h2 class="category-header__title">INDEX — Acceso absoluto a filas</h2>
+            <h2 class="category-header__title">INDEX, Acceso absoluto a filas</h2>
           </div>
 
           <div class="function-card">
@@ -595,7 +595,7 @@ CALCULATE(
               Como OFFSET pero con posición ABSOLUTA en vez de relativa. INDEX(1) siempre devuelve la primera fila. INDEX(-1) devuelve la última. Ideal cuando necesitas comparar con un valor fijo de referencia.
             </div>
 
-            <h4>Ejemplo 1 — Comparar cada mes con el primer mes del período:</h4>
+            <h4>Ejemplo 1, Comparar cada mes con el primer mes del período:</h4>
             <div class="code-block">
               <button class="code-block__copy">Copiar</button>
               <pre><code class="language-javascript">// Ventas del primer mes visible (referencia fija)
@@ -614,7 +614,7 @@ CALCULATE(
 DIVIDE([Total Ventas], [Ventas Primer Período]) * 100</code></pre>
             </div>
 
-            <h4>Ejemplo 2 — Comparar con el último valor conocido:</h4>
+            <h4>Ejemplo 2, Comparar con el último valor conocido:</h4>
             <div class="code-block">
               <button class="code-block__copy">Copiar</button>
               <pre><code class="language-javascript">// Ventas del último mes con datos
@@ -635,7 +635,7 @@ CALCULATE(
         <section id="rank">
           <div class="category-header">
             <span class="category-header__icon">🏅</span>
-            <h2 class="category-header__title">RANK y ROWNUMBER — Numeración y rankings</h2>
+            <h2 class="category-header__title">RANK y ROWNUMBER, Numeración y rankings</h2>
           </div>
 
           <div class="function-card">
@@ -657,12 +657,12 @@ CALCULATE(
               <tbody>
                 <tr>
                   <td><strong>RANKX</strong></td>
-                  <td>Iterador — evalúa una expresión para cada fila de una tabla</td>
+                  <td>Iterador, evalúa una expresión para cada fila de una tabla</td>
                   <td>En medidas, para rankings dinámicos en cualquier visual</td>
                 </tr>
                 <tr>
                   <td><strong>RANK</strong></td>
-                  <td>Window Function — trabaja con la posición en la tabla base</td>
+                  <td>Window Function, trabaja con la posición en la tabla base</td>
                   <td>En tablas calculadas, para rankings más eficientes y SQL-like</td>
                 </tr>
               </tbody>
@@ -689,7 +689,7 @@ ADDCOLUMNS(
             <div class="function-card__name">ROWNUMBER(&lt;relación&gt;, [&lt;ordenar_por&gt;], [&lt;matchby&gt;], [&lt;partitionby&gt;])</div>
             <div class="function-card__level">Avanzado</div>
             <div class="function-card__description">
-              Asigna un número de fila único a cada fila. A diferencia de RANK, no hay empates — cada fila tiene un número distinto aunque los valores sean iguales.
+              Asigna un número de fila único a cada fila. A diferencia de RANK, no hay empates, cada fila tiene un número distinto aunque los valores sean iguales.
             </div>
 
             <h4>Ejemplo ROWNUMBER:</h4>
@@ -723,13 +723,13 @@ ROWNUMBER(
             <h2 class="category-header__title">Funciones auxiliares de las Window Functions</h2>
           </div>
 
-          <p>Estas funciones no se usan solas — solo tienen sentido como argumentos dentro de WINDOW, OFFSET, INDEX, RANK o ROWNUMBER.</p>
+          <p>Estas funciones no se usan solas, solo tienen sentido como argumentos dentro de WINDOW, OFFSET, INDEX, RANK o ROWNUMBER.</p>
 
           <div class="function-card">
             <div class="function-card__name">ORDERBY(&lt;expresión&gt;, [&lt;orden&gt;], &lt;expresión2&gt;, [&lt;orden2&gt;], ...)</div>
             <div class="function-card__level">Avanzado</div>
             <div class="function-card__description">
-              Define el criterio de ordenación para las Window Functions. El orden es crucial — determina qué es "anterior" y "posterior". Puedes ordenar por múltiples columnas.
+              Define el criterio de ordenación para las Window Functions. El orden es crucial, determina qué es "anterior" y "posterior". Puedes ordenar por múltiples columnas.
             </div>
 
             <h4>Ejemplos:</h4>
@@ -784,7 +784,7 @@ MATCHBY('Calendario'[Mes], 'Calendario'[Año])</code></pre>
             <h2 class="category-header__title">Patrones más usados con Window Functions</h2>
           </div>
 
-          <h3>Patrón 1 — Acumulado genérico (por cualquier dimensión):</h3>
+          <h3>Patrón 1, Acumulado genérico (por cualquier dimensión):</h3>
           <div class="code-block">
             <button class="code-block__copy">Copiar</button>
             <pre><code class="language-javascript">// Acumulado de ventas por número de cliente (no por fecha)
@@ -798,10 +798,10 @@ SUMX(
 )</code></pre>
           </div>
 
-          <h3>Patrón 2 — Variación respecto al período anterior (reutilizable):</h3>
+          <h3>Patrón 2, Variación respecto al período anterior (reutilizable):</h3>
           <div class="code-block">
             <button class="code-block__copy">Copiar</button>
-            <pre><code class="language-javascript">// Diferencia con el mes anterior — funciona en cualquier visual con meses
+            <pre><code class="language-javascript">// Diferencia con el mes anterior, funciona en cualquier visual con meses
 Variación Mes =
 VAR VentasActual = [Total Ventas]
 VAR VentasAnterior =
@@ -811,7 +811,7 @@ VAR VentasAnterior =
 RETURN DIVIDE(VentasActual - VentasAnterior, VentasAnterior, BLANK())</code></pre>
           </div>
 
-          <h3>Patrón 3 — Ranking dentro de grupo:</h3>
+          <h3>Patrón 3, Ranking dentro de grupo:</h3>
           <div class="code-block">
             <button class="code-block__copy">Copiar</button>
             <pre><code class="language-javascript">// Ranking de vendedores dentro de su equipo
@@ -830,7 +830,7 @@ RANK(DENSE,
 
           <div class="note note--next">
             <strong>🚀 Siguiente paso</strong><br>
-            ¡Las Window Functions son de lo más potente que existe en DAX! Ahora que las entiendes, el siguiente paso son los Grupos de Cálculo — que te permitirán hacer que las medidas sean completamente dinámicas y reutilizables.
+            ¡Las Window Functions son de lo más potente que existe en DAX! Ahora que las entiendes, el siguiente paso son los Grupos de Cálculo, que te permitirán hacer que las medidas sean completamente dinámicas y reutilizables.
           </div>
         </section>
 

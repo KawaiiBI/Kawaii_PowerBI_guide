@@ -4,13 +4,13 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<meta content="Inteligencia de Tiempo en DAX — TOTALYTD, SAMEPERIODLASTYEAR, DATESINPERIOD, PARALLELPERIOD y todas las funciones de Time Intelligence" name="description"/>
-<title>Inteligencia de Tiempo — Funciones DAX | Power BI Guide</title>
+<meta content="Inteligencia de Tiempo en DAX, TOTALYTD, SAMEPERIODLASTYEAR, DATESINPERIOD, PARALLELPERIOD y todas las funciones de Time Intelligence" name="description"/>
+<title>Inteligencia de Tiempo, Funciones DAX | Power BI Guide</title>
   <link rel="canonical" href="https://kawaiibi.es/topics/dax/tiempo.html">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Kawaii Power BI Guide">
   <meta property="og:locale" content="es_ES">
-  <meta property="og:title" content="Inteligencia de Tiempo — Funciones DAX | Power BI Guide">
+  <meta property="og:title" content="Inteligencia de Tiempo, Funciones DAX | Power BI Guide">
   <meta property="og:description" content="Guia kawaii de Power BI, DAX, Lenguaje M y Microsoft Fabric.">
   <meta property="og:url" content="https://kawaiibi.es/topics/dax/tiempo.html">
   <meta property="og:image" content="https://kawaiibi.es/assets/images/og-banner.png">
@@ -18,7 +18,7 @@
   <meta property="og:image:height" content="1200">
   <meta property="og:image:alt" content="Sara Lozano Marti - Kawaii Power BI">
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="Inteligencia de Tiempo — Funciones DAX | Power BI Guide">
+  <meta name="twitter:title" content="Inteligencia de Tiempo, Funciones DAX | Power BI Guide">
   <meta name="twitter:description" content="Guia kawaii de Power BI, DAX, Lenguaje M y Microsoft Fabric.">
   <meta name="twitter:image" content="https://kawaiibi.es/assets/images/og-banner.png">
 <!-- Google Fonts -->
@@ -78,7 +78,7 @@
       align-items: center;
     }
 
-    /* TOC — Table of contents */
+    /* TOC, Table of contents */
     .toc {
       background: var(--color-rose);
       border: 1.5px solid var(--color-mauve);
@@ -118,7 +118,7 @@
       text-decoration: underline;
     }
 
-    /* Category header — separadores entre categorías */
+    /* Category header, separadores entre categorías */
     .category-header {
       display: flex;
       align-items: center;
@@ -139,7 +139,7 @@
       margin: 0;
     }
 
-    /* Function card — tarjeta individual para cada función */
+    /* Function card, tarjeta individual para cada función */
     .function-card {
       background: var(--color-white);
       border: 1.5px solid var(--color-mauve);
@@ -174,7 +174,7 @@
       margin-bottom: 1rem;
     }
 
-    /* Function table — tabla compacta con ejemplos */
+    /* Function table, tabla compacta con ejemplos */
     .function-table {
       width: 100%;
       border-collapse: collapse;
@@ -326,7 +326,7 @@
         <header class="topic-header">
 <span class="topic-header__icon">⏳</span>
 <h1 class="topic-header__title">Inteligencia de Tiempo</h1>
-<p class="topic-header__subtitle">TOTALYTD, SAMEPERIODLASTYEAR, DATESINPERIOD, PARALLELPERIOD y las 40 funciones para comparativas temporales — la categoría más poderosa de DAX</p>
+<p class="topic-header__subtitle">TOTALYTD, SAMEPERIODLASTYEAR, DATESINPERIOD, PARALLELPERIOD y las 40 funciones para comparativas temporales, la categoría más poderosa de DAX</p>
 <div class="topic-header__levels">
 <span class="badge badge--intermediate">Intermedio</span>
 <span class="badge badge--advanced">Avanzado</span>
@@ -354,7 +354,7 @@
 <li><a class="toc__link" href="#firstlast">Primera y última fecha</a></li>
 <li><a class="toc__link" href="#allperiods">Todos los períodos</a></li>
 <li><a class="toc__link" href="#semana">Funciones de semana (WEEK)</a></li>
-<li><a class="toc__link" href="#startof">STARTOF — Primer día del período</a></li>
+<li><a class="toc__link" href="#startof">STARTOF, Primer día del período</a></li>
 <li><a class="toc__link" href="#patrones">Los 10 patrones más usados</a></li>
 </ul>
 </nav>
@@ -436,7 +436,7 @@ Ventas YTD = TOTALYTD(SUM('Ventas'[Importe]), 'Calendario'[Date])
 </section><!-- SECCIÓN 1: Acumulados --><section id="acumulados">
 <div class="category-header">
 <span class="category-header__icon">📊</span>
-<h2 class="category-header__title">Totales acumulados — Year-to-Date, Quarter-to-Date, Month-to-Date</h2>
+<h2 class="category-header__title">Totales acumulados, Year-to-Date, Quarter-to-Date, Month-to-Date</h2>
 </div>
 <p>
             YTD (Year-to-Date) significa "desde el inicio del año hasta hoy". QTD = desde el inicio del trimestre. MTD = desde el inicio del mes.
@@ -496,7 +496,7 @@ Ventas YTD v2 = CALCULATE([Total Ventas], DATESYTD('Calendario'[Date]))</code></
 <button class="code-block__copy">Copiar</button>
 <pre><code class="language-javascript">// TOTALYTD es un atajo para:
 CALCULATE([Total Ventas], DATESYTD('Calendario'[Date]))
-// Ambas dan el mismo resultado — elige la que prefieras leer
+// Ambas dan el mismo resultado, elige la que prefieras leer
 
 // ✅ La ventaja de DATES... es que puedes combinarlo con otras cosas
 Margen YTD = CALCULATE([Total Margen], DATESYTD('Calendario'[Date]))
@@ -562,7 +562,7 @@ VAR Var = DIVIDE(Actual - Anterior, Anterior)
 RETURN
     FORMAT(Actual, "#,##0 €") &amp; " (" &amp; FORMAT(Var, "+0.0%;-0.0%") &amp; " vs año ant.)"
 
-// ✅ Funciona también con YTD — comparativa YTD vs YTD año anterior
+// ✅ Funciona también con YTD, comparativa YTD vs YTD año anterior
 Ventas YTD Año Anterior =
 CALCULATE(
     [Total Ventas],
@@ -635,12 +635,12 @@ Gap vs Próximo Año = [Total Ventas] - CALCULATE([Total Ventas], NEXTYEAR('Cale
 </section><!-- SECCIÓN 4: Desplazamientos --><section id="dateadd">
 <div class="category-header">
 <span class="category-header__icon">↔️</span>
-<h2 class="category-header__title">DATEADD y PARALLELPERIOD — mover el tiempo con precisión</h2>
+<h2 class="category-header__title">DATEADD y PARALLELPERIOD, mover el tiempo con precisión</h2>
 </div>
 <!-- DATEADD -->
 <div class="function-card">
 <div class="function-card__name">DATEADD(&lt;columna_fecha&gt;, &lt;numero_intervalos&gt;, &lt;intervalo&gt;)</div>
-<div class="function-card__level">Intermedio — Avanzado</div>
+<div class="function-card__level">Intermedio, Avanzado</div>
 <div class="function-card__description">
               Desplaza las fechas del contexto actual en N intervalos (DAY, MONTH, QUARTER, YEAR).
               Positivo = hacia el futuro, negativo = hacia el pasado.
@@ -704,14 +704,14 @@ PARALLELPERIOD('Calendario'[Date], -1, MONTH)
 <!-- DATESBETWEEN y DATESINPERIOD -->
 <div class="function-card">
 <div class="function-card__name">DATESBETWEEN / DATESINPERIOD</div>
-<div class="function-card__level">Intermedio — Avanzado</div>
+<div class="function-card__level">Intermedio, Avanzado</div>
 <div class="function-card__description">
 <strong>DATESBETWEEN:</strong> Devuelve las fechas entre dos fechas específicas (ambas inclusive).<br/>
 <strong>DATESINPERIOD:</strong> Devuelve fechas para un período de N intervalos a partir de una fecha de inicio. Perfecta para ventanas móviles (rolling windows).
             </div>
 <div class="code-block">
 <button class="code-block__copy">Copiar</button>
-<pre><code class="language-javascript">// ✅ DATESBETWEEN — Ventas en un rango de fechas específico
+<pre><code class="language-javascript">// ✅ DATESBETWEEN, Ventas en un rango de fechas específico
 Ventas Q1 2024 =
 CALCULATE(
     [Total Ventas],
@@ -725,7 +725,7 @@ CALCULATE(
     DATESBETWEEN('Calendario'[Date], TODAY() - 30, TODAY())
 )
 
-// ✅ DATESINPERIOD — Últimos 12 meses desde la fecha máxima del contexto
+// ✅ DATESINPERIOD, Últimos 12 meses desde la fecha máxima del contexto
 Ventas Últimos 12M =
 CALCULATE(
     [Total Ventas],
@@ -743,7 +743,7 @@ CALCULATE(
 </section><!-- SECCIÓN 5: Apertura/Cierre --><section id="openclose">
 <div class="category-header">
 <span class="category-header__icon">💰</span>
-<h2 class="category-header__title">Saldos de apertura y cierre — para contabilidad y stock</h2>
+<h2 class="category-header__title">Saldos de apertura y cierre, para contabilidad y stock</h2>
 </div>
 <p>
             Estas funciones son esenciales para análisis financieros y de inventario donde necesitas saber el valor al INICIO o al FINAL de un período,
@@ -799,7 +799,7 @@ CLOSINGBALANCEYEAR(
 </section><!-- SECCIÓN 6: Primera/Última fecha --><section id="firstlast">
 <div class="category-header">
 <span class="category-header__icon">📌</span>
-<h2 class="category-header__title">FIRSTDATE, LASTDATE y variantes — encontrar fechas clave</h2>
+<h2 class="category-header__title">FIRSTDATE, LASTDATE y variantes, encontrar fechas clave</h2>
 </div>
 <h3>Tabla comparativa</h3>
 <table class="function-table">
@@ -1017,13 +1017,13 @@ VAR WTD_Anterior = CALCULATE([Ventas WTD], PREVIOUSWEEK('Calendario'[Fecha]))
 RETURN DIVIDE(WTD_Actual - WTD_Anterior, WTD_Anterior)</code></pre>
 </div>
 <div class="note note--tip">
-<strong>💡 El parámetro fin_semana de TOTALWTD puede ser confuso.</strong> Prueba tu medida con datos conocidos antes de publicar — el día de inicio de semana varía según el país y la configuración regional del modelo. "0" = semana termina el sábado, "1" = termina el domingo.
+<strong>💡 El parámetro fin_semana de TOTALWTD puede ser confuso.</strong> Prueba tu medida con datos conocidos antes de publicar, el día de inicio de semana varía según el país y la configuración regional del modelo. "0" = semana termina el sábado, "1" = termina el domingo.
 </div>
 </div>
 </section><!-- SECCIÓN 9: STARTOF --><section id="startof">
 <div class="category-header">
 <span class="category-header__icon">🚩</span>
-<h2 class="category-header__title">STARTOF — Primer día del período</h2>
+<h2 class="category-header__title">STARTOF, Primer día del período</h2>
 </div>
 <p>
   Las funciones STARTOF devuelven el primer día del período que contiene la fecha del contexto actual.
@@ -1331,7 +1331,7 @@ CALCULATE(
           ¡La inteligencia de tiempo ya es tuya! Con estos 10 patrones puedes construir prácticamente cualquier análisis temporal
           que un cuadro de mando ejecutivo pueda necesitar. Ahora vamos con las
           <strong><a href="relaciones.html" style="color: var(--color-coral); text-decoration: underline;">funciones de Relaciones</a></strong>
-          — menos glamurosas pero absolutamente fundamentales para modelos de datos avanzados.
+, menos glamurosas pero absolutamente fundamentales para modelos de datos avanzados.
         </div>
 
       </div>

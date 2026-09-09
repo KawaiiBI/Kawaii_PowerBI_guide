@@ -5,12 +5,12 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <meta content="Funciones de Texto en DAX - FORMAT, CONCATENATE, LEFT, RIGHT, SUBSTITUTE, CONTAINSSTRING en Power BI" name="description"/>
-<title>Funciones de Texto — Power BI Guide</title>
+<title>Funciones de Texto, Power BI Guide</title>
   <link rel="canonical" href="https://kawaiibi.es/topics/dax/texto.html">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Kawaii Power BI Guide">
   <meta property="og:locale" content="es_ES">
-  <meta property="og:title" content="Funciones de Texto — Power BI Guide">
+  <meta property="og:title" content="Funciones de Texto, Power BI Guide">
   <meta property="og:description" content="Guia kawaii de Power BI, DAX, Lenguaje M y Microsoft Fabric.">
   <meta property="og:url" content="https://kawaiibi.es/topics/dax/texto.html">
   <meta property="og:image" content="https://kawaiibi.es/assets/images/og-banner.png">
@@ -18,7 +18,7 @@
   <meta property="og:image:height" content="1200">
   <meta property="og:image:alt" content="Sara Lozano Marti - Kawaii Power BI">
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="Funciones de Texto — Power BI Guide">
+  <meta name="twitter:title" content="Funciones de Texto, Power BI Guide">
   <meta name="twitter:description" content="Guia kawaii de Power BI, DAX, Lenguaje M y Microsoft Fabric.">
   <meta name="twitter:image" content="https://kawaiibi.es/assets/images/og-banner.png">
 <!-- Google Fonts -->
@@ -78,7 +78,7 @@
       align-items: center;
     }
 
-    /* TOC — Table of contents */
+    /* TOC, Table of contents */
     .toc {
       background: var(--color-rose);
       border: 1.5px solid var(--color-mauve);
@@ -118,7 +118,7 @@
       text-decoration: underline;
     }
 
-    /* Category header — separadores entre categorías */
+    /* Category header, separadores entre categorías */
     .category-header {
       display: flex;
       align-items: center;
@@ -139,7 +139,7 @@
       margin: 0;
     }
 
-    /* Function card — tarjeta individual para cada función */
+    /* Function card, tarjeta individual para cada función */
     .function-card {
       background: var(--color-white);
       border: 1.5px solid var(--color-mauve);
@@ -174,7 +174,7 @@
       margin-bottom: 1rem;
     }
 
-    /* Function table — tabla compacta con ejemplos */
+    /* Function table, tabla compacta con ejemplos */
     .function-table {
       width: 100%;
       border-collapse: collapse;
@@ -345,7 +345,7 @@
         <nav class="toc">
 <h2 class="toc__title">📑 En esta página</h2>
 <ul class="toc__list">
-<li><a class="toc__link" href="#intro">Texto en DAX — cosas que debes saber</a></li>
+<li><a class="toc__link" href="#intro">Texto en DAX, cosas que debes saber</a></li>
 <li><a class="toc__link" href="#extraccion">Extracción: LEFT, RIGHT, MID, LEN</a></li>
 <li><a class="toc__link" href="#busqueda">Búsqueda: FIND, SEARCH, CONTAINSSTRING</a></li>
 <li><a class="toc__link" href="#transformacion">Transformación: UPPER, LOWER, TRIM, SUBSTITUTE</a></li>
@@ -358,12 +358,12 @@
 </nav>
 
         <!-- Breadcrumb --><!-- Buscador compacto DAX --><!-- Header del topic --><!-- TOC --><!-- SECCIÓN 0: Intro --><section id="intro">
-<h2 class="category-header__title">Texto en DAX — cosas que debes saber 🎯</h2>
+<h2 class="category-header__title">Texto en DAX, cosas que debes saber 🎯</h2>
 <p>
             El texto en DAX puede ser un poco traicionero si no entiendes cómo funciona. Antes de lanzarnos a las funciones,
             hay dos cositas importantes que debes saber para evitar sorpresas. 🧐
           </p>
-<h3>Cosa 1 — DAX distingue BLANK de cadena vacía</h3>
+<h3>Cosa 1, DAX distingue BLANK de cadena vacía</h3>
 <div class="code-block">
 <button class="code-block__copy">Copiar</button>
 <pre><code class="language-javascript">// ⚠️ BLANK() no es lo mismo que ""
@@ -371,16 +371,16 @@ ISBLANK("")          -- FALSE (una cadena vacía no es BLANK)
 ISBLANK(BLANK())     -- TRUE
 
 // Muchas funciones de texto devuelven "" cuando no hay resultado
-// y otras devuelven BLANK() — ¡verifica cuál usa cada función!</code></pre>
+// y otras devuelven BLANK(), ¡verifica cuál usa cada función!</code></pre>
 </div>
-<h3>Cosa 2 — El operador &amp; para concatenar</h3>
+<h3>Cosa 2, El operador &amp; para concatenar</h3>
 <div class="code-block">
 <button class="code-block__copy">Copiar</button>
 <pre><code class="language-javascript">// En DAX, &amp; concatena textos igual que en Excel
 "Hola" &amp; " " &amp; "mundo"  -- "Hola mundo"
 // Mucho más legible que CONCATENATE anidados</code></pre>
 </div>
-<h3>Cosa 3 — Las funciones de texto y case-sensitivity</h3>
+<h3>Cosa 3, Las funciones de texto y case-sensitivity</h3>
 <div class="code-block">
 <button class="code-block__copy">Copiar</button>
 <pre><code class="language-javascript">// FIND y SEARCH son diferentes en este aspecto
@@ -693,7 +693,7 @@ Nombre Completo = 'Clientes'[Nombre] &amp; " " &amp; 'Clientes'[Apellidos]
 Etiqueta = 'Productos'[Nombre] &amp; " (" &amp; FORMAT([Ventas], "#,##0 €") &amp; ")"
 // "Portátil Pro (12.450 €)"
 
-// ⚠️ Números en texto — SIEMPRE usa FORMAT o TEXT
+// ⚠️ Números en texto, SIEMPRE usa FORMAT o TEXT
 Precio Label = "Precio: " &amp; FORMAT('Productos'[Precio], "#,##0.00 €")
 // No: "Precio: " &amp; 'Productos'[Precio]  ← puede dar resultado inesperado</code></pre>
 </div>
@@ -793,19 +793,19 @@ FORMAT(TODAY(), "MMM")                -- "feb" (mes abreviado)</code></pre>
 <div class="code-block">
 <button class="code-block__copy">Copiar</button>
 <pre><code class="language-javascript">// Con punto y coma para positivo;negativo;cero
-FORMAT([Variacion], "+#,##0.00;-#,##0.00;—")
+FORMAT([Variacion], "+#,##0.00;-#,##0.00;, ")
 // +1234.56 → "+1.234,56"
 // -1234.56 → "-1.234,56"
-// 0 → "—"</code></pre>
+// 0 → ", "</code></pre>
 </div>
 <h3>Ejemplo en título dinámico</h3>
 <div class="code-block">
 <button class="code-block__copy">Copiar</button>
 <pre><code class="language-javascript">Titulo Visual =
 "Ventas " &amp; FORMAT([Total Ventas], "#,##0 €") &amp;
-" — " &amp; FORMAT(TODAY(), "MMMM YYYY") &amp;
+", " &amp; FORMAT(TODAY(), "MMMM YYYY") &amp;
 " | Crecimiento: " &amp; FORMAT([Variacion YoY], "+0.0%;-0.0%;0%")
-// "Ventas 1.234.567 € — febrero 2025 | Crecimiento: +12,3%"</code></pre>
+// "Ventas 1.234.567 €, febrero 2025 | Crecimiento: +12,3%"</code></pre>
 </div>
 </div>
 <div class="function-card">
@@ -874,7 +874,7 @@ Dos Lineas = "Primera línea" &amp; UNICHAR(10) &amp; "Segunda línea"</code></p
 </section><!-- SECCIÓN 7: Exportación --><section id="exportacion">
 <div class="category-header">
 <span class="category-header__icon">📤</span>
-<h2 class="category-header__title">TOCSV y TOJSON — exportar tablas como texto</h2>
+<h2 class="category-header__title">TOCSV y TOJSON, exportar tablas como texto</h2>
 </div>
 <p>
             Estas dos funciones son las más recientes de la categoría de texto y abren posibilidades muy interesantes para integración con otras herramientas.
@@ -969,16 +969,16 @@ AND(
 VAR Periodo = SELECTEDVALUE('Calendario'[Año], "Todos los años")
 VAR Pais = SELECTEDVALUE('Clientes'[País], "Todos los países")
 VAR Ventas = FORMAT([Total Ventas], "#,##0 €")
-VAR Var = FORMAT([Variacion YoY], "+0.0%;-0.0%;—")
+VAR Var = FORMAT([Variacion YoY], "+0.0%;-0.0%;, ")
 RETURN
-    "📊 Ventas " &amp; Pais &amp; " — " &amp; Periodo &amp; " | " &amp; Ventas &amp; " (" &amp; Var &amp; ")"</code></pre>
+    "📊 Ventas " &amp; Pais &amp; ", " &amp; Periodo &amp; " | " &amp; Ventas &amp; " (" &amp; Var &amp; ")"</code></pre>
 </div>
 </div>
 </section><div class="note note--next">
 <strong>🚀 Siguiente paso</strong><br/>
           ¡El texto ya no tiene secretos para ti! La siguiente parada son las
           <strong><a href="tablas.html">Funciones de Manipulación de Tablas</a></strong>
-          — una de las categorías más potentes de DAX avanzado para construir tablas calculadas, hacer joins y crear estructuras de datos complejas. 🚀
+, una de las categorías más potentes de DAX avanzado para construir tablas calculadas, hacer joins y crear estructuras de datos complejas. 🚀
         </div>
 
       </div>

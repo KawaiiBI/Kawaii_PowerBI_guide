@@ -4,12 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Bus Matrix de Kimball: herramienta de planificación para Data Warehouses dimensionales. Dimensiones conformadas, procesos de negocio y arquitecturas escalables en Power BI.">
-  <title>Bus Matrix de Kimball — Modelado de Datos | Power BI Guide by Kawaii BI</title>
+  <title>Bus Matrix de Kimball, Modelado de Datos | Power BI Guide by Kawaii BI</title>
   <link rel="canonical" href="https://kawaiibi.es/topics/modelado/kimball-bus-matrix.html">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Kawaii Power BI Guide">
   <meta property="og:locale" content="es_ES">
-  <meta property="og:title" content="Bus Matrix de Kimball — Modelado de Datos | Power BI Guide by Kawaii BI">
+  <meta property="og:title" content="Bus Matrix de Kimball, Modelado de Datos | Power BI Guide by Kawaii BI">
   <meta property="og:description" content="Bus Matrix de Kimball: herramienta de planificación para Data Warehouses dimensionales. Dimensiones conformadas, procesos de negocio y arquitecturas escalables en Power BI.">
   <meta property="og:url" content="https://kawaiibi.es/topics/modelado/kimball-bus-matrix.html">
   <meta property="og:image" content="https://kawaiibi.es/assets/images/og-banner.png">
@@ -17,7 +17,7 @@
   <meta property="og:image:height" content="1200">
   <meta property="og:image:alt" content="Sara Lozano Marti - Kawaii Power BI">
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="Bus Matrix de Kimball — Modelado de Datos | Power BI Guide by Kawaii BI">
+  <meta name="twitter:title" content="Bus Matrix de Kimball, Modelado de Datos | Power BI Guide by Kawaii BI">
   <meta name="twitter:description" content="Bus Matrix de Kimball: herramienta de planificación para Data Warehouses dimensionales. Dimensiones conformadas, procesos de negocio y arquitecturas escalables en Power BI.">
   <meta name="twitter:image" content="https://kawaiibi.es/assets/images/og-banner.png">
 
@@ -227,7 +227,7 @@
             <div class="component-item">
               <div class="component-item__number">3</div>
               <h4>Marcas / Cruces (intersecciones)</h4>
-              <p>Una marca (✓) indica que ese proceso usa esa dimensión. Un guión (—) indica que no aplica. Por ejemplo, "Ventas Online" no tiene dimensión "Tienda Física".</p>
+              <p>Una marca (✓) indica que ese proceso usa esa dimensión. Un guión (, ) indica que no aplica. Por ejemplo, "Ventas Online" no tiene dimensión "Tienda Física".</p>
             </div>
             <div class="component-item">
               <div class="component-item__number">4</div>
@@ -289,12 +289,12 @@
 
         <article class="concept-card">
           <h3>Proceso paso a paso</h3>
-          <p>La Bus Matrix se construye en talleres colaborativos con stakeholders de negocio y de datos. No es un artefacto técnico que se crea en solitario — es el resultado de conversaciones estructuradas.</p>
+          <p>La Bus Matrix se construye en talleres colaborativos con stakeholders de negocio y de datos. No es un artefacto técnico que se crea en solitario, es el resultado de conversaciones estructuradas.</p>
 
           <ol class="step-list">
             <li>
               <strong>Identificar Procesos de Negocio</strong><br>
-              Reúnete con stakeholders de diferentes áreas y pregunta: <em>"¿Qué eventos medibles ocurren en tu área?"</em> No preguntes por informes o KPIs todavía — pregunta por eventos. Lista todo: Ventas en tienda, Ventas online, Devoluciones, Llamadas al call center, Inventario diario, Impresiones de campaña, Incorporaciones de empleados…
+              Reúnete con stakeholders de diferentes áreas y pregunta: <em>"¿Qué eventos medibles ocurren en tu área?"</em> No preguntes por informes o KPIs todavía, pregunta por eventos. Lista todo: Ventas en tienda, Ventas online, Devoluciones, Llamadas al call center, Inventario diario, Impresiones de campaña, Incorporaciones de empleados…
             </li>
             <li>
               <strong>Definir la Granularidad de cada Proceso</strong><br>
@@ -306,7 +306,7 @@
             </li>
             <li>
               <strong>Marcar las Intersecciones</strong><br>
-              Construye la tabla. Filas = procesos, columnas = dimensiones. Marca ✓ donde el proceso usa la dimensión y — donde no aplica. Involucra a los propietarios de cada área para validar las marcas — es fácil equivocarse sin su conocimiento.
+              Construye la tabla. Filas = procesos, columnas = dimensiones. Marca ✓ donde el proceso usa la dimensión y, donde no aplica. Involucra a los propietarios de cada área para validar las marcas, es fácil equivocarse sin su conocimiento.
             </li>
             <li>
               <strong>Identificar y Conformar Dimensiones</strong><br>
@@ -324,7 +324,7 @@
         </article>
 
         <!-- ══════════════════════════════════════════
-             SECCIÓN 5: Ejemplo Práctico — Empresa Retail
+             SECCIÓN 5: Ejemplo Práctico, Empresa Retail
         ══════════════════════════════════════════ -->
         <div class="category-header" id="ejemplo">
           <span class="category-header__icon">🏪</span>
@@ -365,8 +365,8 @@
                   <td><span class="check">✓</span></td>
                   <td><span class="check">✓</span></td>
                   <td><span class="check">✓</span></td>
-                  <td><span class="dash">—</span></td>
-                  <td><span class="dash">—</span></td>
+                  <td><span class="dash">, </span></td>
+                  <td><span class="dash">, </span></td>
                   <td><span class="check">✓</span></td>
                   <td><span class="check">✓</span></td>
                 </tr>
@@ -376,19 +376,19 @@
                   <td><span class="check">✓</span></td>
                   <td><span class="check">✓</span></td>
                   <td><span class="check">✓</span></td>
-                  <td><span class="dash">—</span></td>
-                  <td><span class="dash">—</span></td>
+                  <td><span class="dash">, </span></td>
+                  <td><span class="dash">, </span></td>
                   <td><span class="check">✓</span></td>
                 </tr>
                 <tr>
                   <td>Inventario Snapshot</td>
                   <td><span class="check">✓</span></td>
                   <td><span class="check">✓</span></td>
-                  <td><span class="dash">—</span></td>
+                  <td><span class="dash">, </span></td>
                   <td><span class="check">✓</span></td>
-                  <td><span class="dash">—</span></td>
-                  <td><span class="dash">—</span></td>
-                  <td><span class="dash">—</span></td>
+                  <td><span class="dash">, </span></td>
+                  <td><span class="dash">, </span></td>
+                  <td><span class="dash">, </span></td>
                 </tr>
                 <tr class="gran-row">
                   <td>Granularidad:</td>
@@ -409,14 +409,14 @@
           <h4>Observaciones clave de esta matriz:</h4>
           <ul>
             <li><strong>Fecha, Producto y Cliente</strong> aparecen en casi todos los procesos → son dimensiones conformadas prioritarias</li>
-            <li><strong>Tienda</strong> no aplica a Ventas Online (canal digital no tiene tienda física) → marca —</li>
+            <li><strong>Tienda</strong> no aplica a Ventas Online (canal digital no tiene tienda física) → marca, </li>
             <li><strong>Empleado</strong> solo es relevante en ventas presenciales donde hay vendedor asignado</li>
             <li><strong>Inventario</strong> no tiene dimensión Cliente ni Empleado porque un snapshot de stock no está asociado a ningún cliente</li>
             <li>Los 4 procesos comparten <code>Dim_Producto</code>: <code>ProductID = 12345</code> significa lo mismo en Ventas, Devoluciones e Inventario → puedo calcular <em>% devuelto sobre vendido</em> directamente</li>
           </ul>
 
           <div class="note note--tip">
-            💡 <strong>Tip kawaii:</strong> Las columnas con más ✓ son tus dimensiones más valiosas — son las que habilitan más análisis cruzados. Inviérteles tiempo en diseñarlas bien desde el principio. Una <code>Dim_Producto</code> bien construida que sirve a 4 procesos vale mucho más que 4 tablas de productos independientes y mal documentadas.
+            💡 <strong>Tip kawaii:</strong> Las columnas con más ✓ son tus dimensiones más valiosas, son las que habilitan más análisis cruzados. Inviérteles tiempo en diseñarlas bien desde el principio. Una <code>Dim_Producto</code> bien construida que sirve a 4 procesos vale mucho más que 4 tablas de productos independientes y mal documentadas.
           </div>
         </article>
 
@@ -456,7 +456,7 @@
 
           <div class="note note--warning">
             ⚠️ <strong>Error #1: Confundir "misma dimensión" con "conformada"</strong>
-            <p style="margin: 8px 0 0; line-height: 1.7;">Que Ventas y Devoluciones tengan una dimensión llamada "Cliente" <strong>NO significa que sea conformada</strong>. Solo lo es si comparten la MISMA tabla física con las MISMAS claves y los MISMOS atributos. Si cada proceso tiene su propia <code>Dim_Cliente</code> con IDs diferentes o definiciones distintas, no es conformada — es un silo con otro nombre.</p>
+            <p style="margin: 8px 0 0; line-height: 1.7;">Que Ventas y Devoluciones tengan una dimensión llamada "Cliente" <strong>NO significa que sea conformada</strong>. Solo lo es si comparten la MISMA tabla física con las MISMAS claves y los MISMOS atributos. Si cada proceso tiene su propia <code>Dim_Cliente</code> con IDs diferentes o definiciones distintas, no es conformada, es un silo con otro nombre.</p>
           </div>
 
           <div class="note note--warning">

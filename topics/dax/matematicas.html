@@ -4,13 +4,13 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<meta content="Funciones Matemáticas y Trigonométricas en DAX — DIVIDE, ROUND, ABS, MOD, trigonometría y las 47 funciones matemáticas" name="description"/>
-<title>Funciones Matemáticas y Trigonométricas — Funciones DAX | Power BI Guide</title>
+<meta content="Funciones Matemáticas y Trigonométricas en DAX, DIVIDE, ROUND, ABS, MOD, trigonometría y las 47 funciones matemáticas" name="description"/>
+<title>Funciones Matemáticas y Trigonométricas, Funciones DAX | Power BI Guide</title>
   <link rel="canonical" href="https://kawaiibi.es/topics/dax/matematicas.html">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Kawaii Power BI Guide">
   <meta property="og:locale" content="es_ES">
-  <meta property="og:title" content="Funciones Matemáticas y Trigonométricas — Funciones DAX | Power BI Guide">
+  <meta property="og:title" content="Funciones Matemáticas y Trigonométricas, Funciones DAX | Power BI Guide">
   <meta property="og:description" content="Guia kawaii de Power BI, DAX, Lenguaje M y Microsoft Fabric.">
   <meta property="og:url" content="https://kawaiibi.es/topics/dax/matematicas.html">
   <meta property="og:image" content="https://kawaiibi.es/assets/images/og-banner.png">
@@ -18,7 +18,7 @@
   <meta property="og:image:height" content="1200">
   <meta property="og:image:alt" content="Sara Lozano Marti - Kawaii Power BI">
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="Funciones Matemáticas y Trigonométricas — Funciones DAX | Power BI Guide">
+  <meta name="twitter:title" content="Funciones Matemáticas y Trigonométricas, Funciones DAX | Power BI Guide">
   <meta name="twitter:description" content="Guia kawaii de Power BI, DAX, Lenguaje M y Microsoft Fabric.">
   <meta name="twitter:image" content="https://kawaiibi.es/assets/images/og-banner.png">
 <!-- Google Fonts -->
@@ -78,7 +78,7 @@
       align-items: center;
     }
 
-    /* TOC — Table of contents */
+    /* TOC, Table of contents */
     .toc {
       background: var(--color-rose);
       border: 1.5px solid var(--color-mauve);
@@ -118,7 +118,7 @@
       text-decoration: underline;
     }
 
-    /* Category header — separadores entre categorías */
+    /* Category header, separadores entre categorías */
     .category-header {
       display: flex;
       align-items: center;
@@ -139,7 +139,7 @@
       margin: 0;
     }
 
-    /* Function card — tarjeta individual para cada función */
+    /* Function card, tarjeta individual para cada función */
     .function-card {
       background: var(--color-white);
       border: 1.5px solid var(--color-mauve);
@@ -174,7 +174,7 @@
       margin-bottom: 1rem;
     }
 
-    /* Function table — tabla compacta con ejemplos */
+    /* Function table, tabla compacta con ejemplos */
     .function-table {
       width: 100%;
       border-collapse: collapse;
@@ -326,7 +326,7 @@
         <header class="topic-header">
 <span class="topic-header__icon">🔢</span>
 <h1 class="topic-header__title">Funciones Matemáticas y Trigonométricas</h1>
-<p class="topic-header__subtitle">DIVIDE, ROUND, ABS, MOD, SQRT, LOG, trigonometría completa y mucho más — las 47 funciones matemáticas de DAX</p>
+<p class="topic-header__subtitle">DIVIDE, ROUND, ABS, MOD, SQRT, LOG, trigonometría completa y mucho más, las 47 funciones matemáticas de DAX</p>
 <div class="topic-header__levels">
 <span class="badge badge--beginner">Principiante</span>
 <span class="badge badge--intermediate">Intermedio</span>
@@ -360,7 +360,7 @@
         <!-- Breadcrumb --><!-- Buscador compacto DAX --><!-- Header del topic --><!-- TOC --><!-- Intro --><section>
 <div class="note note--tip">
 <strong>Bienvenida desde Excel 🌸</strong><br/>
-            Las funciones matemáticas en DAX son casi idénticas a las de Excel — si vienes de ahí, te sentirás como en casa. Pero hay algunas que son exclusivas de DAX y muy importantes para análisis de datos, como DIVIDE (que maneja la división por cero de forma elegante) o CONVERT (para cambiar tipos de datos). Vamos por categorías.
+            Las funciones matemáticas en DAX son casi idénticas a las de Excel, si vienes de ahí, te sentirás como en casa. Pero hay algunas que son exclusivas de DAX y muy importantes para análisis de datos, como DIVIDE (que maneja la división por cero de forma elegante) o CONVERT (para cambiar tipos de datos). Vamos por categorías.
           </div>
 </section><!-- SECCIÓN 1: Esenciales --><section id="esenciales">
 <div class="category-header">
@@ -371,9 +371,9 @@
 <div class="function-card__name">DIVIDE(&lt;numerador&gt;, &lt;denominador&gt;, [&lt;alternativa&gt;])</div>
 <div class="function-card__level">Principiante</div>
 <div class="function-card__description">
-              Divide dos números de forma SEGURA. Si el denominador es 0 o BLANK, devuelve el valor alternativo (por defecto BLANK) en lugar de dar error. La forma correcta de dividir en DAX — nunca uses el operador / directamente sin protección.
+              Divide dos números de forma SEGURA. Si el denominador es 0 o BLANK, devuelve el valor alternativo (por defecto BLANK) en lugar de dar error. La forma correcta de dividir en DAX, nunca uses el operador / directamente sin protección.
             </div>
-<h4>Ejemplo básico — la diferencia crítica:</h4>
+<h4>Ejemplo básico, la diferencia crítica:</h4>
 <div class="code-block">
 <button class="code-block__copy">Copiar</button>
 <pre><code class="language-javascript">// ❌ Nunca hagas esto en una medida:
@@ -396,7 +396,7 @@ Variación % = DIVIDE([Ventas Actual] - [Ventas Anterior], [Ventas Anterior], BL
 </div>
 <div class="note note--best-practice">
 <strong>🏆 Best Practice</strong><br/>
-              DIVIDE es más eficiente que IFERROR([Ventas]/[Pedidos], 0) porque está optimizada internamente. Úsala siempre que dividas — es una de esas buenas prácticas que deberían ser automáticas.
+              DIVIDE es más eficiente que IFERROR([Ventas]/[Pedidos], 0) porque está optimizada internamente. Úsala siempre que dividas, es una de esas buenas prácticas que deberían ser automáticas.
             </div>
 </div>
 <div class="function-card">
@@ -411,7 +411,7 @@ Variación % = DIVIDE([Ventas Actual] - [Ventas Anterior], [Ventas Anterior], BL
 <pre><code class="language-javascript">// Diferencia absoluta entre presupuesto y real (sin importar el signo)
 Desviación = ABS([Real] - [Presupuesto])
 
-// Error medio absoluto (MAE — Mean Absolute Error):
+// Error medio absoluto (MAE, Mean Absolute Error):
 MAE = AVERAGEX('Predicciones', ABS('Predicciones'[Predicho] - 'Predicciones'[Real]))</code></pre>
 </div>
 </div>
@@ -436,7 +436,7 @@ SWITCH(
 </div>
 <div class="function-card">
 <div class="function-card__name">MOD(&lt;número&gt;, &lt;divisor&gt;)</div>
-<div class="function-card__level">Principiante — Intermedio</div>
+<div class="function-card__level">Principiante, Intermedio</div>
 <div class="function-card__description">
               Devuelve el RESTO de la división entera. Esencial para detectar si un número es par/impar, para ciclos, patrones y lógica de rotación.
             </div>
@@ -464,7 +464,7 @@ Grupo = MOD(ROWNUMBER(ALL('Tabla'), ORDERBY('Tabla'[ID])), 3)
 <div class="function-card__name">QUOTIENT(&lt;numerador&gt;, &lt;denominador&gt;)</div>
 <div class="function-card__level">Principiante</div>
 <div class="function-card__description">
-              Devuelve la parte ENTERA de una división (sin el resto). Complementario de MOD — juntos dan el cociente y el resto completos.
+              Devuelve la parte ENTERA de una división (sin el resto). Complementario de MOD, juntos dan el cociente y el resto completos.
             </div>
 <h4>Ejemplos:</h4>
 <div class="code-block">
@@ -483,7 +483,7 @@ Unidades Sueltas = MOD('Productos'[Stock], 12)</code></pre>
 </section><!-- SECCIÓN 2: Redondeo --><section id="redondeo">
 <div class="category-header">
 <span class="category-header__icon">🎯</span>
-<h2 class="category-header__title">Redondeo — más opciones de las que crees</h2>
+<h2 class="category-header__title">Redondeo, más opciones de las que crees</h2>
 </div>
 <h3>Tabla comparativa de todas las funciones de redondeo:</h3>
 <table class="function-table">
@@ -774,7 +774,7 @@ Combinaciones Test = COMBIN([Nº Variantes], 2)</code></pre>
 <div class="function-card__name">PERMUT(&lt;n&gt;, &lt;k&gt;)</div>
 <div class="function-card__level">Avanzado</div>
 <div class="function-card__description">
-              Permutaciones sin repetición — como COMBIN pero el orden importa.
+              Permutaciones sin repetición, como COMBIN pero el orden importa.
             </div>
 <h4>Ejemplo:</h4>
 <div class="code-block">
@@ -786,13 +786,13 @@ PERMUT(10, 3)  -- 720</code></pre>
 </section><!-- SECCIÓN 6: Números aleatorios --><section id="aleatorio">
 <div class="category-header">
 <span class="category-header__icon">🎲</span>
-<h2 class="category-header__title">RAND y RANDBETWEEN — números aleatorios</h2>
+<h2 class="category-header__title">RAND y RANDBETWEEN, números aleatorios</h2>
 </div>
 <div class="function-card">
 <div class="function-card__name">RAND() | RANDBETWEEN(&lt;inferior&gt;, &lt;superior&gt;)</div>
 <div class="function-card__level">Intermedio</div>
 <div class="function-card__description">
-<strong>RAND:</strong> Devuelve un número decimal aleatorio entre 0 y 1 (exclusivo). <strong>RANDBETWEEN:</strong> Devuelve un entero aleatorio entre dos valores (inclusivo). Ambas son VOLÁTILES — se recalculan en cada refresco.
+<strong>RAND:</strong> Devuelve un número decimal aleatorio entre 0 y 1 (exclusivo). <strong>RANDBETWEEN:</strong> Devuelve un entero aleatorio entre dos valores (inclusivo). Ambas son VOLÁTILES, se recalculan en cada refresco.
             </div>
 <h4>Ejemplo de uso en datos de prueba:</h4>
 <div class="code-block">
@@ -808,7 +808,7 @@ ADDCOLUMNS(
 </div>
 <div class="note note--warning">
 <strong>⚠️ Funciones volátiles</strong><br/>
-              RAND() y RANDBETWEEN() son VOLÁTILES — se recalculan cada vez que el informe se actualiza. Esto significa que los valores cambian en cada refresco. Si necesitas datos aleatorios fijos (para pruebas reproducibles), genera la tabla una vez con DATATABLE o importa los datos.
+              RAND() y RANDBETWEEN() son VOLÁTILES, se recalculan cada vez que el informe se actualiza. Esto significa que los valores cambian en cada refresco. Si necesitas datos aleatorios fijos (para pruebas reproducibles), genera la tabla una vez con DATATABLE o importa los datos.
             </div>
 </div>
 </section><!-- SECCIÓN 7: Trigonometría --><section id="trigonometria">
@@ -847,7 +847,7 @@ ADDCOLUMNS(
 <tr><td><strong>COTH(x)</strong></td><td>Cotangente hiperbólica</td><td>-∞ a +∞</td></tr>
 </tbody>
 </table>
-<h3>Ejemplo práctico — distancia entre dos coordenadas geográficas (fórmula Haversine):</h3>
+<h3>Ejemplo práctico, distancia entre dos coordenadas geográficas (fórmula Haversine):</h3>
 <div class="code-block">
 <button class="code-block__copy">Copiar</button>
 <pre><code class="language-javascript">// Distancia en km entre dos puntos (lat/lon en grados)
@@ -870,7 +870,7 @@ RETURN R * C</code></pre>
 <span class="category-header__icon">🛠️</span>
 <h2 class="category-header__title">Patrones prácticos</h2>
 </div>
-<h3>Patrón 1 — Formateo de número en escala automática:</h3>
+<h3>Patrón 1, Formateo de número en escala automática:</h3>
 <div class="code-block">
 <button class="code-block__copy">Copiar</button>
 <pre><code class="language-javascript">Ventas Formateadas =
@@ -884,7 +884,7 @@ SWITCH(
     FORMAT(V, "#,##0")
 )</code></pre>
 </div>
-<h3>Patrón 2 — Redondeo a cifras significativas:</h3>
+<h3>Patrón 2, Redondeo a cifras significativas:</h3>
 <div class="code-block">
 <button class="code-block__copy">Copiar</button>
 <pre><code class="language-javascript">// Redondear a N cifras significativas:
@@ -894,7 +894,7 @@ VAR Magnitud = POWER(10, INT(LOG10(ABS(Valor))) - Cifras + 1)
 RETURN ROUND(Valor / Magnitud, 0) * Magnitud
 // Resultado: 12300</code></pre>
 </div>
-<h3>Patrón 3 — Porcentaje siempre entre 0 y 100:</h3>
+<h3>Patrón 3, Porcentaje siempre entre 0 y 100:</h3>
 <div class="code-block">
 <button class="code-block__copy">Copiar</button>
 <pre><code class="language-javascript">% Seguro =
@@ -903,7 +903,7 @@ RETURN MAX(0, MIN(1, IFERROR(Ratio, 0))) * 100</code></pre>
 </div>
 <div class="note note--next">
 <strong>🚀 Siguiente paso</strong><br/>
-            ¡Ahora tienes todo el arsenal matemático de DAX! Si tu trabajo incluye análisis estadístico — distribuciones, percentiles, regresión — la siguiente página de Estadísticas te va a encantar.
+            ¡Ahora tienes todo el arsenal matemático de DAX! Si tu trabajo incluye análisis estadístico, distribuciones, percentiles, regresión, la siguiente página de Estadísticas te va a encantar.
           </div>
 </section>
 

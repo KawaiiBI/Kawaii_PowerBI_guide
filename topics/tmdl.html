@@ -4,12 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="TMDL (Tabular Model Definition Language): gestiona tu modelo semántico como código. Aprende la sintaxis, cómo usarlo en Desktop y en el Service.">
-  <title>TMDL — Modelos como código | Power BI Guide by Kawaii BI</title>
+  <title>TMDL, Modelos como código | Power BI Guide by Kawaii BI</title>
   <link rel="canonical" href="https://kawaiibi.es/topics/tmdl.html">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Kawaii Power BI Guide">
   <meta property="og:locale" content="es_ES">
-  <meta property="og:title" content="TMDL — Modelos como código | Power BI Guide by Kawaii BI">
+  <meta property="og:title" content="TMDL, Modelos como código | Power BI Guide by Kawaii BI">
   <meta property="og:description" content="TMDL (Tabular Model Definition Language): gestiona tu modelo semántico como código. Aprende la sintaxis, cómo usarlo en Desktop y en el Service.">
   <meta property="og:url" content="https://kawaiibi.es/topics/tmdl.html">
   <meta property="og:image" content="https://kawaiibi.es/assets/images/og-banner.png">
@@ -17,7 +17,7 @@
   <meta property="og:image:height" content="1200">
   <meta property="og:image:alt" content="Sara Lozano Marti - Kawaii Power BI">
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="TMDL — Modelos como código | Power BI Guide by Kawaii BI">
+  <meta name="twitter:title" content="TMDL, Modelos como código | Power BI Guide by Kawaii BI">
   <meta name="twitter:description" content="TMDL (Tabular Model Definition Language): gestiona tu modelo semántico como código. Aprende la sintaxis, cómo usarlo en Desktop y en el Service.">
   <meta name="twitter:image" content="https://kawaiibi.es/assets/images/og-banner.png">
 
@@ -37,7 +37,7 @@
 
   <style>
     /* ============================================================
-       ESTILOS — TMDL
+       ESTILOS, TMDL
     ============================================================ */
 
     .topic-header {
@@ -428,7 +428,7 @@
       <div class="topic-header">
         <div class="topic-header__icon">📝</div>
         <div>
-          <h1 class="topic-header__title">TMDL — Tu modelo semántico como código</h1>
+          <h1 class="topic-header__title">TMDL, Tu modelo semántico como código</h1>
           <p class="topic-header__subtitle">
             Imagina poder guardar todo tu modelo de Power BI como archivos de texto legibles, versionarlos en Git y revisarlos como si fueran código. Eso es exactamente lo que hace TMDL: convierte tu modelo en algo que puedes leer, editar, comparar y colaborar como cualquier otro proyecto de software.
           </p>
@@ -445,9 +445,9 @@
         <div class="toc-box__list">
           <a href="#que-es" class="toc-box__link"><span>01</span> ¿Qué es TMDL?</a>
           <a href="#problema-pbix" class="toc-box__link"><span>02</span> El problema con el .pbix</a>
-          <a href="#pbip-vs-pbix" class="toc-box__link"><span>03</span> .pbip vs .pbix — el nuevo formato</a>
+          <a href="#pbip-vs-pbix" class="toc-box__link"><span>03</span> .pbip vs .pbix, el nuevo formato</a>
           <a href="#estructura" class="toc-box__link"><span>04</span> Estructura de carpetas y archivos</a>
-          <a href="#sintaxis" class="toc-box__link"><span>05</span> Sintaxis TMDL — lo esencial</a>
+          <a href="#sintaxis" class="toc-box__link"><span>05</span> Sintaxis TMDL, lo esencial</a>
           <a href="#en-desktop" class="toc-box__link"><span>06</span> TMDL en Power BI Desktop</a>
           <a href="#en-service" class="toc-box__link"><span>07</span> TMDL en Power BI Service ✨ nuevo</a>
           <a href="#casos-de-uso" class="toc-box__link"><span>08</span> Casos de uso reales</a>
@@ -535,7 +535,7 @@
             <ul>
               <li>Binario: Git solo puede decirte que el archivo cambió, no qué cambió dentro</li>
               <li>Un solo archivo para todo: datos, informe y modelo mezclados</li>
-              <li>Colaboración imposible en paralelo — el último en guardar machaca al anterior</li>
+              <li>Colaboración imposible en paralelo, el último en guardar machaca al anterior</li>
               <li>No puedes hacer code review de las medidas</li>
               <li>Difícil de integrar en pipelines automatizados</li>
               <li>Si se corrompe el archivo, pierdes todo</li>
@@ -566,7 +566,7 @@
       <section class="content-section" id="pbip-vs-pbix">
         <div class="section-header">
           <span class="section-icon">📦</span>
-          <h2>.pbip vs .pbix — el nuevo formato de proyecto</h2>
+          <h2>.pbip vs .pbix, el nuevo formato de proyecto</h2>
         </div>
 
         <p class="lead">
@@ -616,7 +616,7 @@
           El corazón de todo está en la carpeta <code>definition/</code> dentro de <code>.Dataset/</code>. Aquí es donde viven los archivos TMDL con la definición completa del modelo.
         </p>
 
-        <h3 class="subsection-title">model.tmdl — la cabecera del modelo</h3>
+        <h3 class="subsection-title">model.tmdl, la cabecera del modelo</h3>
         <p class="text">
           El archivo <code>model.tmdl</code> contiene la configuración global: versión de compatibilidad, cultura (idioma para formatos de fecha y número), modo de almacenamiento por defecto y la referencia a las tablas que forman parte del modelo.
         </p>
@@ -637,7 +637,7 @@
   ref table _Medidas</code></pre>
         </div>
 
-        <h3 class="subsection-title">Tabla.tmdl — tablas, columnas y medidas juntas</h3>
+        <h3 class="subsection-title">Tabla.tmdl, tablas, columnas y medidas juntas</h3>
         <p class="text">
           Cada tabla tiene su propio archivo .tmdl y contiene todo lo relacionado con ella: columnas, columnas calculadas, medidas y la consulta M de la fuente de datos. Todo junto, bien organizado e indentado.
         </p>
@@ -692,7 +692,7 @@
   annotation PBI_ResultType = Table</code></pre>
         </div>
 
-        <h3 class="subsection-title">relationships.tmdl — todas las relaciones</h3>
+        <h3 class="subsection-title">relationships.tmdl, todas las relaciones</h3>
         <p class="text">
           Las relaciones del modelo viven todas juntas en un único archivo, lo que facilita revisarlas de un vistazo.
         </p>
@@ -729,7 +729,7 @@ relationship Ventas_Producto
       <section class="content-section" id="sintaxis">
         <div class="section-header">
           <span class="section-icon">✍️</span>
-          <h2>Sintaxis TMDL — lo esencial</h2>
+          <h2>Sintaxis TMDL, lo esencial</h2>
         </div>
 
         <p class="lead">
@@ -802,7 +802,7 @@ relationship Ventas_Producto
         <h3 class="subsection-title">Columna calculada</h3>
         <div class="code-block">
           <div class="code-block__header">
-            <span class="code-block__lang">TMDL — columna calculada</span>
+            <span class="code-block__lang">TMDL, columna calculada</span>
             <button class="code-block__copy" aria-label="Copiar código">Copiar</button>
           </div>
           <pre><code class="language-javascript">  column 'Año Fiscal'
@@ -820,7 +820,7 @@ relationship Ventas_Producto
         <h3 class="subsection-title">Jerarquía</h3>
         <div class="code-block">
           <div class="code-block__header">
-            <span class="code-block__lang">TMDL — jerarquía</span>
+            <span class="code-block__lang">TMDL, jerarquía</span>
             <button class="code-block__copy" aria-label="Copiar código">Copiar</button>
           </div>
           <pre><code class="language-javascript">  hierarchy 'Jerarquía Temporal'
@@ -842,7 +842,7 @@ relationship Ventas_Producto
         <h3 class="subsection-title">Rol de seguridad (RLS)</h3>
         <div class="code-block">
           <div class="code-block__header">
-            <span class="code-block__lang">TMDL — rol RLS</span>
+            <span class="code-block__lang">TMDL, rol RLS</span>
             <button class="code-block__copy" aria-label="Copiar código">Copiar</button>
           </div>
           <pre><code class="language-javascript">role 'Ventas por Región'
@@ -868,7 +868,7 @@ relationship Ventas_Producto
         </p>
 
         <!-- VIA 1: vista TMDL nativa -->
-        <h3 class="subsection-title">🪟 Vista TMDL — el editor integrado en Desktop</h3>
+        <h3 class="subsection-title">🪟 Vista TMDL, el editor integrado en Desktop</h3>
 
         <p class="text">
           Power BI Desktop incluye una <strong>vista TMDL nativa</strong>: una pestaña en el panel de vistas izquierdo (junto a Report, Data y Model) que muestra el TMDL completo del modelo actual directamente en la aplicación. No necesitas salir a ningún editor externo.
@@ -898,11 +898,11 @@ relationship Ventas_Producto
         </div>
 
         <div class="note note--tip">
-          <strong>¿Cómo acceder?</strong> En Power BI Desktop, en la barra de vistas del lado izquierdo (donde están los iconos de Report, Data y Model), busca el icono de TMDL — parece un documento con código. Al hacer clic, se abre el editor con el TMDL completo del modelo actual.
+          <strong>¿Cómo acceder?</strong> En Power BI Desktop, en la barra de vistas del lado izquierdo (donde están los iconos de Report, Data y Model), busca el icono de TMDL, parece un documento con código. Al hacer clic, se abre el editor con el TMDL completo del modelo actual.
         </div>
 
         <!-- VIA 2: .pbip + VS Code -->
-        <h3 class="subsection-title">📁 Formato .pbip — para trabajar con VS Code y Git</h3>
+        <h3 class="subsection-title">📁 Formato .pbip, para trabajar con VS Code y Git</h3>
 
         <p class="text">
           Si quieres aprovechar todo el potencial de TMDL (control de versiones, colaboración en equipo, CI/CD), el siguiente nivel es guardar el proyecto en formato <strong>.pbip</strong>. Esto genera una carpeta con todos los archivos TMDL en disco, que puedes abrir en VS Code y versionar con Git.
@@ -941,7 +941,7 @@ relationship Ventas_Producto
             <div class="step__num">5</div>
             <div>
               <p class="step__title">Commit con diffs legibles</p>
-              <p>Cada vez que guardas cambios en el modelo, puedes hacer commit en Git. El diff mostrará exactamente qué líneas de TMDL cambiaron — perfectamente legible para code reviews.</p>
+              <p>Cada vez que guardas cambios en el modelo, puedes hacer commit en Git. El diff mostrará exactamente qué líneas de TMDL cambiaron, perfectamente legible para code reviews.</p>
             </div>
           </div>
         </div>
@@ -957,7 +957,7 @@ relationship Ventas_Producto
 
         <div class="code-block">
           <div class="code-block__header">
-            <span class="code-block__lang">.gitignore — para proyectos .pbip</span>
+            <span class="code-block__lang">.gitignore, para proyectos .pbip</span>
             <button class="code-block__copy" aria-label="Copiar código">Copiar</button>
           </div>
           <pre><code class="language-javascript"># Datos cacheados (pueden ser muy pesados)

@@ -4,12 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Tablas de fechas en Power BI: por qué son imprescindibles, cómo crearlas con DAX (CALENDAR, CALENDARAUTO), marcar como tabla de fechas y calendarios fiscales.">
-  <title>Tablas de Fechas — Modelado de Datos | Power BI Guide by Kawaii BI</title>
+  <title>Tablas de Fechas, Modelado de Datos | Power BI Guide by Kawaii BI</title>
   <link rel="canonical" href="https://kawaiibi.es/topics/modelado/tablas-fechas.html">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Kawaii Power BI Guide">
   <meta property="og:locale" content="es_ES">
-  <meta property="og:title" content="Tablas de Fechas — Modelado de Datos | Power BI Guide by Kawaii BI">
+  <meta property="og:title" content="Tablas de Fechas, Modelado de Datos | Power BI Guide by Kawaii BI">
   <meta property="og:description" content="Tablas de fechas en Power BI: por qué son imprescindibles, cómo crearlas con DAX (CALENDAR, CALENDARAUTO), marcar como tabla de fechas y calendarios fiscales.">
   <meta property="og:url" content="https://kawaiibi.es/topics/modelado/tablas-fechas.html">
   <meta property="og:image" content="https://kawaiibi.es/assets/images/og-banner.png">
@@ -17,7 +17,7 @@
   <meta property="og:image:height" content="1200">
   <meta property="og:image:alt" content="Sara Lozano Marti - Kawaii Power BI">
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="Tablas de Fechas — Modelado de Datos | Power BI Guide by Kawaii BI">
+  <meta name="twitter:title" content="Tablas de Fechas, Modelado de Datos | Power BI Guide by Kawaii BI">
   <meta name="twitter:description" content="Tablas de fechas en Power BI: por qué son imprescindibles, cómo crearlas con DAX (CALENDAR, CALENDARAUTO), marcar como tabla de fechas y calendarios fiscales.">
   <meta name="twitter:image" content="https://kawaiibi.es/assets/images/og-banner.png">
 
@@ -162,7 +162,7 @@
           </ul>
 
           <div class="note note--practice">
-            📌 <strong>Buena práctica:</strong> El rango de tu tabla de fechas debe ser siempre de <strong>años completos</strong> — desde el 1 de enero del año más antiguo hasta el 31 de diciembre del año más reciente. Si tu dato más antiguo es marzo de 2020, tu tabla debe empezar el 1 de enero de 2020.
+            📌 <strong>Buena práctica:</strong> El rango de tu tabla de fechas debe ser siempre de <strong>años completos</strong>, desde el 1 de enero del año más antiguo hasta el 31 de diciembre del año más reciente. Si tu dato más antiguo es marzo de 2020, tu tabla debe empezar el 1 de enero de 2020.
           </div>
         </article>
 
@@ -172,7 +172,7 @@
         </div>
 
         <article class="concept-card">
-          <h3>CALENDARAUTO — la opción más sencilla</h3>
+          <h3>CALENDARAUTO, la opción más sencilla</h3>
           <p><code>CALENDARAUTO</code> genera automáticamente un rango de fechas basado en las columnas de fecha del modelo. Detecta la fecha mínima y máxima y crea el rango de años completos.</p>
 
           <pre><code class="language-javascript">// Tabla de fechas básica con CALENDARAUTO
@@ -181,7 +181,7 @@ DimFecha = CALENDARAUTO()
 // CALENDARAUTO con mes de fin de año fiscal (ej: año fiscal termina en junio = 6)
 DimFecha = CALENDARAUTO(6)</code></pre>
 
-          <h3 style="margin-top: 1.25rem;">CALENDAR — control total del rango</h3>
+          <h3 style="margin-top: 1.25rem;">CALENDAR, control total del rango</h3>
           <p><code>CALENDAR</code> te permite definir explícitamente la fecha de inicio y fin.</p>
 
           <pre><code class="language-javascript">// Rango fijo de fechas
@@ -246,7 +246,7 @@ IDFecha = YEAR(DimFecha[Fecha]) * 10000
           </ul>
 
           <h4>¿Qué desactiva al marcar la tabla?</h4>
-          <p>Al marcar una tabla de fechas explícita, Power BI desactiva las jerarquías de fecha automáticas para esa tabla. Esto es correcto — quieres usar tu propia jerarquía personalizada.</p>
+          <p>Al marcar una tabla de fechas explícita, Power BI desactiva las jerarquías de fecha automáticas para esa tabla. Esto es correcto, quieres usar tu propia jerarquía personalizada.</p>
         </article>
 
         <div class="category-header" id="fiscal">

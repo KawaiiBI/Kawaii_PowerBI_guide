@@ -4,13 +4,13 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<meta content="Funciones de Relaciones en DAX — RELATED, RELATEDTABLE, USERELATIONSHIP y CROSSFILTER" name="description"/>
-<title>Relaciones — Funciones DAX | Power BI Guide</title>
+<meta content="Funciones de Relaciones en DAX, RELATED, RELATEDTABLE, USERELATIONSHIP y CROSSFILTER" name="description"/>
+<title>Relaciones, Funciones DAX | Power BI Guide</title>
   <link rel="canonical" href="https://kawaiibi.es/topics/dax/relaciones.html">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Kawaii Power BI Guide">
   <meta property="og:locale" content="es_ES">
-  <meta property="og:title" content="Relaciones — Funciones DAX | Power BI Guide">
+  <meta property="og:title" content="Relaciones, Funciones DAX | Power BI Guide">
   <meta property="og:description" content="Guia kawaii de Power BI, DAX, Lenguaje M y Microsoft Fabric.">
   <meta property="og:url" content="https://kawaiibi.es/topics/dax/relaciones.html">
   <meta property="og:image" content="https://kawaiibi.es/assets/images/og-banner.png">
@@ -18,7 +18,7 @@
   <meta property="og:image:height" content="1200">
   <meta property="og:image:alt" content="Sara Lozano Marti - Kawaii Power BI">
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="Relaciones — Funciones DAX | Power BI Guide">
+  <meta name="twitter:title" content="Relaciones, Funciones DAX | Power BI Guide">
   <meta name="twitter:description" content="Guia kawaii de Power BI, DAX, Lenguaje M y Microsoft Fabric.">
   <meta name="twitter:image" content="https://kawaiibi.es/assets/images/og-banner.png">
 <!-- Google Fonts -->
@@ -78,7 +78,7 @@
       align-items: center;
     }
 
-    /* TOC — Table of contents */
+    /* TOC, Table of contents */
     .toc {
       background: var(--color-rose);
       border: 1.5px solid var(--color-mauve);
@@ -118,7 +118,7 @@
       text-decoration: underline;
     }
 
-    /* Category header — separadores entre categorías */
+    /* Category header, separadores entre categorías */
     .category-header {
       display: flex;
       align-items: center;
@@ -139,7 +139,7 @@
       margin: 0;
     }
 
-    /* Function card — tarjeta individual para cada función */
+    /* Function card, tarjeta individual para cada función */
     .function-card {
       background: var(--color-white);
       border: 1.5px solid var(--color-mauve);
@@ -174,7 +174,7 @@
       margin-bottom: 1rem;
     }
 
-    /* Function table — tabla compacta con ejemplos */
+    /* Function table, tabla compacta con ejemplos */
     .function-table {
       width: 100%;
       border-collapse: collapse;
@@ -346,7 +346,7 @@
         <header class="topic-header">
 <span class="topic-header__icon">🔗</span>
 <h1 class="topic-header__title">Funciones de Relaciones</h1>
-<p class="topic-header__subtitle">RELATED, RELATEDTABLE, USERELATIONSHIP, CROSSFILTER — controla cómo fluye el contexto entre tablas</p>
+<p class="topic-header__subtitle">RELATED, RELATEDTABLE, USERELATIONSHIP, CROSSFILTER, controla cómo fluye el contexto entre tablas</p>
 <div class="topic-header__levels">
 <span class="badge badge--intermediate">Intermedio</span>
 <span class="badge badge--advanced">Avanzado</span>
@@ -366,10 +366,10 @@
 <h2 class="toc__title">📑 En esta página</h2>
 <ul class="toc__list">
 <li><a class="toc__link" href="#intro">Cómo funcionan las relaciones en DAX</a></li>
-<li><a class="toc__link" href="#related">RELATED — navegar de muchos a uno</a></li>
-<li><a class="toc__link" href="#relatedtable">RELATEDTABLE — navegar de uno a muchos</a></li>
-<li><a class="toc__link" href="#userelationship">USERELATIONSHIP — activar relaciones inactivas</a></li>
-<li><a class="toc__link" href="#crossfilter">CROSSFILTER — cambiar la dirección de filtrado</a></li>
+<li><a class="toc__link" href="#related">RELATED, navegar de muchos a uno</a></li>
+<li><a class="toc__link" href="#relatedtable">RELATEDTABLE, navegar de uno a muchos</a></li>
+<li><a class="toc__link" href="#userelationship">USERELATIONSHIP, activar relaciones inactivas</a></li>
+<li><a class="toc__link" href="#crossfilter">CROSSFILTER, cambiar la dirección de filtrado</a></li>
 <li><a class="toc__link" href="#patrones">Patrones avanzados con relaciones</a></li>
 </ul>
 </nav>
@@ -395,32 +395,32 @@
 <li><strong>Dirección de filtro:</strong> De la tabla "uno" hacia la tabla "muchos" (por defecto). Los filtros aplicados a Clientes, Productos o Calendario fluyen automáticamente a Ventas.</li>
 <li><strong>Cardinalidad:</strong>
 <ul>
-<li>Uno a muchos (1:N) — la más común</li>
-<li>Muchos a muchos (N:M) — requiere configuración especial</li>
-<li>Uno a uno (1:1) — poco común</li>
+<li>Uno a muchos (1:N), la más común</li>
+<li>Muchos a muchos (N:M), requiere configuración especial</li>
+<li>Uno a uno (1:1), poco común</li>
 </ul>
 </li>
 <li><strong>Estado:</strong>
 <ul>
-<li>Activa — solo puede haber UNA relación activa entre dos tablas</li>
-<li>Inactiva — relaciones adicionales que deben activarse con USERELATIONSHIP</li>
+<li>Activa, solo puede haber UNA relación activa entre dos tablas</li>
+<li>Inactiva, relaciones adicionales que deben activarse con USERELATIONSHIP</li>
 </ul>
 </li>
 </ul>
 <h3>Las 4 funciones de relaciones en DAX</h3>
 <ul>
-<li><strong>RELATED</strong> — navega "río arriba" (de la tabla muchos a la tabla uno)</li>
-<li><strong>RELATEDTABLE</strong> — navega "río abajo" (de la tabla uno a la tabla muchos)</li>
-<li><strong>USERELATIONSHIP</strong> — activa una relación inactiva temporalmente</li>
-<li><strong>CROSSFILTER</strong> — cambia la dirección de filtrado o desactiva el filtrado cruzado</li>
+<li><strong>RELATED</strong>, navega "río arriba" (de la tabla muchos a la tabla uno)</li>
+<li><strong>RELATEDTABLE</strong>, navega "río abajo" (de la tabla uno a la tabla muchos)</li>
+<li><strong>USERELATIONSHIP</strong>, activa una relación inactiva temporalmente</li>
+<li><strong>CROSSFILTER</strong>, cambia la dirección de filtrado o desactiva el filtrado cruzado</li>
 </ul>
 <div class="note note--tip">
 <strong>Analogía kawaii 🌸</strong><br/>
             Piensa en las relaciones como <strong>canales de agua</strong>:
             <ul style="margin-top: 0.5rem;">
 <li>El agua (los filtros) fluye desde la montaña (tabla "uno") hacia el río (tabla "muchos")</li>
-<li><strong>RELATED</strong> es como nadar río arriba — vas desde Ventas hacia Productos/Clientes</li>
-<li><strong>RELATEDTABLE</strong> es como dejarse llevar río abajo — vas desde Productos/Clientes hacia Ventas</li>
+<li><strong>RELATED</strong> es como nadar río arriba, vas desde Ventas hacia Productos/Clientes</li>
+<li><strong>RELATEDTABLE</strong> es como dejarse llevar río abajo, vas desde Productos/Clientes hacia Ventas</li>
 <li><strong>USERELATIONSHIP</strong> abre una compuerta secundaria</li>
 <li><strong>CROSSFILTER</strong> cambia la dirección del canal</li>
 </ul>
@@ -428,7 +428,7 @@
 </section><!-- SECCIÓN 1: RELATED --><section id="related">
 <div class="category-header">
 <span class="category-header__icon">⬆️</span>
-<h2 class="category-header__title">RELATED — navegar de muchos a uno</h2>
+<h2 class="category-header__title">RELATED, navegar de muchos a uno</h2>
 </div>
 <div class="function-card">
 <div class="function-card__name">RELATED(&lt;columna&gt;)</div>
@@ -438,7 +438,7 @@
 </div>
 <h4>Cuándo usarla</h4>
 <p>En una <strong>COLUMNA CALCULADA</strong> de la tabla de hechos, cuando quieres traer información de una tabla de dimensión relacionada. También dentro de iteradores como SUMX, AVERAGEX, FILTER...</p>
-<h4>Ejemplo básico — columna calculada en tabla de hechos</h4>
+<h4>Ejemplo básico, columna calculada en tabla de hechos</h4>
 <div class="code-block">
 <button class="code-block__copy">Copiar</button>
 <pre><code class="language-javascript">// En la tabla Ventas, añadir la categoría del producto:
@@ -491,11 +491,11 @@ CALCULATE([Total Ventas], 'Productos'[Categoría] = "Electrónica")</code></pre>
 </section><!-- SECCIÓN 2: RELATEDTABLE --><section id="relatedtable">
 <div class="category-header">
 <span class="category-header__icon">⬇️</span>
-<h2 class="category-header__title">RELATEDTABLE — navegar de uno a muchos</h2>
+<h2 class="category-header__title">RELATEDTABLE, navegar de uno a muchos</h2>
 </div>
 <div class="function-card">
 <div class="function-card__name">RELATEDTABLE(&lt;tabla&gt;)</div>
-<div class="function-card__level">Intermedio — Avanzado</div>
+<div class="function-card__level">Intermedio, Avanzado</div>
 <div class="function-card__description">
               Devuelve la tabla relacionada navegando "hacia el lado muchos" de la relación. Desde una tabla de dimensión, obtiene todas las filas de la tabla de hechos que están relacionadas con la fila actual. <strong>Equivalente al INNER JOIN en sentido inverso.</strong>
 </div>
@@ -546,19 +546,19 @@ SUMX(
 </section><!-- SECCIÓN 3: USERELATIONSHIP --><section id="userelationship">
 <div class="category-header">
 <span class="category-header__icon">🔄</span>
-<h2 class="category-header__title">USERELATIONSHIP — activar relaciones inactivas</h2>
+<h2 class="category-header__title">USERELATIONSHIP, activar relaciones inactivas</h2>
 </div>
 <div class="function-card">
 <div class="function-card__name">USERELATIONSHIP(&lt;columna1&gt;, &lt;columna2&gt;)</div>
 <div class="function-card__level">Avanzado</div>
 <div class="function-card__description">
-              Modificador de CALCULATE que activa una relación INACTIVA para la duración del cálculo. Power BI solo permite una relación activa entre dos tablas — si necesitas filtrar por una segunda relación, debes marcarla como inactiva en el modelo y activarla temporalmente con USERELATIONSHIP.
+              Modificador de CALCULATE que activa una relación INACTIVA para la duración del cálculo. Power BI solo permite una relación activa entre dos tablas, si necesitas filtrar por una segunda relación, debes marcarla como inactiva en el modelo y activarla temporalmente con USERELATIONSHIP.
             </div>
-<h4>Caso de uso típico — múltiples relaciones fecha</h4>
+<h4>Caso de uso típico, múltiples relaciones fecha</h4>
 <p><strong>Escenario muy común:</strong> tabla Ventas con dos columnas de fecha:</p>
 <ul>
-<li><strong>FechaPedido</strong> — fecha en que se realizó el pedido</li>
-<li><strong>FechaEntrega</strong> — fecha en que se entregó</li>
+<li><strong>FechaPedido</strong>, fecha en que se realizó el pedido</li>
+<li><strong>FechaEntrega</strong>, fecha en que se entregó</li>
 </ul>
 <p>Solo UNA puede ser la relación activa con el Calendario. La otra debe ser inactiva y se activa con USERELATIONSHIP cuando la necesitas.</p>
 <div class="code-block">
@@ -583,7 +583,7 @@ CALCULATE(
 // Ambas en el mismo informe con el mismo slicer de fecha:
 // El slicer filtra la fecha, USERELATIONSHIP determina cuál columna se usa</code></pre>
 </div>
-<h4>Ejemplo 2 — tabla de roles en RRHH</h4>
+<h4>Ejemplo 2, tabla de roles en RRHH</h4>
 <div class="code-block">
 <button class="code-block__copy">Copiar</button>
 <pre><code class="language-javascript">// Tabla Empleados con:
@@ -598,14 +598,14 @@ CALCULATE(
 </div>
 <div class="note note--warning">
 <strong>⚠️ Limitaciones de USERELATIONSHIP</strong><br/>
-<strong>USERELATIONSHIP solo puede activar relaciones que ya existen en el modelo</strong> (aunque sean inactivas). No puede crear relaciones nuevas en tiempo de ejecución — para eso existe TREATAS.<br/><br/>
+<strong>USERELATIONSHIP solo puede activar relaciones que ya existen en el modelo</strong> (aunque sean inactivas). No puede crear relaciones nuevas en tiempo de ejecución, para eso existe TREATAS.<br/><br/>
               Además, USERELATIONSHIP suspende la relación activa entre esas dos tablas mientras dura el cálculo.
             </div>
 </div>
 </section><!-- SECCIÓN 4: CROSSFILTER --><section id="crossfilter">
 <div class="category-header">
 <span class="category-header__icon">↔️</span>
-<h2 class="category-header__title">CROSSFILTER — cambiar la dirección de filtrado</h2>
+<h2 class="category-header__title">CROSSFILTER, cambiar la dirección de filtrado</h2>
 </div>
 <div class="function-card">
 <div class="function-card__name">CROSSFILTER(&lt;columna1&gt;, &lt;columna2&gt;, &lt;dirección&gt;)</div>
@@ -614,14 +614,14 @@ CALCULATE(
               Modificador de CALCULATE que cambia la dirección de filtrado cruzado de una relación para la duración del cálculo. Los valores posibles de dirección son:
             </div>
 <ul style="margin-top: 1rem;">
-<li><strong>NONE</strong> — desactiva el filtrado por esta relación</li>
-<li><strong>ONEWAY</strong> — filtra solo en la dirección "uno → muchos" (comportamiento normal)</li>
-<li><strong>BOTH</strong> — filtra en ambas direcciones (bidireccional)</li>
+<li><strong>NONE</strong>, desactiva el filtrado por esta relación</li>
+<li><strong>ONEWAY</strong>, filtra solo en la dirección "uno → muchos" (comportamiento normal)</li>
+<li><strong>BOTH</strong>, filtra en ambas direcciones (bidireccional)</li>
 </ul>
 <h4>Por qué es importante</h4>
 <p>Por defecto, los filtros fluyen de la tabla "uno" a la tabla "muchos". A veces necesitas que el filtro fluya en la dirección contraria.</p>
 <p>En lugar de cambiar el modelo permanentemente (lo cual puede crear ambigüedad), usa CROSSFILTER para activar la bidireccionalidad solo cuando la necesitas.</p>
-<h4>Ejemplo — contar clientes que compraron un producto específico</h4>
+<h4>Ejemplo, contar clientes que compraron un producto específico</h4>
 <div class="code-block">
 <button class="code-block__copy">Copiar</button>
 <pre><code class="language-javascript">// Sin CROSSFILTER, el filtro de Productos no llega a Clientes
@@ -642,7 +642,7 @@ CALCULATE(
     'Productos'[Nombre] = "Laptop Pro"
 )</code></pre>
 </div>
-<h4>Ejemplo — desactivar una relación temporalmente</h4>
+<h4>Ejemplo, desactivar una relación temporalmente</h4>
 <div class="code-block">
 <button class="code-block__copy">Copiar</button>
 <pre><code class="language-javascript">// Calcular el total sin que una relación filtre:
@@ -663,7 +663,7 @@ CALCULATE(
 <span class="category-header__icon">🏆</span>
 <h2 class="category-header__title">Patrones avanzados con relaciones</h2>
 </div>
-<h3>Patrón 1 — Ventas del mes de entrega (relación inactiva)</h3>
+<h3>Patrón 1, Ventas del mes de entrega (relación inactiva)</h3>
 <div class="code-block">
 <button class="code-block__copy">Copiar</button>
 <pre><code class="language-javascript">Ventas por Entrega =
@@ -672,7 +672,7 @@ CALCULATE(
     USERELATIONSHIP('Ventas'[FechaEntrega], 'Calendario'[Date])
 )</code></pre>
 </div>
-<h3>Patrón 2 — Contar clientes únicos que compraron una categoría</h3>
+<h3>Patrón 2, Contar clientes únicos que compraron una categoría</h3>
 <div class="code-block">
 <button class="code-block__copy">Copiar</button>
 <pre><code class="language-javascript">Clientes por Categoría =
@@ -681,7 +681,7 @@ CALCULATE(
     CROSSFILTER('Ventas'[IDCliente], 'Clientes'[ID], BOTH)
 )</code></pre>
 </div>
-<h3>Patrón 3 — Segmentación de clientes en columna calculada</h3>
+<h3>Patrón 3, Segmentación de clientes en columna calculada</h3>
 <div class="code-block">
 <button class="code-block__copy">Copiar</button>
 <pre><code class="language-javascript">// Añadir el segmento de cliente a cada venta (para análisis rápido):
@@ -689,7 +689,7 @@ CALCULATE(
 'Ventas'[País] = RELATED('Clientes'[País])
 'Ventas'[Categoría Producto] = RELATED('Productos'[Categoría])</code></pre>
 </div>
-<h3>Patrón 4 — Tabla de hechos enriquecida para análisis</h3>
+<h3>Patrón 4, Tabla de hechos enriquecida para análisis</h3>
 <div class="code-block">
 <button class="code-block__copy">Copiar</button>
 <pre><code class="language-javascript">Ventas Enriquecidas =
@@ -715,7 +715,7 @@ ADDCOLUMNS(
 </div>
 <div class="note note--next">
 <strong>🚀 Siguiente paso</strong><br/>
-            Controlas el flujo de datos entre tablas — eso es manejar DAX a nivel avanzado. A continuación, las <strong>funciones de Información</strong> — el grupo IS... que te ayuda a entender en qué contexto está evaluándose tu medida.
+            Controlas el flujo de datos entre tablas, eso es manejar DAX a nivel avanzado. A continuación, las <strong>funciones de Información</strong>, el grupo IS... que te ayuda a entender en qué contexto está evaluándose tu medida.
           </div>
 </section>
 

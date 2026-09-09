@@ -4,13 +4,13 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<meta content="Funciones Padre-Hijo en DAX — PATH, PATHITEM, PATHLENGTH, PATHCONTAINS para jerarquías irregulares" name="description"/>
-<title>Padre-Hijo — Funciones DAX | Power BI Guide</title>
+<meta content="Funciones Padre-Hijo en DAX, PATH, PATHITEM, PATHLENGTH, PATHCONTAINS para jerarquías irregulares" name="description"/>
+<title>Padre-Hijo, Funciones DAX | Power BI Guide</title>
   <link rel="canonical" href="https://kawaiibi.es/topics/dax/padre-hijo.html">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Kawaii Power BI Guide">
   <meta property="og:locale" content="es_ES">
-  <meta property="og:title" content="Padre-Hijo — Funciones DAX | Power BI Guide">
+  <meta property="og:title" content="Padre-Hijo, Funciones DAX | Power BI Guide">
   <meta property="og:description" content="Guia kawaii de Power BI, DAX, Lenguaje M y Microsoft Fabric.">
   <meta property="og:url" content="https://kawaiibi.es/topics/dax/padre-hijo.html">
   <meta property="og:image" content="https://kawaiibi.es/assets/images/og-banner.png">
@@ -18,7 +18,7 @@
   <meta property="og:image:height" content="1200">
   <meta property="og:image:alt" content="Sara Lozano Marti - Kawaii Power BI">
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="Padre-Hijo — Funciones DAX | Power BI Guide">
+  <meta name="twitter:title" content="Padre-Hijo, Funciones DAX | Power BI Guide">
   <meta name="twitter:description" content="Guia kawaii de Power BI, DAX, Lenguaje M y Microsoft Fabric.">
   <meta name="twitter:image" content="https://kawaiibi.es/assets/images/og-banner.png">
 <!-- Google Fonts -->
@@ -78,7 +78,7 @@
       align-items: center;
     }
 
-    /* TOC — Table of contents */
+    /* TOC, Table of contents */
     .toc {
       background: var(--color-rose);
       border: 1.5px solid var(--color-mauve);
@@ -118,7 +118,7 @@
       text-decoration: underline;
     }
 
-    /* Category header — separadores entre categorías */
+    /* Category header, separadores entre categorías */
     .category-header {
       display: flex;
       align-items: center;
@@ -139,7 +139,7 @@
       margin: 0;
     }
 
-    /* Function card — tarjeta individual para cada función */
+    /* Function card, tarjeta individual para cada función */
     .function-card {
       background: var(--color-white);
       border: 1.5px solid var(--color-mauve);
@@ -174,7 +174,7 @@
       margin-bottom: 1rem;
     }
 
-    /* Function table — tabla compacta con ejemplos */
+    /* Function table, tabla compacta con ejemplos */
     .function-table {
       width: 100%;
       border-collapse: collapse;
@@ -345,7 +345,7 @@
         <header class="topic-header">
 <span class="topic-header__icon">🌳</span>
 <h1 class="topic-header__title">Funciones Padre-Hijo</h1>
-<p class="topic-header__subtitle">PATH, PATHITEM, PATHLENGTH, PATHCONTAINS — maneja jerarquías irregulares como organigramas y planes de cuentas</p>
+<p class="topic-header__subtitle">PATH, PATHITEM, PATHLENGTH, PATHCONTAINS, maneja jerarquías irregulares como organigramas y planes de cuentas</p>
 <div class="topic-header__levels">
 <span class="badge badge--advanced">Avanzado</span>
 </div>
@@ -364,10 +364,10 @@
 <h2 class="toc__title">📑 En esta página</h2>
 <ul class="toc__list">
 <li><a class="toc__link" href="#intro">¿Qué es una jerarquía padre-hijo? El problema que resuelven</a></li>
-<li><a class="toc__link" href="#path">PATH — construir el camino completo</a></li>
-<li><a class="toc__link" href="#pathlength">PATHLENGTH — profundidad del nodo</a></li>
-<li><a class="toc__link" href="#pathitem">PATHITEM y PATHITEMREVERSE — extraer niveles</a></li>
-<li><a class="toc__link" href="#pathcontains">PATHCONTAINS — verificar pertenencia</a></li>
+<li><a class="toc__link" href="#path">PATH, construir el camino completo</a></li>
+<li><a class="toc__link" href="#pathlength">PATHLENGTH, profundidad del nodo</a></li>
+<li><a class="toc__link" href="#pathitem">PATHITEM y PATHITEMREVERSE, extraer niveles</a></li>
+<li><a class="toc__link" href="#pathcontains">PATHCONTAINS, verificar pertenencia</a></li>
 <li><a class="toc__link" href="#aplanar">El patrón completo: aplanar jerarquía padre-hijo</a></li>
 <li><a class="toc__link" href="#patrones">Casos de uso reales</a></li>
 </ul>
@@ -378,7 +378,7 @@
 <span class="category-header__icon">🎯</span>
 <h2 class="category-header__title">¿Qué es una jerarquía padre-hijo? El problema que resuelven</h2>
 </div>
-<p>Imagina que tienes un organigrama de empresa guardado en una tabla. Cada persona tiene un ID y el ID de su manager directo. La jerarquía tiene profundidad variable — la directora tiene 1 nivel, los managers 2, los coordinadores 3, los técnicos 4, los juniors 5... <strong>Power BI no sabe cómo manejar jerarquías de profundidad variable directamente. Ahí entran las funciones Padre-Hijo.</strong></p>
+<p>Imagina que tienes un organigrama de empresa guardado en una tabla. Cada persona tiene un ID y el ID de su manager directo. La jerarquía tiene profundidad variable, la directora tiene 1 nivel, los managers 2, los coordinadores 3, los técnicos 4, los juniors 5... <strong>Power BI no sabe cómo manejar jerarquías de profundidad variable directamente. Ahí entran las funciones Padre-Hijo.</strong></p>
 <h3>El problema en datos</h3>
 <p><strong>TABLA 'Empleados':</strong></p>
 <table class="function-table">
@@ -443,15 +443,15 @@ Elena García (CEO)
 <strong>La solución:</strong> convertir esta estructura recursiva en columnas fijas.</p>
 <h3>Otros casos de uso típicos</h3>
 <ul>
-<li><strong>Plan de cuentas contable</strong> — cuenta padre &gt; subcuenta &gt; subsubcuenta...</li>
-<li><strong>Taxonomía de productos</strong> — categoría &gt; subcategoría &gt; familia &gt; SKU</li>
-<li><strong>Estructura organizativa</strong> — CEO &gt; Director &gt; Manager &gt; Coordinador &gt; Técnico</li>
-<li><strong>BOM (Bill of Materials)</strong> — productos con componentes y subcomponentes</li>
+<li><strong>Plan de cuentas contable</strong>, cuenta padre &gt; subcuenta &gt; subsubcuenta...</li>
+<li><strong>Taxonomía de productos</strong>, categoría &gt; subcategoría &gt; familia &gt; SKU</li>
+<li><strong>Estructura organizativa</strong>, CEO &gt; Director &gt; Manager &gt; Coordinador &gt; Técnico</li>
+<li><strong>BOM (Bill of Materials)</strong>, productos con componentes y subcomponentes</li>
 </ul>
 </section><!-- SECCIÓN 1: PATH --><section id="path">
 <div class="category-header">
 <span class="category-header__icon">🛤️</span>
-<h2 class="category-header__title">PATH — el punto de partida</h2>
+<h2 class="category-header__title">PATH, el punto de partida</h2>
 </div>
 <div class="function-card">
 <div class="function-card__name">PATH(&lt;id_columna&gt;, &lt;padre_columna&gt;)</div>
@@ -489,7 +489,7 @@ PATH('Empleados'[EmpleadoID], 'Empleados'[ManagerIDLimpio])</code></pre>
 </section><!-- SECCIÓN 2: PATHLENGTH --><section id="pathlength">
 <div class="category-header">
 <span class="category-header__icon">📏</span>
-<h2 class="category-header__title">PATHLENGTH — la profundidad</h2>
+<h2 class="category-header__title">PATHLENGTH, la profundidad</h2>
 </div>
 <div class="function-card">
 <div class="function-card__name">PATHLENGTH(&lt;path&gt;)</div>
@@ -534,7 +534,7 @@ Niveles Totales = MAXX(ALL('Empleados'), 'Empleados'[Nivel])</code></pre>
 </section><!-- SECCIÓN 3: PATHITEM y PATHITEMREVERSE --><section id="pathitem">
 <div class="category-header">
 <span class="category-header__icon">🔍</span>
-<h2 class="category-header__title">PATHITEM y PATHITEMREVERSE — extraer niveles</h2>
+<h2 class="category-header__title">PATHITEM y PATHITEMREVERSE, extraer niveles</h2>
 </div>
 <!-- PATHITEM -->
 <div class="function-card">
@@ -546,7 +546,7 @@ Niveles Totales = MAXX(ALL('Empleados'), 'Empleados'[Nivel])</code></pre>
 <h4>Ejemplo básico:</h4>
 <div class="code-block">
 <button class="code-block__copy">Copiar</button>
-<pre><code class="language-javascript">// Extraer el nivel 1 (la raíz — siempre es la CEO):
+<pre><code class="language-javascript">// Extraer el nivel 1 (la raíz, siempre es la CEO):
 'Empleados'[Nivel1 ID] = PATHITEM('Empleados'[Path], 1)
 // Siempre devuelve "E001" (Elena García) para todos los empleados
 
@@ -614,7 +614,7 @@ PATHITEMREVERSE('Empleados'[Path], 4)   → "E001" (Elena, la raíz)</code></pre
 </section><!-- SECCIÓN 4: PATHCONTAINS --><section id="pathcontains">
 <div class="category-header">
 <span class="category-header__icon">✅</span>
-<h2 class="category-header__title">PATHCONTAINS — verificar pertenencia</h2>
+<h2 class="category-header__title">PATHCONTAINS, verificar pertenencia</h2>
 </div>
 <div class="function-card">
 <div class="function-card__name">PATHCONTAINS(&lt;path&gt;, &lt;elemento&gt;)</div>
@@ -661,11 +661,11 @@ CALCULATE(
 </section><!-- SECCIÓN 5: Aplanar jerarquía --><section id="aplanar">
 <div class="category-header">
 <span class="category-header__icon">🏆</span>
-<h2 class="category-header__title">El patrón completo — aplanar la jerarquía</h2>
+<h2 class="category-header__title">El patrón completo, aplanar la jerarquía</h2>
 </div>
 <p><strong>El patrón definitivo para trabajar con jerarquías padre-hijo en Power BI</strong></p>
 <p>Power BI necesita columnas fijas para hacer jerarquías visuales (como las que ves en una matriz expandible). El patrón estándar es convertir la jerarquía padre-hijo recursiva en N columnas fijas (una por nivel máximo de la jerarquía). Así Power BI puede hacer drill-down.</p>
-<h3>Paso 1 — Determinar la profundidad máxima</h3>
+<h3>Paso 1, Determinar la profundidad máxima</h3>
 <div class="code-block">
 <button class="code-block__copy">Copiar</button>
 <pre><code class="language-javascript">// Primero crea la columna Path:
@@ -677,7 +677,7 @@ CALCULATE(
 // Ver la profundidad máxima (para saber cuántas columnas necesitas):
 // En DAX Studio: EVALUATE ROW("MaxNivel", MAXX(ALL('Empleados'), 'Empleados'[Nivel]))</code></pre>
 </div>
-<h3>Paso 2 — Crear columnas por nivel (asumiendo max 5 niveles)</h3>
+<h3>Paso 2, Crear columnas por nivel (asumiendo max 5 niveles)</h3>
 <div class="code-block">
 <button class="code-block__copy">Copiar</button>
 <pre><code class="language-javascript">// Columnas de ID por nivel:
@@ -695,7 +695,7 @@ IF(PATHLENGTH('Empleados'[Path]) &gt;= 4, PATHITEM('Empleados'[Path], 4), BLANK(
 'Empleados'[Nivel5 ID] =
 IF(PATHLENGTH('Empleados'[Path]) &gt;= 5, PATHITEM('Empleados'[Path], 5), BLANK())</code></pre>
 </div>
-<h3>Paso 3 — Convertir IDs a nombres</h3>
+<h3>Paso 3, Convertir IDs a nombres</h3>
 <div class="code-block">
 <button class="code-block__copy">Copiar</button>
 <pre><code class="language-javascript">// Columnas de Nombre por nivel (más útiles para visualización):
@@ -713,14 +713,14 @@ IF(NOT ISBLANK('Empleados'[Nivel3 ID]),
    BLANK())
 // ... repetir para Nivel4 y Nivel5</code></pre>
 </div>
-<h3>Paso 4 — Crear la jerarquía en Power BI</h3>
+<h3>Paso 4, Crear la jerarquía en Power BI</h3>
 <p>En el panel de Campos:</p>
 <ul>
 <li>→ Clic derecho en 'Nivel1 Nombre' → "Crear jerarquía"</li>
 <li>→ Arrastrar 'Nivel2 Nombre', 'Nivel3 Nombre'... a la jerarquía</li>
 <li>→ Usar la jerarquía en una matriz con drill-down habilitado</li>
 </ul>
-<h3>Paso 5 — Medidas que respetan la jerarquía</h3>
+<h3>Paso 5, Medidas que respetan la jerarquía</h3>
 <div class="code-block">
 <button class="code-block__copy">Copiar</button>
 <pre><code class="language-javascript">// Esta medida funciona en cualquier nivel de la jerarquía:
@@ -745,7 +745,7 @@ SUMX(
 <span class="category-header__icon">💼</span>
 <h2 class="category-header__title">Casos de uso reales</h2>
 </div>
-<h3>Patrón 1 — Plan de cuentas contable</h3>
+<h3>Patrón 1, Plan de cuentas contable</h3>
 <div class="code-block">
 <button class="code-block__copy">Copiar</button>
 <pre><code class="language-javascript">// Misma lógica pero con cuentas:
@@ -768,7 +768,7 @@ CALCULATE(
     )
 )</code></pre>
 </div>
-<h3>Patrón 2 — Headcount y organigrama</h3>
+<h3>Patrón 2, Headcount y organigrama</h3>
 <div class="code-block">
 <button class="code-block__copy">Copiar</button>
 <pre><code class="language-javascript">// Total de personas en el equipo de un manager (incluyendo todos los niveles):
@@ -795,7 +795,7 @@ MAXX(
     )
 )</code></pre>
 </div>
-<h3>Patrón 3 — BOM (Bill of Materials) — coste total de un producto</h3>
+<h3>Patrón 3, BOM (Bill of Materials), coste total de un producto</h3>
 <div class="code-block">
 <button class="code-block__copy">Copiar</button>
 <pre><code class="language-javascript">// Tabla de componentes: ProductoID | ComponenteID | Cantidad | Coste
@@ -822,7 +822,7 @@ SUMX(
 <div class="note note--next">
 <strong>🎉 ¡Enhorabuena! Has completado la guía DAX completa</strong><br/>
 <strong>¡Lo conseguiste!</strong> Has completado la guía más completa de funciones DAX en español. Desde SUM hasta PATH, pasando por CALCULATE, Window Functions, Visual Calculations y Grupos de Cálculo. Ahora tienes una referencia de cabecera para cualquier función DAX que necesites.<br/><br/>
-<strong>Recuerda:</strong> DAX se aprende usándolo. No te preocupes si no recuerdas todo — para eso está esta guía. Lo importante es saber que existe la función, qué hace y dónde buscarla cuando la necesites.<br/><br/>
+<strong>Recuerda:</strong> DAX se aprende usándolo. No te preocupes si no recuerdas todo, para eso está esta guía. Lo importante es saber que existe la función, qué hace y dónde buscarla cuando la necesites.<br/><br/>
 <strong>¡Tú puedes!</strong> 🌸🚀
           </div>
 </section>

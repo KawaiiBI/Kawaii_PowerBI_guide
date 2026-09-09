@@ -4,12 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Row-Level Security (RLS) en Power BI: roles estáticos y dinámicos, USERNAME() y USERPRINCIPALNAME(), patrones jerárquicos con PATH y cómo probar antes de publicar.">
-  <title>Row-Level Security (RLS) — Gobernanza | Power BI Guide by Kawaii BI</title>
+  <title>Row-Level Security (RLS), Gobernanza | Power BI Guide by Kawaii BI</title>
   <link rel="canonical" href="https://kawaiibi.es/topics/gobernanza/rls.html">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Kawaii Power BI Guide">
   <meta property="og:locale" content="es_ES">
-  <meta property="og:title" content="Row-Level Security (RLS) — Gobernanza | Power BI Guide by Kawaii BI">
+  <meta property="og:title" content="Row-Level Security (RLS), Gobernanza | Power BI Guide by Kawaii BI">
   <meta property="og:description" content="Row-Level Security (RLS) en Power BI: roles estáticos y dinámicos, USERNAME() y USERPRINCIPALNAME(), patrones jerárquicos con PATH y cómo probar antes de publicar.">
   <meta property="og:url" content="https://kawaiibi.es/topics/gobernanza/rls.html">
   <meta property="og:image" content="https://kawaiibi.es/assets/images/og-banner.png">
@@ -17,7 +17,7 @@
   <meta property="og:image:height" content="1200">
   <meta property="og:image:alt" content="Sara Lozano Marti - Kawaii Power BI">
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="Row-Level Security (RLS) — Gobernanza | Power BI Guide by Kawaii BI">
+  <meta name="twitter:title" content="Row-Level Security (RLS), Gobernanza | Power BI Guide by Kawaii BI">
   <meta name="twitter:description" content="Row-Level Security (RLS) en Power BI: roles estáticos y dinámicos, USERNAME() y USERPRINCIPALNAME(), patrones jerárquicos con PATH y cómo probar antes de publicar.">
   <meta name="twitter:image" content="https://kawaiibi.es/assets/images/og-banner.png">
 
@@ -110,7 +110,7 @@
         <header class="topic-header">
           <span class="topic-header__icon">🔐</span>
           <h1 class="topic-header__title">Row-Level Security (RLS)</h1>
-          <p class="topic-header__subtitle">Filtra filas por usuario en tus modelos semánticos: roles estáticos, dinámicos, USERPRINCIPALNAME() y jerarquías con PATH — con ejemplos reales.</p>
+          <p class="topic-header__subtitle">Filtra filas por usuario en tus modelos semánticos: roles estáticos, dinámicos, USERPRINCIPALNAME() y jerarquías con PATH, con ejemplos reales.</p>
           <div class="topic-header__levels">
             <span class="badge badge--intermediate">Intermedio</span>
             <span class="badge badge--advanced">Avanzado</span>
@@ -199,8 +199,8 @@
           <h3>Un solo rol que se adapta al usuario</h3>
           <p>En RLS dinámico mantienes <strong>una tabla de seguridad</strong> que relaciona usuarios con dimensiones, y el rol filtra usando funciones que identifican al usuario actual:</p>
           <ul>
-            <li><code>USERNAME()</code> — devuelve el usuario en formato dominio o UPN según el origen</li>
-            <li><code>USERPRINCIPALNAME()</code> — siempre devuelve el UPN (<code>email@dominio</code>). Es la recomendada.</li>
+            <li><code>USERNAME()</code>, devuelve el usuario en formato dominio o UPN según el origen</li>
+            <li><code>USERPRINCIPALNAME()</code>, siempre devuelve el UPN (<code>email@dominio</code>). Es la recomendada.</li>
           </ul>
 
           <h4>Patrón clásico: tabla de seguridad por país</h4>
@@ -273,7 +273,7 @@ RETURN
           <ul>
             <li>Modelado → <em>Administrar roles</em> → crear el rol</li>
             <li>Modelado → <em>Ver como</em> → elige el rol (y opcionalmente "Otro usuario" para simular un UPN concreto)</li>
-            <li>Si combinas varios roles para un mismo usuario, los filtros se aplican con OR — verás la unión</li>
+            <li>Si combinas varios roles para un mismo usuario, los filtros se aplican con OR, verás la unión</li>
           </ul>
 
           <h3>En el Service</h3>
