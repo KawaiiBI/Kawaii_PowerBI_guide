@@ -1,0 +1,1153 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="DP-700 Módulo 12: SQL Database en Microsoft Fabric. SaaS vs PaaS, OLTP vs OLAP, mirroring automático a OneLake, autonomous tuning e indexing, Copilot, data virtualization y seguridad T-SQL.">
+  <title>DP-700 · Módulo 12: SQL Database | Power BI Guide by Kawaii BI</title>
+  <link rel="canonical" href="https://kawaiibi.es/topics/certificaciones/dp-700/modulo-12.html">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Kawaii Power BI Guide">
+  <meta property="og:locale" content="es_ES">
+  <meta property="og:title" content="DP-700 · Módulo 12: SQL Database | Power BI Guide by Kawaii BI">
+  <meta property="og:description" content="DP-700 Módulo 12: SQL Database en Fabric. OLTP vs OLAP, mirroring automático a OneLake, autonomous features, Copilot y data virtualization.">
+  <meta property="og:url" content="https://kawaiibi.es/topics/certificaciones/dp-700/modulo-12.html">
+  <meta property="og:image" content="https://kawaiibi.es/assets/images/og-banner.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="1200">
+  <meta property="og:image:alt" content="Sara Lozano Marti - Kawaii Power BI">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="DP-700 · Módulo 12: SQL Database | Power BI Guide by Kawaii BI">
+  <meta name="twitter:description" content="DP-700 Módulo 12: SQL Database en Fabric. OLTP vs OLAP, mirroring a OneLake, Copilot y data virtualization.">
+  <meta name="twitter:image" content="https://kawaiibi.es/assets/images/og-banner.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/prismjs@1/themes/prism-okaidia.min.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="../../../assets/css/main.css">
+  <link rel="stylesheet" href="../../../assets/css/themes.css">
+  <link rel="stylesheet" href="../../../assets/css/components.css">
+  <link rel="stylesheet" href="../../../assets/css/layout.css">
+
+  <style>
+    .topic-header { text-align: center; padding: 2.25rem 0 1.75rem; border-bottom: 2px solid var(--color-mauve); margin-bottom: 2rem; }
+    .topic-header__eyebrow { font-family: 'Fira Code', monospace; font-size: 0.8125rem; font-weight: 600; color: var(--color-coral); letter-spacing: 0.05em; }
+    .topic-header__icon { font-size: 3.5rem; margin: 0.5rem 0; display: block; }
+    .topic-header__title { font-size: clamp(1.75rem, 4vw, 2.25rem); font-weight: 800; color: var(--color-dark); margin-bottom: 0.625rem; line-height: 1.2; }
+    .topic-header__subtitle { font-size: 1rem; color: var(--color-slate); margin-bottom: 1.25rem; line-height: 1.55; max-width: 680px; margin-left: auto; margin-right: auto; }
+    .topic-header__levels { display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap; align-items: center; }
+
+    .toc { background: var(--color-rose); border-radius: var(--border-radius); padding: 1.25rem 1.5rem; margin-bottom: 2rem; border: 1.5px solid var(--color-mauve); }
+    .toc__title { font-size: 1rem; font-weight: 700; margin: 0 0 0.75rem; }
+    .toc__list { display: flex; flex-wrap: wrap; gap: 0.5rem; list-style: none; padding: 0; margin: 0; }
+    .toc__list a { font-size: 0.8125rem; color: var(--color-coral); text-decoration: none; padding: 0.25rem 0.625rem; background: var(--color-white); border-radius: 999px; border: 1px solid var(--color-mauve); }
+    .toc__list a:hover { background: var(--color-coral); color: #fff; }
+
+    .category-header { display: flex; align-items: center; gap: 0.75rem; margin: 2.5rem 0 1.25rem; padding: 0.875rem 1.25rem; background: var(--color-rose); border-radius: var(--border-radius-sm); border-left: 4px solid var(--color-coral); scroll-margin-top: 20px; }
+    .category-header__icon { font-size: 1.5rem; }
+    .category-header__title { font-size: 1.25rem; font-weight: 700; margin: 0; }
+
+    .concept-card { background: var(--color-white); border: 1.5px solid var(--color-mauve); border-radius: var(--border-radius); padding: 1.5rem 1.75rem; margin-bottom: 1.25rem; }
+    .concept-card h3 { font-size: 1.0625rem; font-weight: 700; color: var(--color-coral); margin: 0 0 0.6rem; }
+    .concept-card h4 { font-size: 0.9375rem; font-weight: 700; color: var(--color-dark); margin: 1.1rem 0 0.4rem; }
+    .concept-card p { font-size: 0.9375rem; line-height: 1.7; color: var(--color-dark); margin-bottom: 0.7rem; }
+    .concept-card ul, .concept-card ol { padding-left: 1.25rem; font-size: 0.9375rem; line-height: 1.75; color: var(--color-dark); margin: 0.4rem 0; }
+    .concept-card code { background: var(--color-blush); padding: 0.1em 0.4em; border-radius: 4px; font-family: 'Fira Code', monospace; font-size: 0.85em; color: var(--color-coral); }
+    .concept-card pre { margin: 0.75rem 0; }
+
+    .md-table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.84rem; }
+    .md-table th, .md-table td { border: 1px solid var(--color-mauve); padding: 0.5rem 0.7rem; text-align: left; vertical-align: top; }
+    .md-table th { background: var(--color-rose); font-weight: 700; color: var(--color-dark); }
+    .md-table tr:nth-child(even) td { background: var(--color-blush); }
+    .table-scroll { overflow-x: auto; }
+
+    .trap-list { list-style: none; padding: 0; margin: 0; }
+    .trap-list > li { background: var(--color-white); border: 1.5px solid var(--color-mauve); border-left: 4px solid var(--color-warning); border-radius: var(--border-radius-sm); padding: 0.875rem 1.125rem; margin-bottom: 0.75rem; font-size: 0.9375rem; line-height: 1.7; }
+    .trap-list strong.trap-title { display: block; color: var(--color-dark); margin-bottom: 0.25rem; }
+
+    .course-nav { display: flex; justify-content: space-between; gap: 1rem; margin-top: 2.5rem; flex-wrap: wrap; }
+    .course-nav a { flex: 1 1 220px; display: block; background: var(--color-white); border: 1.5px solid var(--color-mauve); border-radius: var(--border-radius); padding: 1rem 1.25rem; text-decoration: none; color: inherit; transition: var(--transition); }
+    .course-nav a:hover { border-color: var(--color-coral); box-shadow: var(--shadow-md); text-decoration: none; }
+    .course-nav__label { font-size: 0.75rem; color: var(--color-slate); text-transform: uppercase; letter-spacing: 0.05em; }
+    .course-nav__title { font-weight: 700; color: var(--color-coral); }
+    .course-nav a.next { text-align: right; }
+
+    .sources-list { font-size: 0.875rem; line-height: 1.9; word-break: break-word; }
+  </style>
+</head>
+<body>
+
+  <aside class="site-sidebar">
+    <div class="site-sidebar__profile">
+      <img src="../../../assets/images/avatar-sara.png" alt="Sara Lozano Martí" class="site-sidebar__avatar">
+      <p class="site-sidebar__name">Sara Lozano Martí</p>
+      <p class="site-sidebar__subtitle">Power BI Expert</p>
+    </div>
+    <nav class="site-sidebar__nav" aria-label="Navegación principal">
+      <ul>
+        <li><a href="../../../index.html" class="site-sidebar__link"><span class="site-sidebar__icon">🏠</span> Inicio</a></li>
+        <li><a href="../../dax.html" class="site-sidebar__link"><span class="site-sidebar__icon">⚡</span> Funciones DAX</a></li>
+        <li><a href="../../power-query.html" class="site-sidebar__link"><span class="site-sidebar__icon">🔄</span> Power Query</a></li>
+        <li><a href="../../lenguaje-m.html" class="site-sidebar__link"><span class="site-sidebar__icon">〽️</span> Lenguaje M</a></li>
+        <li><a href="../../modelado.html" class="site-sidebar__link"><span class="site-sidebar__icon">🗄️</span> Modelado</a></li>
+        <li><a href="../../conceptos-powerbi.html" class="site-sidebar__link"><span class="site-sidebar__icon">📊</span> Conceptos Power BI</a></li>
+        <li><a href="../../fabric.html" class="site-sidebar__link"><span class="site-sidebar__icon">🧵</span> Microsoft Fabric</a></li>
+        <li><a href="../../tmdl.html" class="site-sidebar__link"><span class="site-sidebar__icon">📝</span> TMDL</a></li>
+        <li><a href="../../diseno-ux.html" class="site-sidebar__link"><span class="site-sidebar__icon">🎨</span> Diseño y UX</a></li>
+        <li><a href="../../gobernanza.html" class="site-sidebar__link"><span class="site-sidebar__icon">🔒</span> Gobernanza</a></li>
+        <li><a href="../../certificaciones.html" class="site-sidebar__link is-active"><span class="site-sidebar__icon">🎓</span> Certificaciones</a></li>
+      </ul>
+    </nav>
+    <div class="site-sidebar__divider"></div>
+    <div class="site-sidebar__footer">
+      <a href="../../../quien-soy.html" class="site-sidebar__link site-sidebar__link--highlight"><span class="site-sidebar__icon">👩‍💻</span> ¿Quién soy?</a>
+      <div class="site-sidebar__social">
+        <a href="https://www.linkedin.com/in/saralozanomarti" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><img src="../../../assets/images/logo-linkedin.png" alt="LinkedIn" class="site-sidebar__social-icon"></a>
+        <a href="https://www.youtube.com/@KawaiiPowerBI" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><img src="../../../assets/images/logo-youtube.png" alt="YouTube" class="site-sidebar__social-icon"></a>
+        <a href="https://github.com/KawaiiBI" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><img src="../../../assets/images/logo-github.png" alt="GitHub" class="site-sidebar__social-icon"></a>
+      </div>
+      <div class="site-sidebar__logo-bottom"><img src="../../../assets/images/logo-kawaii.jpg" alt="Kawaii BI" class="site-sidebar__logo-img"></div>
+      <p class="site-sidebar__copyright">Power BI Guide 🌸<br>© 2026 Kawaii BI</p>
+    </div>
+  </aside>
+
+  <div class="page-wrapper">
+    <main class="main-content">
+      <div class="topic-page">
+
+        <nav class="breadcrumb" aria-label="Ruta de navegación">
+          <span class="breadcrumb__item"><a href="../../../index.html">🏠 Inicio</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item"><a href="../../certificaciones.html">Certificaciones</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item"><a href="../dp-700.html">DP-700</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item">Módulo 12</span>
+        </nav>
+
+        <header class="topic-header">
+          <span class="topic-header__eyebrow">DP-700 · MÓDULO 12</span>
+          <span class="topic-header__icon">🗃️</span>
+          <h1 class="topic-header__title">Empezar con SQL Database en Microsoft Fabric</h1>
+          <p class="topic-header__subtitle">El producto transaccional (OLTP) de Fabric: SaaS en vez de PaaS, mirroring automático a OneLake, autonomous tuning e indexing, Copilot integrado y data virtualization. 🌸</p>
+          <div class="topic-header__levels">
+            <span class="badge badge--intermediate">Intermedio</span>
+            <span class="badge badge--advanced">Avanzado</span>
+          </div>
+        </header>
+
+        <nav class="toc" aria-label="Índice del módulo">
+          <p class="toc__title">📑 En este módulo:</p>
+          <ul class="toc__list">
+            <li><a href="#objetivos">1. Objetivos y encaje</a></li>
+            <li><a href="#que-es">2. ¿Qué es SQL Database?</a></li>
+            <li><a href="#saas-paas">3. SaaS vs PaaS</a></li>
+            <li><a href="#oltp-vs-olap">4. OLTP vs OLAP</a></li>
+            <li><a href="#crear">5. Crear una SQL Database</a></li>
+            <li><a href="#ingesta">6. Ingesta y sample data</a></li>
+            <li><a href="#query">7. Query experience</a></li>
+            <li><a href="#source-control">8. Source control</a></li>
+            <li><a href="#performance">9. Performance dashboard</a></li>
+            <li><a href="#autonomous">10. Autonomous features</a></li>
+            <li><a href="#seguridad">11. Roles y permisos</a></li>
+            <li><a href="#tsql-security">12. T-SQL security</a></li>
+            <li><a href="#copilot">13. Copilot</a></li>
+            <li><a href="#mirroring">14. Mirroring a OneLake</a></li>
+            <li><a href="#analytics-endpoint">15. SQL analytics endpoint</a></li>
+            <li><a href="#virtualization">16. Data virtualization</a></li>
+            <li><a href="#cross-db">17. Cross-database queries</a></li>
+            <li><a href="#integracion">18. Integración con Fabric</a></li>
+            <li><a href="#casos-uso">19. Casos de uso</a></li>
+            <li><a href="#trampas">20. Trampas típicas</a></li>
+            <li><a href="#comparativas">21. Comparativas clave</a></li>
+            <li><a href="#fuentes">22. Fuentes oficiales</a></li>
+          </ul>
+        </nav>
+
+        <!-- ============ 1. OBJETIVOS ============ -->
+        <div class="category-header" id="objetivos">
+          <span class="category-header__icon">🎯</span>
+          <h2 class="category-header__title">1. Objetivos y encaje en el DP-700</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>¿Qué te enseña este módulo?</h3>
+          <p>Este módulo cubre <strong>SQL Database en Fabric</strong>, un producto <strong>transaccional (OLTP)</strong> que complementa al Warehouse (que es OLAP). Los objetivos oficiales:</p>
+          <ol>
+            <li>Explicar cómo funciona SQL Database en Fabric.</li>
+            <li>Entender las opciones de seguridad en SQL Database.</li>
+            <li>Explicar cómo usar Copilot para mejorar el troubleshooting.</li>
+            <li>Explorar las capacidades de <strong>mirroring y data virtualization</strong>.</li>
+          </ol>
+
+          <h4>Peso en el examen DP-700</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Dominio</th><th>Cómo aparece</th></tr></thead>
+              <tbody>
+                <tr><td>Implement and manage (30-35%)</td><td><strong>Elección Warehouse vs SQL DB vs Lakehouse</strong>, workspace security, T-SQL security, source control</td></tr>
+                <tr><td>Ingest and transform (30-35%)</td><td>Mirroring automático a OneLake, data virtualization con external tables</td></tr>
+                <tr><td>Monitor and optimize (30-35%)</td><td>Performance dashboard, automatic tuning, mirroring monitoring</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="note note--tip">
+            🎯 <strong>Qué es CRÍTICO dominar:</strong>
+            <ul>
+              <li><strong>Diferencia fundamental</strong>: SQL Database (OLTP) vs Warehouse (OLAP) vs Lakehouse</li>
+              <li><strong>SaaS vs PaaS</strong>: distinción con Azure SQL Database tradicional</li>
+              <li><strong>Mirroring automático a OneLake</strong> (feature estrella)</li>
+              <li><strong>Autonomous features</strong> (automatic tuning, automatic indexing)</li>
+              <li><strong>Data virtualization</strong> con external tables (feature muy poderosa)</li>
+              <li><strong>Copilot integrado</strong> (natural language to SQL)</li>
+            </ul>
+          </div>
+
+          <h4>🌸 ¿Por qué existe este producto?</h4>
+          <p>Diferencia con el SQL analytics endpoint del Lakehouse/Warehouse:</p>
+          <ul>
+            <li>Warehouse y Lakehouse son para <strong>analytics</strong> (OLAP).</li>
+            <li>SQL Database es para <strong>cargas transaccionales</strong> (OLTP): apps que necesitan INSERT/UPDATE/DELETE frecuentes con <strong>baja latencia</strong>.</li>
+            <li>Antes tenías que salir de Fabric a Azure SQL. Ahora <strong>tienes OLTP nativo en Fabric</strong>.</li>
+          </ul>
+          <p>Aviso: si vienes de SQL Server o Azure SQL, ya sabes el 90% de este módulo. La sintaxis y el engine son los mismos 💕</p>
+        </article>
+
+        <!-- ============ 2. QUÉ ES ============ -->
+        <div class="category-header" id="que-es">
+          <span class="category-header__icon">🏛️</span>
+          <h2 class="category-header__title">2. ¿Qué es SQL Database en Fabric?</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>Definición</h3>
+          <p><strong>SQL Database en Microsoft Fabric</strong> es una <strong>transactional database versátil y developer-friendly</strong> construida sobre la base de <strong>Azure SQL Database</strong>. Permite la <strong>creación y gestión de operational databases</strong> dentro del entorno Fabric.</p>
+
+          <h4>Diferencias clave con Azure SQL Database</h4>
+          <ul>
+            <li>✅ <strong>SaaS</strong> (no PaaS como Azure SQL Database).</li>
+            <li>✅ <strong>Low-maintenance</strong> (Fabric gestiona todo).</li>
+            <li>✅ <strong>Auto-mirroring a OneLake</strong> en near real-time.</li>
+            <li>✅ <strong>Integrado con el ecosistema Fabric</strong>.</li>
+            <li>✅ <strong>Copilot nativo</strong>.</li>
+            <li>✅ <strong>Autonomous features</strong> activadas por defecto.</li>
+          </ul>
+
+          <div class="note note--tip">
+            🌷 <strong>Analogía kawaii:</strong> imagina que Azure SQL Database es un <strong>coche manual</strong>: tienes que hacer más cosas tú (config, tuning, updates). SQL Database en Fabric es un <strong>coche automático con navegador</strong>: te preocupas menos de la mecánica y más de llegar a tu destino. Todo integrado, todo listo 🚗✨
+          </div>
+
+          <h4>Basado en el mismo engine SQL</h4>
+          <p>Como está construido sobre Azure SQL Database, tiene el <strong>mismo SQL engine</strong> que ya conoces: complex queries, advanced data manipulations y un amplio rango de <strong>security features</strong> a nivel de base de datos. Si ya sabes T-SQL, ya sabes trabajar con esto.</p>
+        </article>
+
+        <!-- ============ 3. SAAS VS PAAS ============ -->
+        <div class="category-header" id="saas-paas">
+          <span class="category-header__icon">☁️</span>
+          <h2 class="category-header__title">3. SaaS vs PaaS: Fabric SQL DB vs Azure SQL Database</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>¿Qué significa cada uno?</h3>
+          <p><strong>PaaS (Platform as a Service)</strong> — como Azure SQL Database tradicional:</p>
+          <ul>
+            <li>Microsoft gestiona la infraestructura.</li>
+            <li>Tú gestionas la BBDD: configuration, tuning, scaling.</li>
+            <li>Más control pero más responsabilidad.</li>
+          </ul>
+          <p><strong>SaaS (Software as a Service)</strong> — como Fabric SQL Database:</p>
+          <ul>
+            <li>Microsoft gestiona <strong>TODO</strong>: infraestructura + gestión de la BBDD.</li>
+            <li>Tú solo te preocupas del <strong>schema, las queries y la aplicación</strong>.</li>
+            <li>Menos control pero <strong>casi zero maintenance</strong>.</li>
+          </ul>
+
+          <h4>Comparativa práctica</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Aspecto</th><th>Azure SQL Database (PaaS)</th><th>Fabric SQL Database (SaaS)</th></tr></thead>
+              <tbody>
+                <tr><td>Gestión infra</td><td>Microsoft</td><td>Microsoft</td></tr>
+                <tr><td>Gestión BBDD (tuning, scaling)</td><td><strong>Tú</strong></td><td><strong>Microsoft (automatic)</strong></td></tr>
+                <tr><td>Compute scaling</td><td>Manual/automated pero configurable</td><td><strong>Automatic transparente</strong></td></tr>
+                <tr><td>Storage scaling</td><td>Configuras tiers</td><td><strong>Auto</strong></td></tr>
+                <tr><td>Índices</td><td>Los creas tú</td><td><strong>Automatic indexing</strong></td></tr>
+                <tr><td>Backups</td><td>Configuras retention</td><td><strong>Automatic</strong></td></tr>
+                <tr><td>Monitoring</td><td>Azure Monitor</td><td><strong>Performance dashboard integrado</strong></td></tr>
+                <tr><td>Auto-analytics (mirror a OneLake)</td><td>❌ (manual)</td><td>✅ <strong>Automatic</strong></td></tr>
+                <tr><td>Integración Fabric</td><td>❌</td><td>✅ <strong>Nativa</strong></td></tr>
+                <tr><td>Copilot</td><td>✅ (vía Azure)</td><td>✅ <strong>Integrado en el editor</strong></td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h4>Beneficio para el usuario</h4>
+          <p><strong>Menos maintenance = más foco en business logic</strong>. Ideal para equipos que <strong>no quieren dedicar DBAs</strong>, <strong>startups</strong> o proyectos rápidos, <strong>citizen developers</strong> y apps que necesitan <strong>OLTP dentro del ecosistema Fabric</strong>.</p>
+        </article>
+
+        <!-- ============ 4. OLTP VS OLAP ============ -->
+        <div class="category-header" id="oltp-vs-olap">
+          <span class="category-header__icon">🎯</span>
+          <h2 class="category-header__title">4. OLTP vs OLAP: SQL DB vs Warehouse (CRÍTICO)</h2>
+        </div>
+
+        <article class="concept-card">
+          <p><strong>Este es EL punto más examinable</strong> del módulo. Vamos a fondo.</p>
+
+          <h4>OLTP vs OLAP</h4>
+          <p><strong>OLTP (Online Transaction Processing)</strong>:</p>
+          <ul>
+            <li><strong>Workload transaccional</strong>: INSERT, UPDATE, DELETE frecuentes.</li>
+            <li><strong>Rows individuales</strong> o small batches.</li>
+            <li><strong>Baja latencia</strong> (milisegundos).</li>
+            <li>Ejemplos: apps de banca, ecommerce, CRM operations, ERPs.</li>
+          </ul>
+          <p><strong>OLAP (Online Analytical Processing)</strong>:</p>
+          <ul>
+            <li><strong>Workload analítico</strong>: SELECT complejos con aggregations.</li>
+            <li><strong>Grandes volúmenes</strong> procesados en cada query.</li>
+            <li><strong>Latencia moderada</strong> (segundos-minutos aceptables).</li>
+            <li>Ejemplos: reports, dashboards, BI queries, analytics.</li>
+          </ul>
+
+          <h4>Los 3 items SQL de Fabric</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Item</th><th>Optimizado para</th><th>Storage</th><th>Uso</th></tr></thead>
+              <tbody>
+                <tr><td><strong>SQL Database</strong> ⭐</td><td><strong>OLTP</strong></td><td>Row-store (SQL Server engine)</td><td>Apps transaccionales</td></tr>
+                <tr><td><strong>Warehouse</strong></td><td><strong>OLAP</strong></td><td>Column-store (Delta Parquet)</td><td>Data warehousing</td></tr>
+                <tr><td><strong>Lakehouse</strong></td><td>Mixed</td><td>Delta Parquet</td><td>Big data + Spark</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h4>Comparativa completa</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Feature</th><th>SQL Database</th><th>Warehouse</th><th>Lakehouse</th></tr></thead>
+              <tbody>
+                <tr><td>Workload</td><td>OLTP</td><td>OLAP</td><td>Mixed</td></tr>
+                <tr><td>Storage</td><td>Row-store optimizado</td><td>Column-store Delta</td><td>Delta files</td></tr>
+                <tr><td>T-SQL DDL/DML</td><td>✅ Full</td><td>✅ Full</td><td>❌ (solo vía SQL endpoint read-only)</td></tr>
+                <tr><td>Latency writes</td><td>Milisegundos</td><td>Segundos</td><td>Segundos</td></tr>
+                <tr><td>Latency reads</td><td>Milisegundos</td><td>Segundos</td><td>Segundos</td></tr>
+                <tr><td>Concurrent writes</td><td>Alto</td><td>Moderado</td><td>Bajo</td></tr>
+                <tr><td>Big data support</td><td>Limitado</td><td>✅</td><td>✅</td></tr>
+                <tr><td>Mirroring a OneLake</td><td><strong>Automatic</strong></td><td>Native (es OneLake)</td><td>Native</td></tr>
+                <tr><td>Spark support</td><td>Vía mirror</td><td>Vía OneLake</td><td>✅ Native</td></tr>
+                <tr><td>Best for</td><td><strong>Apps transaccionales</strong></td><td><strong>BI/Analytics</strong></td><td><strong>Big data + ML</strong></td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="note note--practice">
+            📌 <strong>🎯 Regla del pulgar:</strong>
+            <ul>
+              <li>Necesito <strong>muchas transacciones concurrentes</strong> → <strong>SQL Database</strong></li>
+              <li>Necesito <strong>queries analíticas</strong> sobre grandes volúmenes → <strong>Warehouse</strong></li>
+              <li>Necesito <strong>big data + Spark + ML</strong> → <strong>Lakehouse</strong></li>
+            </ul>
+          </div>
+
+          <h4>Pueden coexistir</h4>
+          <p><strong>Muy común</strong>: <strong>SQL Database</strong> para la app transaccional (bookings, orders), con auto-mirroring a OneLake; <strong>Warehouse</strong> para analytics históricos; y <strong>Lakehouse</strong> para ML training data. <strong>Todo en el mismo workspace, sin ETL manual</strong>.</p>
+        </article>
+
+        <!-- ============ 5. CREAR ============ -->
+        <div class="category-header" id="crear">
+          <span class="category-header__icon">🛠️</span>
+          <h2 class="category-header__title">5. Crear una SQL Database</h2>
+        </div>
+
+        <article class="concept-card">
+          <h4>Prerequisites</h4>
+          <ul>
+            <li><strong>Fabric capacity</strong> (F SKU o Trial).</li>
+            <li><strong>Workspace existente</strong> o nuevo.</li>
+            <li>Rol <strong>Admin o Member</strong> en el workspace.</li>
+          </ul>
+
+          <h4>Pasos</h4>
+          <ol>
+            <li>En el Fabric portal, seleccionar <strong>Databases</strong>.</li>
+            <li>Bajo <strong>New</strong>, seleccionar el tile <strong>SQL database</strong>.</li>
+            <li>Dar un nombre a la <strong>New Database</strong>.</li>
+            <li>Seleccionar <strong>Create</strong> — el <strong>provisioning tarda menos de 1 minuto</strong>.</li>
+          </ol>
+
+          <h4>Home page de la nueva DB</h4>
+          <p>Después del provisioning, ves:</p>
+          <ul>
+            <li><strong>Explorer pane</strong>: muestra los database objects (tables, views, procs, etc.).</li>
+            <li><strong>Build your database</strong> con 3 tiles útiles:
+              <ul>
+                <li><strong>Sample data</strong>: importar el sample AdventureWorksLT.</li>
+                <li><strong>T-SQL</strong>: web-editor para escribir T-SQL.</li>
+                <li><strong>Connection strings</strong>: información de conexión para tools externos.</li>
+              </ul>
+            </li>
+          </ul>
+
+          <h4>Sample data</h4>
+          <p>Puedes cargar el sample <strong>SalesLT / AdventureWorksLT</strong> con un click. Ideal para aprender, testing y los ejercicios del propio Learn. Después de importar → schema <code>SalesLT</code> con sus tablas asociadas.</p>
+        </article>
+
+        <!-- ============ 6. INGESTA ============ -->
+        <div class="category-header" id="ingesta">
+          <span class="category-header__icon">📥</span>
+          <h2 class="category-header__title">6. Ingesta de datos y sample data</h2>
+        </div>
+
+        <article class="concept-card">
+          <h4>Formas de cargar datos</h4>
+          <p><strong>A) Sample data button</strong> (para pruebas rápidas): un click, carga AdventureWorksLT.</p>
+          <p><strong>B) T-SQL directo</strong>: <code>INSERT INTO ... VALUES (...)</code>, ejecutado desde el web editor o tools externos.</p>
+          <p><strong>C) Dataflows Gen2</strong>: como destination, ETL low-code.</p>
+          <p><strong>D) Pipelines</strong>: actividad Copy Data con SQL Database como destination.</p>
+          <p><strong>E) External tools con TDS</strong>: <strong>SQL Server Management Studio (SSMS)</strong>, <strong>Azure Data Studio</strong>, <strong>VS Code con la extensión MSSQL</strong> o cualquier tool que soporte el <strong>Tabular Data Stream protocol</strong>.</p>
+
+          <h4>Conectar desde external tools</h4>
+          <p><strong>Connection string</strong> desde el menú Connection strings:</p>
+          <pre><code class="language-plaintext">Server=&lt;fabric-server&gt;.database.fabric.microsoft.com,1433;
+Database=&lt;database-name&gt;;
+Authentication=Active Directory Interactive;</code></pre>
+          <p><strong>Autenticación</strong>: Microsoft Entra Interactive (browser-based), Microsoft Entra MFA, Microsoft Entra Password y Service Principal.</p>
+
+          <h4>Conectar desde SSMS</h4>
+          <ol>
+            <li>Server type: <strong>Database Engine</strong>.</li>
+            <li>Server name: <code>&lt;server&gt;.database.fabric.microsoft.com,1433</code>.</li>
+            <li>Authentication: <strong>Microsoft Entra MFA</strong> (recomendado).</li>
+            <li>Database Name: nombre de tu DB.</li>
+            <li>Connect.</li>
+          </ol>
+          <p>Después de conectar puedes navegar en el Object Explorer, crear tablas con CREATE TABLE, insertar rows y consultar como en cualquier SQL Server.</p>
+        </article>
+
+        <!-- ============ 7. QUERY ============ -->
+        <div class="category-header" id="query">
+          <span class="category-header__icon">💻</span>
+          <h2 class="category-header__title">7. Query experience: web editor y external tools</h2>
+        </div>
+
+        <article class="concept-card">
+          <h4>Web editor en el portal</h4>
+          <p>Fabric provee un <strong>editor T-SQL web-based</strong> integrado, con IntelliSense, syntax highlighting, Copilot integrado y result viewer (Text, Grid, File).</p>
+
+          <h4>Open in</h4>
+          <p>Botón <strong>Open in</strong> que <strong>lanza tools externos</strong> con las connection properties ya rellenadas: <strong>Visual Studio Code</strong> y <strong>SQL Server Management Studio</strong>. Facilita empezar a trabajar <strong>inmediatamente</strong> en tu tool preferido.</p>
+
+          <h4>Query tools soportados</h4>
+          <p>Cualquier tool que soporte el protocolo <strong>TDS (Tabular Data Stream)</strong>: SSMS, Azure Data Studio, VS Code + MSSQL extension, SQLCMD, apps .NET con SqlClient, Python con pyodbc, Node.js con mssql, etc.</p>
+
+          <h4>Templates en el web editor</h4>
+          <p>En el tile <strong>T-SQL</strong> hay un <strong>Templates dropdown</strong> con snippets para CREATE TABLE, CREATE VIEW, queries comunes, templates de stored procedures y más. Muy útil para aprender sintaxis o empezar rápido.</p>
+        </article>
+
+        <!-- ============ 8. SOURCE CONTROL ============ -->
+        <div class="category-header" id="source-control">
+          <span class="category-header__icon">🔀</span>
+          <h2 class="category-header__title">8. Source control integration</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>Feature</h3>
+          <p>El <strong>source control</strong> es esencial para gestionar SQL databases en Fabric. Permite:</p>
+          <ul>
+            <li>✅ <strong>Trackear cambios</strong>.</li>
+            <li>✅ <strong>Colaborar con el equipo</strong>.</li>
+            <li>✅ <strong>Mantener el histórico</strong> de modificaciones.</li>
+            <li>✅ <strong>Revertir</strong> cambios si lo necesitas.</li>
+          </ul>
+
+          <h4>Cómo funciona</h4>
+          <p>Workflow familiar para quien ya use source control:</p>
+          <p><strong>A) Commit to source control</strong>: puedes <strong>commitear database objects</strong> a source control. <strong>Convierte la live database en código</strong>: lee las object definitions desde la DB y las <strong>escribe al repositorio</strong>.</p>
+          <p><strong>B) Update from source control</strong>: actualiza los database objects <strong>desde el contenido del source control</strong>. El código se <strong>valida antes</strong> de aplicar el cambio diferencial a la DB.</p>
+          <p><strong>C) History tracking</strong>: los usuarios pueden <strong>ver el histórico</strong> de los database objects, con un registro claro de cambios que facilita la colaboración.</p>
+
+          <h4>Diferencia con Warehouse</h4>
+          <p>El <strong>source control de SQL Database</strong> es más maduro y granular que en otros items: enfocado en <strong>schema objects</strong> (tables, views, procs, functions), con histórico completo de cambios DDL. Perfecto para <strong>schema management</strong> en dev/test/prod.</p>
+
+          <h4>Sistemas soportados</h4>
+          <ul>
+            <li><strong>Azure DevOps</strong> (Git repos).</li>
+            <li><strong>GitHub</strong>.</li>
+          </ul>
+        </article>
+
+        <!-- ============ 9. PERFORMANCE ============ -->
+        <div class="category-header" id="performance">
+          <span class="category-header__icon">📊</span>
+          <h2 class="category-header__title">9. Performance dashboard</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>¿Qué es?</h3>
+          <p>El <strong>Performance Dashboard de Fabric SQL Database simplifica la experiencia de usuario</strong> eliminando las complejidades de monitorización y operación. Permite <strong>aprovechar plenamente las capacidades del SQL database engine</strong>, cubriendo distintos workloads.</p>
+
+          <h4>Niveles de visibility</h4>
+          <p>Ofrece <strong>distintos niveles de visibilidad de métricas</strong> para acomodar a usuarios con diferente expertise en SQL: <strong>principiantes</strong> con métricas básicas de query performance, e <strong>intermedios/avanzados</strong> con información más detallada.</p>
+
+          <h4>Cómo acceder</h4>
+          <p><strong>Dos formas</strong>:</p>
+          <ul>
+            <li><strong>A)</strong> Right-click en la item view → botón de contexto (<strong>tres puntos</strong>) → <strong>Open performance summary</strong>.</li>
+            <li><strong>B)</strong> Query Editor → home toolbar → <strong>Performance summary</strong>.</li>
+          </ul>
+
+          <h4>Qué muestra</h4>
+          <ul>
+            <li>Query performance metrics.</li>
+            <li>Long-running queries.</li>
+            <li>Tendencias de uso de recursos.</li>
+            <li>Detección de bottlenecks.</li>
+            <li>Alertas para issues.</li>
+          </ul>
+
+          <h4>Uso típico</h4>
+          <p><strong>Debug</strong> de queries lentas, <strong>optimización</strong> de workloads, <strong>detección temprana de bottlenecks</strong> y asegurar una experiencia de usuario <strong>intuitiva y eficiente</strong>.</p>
+        </article>
+
+        <!-- ============ 10. AUTONOMOUS ============ -->
+        <div class="category-header" id="autonomous">
+          <span class="category-header__icon">🤖</span>
+          <h2 class="category-header__title">10. Autonomous features: automatic tuning, indexing</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>¿Qué son?</h3>
+          <p><strong>Automatic tuning</strong> es una <strong>capability integrada</strong> que aplica <strong>machine learning</strong> para optimizar la performance de tus queries. Automáticamente identifica oportunidades de tuning y las implementa para mejorar la eficiencia de la base de datos. <strong>Sin intervención manual</strong>. Es la parte "autónoma" del SaaS.</p>
+
+          <h4>Automatic indexing</h4>
+          <p>En Fabric SQL Database, los <strong>índices se gestionan dinámicamente</strong>:</p>
+          <ul>
+            <li><strong>Crea índices</strong> que mejoran la query performance.</li>
+            <li><strong>Elimina índices</strong> que ya no se usan.</li>
+            <li><strong>Revierte índices</strong> si su creación causó regresiones.</li>
+          </ul>
+          <p>Todo <strong>automáticamente</strong>, basándose en los patrones de workload observados.</p>
+
+          <h4>Monitorizar el automatic indexing</h4>
+          <p>En el performance dashboard, tab <strong>Automatic index</strong>:</p>
+          <ul>
+            <li><strong>Gráfico</strong> mostrando el <strong>número de índices creados, eliminados y revertidos</strong> a lo largo del tiempo.</li>
+            <li><strong>Tabla</strong> listando los índices creados por la herramienta: schema name, table name, index name, status, key columns, included columns, creation date y drop date (si aplica).</li>
+          </ul>
+
+          <h4>Beneficio</h4>
+          <ul>
+            <li>🎯 <strong>Mejor query performance sin tuning manual</strong>.</li>
+            <li>💰 <strong>Menos tiempo de DBA</strong> dedicado a indexing.</li>
+            <li>🧠 Decisiones <strong>ML-driven</strong>, más inteligentes que el tuning humano en muchos casos.</li>
+            <li>🔄 <strong>Se adapta continuamente</strong> a los cambios de workload.</li>
+          </ul>
+
+          <h4>Cuándo aún necesitas DBA</h4>
+          <p>Diseño de schema, business logic, índices complejos específicos que el ML no considera, indexing por compliance y optimización cross-database. Pero para el día a día, las <strong>autonomous features cubren el 80% de los casos</strong>.</p>
+        </article>
+
+        <!-- ============ 11. SEGURIDAD ============ -->
+        <div class="category-header" id="seguridad">
+          <span class="category-header__icon">🔐</span>
+          <h2 class="category-header__title">11. Seguridad: workspace roles, item permissions</h2>
+        </div>
+
+        <article class="concept-card">
+          <p>La seguridad de Fabric SQL Database opera en <strong>múltiples niveles</strong>, igual que en el Warehouse.</p>
+
+          <h4>Workspace roles</h4>
+          <p><strong>Primera capa</strong> de access control. Los roles familiares:</p>
+          <ul>
+            <li><strong>Admin</strong>: full control.</li>
+            <li><strong>Member</strong>: gestión sin borrar el workspace.</li>
+            <li><strong>Contributor</strong>: crear/editar items.</li>
+            <li><strong>Viewer</strong>: read-only en el workspace.</li>
+          </ul>
+          <p>Asigna a los usuarios el rol apropiado según el <strong>nivel de acceso necesario</strong>.</p>
+
+          <h4>Item permissions</h4>
+          <p>Las databases individuales pueden tener <strong>item permissions</strong> asignadas directamente. La <strong>intención principal</strong>: facilitar el <strong>sharing de la SQL database para uso downstream</strong>.</p>
+          <p><strong>Cómo revisarlas</strong>: navegar al item en el workspace y seleccionar la quick action <strong>Manage permissions</strong>. Puedes ver los permisos de la SQL database, de su <strong>SQL analytics endpoint</strong> y de su <strong>default semantic model</strong>.</p>
+
+          <div class="note note--warning">
+            ⚠️ <strong>Nota crítica sobre item permissions:</strong> <em>"Granting item permissions has NO IMPACT on the security metadata INSIDE the database."</em>
+            <br>Traducción: si le das a alguien "Read" en la SQL database vía item permissions, <strong>eso no significa que pueda ver todas las tablas</strong>. Las <strong>T-SQL security policies dentro de la DB siguen aplicando</strong>. Los item permissions dan acceso al <strong>contenedor</strong>; la T-SQL security da acceso al <strong>contenido</strong>. <strong>Cae en el examen</strong> este matiz.
+          </div>
+
+          <h4>Las dos capas trabajando juntas</h4>
+          <p>Necesitas <strong>AMBAS</strong> para acceso completo:</p>
+          <ol>
+            <li><strong>Item permissions</strong>: para <strong>conectarte</strong> a la DB.</li>
+            <li><strong>T-SQL security</strong> (roles, permissions): para <strong>hacer operaciones</strong> dentro.</li>
+          </ol>
+          <p>Sin item permission → no conectas. Sin T-SQL permission → conectas pero no puedes hacer nada.</p>
+        </article>
+
+        <!-- ============ 12. T-SQL SECURITY ============ -->
+        <div class="category-header" id="tsql-security">
+          <span class="category-header__icon">🛡️</span>
+          <h2 class="category-header__title">12. T-SQL security: OLS, RLS, CLS, DDM</h2>
+        </div>
+
+        <article class="concept-card">
+          <p>Igual que en el Warehouse, SQL Database soporta <strong>seguridad T-SQL</strong> granular.</p>
+
+          <h4>Los 4 mecanismos (repaso)</h4>
+          <ul>
+            <li><strong>A) Object-Level Security (OLS)</strong>: controla el acceso a database objects específicos (tables, views, procedures). GRANT/DENY a nivel object.</li>
+            <li><strong>B) Row-Level Security (RLS)</strong>: restringe las rows visibles por usuario, con WHERE clause predicates.</li>
+            <li><strong>C) Column-Level Security (CLS)</strong>: restringe las columns visibles, con <code>DENY SELECT ON table (column) TO user</code>.</li>
+            <li><strong>D) Dynamic Data Masking (DDM)</strong>: enmascara data sensible en la visualización. La data no cambia, solo se enmascara al presentarla.</li>
+          </ul>
+
+          <h4>Cómo gestionar desde el portal</h4>
+          <p><strong>Fabric portal</strong> → <strong>Security</strong> → <strong>Manage SQL security</strong>. Ahí puedes gestionar los <strong>database-level roles</strong>.</p>
+
+          <h4>T-SQL directo</h4>
+          <pre><code class="language-sql">-- Create role
+CREATE ROLE ReadOnlyRole;
+
+-- Grant permissions al role
+GRANT SELECT ON SCHEMA::SalesLT TO ReadOnlyRole;
+
+-- Add member al role
+ALTER ROLE ReadOnlyRole ADD MEMBER [user@company.com];
+
+-- Row-level security policy
+CREATE FUNCTION security.fn_regionAccess(@region NVARCHAR(50))
+RETURNS TABLE
+WITH SCHEMABINDING
+AS
+RETURN SELECT 1 AS fn_result
+WHERE @region = USER_NAME();
+
+CREATE SECURITY POLICY SalesRegionFilter
+ADD FILTER PREDICATE security.fn_regionAccess(Region) ON dbo.Sales
+WITH (STATE = ON);
+
+-- Column-level security
+DENY SELECT ON dbo.Employee (Salary) TO AnalystRole;
+
+-- Dynamic Data Masking
+ALTER TABLE dbo.Customer
+ALTER COLUMN Email ADD MASKED WITH (FUNCTION = 'email()');</code></pre>
+
+          <h4>Aplica también al SQL analytics endpoint</h4>
+          <p>Las <strong>security policies aplican independientemente del punto de acceso</strong>: conexión SQL directa, SQL analytics endpoint, Power BI, Copilot y notebooks. Esto <strong>garantiza una experiencia fluida y segura sin cambios en las aplicaciones existentes</strong>.</p>
+        </article>
+
+        <!-- ============ 13. COPILOT ============ -->
+        <div class="category-header" id="copilot">
+          <span class="category-header__icon">🤖</span>
+          <h2 class="category-header__title">13. Copilot para SQL Database</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>Integración completa</h3>
+          <p><strong>Microsoft Copilot</strong> está integrado con SQL database en Fabric: mejora la <strong>gestión y el troubleshooting de SQL</strong>, aumenta la productividad y ofrece self-help a los usuarios.</p>
+
+          <h4>Las 4 features principales</h4>
+          <p><strong>A) Natural Language to SQL</strong> ⭐</p>
+          <ul>
+            <li>Traduce queries en lenguaje natural a SQL dentro del query editor.</li>
+            <li><strong>Schema-aware</strong>: conoce la estructura de tu DB.</li>
+            <li>Interacciones más intuitivas.</li>
+          </ul>
+          <p>Ejemplos que puedes preguntar:</p>
+          <ul>
+            <li><em>"Which employees have completed more than two projects this quarter?"</em></li>
+            <li><em>"List all products that were out of stock last month."</em></li>
+            <li><em>"Provide the rank of each department by employee satisfaction score."</em></li>
+            <li><em>"Create a primary key constraint named PK_Product_ProductID to the column ProductID in the table Product."</em></li>
+          </ul>
+          <p><strong>B) Chat pane</strong> 💬: chat interactivo con Copilot para hacer preguntas y generar queries.</p>
+          <p><strong>C) Code completion</strong> ⌨️: sugerencias automáticas <strong>mientras escribes</strong> T-SQL, como un IntelliSense inteligente.</p>
+          <p><strong>D) Quick actions</strong>: <strong>Explain</strong> (entender qué hace una query existente) y <strong>Fix</strong> (corregir errores en queries), como botones en la toolbar del query editor.</p>
+
+          <h4>Cómo acceder</h4>
+          <p>En el Fabric portal: abre tu SQL database, selecciona el <strong>botón Copilot</strong> en el ribbon → chat pane. O usa los quick action buttons <strong>Explain</strong> y <strong>Fix</strong> en la toolbar del query editor.</p>
+
+          <h4>Auto-correct de errores T-SQL</h4>
+          <p><strong>Feature poderosa</strong>: Copilot puede <strong>corregir automáticamente errores de código T-SQL</strong> según ocurren. Compartiendo contexto con la active query tab, Copilot ofrece <strong>sugerencias útiles para arreglar errores de SQL sin fricción</strong>.</p>
+
+          <div class="note note--warning">
+            ⚠️ <strong>Privacy note MUY IMPORTANTE para el examen:</strong> <em>"Copilot for SQL database does NOT use data in tables to generate T-SQL suggestions."</em>
+            <br>Solo usa <strong>schema information</strong> (nombres de tablas, columnas, relationships, descriptions). <strong>Nunca lee los datos reales</strong>. Esto es crítico para compliance y privacidad.
+          </div>
+
+          <h4>Beneficio principal</h4>
+          <p>Copilot <strong>mejora el troubleshooting</strong>: detecta errores, explica queries complejas, sugiere correcciones y reduce la curva de aprendizaje de T-SQL. Ideal para <strong>citizen developers</strong> o equipos cross-funcionales.</p>
+        </article>
+
+        <!-- ============ 14. MIRRORING ============ -->
+        <div class="category-header" id="mirroring">
+          <span class="category-header__icon">🌊</span>
+          <h2 class="category-header__title">14. Mirroring automático a OneLake (CRÍTICO)</h2>
+        </div>
+
+        <article class="concept-card">
+          <p><strong>Esta es la feature MÁS distintiva</strong> de SQL Database en Fabric. Súper examinable 💕</p>
+
+          <h4>La feature en una frase</h4>
+          <p><strong>SQL Database en Fabric se auto-mirrorea a OneLake en near real-time</strong>, convirtiendo automáticamente los datos a <strong>formato Delta Parquet</strong>.</p>
+
+          <h4>Por qué es tan importante</h4>
+          <p><strong>Elimina la necesidad de procesos ETL complejos</strong> para llevar la data OLTP al analytics stack.</p>
+          <p><strong>Antes</strong> (con Azure SQL Database tradicional):</p>
+          <pre><code class="language-plaintext">Azure SQL DB → Data Factory pipeline → Storage → Lakehouse
+                      (horas de setup + mantenimiento)</code></pre>
+          <p><strong>Ahora</strong> (con Fabric SQL Database):</p>
+          <pre><code class="language-plaintext">Fabric SQL DB → [auto-mirror] → OneLake (Delta)
+                (transparente, sin setup)</code></pre>
+
+          <h4>Beneficios</h4>
+          <ul>
+            <li>⚡ <strong>Near real-time replication</strong> (segundos-minutos de lag).</li>
+            <li>🚫 <strong>No manual ETL</strong> requerido.</li>
+            <li>💰 <strong>Reduce el Total Cost of Ownership</strong>.</li>
+            <li>🎯 <strong>Acelera el time-to-insight</strong>.</li>
+            <li>🌊 <strong>Data siempre disponible en OneLake</strong> para analytics.</li>
+            <li>🔗 <strong>Desbloquea escenarios de BI, AI, data engineering, data science y data sharing</strong>.</li>
+          </ul>
+
+          <h4>Consumers del mirror</h4>
+          <p>Una vez la data está en OneLake, muchos workloads de Fabric pueden consumirla:</p>
+          <ul>
+            <li><strong>Spark notebooks</strong> para analytics batch.</li>
+            <li><strong>Power BI</strong> con <strong>Direct Lake mode</strong>.</li>
+            <li><strong>Warehouse queries</strong> con cross-database queries.</li>
+            <li><strong>Lakehouse</strong> con shortcuts.</li>
+            <li><strong>Data agents</strong> (Fabric IQ).</li>
+            <li><strong>Notebooks Python</strong> con Semantic Link.</li>
+          </ul>
+
+          <h4>Tipos de mirroring en Fabric</h4>
+          <p><strong>Fabric soporta mirroring de múltiples sources</strong>:</p>
+          <ol>
+            <li><strong>SQL Database en Fabric</strong> (esta): automático, siempre activo.</li>
+            <li><strong>Azure SQL Database</strong> (external): setup manual del mirror.</li>
+            <li><strong>Azure Cosmos DB</strong>: setup manual.</li>
+            <li><strong>Snowflake</strong>: setup manual.</li>
+            <li><strong>Otras</strong> (la lista sigue creciendo).</li>
+          </ol>
+          <p>Todos siguen el mismo patrón: replicación near real-time a OneLake sin ETL manual.</p>
+
+          <h4>Monitorizar el estado del mirroring</h4>
+          <p><strong>Cómo</strong>: seleccionar <strong>Monitor replication</strong> desde el tab <strong>Replication</strong>. Muestra el estado de replicación por tabla, el lag time, los errores si los hay y el volumen replicado.</p>
+          <p>Si <strong>no hay updates en las source tables</strong>, el engine hace <strong>back off</strong> y <strong>reanuda el polling regular</strong> tras detectar data actualizada.</p>
+
+          <div class="note note--warning">
+            ⚠️ <strong>Ojo cosita con la diferencia:</strong>
+            <br><strong>SQL Database en Fabric (native)</strong>: mirror <strong>automático desde el momento uno</strong>, <strong>no requiere configuración</strong>, es intrínseco al producto.
+            <br><strong>Azure SQL Database mirror (external)</strong>: configurable como item <strong>Mirrored database</strong> separado, <strong>requiere setup manual</strong> de conexión y credenciales y configuración de las tablas a mirrorear. Mismo patrón, pero explícito.
+          </div>
+        </article>
+
+        <!-- ============ 15. ANALYTICS ENDPOINT ============ -->
+        <div class="category-header" id="analytics-endpoint">
+          <span class="category-header__icon">📊</span>
+          <h2 class="category-header__title">15. SQL analytics endpoint del mirror</h2>
+        </div>
+
+        <article class="concept-card">
+          <h4>Auto-generated</h4>
+          <p>Cuando tienes una SQL Database en Fabric, se genera automáticamente un <strong>SQL analytics endpoint</strong> que apunta a la <strong>mirrored data</strong> en OneLake.</p>
+
+          <h4>Uso típico</h4>
+          <p>Ejecutar <strong>queries analíticas sobre la mirrored data</strong>: sin impactar el workload OLTP de la SQL Database original, con optimizaciones analíticas (el column-store del Delta) y compatible con analytics tools.</p>
+
+          <h4>Similitud con Lakehouse</h4>
+          <p><strong>Muy parecido al SQL analytics endpoint del Lakehouse</strong>: read-only, queries y views T-SQL, puede tener stored procedures y es consumible desde Power BI.</p>
+
+          <div class="note note--practice">
+            📌 <strong>Best practice para analytics:</strong> el <strong>OLTP transaccional</strong> va directo a la <strong>SQL Database</strong>, y las <strong>analytics queries</strong> al <strong>SQL analytics endpoint del mirror</strong>. Así <strong>no compites por recursos</strong> entre OLTP y OLAP.
+          </div>
+
+          <h4>Semantic model automático</h4>
+          <p>También se puede crear (o se genera automáticamente en algunos casos) un <strong>default semantic model</strong> sobre el SQL analytics endpoint. Ideal para reports de Power BI en Direct Lake.</p>
+        </article>
+
+        <!-- ============ 16. VIRTUALIZATION ============ -->
+        <div class="category-header" id="virtualization">
+          <span class="category-header__icon">🌐</span>
+          <h2 class="category-header__title">16. Data virtualization con external tables</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>¿Qué es?</h3>
+          <p><strong>Data virtualization</strong> en SQL Database en Fabric = capacidad de <strong>acceder y manipular data de distintas sources SIN mover ni copiar la data</strong>. Provee una <strong>vista unificada</strong> de los datos, permitiendo integración y análisis fluidos entre plataformas.</p>
+
+          <h4>Casos de uso</h4>
+          <p>Consultar directamente tablas <strong>Parquet, CSV y Delta</strong> disponibles en <strong>Lakehouses</strong> de Fabric, en <strong>OneLake</strong> (cualquier folder) o en <strong>storage externo</strong> con credenciales.</p>
+
+          <h4>Los 4 building blocks</h4>
+          <p>Para montar data virtualization necesitas <strong>4 componentes T-SQL</strong>:</p>
+          <p><strong>A) Database Scoped Credential</strong> — credenciales <strong>para acceder a las external data sources de forma segura</strong>.</p>
+          <pre><code class="language-sql">CREATE DATABASE SCOPED CREDENTIAL MyCredential
+WITH IDENTITY = 'USER IDENTITY';</code></pre>
+          <p><strong>B) External Data Source</strong> — define las <strong>external data sources</strong>, como ficheros en OneLake.</p>
+          <pre><code class="language-sql">CREATE EXTERNAL DATA SOURCE MyOneLakeDS
+WITH (
+    LOCATION = 'abfss://aaaaaaaa-0000-1111-2222-bbbbbbbbbbbb@&lt;onelake_account&gt;.dfs.fabric.microsoft.com/bbbbbbbb-1111-2222-3333-cccccccccccc/Files/parquet/'
+);</code></pre>
+          <p><strong>C) External File Format</strong> — especifica el <strong>formato de los ficheros externos</strong>: Parquet, CSV, Delta.</p>
+          <pre><code class="language-sql">CREATE EXTERNAL FILE FORMAT MyFileFormat
+WITH (
+    FORMAT_TYPE = DELIMITEDTEXT,
+    FORMAT_OPTIONS (
+        FIELD_TERMINATOR = ',',
+        STRING_DELIMITER = '"'
+    )
+);</code></pre>
+          <p><strong>D) External Table</strong> — crea tablas que <strong>referencian data almacenada fuera</strong> de la SQL database.</p>
+          <pre><code class="language-sql">CREATE EXTERNAL TABLE MyExternalTable (
+    Column1 INT,
+    Column2 NVARCHAR(50)
+)
+WITH (
+    LOCATION = 'myfolder/myfile.csv',
+    DATA_SOURCE = MyOneLakeDS,
+    FILE_FORMAT = MyFileFormat
+);</code></pre>
+
+          <h4>Uso posterior</h4>
+          <p>Una vez creada la external table, la <strong>consultas como si fuera una tabla normal</strong>:</p>
+          <pre><code class="language-sql">SELECT * FROM MyExternalTable WHERE Column1 &gt; 100;</code></pre>
+          <p><strong>Fabric traduce esto a</strong>: leer del fichero externo, aplicar el filtro y devolver resultados. Todo transparente.</p>
+
+          <h4>Beneficios</h4>
+          <ul>
+            <li>✅ <strong>No data movement</strong>: los datos siguen en su source.</li>
+            <li>✅ <strong>Real-time</strong>: siempre lees los últimos datos.</li>
+            <li>✅ <strong>Unified queries</strong>: joins entre tablas locales y externas.</li>
+            <li>✅ <strong>Ahorro de storage</strong>: no duplicas data.</li>
+            <li>✅ <strong>Flexibilidad de formato</strong>: Parquet, CSV, Delta.</li>
+          </ul>
+
+          <h4>Casos de uso reales</h4>
+          <p><strong>Escenario 1</strong>: enriquecer datos OLTP con big data.</p>
+          <pre><code class="language-sql">-- Tu SQL Database tiene customer master data
+-- El Lakehouse tiene web logs enriched
+
+SELECT
+    c.customer_id,
+    c.name,
+    l.total_pageviews
+FROM dbo.Customers c
+INNER JOIN LakehouseLogs l ON c.customer_id = l.user_id;</code></pre>
+          <p><strong>Escenario 2</strong>: reporting mixto — live OLTP data (SQL Database) e historical archived data (Lakehouse Delta), con un solo query que combina ambos.</p>
+        </article>
+
+        <!-- ============ 17. CROSS-DB ============ -->
+        <div class="category-header" id="cross-db">
+          <span class="category-header__icon">🔗</span>
+          <h2 class="category-header__title">17. Cross-database queries</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>Feature</h3>
+          <p>SQL Database en Fabric soporta <strong>cross-database queries</strong> dentro del mismo workspace. Sintaxis: <strong>three-part naming</strong> <code>database.schema.table</code>.</p>
+
+          <h4>Ejemplo</h4>
+          <pre><code class="language-sql">SELECT
+    s.OrderID,
+    s.Total,
+    c.CustomerName
+FROM Sales_DB.dbo.Orders s
+INNER JOIN Customer_DB.dbo.Customers c
+    ON s.CustomerID = c.CustomerID;</code></pre>
+          <p>La query cruza dos SQL databases distintas en el mismo workspace.</p>
+
+          <h4>También cross-item type</h4>
+          <p>Puedes hacer cross-query <strong>entre distintos tipos</strong> de items: SQL Database ↔ Warehouse, y SQL Database ↔ SQL analytics endpoint de Lakehouse. Todo con <strong>three-part naming</strong> siempre que estén en el <strong>mismo workspace</strong>.</p>
+
+          <h4>Limitaciones</h4>
+          <ul>
+            <li><strong>Solo mismo workspace</strong> (cross-workspace requiere shortcuts).</li>
+            <li>Read-only en el remote (típicamente).</li>
+          </ul>
+        </article>
+
+        <!-- ============ 18. INTEGRACIÓN ============ -->
+        <div class="category-header" id="integracion">
+          <span class="category-header__icon">🎨</span>
+          <h2 class="category-header__title">18. Integración con el ecosistema Fabric</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>SQL Database es un first-class citizen</h3>
+          <p>SQL Database en Fabric está <strong>integrado nativamente</strong> con todo el ecosistema:</p>
+          <p><strong>Data ingestion</strong>: los pipelines pueden usar SQL Database como source/destination, y los Dataflows Gen2 igual.</p>
+          <p><strong>Analytics downstream</strong>: el <strong>mirror automático</strong> a OneLake habilita Power BI Direct Lake, notebooks y warehouse queries.</p>
+          <p><strong>Governance</strong>: integración con <strong>Purview</strong>, soporte de <strong>sensitivity labels</strong> y <strong>endorsement</strong> (Promoted, Certified).</p>
+          <p><strong>Copilot</strong>: <strong>Copilot for SQL Database</strong> integrado en el editor, y <strong>Fabric IQ</strong> puede consultar la SQL Database para analytics con IA.</p>
+          <p><strong>DevOps</strong>: <strong>Git integration</strong> para source control y <strong>deployment pipelines</strong> para dev → test → prod.</p>
+
+          <h4>GraphQL API integration</h4>
+          <p><strong>SQL Database en Fabric puede exponerse como GraphQL API</strong> usando <strong>API for GraphQL</strong> (item de Fabric): una data API moderna para aplicaciones, consumible desde web apps, mobile apps y servicios. Lo vemos en el <a href="modulo-13.html">Módulo 13: GraphQL en Fabric</a>.</p>
+        </article>
+
+        <!-- ============ 19. CASOS DE USO ============ -->
+        <div class="category-header" id="casos-uso">
+          <span class="category-header__icon">🎯</span>
+          <h2 class="category-header__title">19. Casos de uso: cuándo elegir SQL Database</h2>
+        </div>
+
+        <article class="concept-card">
+          <h4>Casos ideales</h4>
+          <p><strong>A) Apps transaccionales que viven dentro del ecosistema Fabric</strong>: apps customer-facing que necesitan OLTP, backend de aplicaciones internas, order management, booking systems.</p>
+          <p><strong>B) Aplicaciones que necesitan tanto OLTP como analytics</strong>: el auto-mirror elimina la necesidad de dos productos; un solo item soluciona ambos casos.</p>
+          <p><strong>C) Prototipos y proyectos rápidos</strong>: SaaS = zero setup, sample data listo, Copilot para acelerar el desarrollo.</p>
+          <p><strong>D) Equipos sin DBAs dedicados</strong>: las autonomous features gestionan el tuning y el indexing, con menos carga de mantenimiento.</p>
+          <p><strong>E) Modern app development</strong>: combinación con GraphQL API, integración con AI/Copilot e integración directa con Power BI para reports operacionales.</p>
+
+          <h4>Cuándo NO usar SQL Database</h4>
+          <ul>
+            <li><strong>A) Big data analytics puro</strong> → mejor <strong>Warehouse</strong> o <strong>Lakehouse</strong>.</li>
+            <li><strong>B) Data science con ML</strong> → mejor <strong>Lakehouse</strong> con Spark.</li>
+            <li><strong>C) Data lake pattern</strong> → <strong>Lakehouse</strong>.</li>
+            <li><strong>D) Streaming ingestion</strong> → <strong>Eventhouse / KQL Database</strong>.</li>
+            <li><strong>E) On-prem workloads</strong> → seguir con <strong>SQL Server / Azure SQL Managed Instance</strong>.</li>
+          </ul>
+
+          <div class="note note--tip">
+            🎯 <strong>Elección práctica. Pregúntate:</strong>
+            <ol>
+              <li>¿Es un OLTP workload con muchas transacciones concurrentes? → <strong>SQL Database</strong></li>
+              <li>¿Es analytics BI con star schema? → <strong>Warehouse</strong></li>
+              <li>¿Es big data con Spark/notebooks? → <strong>Lakehouse</strong></li>
+              <li>¿Es streaming en tiempo real? → <strong>Eventhouse</strong></li>
+            </ol>
+            Y no olvides que <strong>pueden coexistir</strong> en el mismo workspace.
+          </div>
+        </article>
+
+        <!-- ============ 20. TRAMPAS ============ -->
+        <div class="category-header" id="trampas">
+          <span class="category-header__icon">⚠️</span>
+          <h2 class="category-header__title">20. Trampas típicas y confusiones frecuentes</h2>
+        </div>
+
+        <article class="concept-card">
+          <ul class="trap-list">
+            <li><strong class="trap-title">Trampa 1: "SQL Database en Fabric = Azure SQL Database"</strong>
+              ❌ <strong>Diferentes</strong>: Fabric SQL DB es <strong>SaaS</strong>, Azure SQL DB es <strong>PaaS</strong>. Mismo engine pero distinta gestión.</li>
+            <li><strong class="trap-title">Trampa 2: "SQL Database es un data warehouse"</strong>
+              ❌ <strong>NO</strong>. SQL Database es <strong>OLTP</strong> (transaccional). El Warehouse es <strong>OLAP</strong> (analítico).</li>
+            <li><strong class="trap-title">Trampa 3: "Necesito hacer setup del mirroring"</strong>
+              ❌ El mirror a OneLake es <strong>automático desde el momento cero</strong> en SQL Database en Fabric. <strong>No requiere configuración</strong>.</li>
+            <li><strong class="trap-title">Trampa 4: "Los item permissions dan acceso a los datos"</strong>
+              ❌ Los item permissions solo permiten <strong>conectar</strong>. Las <strong>T-SQL security policies dentro de la DB</strong> deciden qué puedes ver.</li>
+            <li><strong class="trap-title">Trampa 5: "Automatic indexing requiere configuración manual"</strong>
+              ❌ Es <strong>automático por defecto</strong>. Puedes monitorizarlo pero no hace falta configurarlo.</li>
+            <li><strong class="trap-title">Trampa 6: "Copilot usa mis datos para generar SQL"</strong>
+              ❌ <strong>NO</strong>. Copilot <strong>solo usa schema information</strong> (nombres de tablas/columnas), NUNCA los datos reales de las tablas.</li>
+            <li><strong class="trap-title">Trampa 7: "El mirror es real-time exactamente"</strong>
+              ❌ Es <strong>near real-time</strong>. Hay latencia de segundos-minutos según el workload.</li>
+            <li><strong class="trap-title">Trampa 8: "Las external tables copian los datos"</strong>
+              ❌ Solo <strong>referencian</strong>. Data virtualization = <strong>NO data movement</strong>.</li>
+            <li><strong class="trap-title">Trampa 9: "Puedo hacer INSERT en el SQL analytics endpoint del mirror"</strong>
+              ❌ <strong>Read-only</strong>. Los writes van a la SQL Database original, que luego se mirrorea.</li>
+            <li><strong class="trap-title">Trampa 10: "Las cross-database queries funcionan cross-workspace"</strong>
+              ❌ <strong>Solo mismo workspace</strong>. Cross-workspace requiere shortcuts.</li>
+            <li><strong class="trap-title">Trampa 11: "SQL Database y Warehouse son intercambiables"</strong>
+              ❌ Propósitos <strong>muy distintos</strong>: OLTP vs OLAP. Elegir según workload.</li>
+            <li><strong class="trap-title">Trampa 12: "Las autonomous features me libran de TODO trabajo DBA"</strong>
+              ❌ Automatic tuning e indexing cubren el <strong>80%</strong>. Aún necesitas diseño de schema, business logic y decisiones de compliance.</li>
+            <li><strong class="trap-title">Trampa 13: "SQL Database solo se conecta desde el web editor"</strong>
+              ❌ Cualquier tool con <strong>protocolo TDS</strong>: SSMS, ADS, VS Code, apps custom.</li>
+            <li><strong class="trap-title">Trampa 14: "El Performance dashboard requiere Copilot"</strong>
+              ❌ Son features <strong>independientes</strong>. El Performance dashboard funciona sin Copilot.</li>
+            <li><strong class="trap-title">Trampa 15: "El source control es opcional y raramente útil"</strong>
+              ✅ Es una <strong>best practice fuerte</strong> — para trackear cambios de schema y colaborar.</li>
+            <li><strong class="trap-title">Trampa 16: "El mirror del SQL Database va a un Lakehouse"</strong>
+              ❌ Va <strong>directamente a OneLake</strong> como ficheros Delta. Distintos workloads de Fabric pueden consumirlos.</li>
+            <li><strong class="trap-title">Trampa 17: "SQL Database y SQL analytics endpoint son lo mismo"</strong>
+              ❌ SQL Database = OLTP writable. SQL analytics endpoint = read-only sobre el mirror en OneLake.</li>
+          </ul>
+        </article>
+
+        <!-- ============ 21. COMPARATIVAS ============ -->
+        <div class="category-header" id="comparativas">
+          <span class="category-header__icon">🆚</span>
+          <h2 class="category-header__title">21. Comparativas clave (chuleta)</h2>
+        </div>
+
+        <article class="concept-card">
+          <h4>SQL Database vs Warehouse vs Lakehouse</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th></th><th>SQL Database</th><th>Warehouse</th><th>Lakehouse</th></tr></thead>
+              <tbody>
+                <tr><td>Workload</td><td><strong>OLTP</strong></td><td><strong>OLAP</strong></td><td>Mixed</td></tr>
+                <tr><td>Storage</td><td>Row-store</td><td>Column-store Delta</td><td>Delta files</td></tr>
+                <tr><td>Writes</td><td>✅ High throughput</td><td>✅ (bulk)</td><td>Vía Spark</td></tr>
+                <tr><td>Reads latency</td><td>Milisegundos</td><td>Segundos</td><td>Segundos</td></tr>
+                <tr><td>Concurrency writes</td><td>Alta</td><td>Moderada</td><td>Baja</td></tr>
+                <tr><td>Big data</td><td>No</td><td>✅</td><td>✅</td></tr>
+                <tr><td>Spark support</td><td>Vía mirror</td><td>Vía OneLake</td><td>✅ Native</td></tr>
+                <tr><td>Auto-mirror OneLake</td><td>✅</td><td>Native</td><td>Native</td></tr>
+                <tr><td>Best for</td><td><strong>Apps transaccionales</strong></td><td><strong>BI Analytics</strong></td><td><strong>Big data + ML</strong></td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h4>SaaS vs PaaS (Fabric SQL DB vs Azure SQL DB)</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th></th><th>Fabric SQL DB (SaaS)</th><th>Azure SQL DB (PaaS)</th></tr></thead>
+              <tbody>
+                <tr><td>Infra mgmt</td><td>Microsoft</td><td>Microsoft</td></tr>
+                <tr><td>DB mgmt</td><td><strong>Microsoft (automatic)</strong></td><td>Tú</td></tr>
+                <tr><td>Tuning</td><td>Automatic</td><td>Manual/tools</td></tr>
+                <tr><td>Indexing</td><td>Automatic</td><td>Manual</td></tr>
+                <tr><td>Backup</td><td>Automatic</td><td>Configuras</td></tr>
+                <tr><td>Auto-mirror OneLake</td><td>✅</td><td>❌</td></tr>
+                <tr><td>Fabric integration</td><td>✅ Native</td><td>Manual</td></tr>
+                <tr><td>Copilot integration</td><td>✅ Native</td><td>Vía Azure</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h4>Mirror pattern</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Source</th><th>Mirror setup</th></tr></thead>
+              <tbody>
+                <tr><td><strong>SQL Database en Fabric</strong></td><td>⭐ <strong>Automatic</strong> (desde su creación)</td></tr>
+                <tr><td><strong>Azure SQL Database</strong></td><td>Manual (crear item Mirrored database)</td></tr>
+                <tr><td><strong>Cosmos DB</strong></td><td>Manual</td></tr>
+                <tr><td><strong>Snowflake</strong></td><td>Manual</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h4>Copilot capabilities</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Feature</th><th>Función</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Natural Language to SQL</strong></td><td>Traduce NL a T-SQL</td></tr>
+                <tr><td><strong>Chat pane</strong></td><td>Q&amp;A interactivo</td></tr>
+                <tr><td><strong>Code completion</strong></td><td>Sugerencias mientras escribes</td></tr>
+                <tr><td><strong>Explain</strong></td><td>Entender queries existentes</td></tr>
+                <tr><td><strong>Fix</strong></td><td>Corregir errores</td></tr>
+                <tr><td><strong>Auto-correct</strong></td><td>Errores corregidos sin fricción</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>⚠️ <strong>NO usa data de las tablas</strong> para las sugerencias.</p>
+
+          <h4>T-SQL security en SQL Database (igual que Warehouse)</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th></th><th>Función</th></tr></thead>
+              <tbody>
+                <tr><td><strong>OLS</strong></td><td>Acceso a objects específicos</td></tr>
+                <tr><td><strong>RLS</strong></td><td>Filtrar rows por user</td></tr>
+                <tr><td><strong>CLS</strong></td><td>Restringir columns visibles</td></tr>
+                <tr><td><strong>DDM</strong></td><td>Enmascarar data sensible</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h4>Data virtualization: 4 building blocks</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Component</th><th>Función</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Database Scoped Credential</strong></td><td>Credenciales seguras</td></tr>
+                <tr><td><strong>External Data Source</strong></td><td>Define la location externa</td></tr>
+                <tr><td><strong>External File Format</strong></td><td>Specs de Parquet/CSV/Delta</td></tr>
+                <tr><td><strong>External Table</strong></td><td>Consultar lo externo como local</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h4>Autonomous features</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Feature</th><th>Función</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Automatic tuning</strong></td><td>Optimización de queries basada en ML</td></tr>
+                <tr><td><strong>Automatic indexing</strong></td><td>Crear/eliminar/revertir índices según el workload</td></tr>
+                <tr><td><strong>Performance dashboard</strong></td><td>Monitorización integrada</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h4>3 tiles útiles al crear SQL Database</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Tile</th><th>Función</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Sample data</strong></td><td>Importar AdventureWorksLT</td></tr>
+                <tr><td><strong>T-SQL</strong></td><td>Web editor con templates</td></tr>
+                <tr><td><strong>Connection strings</strong></td><td>Para conectar tools externos</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </article>
+
+        <!-- ============ 22. FUENTES ============ -->
+        <div class="category-header" id="fuentes">
+          <span class="category-header__icon">📚</span>
+          <h2 class="category-header__title">22. Fuentes oficiales consultadas</h2>
+        </div>
+
+        <article class="concept-card">
+          <ul class="sources-list">
+            <li>Módulo Learn: <a href="https://learn.microsoft.com/training/modules/get-started-sql-database-microsoft-fabric/" target="_blank" rel="noopener noreferrer">get-started-sql-database-microsoft-fabric</a></li>
+            <li>SQL Database in Fabric overview: <a href="https://learn.microsoft.com/fabric/database/sql/overview" target="_blank" rel="noopener noreferrer">database/sql/overview</a></li>
+            <li>Create SQL database: <a href="https://learn.microsoft.com/fabric/database/sql/create" target="_blank" rel="noopener noreferrer">database/sql/create</a></li>
+            <li>SQL database tutorial: <a href="https://learn.microsoft.com/fabric/database/sql/tutorial-introduction" target="_blank" rel="noopener noreferrer">tutorial-introduction</a></li>
+            <li>Copilot for SQL Database: <a href="https://learn.microsoft.com/fabric/database/sql/copilot-sql-database" target="_blank" rel="noopener noreferrer">copilot-sql-database</a></li>
+            <li>Copilot chat pane: <a href="https://learn.microsoft.com/fabric/database/sql/copilot-chat-pane" target="_blank" rel="noopener noreferrer">copilot-chat-pane</a></li>
+            <li>Automatic tuning: <a href="https://learn.microsoft.com/fabric/database/sql/automatic-tuning" target="_blank" rel="noopener noreferrer">automatic-tuning</a></li>
+            <li>Performance dashboard: <a href="https://learn.microsoft.com/fabric/database/sql/performance-dashboard" target="_blank" rel="noopener noreferrer">performance-dashboard</a></li>
+            <li>Authentication: <a href="https://learn.microsoft.com/fabric/database/sql/authentication" target="_blank" rel="noopener noreferrer">authentication</a></li>
+            <li>Configure access controls: <a href="https://learn.microsoft.com/fabric/database/sql/configure-sql-access-controls" target="_blank" rel="noopener noreferrer">configure-sql-access-controls</a></li>
+            <li>Share and manage permissions: <a href="https://learn.microsoft.com/fabric/database/sql/share-sql-manage-permission" target="_blank" rel="noopener noreferrer">share-sql-manage-permission</a></li>
+            <li>Source control integration: <a href="https://learn.microsoft.com/fabric/database/sql/source-control" target="_blank" rel="noopener noreferrer">source-control</a></li>
+            <li>Mirroring for analytics: <a href="https://learn.microsoft.com/fabric/database/sql/mirroring-overview" target="_blank" rel="noopener noreferrer">mirroring-overview</a></li>
+            <li>Azure SQL Database mirror tutorial: <a href="https://learn.microsoft.com/fabric/database/mirrored-database/azure-sql-database-tutorial" target="_blank" rel="noopener noreferrer">azure-sql-database-tutorial</a></li>
+            <li>SQL analytics endpoint: <a href="https://learn.microsoft.com/fabric/database/sql/sql-analytics-endpoint" target="_blank" rel="noopener noreferrer">sql-analytics-endpoint</a></li>
+            <li>Data virtualization: <a href="https://learn.microsoft.com/fabric/database/sql/data-virtualization" target="_blank" rel="noopener noreferrer">data-virtualization</a></li>
+            <li>SSMS connect quickstart: <a href="https://learn.microsoft.com/ssms/quickstarts/ssms-connect-query-sql-database-fabric" target="_blank" rel="noopener noreferrer">ssms-connect-query-sql-database-fabric</a></li>
+          </ul>
+        </article>
+
+        <div class="note note--next">
+          🚀 <strong>¡Módulo 12 completado!</strong> Ya sabes cuándo Fabric te pide OLTP y cómo sacarle partido sin ETL. Sigue con el <a href="modulo-13.html">Módulo 13: API for GraphQL</a>. 🌸
+        </div>
+
+        <!-- Navegación del curso -->
+        <div class="course-nav">
+          <a href="modulo-11.html">
+            <span class="course-nav__label">← Anterior</span>
+            <span class="course-nav__title">Módulo 11 · Data Warehouse</span>
+          </a>
+          <a href="modulo-13.html" class="next">
+            <span class="course-nav__label">Siguiente →</span>
+            <span class="course-nav__title">Módulo 13 · GraphQL</span>
+          </a>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <button id="back-to-top" class="back-to-top" aria-label="Volver arriba" title="Volver arriba">↑</button>
+
+  <script src="https://cdn.jsdelivr.net/npm/i18next@23/dist/umd/i18next.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1/prism.min.js"></script>
+  <script src="../../../assets/js/theme.js"></script>
+  <script src="../../../assets/js/main.js"></script>
+  <script src="../../../assets/js/cursor.js"></script>
+</body>
+</html>

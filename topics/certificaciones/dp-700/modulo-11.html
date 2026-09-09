@@ -1,0 +1,1639 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="DP-700 Módulo 11: data warehouses en Microsoft Fabric. Modelado dimensional, star schema, Warehouse vs SQL analytics endpoint, COPY INTO, zero-copy clones, time travel, RLS/CLS/DDM y monitoring.">
+  <title>DP-700 · Módulo 11: Data Warehouse | Power BI Guide by Kawaii BI</title>
+  <link rel="canonical" href="https://kawaiibi.es/topics/certificaciones/dp-700/modulo-11.html">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Kawaii Power BI Guide">
+  <meta property="og:locale" content="es_ES">
+  <meta property="og:title" content="DP-700 · Módulo 11: Data Warehouse | Power BI Guide by Kawaii BI">
+  <meta property="og:description" content="DP-700 Módulo 11: Fabric Data Warehouse. Modelado dimensional, COPY INTO, zero-copy clones, time travel, seguridad granular y monitoring.">
+  <meta property="og:url" content="https://kawaiibi.es/topics/certificaciones/dp-700/modulo-11.html">
+  <meta property="og:image" content="https://kawaiibi.es/assets/images/og-banner.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="1200">
+  <meta property="og:image:alt" content="Sara Lozano Marti - Kawaii Power BI">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="DP-700 · Módulo 11: Data Warehouse | Power BI Guide by Kawaii BI">
+  <meta name="twitter:description" content="DP-700 Módulo 11: Fabric Data Warehouse. Star schema, clones, time travel, RLS/CLS/DDM y query insights.">
+  <meta name="twitter:image" content="https://kawaiibi.es/assets/images/og-banner.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/prismjs@1/themes/prism-okaidia.min.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="../../../assets/css/main.css">
+  <link rel="stylesheet" href="../../../assets/css/themes.css">
+  <link rel="stylesheet" href="../../../assets/css/components.css">
+  <link rel="stylesheet" href="../../../assets/css/layout.css">
+
+  <style>
+    .topic-header { text-align: center; padding: 2.25rem 0 1.75rem; border-bottom: 2px solid var(--color-mauve); margin-bottom: 2rem; }
+    .topic-header__eyebrow { font-family: 'Fira Code', monospace; font-size: 0.8125rem; font-weight: 600; color: var(--color-coral); letter-spacing: 0.05em; }
+    .topic-header__icon { font-size: 3.5rem; margin: 0.5rem 0; display: block; }
+    .topic-header__title { font-size: clamp(1.75rem, 4vw, 2.25rem); font-weight: 800; color: var(--color-dark); margin-bottom: 0.625rem; line-height: 1.2; }
+    .topic-header__subtitle { font-size: 1rem; color: var(--color-slate); margin-bottom: 1.25rem; line-height: 1.55; max-width: 680px; margin-left: auto; margin-right: auto; }
+    .topic-header__levels { display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap; align-items: center; }
+
+    .toc { background: var(--color-rose); border-radius: var(--border-radius); padding: 1.25rem 1.5rem; margin-bottom: 2rem; border: 1.5px solid var(--color-mauve); }
+    .toc__title { font-size: 1rem; font-weight: 700; margin: 0 0 0.75rem; }
+    .toc__list { display: flex; flex-wrap: wrap; gap: 0.5rem; list-style: none; padding: 0; margin: 0; }
+    .toc__list a { font-size: 0.8125rem; color: var(--color-coral); text-decoration: none; padding: 0.25rem 0.625rem; background: var(--color-white); border-radius: 999px; border: 1px solid var(--color-mauve); }
+    .toc__list a:hover { background: var(--color-coral); color: #fff; }
+
+    .category-header { display: flex; align-items: center; gap: 0.75rem; margin: 2.5rem 0 1.25rem; padding: 0.875rem 1.25rem; background: var(--color-rose); border-radius: var(--border-radius-sm); border-left: 4px solid var(--color-coral); scroll-margin-top: 20px; }
+    .category-header__icon { font-size: 1.5rem; }
+    .category-header__title { font-size: 1.25rem; font-weight: 700; margin: 0; }
+
+    .concept-card { background: var(--color-white); border: 1.5px solid var(--color-mauve); border-radius: var(--border-radius); padding: 1.5rem 1.75rem; margin-bottom: 1.25rem; }
+    .concept-card h3 { font-size: 1.0625rem; font-weight: 700; color: var(--color-coral); margin: 0 0 0.6rem; }
+    .concept-card h4 { font-size: 0.9375rem; font-weight: 700; color: var(--color-dark); margin: 1.1rem 0 0.4rem; }
+    .concept-card p { font-size: 0.9375rem; line-height: 1.7; color: var(--color-dark); margin-bottom: 0.7rem; }
+    .concept-card ul, .concept-card ol { padding-left: 1.25rem; font-size: 0.9375rem; line-height: 1.75; color: var(--color-dark); margin: 0.4rem 0; }
+    .concept-card code { background: var(--color-blush); padding: 0.1em 0.4em; border-radius: 4px; font-family: 'Fira Code', monospace; font-size: 0.85em; color: var(--color-coral); }
+    .concept-card pre { margin: 0.75rem 0; }
+
+    .md-table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.84rem; }
+    .md-table th, .md-table td { border: 1px solid var(--color-mauve); padding: 0.5rem 0.7rem; text-align: left; vertical-align: top; }
+    .md-table th { background: var(--color-rose); font-weight: 700; color: var(--color-dark); }
+    .md-table tr:nth-child(even) td { background: var(--color-blush); }
+    .table-scroll { overflow-x: auto; }
+
+    .trap-list { list-style: none; padding: 0; margin: 0; }
+    .trap-list > li { background: var(--color-white); border: 1.5px solid var(--color-mauve); border-left: 4px solid var(--color-warning); border-radius: var(--border-radius-sm); padding: 0.875rem 1.125rem; margin-bottom: 0.75rem; font-size: 0.9375rem; line-height: 1.7; }
+    .trap-list strong.trap-title { display: block; color: var(--color-dark); margin-bottom: 0.25rem; }
+
+    .course-nav { display: flex; justify-content: space-between; gap: 1rem; margin-top: 2.5rem; flex-wrap: wrap; }
+    .course-nav a { flex: 1 1 220px; display: block; background: var(--color-white); border: 1.5px solid var(--color-mauve); border-radius: var(--border-radius); padding: 1rem 1.25rem; text-decoration: none; color: inherit; transition: var(--transition); }
+    .course-nav a:hover { border-color: var(--color-coral); box-shadow: var(--shadow-md); text-decoration: none; }
+    .course-nav__label { font-size: 0.75rem; color: var(--color-slate); text-transform: uppercase; letter-spacing: 0.05em; }
+    .course-nav__title { font-weight: 700; color: var(--color-coral); }
+    .course-nav a.next { text-align: right; }
+
+    .sources-list { font-size: 0.875rem; line-height: 1.9; word-break: break-word; }
+  </style>
+</head>
+<body>
+
+  <aside class="site-sidebar">
+    <div class="site-sidebar__profile">
+      <img src="../../../assets/images/avatar-sara.png" alt="Sara Lozano Martí" class="site-sidebar__avatar">
+      <p class="site-sidebar__name">Sara Lozano Martí</p>
+      <p class="site-sidebar__subtitle">Power BI Expert</p>
+    </div>
+    <nav class="site-sidebar__nav" aria-label="Navegación principal">
+      <ul>
+        <li><a href="../../../index.html" class="site-sidebar__link"><span class="site-sidebar__icon">🏠</span> Inicio</a></li>
+        <li><a href="../../dax.html" class="site-sidebar__link"><span class="site-sidebar__icon">⚡</span> Funciones DAX</a></li>
+        <li><a href="../../power-query.html" class="site-sidebar__link"><span class="site-sidebar__icon">🔄</span> Power Query</a></li>
+        <li><a href="../../lenguaje-m.html" class="site-sidebar__link"><span class="site-sidebar__icon">〽️</span> Lenguaje M</a></li>
+        <li><a href="../../modelado.html" class="site-sidebar__link"><span class="site-sidebar__icon">🗄️</span> Modelado</a></li>
+        <li><a href="../../conceptos-powerbi.html" class="site-sidebar__link"><span class="site-sidebar__icon">📊</span> Conceptos Power BI</a></li>
+        <li><a href="../../fabric.html" class="site-sidebar__link"><span class="site-sidebar__icon">🧵</span> Microsoft Fabric</a></li>
+        <li><a href="../../tmdl.html" class="site-sidebar__link"><span class="site-sidebar__icon">📝</span> TMDL</a></li>
+        <li><a href="../../diseno-ux.html" class="site-sidebar__link"><span class="site-sidebar__icon">🎨</span> Diseño y UX</a></li>
+        <li><a href="../../gobernanza.html" class="site-sidebar__link"><span class="site-sidebar__icon">🔒</span> Gobernanza</a></li>
+        <li><a href="../../certificaciones.html" class="site-sidebar__link is-active"><span class="site-sidebar__icon">🎓</span> Certificaciones</a></li>
+      </ul>
+    </nav>
+    <div class="site-sidebar__divider"></div>
+    <div class="site-sidebar__footer">
+      <a href="../../../quien-soy.html" class="site-sidebar__link site-sidebar__link--highlight"><span class="site-sidebar__icon">👩‍💻</span> ¿Quién soy?</a>
+      <div class="site-sidebar__social">
+        <a href="https://www.linkedin.com/in/saralozanomarti" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><img src="../../../assets/images/logo-linkedin.png" alt="LinkedIn" class="site-sidebar__social-icon"></a>
+        <a href="https://www.youtube.com/@KawaiiPowerBI" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><img src="../../../assets/images/logo-youtube.png" alt="YouTube" class="site-sidebar__social-icon"></a>
+        <a href="https://github.com/KawaiiBI" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><img src="../../../assets/images/logo-github.png" alt="GitHub" class="site-sidebar__social-icon"></a>
+      </div>
+      <div class="site-sidebar__logo-bottom"><img src="../../../assets/images/logo-kawaii.jpg" alt="Kawaii BI" class="site-sidebar__logo-img"></div>
+      <p class="site-sidebar__copyright">Power BI Guide 🌸<br>© 2026 Kawaii BI</p>
+    </div>
+  </aside>
+
+  <div class="page-wrapper">
+    <main class="main-content">
+      <div class="topic-page">
+
+        <nav class="breadcrumb" aria-label="Ruta de navegación">
+          <span class="breadcrumb__item"><a href="../../../index.html">🏠 Inicio</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item"><a href="../../certificaciones.html">Certificaciones</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item"><a href="../dp-700.html">DP-700</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item">Módulo 11</span>
+        </nav>
+
+        <header class="topic-header">
+          <span class="topic-header__eyebrow">DP-700 · MÓDULO 11</span>
+          <span class="topic-header__icon">🏛️</span>
+          <h1 class="topic-header__title">Empezar con data warehouses en Microsoft Fabric</h1>
+          <p class="topic-header__subtitle">El motor relacional T-SQL enterprise-grade de Fabric: modelado dimensional, Warehouse vs SQL analytics endpoint, COPY INTO, zero-copy clones, time travel, seguridad granular y monitoring. 🌸</p>
+          <div class="topic-header__levels">
+            <span class="badge badge--intermediate">Intermedio</span>
+            <span class="badge badge--advanced">Avanzado</span>
+          </div>
+        </header>
+
+        <nav class="toc" aria-label="Índice del módulo">
+          <p class="toc__title">📑 En este módulo:</p>
+          <ul class="toc__list">
+            <li><a href="#objetivos">1. Objetivos y encaje</a></li>
+            <li><a href="#que-es">2. ¿Qué es un data warehouse?</a></li>
+            <li><a href="#dimensional">3. Modelado dimensional</a></li>
+            <li><a href="#keys">4. Surrogate vs alternate keys</a></li>
+            <li><a href="#special-dims">5. Time dimensions y SCD</a></li>
+            <li><a href="#star-snowflake">6. Star vs Snowflake</a></li>
+            <li><a href="#fabric-dw">7. Fabric Data Warehouse</a></li>
+            <li><a href="#warehouse-vs-sqlep">8. Warehouse vs SQL endpoint</a></li>
+            <li><a href="#crear">9. Crear un warehouse</a></li>
+            <li><a href="#ingesta">10. Ingesta de datos</a></li>
+            <li><a href="#tablas">11. Crear tablas y cargar</a></li>
+            <li><a href="#staging">12. Staging tables</a></li>
+            <li><a href="#clones">13. Zero-copy clones</a></li>
+            <li><a href="#time-travel">14. Time travel</a></li>
+            <li><a href="#retention">15. Data retention</a></li>
+            <li><a href="#sql-editor">16. SQL query editor</a></li>
+            <li><a href="#visual-editor">17. Visual query editor</a></li>
+            <li><a href="#views-sp">18. Views y stored procedures</a></li>
+            <li><a href="#model">19. Modelar en el warehouse</a></li>
+            <li><a href="#relationships">20. Relationships</a></li>
+            <li><a href="#views-measures">21. Views y measures</a></li>
+            <li><a href="#semantic-model">22. Semantic model Direct Lake</a></li>
+            <li><a href="#seguridad">23. Roles y permisos</a></li>
+            <li><a href="#granular">24. OLS, RLS, CLS y DDM</a></li>
+            <li><a href="#cross-db">25. Cross-database querying</a></li>
+            <li><a href="#monitoring">26. Monitoring</a></li>
+            <li><a href="#transacciones">27. Transacciones</a></li>
+            <li><a href="#trampas">28. Trampas típicas</a></li>
+            <li><a href="#comparativas">29. Comparativas clave</a></li>
+            <li><a href="#fuentes">30. Fuentes oficiales</a></li>
+          </ul>
+        </nav>
+
+        <!-- ============ 1. OBJETIVOS ============ -->
+        <div class="category-header" id="objetivos">
+          <span class="category-header__icon">🎯</span>
+          <h2 class="category-header__title">1. Objetivos y encaje en el DP-700</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>¿Qué te enseña este módulo?</h3>
+          <p>Este módulo cubre el <strong>Fabric Data Warehouse</strong> — el motor relacional T-SQL enterprise-grade. Los objetivos oficiales:</p>
+          <ol>
+            <li>Describir conceptos de data warehouse y los fundamentos del modelado dimensional.</li>
+            <li>Crear tablas, cargar datos y entender los métodos de ingesta.</li>
+            <li>Consultar y transformar datos con T-SQL y el visual query editor.</li>
+            <li>Modelar los datos del warehouse para reporting y consumo downstream.</li>
+            <li>Asegurar y monitorizar un data warehouse.</li>
+          </ol>
+
+          <h4>Peso en el examen DP-700</h4>
+          <p>El Warehouse aparece principalmente en los dominios 1 y 2:</p>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Dominio</th><th>Cómo aparece</th></tr></thead>
+              <tbody>
+                <tr><td>Implement and manage (30-35%)</td><td><strong>Workspace roles, item permissions (Read/ReadData/ReadAll), RLS/CLS/OLS/DDM, T-SQL security</strong></td></tr>
+                <tr><td>Ingest and transform (30-35%)</td><td><strong>COPY INTO, transformaciones T-SQL, modelado dimensional, staging patterns</strong></td></tr>
+                <tr><td>Monitor and optimize (30-35%)</td><td><strong>Query insights, DMVs, warehouse performance, time travel, clones</strong></td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="note note--tip">
+            🎯 <strong>Qué es CRÍTICO dominar:</strong>
+            <ul>
+              <li><strong>Warehouse vs SQL analytics endpoint</strong> (pregunta clásica)</li>
+              <li><strong>Ingestion methods</strong>: COPY INTO y sus opciones</li>
+              <li><strong>Zero-copy clones</strong> (feature moderna, súper examinable)</li>
+              <li><strong>Time travel</strong> con <code>FOR TIMESTAMP AS OF</code></li>
+              <li><strong>Item permissions</strong>: Read, ReadData, ReadAll (distinción importante)</li>
+              <li><strong>RLS, CLS, DDM</strong> en T-SQL</li>
+              <li><strong>Cross-database queries</strong> con three-part naming</li>
+              <li><strong>Query insights</strong> para monitoring</li>
+            </ul>
+          </div>
+
+          <div class="note note--tip">
+            🌸 <strong>Buenas noticias si vienes de SQL Server:</strong> si ya sabes T-SQL, ya sabes el <strong>90% de este módulo</strong>. Fabric Warehouse tiene sintaxis muy familiar. Las diferencias son: gestión de infra automatizada, storage en Delta y algunas features nuevas (clones, time travel).
+          </div>
+        </article>
+
+        <!-- ============ 2. QUÉ ES UN DW ============ -->
+        <div class="category-header" id="que-es">
+          <span class="category-header__icon">🏛️</span>
+          <h2 class="category-header__title">2. ¿Qué es un data warehouse?</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>Definición</h3>
+          <p>Un <strong>data warehouse</strong> es un <strong>store centralizado y estructurado</strong> diseñado para <strong>queries analíticas y reporting</strong>.</p>
+          <p><strong>Diferencia crítica</strong> con las bases de datos operacionales:</p>
+          <ul>
+            <li><strong>OLTP</strong> (databases operacionales): manejan <strong>transacciones day-to-day</strong> del negocio.</li>
+            <li><strong>OLAP</strong> (data warehouses): consolidan data de múltiples sources en un formato <strong>optimizado para analytics</strong>.</li>
+          </ul>
+
+          <h4>Los 4 pasos de un DW moderno</h4>
+          <ol>
+            <li><strong>Data ingestion</strong> — mover data de sources al warehouse.</li>
+            <li><strong>Data storage</strong> — almacenar en formato optimizado para analytics.</li>
+            <li><strong>Data processing</strong> — transformar para consumo por analytical tools.</li>
+            <li><strong>Data analysis y delivery</strong> — analizar y entregar insights al negocio.</li>
+          </ol>
+
+          <h4>¿Cómo se diseñan?</h4>
+          <p>Los warehouses contienen tablas organizadas en un <strong>schema optimizado para multidimensional modeling</strong>.</p>
+          <p>La idea: agrupar <strong>numerical data related to events</strong> por diferentes <strong>attributes</strong>. Ejemplos: total amount de sales orders que ocurrieron en una fecha específica, ventas en una tienda concreta, o métricas por región o customer.</p>
+
+          <div class="note note--tip">
+            🌸 <strong>Analogía kawaii:</strong> piénsalo como una biblioteca ordenada. <strong>OLTP</strong> = ficheros de operaciones diarias (mesa de trabajo, apuntes rápidos). <strong>Warehouse</strong> = estanterías organizadas por tema, categoría y fecha (fácil buscar patrones históricos).
+          </div>
+        </article>
+
+        <!-- ============ 3. DIMENSIONAL ============ -->
+        <div class="category-header" id="dimensional">
+          <span class="category-header__icon">📊</span>
+          <h2 class="category-header__title">3. Dimensional modeling: fact + dimension tables</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>La técnica del modelado dimensional</h3>
+          <p>Organizamos las tablas en <strong>dos tipos fundamentales</strong>: <strong>fact tables</strong> (mediciones) y <strong>dimension tables</strong> (contexto).</p>
+
+          <h4>Fact tables</h4>
+          <p><strong>Contienen la numerical data</strong> que quieres analizar.</p>
+          <p><strong>Características</strong>:</p>
+          <ul>
+            <li>📊 Típicamente <strong>muchas rows</strong>.</li>
+            <li>🎯 <strong>Primary source</strong> para analysis.</li>
+            <li>📏 Contienen <strong>granular measurements</strong> de events.</li>
+            <li>🔑 Contienen <strong>foreign keys</strong> a dimension tables.</li>
+          </ul>
+          <p><strong>Ejemplos</strong>:</p>
+          <ul>
+            <li><code>FactSales</code>: cada row = una línea de venta con <code>sales_amount</code>, <code>quantity</code>.</li>
+            <li><code>FactStockPrices</code>: cada row = una lectura de precio con <code>open_price</code>, <code>close_price</code>.</li>
+            <li><code>FactWebEvents</code>: cada row = un pageview con <code>duration</code>, <code>bytes_transferred</code>.</li>
+          </ul>
+
+          <h4>Dimension tables</h4>
+          <p><strong>Contienen descriptive information</strong> sobre los datos en las fact tables.</p>
+          <p><strong>Características</strong>:</p>
+          <ul>
+            <li>📚 Típicamente <strong>pocas rows</strong> (comparadas con fact).</li>
+            <li>📝 Muchas <strong>columnas descriptivas</strong>.</li>
+            <li>🎨 Proveen <strong>contexto</strong>.</li>
+            <li>🔑 Contienen keys que se referencian desde facts.</li>
+          </ul>
+          <p><strong>Ejemplos</strong>:</p>
+          <ul>
+            <li><code>DimCustomer</code>: name, region, segment.</li>
+            <li><code>DimProduct</code>: category, brand, supplier.</li>
+            <li><code>DimDate</code>: year, quarter, month, day, day_of_week.</li>
+            <li><code>DimStore</code>: store_name, location, size.</li>
+          </ul>
+
+          <div class="note note--tip">
+            🌷 <strong>La analogía del libro de contabilidad:</strong> la <strong>fact table</strong> es el ledger con transactions numéricas (dinero, cantidades). Las <strong>dimension tables</strong> son los libros de referencia (clientes, productos) que te explican quién compró qué y cuándo.
+          </div>
+        </article>
+
+        <!-- ============ 4. KEYS ============ -->
+        <div class="category-header" id="keys">
+          <span class="category-header__icon">🔑</span>
+          <h2 class="category-header__title">4. Surrogate keys vs alternate keys</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>Dos tipos de keys</h3>
+          <p>Una dimension table típicamente incluye <strong>dos key columns</strong>:</p>
+          <p><strong>A) Surrogate key</strong></p>
+          <ul>
+            <li>Unique identifier <strong>específico del warehouse</strong>.</li>
+            <li>Suele ser un <strong>integer</strong> generado automáticamente por el DBMS.</li>
+            <li>No tiene business meaning.</li>
+          </ul>
+          <p><strong>B) Alternate key</strong> (también llamada natural key o business key)</p>
+          <ul>
+            <li>Identifica el <strong>entity en el source system</strong>.</li>
+            <li>Ejemplos: product code, customer ID, employee number.</li>
+            <li>Tiene business meaning.</li>
+          </ul>
+
+          <h4>¿Por qué necesitas ambas?</h4>
+          <p><strong>Sirven propósitos distintos.</strong></p>
+          <p><strong>Surrogate key</strong>:</p>
+          <ul>
+            <li>✅ <strong>Consistency y accuracy</strong> dentro del warehouse.</li>
+            <li>✅ <strong>Independiente del source system</strong> (si el source cambia, la surrogate no).</li>
+            <li>✅ <strong>Performance</strong>: los integer joins son más rápidos.</li>
+            <li>✅ <strong>Habilita SCD Type 2</strong> (necesitas surrogate para tracking versions).</li>
+          </ul>
+          <p><strong>Alternate key</strong>:</p>
+          <ul>
+            <li>✅ <strong>Traceability</strong> entre warehouse y source.</li>
+            <li>✅ <strong>Debugging</strong>: puedes hacer lookup del source si algo va raro.</li>
+            <li>✅ <strong>Business queries</strong>: los users saben product codes, no surrogate keys.</li>
+          </ul>
+
+          <h4>Ejemplo</h4>
+          <pre><code class="language-sql">CREATE TABLE dbo.DimCustomer (
+    CustomerKey INT NOT NULL,           -- Surrogate key (warehouse-generated)
+    CustomerAltKey NVARCHAR(10) NOT NULL, -- Alternate key (from source)
+    CustomerName NVARCHAR(100) NOT NULL,
+    Region NVARCHAR(50) NULL
+);</code></pre>
+          <ul>
+            <li><code>CustomerKey</code> = surrogate (ej: 1, 2, 3...).</li>
+            <li><code>CustomerAltKey</code> = alternate (ej: "CUST-00123" desde el CRM).</li>
+          </ul>
+
+          <h4>La fact table usa la surrogate</h4>
+          <pre><code class="language-sql">CREATE TABLE dbo.FactSales (
+    SalesKey INT NOT NULL,
+    CustomerKey INT NOT NULL,   -- FK a DimCustomer.CustomerKey (surrogate)
+    ProductKey INT NOT NULL,     -- FK a DimProduct.ProductKey (surrogate)
+    DateKey INT NOT NULL,        -- FK a DimDate.DateKey
+    SalesAmount DECIMAL(10,2) NOT NULL,
+    Quantity INT NOT NULL
+);</code></pre>
+          <p>Joins más rápidos (integer keys) e <strong>independientes</strong> del source.</p>
+        </article>
+
+        <!-- ============ 5. SPECIAL DIMS ============ -->
+        <div class="category-header" id="special-dims">
+          <span class="category-header__icon">📐</span>
+          <h2 class="category-header__title">5. Special dimensions: time y SCD</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>Time dimensions</h3>
+          <p>Las <strong>time dimensions</strong> proveen información sobre el <strong>time period</strong> en que ocurrió un event. Permiten a los analistas <strong>agregar data over temporal intervals</strong>.</p>
+          <p><strong>Ejemplo</strong>: <code>DimDate</code> con columnas <code>DateKey</code> (ej: 20260315 formato yyyymmdd), <code>Date</code>, <code>Year</code>, <code>Quarter</code>, <code>Month</code>, <code>MonthName</code>, <code>Day</code>, <code>DayOfWeek</code>, <code>IsWeekend</code>, <code>FiscalYear</code> y <code>FiscalQuarter</code>.</p>
+
+          <h4>Por qué son especiales</h4>
+          <ul>
+            <li><strong>Reutilizables</strong>: una <code>DimDate</code> sirve para múltiples facts.</li>
+            <li><strong>Hierarchies naturales</strong>: Year → Quarter → Month → Day.</li>
+            <li><strong>Pre-populated</strong>: se rellena con todas las fechas del rango.</li>
+            <li><strong>Business calendars</strong>: fiscal years, holidays, working days.</li>
+          </ul>
+
+          <h4>Slowly Changing Dimensions (SCD)</h4>
+          <p>Ya las vimos en el Módulo 4. Recordatorio: <strong>SCD</strong> = tracking de <strong>changes to dimension attributes over time</strong>. Ejemplos: un customer cambia de dirección, un product cambia de precio, una store cierra y reabre.</p>
+
+          <h4>Por qué importan en el warehouse</h4>
+          <p>Permiten <strong>analizar y entender los cambios de los datos a lo largo del tiempo</strong>: comparar sales de un customer <strong>cuando estaba en su region antigua vs la nueva</strong>, y hacer analytics históricos que respetan <strong>el estado del dato en el momento</strong>.</p>
+
+          <h4>Los 3 tipos principales (repaso)</h4>
+          <ul>
+            <li><strong>SCD Type 1</strong>: sobrescribir (sin historia).</li>
+            <li><strong>SCD Type 2</strong>: versionado con <code>Valid_From</code>, <code>Valid_To</code>, <code>Is_Current</code>.</li>
+            <li><strong>SCD Type 3</strong>: mantener <code>previous_value</code> en columna separada.</li>
+          </ul>
+        </article>
+
+        <!-- ============ 6. STAR VS SNOWFLAKE ============ -->
+        <div class="category-header" id="star-snowflake">
+          <span class="category-header__icon">⭐</span>
+          <h2 class="category-header__title">6. Star schema vs Snowflake schema</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>La denormalización en warehouse</h3>
+          <p>En la mayoría de <strong>transactional databases</strong> operacionales, la data está <strong>normalizada</strong> para reducir duplication.</p>
+          <p>En un <strong>data warehouse</strong>, la dimension data está <strong>DENORMALIZADA</strong> para <strong>reducir el número de joins</strong> requeridos por las queries. Esto es una <strong>decisión intencional</strong> para performance analytics.</p>
+
+          <h4>Star schema</h4>
+          <p><strong>Star schema</strong> = fact table conectada <strong>directamente</strong> a dimension tables:</p>
+          <pre><code class="language-plaintext">       DimCustomer
+            |
+DimDate --- FactSales --- DimProduct
+            |
+       DimStore</code></pre>
+          <p><strong>Características</strong>:</p>
+          <ul>
+            <li>✅ <strong>Menos joins</strong> para queries.</li>
+            <li>✅ <strong>Más rápido</strong> para analytics.</li>
+            <li>✅ <strong>Más fácil de entender</strong> para analistas.</li>
+            <li>✅ <strong>Estándar para Power BI</strong>.</li>
+          </ul>
+
+          <h4>Snowflake schema</h4>
+          <p><strong>Snowflake schema</strong> = dimensions <strong>normalizadas</strong> en múltiples tablas:</p>
+          <pre><code class="language-plaintext">       DimCustomer --- DimGeography
+            |
+DimDate --- FactSales --- DimProduct --- DimCategory
+            |                          |
+       DimStore --- DimGeography    DimSupplier</code></pre>
+          <p>En vez de todo el detalle en <code>DimProduct</code>, se separa en <code>DimCategory</code> y <code>DimSupplier</code>.</p>
+          <p><strong>Características</strong>:</p>
+          <ul>
+            <li>✅ Menos <strong>data duplication</strong> en storage.</li>
+            <li>⚠️ <strong>Más joins</strong> para queries → más lento.</li>
+            <li>⚠️ <strong>Más complejo</strong> para analistas.</li>
+          </ul>
+
+          <h4>Cuándo cada uno</h4>
+          <p><strong>Star schema</strong> ✅ (mayoría de casos): cuando la performance analítica es prioridad, los analistas consumen directamente, hay reports de Power BI, o es un data warehouse tradicional.</p>
+          <p><strong>Snowflake schema</strong> (casos específicos): cuando el storage cost es prioridad <strong>muy alta</strong>, las dimensions tienen <strong>muchos niveles/attributes</strong>, o la data se actualiza frecuentemente en dimensions.</p>
+
+          <div class="note note--practice">
+            📌 <strong>🎯 Recomendación oficial:</strong> Microsoft recomienda <strong>star schema</strong> para Fabric. Es lo estándar y funciona mejor con Direct Lake semantic models, Copilot para Data Warehouse y Fabric IQ data agents.
+          </div>
+        </article>
+
+        <!-- ============ 7. FABRIC DW ============ -->
+        <div class="category-header" id="fabric-dw">
+          <span class="category-header__icon">🏛️</span>
+          <h2 class="category-header__title">7. Fabric Data Warehouse: características clave</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>Definición</h3>
+          <p>Un <strong>Fabric data warehouse</strong> es un <strong>fully managed, enterprise-scale relational database</strong> construido sobre OneLake.</p>
+          <p>Provee <strong>full transactional T-SQL capabilities</strong>:</p>
+          <ul>
+            <li><strong>DDL statements</strong>: CREATE, ALTER, DROP.</li>
+            <li><strong>DML statements</strong>: INSERT, UPDATE, DELETE, MERGE.</li>
+            <li><strong>Full ACID compliance</strong> para data consistency.</li>
+          </ul>
+
+          <h4>Storage en OneLake</h4>
+          <p>La data se almacena en <strong>open Delta format</strong> en OneLake:</p>
+          <ul>
+            <li>✅ Otros Fabric workloads pueden <strong>acceder a la misma data sin duplication</strong>.</li>
+            <li>✅ <strong>Cross-workload interoperability</strong>.</li>
+            <li>✅ <strong>No lock-in</strong> del formato.</li>
+          </ul>
+
+          <h4>Interfaces</h4>
+          <p>Usas <strong>T-SQL</strong> para crear tablas, cargar data, construir views y stored procedures y hacer transformaciones. Todo con la <strong>experiencia familiar de SQL Server</strong>.</p>
+
+          <h4>Key capabilities</h4>
+          <p><strong>A) Full T-SQL support</strong>: DDL y DML statements, <strong>MERGE para upsert scenarios</strong>, sintaxis familiar de SQL Server.</p>
+          <p><strong>B) Fully managed</strong>: <strong>NO hay infraestructura</strong> que configurar. El compute <strong>escala automáticamente</strong> e <strong>independientemente del storage</strong>.</p>
+          <p><strong>C) OneLake integration</strong>: data en Delta format, accesible por otros Fabric workloads sin duplication.</p>
+          <p><strong>D) Cross-database querying</strong>: query across warehouses y lakehouses <strong>sin copiar data</strong>, con <strong>three-part naming</strong> (database.schema.table) para joins cross-source.</p>
+          <p><strong>E) Familiar tooling</strong>: conecta con <strong>SQL Server Management Studio (SSMS)</strong>, <strong>Azure Data Studio</strong>, <strong>VS Code con la extensión MSSQL</strong> o cualquier SQL client vía <strong>TDS connections</strong>.</p>
+          <p><strong>F) Copilot assistance</strong>: <strong>Copilot for Data Warehouse</strong> genera SQL desde natural language, completa código mientras escribes y explica o arregla queries existentes en el SQL editor.</p>
+        </article>
+
+        <!-- ============ 8. WAREHOUSE VS SQL EP ============ -->
+        <div class="category-header" id="warehouse-vs-sqlep">
+          <span class="category-header__icon">🎯</span>
+          <h2 class="category-header__title">8. Warehouse vs SQL analytics endpoint (CRÍTICO)</h2>
+        </div>
+
+        <article class="concept-card">
+          <p><strong>Este es probablemente el tema MÁS examinable</strong> del módulo. Lo tienes que dominar completamente.</p>
+
+          <h4>Los dos items SQL en Fabric</h4>
+          <p><strong>A) Warehouse</strong></p>
+          <ul>
+            <li>Item <strong>standalone</strong>.</li>
+            <li><strong>Native warehouse tables</strong> (creadas por ti con CREATE TABLE).</li>
+            <li><strong>Full read/write</strong>.</li>
+          </ul>
+          <p><strong>B) SQL analytics endpoint</strong></p>
+          <ul>
+            <li>Endpoint <strong>auto-generado</strong> de un Lakehouse.</li>
+            <li>Consulta <strong>Lakehouse Delta tables</strong>.</li>
+            <li><strong>Read-only</strong>.</li>
+          </ul>
+
+          <h4>Tabla comparativa oficial</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Capability</th><th>Warehouse</th><th>SQL analytics endpoint</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Read data</strong></td><td>✅ Sí</td><td>✅ Sí</td></tr>
+                <tr><td><strong>Write data</strong> (INSERT, UPDATE, DELETE, MERGE)</td><td>✅ Sí</td><td>❌ No</td></tr>
+                <tr><td><strong>Create tables</strong> (DDL)</td><td>✅ Sí</td><td>❌ No</td></tr>
+                <tr><td><strong>Create views y stored procedures</strong></td><td>✅ Sí</td><td>✅ Sí</td></tr>
+                <tr><td><strong>Data source</strong></td><td>Native warehouse tables</td><td>Lakehouse Delta tables</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h4>🎯 Cuándo usar cada uno</h4>
+          <p><strong>Warehouse</strong> ✅ cuando necesitas <strong>full read/write</strong> T-SQL, quieres INSERT/UPDATE/DELETE/MERGE, necesitas crear tablas vía CREATE TABLE, el equipo es T-SQL first, o haces BI empresarial tradicional.</p>
+          <p><strong>SQL analytics endpoint</strong> ✅ cuando necesitas <strong>read-only</strong> SQL access a data de Lakehouse, ya tienes data en Lakehouse (poblada por Spark, dataflows, etc.), solo quieres queries y views sobre esa data, y no necesitas modificar datos.</p>
+
+          <div class="note note--warning">
+            🎯 <strong>Diferencia CRÍTICA que cae en el examen:</strong> puedes crear <strong>views y stored procedures en AMBOS</strong>. Pero <strong>solo puedes crear tablas en el Warehouse</strong>. Y <strong>solo puedes modificar data en el Warehouse</strong>. Esta distinción cae constantemente.
+          </div>
+          <p>Los dos usan <strong>T-SQL syntax</strong>. La sintaxis es igual; lo que cambia es <strong>qué operaciones permite</strong>.</p>
+        </article>
+
+        <!-- ============ 9. CREAR ============ -->
+        <div class="category-header" id="crear">
+          <span class="category-header__icon">🛠️</span>
+          <h2 class="category-header__title">9. Crear un warehouse</h2>
+        </div>
+
+        <article class="concept-card">
+          <h4>Dos formas</h4>
+          <ul>
+            <li><strong>A) Desde el create hub</strong>: New → Warehouse. Provee nombre.</li>
+            <li><strong>B) Desde un workspace</strong>: New item → Warehouse.</li>
+          </ul>
+
+          <h4>Después de crear</h4>
+          <p>El warehouse <strong>empieza vacío</strong>. Puedes añadir tablas, views, stored procedures y otros objects. Todo desde el <strong>SQL query editor</strong> en el Fabric portal.</p>
+
+          <h4>Auto-created objects</h4>
+          <p>Cuando creas un warehouse, se crea automáticamente un default schema <code>dbo</code>, y hay sample data disponible <strong>opcionalmente</strong> (Sample warehouse).</p>
+
+          <h4>Elementos del interface</h4>
+          <ul>
+            <li><strong>SQL query editor</strong>: para T-SQL.</li>
+            <li><strong>Visual query editor</strong>: no-code drag and drop.</li>
+            <li><strong>Model view</strong>: para relationships y modeling.</li>
+            <li><strong>Explorer</strong>: navegar tables y objects.</li>
+          </ul>
+        </article>
+
+        <!-- ============ 10. INGESTA ============ -->
+        <div class="category-header" id="ingesta">
+          <span class="category-header__icon">📥</span>
+          <h2 class="category-header__title">10. Ingesta: COPY INTO, OPENROWSET, Pipelines, Dataflows</h2>
+        </div>
+
+        <article class="concept-card">
+          <p>Hay <strong>varias formas de cargar data</strong>: <strong>COPY INTO</strong> ⭐, <strong>OPENROWSET</strong>, <strong>Pipelines y Dataflows</strong> y <strong>cross-database queries</strong> (para no duplicar). Vamos uno por uno.</p>
+
+          <h3>COPY INTO (el más común)</h3>
+          <p><strong>Bulk load</strong> de external files (CSV, Parquet) en Azure storage a warehouse tables.</p>
+          <pre><code class="language-sql">COPY INTO dbo.Region
+FROM 'https://mystorageaccount.blob.core.windows.net/data/Region.csv'
+WITH (
+    FILE_TYPE = 'CSV',
+    CREDENTIAL = (
+        IDENTITY = 'Shared Access Signature',
+        SECRET = 'xxx'
+    ),
+    FIRSTROW = 2
+)
+GO</code></pre>
+          <p><strong>Options importantes</strong>:</p>
+          <ul>
+            <li><code>FILE_TYPE</code>: CSV, PARQUET.</li>
+            <li><code>CREDENTIAL</code>: SAS, managed identity, service principal.</li>
+            <li><code>FIRSTROW</code>: skip header row.</li>
+            <li><code>FIELDTERMINATOR</code>, <code>ROWTERMINATOR</code>: para CSVs custom.</li>
+            <li><code>PARSER_VERSION</code>: '1.0' o '2.0' (recomendado 2.0).</li>
+          </ul>
+
+          <h3>OPENROWSET</h3>
+          <p>Consulta ficheros <strong>directamente desde external storage o OneLake locations</strong> para <strong>ad hoc analysis o ingestion</strong>, <strong>sin crear tablas primero</strong>.</p>
+          <p><strong>Uso típico</strong>: exploración rápida antes de decidir schema.</p>
+
+          <h3>Pipelines y Dataflows</h3>
+          <p>Ya los vimos en los Módulos 5 y 6. Recordatorio: <strong>Data Factory pipelines</strong> para orchestrated data movement y <strong>Dataflows Gen2</strong> para transformation low-code. Ambos pueden tener <strong>Warehouse como destination</strong>.</p>
+
+          <h3>Cross-database queries</h3>
+          <p>Si ya tienes tablas en Lakehouse y quieres consultarlas desde el Warehouse <strong>sin copiar</strong>, usa cross-database queries con <strong>three-part naming</strong>:</p>
+          <pre><code class="language-sql">SELECT *
+FROM [MyLakehouse].[dbo].[sales_table]</code></pre>
+          <p>Sin copiar data. Vemos esto a fondo en la sección específica.</p>
+
+          <h4>🎯 Cuándo cada método</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Caso</th><th>Método</th></tr></thead>
+              <tbody>
+                <tr><td>Bulk load de CSV/Parquet en storage</td><td><strong>COPY INTO</strong></td></tr>
+                <tr><td>Ad-hoc query de fichero externo</td><td><strong>OPENROWSET</strong></td></tr>
+                <tr><td>Orquestación multi-step con dependencias</td><td><strong>Pipeline</strong></td></tr>
+                <tr><td>Transformation low-code Power Query</td><td><strong>Dataflow Gen2</strong></td></tr>
+                <tr><td>Query cross-item sin copiar</td><td><strong>Cross-database queries</strong></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </article>
+
+        <!-- ============ 11. TABLAS ============ -->
+        <div class="category-header" id="tablas">
+          <span class="category-header__icon">🏗️</span>
+          <h2 class="category-header__title">11. Crear tablas y cargar data</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>CREATE TABLE</h3>
+          <p>Usa T-SQL <code>CREATE TABLE</code> con columnas apropiadas para analytics workloads:</p>
+          <pre><code class="language-sql">CREATE TABLE dbo.DimCustomer (
+    CustomerKey INT NOT NULL,
+    CustomerAltKey NVARCHAR(10) NOT NULL,
+    CustomerName NVARCHAR(100) NOT NULL,
+    Region NVARCHAR(50) NULL
+);
+GO
+
+CREATE TABLE dbo.FactSales (
+    SalesKey INT NOT NULL,
+    CustomerKey INT NOT NULL,
+    ProductKey INT NOT NULL,
+    DateKey INT NOT NULL,
+    SalesAmount DECIMAL(10,2) NOT NULL,
+    Quantity INT NOT NULL
+);
+GO</code></pre>
+
+          <h4>Data types recomendados</h4>
+          <p>Elige types que <strong>balanceen precisión con storage efficiency</strong>:</p>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Type</th><th>Uso</th></tr></thead>
+              <tbody>
+                <tr><td><code>INT</code></td><td>Key columns (surrogate, alternate integer)</td></tr>
+                <tr><td><code>BIGINT</code></td><td>Keys con muchos valores</td></tr>
+                <tr><td><code>NVARCHAR(n)</code></td><td>Text con special characters (Unicode)</td></tr>
+                <tr><td><code>VARCHAR(n)</code></td><td>Text ASCII simple (menos storage)</td></tr>
+                <tr><td><code>DECIMAL(p,s)</code></td><td>Financial values (precisión exacta)</td></tr>
+                <tr><td><code>FLOAT</code> / <code>REAL</code></td><td>Scientific values (aproximado)</td></tr>
+                <tr><td><code>DATE</code></td><td>Solo fecha</td></tr>
+                <tr><td><code>DATETIME2</code></td><td>Fecha + hora con precisión</td></tr>
+                <tr><td><code>BIT</code></td><td>Booleanos (0/1)</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="note note--warning">
+            ⚠️ <strong>Limitations importantes:</strong> Fabric Warehouse <strong>NO soporta todos los data types de SQL Server</strong>. Faltan: <code>NTEXT</code>, <code>TEXT</code> (deprecated), <code>IMAGE</code>, <code>SQL_VARIANT</code>, <code>GEOGRAPHY</code>, <code>GEOMETRY</code>, <code>XML</code>, <code>HIERARCHYID</code>, <code>MONEY</code> y <code>SMALLMONEY</code> (usa DECIMAL).
+          </div>
+
+          <h4>Constraints</h4>
+          <p>Fabric Warehouse soporta:</p>
+          <ul>
+            <li>✅ <code>NOT NULL</code> / <code>NULL</code>.</li>
+            <li>✅ <code>PRIMARY KEY NONCLUSTERED NOT ENFORCED</code> (informational only).</li>
+            <li>✅ <code>UNIQUE NOT ENFORCED</code>.</li>
+            <li>✅ <code>FOREIGN KEY NOT ENFORCED</code>.</li>
+          </ul>
+          <p>⚠️ <strong>NOT ENFORCED</strong>: Fabric NO enforcea constraints. Los mantiene como <strong>metadata para el optimizer</strong>, pero tú eres responsable de mantener la data integrity.</p>
+        </article>
+
+        <!-- ============ 12. STAGING ============ -->
+        <div class="category-header" id="staging">
+          <span class="category-header__icon">🎨</span>
+          <h2 class="category-header__title">12. Staging tables pattern</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>El pattern</h3>
+          <p>Un <strong>pattern común en data warehousing</strong>: <strong>aterrizar raw data en staging tables</strong> antes de transformar y cargar en las dimension y fact tables finales.</p>
+          <p>Las staging tables <strong>replican la estructura del source data</strong> y actúan como un <strong>temporary holding area</strong>.</p>
+
+          <h4>Beneficios</h4>
+          <ul>
+            <li>✅ <strong>Aislar el source data</strong> del modelo final.</li>
+            <li>✅ <strong>Aplicar business rules durante el load</strong> (no en query).</li>
+            <li>✅ <strong>Key lookups</strong> entre source keys y surrogate keys.</li>
+            <li>✅ <strong>Data validation</strong> antes de commit a la tabla final.</li>
+            <li>✅ <strong>Retry logic</strong>: si algo falla, el source data queda intacto en staging.</li>
+            <li>✅ <strong>Auditability</strong>: histórico de qué data se cargó cuándo.</li>
+          </ul>
+
+          <h4>Ejemplo típico</h4>
+          <pre><code class="language-sql">-- 1. Load raw data en staging con COPY INTO o pipeline
+COPY INTO dbo.StgSales FROM '...';
+
+-- 2. Transform + insert en fact table con key lookups
+INSERT INTO dbo.FactSales (SalesKey, CustomerKey, ProductKey, DateKey, SalesAmount, Quantity)
+SELECT
+    s.OrderID,
+    c.CustomerKey,    -- Lookup surrogate desde alternate
+    p.ProductKey,     -- Lookup surrogate desde alternate
+    d.DateKey,
+    s.Amount,
+    s.Qty
+FROM dbo.StgSales AS s
+INNER JOIN dbo.DimCustomer AS c ON s.CustomerID = c.CustomerAltKey
+INNER JOIN dbo.DimProduct AS p ON s.ProductID = p.ProductAltKey
+INNER JOIN dbo.DimDate AS d ON s.OrderDate = d.DateValue;
+GO</code></pre>
+
+          <h4>Conventional naming</h4>
+          <p>Prefixes comunes:</p>
+          <ul>
+            <li><strong><code>Stg</code></strong> o <strong><code>Staging</code></strong>: staging tables (<code>StgSales</code>, <code>StagingCustomer</code>).</li>
+            <li><strong><code>Dim</code></strong>: dimensions.</li>
+            <li><strong><code>Fact</code></strong>: facts.</li>
+            <li><strong><code>Bridge</code></strong> o <strong><code>Br</code></strong>: bridge/mapping tables.</li>
+            <li><strong><code>Aggr</code></strong> o <strong><code>Agg</code></strong>: aggregated summary tables.</li>
+          </ul>
+        </article>
+
+        <!-- ============ 13. CLONES ============ -->
+        <div class="category-header" id="clones">
+          <span class="category-header__icon">🎨</span>
+          <h2 class="category-header__title">13. Zero-copy table clones (feature moderna)</h2>
+        </div>
+
+        <article class="concept-card">
+          <p><strong>Este es un tema estrella del módulo</strong>. Muy examinable.</p>
+
+          <h3>¿Qué es?</h3>
+          <p><strong>Fabric ofrece near-instantaneous zero-copy clones</strong> con <strong>minimal storage costs</strong>.</p>
+          <p>Un <strong>zero-copy clone</strong> crea una réplica de la tabla <strong>copiando solo la metadata</strong>, mientras <strong>sigue referenciando los mismos data files</strong> en OneLake.</p>
+          <ul>
+            <li>✅ <strong>Metadata copiada</strong>.</li>
+            <li>❌ <strong>Underlying data NO copiada</strong> (referenciada).</li>
+            <li>⚡ Creación <strong>near-instant</strong>.</li>
+            <li>💾 <strong>Minimal storage cost</strong>.</li>
+          </ul>
+
+          <h4>Sintaxis</h4>
+          <pre><code class="language-sql">-- Clone en el mismo schema
+CREATE TABLE dbo.Employee AS CLONE OF dbo.EmployeeUSA;
+
+-- Clone cross-schema
+CREATE TABLE dev.Employee AS CLONE OF prod.EmployeeUSA;
+
+-- Clone as-of past point-in-time
+CREATE TABLE dbo.Employee_Yesterday
+AS CLONE OF dbo.Employee
+AT (TIMESTAMP AS OF '2026-04-14T10:00:00');</code></pre>
+
+          <h4>Casos de uso</h4>
+          <ol>
+            <li><strong>Development y testing</strong>: crear clones para playground sin duplicar data.</li>
+            <li><strong>Data recovery</strong>: recuperar tras un failed release o data corruption.</li>
+            <li><strong>Historical reporting</strong>: preservar data en puntos concretos del tiempo.</li>
+            <li><strong>Business milestones</strong>: snapshot en momentos clave.</li>
+            <li><strong>A/B testing</strong>: comparar 2 versiones sin coste de duplicación.</li>
+          </ol>
+
+          <h4>Independencia post-clone</h4>
+          <p><strong>Después de crear</strong>, el clone es <strong>independiente y separado</strong>:</p>
+          <ul>
+            <li>Los cambios en el source <strong>NO afectan</strong> al clone.</li>
+            <li>Los cambios en el clone <strong>NO afectan</strong> al source.</li>
+            <li>Puedes <strong>dropear cualquiera</strong> sin afectar al otro.</li>
+          </ul>
+
+          <div class="note note--tip">
+            🎯 <strong>Copia security features (muy importante):</strong> los clones <strong>también copian</strong> Row-Level Security (RLS), Column-Level Security (CLS) y Dynamic Data Masking (DDM). Sin necesidad de re-aplicar policies después del clone.
+          </div>
+
+          <h4>Time travel + clones</h4>
+          <p>Puedes crear clones <strong>as-of un past point-in-time</strong> dentro del retention period. Es una capability muy poderosa.</p>
+
+          <h4>Multiple tables at once</h4>
+          <p>Puedes <strong>clonar múltiples tablas a la vez</strong> con un solo comando, útil para clonar sets de tablas relacionadas <strong>al mismo past point-in-time</strong>.</p>
+
+          <h4>Sin límite en clones</h4>
+          <p><strong>No hay límite</strong> en el número de clones que puedes crear (dentro y entre schemas).</p>
+
+          <h4>Storage cost</h4>
+          <p>Como no copian data, el <strong>storage cost es mínimo</strong>: solo cuenta el <strong>metadata overhead</strong> (pequeño) y los data files están <strong>compartidos</strong> con el source. Cuando <strong>modificas</strong> el clone, se <strong>generan nuevos files</strong> solo para las modificaciones (Delta lo maneja transparentemente).</p>
+        </article>
+
+        <!-- ============ 14. TIME TRAVEL ============ -->
+        <div class="category-header" id="time-travel">
+          <span class="category-header__icon">⏰</span>
+          <h2 class="category-header__title">14. Time travel con FOR TIMESTAMP AS OF</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>¿Qué es time travel?</h3>
+          <p><strong>Time travel</strong> en el data warehouse = capability <strong>low-cost y eficiente</strong> para <strong>consultar rápidamente versiones anteriores de la data</strong>.</p>
+          <p>Fabric permite recuperar past states de dos formas:</p>
+          <ol>
+            <li><strong>A nivel de statement</strong> con <code>FOR TIMESTAMP AS OF</code>.</li>
+            <li><strong>A nivel de tabla</strong> con <code>CLONE TABLE</code>.</li>
+          </ol>
+
+          <h4>Sintaxis básica</h4>
+          <pre><code class="language-sql">SELECT *
+FROM [dbo].[dimension_customer] AS DC
+OPTION (FOR TIMESTAMP AS OF '2026-03-13T19:39:35.28');
+-- March 13, 2026 at 7:39:35.28 PM UTC</code></pre>
+          <p>Devuelve la data <strong>exactamente como existía</strong> en ese timestamp.</p>
+
+          <h4>Format del timestamp</h4>
+          <p>Format: <code>YYYY-MM-DDTHH:MM:SS[.fff]</code>. <strong>Solo UTC</strong> — no otras timezones.</p>
+          <p>Puedes usar <code>CONVERT</code> con <strong>style 126</strong> para obtener el datetime format necesario:</p>
+          <pre><code class="language-sql">SELECT CONVERT(DATETIME2, '2026-03-13T19:39:35', 126);</code></pre>
+
+          <h4>Reglas y limitaciones</h4>
+          <p><strong>Los resultados son inherentemente read-only</strong>: ❌ NO puedes hacer INSERT, UPDATE ni DELETE con el time travel query hint.</p>
+          <p><strong><code>FOR TIMESTAMP AS OF</code> afecta al statement ENTERO</strong>: incluye <strong>todas las warehouse tables del join</strong>. Todas ven data del mismo point-in-time.</p>
+          <p><strong>Puedes usarla en</strong>:</p>
+          <ul>
+            <li>✅ SELECT statements.</li>
+            <li>✅ Views (consultando views existentes, no creando views con time travel).</li>
+            <li>✅ Stored procedures.</li>
+          </ul>
+          <p><strong>NO puedes</strong>:</p>
+          <ul>
+            <li>❌ Usar time travel para <strong>crear views</strong> as-of past point-in-time.</li>
+            <li>❌ Usarla más de <strong>una vez dentro de un SELECT statement</strong>.</li>
+            <li>❌ Afecta a <strong>session-scoped temp tables</strong> (<code>#temp_table</code>).</li>
+          </ul>
+
+          <h4>7 casos de uso oficiales</h4>
+          <ol>
+            <li><strong>Stable reporting</strong>: reports basados en query results as-of la tarde anterior, mientras el ETL corre en background.</li>
+            <li><strong>Historical trend analysis</strong>: comparar data en past time frames.</li>
+            <li><strong>Analysis y comparison</strong>: identificar root cause con perspectiva histórica.</li>
+            <li><strong>Performance analysis</strong>: identificar trends de degradación.</li>
+            <li><strong>Audit y compliance</strong>: navegar el histórico para regulaciones de compliance.</li>
+            <li><strong>Reproducir ML models</strong>: replicar exactamente los datasets usados para entrenar.</li>
+            <li><strong>Cross-warehouse time travel</strong>: consultar tablas as-of un punto concreto across múltiples warehouses del mismo workspace.</li>
+          </ol>
+
+          <h4>Data retention</h4>
+          <p><strong>Todos los inserts, updates y deletes</strong> al warehouse <strong>se retienen dentro del retention period configurado</strong>. Esto habilita las time travel queries y los clones as-of past. Ver la siguiente sección.</p>
+        </article>
+
+        <!-- ============ 15. RETENTION ============ -->
+        <div class="category-header" id="retention">
+          <span class="category-header__icon">⏳</span>
+          <h2 class="category-header__title">15. Data retention</h2>
+        </div>
+
+        <article class="concept-card">
+          <h4>Default y configurable</h4>
+          <p><strong>Default</strong>: data history <strong>retenida durante 30 días calendario</strong>. <strong>Configurable</strong>: desde <strong>1 hasta 120 días</strong>.</p>
+
+          <h4>Impacto en features</h4>
+          <p>El retention period impacta a:</p>
+          <ul>
+            <li><strong>Time travel</strong>: solo puedes ir atrás dentro del retention.</li>
+            <li><strong>Clones as-of past</strong>: mismo límite.</li>
+            <li><strong>Recovery</strong>: solo posible dentro del retention.</li>
+          </ul>
+
+          <h4>Cómo configurar</h4>
+          <p>Se configura a nivel warehouse. Ver docs oficiales para la sintaxis exacta (varía).</p>
+          <p><strong>Consideraciones</strong>: mayor retention = más storage cost; menor retention = menos capabilities de time travel; y el compliance puede requerir un retention mínimo.</p>
+
+          <div class="note note--warning">
+            ⚠️ <strong>Ojo cosita:</strong> el retention NO reemplaza una backup strategy. El retention es para <strong>rollback rápido</strong> y time travel. Un backup completo (horizontes más largos) requiere estrategia separada.
+          </div>
+        </article>
+
+        <!-- ============ 16. SQL EDITOR ============ -->
+        <div class="category-header" id="sql-editor">
+          <span class="category-header__icon">💻</span>
+          <h2 class="category-header__title">16. Query con SQL query editor</h2>
+        </div>
+
+        <article class="concept-card">
+          <h4>La interfaz</h4>
+          <p>El <strong>SQL query editor</strong> provee una experiencia que incluye IntelliSense, code completion, syntax highlighting, client-side parsing y validation. <strong>Muy familiar</strong> para quienes vienen de SSMS o Azure Data Studio.</p>
+
+          <h4>Cómo crear una query</h4>
+          <p>Menu → <strong>New SQL query</strong>. O el botón en el ribbon.</p>
+
+          <h4>Copilot for Data Warehouse</h4>
+          <p>Disponible en el editor. Ayuda a <strong>generar queries</strong> desde natural language, <strong>completar código</strong> mientras escribes, <strong>explicar</strong> queries existentes y <strong>arreglar</strong> queries que fallan.</p>
+
+          <h4>Ejemplo natural language</h4>
+          <p>Usuario: <em>"Show me total sales by customer region for last month"</em></p>
+          <p>Copilot genera:</p>
+          <pre><code class="language-sql">SELECT
+    c.Region,
+    SUM(f.SalesAmount) AS TotalSales
+FROM dbo.FactSales AS f
+INNER JOIN dbo.DimCustomer AS c ON f.CustomerKey = c.CustomerKey
+INNER JOIN dbo.DimDate AS d ON f.DateKey = d.DateKey
+WHERE d.Date &gt;= DATEADD(MONTH, -1, GETDATE())
+GROUP BY c.Region;</code></pre>
+        </article>
+
+        <!-- ============ 17. VISUAL EDITOR ============ -->
+        <div class="category-header" id="visual-editor">
+          <span class="category-header__icon">🎨</span>
+          <h2 class="category-header__title">17. Query con Visual query editor</h2>
+        </div>
+
+        <article class="concept-card">
+          <h4>La interfaz</h4>
+          <p><strong>Visual query editor</strong> = experiencia similar al <strong>Power Query online diagram view</strong>. Para usuarios que prefieren <strong>no-code drag and drop</strong> sobre escribir T-SQL.</p>
+
+          <h4>Cómo usarlo</h4>
+          <ol>
+            <li><strong>New visual query</strong>.</li>
+            <li><strong>Arrastrar una tabla</strong> al canvas.</li>
+            <li>Usar el menú <strong>Transform</strong> o el botón <strong>(+)</strong> en el visual para añadir columnas, filtrar, agregar, hacer join, group by, etc.</li>
+          </ol>
+
+          <h4>Cuándo cada uno</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Situación</th><th>Editor</th></tr></thead>
+              <tbody>
+                <tr><td>T-SQL developer</td><td><strong>SQL query editor</strong></td></tr>
+                <tr><td>Analista low-code</td><td><strong>Visual query editor</strong></td></tr>
+                <tr><td>Query compleja</td><td><strong>SQL</strong> (más control)</td></tr>
+                <tr><td>Exploración rápida</td><td><strong>Visual</strong></td></tr>
+                <tr><td>Reutilización cross-project</td><td><strong>SQL</strong> (más portable)</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </article>
+
+        <!-- ============ 18. VIEWS Y SP ============ -->
+        <div class="category-header" id="views-sp">
+          <span class="category-header__icon">📚</span>
+          <h2 class="category-header__title">18. Views y stored procedures</h2>
+        </div>
+
+        <article class="concept-card">
+          <p>Más allá de las queries ad hoc, puedes <strong>guardar la lógica de transformación</strong> como <strong>objetos reutilizables</strong>.</p>
+
+          <h3>Views</h3>
+          <p><strong>Definen una saved query</strong> que puedes referenciar como si fuera una tabla.</p>
+          <p><strong>Use cases</strong>: <strong>estandarizar</strong> cómo los analistas acceden a la data, combinar fact y dimension tables en formato reporting-friendly, filtrar rows a un contexto de negocio específico y ocultar la complejidad de las tablas subyacentes.</p>
+          <pre><code class="language-sql">CREATE VIEW dbo.vw_SalesByRegion
+AS
+SELECT
+    c.Region,
+    SUM(f.SalesAmount) AS TotalSales,
+    COUNT(f.OrderID) AS OrderCount
+FROM dbo.FactSales AS f
+INNER JOIN dbo.DimCustomer AS c ON f.CustomerKey = c.CustomerKey
+GROUP BY c.Region;</code></pre>
+          <p>Se consumen así:</p>
+          <pre><code class="language-sql">SELECT * FROM dbo.vw_SalesByRegion WHERE Region = 'North';</code></pre>
+
+          <h3>Stored procedures</h3>
+          <p>Contienen <strong>lógica T-SQL</strong> que ejecutas <strong>on demand</strong>.</p>
+          <p><strong>Use cases</strong>: <strong>tareas de transformación repetibles</strong>, cargar staging data en tablas finales, aplicar business rules y lógica ETL compleja parametrizable.</p>
+          <pre><code class="language-sql">CREATE PROCEDURE dbo.usp_LoadFactSales
+    @LoadDate DATE
+AS
+BEGIN
+    INSERT INTO dbo.FactSales (SalesKey, CustomerKey, ProductKey, DateKey, SalesAmount, Quantity)
+    SELECT
+        s.OrderID,
+        c.CustomerKey,
+        p.ProductKey,
+        d.DateKey,
+        s.Amount,
+        s.Qty
+    FROM dbo.StgSales AS s
+    INNER JOIN dbo.DimCustomer AS c ON s.CustomerID = c.CustomerAltKey
+    INNER JOIN dbo.DimProduct AS p ON s.ProductID = p.ProductAltKey
+    INNER JOIN dbo.DimDate AS d ON s.OrderDate = d.DateValue
+    WHERE s.OrderDate = @LoadDate;
+END;</code></pre>
+          <p>Ejecutar:</p>
+          <pre><code class="language-sql">EXEC dbo.usp_LoadFactSales @LoadDate = '2026-04-14';</code></pre>
+
+          <div class="note note--tip">
+            🎯 <strong>Views y AI (muy importante para el examen):</strong> las views y stored procedures <strong>también hacen tu data más accesible a las AI-powered tools</strong>. <strong>Copilot y los Fabric IQ data agents</strong> pueden consultar views <strong>como si fueran tablas</strong>. Estandarizar el acceso a datos mediante <strong>views bien nombradas mejora la accuracy de las natural language queries</strong>. Cae en preguntas de "cómo mejorar la accuracy de Copilot".
+          </div>
+        </article>
+
+        <!-- ============ 19. MODEL ============ -->
+        <div class="category-header" id="model">
+          <span class="category-header__icon">🎨</span>
+          <h2 class="category-header__title">19. Modelar data en el warehouse</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>Por qué modelar</h3>
+          <p>Sin data modeling, <strong>cada consumer</strong> tiene que averiguar qué tablas se relacionan, escribir su propia aggregation logic y adivinar el significado de las columnas.</p>
+          <p>El <strong>data modeling embebe</strong> estructura, business logic y documentación <strong>directamente en el warehouse</strong>.</p>
+
+          <h4>Los 4 pasos del modeling</h4>
+          <ol>
+            <li><strong>Preparar la data para clarity</strong> (hide, rename, describe).</li>
+            <li><strong>Definir relationships</strong> entre tablas.</li>
+            <li><strong>Estandarizar el acceso</strong> con views y measures.</li>
+            <li><strong>Publicar semantic models</strong> para reporting.</li>
+          </ol>
+
+          <h4>Preparar data para consumption</h4>
+          <p>Las raw warehouse tables suelen contener staging tables, surrogate key columns e internal flags. Estos son para <strong>ETL processing, no para análisis</strong>: crean ruido para los consumers.</p>
+          <p>En el <strong>model view</strong>:</p>
+          <p><strong>A) Hide internal objects</strong>: ocultar staging tables, surrogate key columns (<code>CustomerKey</code>) y ETL artifacts.</p>
+          <p><strong>B) Rename columns</strong>: <code>CustRgn</code> → <code>Customer Region</code>. Nombres business-friendly.</p>
+          <p><strong>C) Add descriptions</strong>: tablas y columnas con descripciones, para que los users las entiendan sin documentación externa.</p>
+
+          <div class="note note--tip">
+            🎯 <strong>Por qué importa para Copilot (muy examinable):</strong> Copilot en Power BI y los Fabric IQ data agents se apoyan en los <strong>nombres de tablas, nombres de columnas y descripciones</strong> para <strong>interpretar preguntas en lenguaje natural</strong> y <strong>generar SQL o DAX correctos</strong>.
+            <br>❌ <code>CustRgn</code> sin description → pobres resultados NL.
+            <br>✅ <code>Customer Region</code> con description "Geographic region of the customer's primary address" → <strong>mejores resultados NL</strong>.
+          </div>
+        </article>
+
+        <!-- ============ 20. RELATIONSHIPS ============ -->
+        <div class="category-header" id="relationships">
+          <span class="category-header__icon">🔗</span>
+          <h2 class="category-header__title">20. Relationships: cardinality y cross-filter direction</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>¿Qué es una relationship?</h3>
+          <p><strong>Relationship</strong> = <strong>conexión lógica</strong> entre dos tablas que permite <strong>filtering, grouping y aggregation</strong> across esas tablas.</p>
+          <p>En star schema: conexiones entre fact tables y dimension tables <strong>a través de shared key columns</strong>. Ejemplo: <code>CustomerKey</code> en <code>FactSales</code> y <code>DimCustomer</code> establece el link → permite analizar sales por customer attributes (region, segment, etc.).</p>
+
+          <h4>Cada relationship tiene 2 properties</h4>
+          <p><strong>A) Cardinality</strong><br>
+          Describe cómo <strong>se corresponden</strong> las rows de las dos tablas. En star schema es típicamente <strong>many-to-one</strong>: muchas fact rows mapean a una única dimension row.</p>
+          <p>Tipos de cardinality:</p>
+          <ul>
+            <li><strong>1:1</strong> (one-to-one)</li>
+            <li><strong>1:*</strong> (one-to-many)</li>
+            <li><strong>*:1</strong> (many-to-one) ⭐ típica en star</li>
+            <li><strong>*:*</strong> (many-to-many)</li>
+          </ul>
+          <p><strong>B) Cross-filter direction</strong><br>
+          Determina <strong>en qué dirección</strong> se propagan los filters entre las tablas.</p>
+          <ul>
+            <li><strong>Single direction</strong>: la dimension filtra el fact (⭐ estándar en star schema).</li>
+            <li><strong>Both directions</strong>: bidireccional (más flexible pero más lenta).</li>
+          </ul>
+
+          <h4>Por qué single direction es el estándar</h4>
+          <ul>
+            <li>✅ <strong>Filter behavior predecible</strong>.</li>
+            <li>✅ <strong>Performante</strong>.</li>
+            <li>✅ <strong>Evita ambigüedad</strong> en modelos complejos.</li>
+          </ul>
+          <p>Both directions puede causar problemas de ambigüedad, dependencias circulares y penalizaciones de performance. Usar bidireccional <strong>solo cuando sea específicamente necesario</strong>.</p>
+
+          <h4>Beneficio de definir relationships</h4>
+          <p>Sin relationships, cada consumer que quiera <strong>combinar data across tables</strong> necesita escribir <strong>lógica JOIN explícita</strong>. Las relationships <strong>eliminan esa repetición</strong> codificando la conexión una sola vez.</p>
+          <p>Cuando creas un semantic model desde el warehouse, <strong>Power BI, Copilot y los Fabric IQ data agents</strong> usan estas relationships, y los data agents <strong>generan joins correctos</strong> al traducir natural language a SQL.</p>
+        </article>
+
+        <!-- ============ 21. VIEWS Y MEASURES ============ -->
+        <div class="category-header" id="views-measures">
+          <span class="category-header__icon">📊</span>
+          <h2 class="category-header__title">21. Views y measures para consumo</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>La necesidad de standardization</h3>
+          <p>Sin estandarización, cada equipo escribe su <strong>join logic</strong>, aplica <strong>sus propios filtros</strong>, define <strong>sus propias fórmulas</strong> → <strong>resultados contradictorios</strong>.</p>
+
+          <h4>Views para T-SQL consumers</h4>
+          <p>Ya las vimos. Encapsulan <strong>join logic, filters y column selections</strong> en una query reutilizable.</p>
+          <p>Ejemplo: una view que hace join de fact/dimension, filtra a completed orders y expone solo las columnas relevantes → <strong>punto de partida fiable</strong> para todos los T-SQL consumers.</p>
+          <p><strong>También</strong>: las views sirven como <strong>stable data sources</strong> para reports. En vez de apuntar los reports a las base tables (que pueden cambiar), apúntalos a <strong>views con forma consistente</strong>.</p>
+
+          <h4>Measures para DAX</h4>
+          <p><strong>Measures</strong> = <strong>expresiones DAX reutilizables</strong> que definen cálculos como total, average, ratio o count.</p>
+          <p>Se crean <strong>directamente en el model view del warehouse</strong>:</p>
+          <ol>
+            <li>Seleccionar una tabla.</li>
+            <li>Add new measure.</li>
+            <li>Definir la expresión DAX.</li>
+          </ol>
+          <p><strong>Ejemplo</strong>: una measure <code>Total Sales</code> que suma la columna <code>SalesAmount</code> asegura que <strong>todos los consumers usan el mismo cálculo</strong>.</p>
+
+          <h4>Single source of truth</h4>
+          <p>Porque la <strong>definición de la measure vive con la data</strong>, se convierte en <strong>single source of truth</strong> para esa métrica. Cuando el negocio cambia cómo calcula revenue, actualizas la measure <strong>en un solo sitio</strong>: no tienes que rastrear cada report que contiene su propia fórmula.</p>
+
+          <h4>Views vs Measures</h4>
+          <p>Juntas, views y measures <strong>cubren ambos lados del consumo</strong>:</p>
+          <ul>
+            <li><strong>Views</strong> estandarizan cómo los T-SQL consumers <strong>acceden y consultan la data</strong>.</li>
+            <li><strong>Measures</strong> estandarizan cómo los cálculos de negocio <strong>aparecen en reports y dashboards</strong>.</li>
+          </ul>
+        </article>
+
+        <!-- ============ 22. SEMANTIC MODEL ============ -->
+        <div class="category-header" id="semantic-model">
+          <span class="category-header__icon">📈</span>
+          <h2 class="category-header__title">22. Semantic model con Direct Lake</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>Cuándo crearlo</h3>
+          <p>Con las tablas preparadas, las relationships definidas y las views y measures estandarizadas, el warehouse está <strong>listo para reporting downstream</strong>.</p>
+          <p>Los equipos que consultan directamente con T-SQL pueden <strong>trabajar con el warehouse model tal cual</strong>. Pero cuando quieres <strong>construir reports y dashboards interactivos de Power BI</strong> → crear un <strong>semantic model</strong> es el siguiente paso.</p>
+
+          <h4>Direct Lake por defecto</h4>
+          <p>Los semantic models creados desde un Fabric warehouse <strong>usan Direct Lake mode</strong>.</p>
+          <ul>
+            <li><strong>Import mode</strong>: copia la data en memoria de Power BI → requiere scheduled refreshes.</li>
+            <li><strong>Direct Lake</strong>: lee la data directamente <strong>de los ficheros Parquet de OneLake</strong> → <strong>no requiere refreshes</strong>.</li>
+          </ul>
+
+          <h4>Ventajas de Direct Lake</h4>
+          <ul>
+            <li>✅ <strong>Los reports reflejan la última data del warehouse</strong> sin scheduled refreshes.</li>
+            <li>✅ <strong>Evitas el storage overhead</strong> de mantener una copia separada.</li>
+            <li>✅ <strong>Evitas el processing overhead</strong> de los refreshes.</li>
+            <li>✅ <strong>Performance similar</strong> a Import mode (lee data en memoria on-demand).</li>
+          </ul>
+
+          <h4>Cómo crear</h4>
+          <p>Desde el warehouse: Model view → <strong>New semantic model</strong>, seleccionar tablas a incluir, confirmar relationships y measures, y listo. Los reports de Power BI conectan a <strong>este semantic model</strong>, no directamente a las tablas.</p>
+
+          <h4>Beneficios adicionales</h4>
+          <ul>
+            <li><strong>Governance centralizado</strong>: measures definidas una vez.</li>
+            <li><strong>RLS y sensitivity labels</strong> en el semantic model.</li>
+            <li><strong>Reusability</strong>: múltiples reports usan el mismo model.</li>
+            <li><strong>Endorsement</strong>: certified/promoted.</li>
+          </ul>
+        </article>
+
+        <!-- ============ 23. SEGURIDAD ============ -->
+        <div class="category-header" id="seguridad">
+          <span class="category-header__icon">🔐</span>
+          <h2 class="category-header__title">23. Seguridad: workspace roles, item permissions</h2>
+        </div>
+
+        <article class="concept-card">
+          <p>La seguridad del Fabric data warehouse opera <strong>en múltiples niveles</strong>, desde el workspace access hasta rows y columns individuales.</p>
+
+          <h4>Workspace roles (primera capa)</h4>
+          <p>La data en Fabric se organiza en <strong>workspaces</strong>. Los workspace roles son la <strong>primera capa</strong> de access control.</p>
+          <ul>
+            <li><strong>Admin</strong>: full control.</li>
+            <li><strong>Member</strong>: casi todo excepto borrar el workspace.</li>
+            <li><strong>Contributor</strong>: crear/editar items.</li>
+            <li><strong>Viewer</strong>: solo ver.</li>
+          </ul>
+
+          <h4>Item permissions (granular)</h4>
+          <p>Además de los workspace roles, puedes <strong>conceder item permissions</strong> para <strong>compartir warehouses individuales sin dar acceso al workspace entero</strong>.</p>
+          <p><strong>3 permisos específicos</strong>:</p>
+          <ul>
+            <li><strong>A) Read</strong>: permite <strong>conectar usando el SQL analytics endpoint</strong>. <strong>Sin Read → la conexión falla</strong>.</li>
+            <li><strong>B) ReadData</strong>: permite <strong>leer data desde cualquier tabla o view</strong> del warehouse.</li>
+            <li><strong>C) ReadAll</strong>: permite <strong>leer los raw parquet files en OneLake</strong>.</li>
+          </ul>
+
+          <div class="note note--warning">
+            🎯 <strong>Diferencia crítica que cae en el examen:</strong>
+            <div class="table-scroll">
+              <table class="md-table">
+                <thead><tr><th>Permission</th><th>Qué permite</th></tr></thead>
+                <tbody>
+                  <tr><td><strong>Read</strong></td><td>Conectar al SQL endpoint (sin ver data automáticamente)</td></tr>
+                  <tr><td><strong>ReadData</strong></td><td>Leer data vía SQL (queries a tables/views)</td></tr>
+                  <tr><td><strong>ReadAll</strong></td><td>Leer raw Parquet files directamente en OneLake</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <strong>Read por sí solo</strong> no da acceso a la data: necesitas también ReadData o ReadAll. <strong>Sin Read → la connection falla del todo</strong>. <strong>ReadAll</strong> es el más amplio → parquet files raw, saltándose la capa SQL.
+          </div>
+
+          <h4>Item permissions: cuándo compartir</h4>
+          <p>Los item permissions son útiles cuando necesitas compartir el warehouse para <strong>consumo downstream</strong> con usuarios específicos, <strong>sin dar acceso completo al workspace</strong>, con <strong>sharing granular</strong>.</p>
+        </article>
+
+        <!-- ============ 24. GRANULAR ============ -->
+        <div class="category-header" id="granular">
+          <span class="category-header__icon">🎯</span>
+          <h2 class="category-header__title">24. Granular SQL security: OLS, RLS, CLS, DDM</h2>
+        </div>
+
+        <article class="concept-card">
+          <p>Para un access control más preciso, el Fabric data warehouse soporta <strong>seguridad granular usando T-SQL</strong>. Estas features <strong>restringen la visibilidad de la data sin cambiar las tablas subyacentes</strong>.</p>
+
+          <h4>Los 4 mecanismos</h4>
+          <p><strong>A) Object-Level Security (OLS)</strong></p>
+          <ul>
+            <li>Controla el acceso a <strong>tablas, views o procedures específicos</strong>.</li>
+            <li>GRANT/DENY a nivel de object.</li>
+            <li>Un user puede ver <code>TableA</code> pero no <code>TableB</code>.</li>
+          </ul>
+          <p><strong>B) Row-Level Security (RLS)</strong></p>
+          <ul>
+            <li>Restringe qué <strong>rows</strong> puede ver un user.</li>
+            <li>Usa <code>WHERE clause predicates</code> en security policies.</li>
+            <li>Un manager solo ve las ventas de su región.</li>
+          </ul>
+          <p><strong>C) Column-Level Security (CLS)</strong></p>
+          <ul>
+            <li>Restringe qué <strong>columns</strong> son visibles para usuarios específicos.</li>
+            <li>Un user puede ver <code>email</code> pero no <code>salary</code>.</li>
+          </ul>
+          <p><strong>D) Dynamic Data Masking (DDM)</strong></p>
+          <ul>
+            <li><strong>Enmascara data sensible</strong> (emails, account numbers, credit cards) para usuarios no privilegiados.</li>
+            <li>La data sigue ahí, solo se <strong>enmascara en la visualización</strong>.</li>
+            <li>Ejemplo: <code>4111-XXXX-XXXX-1234</code> en vez del número completo.</li>
+          </ul>
+
+          <h4>Enforcement</h4>
+          <p><strong>Muy importante</strong>: las security policies definidas en T-SQL se <strong>aplican independientemente de cómo se acceda a la data</strong>: SQL client (SSMS, ADS), reports de Power BI, queries de Copilot, notebooks y cualquier otra interfaz.</p>
+
+          <h4>Por qué importa para compliance y AI</h4>
+          <p>Asegurar la warehouse data importa para el <strong>cumplimiento regulatorio</strong> (GDPR, HIPAA, LGPD) y para garantizar que las <strong>AI-powered tools como Copilot y los data agents</strong> operan dentro de límites gobernados. Sin security enforcement, Copilot podría generar queries que <strong>exponen data sensible</strong> que no debería mostrarse.</p>
+
+          <h4>Ejemplo básico de RLS</h4>
+          <pre><code class="language-sql">-- 1. Create security predicate function
+CREATE FUNCTION security.fn_regionaccess(@region NVARCHAR(50))
+RETURNS TABLE
+WITH SCHEMABINDING
+AS
+RETURN SELECT 1 AS access_result
+WHERE @region = USER_NAME()
+   OR IS_ROLEMEMBER('AdminRole') = 1;
+
+-- 2. Create security policy
+CREATE SECURITY POLICY SalesRegionFilter
+ADD FILTER PREDICATE security.fn_regionaccess(Region) ON dbo.FactSales
+WITH (STATE = ON);</code></pre>
+          <p>Después de esto, <code>SELECT * FROM dbo.FactSales</code> <strong>solo devuelve rows de la región del user</strong>.</p>
+
+          <h4>Ejemplo básico de DDM</h4>
+          <pre><code class="language-sql">-- Alter column to add masking
+ALTER TABLE dbo.Customer
+ALTER COLUMN Email ADD MASKED WITH (FUNCTION = 'email()');
+
+-- Ahora los emails aparecen como aXXX@XXXX.com para usuarios no privilegiados</code></pre>
+
+          <h4>CLS ejemplo</h4>
+          <pre><code class="language-sql">-- Denegar acceso a la columna Salary a un role
+DENY SELECT ON dbo.Employee (Salary) TO AnalystRole;</code></pre>
+
+          <h4>Combinación de todos</h4>
+          <p>Puedes combinar <strong>múltiples capas</strong>: OLS niega el acceso a la tabla <code>SalaryHistory</code>, RLS filtra rows en <code>Employee</code> por departamento, CLS niega la columna <code>SSN</code> en <code>Employee</code> y DDM enmascara <code>PhoneNumber</code>. Todo trabaja <strong>junto en T-SQL</strong>.</p>
+        </article>
+
+        <!-- ============ 25. CROSS-DB ============ -->
+        <div class="category-header" id="cross-db">
+          <span class="category-header__icon">🔗</span>
+          <h2 class="category-header__title">25. Cross-database querying (three-part naming)</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>Feature</h3>
+          <p><strong>Consultar across warehouses y lakehouses</strong> del <strong>mismo workspace</strong> sin copiar data.</p>
+
+          <h4>Three-part naming</h4>
+          <p>Sintaxis: <code>database.schema.table</code></p>
+          <pre><code class="language-sql">SELECT
+    w.CustomerID,
+    l.total_spent
+FROM MyWarehouse.dbo.DimCustomer AS w
+INNER JOIN MyLakehouse.dbo.customer_spending AS l
+    ON w.CustomerAltKey = l.customer_id;</code></pre>
+          <p>Un solo query, dos fuentes distintas, <strong>sin copiar data</strong>.</p>
+
+          <h4>Ventajas</h4>
+          <ul>
+            <li>⚡ <strong>No data movement</strong>.</li>
+            <li>💰 <strong>No storage duplication</strong>.</li>
+            <li>🔗 <strong>Combinar warehouse y lakehouse</strong> con naturalidad.</li>
+            <li>🎯 <strong>Data en tiempo real across sources</strong>.</li>
+          </ul>
+
+          <h4>Cuándo usar</h4>
+          <p>Cuando el warehouse tiene dimensions curadas y el lakehouse tiene raw sales data, y quieres combinar ambos sin copiar. <strong>Muy típico en medallion architecture</strong>: bronze/silver en Lakehouse, gold en Warehouse.</p>
+
+          <div class="note note--warning">
+            ⚠️ <strong>Limitaciones:</strong> <strong>mismo workspace</strong> — las cross-workspace queries no están soportadas (requiere shortcuts). Y es read-only en el remote source (el lakehouse desde el warehouse).
+          </div>
+        </article>
+
+        <!-- ============ 26. MONITORING ============ -->
+        <div class="category-header" id="monitoring">
+          <span class="category-header__icon">📊</span>
+          <h2 class="category-header__title">26. Monitoring: query insights y DMVs</h2>
+        </div>
+
+        <article class="concept-card">
+          <p>Monitorizar la actividad del warehouse ayuda a <strong>identificar problemas de performance, optimizar queries y entender patrones de uso</strong>.</p>
+
+          <h3>Query insights</h3>
+          <p><strong>Query insights</strong> provee una <strong>localización central</strong> para el histórico de queries y la información accionable de performance.</p>
+          <ul>
+            <li><strong>Retiene data durante 30 días</strong>.</li>
+            <li>Identificar long-running queries.</li>
+            <li>Trackear cambios de performance a lo largo del tiempo.</li>
+            <li>Entender qué queries consumen más recursos.</li>
+          </ul>
+
+          <h4>System views para query insights</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>View</th><th>Función</th></tr></thead>
+              <tbody>
+                <tr><td><code>queryinsights.exec_requests_history</code></td><td>Info sobre cada completed SQL request</td></tr>
+                <tr><td><code>queryinsights.long_running_queries</code></td><td>Queries ordenadas por execution time</td></tr>
+                <tr><td><code>queryinsights.exec_sessions_history</code></td><td>Info sobre completed sessions</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <pre><code class="language-sql">SELECT TOP 10 *
+FROM queryinsights.long_running_queries
+ORDER BY total_elapsed_time_ms DESC;</code></pre>
+          <p>Te devuelve las 10 queries más lentas.</p>
+
+          <h3>Dynamic Management Views (DMVs)</h3>
+          <p>También puedes usar <strong>DMVs</strong> para monitorizar <strong>conexiones, sesiones y requests activos en tiempo real</strong>.</p>
+          <pre><code class="language-sql">SELECT
+    request_id,
+    session_id,
+    start_time,
+    total_elapsed_time
+FROM sys.dm_exec_requests
+WHERE status = 'running'
+ORDER BY total_elapsed_time DESC;</code></pre>
+
+          <div class="note note--warning">
+            ⚠️ <strong>KILL command (importante para el examen):</strong> solo el <strong>workspace Admin puede ejecutar el comando <code>KILL</code></strong> para terminar sesiones long-running. Members, Contributors y Viewers pueden ver <strong>sus propios resultados</strong> pero <strong>NO las queries de otros usuarios</strong>.
+          </div>
+
+          <h4>Cuándo usar cada uno</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th></th><th>Query Insights</th><th>DMVs</th></tr></thead>
+              <tbody>
+                <tr><td>Data</td><td>Histórica (30 días)</td><td>Tiempo real (ahora)</td></tr>
+                <tr><td>Uso</td><td>Performance trends, análisis retrospectivo</td><td>Debug de queries corriendo ahora, identificar bottlenecks</td></tr>
+                <tr><td>Retention</td><td>30 días automático</td><td>Sin retención (snapshot)</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </article>
+
+        <!-- ============ 27. TRANSACCIONES ============ -->
+        <div class="category-header" id="transacciones">
+          <span class="category-header__icon">🔄</span>
+          <h2 class="category-header__title">27. Transacciones y concurrency</h2>
+        </div>
+
+        <article class="concept-card">
+          <h4>Full ACID</h4>
+          <p>Fabric Warehouse tiene <strong>full ACID compliance</strong>:</p>
+          <ul>
+            <li><strong>Atomicity</strong>: las transacciones son atómicas (all-or-nothing).</li>
+            <li><strong>Consistency</strong>: la data siempre en estado válido.</li>
+            <li><strong>Isolation</strong>: las transacciones no interfieren.</li>
+            <li><strong>Durability</strong>: los cambios committed persisten.</li>
+          </ul>
+
+          <h4>Snapshot isolation exclusively</h4>
+          <p>Fabric Data Warehouse usa <strong>snapshot isolation exclusivamente</strong>. Los intentos de cambiar el isolation level vía T-SQL son <strong>ignorados</strong>.</p>
+
+          <h4>Capabilities de transacciones</h4>
+          <p><strong>A) DDL dentro de transacciones</strong></p>
+          <pre><code class="language-sql">BEGIN TRANSACTION;
+CREATE TABLE dbo.MyTable (id INT);
+INSERT INTO dbo.MyTable VALUES (1);
+COMMIT;</code></pre>
+          <p><strong>B) Cross-database transactions</strong>: soportadas <strong>dentro del mismo workspace</strong>. Incluye lecturas desde SQL analytics endpoints.</p>
+          <p><strong>C) Parquet-based rollback</strong>: el storage está en ficheros Parquet inmutables, así que los <strong>rollbacks son rápidos</strong> — revierten a versiones anteriores de los ficheros.</p>
+          <p><strong>D) Automatic data compaction y checkpointing</strong>: la <strong>compaction</strong> fusiona ficheros Parquet pequeños y elimina rows borradas lógicamente. El <strong>checkpointing</strong>: cada write operation añade un JSON log file al Delta transaction log, y el checkpointing resume esos logs en un único checkpoint file → lecturas de metadata más rápidas.</p>
+
+          <div class="note note--practice">
+            📌 <strong>Best practices con transacciones:</strong>
+            <ol>
+              <li><strong>Usa las explicit transactions con criterio</strong>: siempre COMMIT o ROLLBACK.</li>
+              <li><strong>Mantén las transacciones cortas</strong>. Evita transacciones long-running que retienen locks (especialmente si contienen DDLs).</li>
+              <li><strong>Retry logic con delay</strong> en pipelines o apps para manejar conflictos transitorios.</li>
+              <li><strong>Exponential backoff</strong> para evitar retry storms.</li>
+              <li><strong>Monitoriza locks y conflicts</strong> en el warehouse.</li>
+            </ol>
+          </div>
+
+          <div class="note note--warning">
+            ⚠️ <strong>Warning:</strong> las transacciones long-running con DDLs pueden causar <strong>contención con SELECT statements sobre las system catalog views</strong> (como <code>sys.tables</code>) y <strong>provocar problemas en el Fabric portal</strong>.
+          </div>
+        </article>
+
+        <!-- ============ 28. TRAMPAS ============ -->
+        <div class="category-header" id="trampas">
+          <span class="category-header__icon">⚠️</span>
+          <h2 class="category-header__title">28. Trampas típicas y confusiones frecuentes</h2>
+        </div>
+
+        <article class="concept-card">
+          <ul class="trap-list">
+            <li><strong class="trap-title">Trampa 1: "Warehouse y SQL analytics endpoint son intercambiables"</strong>
+              ❌ <strong>Distintos</strong>. Warehouse permite CREATE TABLE + write. SQL endpoint es read-only sobre Lakehouse.</li>
+            <li><strong class="trap-title">Trampa 2: "Puedo hacer INSERT en un SQL analytics endpoint"</strong>
+              ❌ <strong>El SQL analytics endpoint es READ-ONLY</strong>. Solo el Warehouse permite writes.</li>
+            <li><strong class="trap-title">Trampa 3: "Puedo crear tablas en un SQL analytics endpoint"</strong>
+              ❌ <strong>No</strong>. Solo el Warehouse permite DDL. En el SQL endpoint solo views y stored procedures.</li>
+            <li><strong class="trap-title">Trampa 4: "Fabric Warehouse enforcea foreign keys"</strong>
+              ❌ Los <strong>constraints son NOT ENFORCED</strong>. Se guardan como metadata para el optimizer; tú eres responsable de mantener la integridad.</li>
+            <li><strong class="trap-title">Trampa 5: "Zero-copy clone duplica el storage"</strong>
+              ❌ <strong>NO duplica data</strong>. Solo metadata. Los data files se comparten con el source.</li>
+            <li><strong class="trap-title">Trampa 6: "Los clones NO copian las security policies"</strong>
+              ❌ <strong>SÍ COPIAN</strong> RLS, CLS y DDM. No hay que re-aplicarlas.</li>
+            <li><strong class="trap-title">Trampa 7: "Time travel funciona con DELETE/INSERT/UPDATE"</strong>
+              ❌ <strong>Read-only</strong>. <code>FOR TIMESTAMP AS OF</code> solo funciona con SELECT.</li>
+            <li><strong class="trap-title">Trampa 8: "Con time travel puedo ir 1 año atrás"</strong>
+              ❌ <strong>Solo dentro del retention period</strong> (default 30 días, máximo 120).</li>
+            <li><strong class="trap-title">Trampa 9: "El retention default es 7 días"</strong>
+              ❌ <strong>El default es 30 días</strong>. Configurable de 1 a 120.</li>
+            <li><strong class="trap-title">Trampa 10: "El permiso Read da acceso a la data"</strong>
+              ❌ <strong>Read</strong> solo permite <strong>conectar al SQL endpoint</strong>. Para ver data necesitas <strong>ReadData</strong> o <strong>ReadAll</strong>.</li>
+            <li><strong class="trap-title">Trampa 11: "ReadAll da acceso solo a algunos parquet files"</strong>
+              ❌ <strong>ReadAll da acceso a TODOS los raw Parquet files</strong> en OneLake. Es el permiso más amplio.</li>
+            <li><strong class="trap-title">Trampa 12: "RLS, CLS y DDM son mutuamente excluyentes"</strong>
+              ❌ <strong>Se pueden combinar libremente</strong>. Son capas complementarias.</li>
+            <li><strong class="trap-title">Trampa 13: "Todos los data types de SQL Server están soportados"</strong>
+              ❌ Faltan varios: NTEXT, TEXT, IMAGE, XML, GEOGRAPHY, GEOMETRY, HIERARCHYID, MONEY, SMALLMONEY, SQL_VARIANT.</li>
+            <li><strong class="trap-title">Trampa 14: "Copiar tablas es igual que clonar"</strong>
+              ❌ <strong>Copiar duplica data</strong> (más storage, más tiempo). <strong>Clonar solo copia metadata</strong> (near-instant, storage mínimo).</li>
+            <li><strong class="trap-title">Trampa 15: "El semantic model desde Warehouse usa Import mode por defecto"</strong>
+              ❌ <strong>Direct Lake por defecto</strong>. Lee data directamente de OneLake sin copiar.</li>
+            <li><strong class="trap-title">Trampa 16: "Snowflake schema es mejor para performance"</strong>
+              ❌ <strong>Star schema es más rápido</strong> (menos joins). Snowflake reduce storage pero añade joins.</li>
+            <li><strong class="trap-title">Trampa 17: "Copilot funciona igual sin descriptions"</strong>
+              ❌ Las <strong>descriptions mejoran significativamente la accuracy</strong> de Copilot y Fabric IQ. Muy importante para AI.</li>
+            <li><strong class="trap-title">Trampa 18: "Puedo cambiar el isolation level en Fabric Warehouse"</strong>
+              ❌ <strong>Snapshot isolation exclusivamente</strong>. Los intentos de cambiarlo se ignoran.</li>
+            <li><strong class="trap-title">Trampa 19: "Las cross-database queries funcionan cross-workspace"</strong>
+              ❌ <strong>Solo dentro del mismo workspace</strong>. Cross-workspace requiere shortcuts.</li>
+            <li><strong class="trap-title">Trampa 20: "Cualquiera puede hacer KILL de queries"</strong>
+              ❌ <strong>Solo el workspace Admin</strong>. Otros roles pueden ver sus propias queries pero no las de otros.</li>
+          </ul>
+        </article>
+
+        <!-- ============ 29. COMPARATIVAS ============ -->
+        <div class="category-header" id="comparativas">
+          <span class="category-header__icon">🆚</span>
+          <h2 class="category-header__title">29. Comparativas clave (chuleta)</h2>
+        </div>
+
+        <article class="concept-card">
+          <h4>Warehouse vs SQL analytics endpoint</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Capability</th><th>Warehouse</th><th>SQL endpoint</th></tr></thead>
+              <tbody>
+                <tr><td>Read data</td><td>✅</td><td>✅</td></tr>
+                <tr><td>Write data</td><td>✅</td><td>❌</td></tr>
+                <tr><td>Create tables</td><td>✅</td><td>❌</td></tr>
+                <tr><td>Views y stored procedures</td><td>✅</td><td>✅</td></tr>
+                <tr><td>Data source</td><td>Native warehouse tables</td><td>Lakehouse Delta tables</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h4>Star schema vs Snowflake</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th></th><th>Star</th><th>Snowflake</th></tr></thead>
+              <tbody>
+                <tr><td>Joins</td><td>Menos</td><td>Más</td></tr>
+                <tr><td>Performance</td><td>Mejor</td><td>Peor</td></tr>
+                <tr><td>Storage</td><td>Más (denorm)</td><td>Menos (norm)</td></tr>
+                <tr><td>Simplicidad</td><td>Alta</td><td>Media</td></tr>
+                <tr><td>Recomendado</td><td>✅ Sí</td><td>Casos específicos</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h4>Data ingestion methods</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Método</th><th>Cuándo</th></tr></thead>
+              <tbody>
+                <tr><td><strong>COPY INTO</strong></td><td>Bulk load desde storage (CSV, Parquet)</td></tr>
+                <tr><td><strong>OPENROWSET</strong></td><td>Ad-hoc query de ficheros externos</td></tr>
+                <tr><td><strong>Pipelines</strong></td><td>Orquestación multi-step</td></tr>
+                <tr><td><strong>Dataflows Gen2</strong></td><td>Transform low-code</td></tr>
+                <tr><td><strong>Cross-database queries</strong></td><td>Query sin copiar</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h4>Item permissions</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Permission</th><th>Da acceso a</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Read</strong></td><td>Conectar al SQL endpoint (nada más)</td></tr>
+                <tr><td><strong>ReadData</strong></td><td>Data vía SQL (tables, views)</td></tr>
+                <tr><td><strong>ReadAll</strong></td><td>Raw Parquet files en OneLake</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>Sin Read → la connection falla completamente.</p>
+
+          <h4>Granular security options</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Security</th><th>Restringe</th></tr></thead>
+              <tbody>
+                <tr><td><strong>OLS</strong></td><td>Acceso a tables/views/procedures específicos</td></tr>
+                <tr><td><strong>RLS</strong></td><td>Rows visibles por user</td></tr>
+                <tr><td><strong>CLS</strong></td><td>Columns visibles por user</td></tr>
+                <tr><td><strong>DDM</strong></td><td>Enmascara data sensible en la visualización</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h4>Time travel vs Clones</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th></th><th>Time travel</th><th>Clone</th></tr></thead>
+              <tbody>
+                <tr><td>Scope</td><td>Statement level</td><td>Table level</td></tr>
+                <tr><td>Sintaxis</td><td><code>OPTION (FOR TIMESTAMP AS OF ...)</code></td><td><code>CREATE TABLE X AS CLONE OF Y</code></td></tr>
+                <tr><td>Read/write</td><td>Read-only</td><td>Read/write (independiente)</td></tr>
+                <tr><td>Uso</td><td>Point-in-time queries</td><td>Backup, dev/test, snapshot histórico</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h4>Query monitoring</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th></th><th>Query Insights</th><th>DMVs</th></tr></thead>
+              <tbody>
+                <tr><td>Retention</td><td>30 días</td><td>Snapshot en tiempo real</td></tr>
+                <tr><td>Uso</td><td>Análisis retrospectivo</td><td>Debug de queries activas</td></tr>
+                <tr><td>Views</td><td><code>queryinsights.*</code></td><td><code>sys.dm_exec_*</code></td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h4>Views vs Stored procedures</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th></th><th>Views</th><th>Stored Procedures</th></tr></thead>
+              <tbody>
+                <tr><td>Contenido</td><td>Saved query</td><td>Lógica T-SQL</td></tr>
+                <tr><td>Referencia</td><td>Como una tabla</td><td>Con EXEC</td></tr>
+                <tr><td>Parámetros</td><td>❌ (típicamente)</td><td>✅</td></tr>
+                <tr><td>Uso</td><td>Estandarizar acceso</td><td>Transformaciones repetibles</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h4>Direct Lake vs Import mode</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th></th><th>Direct Lake</th><th>Import mode</th></tr></thead>
+              <tbody>
+                <tr><td>Data</td><td>Lectura directa de OneLake</td><td>Copiada en memoria</td></tr>
+                <tr><td>Refresh</td><td>❌ No requerido</td><td>✅ Programado</td></tr>
+                <tr><td>Storage overhead</td><td>Mínimo</td><td>Copia duplicada</td></tr>
+                <tr><td>Freshness</td><td>Siempre la última</td><td>Snapshot del último refresh</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </article>
+
+        <!-- ============ 30. FUENTES ============ -->
+        <div class="category-header" id="fuentes">
+          <span class="category-header__icon">📚</span>
+          <h2 class="category-header__title">30. Fuentes oficiales consultadas</h2>
+        </div>
+
+        <article class="concept-card">
+          <ul class="sources-list">
+            <li>Módulo Learn: <a href="https://learn.microsoft.com/training/modules/get-started-data-warehouse/" target="_blank" rel="noopener noreferrer">get-started-data-warehouse</a></li>
+            <li>Data warehousing en Fabric: <a href="https://learn.microsoft.com/fabric/data-warehouse/data-warehousing" target="_blank" rel="noopener noreferrer">data-warehousing</a></li>
+            <li>Fabric Data Warehouse overview: <a href="https://learn.microsoft.com/fabric/data-warehouse/data-warehouse-overview" target="_blank" rel="noopener noreferrer">data-warehouse-overview</a></li>
+            <li>COPY INTO: <a href="https://learn.microsoft.com/fabric/data-warehouse/ingest-data-copy" target="_blank" rel="noopener noreferrer">ingest-data-copy</a></li>
+            <li>Clone table: <a href="https://learn.microsoft.com/fabric/data-warehouse/clone-table" target="_blank" rel="noopener noreferrer">clone-table</a></li>
+            <li>Time travel: <a href="https://learn.microsoft.com/fabric/data-warehouse/time-travel" target="_blank" rel="noopener noreferrer">time-travel</a></li>
+            <li>Data retention: <a href="https://learn.microsoft.com/fabric/data-warehouse/data-retention" target="_blank" rel="noopener noreferrer">data-retention</a></li>
+            <li>Security: <a href="https://learn.microsoft.com/fabric/data-warehouse/security" target="_blank" rel="noopener noreferrer">security</a></li>
+            <li>Workspace roles: <a href="https://learn.microsoft.com/fabric/data-warehouse/workspace-roles" target="_blank" rel="noopener noreferrer">workspace-roles</a></li>
+            <li>Row-level security (Fabric): <a href="https://learn.microsoft.com/fabric/data-warehouse/row-level-security" target="_blank" rel="noopener noreferrer">row-level-security</a></li>
+            <li>Column-level security: <a href="https://learn.microsoft.com/fabric/data-warehouse/column-level-security" target="_blank" rel="noopener noreferrer">column-level-security</a></li>
+            <li>Dynamic data masking: <a href="https://learn.microsoft.com/fabric/data-warehouse/dynamic-data-masking" target="_blank" rel="noopener noreferrer">dynamic-data-masking</a></li>
+            <li>Query insights: <a href="https://learn.microsoft.com/fabric/data-warehouse/query-insights" target="_blank" rel="noopener noreferrer">query-insights</a></li>
+            <li>Performance guidelines: <a href="https://learn.microsoft.com/fabric/data-warehouse/guidelines-warehouse-performance" target="_blank" rel="noopener noreferrer">guidelines-warehouse-performance</a></li>
+            <li>Star schema (Power BI guidance): <a href="https://learn.microsoft.com/power-bi/guidance/star-schema" target="_blank" rel="noopener noreferrer">star-schema</a></li>
+            <li>Dimensional modeling overview: <a href="https://learn.microsoft.com/fabric/data-warehouse/dimensional-modeling-overview" target="_blank" rel="noopener noreferrer">dimensional-modeling-overview</a></li>
+            <li>Direct Lake overview: <a href="https://learn.microsoft.com/fabric/fundamentals/direct-lake-overview" target="_blank" rel="noopener noreferrer">direct-lake-overview</a></li>
+          </ul>
+        </article>
+
+        <div class="note note--next">
+          🚀 <strong>¡Módulo 11 completado!</strong> Ya dominas el Warehouse de Fabric de punta a punta. Sigue con el <a href="modulo-12.html">Módulo 12: SQL Database en Fabric</a>. 🌸
+        </div>
+
+        <!-- Navegación del curso -->
+        <div class="course-nav">
+          <a href="modulo-10.html">
+            <span class="course-nav__label">← Anterior</span>
+            <span class="course-nav__title">Módulo 10 · Eventhouse y KQL</span>
+          </a>
+          <a href="modulo-12.html" class="next">
+            <span class="course-nav__label">Siguiente →</span>
+            <span class="course-nav__title">Módulo 12 · SQL Database</span>
+          </a>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <button id="back-to-top" class="back-to-top" aria-label="Volver arriba" title="Volver arriba">↑</button>
+
+  <script src="https://cdn.jsdelivr.net/npm/i18next@23/dist/umd/i18next.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1/prism.min.js"></script>
+  <script src="../../../assets/js/theme.js"></script>
+  <script src="../../../assets/js/main.js"></script>
+  <script src="../../../assets/js/cursor.js"></script>
+</body>
+</html>
