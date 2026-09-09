@@ -3,22 +3,22 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="DP-700 Módulo 9: eventstreams en tiempo real en Fabric. Sources, destinations, 7 transformaciones no-code, las 5 windowing functions, derived streams y DeltaFlow para CDC.">
-  <title>DP-700 · Módulo 9: Eventstreams en tiempo real | Power BI Guide by Kawaii BI</title>
+  <meta name="description" content="DP-700 Módulo 9: eventstreams en tiempo real en Microsoft Fabric. Sources, destinations, transformaciones no-code, SQL operator, las 5 windowing functions, derived streams, DeltaFlow y monitoring.">
+  <title>DP-700 · Módulo 9: Eventstreams | Power BI Guide by Kawaii BI</title>
   <link rel="canonical" href="https://kawaiibi.es/topics/certificaciones/dp-700/modulo-9.html">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Kawaii Power BI Guide">
   <meta property="og:locale" content="es_ES">
-  <meta property="og:title" content="DP-700 · Módulo 9: Eventstreams en tiempo real | Power BI Guide by Kawaii BI">
-  <meta property="og:description" content="DP-700 Módulo 9: eventstreams. Sources, destinations, 7 transformaciones, las 5 windowing functions y derived streams.">
+  <meta property="og:title" content="DP-700 · Módulo 9: Eventstreams | Power BI Guide by Kawaii BI">
+  <meta property="og:description" content="DP-700 Módulo 9: eventstreams en Fabric. Sources, destinations, transformaciones, las 5 windowing functions y derived streams.">
   <meta property="og:url" content="https://kawaiibi.es/topics/certificaciones/dp-700/modulo-9.html">
   <meta property="og:image" content="https://kawaiibi.es/assets/images/og-banner.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="1200">
   <meta property="og:image:alt" content="Sara Lozano Marti - Kawaii Power BI">
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="DP-700 · Módulo 9: Eventstreams en tiempo real | Power BI Guide by Kawaii BI">
-  <meta name="twitter:description" content="DP-700 Módulo 9: eventstreams. Sources, destinations, transformaciones y las 5 windowing functions.">
+  <meta name="twitter:title" content="DP-700 · Módulo 9: Eventstreams | Power BI Guide by Kawaii BI">
+  <meta name="twitter:description" content="DP-700 Módulo 9: eventstreams, windowing functions y content-based routing.">
   <meta name="twitter:image" content="https://kawaiibi.es/assets/images/og-banner.png">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -63,12 +63,18 @@
     .md-table tr:nth-child(even) td { background: var(--color-blush); }
     .table-scroll { overflow-x: auto; }
 
+    .trap-list { list-style: none; padding: 0; margin: 0; }
+    .trap-list > li { background: var(--color-white); border: 1.5px solid var(--color-mauve); border-left: 4px solid var(--color-warning); border-radius: var(--border-radius-sm); padding: 0.875rem 1.125rem; margin-bottom: 0.75rem; font-size: 0.9375rem; line-height: 1.7; }
+    .trap-list strong.trap-title { display: block; color: var(--color-dark); margin-bottom: 0.25rem; }
+
     .course-nav { display: flex; justify-content: space-between; gap: 1rem; margin-top: 2.5rem; flex-wrap: wrap; }
     .course-nav a { flex: 1 1 220px; display: block; background: var(--color-white); border: 1.5px solid var(--color-mauve); border-radius: var(--border-radius); padding: 1rem 1.25rem; text-decoration: none; color: inherit; transition: var(--transition); }
     .course-nav a:hover { border-color: var(--color-coral); box-shadow: var(--shadow-md); text-decoration: none; }
     .course-nav__label { font-size: 0.75rem; color: var(--color-slate); text-transform: uppercase; letter-spacing: 0.05em; }
     .course-nav__title { font-weight: 700; color: var(--color-coral); }
     .course-nav a.next { text-align: right; }
+
+    .sources-list { font-size: 0.875rem; line-height: 1.9; word-break: break-word; }
   </style>
 </head>
 <body>
@@ -123,9 +129,9 @@
 
         <header class="topic-header">
           <span class="topic-header__eyebrow">DP-700 · MÓDULO 9</span>
-          <span class="topic-header__icon">🚰</span>
-          <h1 class="topic-header__title">Eventstreams en tiempo real</h1>
-          <p class="topic-header__subtitle">Sources y destinations, las 7 transformaciones no-code, las 5 windowing functions (el tema estrella del examen), derived streams para content-based routing y DeltaFlow para CDC. 🌸</p>
+          <span class="topic-header__icon">🌊</span>
+          <h1 class="topic-header__title">Usar eventstreams en tiempo real en Microsoft Fabric</h1>
+          <p class="topic-header__subtitle">La herramienta principal de ingesta y transformación de streaming: sources, destinations, transformaciones no-code, SQL operator, las 5 windowing functions, derived streams y DeltaFlow. 🌸</p>
           <div class="topic-header__levels">
             <span class="badge badge--intermediate">Intermedio</span>
             <span class="badge badge--advanced">Avanzado</span>
@@ -135,225 +141,1123 @@
         <nav class="toc" aria-label="Índice del módulo">
           <p class="toc__title">📑 En este módulo:</p>
           <ul class="toc__list">
-            <li><a href="#anatomia">1. Anatomía</a></li>
-            <li><a href="#capabilities">2. Enhanced vs Standard</a></li>
-            <li><a href="#sources">3. Sources</a></li>
-            <li><a href="#destinations">4. Destinations</a></li>
-            <li><a href="#no-code">5. 7 transformaciones</a></li>
-            <li><a href="#sql-editor">6. SQL code editor</a></li>
-            <li><a href="#windowing">7. Windowing functions ⭐</a></li>
-            <li><a href="#tumbling">8. Tumbling</a></li>
-            <li><a href="#hopping">9. Hopping</a></li>
-            <li><a href="#sliding">10. Sliding</a></li>
-            <li><a href="#session">11. Session</a></li>
-            <li><a href="#snapshot">12. Snapshot</a></li>
-            <li><a href="#choose">13. Elegir window</a></li>
-            <li><a href="#derived">14. Derived streams</a></li>
-            <li><a href="#deltaflow">15. DeltaFlow y Spark</a></li>
-            <li><a href="#trampas">16. Trampas</a></li>
-            <li><a href="#comparativas">17. Comparativas</a></li>
+            <li><a href="#objetivos">1. Objetivos y encaje</a></li>
+            <li><a href="#anatomia">2. Anatomía de un Eventstream</a></li>
+            <li><a href="#capabilities">3. Enhanced vs Standard</a></li>
+            <li><a href="#sources">4. Sources</a></li>
+            <li><a href="#config-sources">5. Configurar sources</a></li>
+            <li><a href="#destinations">6. Destinations</a></li>
+            <li><a href="#config-destinations">7. Configurar destinations</a></li>
+            <li><a href="#no-code">8. Transformaciones no-code</a></li>
+            <li><a href="#sql-editor">9. SQL Code editor</a></li>
+            <li><a href="#windowing">10. Windowing functions</a></li>
+            <li><a href="#tumbling">11. Tumbling Window</a></li>
+            <li><a href="#hopping">12. Hopping Window</a></li>
+            <li><a href="#sliding">13. Sliding Window</a></li>
+            <li><a href="#session">14. Session Window</a></li>
+            <li><a href="#snapshot">15. Snapshot Window</a></li>
+            <li><a href="#choose-window">16. Elegir el window correcto</a></li>
+            <li><a href="#derived-streams">17. Derived streams</a></li>
+            <li><a href="#patterns">18. Patrones de transformación</a></li>
+            <li><a href="#deltaflow">19. DeltaFlow</a></li>
+            <li><a href="#spark-integration">20. Spark Structured Streaming</a></li>
+            <li><a href="#monitoring">21. Monitoring</a></li>
+            <li><a href="#trampas">22. Trampas típicas</a></li>
+            <li><a href="#comparativas">23. Comparativas clave</a></li>
+            <li><a href="#fuentes">24. Fuentes oficiales</a></li>
           </ul>
         </nav>
 
-        <div class="category-header" id="anatomia"><span class="category-header__icon">🧩</span><h2 class="category-header__title">1. Anatomía de un Eventstream</h2></div>
-        <article class="concept-card">
-          <p>Un Eventstream crea un pipeline que <strong>ingesta, procesa y entrega</strong> events. Se diseña en un <strong>canvas visual</strong> drag-and-drop, sin código ni gestión de infraestructura. Tres componentes obligatorios: <strong>Sources</strong> (📥), <strong>Transformations</strong> (🔄) y <strong>Destinations</strong> (📤).</p>
-          <div class="note note--tip">🎯 <strong>Crítico para el examen:</strong> las 5 windowing functions, derived streams para content-based routing, elegir Eventstream vs Spark Structured Streaming, SQL operator vs no-code, y DeltaFlow para CDC.</div>
-        </article>
+        <!-- ============ 1. OBJETIVOS ============ -->
+        <div class="category-header" id="objetivos">
+          <span class="category-header__icon">🎯</span>
+          <h2 class="category-header__title">1. Objetivos y encaje en el DP-700</h2>
+        </div>
 
-        <div class="category-header" id="capabilities"><span class="category-header__icon">🎨</span><h2 class="category-header__title">2. Enhanced vs Standard capabilities</h2></div>
         <article class="concept-card">
-          <p><strong>Standard:</strong> versión original, sources/destinations limitados. <strong>Enhanced ⭐:</strong> moderna (recomendada), más sources y destinations, mejor UI, SQL operator y DeltaFlow. Para nuevos eventstreams, <strong>siempre Enhanced</strong>.</p>
-        </article>
+          <h3>¿Qué te enseña este módulo?</h3>
+          <p>Este módulo es donde <strong>profundizamos en los Eventstreams</strong> — la herramienta principal para la ingesta y transformación de datos en streaming en Fabric. Los objetivos oficiales:</p>
+          <ol>
+            <li>Establecer <strong>sources y destinations</strong> en los Fabric Eventstreams.</li>
+            <li><strong>Capturar, transformar y enrutar</strong> datos usando Fabric Eventstreams.</li>
+          </ol>
 
-        <div class="category-header" id="sources"><span class="category-header__icon">📥</span><h2 class="category-header__title">3. Sources</h2></div>
-        <article class="concept-card">
+          <h4>Peso en el examen DP-700</h4>
+          <p>Los Eventstreams aparecen con fuerza en el <strong>Dominio 2 (Ingest and transform)</strong> y también en el Dominio 3 (troubleshooting):</p>
           <div class="table-scroll">
             <table class="md-table">
-              <thead><tr><th>Categoría</th><th>Ejemplos</th></tr></thead>
+              <thead><tr><th>Dominio</th><th>Cómo aparecen</th></tr></thead>
               <tbody>
-                <tr><td>Microsoft sources</td><td>Event Hubs ⭐, IoT Hub, Service Bus, CDC (Azure SQL, PostgreSQL, MySQL, SQL Server)</td></tr>
-                <tr><td>Azure events</td><td>Blob Storage events</td></tr>
-                <tr><td>Fabric events</td><td>Workspace items, OneLake, Fabric jobs</td></tr>
-                <tr><td>External</td><td>Apache Kafka ⭐, GCP Pub/Sub, MQTT, Kinesis, Confluent</td></tr>
-                <tr><td>Custom</td><td>Custom app source, Business events (Preview)</td></tr>
-                <tr><td>Sample</td><td>Bicycles, Yellow Taxi, Stock Market</td></tr>
+                <tr><td>Ingest and transform (30-35%)</td><td><strong>Elección del motor de streaming, transformaciones, windowing functions, routing, content-based routing</strong></td></tr>
+                <tr><td>Monitor and optimize (30-35%)</td><td>Troubleshooting de Eventstreams, workspace monitoring, rendimiento</td></tr>
               </tbody>
             </table>
           </div>
-          <p>Puedes conectar <strong>múltiples sources</strong> a un mismo eventstream (union, join, enrichment). Configurables desde el canvas o desde el Real-Time Hub (reutilizables).</p>
-        </article>
 
-        <div class="category-header" id="destinations"><span class="category-header__icon">📤</span><h2 class="category-header__title">4. Destinations</h2></div>
-        <article class="concept-card">
-          <div class="table-scroll">
-            <table class="md-table">
-              <thead><tr><th>Destination</th><th>Uso principal</th></tr></thead>
-              <tbody>
-                <tr><td><strong>Eventhouse</strong></td><td>Analytics KQL real-time, time-series, anomaly detection</td></tr>
-                <tr><td><strong>Lakehouse</strong></td><td>Delta storage histórico, Direct Lake, batch posterior</td></tr>
-                <tr><td><strong>Derived stream</strong></td><td>Content-based routing intermedio</td></tr>
-                <tr><td><strong>Activator</strong></td><td>Alerts y automated actions</td></tr>
-                <tr><td><strong>Custom endpoint</strong></td><td>Integraciones externas</td></tr>
-              </tbody>
-            </table>
+          <div class="note note--tip">
+            🎯 <strong>Qué es CRÍTICO dominar:</strong>
+            <ul>
+              <li><strong>Los 5 tipos de windowing functions</strong> (esto CAE en el examen fijo)</li>
+              <li><strong>Derived streams para content-based routing</strong></li>
+              <li><strong>Elegir entre Eventstream y Spark Structured Streaming</strong></li>
+              <li><strong>Cuándo usar el SQL code operator vs las transformaciones no-code</strong></li>
+              <li><strong>Todos los destinations</strong> y sus casos de uso</li>
+              <li><strong>DeltaFlow para CDC</strong> (feature moderna)</li>
+            </ul>
           </div>
-          <div class="note note--tip">🎯 <strong>Múltiples destinations en paralelo</strong> desde el mismo eventstream, sin colisionar: un source, un procesado, N destinos (ej: Eventhouse + Activator + Lakehouse + Custom endpoint).</div>
-        </article>
 
-        <div class="category-header" id="no-code"><span class="category-header__icon">🔄</span><h2 class="category-header__title">5. Las 7 transformaciones no-code</h2></div>
-        <article class="concept-card">
-          <div class="table-scroll">
-            <table class="md-table">
-              <thead><tr><th>Transform</th><th>Función</th></tr></thead>
-              <tbody>
-                <tr><td><strong>Filter</strong> 🔍</td><td>Descartar events según condición</td></tr>
-                <tr><td><strong>Manage fields</strong> ✏️</td><td>Add/remove/rename/change type</td></tr>
-                <tr><td><strong>Aggregate</strong> 📊</td><td>Sum/Min/Max/Avg cada vez que llega un event</td></tr>
-                <tr><td><strong>Group by</strong> 🌸</td><td>Aggregations con windowing (contiene las windows)</td></tr>
-                <tr><td><strong>Union</strong> 🔗</td><td>Combinar streams con shared fields (los no compartidos se dropean)</td></tr>
-                <tr><td><strong>Join</strong> 🔀</td><td>Cross-stream matching (inner, left, etc.)</td></tr>
-                <tr><td><strong>Expand</strong> 📤</td><td>Array → una row por valor (como explode)</td></tr>
-              </tbody>
-            </table>
+          <div class="note note--tip">
+            🌸 <strong>Sobre las windowing functions:</strong> son <strong>la piedra angular</strong> del procesamiento de streams y aparecen en muchísimas preguntas de examen. Te las explico con muchos ejemplos y diagramas mentales para que se te queden bien pegadas 💕
           </div>
         </article>
 
-        <div class="category-header" id="sql-editor"><span class="category-header__icon">💻</span><h2 class="category-header__title">6. SQL Code editor operator</h2></div>
+        <!-- ============ 2. ANATOMÍA ============ -->
+        <div class="category-header" id="anatomia">
+          <span class="category-header__icon">🧩</span>
+          <h2 class="category-header__title">2. Anatomía de un Eventstream</h2>
+        </div>
+
         <article class="concept-card">
-          <p>Para teams code-first: escribes SQL directamente (misma sintaxis que Stream Analytics), con windowing, aggregations, joins y content-based routing en una query.</p>
-          <pre><code class="language-sql">SELECT device_id, AVG(temperature) AS avg_temp, System.Timestamp() AS window_end
+          <h3>¿Qué es un Eventstream?</h3>
+          <p>Un <strong>Eventstream</strong> es una feature de Fabric que crea un <strong>pipeline</strong> que:</p>
+          <ol>
+            <li><strong>Ingesta eventos</strong> de fuentes de datos en streaming.</li>
+            <li>Los <strong>procesa</strong> con transformaciones opcionales.</li>
+            <li>Los <strong>entrega</strong> a varios destinos.</li>
+          </ol>
+          <p>Es el <strong>mecanismo de entrega</strong> que lleva los eventos desde donde ocurren hasta donde necesitan procesarse.</p>
+
+          <h4>El canvas visual</h4>
+          <p>Los eventstreams se diseñan en un <strong>canvas visual</strong>: <strong>drag and drop</strong> de nodos (sources, transformaciones, destinations), viendo los <strong>datos de eventos fluyendo</strong> en tiempo real. <strong>Sin código y sin gestionar infraestructura</strong>.</p>
+
+          <h4>Los 3 componentes obligatorios</h4>
+          <ol>
+            <li><strong>Sources</strong> 📥 — de dónde vienen los eventos.</li>
+            <li><strong>Transformations</strong> 🔄 — el procesamiento opcional que se aplica.</li>
+            <li><strong>Destinations</strong> 📤 — dónde van los eventos procesados.</li>
+          </ol>
+
+          <h4>Ejemplo mental</h4>
+          <p>Imagina que tienes datos de bicis compartidas:</p>
+          <pre><code class="language-plaintext">Bicycles (source)          ← datos raw de alquiler de bicis
+     ↓
+GroupByStreet             ← transform: suma bicis por calle
+     ↓
+Bikes-by-street-table     ← destination: tabla KQL</code></pre>
+          <p>Todo esto en el canvas visual, drag-and-drop, sin código.</p>
+        </article>
+
+        <!-- ============ 3. CAPABILITIES ============ -->
+        <div class="category-header" id="capabilities">
+          <span class="category-header__icon">🎨</span>
+          <h2 class="category-header__title">3. Enhanced vs Standard capabilities</h2>
+        </div>
+
+        <article class="concept-card">
+          <h4>Dos versiones de Eventstream</h4>
+          <p><strong>A) Standard capabilities</strong> — la versión original, con interfaz básica y sources y destinations más limitados.</p>
+          <p><strong>B) Enhanced capabilities</strong> ⭐ — la versión moderna (<strong>RECOMENDADA</strong>): más sources y destinations, mejor UI/UX y nuevas features (SQL operator, DeltaFlow, etc.).</p>
+
+          <div class="note note--practice">
+            📌 <strong>Cuál elegir:</strong> <strong>Enhanced siempre</strong>, a menos que estés manteniendo un eventstream legacy. Al crear un eventstream nuevo en 2026, la opción por defecto es <strong>Enhanced</strong>. Este manual se centra en Enhanced.
+          </div>
+        </article>
+
+        <!-- ============ 4. SOURCES ============ -->
+        <div class="category-header" id="sources">
+          <span class="category-header__icon">📥</span>
+          <h2 class="category-header__title">4. Sources: catálogo completo</h2>
+        </div>
+
+        <article class="concept-card">
+          <p>Los eventstreams pueden ingestar de muchos tipos de fuentes:</p>
+
+          <h4>Microsoft sources</h4>
+          <ul>
+            <li><strong>Azure Event Hubs</strong> ⭐ (el más común)</li>
+            <li><strong>Azure IoT Hub</strong></li>
+            <li><strong>Azure Service Bus</strong></li>
+            <li><strong>Feeds de Change Data Capture (CDC)</strong> en servicios de base de datos: Azure SQL Database CDC, PostgreSQL CDC, MySQL CDC, SQL Server on VM CDC y Azure SQL Managed Instance CDC.</li>
+          </ul>
+
+          <h4>Azure events</h4>
+          <p><strong>Eventos de Azure Blob Storage</strong> (BlobCreated, BlobDeleted).</p>
+
+          <h4>Fabric events</h4>
+          <ul>
+            <li><strong>Cambios en items del workspace</strong> (creación, modificación, eliminación).</li>
+            <li><strong>Cambios de datos en los data stores de OneLake</strong>.</li>
+            <li><strong>Eventos de jobs de Fabric</strong> (pipeline start/succeed/fail, etc.).</li>
+          </ul>
+
+          <h4>Fuentes externas</h4>
+          <ul>
+            <li><strong>Apache Kafka</strong> ⭐</li>
+            <li><strong>Google Cloud Pub/Sub</strong></li>
+            <li><strong>MQTT</strong> (Message Queuing Telemetry Transport) (Preview)</li>
+            <li><strong>AWS Kinesis</strong> (vía conectores)</li>
+            <li><strong>Custom app source</strong> (para tus propias apps)</li>
+            <li><strong>Confluent Cloud Kafka</strong></li>
+          </ul>
+
+          <h4>Sample data (para pruebas)</h4>
+          <p>Fabric incluye <strong>streams de muestra pregenerados</strong> para practicar: <strong>Bicycles</strong> (alquiler de bicis), <strong>Yellow Taxi</strong> (taxis de NYC) y <strong>Stock Market</strong> (precios de acciones simulados). Ideales para aprender sin montar infraestructura real.</p>
+
+          <h4>Business events (Preview)</h4>
+          <p>Los <strong>Fabric business events</strong> (feature más nueva) permiten <strong>publicar business events</strong> desde apps con schemas definidos y <strong>reaccionar</strong> a esos eventos con Activator + User Data Functions. Es el patrón moderno de arquitectura orientada a eventos.</p>
+
+          <h4>🎯 Elegir el source correcto</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Escenario</th><th>Source</th></tr></thead>
+              <tbody>
+                <tr><td>Dispositivos IoT enviando telemetría</td><td>Azure IoT Hub</td></tr>
+                <tr><td>Clúster Kafka on-prem</td><td>Apache Kafka</td></tr>
+                <tr><td>BBDD transaccional con CDC</td><td>CDC feed</td></tr>
+                <tr><td>Ficheros que aterrizan en Blob</td><td>Eventos de Azure Blob Storage</td></tr>
+                <tr><td>App custom generando eventos</td><td>Custom app source</td></tr>
+                <tr><td>Multi-cloud (GCP, AWS)</td><td>Google Cloud Pub/Sub, Kinesis</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </article>
+
+        <!-- ============ 5. CONFIG SOURCES ============ -->
+        <div class="category-header" id="config-sources">
+          <span class="category-header__icon">⚙️</span>
+          <h2 class="category-header__title">5. Cómo configurar sources</h2>
+        </div>
+
+        <article class="concept-card">
+          <h4>Dos formas</h4>
+          <p><strong>A) Crear un source nuevo desde el canvas del eventstream</strong>: click en "Add source", elegir el tipo y configurar la conexión y las credenciales.</p>
+          <p><strong>B) Conectar a un source existente desde el Real-Time Hub</strong>: el Real-Time Hub tiene un catálogo de sources ya configurados; te suscribes desde el hub y es reutilizable entre eventstreams.</p>
+
+          <h4>Datos de configuración típicos</h4>
+          <p>Para <strong>Azure Event Hubs</strong>: connection string o Shared Access Signature, consumer group (para no interferir con otros consumidores) y content format (JSON, Avro, etc.).</p>
+          <p>Para <strong>Kafka</strong>: bootstrap servers, nombre del topic y autenticación (SASL, SSL, etc.).</p>
+          <p>Para <strong>CDC</strong>: conexión a la base de datos, tablas a monitorizar y modo de output (analytics-ready recomendado).</p>
+
+          <h4>Un eventstream, varios sources</h4>
+          <p>Puedes conectar <strong>varios sources</strong> a un mismo eventstream. Ideal para hacer <strong>union</strong> de streams similares, <strong>join</strong> entre streams distintos o <strong>enriquecimiento</strong> cross-source.</p>
+        </article>
+
+        <!-- ============ 6. DESTINATIONS ============ -->
+        <div class="category-header" id="destinations">
+          <span class="category-header__icon">📤</span>
+          <h2 class="category-header__title">6. Destinations: catálogo completo</h2>
+        </div>
+
+        <article class="concept-card">
+          <p>Los destinos son endpoints donde tus datos procesados quedan <strong>disponibles para queries, reports, dashboards, alertas y acciones</strong>.</p>
+
+          <h4>Eventhouse</h4>
+          <p><strong>Ingestar tus datos de eventos en tiempo real en un Eventhouse</strong> para consultarlos con KQL.</p>
+          <p><strong>Cuándo usarlo</strong>: analítica en tiempo real con KQL, análisis de series temporales, detección de anomalías e ingesta de alta velocidad.</p>
+
+          <h4>Lakehouse</h4>
+          <p><strong>Transformar los eventos e ingestarlos en el lakehouse en formato Delta Lake</strong>.</p>
+          <p><strong>Cuándo usarlo</strong>: persistir datos históricos, consumirlos desde Power BI Direct Lake, análisis batch posterior sobre datos de streaming y data engineering híbrido batch+streaming.</p>
+
+          <h4>Derived stream ⭐</h4>
+          <p><strong>Versión transformada del stream de datos original</strong> que habilita el <strong>content-based routing</strong>. Permiten <strong>filtrar y transformar</strong> una vez, <strong>enrutar subconjuntos</strong> según el contenido y <strong>reutilizarlos</strong> desde varios sistemas downstream.</p>
+          <p>Ejemplo: filtrar datos de sensores IoT → alertas de temperatura alta a Activator, medias horarias a una KQL database. Los vemos en detalle en la sección de content-based routing.</p>
+
+          <h4>Fabric Activator</h4>
+          <p><strong>Conectar directamente</strong> los datos de eventos en tiempo real a un <strong>motor de detección de eventos</strong> que dispara acciones automáticamente cuando detecta patrones.</p>
+          <p><strong>Acciones posibles</strong>: enviar notificaciones (email, Teams), lanzar <strong>workflows de Power Automate</strong>, ejecutar pipelines de Fabric y ejecutar notebooks de Fabric.</p>
+
+          <h4>Custom endpoint</h4>
+          <p><strong>Enrutar los eventos en tiempo real a un endpoint externo custom</strong>. <strong>Cuándo usarlo</strong>: integraciones con sistemas fuera de Fabric, aplicaciones custom y servicios de terceros.</p>
+
+          <div class="note note--tip">
+            🎯 <strong>Varios destinations en el mismo eventstream:</strong> puedes conectar a <strong>varios destinos simultáneamente</strong> sin que se afecten ni colisionen entre ellos.
+            <pre><code class="language-plaintext">Eventstream "IoT-Sensors"
+     ↓
+[Filter + Aggregate]
+     ↓
+├─→ Eventhouse (análisis histórico)
+├─→ Activator (alertas)
+├─→ Lakehouse (backup para BI)
+└─→ Custom endpoint (app externa de monitorización)</code></pre>
+            <strong>Un source, un procesado, 4 destinations</strong> — todo en paralelo.
+          </div>
+        </article>
+
+        <!-- ============ 7. CONFIG DESTINATIONS ============ -->
+        <div class="category-header" id="config-destinations">
+          <span class="category-header__icon">⚙️</span>
+          <h2 class="category-header__title">7. Cómo configurar destinations</h2>
+        </div>
+
+        <article class="concept-card">
+          <h4>En el canvas</h4>
+          <p>Después de conectar un source (y opcionalmente transformaciones), puedes añadir un destino:</p>
+          <ol>
+            <li>Click en <strong>Add destination</strong>.</li>
+            <li>Elegir el tipo.</li>
+            <li>Configurar el destino (workspace, item, tabla, etc.).</li>
+            <li>Mapear columnas si aplica.</li>
+          </ol>
+
+          <h4>Configuración típica por destino</h4>
+          <p><strong>Eventhouse destination</strong>: destino = workspace + Eventhouse + KQL database + tabla; modo de ingesta directo o vía update policy; y mapeo de schema.</p>
+          <p><strong>Lakehouse destination</strong>: destino = workspace + Lakehouse + tabla; settings de la tabla Delta; y estrategia de particionado.</p>
+          <p><strong>Activator destination</strong>: seleccionas el Activator existente o creas uno nuevo. Los eventos fluyen y Activator los evalúa contra sus rules.</p>
+          <p><strong>Custom endpoint</strong>: URL del endpoint, autenticación (Bearer token, connection string) y formato (JSON, Avro).</p>
+        </article>
+
+        <!-- ============ 8. NO-CODE ============ -->
+        <div class="category-header" id="no-code">
+          <span class="category-header__icon">🔄</span>
+          <h2 class="category-header__title">8. Transformaciones no-code (7 tipos)</h2>
+        </div>
+
+        <article class="concept-card">
+          <p>Eventstream ofrece <strong>7 transformaciones no-code</strong> que arrastras al canvas. Son las herramientas del día a día.</p>
+
+          <h4>Filter 🔍</h4>
+          <p><strong>Filtra eventos según el valor de un campo</strong>. Ejemplos de condiciones: <code>temperature &gt; 80°</code>, <code>status = "error"</code>, <code>customer_type = "premium"</code>. <strong>Uso típico</strong>: quitar eventos inválidos o irrelevantes antes del almacenamiento.</p>
+
+          <h4>Manage fields ✏️</h4>
+          <p>Permite <strong>añadir</strong> campos calculados (derivados de otros), <strong>quitar</strong> campos innecesarios, <strong>cambiar</strong> tipos de datos y <strong>renombrar</strong> campos. <strong>Uso típico</strong>: preparar el schema para el destino.</p>
+          <p>Ejemplo: partiendo de <code>[temp_celsius, timestamp_utc, device_id]</code> → añadir <code>temp_fahrenheit = temp_celsius * 1.8 + 32</code>, renombrar <code>device_id → deviceId</code> y cambiar el tipo de <code>timestamp_utc → datetime</code>.</p>
+
+          <h4>Aggregate 📊</h4>
+          <p>Calcula una <strong>agregación</strong> (Sum, Min, Max, Average) <strong>cada vez que ocurre un evento nuevo</strong> sobre un periodo de tiempo. Puedes tener <strong>varias agregaciones</strong> en la misma transformación, renombrar las columnas calculadas y filtrar la agregación por dimensiones.</p>
+
+          <h4>Group by 🌸 (CRÍTICO — contiene el windowing)</h4>
+          <p>Calcula agregaciones <strong>entre eventos dentro de ventanas temporales</strong>. Ejemplos: totales de ventas por hora, medias diarias de temperatura.</p>
+          <p>Soporta varias <strong>ventanas temporales</strong>: <strong>Tumbling</strong> (intervalos fijos), <strong>Hopping</strong> (intervalos solapados) y <strong>Sliding</strong> (solapados cuando cambia el contenido). Los detalles los vemos en la sección específica.</p>
+
+          <h4>Union 🔗</h4>
+          <p><strong>Conecta 2 o más nodos</strong> del canvas y <strong>añade los eventos con campos compartidos</strong> (mismo nombre y tipo de dato) a una tabla combinada.</p>
+          <p><strong>Reglas</strong>: los campos que <strong>no coinciden</strong> se <strong>descartan</strong> del output. Similar al UNION de SQL pero para streams. <strong>Uso típico</strong>: consolidar streams de varios sources con schema parecido.</p>
+          <p>Ejemplo: stream 1 con sensores del edificio A <code>[device_id, temp, timestamp]</code> y stream 2 del edificio B <code>[device_id, temp, timestamp, humidity]</code> → el union da <code>[device_id, temp, timestamp]</code> (humidity se cae).</p>
+
+          <h4>Join 🔀</h4>
+          <p><strong>Combina datos de 2 streams</strong> según una condición de coincidencia. Similar al JOIN de SQL (INNER JOIN, LEFT JOIN, etc.). <strong>Uso típico</strong>: enriquecimiento cross-stream (correlacionar eventos).</p>
+          <p>Ejemplo: stream A con orders <code>[order_id, customer_id, amount]</code> y stream B con customers <code>[customer_id, name, region]</code>, join por <code>customer_id</code> → orders enriquecidas con la info del cliente.</p>
+
+          <h4>Expand 📤</h4>
+          <p><strong>Transformación de arrays</strong> que crea una fila nueva <strong>por cada valor dentro de un array</strong>. Similar a <code>explode()</code> en Spark. <strong>Uso típico</strong>: normalizar eventos con arrays anidados.</p>
+          <pre><code class="language-json">Input:
+{
+  "order_id": 123,
+  "items": ["apple", "banana", "orange"]
+}
+
+Expand sobre "items" produce:
+{"order_id": 123, "items": "apple"}
+{"order_id": 123, "items": "banana"}
+{"order_id": 123, "items": "orange"}</code></pre>
+        </article>
+
+        <!-- ============ 9. SQL EDITOR ============ -->
+        <div class="category-header" id="sql-editor">
+          <span class="category-header__icon">💻</span>
+          <h2 class="category-header__title">9. SQL Code editor operator</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>¿Qué es?</h3>
+          <p>Para equipos <strong>code-first</strong>, Eventstream incluye un <strong>operador SQL</strong> donde escribes <strong>expresiones SQL directamente</strong>. Soporta windowing, agregaciones, joins, varias queries en el mismo operador y <strong>content-based routing</strong> (misma query, distintos outputs).</p>
+
+          <h4>Cuándo usarlo</h4>
+          <p><strong>SQL operator</strong> ✅ cuando tu equipo viene de <strong>Stream Analytics</strong> (misma sintaxis), la lógica es compleja y necesitaría muchas transformaciones no-code encadenadas, quieres <strong>content-based routing en una sola query</strong>, o prefieres <strong>código declarativo</strong> a lo visual.</p>
+          <p><strong>Transformaciones no-code</strong> ✅ cuando eres analista low-code, la lógica es simple y clara, o el equipo quiere <strong>auditabilidad visual</strong>.</p>
+
+          <h4>Ejemplo</h4>
+          <pre><code class="language-sql">SELECT
+    device_id,
+    AVG(temperature) AS avg_temp,
+    COUNT(*) AS event_count,
+    System.Timestamp() AS window_end
+FROM
+    IoT_Stream
+WHERE
+    temperature IS NOT NULL
+GROUP BY
+    device_id,
+    TumblingWindow(minute, 5)</code></pre>
+          <p>Se traduce como: agrupa los eventos por dispositivo y ventanas de 5 minutos, y calcula la media y el conteo.</p>
+
+          <h4>Content-based routing en SQL</h4>
+          <p>Puedes tener <strong>varios SELECT</strong> en un operador SQL, cada uno con un output distinto:</p>
+          <pre><code class="language-sql">-- Output 1: alertas de temperatura alta
+SELECT * INTO high_temps
 FROM IoT_Stream
-WHERE temperature IS NOT NULL
-GROUP BY device_id, TumblingWindow(minute, 5)</code></pre>
-          <p>Con varios <code>SELECT ... INTO</code> haces routing a distintos destinos desde un solo operator.</p>
+WHERE temperature &gt; 80;
+
+-- Output 2: lecturas normales
+SELECT * INTO normal_readings
+FROM IoT_Stream
+WHERE temperature &lt;= 80;</code></pre>
+          <p>Esto permite hacer <strong>routing a distintos destinos desde un solo operador SQL</strong>.</p>
         </article>
 
-        <div class="category-header" id="windowing"><span class="category-header__icon">⭐</span><h2 class="category-header__title">7. Windowing functions: el corazón del streaming</h2></div>
+        <!-- ============ 10. WINDOWING ============ -->
+        <div class="category-header" id="windowing">
+          <span class="category-header__icon">⭐</span>
+          <h2 class="category-header__title">10. Windowing functions: el corazón del streaming</h2>
+        </div>
+
         <article class="concept-card">
-          <p>Una <strong>window</strong> es un intervalo de tiempo sobre el que agrupas events para agregarlos. Necesarias porque los streams son infinitos (un GROUP BY clásico no aplica). Se usan en el <code>GROUP BY</code>.</p>
-          <div class="note note--tip">🎯 <strong>Regla clave:</strong> todas las windows <strong>output events al FINAL de la window</strong> (un solo event por window, con la agregación, timestamped al end). Tamaño máximo: <strong>7 días</strong> para todos los tipos.</div>
+          <p><strong>Este es EL tema más examinable</strong> del módulo. Presta atención especial 🌸</p>
+
+          <h3>¿Qué son las windowing functions?</h3>
+          <p>En streaming, una <strong>window</strong> es un <strong>intervalo de tiempo</strong> sobre el que agrupas eventos para hacer cálculos agregados.</p>
+          <p><strong>Por qué son necesarias</strong>: los streams son infinitos. Un <code>GROUP BY</code> clásico requeriría procesar todos los eventos, algo imposible con streams. Las windows te permiten agrupar eventos en <strong>intervalos temporales limitados</strong>.</p>
+
+          <h4>Los 5 tipos de windows</h4>
+          <ol>
+            <li><strong>Tumbling Window</strong> — fijas, sin solapamiento</li>
+            <li><strong>Hopping Window</strong> — fijas, con solapamiento (hops)</li>
+            <li><strong>Sliding Window</strong> — móvil, disparada por eventos</li>
+            <li><strong>Session Window</strong> — grupo de eventos cercanos con timeout</li>
+            <li><strong>Snapshot Window</strong> — mismo timestamp</li>
+          </ol>
+          <p>Fabric Eventstream soporta las 5 (algunas también en Azure Stream Analytics).</p>
+
+          <div class="note note--warning">
+            🎯 <strong>Regla clave: output al final.</strong> <strong>Todas las operaciones de windowing emiten eventos al FINAL de la ventana</strong>. Cada window tiene un <strong>start time</strong>, un <strong>end time</strong> y un <strong>output</strong>: un único evento por ventana con la agregación calculada, con el timestamp del end time.
+          </div>
+
+          <h4>Sintaxis en el operador SQL</h4>
+          <p>Se usan en la cláusula <strong>GROUP BY</strong>:</p>
+          <pre><code class="language-sql">SELECT ... FROM stream
+GROUP BY &lt;campos&gt;, &lt;WindowFunction&gt;(&lt;params&gt;)</code></pre>
+
+          <h4>Límites generales</h4>
+          <ul>
+            <li><strong>Tamaño máximo de ventana</strong>: <strong>7 días</strong> para todos los tipos.</li>
+            <li>Puedes agregar sobre <strong>varias ventanas</strong> en el mismo GROUP BY usando la función <strong>Windows()</strong>.</li>
+          </ul>
+          <p>Vamos a ver cada tipo en detalle 🌸</p>
         </article>
 
-        <div class="category-header" id="tumbling"><span class="category-header__icon">🌸</span><h2 class="category-header__title">8. Tumbling Window</h2></div>
+        <!-- ============ 11. TUMBLING ============ -->
+        <div class="category-header" id="tumbling">
+          <span class="category-header__icon">🌸</span>
+          <h2 class="category-header__title">11. Tumbling Window a fondo</h2>
+        </div>
+
         <article class="concept-card">
-          <p>Intervalos <strong>fixed, sin overlap, contiguos</strong>. Cada event cae en <strong>exactamente una window</strong>. 1 parámetro (size). Como muffins en una bandeja 🧁.</p>
-          <pre><code class="language-sql">GROUP BY TollId, TumblingWindow(minute, 5)</code></pre>
-          <p>Por defecto incluye el fin de la window (12:05) y excluye el inicio (12:00). Uso: hourly reports, 5-min rollups, daily aggregations.</p>
+          <h3>Definición</h3>
+          <p>Las <strong>tumbling windows</strong> son una serie de intervalos <strong>de tamaño fijo, sin solapamiento y contiguos</strong>. Piénsalos como <strong>cubos alineados en el tiempo</strong>, todos del mismo tamaño y sin solaparse.</p>
+
+          <div class="note note--tip">
+            🌷 <strong>Analogía kawaii:</strong> como <strong>magdalenas en una bandeja</strong>: cada una en su hueco, del mismo tamaño y sin tocarse. Cada evento cae en <strong>exactamente una magdalena</strong> (una ventana).
+          </div>
+
+          <h4>Características clave</h4>
+          <ul>
+            <li>📏 <strong>Misma longitud</strong> para todas las ventanas.</li>
+            <li>❌ <strong>Sin solapamiento</strong> entre ventanas.</li>
+            <li>✅ Un evento pertenece a <strong>exactamente 1 ventana</strong>.</li>
+            <li>📊 Output al final de cada ventana.</li>
+          </ul>
+
+          <h4>Sintaxis</h4>
+          <pre><code class="language-sql">TUMBLINGWINDOW(timeunit, windowsize)
+
+-- Con offset opcional:
+TUMBLINGWINDOW(timeunit, windowsize, offsetsize)
+
+-- Sintaxis alternativa:
+TUMBLINGWINDOW(Duration(timeunit, windowsize))
+TUMBLINGWINDOW(Duration(timeunit, windowsize), Offset(timeunit, offsetsize))</code></pre>
+
+          <h4>Timeunits válidos</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Timeunit</th><th>Abreviaturas</th></tr></thead>
+              <tbody>
+                <tr><td>day</td><td>dd, d</td></tr>
+                <tr><td>hour</td><td>hh</td></tr>
+                <tr><td>minute</td><td>mi, n</td></tr>
+                <tr><td>second</td><td>ss, s</td></tr>
+                <tr><td>millisecond</td><td>ms</td></tr>
+                <tr><td>microsecond</td><td>mcs</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h4>Ejemplo completo</h4>
+          <pre><code class="language-sql">SELECT
+    TollId,
+    COUNT(*) AS car_count
+FROM Input TIMESTAMP BY EntryTime
+GROUP BY
+    TollId,
+    TumblingWindow(minute, 5)</code></pre>
+          <p><strong>Traducción</strong>: agrupa los eventos por TollId y ventanas tumbling de 5 minutos, cuenta los coches por ventana y emite el output cada 5 minutos con el conteo final.</p>
+
+          <h4>Comportamiento de inclusión</h4>
+          <p>Por defecto, <strong>incluye</strong> el final de la ventana (12:05) y <strong>excluye</strong> el principio (12:00). Ejemplo: la ventana 12:00-12:05 incluye los eventos exactamente a las 12:05, pero <strong>no</strong> los de las 12:00 (esos van a la ventana 11:55-12:00). El <strong>offset</strong> cambia este comportamiento si lo necesitas.</p>
+
+          <h4>Cuándo usarla</h4>
+          <ul>
+            <li><strong>Informes horarios</strong> (<code>TumblingWindow(hour, 1)</code>).</li>
+            <li><strong>Rollups de 5 minutos</strong> para dashboards.</li>
+            <li><strong>Agregaciones diarias</strong> (<code>TumblingWindow(day, 1)</code>).</li>
+            <li>Cualquier caso donde quieras <strong>cubos temporales limpios sin solapamiento</strong>.</li>
+          </ul>
         </article>
 
-        <div class="category-header" id="hopping"><span class="category-header__icon">🌸</span><h2 class="category-header__title">9. Hopping Window</h2></div>
+        <!-- ============ 12. HOPPING ============ -->
+        <div class="category-header" id="hopping">
+          <span class="category-header__icon">🌸</span>
+          <h2 class="category-header__title">12. Hopping Window a fondo</h2>
+        </div>
+
         <article class="concept-card">
-          <p>Como tumbling pero <strong>con overlap</strong>: "saltan" hacia delante. 3 parámetros: size, <strong>hop</strong> y (opcional) offset. Un event puede estar en <strong>varias windows</strong>.</p>
-          <pre><code class="language-sql">GROUP BY Region, HoppingWindow(minute, 10, 5)  -- 10min, salta cada 5min</code></pre>
-          <div class="note note--tip">🎯 Un tumbling es un caso especial de hopping donde <code>hop = size</code>. Uso: rolling averages con updates frecuentes, dashboards smooth.</div>
+          <h3>Definición</h3>
+          <p>Las <strong>hopping windows</strong> son ventanas programadas <strong>con solapamiento</strong>. Como las tumbling, pero <strong>se solapan</strong> entre ellas — van "saltando" (hop) hacia delante en el tiempo por un periodo fijo.</p>
+
+          <div class="note note--tip">
+            🌷 <strong>Analogía kawaii:</strong> como los pasos de un baile con solapamiento: cada paso empieza antes de que termine el anterior. Un evento puede estar en <strong>varios pasos</strong> (ventanas) a la vez.
+          </div>
+
+          <h4>Los 3 parámetros</h4>
+          <p>Requiere <strong>3 parámetros</strong> (a diferencia de la tumbling, que solo necesita 1):</p>
+          <ol>
+            <li><strong>timeunit</strong>: unidad de tiempo (minute, second, etc.).</li>
+            <li><strong>windowsize</strong>: cuánto dura cada ventana.</li>
+            <li><strong>hopsize</strong>: cuánto avanza la ventana respecto a la anterior.</li>
+          </ol>
+          <p>Opcional: <strong>offsetsize</strong> para desplazar el inicio.</p>
+
+          <h4>Sintaxis</h4>
+          <pre><code class="language-sql">HOPPINGWINDOW(timeunit, windowsize, hopsize)
+
+-- Con offset:
+HOPPINGWINDOW(timeunit, windowsize, hopsize, offsetsize)
+
+-- Sintaxis alternativa:
+HOPPINGWINDOW(Duration(timeunit, windowsize), Hop(timeunit, hopsize))</code></pre>
+
+          <div class="note note--tip">
+            🎯 <strong>Regla clave:</strong> una <strong>tumbling window es un caso especial de hopping window donde <code>hop = size</code></strong> (sin solapamiento). Si haces <code>HoppingWindow(minute, 5, 5)</code> equivale a <code>TumblingWindow(minute, 5)</code>.
+          </div>
+
+          <h4>Ejemplo con solapamiento</h4>
+          <p><code>HoppingWindow(minute, 10, 5)</code>: duración de 10 minutos y hop de 5 minutos (avanza 5 min entre ventanas). Ventanas generadas:</p>
+          <pre><code class="language-plaintext">Window 1: [10:00 - 10:10]
+Window 2: [10:05 - 10:15]  ← solapa con W1
+Window 3: [10:10 - 10:20]  ← solapa con W2
+...</code></pre>
+          <p>Un evento a las 10:07 estaría en la Window 1 Y en la Window 2 a la vez.</p>
+
+          <h4>Ejemplo SQL completo</h4>
+          <pre><code class="language-sql">SELECT
+    Region,
+    AVG(Temperature) AS avg_temp
+FROM SensorInput TIMESTAMP BY EventTime
+GROUP BY
+    Region,
+    HoppingWindow(minute, 10, 5)</code></pre>
+          <p><strong>Interpretación</strong>: media de temperatura por región, con ventanas de 10 minutos que "saltan" cada 5 minutos. <strong>Output cada 5 minutos</strong> con la media de los últimos 10 minutos.</p>
+
+          <h4>Cuándo usarla</h4>
+          <ul>
+            <li><strong>Medias móviles</strong> con actualizaciones más frecuentes que la duración del cálculo.</li>
+            <li><strong>Dashboards suaves</strong> que quieren actualizarse a menudo con métricas de ventanas amplias.</li>
+            <li>Ejemplo: un KPI de dashboard actualizado cada minuto con datos de los últimos 15 minutos → <code>HoppingWindow(minute, 15, 1)</code>.</li>
+          </ul>
         </article>
 
-        <div class="category-header" id="sliding"><span class="category-header__icon">🌸</span><h2 class="category-header__title">10. Sliding Window</h2></div>
+        <!-- ============ 13. SLIDING ============ -->
+        <div class="category-header" id="sliding">
+          <span class="category-header__icon">🌸</span>
+          <h2 class="category-header__title">13. Sliding Window a fondo</h2>
+        </div>
+
         <article class="concept-card">
-          <p>Solo emite output <strong>cuando el content cambia</strong> (un event entra o sale). Es <strong>event-driven</strong>, no scheduled. Cada window tiene al menos 1 event. 1 parámetro (size). Como un detector de movimiento.</p>
-          <pre><code class="language-sql">GROUP BY Topic, SlidingWindow(second, 10)
-HAVING COUNT(*) >= 3</code></pre>
-          <p>Uso: alerting (solo cuando cambia la condición), detección de patrones con timing irregular.</p>
+          <h3>Definición</h3>
+          <p>Las <strong>sliding windows</strong> solo emiten output <strong>cuando el contenido de la ventana realmente cambia</strong>, es decir, cuando un evento <strong>entra o sale</strong> de la ventana.</p>
+          <p><strong>Diferencia crítica</strong> con tumbling/hopping: las tumbling y hopping emiten a intervalos fijos; la sliding emite de forma <strong>event-driven</strong> (cuando algo cambia).</p>
+
+          <div class="note note--tip">
+            🌷 <strong>Analogía kawaii:</strong> como un <strong>detector de movimiento</strong>: solo emite señal cuando algo entra o sale de su rango. Si nada se mueve, no emite nada.
+          </div>
+
+          <h4>Características</h4>
+          <ul>
+            <li>✅ Cada ventana tiene <strong>al menos 1 evento</strong> (garantizado).</li>
+            <li>✅ Los eventos pueden pertenecer a <strong>varias sliding windows</strong>.</li>
+            <li>✅ Output <strong>on-demand</strong>, no programado.</li>
+            <li>📏 Solo necesita <strong>1 parámetro</strong>: la duración.</li>
+          </ul>
+
+          <h4>Sintaxis</h4>
+          <pre><code class="language-sql">SLIDINGWINDOW(timeunit, windowsize)</code></pre>
+          <p>Simple — no hay hopsize ni offset.</p>
+
+          <h4>Ejemplo</h4>
+          <p>Input:</p>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Stamp</th><th>CreatedAt</th><th>Topic</th></tr></thead>
+              <tbody>
+                <tr><td>1</td><td>2021-10-26T10:15:10</td><td>Streaming</td></tr>
+                <tr><td>5</td><td>2021-10-26T10:15:12</td><td>Streaming</td></tr>
+                <tr><td>9</td><td>2021-10-26T10:15:15</td><td>Streaming</td></tr>
+                <tr><td>7</td><td>2021-10-26T10:15:15</td><td>Streaming</td></tr>
+                <tr><td>8</td><td>2021-10-26T10:15:27</td><td>Streaming</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>Query:</p>
+          <pre><code class="language-sql">SELECT
+    System.Timestamp() AS WindowEndTime,
+    Topic,
+    COUNT(*) AS Count
+FROM TwitterStream TIMESTAMP BY CreatedAt
+GROUP BY Topic, SlidingWindow(second, 10)
+HAVING COUNT(*) &gt;= 3</code></pre>
+          <p>Output (solo cuando cambia el conteo Y cumple el HAVING &gt;= 3):</p>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>WindowEndTime</th><th>Topic</th><th>Count</th></tr></thead>
+              <tbody>
+                <tr><td>2021-10-26T10:15:15</td><td>Streaming</td><td>4</td></tr>
+                <tr><td>2021-10-26T10:15:20</td><td>Streaming</td><td>3</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p><strong>Interpretación</strong>: solo emite cuando la ventana de 10 segundos tiene 3 o más eventos.</p>
+
+          <h4>Cuándo usarla</h4>
+          <ul>
+            <li><strong>Alertas</strong> (alertar solo cuando cambia la condición).</li>
+            <li><strong>Detección de patrones</strong> que ocurren con timing irregular.</li>
+            <li>Casos donde quieres <strong>evitar emitir eventos "sin cambio"</strong>.</li>
+          </ul>
         </article>
 
-        <div class="category-header" id="session"><span class="category-header__icon">🌸</span><h2 class="category-header__title">11. Session Window</h2></div>
+        <!-- ============ 14. SESSION ============ -->
+        <div class="category-header" id="session">
+          <span class="category-header__icon">🌸</span>
+          <h2 class="category-header__title">14. Session Window a fondo</h2>
+        </div>
+
         <article class="concept-card">
-          <p>Agrupa events que llegan <strong>cerca en el tiempo</strong>, filtrando periodos de inactividad. 2-3 parámetros: <strong>timeout</strong>, <strong>maximum duration</strong> y (opcional) partition. Como sesiones de conversación en WhatsApp.</p>
-          <p>Uso: user session tracking, device activity, anomaly detection por periodos.</p>
+          <h3>Definición</h3>
+          <p>Las <strong>session windows</strong> agrupan eventos que <strong>llegan en momentos cercanos</strong>, filtrando los periodos en los que no hay datos. Cada "sesión" de actividad se agrupa como una ventana, y cuando hay un hueco de inactividad, la sesión termina.</p>
+
+          <div class="note note--tip">
+            🌷 <strong>Analogía kawaii:</strong> como las sesiones de conversación en WhatsApp: se agrupan los mensajes seguiditos como una charla, pero cuando pasa un rato sin mensajes, empieza una sesión nueva.
+          </div>
+
+          <h4>Los 3 parámetros</h4>
+          <ol>
+            <li><strong>Timeout</strong>: cuánto esperar sin datos nuevos antes de cerrar la sesión.</li>
+            <li><strong>Maximum duration</strong>: el tiempo máximo que puede durar una sesión (tope de seguridad).</li>
+            <li><strong>Partition</strong> (opcional): partition key para agrupar sesiones por entidad.</li>
+          </ol>
+
+          <h4>Comportamiento</h4>
+          <ul>
+            <li>Si llega un evento → empieza (o continúa) una sesión.</li>
+            <li>Si en <code>timeout</code> segundos NO llega otro evento → la sesión <strong>se cierra</strong>.</li>
+            <li>Si la sesión alcanza el <code>maximum_duration</code> → <strong>se cierra forzosamente</strong> (aunque sigan llegando eventos).</li>
+            <li>Con partition, se agrupan los eventos solo dentro de la misma key.</li>
+          </ul>
+
+          <h4>Casos de uso ideales</h4>
+          <ul>
+            <li><strong>Seguimiento de sesiones de usuario</strong>: agrupar las acciones de un usuario en su sesión web.</li>
+            <li><strong>Actividad de dispositivos</strong>: periodos de actividad de un dispositivo IoT.</li>
+            <li><strong>Detección de anomalías</strong>: periodos de errores agrupados.</li>
+          </ul>
+
+          <h4>Ejemplo mental</h4>
+          <p>Un usuario navegando un e-commerce: 10:00 visita la home, 10:01 hace click en el producto A, 10:02 lo añade al carrito, (hueco de 30 min sin actividad), 10:32 vuelve y hace checkout.</p>
+          <p>Con una <code>SessionWindow</code> con timeout de 20 minutos: <strong>Sesión 1</strong> = 10:00-10:02 (3 eventos) y <strong>Sesión 2</strong> = 10:32 (1 evento).</p>
         </article>
 
-        <div class="category-header" id="snapshot"><span class="category-header__icon">🌸</span><h2 class="category-header__title">12. Snapshot Window</h2></div>
+        <!-- ============ 15. SNAPSHOT ============ -->
+        <div class="category-header" id="snapshot">
+          <span class="category-header__icon">🌸</span>
+          <h2 class="category-header__title">15. Snapshot Window a fondo</h2>
+        </div>
+
         <article class="concept-card">
-          <p>Agrupa events con el <strong>mismo timestamp exacto</strong> (system time). <strong>Sin parámetros</strong> (el único). Uso: agrupar events simultáneos, cotizaciones del mismo tick.</p>
+          <h3>Definición</h3>
+          <p>Las <strong>snapshot windows</strong> agrupan los eventos que <strong>tienen el mismo timestamp</strong>. Es la más simple: sin parámetros, agrupa por el timestamp exacto del sistema.</p>
+
+          <h4>Características</h4>
+          <ul>
+            <li>❌ <strong>No requiere parámetros</strong> — usa el system time.</li>
+            <li>✅ Ideal para agrupar eventos <strong>exactamente simultáneos</strong>.</li>
+            <li>🎯 Muy poco común, pero útil en escenarios específicos.</li>
+          </ul>
+
+          <h4>Cuándo usarla</h4>
+          <ul>
+            <li>Cuando tienes varios eventos con <strong>exactamente el mismo timestamp</strong> que quieres agrupar.</li>
+            <li>Sistemas donde el system time es la única "agrupación" válida.</li>
+          </ul>
         </article>
 
-        <div class="category-header" id="choose"><span class="category-header__icon">🎯</span><h2 class="category-header__title">13. Cómo elegir el window correcto</h2></div>
+        <!-- ============ 16. CHOOSE WINDOW ============ -->
+        <div class="category-header" id="choose-window">
+          <span class="category-header__icon">🎯</span>
+          <h2 class="category-header__title">16. Cómo elegir el window correcto</h2>
+        </div>
+
         <article class="concept-card">
+          <h4>Árbol de decisión</h4>
           <div class="table-scroll">
             <table class="md-table">
               <thead><tr><th>Necesito...</th><th>Window</th></tr></thead>
               <tbody>
-                <tr><td>Intervalos fijos sin overlap</td><td><strong>Tumbling</strong></td></tr>
-                <tr><td>Intervalos fijos con overlap</td><td><strong>Hopping</strong></td></tr>
-                <tr><td>Emitir solo cuando cambia el content</td><td><strong>Sliding</strong></td></tr>
+                <tr><td>Intervalos fijos sin solapamiento</td><td><strong>Tumbling</strong></td></tr>
+                <tr><td>Intervalos fijos con solapamiento</td><td><strong>Hopping</strong></td></tr>
+                <tr><td>Emitir solo cuando cambia el contenido</td><td><strong>Sliding</strong></td></tr>
                 <tr><td>Agrupar por "sesión" de actividad</td><td><strong>Session</strong></td></tr>
-                <tr><td>Agrupar events con mismo timestamp</td><td><strong>Snapshot</strong></td></tr>
+                <tr><td>Agrupar eventos con el mismo timestamp</td><td><strong>Snapshot</strong></td></tr>
               </tbody>
             </table>
           </div>
-          <pre><code class="language-plaintext">Tumbling:  [....][....][....]      cubetas separadas
-Hopping:   [....]  overlap
+
+          <h4>Preguntas guía</h4>
+          <p><strong>P1</strong>: ¿quiero <strong>solapamiento</strong> entre ventanas? Sí → Hopping o Sliding. No → Tumbling o Session.</p>
+          <p><strong>P2</strong>: ¿quiero <strong>output a intervalos regulares</strong> o <strong>event-driven</strong>? Regular → Tumbling o Hopping. Event-driven → Sliding o Session.</p>
+          <p><strong>P3</strong>: ¿los eventos forman "sesiones" con periodos de inactividad? Sí → Session.</p>
+          <p><strong>P4</strong>: ¿quiero agrupar eventos por <strong>timestamp exacto</strong>? Sí → Snapshot.</p>
+
+          <h4>Comparativa visual</h4>
+          <pre><code class="language-plaintext">Tumbling:  [....][....][....][....]      cubos separados
+
+Hopping:   [....]                        solapamiento
              [....]
-Sliding:   |------| output al entrar/salir event
-Session:   [....] gap [....] gap [........]
-Snapshot:  [| | ||| |]  mismos timestamps</code></pre>
+               [....]
+                 [....]
+
+Sliding:   |------|  emite cuando entra/sale un evento
+              |------|
+
+Session:   [.......] gap [....] gap [........]
+                    (timeout)  (timeout)
+
+Snapshot:  [| | ||| | |]  agrupa los mismos timestamps</code></pre>
+
+          <h4>Ejemplos reales por window</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Window</th><th>Ejemplo real</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Tumbling</strong></td><td>"Ventas totales cada hora"</td></tr>
+                <tr><td><strong>Hopping</strong></td><td>"Media móvil de temperatura cada minuto sobre los últimos 15 min"</td></tr>
+                <tr><td><strong>Sliding</strong></td><td>"Alertar cuando en los últimos 10 seg hay 3 o más errores"</td></tr>
+                <tr><td><strong>Session</strong></td><td>"Sesiones de navegación del usuario con 20 min de timeout"</td></tr>
+                <tr><td><strong>Snapshot</strong></td><td>"Todas las cotizaciones bursátiles del mismo tick"</td></tr>
+              </tbody>
+            </table>
+          </div>
         </article>
 
-        <div class="category-header" id="derived"><span class="category-header__icon">🔀</span><h2 class="category-header__title">14. Content-based routing con Derived streams</h2></div>
+        <!-- ============ 17. DERIVED STREAMS ============ -->
+        <div class="category-header" id="derived-streams">
+          <span class="category-header__icon">🔀</span>
+          <h2 class="category-header__title">17. Content-based routing con Derived streams</h2>
+        </div>
+
         <article class="concept-card">
-          <p><strong>Content-based routing:</strong> enviar subsets del stream a distintos destinos según el <strong>contenido</strong>. Un <strong>derived stream</strong> es una versión transformada del stream original que lo habilita.</p>
-          <pre><code class="language-plaintext">IoT_Sensors
-  ├─ Filter temp>80  → Derived "HighTemps"  → Activator
-  ├─ Aggregate hourly → Derived "HourlyAvg" → Eventhouse
-  └─ Pass-through     → Derived "AllReadings" → Lakehouse</code></pre>
-          <div class="note note--tip">🎯 Pregunta típica: "rutear transacciones de alto valor a alerting y todas al warehouse" → respuesta: <strong>derived streams para content-based routing</strong>. Un solo source, múltiples outputs sin duplicar ingesta.</div>
+          <h3>¿Qué es el content-based routing?</h3>
+          <p><strong>Content-based routing</strong> = enviar <strong>subconjuntos del stream a distintos destinos</strong> según el <strong>contenido de los datos</strong>. La idea: no todo el stream va al mismo sitio; según lo que dice cada evento, se decide su destino.</p>
+
+          <h4>Derived streams</h4>
+          <p>Un <strong>derived stream</strong> es una versión <strong>transformada</strong> del stream original que habilita el content-based routing. Piénsalo como un "sub-stream filtrado" que surge de aplicar transformaciones al stream original.</p>
+
+          <h4>Cómo funciona</h4>
+          <pre><code class="language-plaintext">Stream original: IoT_Sensors
+                    ↓
+              [Transform]
+                    ↓
+    ├─→ Derived stream A (high_temps)
+    │      → Activator (alerta)
+    │
+    ├─→ Derived stream B (normal_readings)
+    │      → Lakehouse (histórico)
+    │
+    └─→ Derived stream C (hourly_avg)
+           → Eventhouse (analytics)</code></pre>
+
+          <h4>Ejemplo real: datos de sensores IoT</h4>
+          <p><strong>Escenario</strong>: los sensores reportan temperatura cada segundo y quieres enviar las <strong>temperaturas altas</strong> (&gt;80°) a Activator para una alerta inmediata, guardar las <strong>medias horarias</strong> en una KQL database para analítica y persistir <strong>todas las lecturas</strong> en el Lakehouse como backup.</p>
+          <pre><code class="language-plaintext">Stream: IoT_Sensors_Original
+    ↓
+Transform Filter: temperature &gt; 80
+    ↓
+    Derived stream "HighTemps" ─→ Activator
+
+Original + Aggregate media horaria
+    ↓
+    Derived stream "HourlyAvg" ─→ Eventhouse
+
+Original (pass-through)
+    ↓
+    Derived stream "AllReadings" ─→ Lakehouse</code></pre>
+
+          <h4>Ventajas</h4>
+          <ul>
+            <li>⚡ <strong>Eficiente</strong>: un solo source, varios outputs sin duplicar la ingesta.</li>
+            <li>🎯 <strong>Consciente del contenido</strong>: cada destino recibe <strong>exactamente lo que necesita</strong>.</li>
+            <li>🔧 <strong>Modular</strong>: los cambios en un derived stream no afectan a los otros.</li>
+            <li>🔄 <strong>Reutilizable</strong>: los derived streams pueden ser sources de otros eventstreams.</li>
+          </ul>
+
+          <div class="note note--tip">
+            🎯 <strong>Cae en el examen.</strong> Pregunta típica: <em>"You want to route high-value transactions to a real-time alerting system while sending all transactions to a data warehouse for historical analysis. What do you use?"</em> → Respuesta: <strong>derived streams para content-based routing</strong> dentro de un eventstream.
+          </div>
         </article>
 
-        <div class="category-header" id="deltaflow"><span class="category-header__icon">🌊</span><h2 class="category-header__title">15. DeltaFlow y Spark Structured Streaming</h2></div>
+        <!-- ============ 18. PATTERNS ============ -->
+        <div class="category-header" id="patterns">
+          <span class="category-header__icon">🎨</span>
+          <h2 class="category-header__title">18. Patrones comunes de transformación</h2>
+        </div>
+
         <article class="concept-card">
-          <p><strong>DeltaFlow (Preview)</strong> simplifica los CDC pipelines: en vez de Event Hubs + Stream Analytics con glue code, lo hace todo en la config del connector (auto-creation de tablas, auto schema evolution). Sources: Azure SQL DB, PostgreSQL, SQL Server on VM, Azure SQL MI. Desde feb 2026 también puedes procesar CDC con <strong>Eventstreams SQL</strong>.</p>
+          <h4>Pipeline de calidad de datos</h4>
+          <p><strong>Objetivo</strong>: filtrar los eventos inválidos o incompletos antes de almacenarlos.</p>
+          <pre><code class="language-plaintext">Source → Filter (descartar inválidos) → Manage fields (parsear) → Destination</code></pre>
+          <p>Ejemplo de filtro: <code>is_null(customer_id) = false</code>, <code>amount &gt; 0</code>, <code>status != "test"</code>.</p>
+
+          <h4>Content-based routing</h4>
+          <p><strong>Objetivo</strong>: distintos subconjuntos a distintos destinos.</p>
+          <pre><code class="language-plaintext">Source → Derived streams por contenido → Múltiples destinations</code></pre>
+          <p>Ver la sección anterior.</p>
+
+          <h4>Enriquecimiento de datos</h4>
+          <p><strong>Objetivo</strong>: añadir campos calculados, renombrar y convertir tipos.</p>
+          <pre><code class="language-plaintext">Source → Manage fields (añadir derivados) → Join (con referencia) → Destination</code></pre>
+          <p>Ejemplo: añadir <code>total = quantity * price</code>, renombrar <code>cust_id → customer_id</code>, convertir <code>date_str → datetime</code> y hacer join con la master data de clientes.</p>
+
+          <h4>Agregación y resumen</h4>
+          <p><strong>Objetivo</strong>: totales móviles, medias y conteos sobre ventanas temporales.</p>
+          <pre><code class="language-plaintext">Source → Filter → Group by [con window] → Destination</code></pre>
+          <pre><code class="language-sql">SELECT device_id, AVG(temp) AS avg_temp
+FROM IoT_Stream
+GROUP BY device_id, TumblingWindow(minute, 5)</code></pre>
+
+          <h4>Estandarización de formato</h4>
+          <p><strong>Objetivo</strong>: estructura de datos consistente entre sources antes de combinarlos.</p>
+          <pre><code class="language-plaintext">Source A → Manage fields (alinear schema) ─┐
+                                           ├─→ Union → Destination
+Source B → Manage fields (alinear schema) ─┘</code></pre>
+
+          <h4>Detección de anomalías IoT</h4>
+          <p><strong>Objetivo</strong>: filtrar → agregar → enrutar según umbral.</p>
+          <pre><code class="language-plaintext">IoT Source
+    ↓
+Filter (descartar errores de sensor)
+    ↓
+Manage fields (añadir campo de prioridad)
+    ↓
+Group by (media horaria por ubicación)
+    ↓
+Derived stream (anomalías) → Activator
+    ↓
+Datos normales → Lakehouse</code></pre>
+        </article>
+
+        <!-- ============ 19. DELTAFLOW ============ -->
+        <div class="category-header" id="deltaflow">
+          <span class="category-header__icon">🌊</span>
+          <h2 class="category-header__title">19. DeltaFlow: CDC pipelines simplificados</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>¿Qué es DeltaFlow?</h3>
+          <p><strong>DeltaFlow</strong> (Preview) es una feature de Eventstream que <strong>simplifica los pipelines de CDC</strong>. En vez de montar un pipeline complejo con Event Hubs + Stream Analytics para procesar los eventos de CDC, <strong>DeltaFlow lo hace todo en la configuración del conector del source</strong>.</p>
+
+          <h4>Pipeline CDC tradicional (antes)</h4>
+          <pre><code class="language-plaintext">Azure SQL DB
+    ↓ (CDC)
+Event Hubs
+    ↓
+Stream Analytics job:
+  - Parsear el JSON de Debezium
+  - Reestructurar
+  - Gestionar la evolución del schema
+    ↓
+Destination</code></pre>
+          <p><strong>Problemas</strong>: complejo, propenso a errores y con mucho código de pegamento.</p>
+
+          <h4>Con DeltaFlow (después)</h4>
+          <pre><code class="language-plaintext">Azure SQL DB (o PostgreSQL, MySQL, SQL Server on VM)
+    ↓ [configuración DeltaFlow]
+    ↓ Output analytics-ready
+    ↓ Tablas destino creadas automáticamente
+    ↓ Evolución de schema automática
+Eventhouse</code></pre>
+          <p><strong>Ventajas</strong>: ✅ sin código de pegamento, ✅ creación automática de las tablas destino, ✅ gestión automática de la evolución del schema y ✅ configuración sencilla en el conector.</p>
+
+          <h4>Sources compatibles con DeltaFlow</h4>
+          <ul>
+            <li>Azure SQL Database</li>
+            <li>PostgreSQL</li>
+            <li>SQL Server on VM</li>
+            <li>Azure SQL Managed Instance</li>
+          </ul>
+
+          <h4>Feature moderna: Eventstreams SQL para CDC</h4>
+          <p><strong>Nueva feature de febrero de 2026</strong>: <strong>procesar streams de CDC usando el SQL de Fabric Eventstreams</strong>. Ahora puedes transformar los eventos CDC raw de las bases de datos con SQL familiar, <strong>centralizando la lógica de shaping del CDC en el eventstream</strong> en vez de empujar la complejidad a los consumidores downstream.</p>
+          <pre><code class="language-sql">SELECT
+    payload.op AS operation,   -- 'c' create, 'u' update, 'd' delete
+    payload.after.customer_id,
+    payload.after.email,
+    payload.after.updated_at
+FROM CDC_Source
+WHERE payload.op IN ('c', 'u')</code></pre>
+        </article>
+
+        <!-- ============ 20. SPARK ============ -->
+        <div class="category-header" id="spark-integration">
+          <span class="category-header__icon">🔥</span>
+          <h2 class="category-header__title">20. Spark Structured Streaming + Eventstream (Preview)</h2>
+        </div>
+
+        <article class="concept-card">
+          <h4>Nueva feature 2026</h4>
+          <p>Feature de febrero de 2026: la <strong>integración entre Spark Structured Streaming, los notebooks y Real-Time Intelligence</strong>. Combina <strong>lo mejor de dos mundos</strong>: <strong>Eventstream</strong> (sources, routing, dashboards de RTI) y <strong>Spark Structured Streaming</strong> (código PySpark potente, ML, transformaciones complejas).</p>
+
+          <h4>Capabilities principales</h4>
+          <ol>
+            <li><strong>Descubrir streaming sources en el Real-Time Hub</strong>.</li>
+            <li><strong>Código PySpark autogenerado</strong> para consumir esos sources.</li>
+            <li><strong>Reutilizar notebooks existentes</strong> como procesadores.</li>
+            <li><strong>Conectar de forma segura</strong> vía <strong>autenticación con Entra ID</strong>.</li>
+          </ol>
+
+          <h4>Ejemplo mental</h4>
+          <p><strong>Antes</strong> (separado): un Eventstream para la ingesta, un notebook de Spark aparte para el ML y "pegamento" manual entre ambos.</p>
+          <p><strong>Ahora</strong> (integrado): en el Real-Time Hub descubres el streaming source, con un click autogeneras el código PySpark que lee del stream, aplicas ML en el notebook y los resultados van a Eventstream/Eventhouse.</p>
+
+          <h4>🎯 Cuándo usar Spark Structured Streaming vs Eventstream</h4>
+          <p><strong>Eventstream</strong> ✅ cuando las transformaciones se expresan en SQL/no-code, no necesitas ML y el equipo es low-code.</p>
+          <p><strong>Spark Structured Streaming (con notebooks)</strong> ✅ cuando hay transformaciones <strong>complejas en PySpark</strong>, <strong>ML inline</strong> con los datos en streaming, código custom que Eventstream no soporta o integración con librerías de Python.</p>
+          <p><strong>La combinación</strong> ✅ cuando la ingesta y el routing son sencillos (Eventstream) pero el procesamiento es complejo (Spark). Lo mejor de ambos mundos.</p>
+        </article>
+
+        <!-- ============ 21. MONITORING ============ -->
+        <div class="category-header" id="monitoring">
+          <span class="category-header__icon">📊</span>
+          <h2 class="category-header__title">21. Monitoring y troubleshooting</h2>
+        </div>
+
+        <article class="concept-card">
+          <h4>Workspace Monitoring para Eventstreams</h4>
+          <p>Feature de agosto de 2026: <strong>workspace monitoring de Eventstream con control por eventstream</strong>. Ahora puedes elegir <strong>qué eventstreams emiten datos</strong> de rendimiento, errores y salud de nodos. Los datos van a <strong>3 tablas KQL</strong> del Eventhouse de workspace monitoring.</p>
+
+          <h4>Métricas típicas monitorizadas</h4>
+          <ul>
+            <li><strong>Tasa de ingesta</strong> (eventos/segundo).</li>
+            <li><strong>Latencia</strong> (source → destination).</li>
+            <li><strong>Errores</strong> (parsing, conexión, throttling).</li>
+            <li><strong>Salud de los nodos</strong> (CPU, memoria).</li>
+            <li><strong>Throughput</strong> por transformación.</li>
+          </ul>
+
+          <h4>Real-Time Hub para eventos de capacidad</h4>
+          <p><strong>Capacity Overview Events</strong> (GA en agosto de 2026): transmite el resumen de capacidad y las señales de estado para monitorizar la utilización y la salud, detectar throttling o cambios de ciclo de vida, y disparar alertas o acciones automatizadas. Muy útil para no llevarse sorpresas con los límites de capacidad.</p>
+
+          <h4>Troubleshooting común</h4>
+          <p><strong>Problema</strong>: no llegan datos al destino. Comprobaciones:</p>
+          <ol>
+            <li>¿El source está funcionando? → ver la preview del source.</li>
+            <li>¿Las transformaciones son válidas? → ver la preview de output de cada transformación.</li>
+            <li>¿El destino está accesible? → ver el estado de la conexión.</li>
+            <li>¿Hay throttling? → ver las métricas de capacidad.</li>
+          </ol>
+          <p><strong>Problema</strong>: schema mismatch en el destino. Comprobaciones: ¿Manage fields aplicó los cambios esperados? (ver preview) y ¿coinciden los tipos? (comparar los schemas de source y destination).</p>
+          <p><strong>Problema</strong>: latencia alta. Comprobaciones: ¿las ventanas son demasiado grandes? (reducir el tamaño), ¿hay muchas transformaciones complejas? (simplificar o dividir) y ¿el source está saturado? (ver la tasa de ingesta).</p>
+        </article>
+
+        <!-- ============ 22. TRAMPAS ============ -->
+        <div class="category-header" id="trampas">
+          <span class="category-header__icon">⚠️</span>
+          <h2 class="category-header__title">22. Trampas típicas y confusiones frecuentes</h2>
+        </div>
+
+        <article class="concept-card">
+          <ul class="trap-list">
+            <li><strong class="trap-title">Trampa 1: "Enhanced y Standard son intercambiables"</strong>
+              ❌ No exactamente. <strong>Enhanced</strong> es la versión moderna con más features; <strong>Standard</strong> existe por compatibilidad legacy. Para eventstreams nuevos → <strong>Enhanced</strong>.</li>
+            <li><strong class="trap-title">Trampa 2: "Tumbling y Hopping son lo mismo"</strong>
+              ❌ <strong>Tumbling NO tiene solapamiento. Hopping SÍ</strong>. Una tumbling equivale a una hopping donde <code>hop = size</code>.</li>
+            <li><strong class="trap-title">Trampa 3: "Un evento solo pertenece a una ventana siempre"</strong>
+              ❌ Solo en <strong>Tumbling</strong>. En <strong>Hopping</strong> y <strong>Sliding</strong> un evento puede estar en <strong>varias ventanas</strong> a la vez.</li>
+            <li><strong class="trap-title">Trampa 4: "La sliding window emite output a intervalos regulares"</strong>
+              ❌ La sliding es <strong>event-driven</strong>: emite solo cuando cambia el contenido (un evento entra/sale). Las tumbling y hopping SÍ son programadas.</li>
+            <li><strong class="trap-title">Trampa 5: "La ventana máxima es de 24 horas"</strong>
+              ❌ <strong>Máximo 7 días</strong> para todos los tipos de ventana.</li>
+            <li><strong class="trap-title">Trampa 6: "La session window no necesita parámetros"</strong>
+              ❌ Necesita <strong>timeout, maximum duration y una partition opcional</strong>. La única sin parámetros es la <strong>Snapshot</strong>.</li>
+            <li><strong class="trap-title">Trampa 7: "El content-based routing requiere varios eventstreams"</strong>
+              ❌ Un solo eventstream con <strong>derived streams</strong> puede enrutar a varios destinos según el contenido.</li>
+            <li><strong class="trap-title">Trampa 8: "Puedo usar Fabric Activator sin conectarlo desde el eventstream"</strong>
+              ❌ Activator puede ser un <strong>destino</strong> del eventstream, no un paso intermedio. Los eventos fluyen a Activator y sus rules deciden las acciones.</li>
+            <li><strong class="trap-title">Trampa 9: "Union combina cualquier campo"</strong>
+              ❌ Union solo mantiene los <strong>campos compartidos</strong> (mismo nombre y tipo). Los que no coinciden se <strong>descartan</strong>.</li>
+            <li><strong class="trap-title">Trampa 10: "Un eventstream = un destino"</strong>
+              ❌ <strong>Varios destinos en paralelo</strong> desde el mismo eventstream. Es una feature clave del patrón.</li>
+            <li><strong class="trap-title">Trampa 11: "El SQL operator soporta cualquier SQL"</strong>
+              ❌ Soporta un <strong>subconjunto de SQL específico para streaming</strong> (el mismo que Stream Analytics). No es T-SQL completo.</li>
+            <li><strong class="trap-title">Trampa 12: "DeltaFlow sirve para cualquier base de datos"</strong>
+              ❌ Solo para <strong>Azure SQL Database, PostgreSQL, SQL Server on VM y Azure SQL Managed Instance</strong>.</li>
+            <li><strong class="trap-title">Trampa 13: "La snapshot window agrupa eventos por segundo/minuto"</strong>
+              ❌ La snapshot agrupa los eventos con <strong>el MISMO timestamp exacto</strong> (system time). No por bucket temporal.</li>
+            <li><strong class="trap-title">Trampa 14: "El output de una ventana contiene todos los eventos"</strong>
+              ❌ El output es <strong>un único evento por ventana</strong> con la agregación calculada. Los eventos individuales no se emiten.</li>
+            <li><strong class="trap-title">Trampa 15: "Puedo aplicar varios windowing en el mismo GROUP BY"</strong>
+              ✅ ¡Sí! Con la función <strong>Windows()</strong> puedes agregar sobre varias ventanas temporales en el mismo GROUP BY.</li>
+          </ul>
+        </article>
+
+        <!-- ============ 23. COMPARATIVAS ============ -->
+        <div class="category-header" id="comparativas">
+          <span class="category-header__icon">🆚</span>
+          <h2 class="category-header__title">23. Comparativas clave (chuleta)</h2>
+        </div>
+
+        <article class="concept-card">
+          <h4>Las 5 windowing functions</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Window</th><th>Solapamiento</th><th>Timing del output</th><th>Parámetros</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Tumbling</strong></td><td>❌ No</td><td>Regular (intervalos fijos)</td><td>1 (size)</td></tr>
+                <tr><td><strong>Hopping</strong></td><td>✅ Sí</td><td>Regular (por hops)</td><td>2 (size, hop)</td></tr>
+                <tr><td><strong>Sliding</strong></td><td>✅ Sí</td><td>Event-driven</td><td>1 (size)</td></tr>
+                <tr><td><strong>Session</strong></td><td>❌ No (sesiones separadas)</td><td>Session-driven</td><td>2-3 (timeout, max, partition opcional)</td></tr>
+                <tr><td><strong>Snapshot</strong></td><td>N/A</td><td>Mismo timestamp</td><td>0</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h4>Eventstream vs Spark Structured Streaming</h4>
           <div class="table-scroll">
             <table class="md-table">
               <thead><tr><th></th><th>Eventstream</th><th>Spark Structured Streaming</th></tr></thead>
               <tbody>
-                <tr><td>Estilo</td><td>No-code / SQL</td><td>PySpark code</td></tr>
-                <tr><td>Ideal para</td><td>Ingesta + transforms simples</td><td>Transforms complejas + ML</td></tr>
+                <tr><td>Estilo</td><td>No-code / SQL</td><td>Código PySpark</td></tr>
+                <tr><td>Ubicación</td><td>Fabric RTI</td><td>Notebook de Fabric</td></tr>
+                <tr><td>Ideal para</td><td>Ingesta + transformaciones simples</td><td>Transformaciones complejas + ML</td></tr>
                 <tr><td>Skills</td><td>Low-code</td><td>Data engineering</td></tr>
+                <tr><td>Combinación</td><td colspan="2">✅ Se pueden integrar (Preview 2026)</td></tr>
               </tbody>
             </table>
           </div>
-          <p>Desde 2026 se pueden integrar: descubres el source en Real-Time Hub, autogenera PySpark, y combinas lo mejor de ambos.</p>
+
+          <h4>Las 7 transformaciones no-code</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Transformación</th><th>Función</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Filter</strong></td><td>Descartar eventos según una condición</td></tr>
+                <tr><td><strong>Manage fields</strong></td><td>Añadir/quitar/renombrar/cambiar tipo</td></tr>
+                <tr><td><strong>Aggregate</strong></td><td>Sum/min/max/avg por evento</td></tr>
+                <tr><td><strong>Group by</strong></td><td>Agregaciones con windowing</td></tr>
+                <tr><td><strong>Union</strong></td><td>Combinar streams con campos compartidos</td></tr>
+                <tr><td><strong>Join</strong></td><td>Matching cross-stream</td></tr>
+                <tr><td><strong>Expand</strong></td><td>Array → varias filas</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h4>Comparativa de destinations</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Destination</th><th>Uso principal</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Eventhouse</strong></td><td>Analítica KQL en tiempo real</td></tr>
+                <tr><td><strong>Lakehouse</strong></td><td>Almacenamiento Delta histórico + BI</td></tr>
+                <tr><td><strong>Derived stream</strong></td><td>Content-based routing intermedio</td></tr>
+                <tr><td><strong>Activator</strong></td><td>Alertas y acciones automatizadas</td></tr>
+                <tr><td><strong>Custom endpoint</strong></td><td>Integraciones externas</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h4>Categorías de sources</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Categoría</th><th>Ejemplos</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Microsoft sources</strong></td><td>Event Hubs, IoT Hub, Service Bus, CDC</td></tr>
+                <tr><td><strong>Azure events</strong></td><td>Eventos de Blob Storage</td></tr>
+                <tr><td><strong>Fabric events</strong></td><td>Items del workspace, OneLake, jobs de Fabric</td></tr>
+                <tr><td><strong>Externos</strong></td><td>Kafka, GCP Pub/Sub, MQTT</td></tr>
+                <tr><td><strong>Custom</strong></td><td>Custom app source, business events</td></tr>
+                <tr><td><strong>Sample</strong></td><td>Bicycles, Yellow Taxi, Stock Market</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h4>Enhanced vs Standard capabilities</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th></th><th>Standard</th><th>Enhanced ⭐</th></tr></thead>
+              <tbody>
+                <tr><td>Fecha</td><td>Versión original</td><td>Moderna</td></tr>
+                <tr><td>Sources</td><td>Limitados</td><td>Más opciones</td></tr>
+                <tr><td>Destinations</td><td>Limitados</td><td>Más opciones</td></tr>
+                <tr><td>SQL operator</td><td>❌</td><td>✅</td></tr>
+                <tr><td>DeltaFlow</td><td>❌</td><td>✅</td></tr>
+                <tr><td>Recomendado para</td><td>Legacy</td><td><strong>Eventstreams nuevos</strong></td></tr>
+              </tbody>
+            </table>
+          </div>
         </article>
 
-        <div class="category-header" id="trampas"><span class="category-header__icon">⚠️</span><h2 class="category-header__title">16. Trampas típicas</h2></div>
+        <!-- ============ 24. FUENTES ============ -->
+        <div class="category-header" id="fuentes">
+          <span class="category-header__icon">📚</span>
+          <h2 class="category-header__title">24. Fuentes oficiales consultadas</h2>
+        </div>
+
         <article class="concept-card">
-          <ul>
-            <li><strong>"Tumbling y Hopping son lo mismo"</strong> → ❌ Tumbling sin overlap, Hopping con overlap.</li>
-            <li><strong>"Un event solo pertenece a una window"</strong> → ❌ solo en Tumbling; en Hopping y Sliding puede estar en varias.</li>
-            <li><strong>"Sliding emite a intervalos regulares"</strong> → ❌ es event-driven.</li>
-            <li><strong>"Window máximo 24h"</strong> → ❌ 7 días para todos.</li>
-            <li><strong>"Session no necesita parámetros"</strong> → ❌ timeout + max duration; el único sin params es Snapshot.</li>
-            <li><strong>"Content-based routing requiere múltiples eventstreams"</strong> → ❌ un solo eventstream con derived streams.</li>
-            <li><strong>"Union combina cualquier campo"</strong> → ❌ solo shared fields; los demás se dropean.</li>
-            <li><strong>"Un eventstream = un destination"</strong> → ❌ múltiples en paralelo.</li>
-            <li><strong>"SQL operator soporta cualquier SQL"</strong> → ❌ subset específico de streaming.</li>
-            <li><strong>"DeltaFlow para cualquier database"</strong> → ❌ solo Azure SQL DB, PostgreSQL, SQL Server on VM, Azure SQL MI.</li>
-            <li><strong>"El output de una window contiene todos los events"</strong> → ❌ un solo event por window con la agregación.</li>
+          <ul class="sources-list">
+            <li>Módulo Learn: <a href="https://learn.microsoft.com/training/modules/explore-event-streams-microsoft-fabric/" target="_blank" rel="noopener noreferrer">explore-event-streams-microsoft-fabric</a></li>
+            <li>Eventstreams overview: <a href="https://learn.microsoft.com/fabric/real-time-intelligence/event-streams/overview" target="_blank" rel="noopener noreferrer">event-streams/overview</a></li>
+            <li>Supported sources: <a href="https://learn.microsoft.com/fabric/real-time-intelligence/event-streams/add-manage-eventstream-sources" target="_blank" rel="noopener noreferrer">add-manage-eventstream-sources</a></li>
+            <li>Supported destinations: <a href="https://learn.microsoft.com/fabric/real-time-intelligence/event-streams/add-manage-eventstream-destinations" target="_blank" rel="noopener noreferrer">add-manage-eventstream-destinations</a></li>
+            <li>Event processor editor: <a href="https://learn.microsoft.com/fabric/real-time-intelligence/event-streams/process-events-using-event-processor-editor" target="_blank" rel="noopener noreferrer">process-events-using-event-processor-editor</a></li>
+            <li>SQL code editor: <a href="https://learn.microsoft.com/fabric/real-time-intelligence/event-streams/process-events-using-sql-code-editor" target="_blank" rel="noopener noreferrer">process-events-using-sql-code-editor</a></li>
+            <li>Windowing functions overview: <a href="https://learn.microsoft.com/stream-analytics-query/windowing-azure-stream-analytics" target="_blank" rel="noopener noreferrer">windowing-azure-stream-analytics</a></li>
+            <li>Tumbling window: <a href="https://learn.microsoft.com/stream-analytics-query/tumbling-window-azure-stream-analytics" target="_blank" rel="noopener noreferrer">tumbling-window</a></li>
+            <li>Hopping window: <a href="https://learn.microsoft.com/stream-analytics-query/hopping-window-azure-stream-analytics" target="_blank" rel="noopener noreferrer">hopping-window</a></li>
+            <li>Sliding window: <a href="https://learn.microsoft.com/stream-analytics-query/sliding-window-azure-stream-analytics" target="_blank" rel="noopener noreferrer">sliding-window</a></li>
+            <li>Session window: <a href="https://learn.microsoft.com/stream-analytics-query/session-window-azure-stream-analytics" target="_blank" rel="noopener noreferrer">session-window</a></li>
+            <li>Snapshot window: <a href="https://learn.microsoft.com/stream-analytics-query/snapshot-window-azure-stream-analytics" target="_blank" rel="noopener noreferrer">snapshot-window</a></li>
+            <li>Windows() function: <a href="https://learn.microsoft.com/stream-analytics-query/windows-azure-stream-analytics" target="_blank" rel="noopener noreferrer">windows-azure-stream-analytics</a></li>
+            <li>Migración desde Event Hubs + Stream Analytics: <a href="https://learn.microsoft.com/fabric/real-time-intelligence/event-streams/migrate-from-azure-event-hubs-stream-analytics" target="_blank" rel="noopener noreferrer">migrate-from-azure-event-hubs-stream-analytics</a></li>
+            <li>Business events tutorial: <a href="https://learn.microsoft.com/fabric/real-time-hub/business-events/tutorial-business-events-event-stream-user-data-function-activator" target="_blank" rel="noopener noreferrer">tutorial-business-events</a></li>
+            <li>Eventstream to Lakehouse tutorial: <a href="https://learn.microsoft.com/fabric/real-time-intelligence/event-streams/transform-and-stream-real-time-events-to-lakehouse" target="_blank" rel="noopener noreferrer">transform-and-stream-real-time-events-to-lakehouse</a></li>
+            <li>Custom app to KQL tutorial: <a href="https://learn.microsoft.com/fabric/real-time-intelligence/event-streams/stream-real-time-events-from-custom-app-to-kusto" target="_blank" rel="noopener noreferrer">stream-real-time-events-from-custom-app-to-kusto</a></li>
+            <li>Workspace monitoring for Eventstreams: <a href="https://learn.microsoft.com/fabric/real-time-intelligence/event-streams/fabric-workspace-monitoring" target="_blank" rel="noopener noreferrer">fabric-workspace-monitoring</a></li>
           </ul>
         </article>
 
-        <div class="category-header" id="comparativas"><span class="category-header__icon">🆚</span><h2 class="category-header__title">17. Comparativas clave (chuleta)</h2></div>
-        <article class="concept-card">
-          <div class="table-scroll">
-            <table class="md-table">
-              <thead><tr><th>Window</th><th>Overlap</th><th>Output timing</th><th>Params</th></tr></thead>
-              <tbody>
-                <tr><td><strong>Tumbling</strong></td><td>❌ No</td><td>Regular (fixed)</td><td>1 (size)</td></tr>
-                <tr><td><strong>Hopping</strong></td><td>✅ Sí</td><td>Regular (hop)</td><td>2 (size, hop)</td></tr>
-                <tr><td><strong>Sliding</strong></td><td>✅ Sí</td><td>Event-driven</td><td>1 (size)</td></tr>
-                <tr><td><strong>Session</strong></td><td>❌ (sesiones)</td><td>Session-driven</td><td>2-3 (timeout, max, opt partition)</td></tr>
-                <tr><td><strong>Snapshot</strong></td><td>N/A</td><td>Same timestamp</td><td>0</td></tr>
-              </tbody>
-            </table>
-          </div>
-        </article>
+        <div class="note note--next">
+          🚀 <strong>¡Módulo 9 completado!</strong> Ya dominas las windowing functions y el content-based routing, que son de lo más examinable del curso. Sigue con el <a href="modulo-10.html">Módulo 10: Eventhouse y KQL</a>. 🌸
+        </div>
 
-        <div class="note note--next">🚀 <strong>¡Módulo 9 completado!</strong> Ya dominas los eventstreams y las windows. Sigue con el <a href="modulo-10.html">Módulo 10: Eventhouse y KQL a fondo</a>. 🌸</div>
-
+        <!-- Navegación del curso -->
         <div class="course-nav">
-          <a href="modulo-8.html"><span class="course-nav__label">← Anterior</span><span class="course-nav__title">Módulo 8 · Real-Time Intelligence</span></a>
-          <a href="modulo-10.html" class="next"><span class="course-nav__label">Siguiente →</span><span class="course-nav__title">Módulo 10 · Eventhouse y KQL</span></a>
+          <a href="modulo-8.html">
+            <span class="course-nav__label">← Anterior</span>
+            <span class="course-nav__title">Módulo 8 · Real-Time Intelligence</span>
+          </a>
+          <a href="modulo-10.html" class="next">
+            <span class="course-nav__label">Siguiente →</span>
+            <span class="course-nav__title">Módulo 10 · Eventhouse y KQL</span>
+          </a>
         </div>
 
       </div>
