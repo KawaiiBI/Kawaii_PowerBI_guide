@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="DP-700 Módulo 8: introducción a Real-Time Intelligence en Fabric. Events, streams, los 6 componentes, Eventhouse, KQL, Activator, OneLake availability y throttling.">
+  <title>DP-700 · Módulo 8: Real-Time Intelligence | Power BI Guide by Kawaii BI</title>
+  <link rel="canonical" href="https://kawaiibi.es/topics/certificaciones/dp-700/modulo-8.html">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Kawaii Power BI Guide">
+  <meta property="og:locale" content="es_ES">
+  <meta property="og:title" content="DP-700 · Módulo 8: Real-Time Intelligence | Power BI Guide by Kawaii BI">
+  <meta property="og:description" content="DP-700 Módulo 8: intro a Real-Time Intelligence. Events, streams, Eventhouse, KQL, Activator y OneLake availability.">
+  <meta property="og:url" content="https://kawaiibi.es/topics/certificaciones/dp-700/modulo-8.html">
+  <meta property="og:image" content="https://kawaiibi.es/assets/images/og-banner.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="1200">
+  <meta property="og:image:alt" content="Sara Lozano Marti - Kawaii Power BI">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="DP-700 · Módulo 8: Real-Time Intelligence | Power BI Guide by Kawaii BI">
+  <meta name="twitter:description" content="DP-700 Módulo 8: intro a Real-Time Intelligence. Events, streams, Eventhouse, KQL y Activator.">
+  <meta name="twitter:image" content="https://kawaiibi.es/assets/images/og-banner.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/prismjs@1/themes/prism-okaidia.min.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="../../../assets/css/main.css">
+  <link rel="stylesheet" href="../../../assets/css/themes.css">
+  <link rel="stylesheet" href="../../../assets/css/components.css">
+  <link rel="stylesheet" href="../../../assets/css/layout.css">
+
+  <style>
+    .topic-header { text-align: center; padding: 2.25rem 0 1.75rem; border-bottom: 2px solid var(--color-mauve); margin-bottom: 2rem; }
+    .topic-header__eyebrow { font-family: 'Fira Code', monospace; font-size: 0.8125rem; font-weight: 600; color: var(--color-coral); letter-spacing: 0.05em; }
+    .topic-header__icon { font-size: 3.5rem; margin: 0.5rem 0; display: block; }
+    .topic-header__title { font-size: clamp(1.75rem, 4vw, 2.25rem); font-weight: 800; color: var(--color-dark); margin-bottom: 0.625rem; line-height: 1.2; }
+    .topic-header__subtitle { font-size: 1rem; color: var(--color-slate); margin-bottom: 1.25rem; line-height: 1.55; max-width: 680px; margin-left: auto; margin-right: auto; }
+    .topic-header__levels { display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap; align-items: center; }
+
+    .toc { background: var(--color-rose); border-radius: var(--border-radius); padding: 1.25rem 1.5rem; margin-bottom: 2rem; border: 1.5px solid var(--color-mauve); }
+    .toc__title { font-size: 1rem; font-weight: 700; margin: 0 0 0.75rem; }
+    .toc__list { display: flex; flex-wrap: wrap; gap: 0.5rem; list-style: none; padding: 0; margin: 0; }
+    .toc__list a { font-size: 0.8125rem; color: var(--color-coral); text-decoration: none; padding: 0.25rem 0.625rem; background: var(--color-white); border-radius: 999px; border: 1px solid var(--color-mauve); }
+    .toc__list a:hover { background: var(--color-coral); color: #fff; }
+
+    .category-header { display: flex; align-items: center; gap: 0.75rem; margin: 2.5rem 0 1.25rem; padding: 0.875rem 1.25rem; background: var(--color-rose); border-radius: var(--border-radius-sm); border-left: 4px solid var(--color-coral); scroll-margin-top: 20px; }
+    .category-header__icon { font-size: 1.5rem; }
+    .category-header__title { font-size: 1.25rem; font-weight: 700; margin: 0; }
+
+    .concept-card { background: var(--color-white); border: 1.5px solid var(--color-mauve); border-radius: var(--border-radius); padding: 1.5rem 1.75rem; margin-bottom: 1.25rem; }
+    .concept-card h3 { font-size: 1.0625rem; font-weight: 700; color: var(--color-coral); margin: 0 0 0.6rem; }
+    .concept-card h4 { font-size: 0.9375rem; font-weight: 700; color: var(--color-dark); margin: 1.1rem 0 0.4rem; }
+    .concept-card p { font-size: 0.9375rem; line-height: 1.7; color: var(--color-dark); margin-bottom: 0.7rem; }
+    .concept-card ul, .concept-card ol { padding-left: 1.25rem; font-size: 0.9375rem; line-height: 1.75; color: var(--color-dark); margin: 0.4rem 0; }
+    .concept-card code { background: var(--color-blush); padding: 0.1em 0.4em; border-radius: 4px; font-family: 'Fira Code', monospace; font-size: 0.85em; color: var(--color-coral); }
+    .concept-card pre { margin: 0.75rem 0; }
+
+    .md-table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.84rem; }
+    .md-table th, .md-table td { border: 1px solid var(--color-mauve); padding: 0.5rem 0.7rem; text-align: left; vertical-align: top; }
+    .md-table th { background: var(--color-rose); font-weight: 700; color: var(--color-dark); }
+    .md-table tr:nth-child(even) td { background: var(--color-blush); }
+    .table-scroll { overflow-x: auto; }
+
+    .course-nav { display: flex; justify-content: space-between; gap: 1rem; margin-top: 2.5rem; flex-wrap: wrap; }
+    .course-nav a { flex: 1 1 220px; display: block; background: var(--color-white); border: 1.5px solid var(--color-mauve); border-radius: var(--border-radius); padding: 1rem 1.25rem; text-decoration: none; color: inherit; transition: var(--transition); }
+    .course-nav a:hover { border-color: var(--color-coral); box-shadow: var(--shadow-md); text-decoration: none; }
+    .course-nav__label { font-size: 0.75rem; color: var(--color-slate); text-transform: uppercase; letter-spacing: 0.05em; }
+    .course-nav__title { font-weight: 700; color: var(--color-coral); }
+    .course-nav a.next { text-align: right; }
+  </style>
+</head>
+<body>
+
+  <aside class="site-sidebar">
+    <div class="site-sidebar__profile">
+      <img src="../../../assets/images/avatar-sara.png" alt="Sara Lozano Martí" class="site-sidebar__avatar">
+      <p class="site-sidebar__name">Sara Lozano Martí</p>
+      <p class="site-sidebar__subtitle">Power BI Expert</p>
+    </div>
+    <nav class="site-sidebar__nav" aria-label="Navegación principal">
+      <ul>
+        <li><a href="../../../index.html" class="site-sidebar__link"><span class="site-sidebar__icon">🏠</span> Inicio</a></li>
+        <li><a href="../../dax.html" class="site-sidebar__link"><span class="site-sidebar__icon">⚡</span> Funciones DAX</a></li>
+        <li><a href="../../power-query.html" class="site-sidebar__link"><span class="site-sidebar__icon">🔄</span> Power Query</a></li>
+        <li><a href="../../lenguaje-m.html" class="site-sidebar__link"><span class="site-sidebar__icon">〽️</span> Lenguaje M</a></li>
+        <li><a href="../../modelado.html" class="site-sidebar__link"><span class="site-sidebar__icon">🗄️</span> Modelado</a></li>
+        <li><a href="../../conceptos-powerbi.html" class="site-sidebar__link"><span class="site-sidebar__icon">📊</span> Conceptos Power BI</a></li>
+        <li><a href="../../fabric.html" class="site-sidebar__link"><span class="site-sidebar__icon">🧵</span> Microsoft Fabric</a></li>
+        <li><a href="../../tmdl.html" class="site-sidebar__link"><span class="site-sidebar__icon">📝</span> TMDL</a></li>
+        <li><a href="../../diseno-ux.html" class="site-sidebar__link"><span class="site-sidebar__icon">🎨</span> Diseño y UX</a></li>
+        <li><a href="../../gobernanza.html" class="site-sidebar__link"><span class="site-sidebar__icon">🔒</span> Gobernanza</a></li>
+        <li><a href="../../certificaciones.html" class="site-sidebar__link is-active"><span class="site-sidebar__icon">🎓</span> Certificaciones</a></li>
+      </ul>
+    </nav>
+    <div class="site-sidebar__divider"></div>
+    <div class="site-sidebar__footer">
+      <a href="../../../quien-soy.html" class="site-sidebar__link site-sidebar__link--highlight"><span class="site-sidebar__icon">👩‍💻</span> ¿Quién soy?</a>
+      <div class="site-sidebar__social">
+        <a href="https://www.linkedin.com/in/saralozanomarti" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><img src="../../../assets/images/logo-linkedin.png" alt="LinkedIn" class="site-sidebar__social-icon"></a>
+        <a href="https://www.youtube.com/@KawaiiPowerBI" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><img src="../../../assets/images/logo-youtube.png" alt="YouTube" class="site-sidebar__social-icon"></a>
+        <a href="https://github.com/KawaiiBI" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><img src="../../../assets/images/logo-github.png" alt="GitHub" class="site-sidebar__social-icon"></a>
+      </div>
+      <div class="site-sidebar__logo-bottom"><img src="../../../assets/images/logo-kawaii.jpg" alt="Kawaii BI" class="site-sidebar__logo-img"></div>
+      <p class="site-sidebar__copyright">Power BI Guide 🌸<br>© 2026 Kawaii BI</p>
+    </div>
+  </aside>
+
+  <div class="page-wrapper">
+    <main class="main-content">
+      <div class="topic-page">
+
+        <nav class="breadcrumb" aria-label="Ruta de navegación">
+          <span class="breadcrumb__item"><a href="../../../index.html">🏠 Inicio</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item"><a href="../../certificaciones.html">Certificaciones</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item"><a href="../dp-700.html">DP-700</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item">Módulo 8</span>
+        </nav>
+
+        <header class="topic-header">
+          <span class="topic-header__eyebrow">DP-700 · MÓDULO 8</span>
+          <span class="topic-header__icon">⚡</span>
+          <h1 class="topic-header__title">Introducción a Real-Time Intelligence</h1>
+          <p class="topic-header__subtitle">La parte más nueva de Fabric: events y streams, los 6 componentes de RTI, Eventhouse, KQL, Activator, OneLake availability y la facturación con throttling. 🌸</p>
+          <div class="topic-header__levels">
+            <span class="badge badge--beginner">Principiante</span>
+            <span class="badge badge--intermediate">Intermedio</span>
+          </div>
+        </header>
+
+        <nav class="toc" aria-label="Índice del módulo">
+          <p class="toc__title">📑 En este módulo:</p>
+          <ul class="toc__list">
+            <li><a href="#objetivos">1. Objetivos</a></li>
+            <li><a href="#que-es">2. ¿Qué es real-time?</a></li>
+            <li><a href="#events">3. Events y streams</a></li>
+            <li><a href="#componentes">4. 6 componentes de RTI</a></li>
+            <li><a href="#hub">5. Real-Time Hub</a></li>
+            <li><a href="#eventstreams">6. Eventstreams</a></li>
+            <li><a href="#eventhouse">7. Eventhouse y KQL DB</a></li>
+            <li><a href="#kql">8. Fundamentos de KQL</a></li>
+            <li><a href="#management">9. Management commands</a></li>
+            <li><a href="#dashboards">10. Dashboards y Power BI</a></li>
+            <li><a href="#activator">11. Activator</a></li>
+            <li><a href="#ingestion">12. Direct vs eventstream</a></li>
+            <li><a href="#onelake">13. OneLake availability</a></li>
+            <li><a href="#endpoint">14. Eventhouse endpoint</a></li>
+            <li><a href="#facturacion">15. Facturación y throttling</a></li>
+            <li><a href="#trampas">16. Trampas</a></li>
+            <li><a href="#comparativas">17. Comparativas</a></li>
+          </ul>
+        </nav>
+
+        <div class="category-header" id="objetivos"><span class="category-header__icon">🎯</span><h2 class="category-header__title">1. Objetivos y encaje en el DP-700</h2></div>
+        <article class="concept-card">
+          <p>Inicio de la <strong>Fase 2 (Real-Time Intelligence)</strong>. Objetivos: describir real-time analytics, entender los componentes de RTI, ingestar y transformar data-in-motion, almacenar y consultar en KQL, visualizar con Real-Time Dashboards y automatizar con Activator.</p>
+          <div class="note note--tip">🎯 <strong>Crítico:</strong> diferencia real-time vs batch, los 6 componentes, eventstream vs direct ingestion, KQL fundamental, update policies vs materialized views vs stored functions, OneLake availability, Eventhouse endpoint y Activator.</div>
+          <div class="note note--warning">⚠️ Si vienes de DP-600, RTI es lo más nuevo para ti. Prepárate para KQL, es distinto al SQL pero muy intuitivo. ✨</div>
+        </article>
+
+        <div class="category-header" id="que-es"><span class="category-header__icon">⚡</span><h2 class="category-header__title">2. ¿Qué es real-time analytics?</h2></div>
+        <article class="concept-card">
+          <p>Procesar, analizar y actuar sobre datos <strong>según se generan</strong> (segundos/minutos). En realidad es <strong>near real-time</strong>: siempre hay latencia. Sub-second = real-time; 1-10s = near real-time típico; horas/días = batch.</p>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th></th><th>Batch</th><th>Real-time</th></tr></thead>
+              <tbody>
+                <tr><td>Cadencia</td><td>Horas/días</td><td>Segundos/minutos</td></tr>
+                <tr><td>Datos</td><td>Snapshots históricos</td><td>Fluyen continuamente</td></tr>
+                <tr><td>Uso típico</td><td>Reports diarios/mensuales</td><td>Alertas, monitoring, actions</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>Casos: delivery tracking, equipment monitoring, fraud detection, website performance, system health. Batch y real-time <strong>coexisten</strong>.</p>
+        </article>
+
+        <div class="category-header" id="events"><span class="category-header__icon">🎪</span><h2 class="category-header__title">3. Events y streams</h2></div>
+        <article class="concept-card">
+          <p>Un <strong>event</strong> es un record de algo que ocurrió (click, compra, lectura de sensor). Un <strong>stream</strong> es una secuencia de events ordenados por tiempo, que fluyen continuamente.</p>
+          <div class="note note--tip">🌷 Un event es como una carta en el buzón; un stream es el cartero pasando cada día. Los streams son el mecanismo de entrega de los events.</div>
+        </article>
+
+        <div class="category-header" id="componentes"><span class="category-header__icon">🌸</span><h2 class="category-header__title">4. Los 6 componentes de RTI</h2></div>
+        <article class="concept-card">
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Componente</th><th>Función</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Real-Time Hub</strong></td><td>Catálogo central de streaming data</td></tr>
+                <tr><td><strong>Eventstream</strong></td><td>Ingest + transform + route</td></tr>
+                <tr><td><strong>Eventhouse</strong></td><td>Contenedor de KQL databases</td></tr>
+                <tr><td><strong>KQL Database</strong></td><td>Storage + query engine (Kusto)</td></tr>
+                <tr><td><strong>Real-Time Dashboard</strong></td><td>Visualización con auto-refresh</td></tr>
+                <tr><td><strong>Activator</strong></td><td>Automatización event-driven</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <pre><code class="language-plaintext">Sources (IoT, apps, CDC) → Eventstream → KQL DB / Lakehouse
+                                              ↓
+                            Dashboard · Power BI · Activator</code></pre>
+        </article>
+
+        <div class="category-header" id="hub"><span class="category-header__icon">🏢</span><h2 class="category-header__title">5. Real-Time Hub</h2></div>
+        <article class="concept-card">
+          <p>Catálogo central de toda la <strong>data-in-motion</strong> a la que tienes acceso. Organiza: Data sources, Azure sources (IoT Hub, Service Bus), Fabric events (job status, OneLake, workspace items) y Azure events (Blob Storage). Desde el Hub puedes previsualizar streams, navegar a eventstreams/KQL, crear Activator rules y suscribirte a eventos.</p>
+        </article>
+
+        <div class="category-header" id="eventstreams"><span class="category-header__icon">🚰</span><h2 class="category-header__title">6. Eventstreams (introducción)</h2></div>
+        <article class="concept-card">
+          <p>Un Eventstream trae real-time events a Fabric, los transforma y los rutea. Como tuberías: <strong>source → transformations → destination</strong>. Sources: Event Hubs, IoT Hub, CDC, Kafka, GCP Pub/Sub, MQTT. Transformaciones: Filter, Manage fields, Aggregate, Group by, Union, Join, Expand, SQL code editor. Destinos: KQL DB, Lakehouse, Derived stream, Activator, Custom endpoint.</p>
+          <div class="note note--tip">🎯 Usa Eventstream cuando quieras transformaciones declarativas o routear a múltiples destinos. Para direct ingestion sin transformación o transforms complejas con PySpark, otras opciones.</div>
+        </article>
+
+        <div class="category-header" id="eventhouse"><span class="category-header__icon">🏛️</span><h2 class="category-header__title">7. Eventhouse y KQL Database</h2></div>
+        <article class="concept-card">
+          <p>Un <strong>Eventhouse</strong> es un contenedor que hospeda <strong>múltiples KQL databases</strong>, comparte capacity y da monitoring unificado. Compute disponible en <strong>5-10 segundos</strong> (más rápido que Spark pools en startup).</p>
+          <p>Una <strong>KQL Database</strong> es un data store real-time optimizado (motor Kusto), ideal para time-series. Contiene tables, stored functions, materialized views, shortcuts y data streams. Soporta RLS, CLS y OLS. Un <strong>KQL Queryset</strong> es la colección de queries (multi-tab, save, share, KQL + subset de T-SQL).</p>
+        </article>
+
+        <div class="category-header" id="kql"><span class="category-header__icon">🌸</span><h2 class="category-header__title">8. Fundamentos de KQL</h2></div>
+        <article class="concept-card">
+          <p>KQL usa <strong>pipes</strong> (<code>|</code>) para encadenar operaciones, de izquierda a derecha.</p>
+          <pre><code class="language-kusto">stock
+| where ["time"] > ago(5m)
+| summarize avgPrice = avg(todouble(bidPrice)) by symbol
+| project symbol, avgPrice</code></pre>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>KQL</th><th>SQL</th></tr></thead>
+              <tbody>
+                <tr><td><code>stock | take 10</code></td><td>SELECT TOP 10 * FROM stock</td></tr>
+                <tr><td><code>stock | where symbol == "MSFT"</code></td><td>WHERE symbol = 'MSFT'</td></tr>
+                <tr><td><code>stock | summarize avg(price) by symbol</code></td><td>GROUP BY symbol</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="note note--warning">⚠️ KQL usa <code>==</code> (no <code>=</code>), strings en comillas dobles, y <code>bin()</code> para buckets temporales. KQL databases también soportan un <strong>subset de T-SQL</strong> (para queries simples o migración).</div>
+        </article>
+
+        <div class="category-header" id="management"><span class="category-header__icon">⚙️</span><h2 class="category-header__title">9. Management commands</h2></div>
+        <article class="concept-card">
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Necesito</th><th>Herramienta</th></tr></thead>
+              <tbody>
+                <tr><td>Transformar automáticamente al ingestar</td><td><strong>Update policy</strong></td></tr>
+                <tr><td>Cachear aggregations para dashboards</td><td><strong>Materialized view</strong></td></tr>
+                <tr><td>Reutilizar query logic</td><td><strong>Stored function</strong></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>Las <strong>materialized views KQL</strong> son distintas de las Materialized Lake Views del Lakehouse (misma filosofía, implementaciones diferentes). Copilot para RTI genera KQL desde lenguaje natural (NL2KQL).</p>
+        </article>
+
+        <div class="category-header" id="dashboards"><span class="category-header__icon">📊</span><h2 class="category-header__title">10. Real-Time Dashboards y Power BI</h2></div>
+        <article class="concept-card">
+          <p><strong>Real-Time Dashboards</strong> conectan directo a KQL databases y se refrescan automáticamente. Colección de tiles, cada uno con una query KQL y una visualización. También puedes crear <strong>Power BI reports</strong> sobre datos KQL (típicamente DirectQuery para datos live).</p>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th></th><th>Real-Time Dashboard</th><th>Power BI report</th></tr></thead>
+              <tbody>
+                <tr><td>Query language</td><td>KQL nativo</td><td>DAX</td></tr>
+                <tr><td>Auto-refresh</td><td>Nativo</td><td>DirectQuery o Import</td></tr>
+                <tr><td>Audiencia</td><td>RTI users</td><td>Business users</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </article>
+
+        <div class="category-header" id="activator"><span class="category-header__icon">🔔</span><h2 class="category-header__title">11. Activator</h2></div>
+        <article class="concept-card">
+          <p>Automated processing de events que triggerean actions. 4 core concepts: <strong>Events</strong> (records), <strong>Objects</strong> (business entities), <strong>Properties</strong> (fields mapeados) y <strong>Rules</strong> (condiciones → action). Actions: notificaciones (email, Teams), workflows Power Automate, pipelines y notebooks.</p>
+          <div class="note note--tip">🎯 Activator puede ser <strong>destination de un eventstream</strong>: los events fluyen y las rules deciden las acciones. Es mucho más que solo enviar emails.</div>
+        </article>
+
+        <div class="category-header" id="ingestion"><span class="category-header__icon">🎯</span><h2 class="category-header__title">12. Direct ingestion vs eventstream</h2></div>
+        <article class="concept-card">
+          <p>Dos formas de ingestar: con <strong>eventstream</strong> (transformación in-flight, routing a múltiples destinos) o <strong>direct ingestion a KQL</strong> (raw, simple, bulk loads). Con direct ingestion, las transformaciones se hacen <strong>post-storage</strong> con update policies.</p>
+          <div class="note note--tip">🎯 Diferencia crítica: eventstream transformations = pre-storage (in-flight); update policy transformations = post-storage (after ingestion).</div>
+        </article>
+
+        <div class="category-header" id="onelake"><span class="category-header__icon">🌊</span><h2 class="category-header__title">13. OneLake availability</h2></div>
+        <article class="concept-card">
+          <p>Feature del Eventhouse que hace que los datos KQL estén <strong>también disponibles en OneLake</strong> en formato Delta Parquet, para que otros workloads (Lakehouse, Direct Lake, notebooks) los consuman. Dos copias sincronizadas: una para KQL, otra para el resto de Fabric.</p>
+          <div class="note note--warning">⚠️ Hay que activarla manualmente (por database o tabla). Usa <strong>adaptive parquet batching</strong> (hasta 3h de delay por default, <code>TargetLatencyInMinutes</code> de 5min a 3h). Bajar mucho el delay → many small files → lecturas ineficientes, y la tabla resultante es <strong>read-only</strong>.</div>
+        </article>
+
+        <div class="category-header" id="endpoint"><span class="category-header__icon">🎯</span><h2 class="category-header__title">14. Eventhouse endpoint</h2></div>
+        <article class="concept-card">
+          <p>Permite <strong>consultar tablas de Lakehouse o Warehouse desde un Eventhouse</strong> con la velocidad del motor KQL. Instant schema sync (segundos), mirrored schema, consumo enriquecido (SQL, Notebook, Copilot, NL2KQL). Bajo el capó usa <strong>shortcuts + query acceleration policies</strong>, sin duplicar datos. En 10 segundos está sincronizado; mejora al cachear más.</p>
+          <div class="note note--tip">🎯 Caso típico: Lakehouse con ventas históricas → activas el endpoint → time-series analysis avanzado con KQL (anomaly detection, Python) sin duplicar datos.</div>
+        </article>
+
+        <div class="category-header" id="facturacion"><span class="category-header__icon">💰</span><h2 class="category-header__title">15. Facturación, capacity scheduler y throttling</h2></div>
+        <article class="concept-card">
+          <p><strong>Compute:</strong> por Eventhouse UpTime. <strong>Storage en 2 tiers:</strong> OneLake <strong>Cache Storage</strong> (premium, fastest queries, la cache policy) y OneLake <strong>Standard Storage</strong> (persistente, la retention policy). Con <strong>Capacity Scheduler</strong> (minimum configurado), la cache storage se incluye en los capacity charges.</p>
+          <h4>Los 3 niveles de throttling</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Level</th><th>Ingestion</th><th>Queries</th><th>Data loss</th></tr></thead>
+              <tbody>
+                <tr><td>Proactive</td><td>✅ Continúa</td><td>⚠️ Throttled</td><td>❌</td></tr>
+                <tr><td>Reactive</td><td>⚠️ Pausada</td><td>⚠️ Pausada</td><td>❌</td></tr>
+                <tr><td>Extreme reactive</td><td>⚠️ Pausada</td><td>⚠️ Pausada</td><td>⚠️ Posible</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </article>
+
+        <div class="category-header" id="trampas"><span class="category-header__icon">⚠️</span><h2 class="category-header__title">16. Trampas típicas</h2></div>
+        <article class="concept-card">
+          <ul>
+            <li><strong>"Real-time = 0ms"</strong> → ❌ near real-time, siempre hay latencia.</li>
+            <li><strong>"Eventstream = KQL database"</strong> → ❌ eventstream ingesta/transforma/rutea; KQL DB almacena/consulta.</li>
+            <li><strong>"Direct ingestion siempre mejor"</strong> → ❌ no permite transformaciones pre-storage.</li>
+            <li><strong>"KQL = SQL"</strong> → ❌ pipes, <code>==</code>, flow-based.</li>
+            <li><strong>"OneLake availability activa por defecto"</strong> → ❌ hay que activarla.</li>
+            <li><strong>"Bajar TargetLatencyInMinutes siempre mejor"</strong> → ❌ many small files; la tabla es read-only.</li>
+            <li><strong>"Eventhouse endpoint copia datos"</strong> → ❌ usa shortcuts + query acceleration.</li>
+            <li><strong>"Throttling siempre pierde datos"</strong> → ❌ solo extreme reactive.</li>
+            <li><strong>"Activator solo envía emails"</strong> → ❌ también pipelines, notebooks, workflows.</li>
+            <li><strong>"Materialized views KQL = Materialized Lake Views"</strong> → ❌ implementaciones distintas.</li>
+            <li><strong>"Real-Time Dashboard consulta cualquier source"</strong> → ❌ diseñado para KQL databases.</li>
+          </ul>
+        </article>
+
+        <div class="category-header" id="comparativas"><span class="category-header__icon">🆚</span><h2 class="category-header__title">17. Comparativas clave (chuleta)</h2></div>
+        <article class="concept-card">
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th></th><th>Update policy</th><th>Materialized view</th><th>Stored function</th></tr></thead>
+              <tbody>
+                <tr><td>Trigger</td><td>Al ingestar</td><td>Async incremental</td><td>On-demand</td></tr>
+                <tr><td>Almacena resultado</td><td>✅ (tabla destino)</td><td>✅</td><td>❌</td></tr>
+                <tr><td>Propósito</td><td>Transformar en storage</td><td>Cache de aggregations</td><td>Reutilizar logic</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Storage tier</th><th>Función</th><th>Policy</th></tr></thead>
+              <tbody>
+                <tr><td>OneLake Cache Storage</td><td>Premium, fastest queries</td><td>Cache policy</td></tr>
+                <tr><td>OneLake Standard Storage</td><td>Standard, persistente</td><td>Retention policy</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </article>
+
+        <div class="note note--next">🚀 <strong>¡Módulo 8 completado!</strong> Ya tienes el mapa de Real-Time Intelligence. Sigue con el <a href="modulo-9.html">Módulo 9: Eventstreams en tiempo real</a>. 🌸</div>
+
+        <div class="course-nav">
+          <a href="modulo-7.html"><span class="course-nav__label">← Anterior</span><span class="course-nav__title">Módulo 7 · Medallion</span></a>
+          <a href="modulo-9.html" class="next"><span class="course-nav__label">Siguiente →</span><span class="course-nav__title">Módulo 9 · Eventstreams</span></a>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <button id="back-to-top" class="back-to-top" aria-label="Volver arriba" title="Volver arriba">↑</button>
+
+  <script src="https://cdn.jsdelivr.net/npm/i18next@23/dist/umd/i18next.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1/prism.min.js"></script>
+  <script src="../../../assets/js/theme.js"></script>
+  <script src="../../../assets/js/main.js"></script>
+  <script src="../../../assets/js/cursor.js"></script>
+</body>
+</html>

@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="DP-700 Módulo 9: eventstreams en tiempo real en Fabric. Sources, destinations, 7 transformaciones no-code, las 5 windowing functions, derived streams y DeltaFlow para CDC.">
+  <title>DP-700 · Módulo 9: Eventstreams en tiempo real | Power BI Guide by Kawaii BI</title>
+  <link rel="canonical" href="https://kawaiibi.es/topics/certificaciones/dp-700/modulo-9.html">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Kawaii Power BI Guide">
+  <meta property="og:locale" content="es_ES">
+  <meta property="og:title" content="DP-700 · Módulo 9: Eventstreams en tiempo real | Power BI Guide by Kawaii BI">
+  <meta property="og:description" content="DP-700 Módulo 9: eventstreams. Sources, destinations, 7 transformaciones, las 5 windowing functions y derived streams.">
+  <meta property="og:url" content="https://kawaiibi.es/topics/certificaciones/dp-700/modulo-9.html">
+  <meta property="og:image" content="https://kawaiibi.es/assets/images/og-banner.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="1200">
+  <meta property="og:image:alt" content="Sara Lozano Marti - Kawaii Power BI">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="DP-700 · Módulo 9: Eventstreams en tiempo real | Power BI Guide by Kawaii BI">
+  <meta name="twitter:description" content="DP-700 Módulo 9: eventstreams. Sources, destinations, transformaciones y las 5 windowing functions.">
+  <meta name="twitter:image" content="https://kawaiibi.es/assets/images/og-banner.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/prismjs@1/themes/prism-okaidia.min.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="../../../assets/css/main.css">
+  <link rel="stylesheet" href="../../../assets/css/themes.css">
+  <link rel="stylesheet" href="../../../assets/css/components.css">
+  <link rel="stylesheet" href="../../../assets/css/layout.css">
+
+  <style>
+    .topic-header { text-align: center; padding: 2.25rem 0 1.75rem; border-bottom: 2px solid var(--color-mauve); margin-bottom: 2rem; }
+    .topic-header__eyebrow { font-family: 'Fira Code', monospace; font-size: 0.8125rem; font-weight: 600; color: var(--color-coral); letter-spacing: 0.05em; }
+    .topic-header__icon { font-size: 3.5rem; margin: 0.5rem 0; display: block; }
+    .topic-header__title { font-size: clamp(1.75rem, 4vw, 2.25rem); font-weight: 800; color: var(--color-dark); margin-bottom: 0.625rem; line-height: 1.2; }
+    .topic-header__subtitle { font-size: 1rem; color: var(--color-slate); margin-bottom: 1.25rem; line-height: 1.55; max-width: 680px; margin-left: auto; margin-right: auto; }
+    .topic-header__levels { display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap; align-items: center; }
+
+    .toc { background: var(--color-rose); border-radius: var(--border-radius); padding: 1.25rem 1.5rem; margin-bottom: 2rem; border: 1.5px solid var(--color-mauve); }
+    .toc__title { font-size: 1rem; font-weight: 700; margin: 0 0 0.75rem; }
+    .toc__list { display: flex; flex-wrap: wrap; gap: 0.5rem; list-style: none; padding: 0; margin: 0; }
+    .toc__list a { font-size: 0.8125rem; color: var(--color-coral); text-decoration: none; padding: 0.25rem 0.625rem; background: var(--color-white); border-radius: 999px; border: 1px solid var(--color-mauve); }
+    .toc__list a:hover { background: var(--color-coral); color: #fff; }
+
+    .category-header { display: flex; align-items: center; gap: 0.75rem; margin: 2.5rem 0 1.25rem; padding: 0.875rem 1.25rem; background: var(--color-rose); border-radius: var(--border-radius-sm); border-left: 4px solid var(--color-coral); scroll-margin-top: 20px; }
+    .category-header__icon { font-size: 1.5rem; }
+    .category-header__title { font-size: 1.25rem; font-weight: 700; margin: 0; }
+
+    .concept-card { background: var(--color-white); border: 1.5px solid var(--color-mauve); border-radius: var(--border-radius); padding: 1.5rem 1.75rem; margin-bottom: 1.25rem; }
+    .concept-card h3 { font-size: 1.0625rem; font-weight: 700; color: var(--color-coral); margin: 0 0 0.6rem; }
+    .concept-card h4 { font-size: 0.9375rem; font-weight: 700; color: var(--color-dark); margin: 1.1rem 0 0.4rem; }
+    .concept-card p { font-size: 0.9375rem; line-height: 1.7; color: var(--color-dark); margin-bottom: 0.7rem; }
+    .concept-card ul, .concept-card ol { padding-left: 1.25rem; font-size: 0.9375rem; line-height: 1.75; color: var(--color-dark); margin: 0.4rem 0; }
+    .concept-card code { background: var(--color-blush); padding: 0.1em 0.4em; border-radius: 4px; font-family: 'Fira Code', monospace; font-size: 0.85em; color: var(--color-coral); }
+    .concept-card pre { margin: 0.75rem 0; }
+
+    .md-table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.84rem; }
+    .md-table th, .md-table td { border: 1px solid var(--color-mauve); padding: 0.5rem 0.7rem; text-align: left; vertical-align: top; }
+    .md-table th { background: var(--color-rose); font-weight: 700; color: var(--color-dark); }
+    .md-table tr:nth-child(even) td { background: var(--color-blush); }
+    .table-scroll { overflow-x: auto; }
+
+    .course-nav { display: flex; justify-content: space-between; gap: 1rem; margin-top: 2.5rem; flex-wrap: wrap; }
+    .course-nav a { flex: 1 1 220px; display: block; background: var(--color-white); border: 1.5px solid var(--color-mauve); border-radius: var(--border-radius); padding: 1rem 1.25rem; text-decoration: none; color: inherit; transition: var(--transition); }
+    .course-nav a:hover { border-color: var(--color-coral); box-shadow: var(--shadow-md); text-decoration: none; }
+    .course-nav__label { font-size: 0.75rem; color: var(--color-slate); text-transform: uppercase; letter-spacing: 0.05em; }
+    .course-nav__title { font-weight: 700; color: var(--color-coral); }
+    .course-nav a.next { text-align: right; }
+  </style>
+</head>
+<body>
+
+  <aside class="site-sidebar">
+    <div class="site-sidebar__profile">
+      <img src="../../../assets/images/avatar-sara.png" alt="Sara Lozano Martí" class="site-sidebar__avatar">
+      <p class="site-sidebar__name">Sara Lozano Martí</p>
+      <p class="site-sidebar__subtitle">Power BI Expert</p>
+    </div>
+    <nav class="site-sidebar__nav" aria-label="Navegación principal">
+      <ul>
+        <li><a href="../../../index.html" class="site-sidebar__link"><span class="site-sidebar__icon">🏠</span> Inicio</a></li>
+        <li><a href="../../dax.html" class="site-sidebar__link"><span class="site-sidebar__icon">⚡</span> Funciones DAX</a></li>
+        <li><a href="../../power-query.html" class="site-sidebar__link"><span class="site-sidebar__icon">🔄</span> Power Query</a></li>
+        <li><a href="../../lenguaje-m.html" class="site-sidebar__link"><span class="site-sidebar__icon">〽️</span> Lenguaje M</a></li>
+        <li><a href="../../modelado.html" class="site-sidebar__link"><span class="site-sidebar__icon">🗄️</span> Modelado</a></li>
+        <li><a href="../../conceptos-powerbi.html" class="site-sidebar__link"><span class="site-sidebar__icon">📊</span> Conceptos Power BI</a></li>
+        <li><a href="../../fabric.html" class="site-sidebar__link"><span class="site-sidebar__icon">🧵</span> Microsoft Fabric</a></li>
+        <li><a href="../../tmdl.html" class="site-sidebar__link"><span class="site-sidebar__icon">📝</span> TMDL</a></li>
+        <li><a href="../../diseno-ux.html" class="site-sidebar__link"><span class="site-sidebar__icon">🎨</span> Diseño y UX</a></li>
+        <li><a href="../../gobernanza.html" class="site-sidebar__link"><span class="site-sidebar__icon">🔒</span> Gobernanza</a></li>
+        <li><a href="../../certificaciones.html" class="site-sidebar__link is-active"><span class="site-sidebar__icon">🎓</span> Certificaciones</a></li>
+      </ul>
+    </nav>
+    <div class="site-sidebar__divider"></div>
+    <div class="site-sidebar__footer">
+      <a href="../../../quien-soy.html" class="site-sidebar__link site-sidebar__link--highlight"><span class="site-sidebar__icon">👩‍💻</span> ¿Quién soy?</a>
+      <div class="site-sidebar__social">
+        <a href="https://www.linkedin.com/in/saralozanomarti" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><img src="../../../assets/images/logo-linkedin.png" alt="LinkedIn" class="site-sidebar__social-icon"></a>
+        <a href="https://www.youtube.com/@KawaiiPowerBI" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><img src="../../../assets/images/logo-youtube.png" alt="YouTube" class="site-sidebar__social-icon"></a>
+        <a href="https://github.com/KawaiiBI" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><img src="../../../assets/images/logo-github.png" alt="GitHub" class="site-sidebar__social-icon"></a>
+      </div>
+      <div class="site-sidebar__logo-bottom"><img src="../../../assets/images/logo-kawaii.jpg" alt="Kawaii BI" class="site-sidebar__logo-img"></div>
+      <p class="site-sidebar__copyright">Power BI Guide 🌸<br>© 2026 Kawaii BI</p>
+    </div>
+  </aside>
+
+  <div class="page-wrapper">
+    <main class="main-content">
+      <div class="topic-page">
+
+        <nav class="breadcrumb" aria-label="Ruta de navegación">
+          <span class="breadcrumb__item"><a href="../../../index.html">🏠 Inicio</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item"><a href="../../certificaciones.html">Certificaciones</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item"><a href="../dp-700.html">DP-700</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item">Módulo 9</span>
+        </nav>
+
+        <header class="topic-header">
+          <span class="topic-header__eyebrow">DP-700 · MÓDULO 9</span>
+          <span class="topic-header__icon">🚰</span>
+          <h1 class="topic-header__title">Eventstreams en tiempo real</h1>
+          <p class="topic-header__subtitle">Sources y destinations, las 7 transformaciones no-code, las 5 windowing functions (el tema estrella del examen), derived streams para content-based routing y DeltaFlow para CDC. 🌸</p>
+          <div class="topic-header__levels">
+            <span class="badge badge--intermediate">Intermedio</span>
+            <span class="badge badge--advanced">Avanzado</span>
+          </div>
+        </header>
+
+        <nav class="toc" aria-label="Índice del módulo">
+          <p class="toc__title">📑 En este módulo:</p>
+          <ul class="toc__list">
+            <li><a href="#anatomia">1. Anatomía</a></li>
+            <li><a href="#capabilities">2. Enhanced vs Standard</a></li>
+            <li><a href="#sources">3. Sources</a></li>
+            <li><a href="#destinations">4. Destinations</a></li>
+            <li><a href="#no-code">5. 7 transformaciones</a></li>
+            <li><a href="#sql-editor">6. SQL code editor</a></li>
+            <li><a href="#windowing">7. Windowing functions ⭐</a></li>
+            <li><a href="#tumbling">8. Tumbling</a></li>
+            <li><a href="#hopping">9. Hopping</a></li>
+            <li><a href="#sliding">10. Sliding</a></li>
+            <li><a href="#session">11. Session</a></li>
+            <li><a href="#snapshot">12. Snapshot</a></li>
+            <li><a href="#choose">13. Elegir window</a></li>
+            <li><a href="#derived">14. Derived streams</a></li>
+            <li><a href="#deltaflow">15. DeltaFlow y Spark</a></li>
+            <li><a href="#trampas">16. Trampas</a></li>
+            <li><a href="#comparativas">17. Comparativas</a></li>
+          </ul>
+        </nav>
+
+        <div class="category-header" id="anatomia"><span class="category-header__icon">🧩</span><h2 class="category-header__title">1. Anatomía de un Eventstream</h2></div>
+        <article class="concept-card">
+          <p>Un Eventstream crea un pipeline que <strong>ingesta, procesa y entrega</strong> events. Se diseña en un <strong>canvas visual</strong> drag-and-drop, sin código ni gestión de infraestructura. Tres componentes obligatorios: <strong>Sources</strong> (📥), <strong>Transformations</strong> (🔄) y <strong>Destinations</strong> (📤).</p>
+          <div class="note note--tip">🎯 <strong>Crítico para el examen:</strong> las 5 windowing functions, derived streams para content-based routing, elegir Eventstream vs Spark Structured Streaming, SQL operator vs no-code, y DeltaFlow para CDC.</div>
+        </article>
+
+        <div class="category-header" id="capabilities"><span class="category-header__icon">🎨</span><h2 class="category-header__title">2. Enhanced vs Standard capabilities</h2></div>
+        <article class="concept-card">
+          <p><strong>Standard:</strong> versión original, sources/destinations limitados. <strong>Enhanced ⭐:</strong> moderna (recomendada), más sources y destinations, mejor UI, SQL operator y DeltaFlow. Para nuevos eventstreams, <strong>siempre Enhanced</strong>.</p>
+        </article>
+
+        <div class="category-header" id="sources"><span class="category-header__icon">📥</span><h2 class="category-header__title">3. Sources</h2></div>
+        <article class="concept-card">
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Categoría</th><th>Ejemplos</th></tr></thead>
+              <tbody>
+                <tr><td>Microsoft sources</td><td>Event Hubs ⭐, IoT Hub, Service Bus, CDC (Azure SQL, PostgreSQL, MySQL, SQL Server)</td></tr>
+                <tr><td>Azure events</td><td>Blob Storage events</td></tr>
+                <tr><td>Fabric events</td><td>Workspace items, OneLake, Fabric jobs</td></tr>
+                <tr><td>External</td><td>Apache Kafka ⭐, GCP Pub/Sub, MQTT, Kinesis, Confluent</td></tr>
+                <tr><td>Custom</td><td>Custom app source, Business events (Preview)</td></tr>
+                <tr><td>Sample</td><td>Bicycles, Yellow Taxi, Stock Market</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>Puedes conectar <strong>múltiples sources</strong> a un mismo eventstream (union, join, enrichment). Configurables desde el canvas o desde el Real-Time Hub (reutilizables).</p>
+        </article>
+
+        <div class="category-header" id="destinations"><span class="category-header__icon">📤</span><h2 class="category-header__title">4. Destinations</h2></div>
+        <article class="concept-card">
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Destination</th><th>Uso principal</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Eventhouse</strong></td><td>Analytics KQL real-time, time-series, anomaly detection</td></tr>
+                <tr><td><strong>Lakehouse</strong></td><td>Delta storage histórico, Direct Lake, batch posterior</td></tr>
+                <tr><td><strong>Derived stream</strong></td><td>Content-based routing intermedio</td></tr>
+                <tr><td><strong>Activator</strong></td><td>Alerts y automated actions</td></tr>
+                <tr><td><strong>Custom endpoint</strong></td><td>Integraciones externas</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="note note--tip">🎯 <strong>Múltiples destinations en paralelo</strong> desde el mismo eventstream, sin colisionar: un source, un procesado, N destinos (ej: Eventhouse + Activator + Lakehouse + Custom endpoint).</div>
+        </article>
+
+        <div class="category-header" id="no-code"><span class="category-header__icon">🔄</span><h2 class="category-header__title">5. Las 7 transformaciones no-code</h2></div>
+        <article class="concept-card">
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Transform</th><th>Función</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Filter</strong> 🔍</td><td>Descartar events según condición</td></tr>
+                <tr><td><strong>Manage fields</strong> ✏️</td><td>Add/remove/rename/change type</td></tr>
+                <tr><td><strong>Aggregate</strong> 📊</td><td>Sum/Min/Max/Avg cada vez que llega un event</td></tr>
+                <tr><td><strong>Group by</strong> 🌸</td><td>Aggregations con windowing (contiene las windows)</td></tr>
+                <tr><td><strong>Union</strong> 🔗</td><td>Combinar streams con shared fields (los no compartidos se dropean)</td></tr>
+                <tr><td><strong>Join</strong> 🔀</td><td>Cross-stream matching (inner, left, etc.)</td></tr>
+                <tr><td><strong>Expand</strong> 📤</td><td>Array → una row por valor (como explode)</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </article>
+
+        <div class="category-header" id="sql-editor"><span class="category-header__icon">💻</span><h2 class="category-header__title">6. SQL Code editor operator</h2></div>
+        <article class="concept-card">
+          <p>Para teams code-first: escribes SQL directamente (misma sintaxis que Stream Analytics), con windowing, aggregations, joins y content-based routing en una query.</p>
+          <pre><code class="language-sql">SELECT device_id, AVG(temperature) AS avg_temp, System.Timestamp() AS window_end
+FROM IoT_Stream
+WHERE temperature IS NOT NULL
+GROUP BY device_id, TumblingWindow(minute, 5)</code></pre>
+          <p>Con varios <code>SELECT ... INTO</code> haces routing a distintos destinos desde un solo operator.</p>
+        </article>
+
+        <div class="category-header" id="windowing"><span class="category-header__icon">⭐</span><h2 class="category-header__title">7. Windowing functions: el corazón del streaming</h2></div>
+        <article class="concept-card">
+          <p>Una <strong>window</strong> es un intervalo de tiempo sobre el que agrupas events para agregarlos. Necesarias porque los streams son infinitos (un GROUP BY clásico no aplica). Se usan en el <code>GROUP BY</code>.</p>
+          <div class="note note--tip">🎯 <strong>Regla clave:</strong> todas las windows <strong>output events al FINAL de la window</strong> (un solo event por window, con la agregación, timestamped al end). Tamaño máximo: <strong>7 días</strong> para todos los tipos.</div>
+        </article>
+
+        <div class="category-header" id="tumbling"><span class="category-header__icon">🌸</span><h2 class="category-header__title">8. Tumbling Window</h2></div>
+        <article class="concept-card">
+          <p>Intervalos <strong>fixed, sin overlap, contiguos</strong>. Cada event cae en <strong>exactamente una window</strong>. 1 parámetro (size). Como muffins en una bandeja 🧁.</p>
+          <pre><code class="language-sql">GROUP BY TollId, TumblingWindow(minute, 5)</code></pre>
+          <p>Por defecto incluye el fin de la window (12:05) y excluye el inicio (12:00). Uso: hourly reports, 5-min rollups, daily aggregations.</p>
+        </article>
+
+        <div class="category-header" id="hopping"><span class="category-header__icon">🌸</span><h2 class="category-header__title">9. Hopping Window</h2></div>
+        <article class="concept-card">
+          <p>Como tumbling pero <strong>con overlap</strong>: "saltan" hacia delante. 3 parámetros: size, <strong>hop</strong> y (opcional) offset. Un event puede estar en <strong>varias windows</strong>.</p>
+          <pre><code class="language-sql">GROUP BY Region, HoppingWindow(minute, 10, 5)  -- 10min, salta cada 5min</code></pre>
+          <div class="note note--tip">🎯 Un tumbling es un caso especial de hopping donde <code>hop = size</code>. Uso: rolling averages con updates frecuentes, dashboards smooth.</div>
+        </article>
+
+        <div class="category-header" id="sliding"><span class="category-header__icon">🌸</span><h2 class="category-header__title">10. Sliding Window</h2></div>
+        <article class="concept-card">
+          <p>Solo emite output <strong>cuando el content cambia</strong> (un event entra o sale). Es <strong>event-driven</strong>, no scheduled. Cada window tiene al menos 1 event. 1 parámetro (size). Como un detector de movimiento.</p>
+          <pre><code class="language-sql">GROUP BY Topic, SlidingWindow(second, 10)
+HAVING COUNT(*) >= 3</code></pre>
+          <p>Uso: alerting (solo cuando cambia la condición), detección de patrones con timing irregular.</p>
+        </article>
+
+        <div class="category-header" id="session"><span class="category-header__icon">🌸</span><h2 class="category-header__title">11. Session Window</h2></div>
+        <article class="concept-card">
+          <p>Agrupa events que llegan <strong>cerca en el tiempo</strong>, filtrando periodos de inactividad. 2-3 parámetros: <strong>timeout</strong>, <strong>maximum duration</strong> y (opcional) partition. Como sesiones de conversación en WhatsApp.</p>
+          <p>Uso: user session tracking, device activity, anomaly detection por periodos.</p>
+        </article>
+
+        <div class="category-header" id="snapshot"><span class="category-header__icon">🌸</span><h2 class="category-header__title">12. Snapshot Window</h2></div>
+        <article class="concept-card">
+          <p>Agrupa events con el <strong>mismo timestamp exacto</strong> (system time). <strong>Sin parámetros</strong> (el único). Uso: agrupar events simultáneos, cotizaciones del mismo tick.</p>
+        </article>
+
+        <div class="category-header" id="choose"><span class="category-header__icon">🎯</span><h2 class="category-header__title">13. Cómo elegir el window correcto</h2></div>
+        <article class="concept-card">
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Necesito...</th><th>Window</th></tr></thead>
+              <tbody>
+                <tr><td>Intervalos fijos sin overlap</td><td><strong>Tumbling</strong></td></tr>
+                <tr><td>Intervalos fijos con overlap</td><td><strong>Hopping</strong></td></tr>
+                <tr><td>Emitir solo cuando cambia el content</td><td><strong>Sliding</strong></td></tr>
+                <tr><td>Agrupar por "sesión" de actividad</td><td><strong>Session</strong></td></tr>
+                <tr><td>Agrupar events con mismo timestamp</td><td><strong>Snapshot</strong></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <pre><code class="language-plaintext">Tumbling:  [....][....][....]      cubetas separadas
+Hopping:   [....]  overlap
+             [....]
+Sliding:   |------| output al entrar/salir event
+Session:   [....] gap [....] gap [........]
+Snapshot:  [| | ||| |]  mismos timestamps</code></pre>
+        </article>
+
+        <div class="category-header" id="derived"><span class="category-header__icon">🔀</span><h2 class="category-header__title">14. Content-based routing con Derived streams</h2></div>
+        <article class="concept-card">
+          <p><strong>Content-based routing:</strong> enviar subsets del stream a distintos destinos según el <strong>contenido</strong>. Un <strong>derived stream</strong> es una versión transformada del stream original que lo habilita.</p>
+          <pre><code class="language-plaintext">IoT_Sensors
+  ├─ Filter temp>80  → Derived "HighTemps"  → Activator
+  ├─ Aggregate hourly → Derived "HourlyAvg" → Eventhouse
+  └─ Pass-through     → Derived "AllReadings" → Lakehouse</code></pre>
+          <div class="note note--tip">🎯 Pregunta típica: "rutear transacciones de alto valor a alerting y todas al warehouse" → respuesta: <strong>derived streams para content-based routing</strong>. Un solo source, múltiples outputs sin duplicar ingesta.</div>
+        </article>
+
+        <div class="category-header" id="deltaflow"><span class="category-header__icon">🌊</span><h2 class="category-header__title">15. DeltaFlow y Spark Structured Streaming</h2></div>
+        <article class="concept-card">
+          <p><strong>DeltaFlow (Preview)</strong> simplifica los CDC pipelines: en vez de Event Hubs + Stream Analytics con glue code, lo hace todo en la config del connector (auto-creation de tablas, auto schema evolution). Sources: Azure SQL DB, PostgreSQL, SQL Server on VM, Azure SQL MI. Desde feb 2026 también puedes procesar CDC con <strong>Eventstreams SQL</strong>.</p>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th></th><th>Eventstream</th><th>Spark Structured Streaming</th></tr></thead>
+              <tbody>
+                <tr><td>Estilo</td><td>No-code / SQL</td><td>PySpark code</td></tr>
+                <tr><td>Ideal para</td><td>Ingesta + transforms simples</td><td>Transforms complejas + ML</td></tr>
+                <tr><td>Skills</td><td>Low-code</td><td>Data engineering</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>Desde 2026 se pueden integrar: descubres el source en Real-Time Hub, autogenera PySpark, y combinas lo mejor de ambos.</p>
+        </article>
+
+        <div class="category-header" id="trampas"><span class="category-header__icon">⚠️</span><h2 class="category-header__title">16. Trampas típicas</h2></div>
+        <article class="concept-card">
+          <ul>
+            <li><strong>"Tumbling y Hopping son lo mismo"</strong> → ❌ Tumbling sin overlap, Hopping con overlap.</li>
+            <li><strong>"Un event solo pertenece a una window"</strong> → ❌ solo en Tumbling; en Hopping y Sliding puede estar en varias.</li>
+            <li><strong>"Sliding emite a intervalos regulares"</strong> → ❌ es event-driven.</li>
+            <li><strong>"Window máximo 24h"</strong> → ❌ 7 días para todos.</li>
+            <li><strong>"Session no necesita parámetros"</strong> → ❌ timeout + max duration; el único sin params es Snapshot.</li>
+            <li><strong>"Content-based routing requiere múltiples eventstreams"</strong> → ❌ un solo eventstream con derived streams.</li>
+            <li><strong>"Union combina cualquier campo"</strong> → ❌ solo shared fields; los demás se dropean.</li>
+            <li><strong>"Un eventstream = un destination"</strong> → ❌ múltiples en paralelo.</li>
+            <li><strong>"SQL operator soporta cualquier SQL"</strong> → ❌ subset específico de streaming.</li>
+            <li><strong>"DeltaFlow para cualquier database"</strong> → ❌ solo Azure SQL DB, PostgreSQL, SQL Server on VM, Azure SQL MI.</li>
+            <li><strong>"El output de una window contiene todos los events"</strong> → ❌ un solo event por window con la agregación.</li>
+          </ul>
+        </article>
+
+        <div class="category-header" id="comparativas"><span class="category-header__icon">🆚</span><h2 class="category-header__title">17. Comparativas clave (chuleta)</h2></div>
+        <article class="concept-card">
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Window</th><th>Overlap</th><th>Output timing</th><th>Params</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Tumbling</strong></td><td>❌ No</td><td>Regular (fixed)</td><td>1 (size)</td></tr>
+                <tr><td><strong>Hopping</strong></td><td>✅ Sí</td><td>Regular (hop)</td><td>2 (size, hop)</td></tr>
+                <tr><td><strong>Sliding</strong></td><td>✅ Sí</td><td>Event-driven</td><td>1 (size)</td></tr>
+                <tr><td><strong>Session</strong></td><td>❌ (sesiones)</td><td>Session-driven</td><td>2-3 (timeout, max, opt partition)</td></tr>
+                <tr><td><strong>Snapshot</strong></td><td>N/A</td><td>Same timestamp</td><td>0</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </article>
+
+        <div class="note note--next">🚀 <strong>¡Módulo 9 completado!</strong> Ya dominas los eventstreams y las windows. Sigue con el <a href="modulo-10.html">Módulo 10: Eventhouse y KQL a fondo</a>. 🌸</div>
+
+        <div class="course-nav">
+          <a href="modulo-8.html"><span class="course-nav__label">← Anterior</span><span class="course-nav__title">Módulo 8 · Real-Time Intelligence</span></a>
+          <a href="modulo-10.html" class="next"><span class="course-nav__label">Siguiente →</span><span class="course-nav__title">Módulo 10 · Eventhouse y KQL</span></a>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <button id="back-to-top" class="back-to-top" aria-label="Volver arriba" title="Volver arriba">↑</button>
+
+  <script src="https://cdn.jsdelivr.net/npm/i18next@23/dist/umd/i18next.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1/prism.min.js"></script>
+  <script src="../../../assets/js/theme.js"></script>
+  <script src="../../../assets/js/main.js"></script>
+  <script src="../../../assets/js/cursor.js"></script>
+</body>
+</html>
