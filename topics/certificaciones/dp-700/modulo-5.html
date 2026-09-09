@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="DP-700 Módulo 5: ingesta con Dataflows Gen2 en Fabric. Query folding, staging, Fast Copy, incremental refresh, CI/CD y elección Dataflow vs Notebook vs Pipeline.">
+  <meta name="description" content="DP-700 Módulo 5: ingestar datos con Dataflows Gen2 en Microsoft Fabric. Power Query Online, query folding, staging, Fast Copy, Modern Evaluator, incremental refresh, CI/CD y costes.">
   <title>DP-700 · Módulo 5: Dataflows Gen2 | Power BI Guide by Kawaii BI</title>
   <link rel="canonical" href="https://kawaiibi.es/topics/certificaciones/dp-700/modulo-5.html">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Kawaii Power BI Guide">
   <meta property="og:locale" content="es_ES">
   <meta property="og:title" content="DP-700 · Módulo 5: Dataflows Gen2 | Power BI Guide by Kawaii BI">
-  <meta property="og:description" content="DP-700 Módulo 5: Dataflows Gen2. Query folding, staging, Fast Copy, incremental refresh y CI/CD.">
+  <meta property="og:description" content="DP-700 Módulo 5: Dataflows Gen2 en Fabric. Query folding, staging, Fast Copy, incremental refresh, CI/CD y consumo de CU.">
   <meta property="og:url" content="https://kawaiibi.es/topics/certificaciones/dp-700/modulo-5.html">
   <meta property="og:image" content="https://kawaiibi.es/assets/images/og-banner.png">
   <meta property="og:image:width" content="1200">
@@ -63,12 +63,18 @@
     .md-table tr:nth-child(even) td { background: var(--color-blush); }
     .table-scroll { overflow-x: auto; }
 
+    .trap-list { list-style: none; padding: 0; margin: 0; }
+    .trap-list > li { background: var(--color-white); border: 1.5px solid var(--color-mauve); border-left: 4px solid var(--color-warning); border-radius: var(--border-radius-sm); padding: 0.875rem 1.125rem; margin-bottom: 0.75rem; font-size: 0.9375rem; line-height: 1.7; }
+    .trap-list strong.trap-title { display: block; color: var(--color-dark); margin-bottom: 0.25rem; }
+
     .course-nav { display: flex; justify-content: space-between; gap: 1rem; margin-top: 2.5rem; flex-wrap: wrap; }
     .course-nav a { flex: 1 1 220px; display: block; background: var(--color-white); border: 1.5px solid var(--color-mauve); border-radius: var(--border-radius); padding: 1rem 1.25rem; text-decoration: none; color: inherit; transition: var(--transition); }
     .course-nav a:hover { border-color: var(--color-coral); box-shadow: var(--shadow-md); text-decoration: none; }
     .course-nav__label { font-size: 0.75rem; color: var(--color-slate); text-transform: uppercase; letter-spacing: 0.05em; }
     .course-nav__title { font-weight: 700; color: var(--color-coral); }
     .course-nav a.next { text-align: right; }
+
+    .sources-list { font-size: 0.875rem; line-height: 1.9; word-break: break-word; }
   </style>
 </head>
 <body>
@@ -124,227 +130,1207 @@
         <header class="topic-header">
           <span class="topic-header__eyebrow">DP-700 · MÓDULO 5</span>
           <span class="topic-header__icon">🌊</span>
-          <h1 class="topic-header__title">Ingesta con Dataflows Gen2 en Fabric</h1>
-          <p class="topic-header__subtitle">El ETL low-code de Fabric con Power Query Online: query folding, staging, Fast Copy, incremental refresh, CI/CD y la clásica elección Dataflow vs Notebook vs Pipeline. 🌸</p>
+          <h1 class="topic-header__title">Ingestar datos con Dataflows Gen2 en Microsoft Fabric</h1>
+          <p class="topic-header__subtitle">El módulo del ETL low-code: Power Query Online, query folding, staging, Fast Copy, Modern Evaluator, incremental refresh y CI/CD. Si vienes de Power BI, ya sabes el 80%. 🌸</p>
           <div class="topic-header__levels">
-            <span class="badge badge--beginner">Principiante</span>
             <span class="badge badge--intermediate">Intermedio</span>
+            <span class="badge badge--advanced">Avanzado</span>
           </div>
         </header>
 
         <nav class="toc" aria-label="Índice del módulo">
           <p class="toc__title">📑 En este módulo:</p>
           <ul class="toc__list">
-            <li><a href="#objetivos">1. Objetivos</a></li>
+            <li><a href="#objetivos">1. Objetivos y encaje</a></li>
             <li><a href="#que-es">2. ¿Qué es un Dataflow?</a></li>
             <li><a href="#gen1-gen2">3. Gen1 vs Gen2</a></li>
-            <li><a href="#limitaciones">4. Beneficios y límites</a></li>
-            <li><a href="#interfaz">5. Interfaz y conectores</a></li>
-            <li><a href="#destinations">6. Data destinations</a></li>
-            <li><a href="#folding">7. Query folding</a></li>
-            <li><a href="#staging">8. Staging queries</a></li>
-            <li><a href="#fast-copy">9. Fast Copy</a></li>
-            <li><a href="#capacidades">10. Modern Evaluator y más</a></li>
-            <li><a href="#incremental">11. Incremental refresh</a></li>
-            <li><a href="#cicd">12. CI/CD y Git</a></li>
-            <li><a href="#costes">13. Costes y CU</a></li>
-            <li><a href="#trampas">14. Trampas</a></li>
-            <li><a href="#comparativas">15. Comparativas</a></li>
+            <li><a href="#beneficios">4. Beneficios y limitaciones</a></li>
+            <li><a href="#crear">5. Cómo crear uno</a></li>
+            <li><a href="#interfaz">6. Power Query Online</a></li>
+            <li><a href="#conectores">7. Conectores</a></li>
+            <li><a href="#transformaciones">8. Transformaciones</a></li>
+            <li><a href="#codigo-m">9. Código M</a></li>
+            <li><a href="#destinations">10. Data destinations</a></li>
+            <li><a href="#query-folding">11. Query folding</a></li>
+            <li><a href="#staging">12. Staging queries</a></li>
+            <li><a href="#fast-copy">13. Fast Copy</a></li>
+            <li><a href="#modern-evaluator">14. Modern Evaluator</a></li>
+            <li><a href="#optimized-copy">15. Optimized copy</a></li>
+            <li><a href="#partitioned-compute">16. Partitioned Compute</a></li>
+            <li><a href="#incremental-refresh">17. Incremental refresh</a></li>
+            <li><a href="#cicd">18. CI/CD y Git</a></li>
+            <li><a href="#pipelines">19. Integración con Pipelines</a></li>
+            <li><a href="#costes">20. Costes y CU</a></li>
+            <li><a href="#trampas">21. Trampas típicas</a></li>
+            <li><a href="#comparativas">22. Comparativas clave</a></li>
+            <li><a href="#fuentes">23. Fuentes oficiales</a></li>
           </ul>
         </nav>
 
-        <div class="category-header" id="objetivos"><span class="category-header__icon">🎯</span><h2 class="category-header__title">1. Objetivos y encaje en el DP-700</h2></div>
+        <!-- ============ 1. OBJETIVOS ============ -->
+        <div class="category-header" id="objetivos">
+          <span class="category-header__icon">🎯</span>
+          <h2 class="category-header__title">1. Objetivos y encaje en el DP-700</h2>
+        </div>
+
         <article class="concept-card">
-          <h3>El módulo del ETL low-code</h3>
-          <p>Objetivos: describir las capacidades de Dataflow, crear soluciones de ingesta/transformación e incluir un Dataflow en un pipeline. Cae sobre todo en el <strong>Dominio 2 (Ingest and transform)</strong>.</p>
-          <div class="note note--tip">🎯 <strong>Crítico:</strong> query folding, staging, Fast Copy, incremental refresh (buckets), CI/CD + Git y la elección <strong>Dataflow vs Notebook vs Pipeline</strong>.</div>
-          <div class="note note--practice">🌸 Si ya sabes Power Query M de Power BI, ya dominas el 80% de este módulo. Lo nuevo son las features Fabric: destinos, staging, Fast Copy, CI/CD.</div>
+          <h3>¿Qué te enseña este módulo?</h3>
+          <p>Este es <strong>el módulo del ETL low-code</strong> en Fabric. Los objetivos oficiales del módulo:</p>
+          <ol>
+            <li>Describir las capacidades de Dataflow en Microsoft Fabric.</li>
+            <li>Crear soluciones Dataflow para ingestar y transformar datos.</li>
+            <li>Incluir un Dataflow en un pipeline.</li>
+          </ol>
+
+          <h4>Peso en el examen DP-700</h4>
+          <p>Los Dataflows Gen2 caen principalmente en el <strong>Dominio 2 (Ingest and transform)</strong>:</p>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Dominio</th><th>Cómo aparece Dataflows Gen2</th></tr></thead>
+              <tbody>
+                <tr><td>Implement and manage (30-35%)</td><td>Workspace settings, CI/CD y Git integration, workspace-level Dataflow config</td></tr>
+                <tr><td>Ingest and transform (30-35%)</td><td>Elección de herramienta (Dataflow vs Notebook vs Pipeline), Power Query M, destinos, incremental refresh</td></tr>
+                <tr><td>Monitor and optimize (30-35%)</td><td>Query folding, staging, Fast Copy, Modern Evaluator, troubleshooting</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="note note--tip">
+            🎯 <strong>Qué es CRÍTICO dominar:</strong>
+            <ul>
+              <li><strong>Query folding</strong>: qué es, cómo se ve, por qué importa</li>
+              <li><strong>Staging queries</strong>: cuándo activarlo y por qué</li>
+              <li><strong>Fast Copy</strong>: prerequisitos y beneficios</li>
+              <li><strong>Incremental refresh</strong>: cómo funciona (buckets)</li>
+              <li><strong>CI/CD + Git integration</strong>: para el dominio de gobernanza</li>
+              <li><strong>Elección Dataflow vs Notebook vs Pipeline</strong>: las clásicas preguntas de escenario</li>
+            </ul>
+          </div>
+
+          <div class="note note--tip">
+            🌸 <strong>Buena noticia si vienes de Power BI:</strong> si ya sabes Power Query M (el de Power BI Desktop o Dataflow Gen1), <strong>ya sabes el 80% de este módulo</strong>. La interfaz visual es prácticamente idéntica y los conceptos M (steps, folding, connectors) son los mismos. Lo que cambia son las novedades de Fabric: destinos, staging, Fast Copy, CI/CD.
+          </div>
         </article>
 
-        <div class="category-header" id="que-es"><span class="category-header__icon">🌊</span><h2 class="category-header__title">2. ¿Qué es un Dataflow?</h2></div>
+        <!-- ============ 2. QUÉ ES UN DATAFLOW ============ -->
+        <div class="category-header" id="que-es">
+          <span class="category-header__icon">🌊</span>
+          <h2 class="category-header__title">2. ¿Qué es un Dataflow?</h2>
+        </div>
+
         <article class="concept-card">
-          <p>Un <strong>Dataflow</strong> es una herramienta ETL cloud, la forma <strong>low-code / visual</strong> de hacer ETL en Fabric usando <strong>Power Query Online</strong>. Extract (conectores), Transform (visual) y Load (a Lakehouse, Warehouse, SQL DB, etc.).</p>
+          <h3>Definición oficial</h3>
+          <p>Un <strong>Dataflow</strong> es una <strong>herramienta ETL basada en cloud</strong> para construir y ejecutar <strong>procesos de transformación de datos escalables</strong>.</p>
+          <p>En cristiano: es la forma <strong>low-code / visual</strong> de hacer ETL en Fabric, usando <strong>Power Query Online</strong> como interfaz. 🌸</p>
+
+          <h4>¿Qué puede hacer?</h4>
+          <ul>
+            <li><strong>Extract</strong>: conectar a decenas de orígenes (BBDD, Excel, SharePoint, APIs, lakehouses...).</li>
+            <li><strong>Transform</strong>: aplicar transformaciones visuales (filtrar, agrupar, join, unpivot, etc.).</li>
+            <li><strong>Load</strong>: escribir a Lakehouse, Warehouse, SQL Database u otros destinos.</li>
+          </ul>
+
+          <h4>¿Cuándo elegir un Dataflow vs otras opciones?</h4>
+          <p>Este es <strong>EL escenario clásico</strong> de examen:</p>
           <div class="table-scroll">
             <table class="md-table">
               <thead><tr><th>Necesitas...</th><th>Herramienta</th></tr></thead>
               <tbody>
-                <tr><td>Interfaz low-code visual, reutilizar transforms, que analistas lo mantengan</td><td><strong>Dataflow Gen2</strong> ✅</td></tr>
-                <tr><td>Transformaciones complejas con código (Python, Spark)</td><td>Notebook</td></tr>
-                <tr><td>Orquestar múltiples pasos con dependencias</td><td>Pipeline</td></tr>
-                <tr><td>Copiar datos raw sin transformar</td><td>Pipeline con Copy Data</td></tr>
+                <tr><td>Interfaz <strong>low-code visual</strong> (Power Query)</td><td><strong>Dataflow Gen2</strong> ✅</td></tr>
+                <tr><td>Reutilizar transformaciones entre reports</td><td><strong>Dataflow Gen2</strong> ✅</td></tr>
+                <tr><td>Que analistas Power BI puedan mantenerlo</td><td><strong>Dataflow Gen2</strong> ✅</td></tr>
+                <tr><td>Transformaciones <strong>complejas con código</strong> (Python, Spark)</td><td><strong>Notebook</strong></td></tr>
+                <tr><td>Orquestar múltiples pasos con dependencias</td><td><strong>Pipeline</strong></td></tr>
+                <tr><td><strong>Copiar datos raw sin transformar</strong></td><td><strong>Pipeline con Copy Data</strong></td></tr>
               </tbody>
             </table>
           </div>
-          <p>Soporta <strong>ETL</strong> (transforma en memoria y escribe curado) y <strong>ELT</strong> (Pipeline copia raw a bronze, Dataflow transforma a silver/gold). Fabric potencia ELT con Fast Copy + staging.</p>
+
+          <h4>ETL vs ELT</h4>
+          <p>Los dataflows soportan ambos patterns:</p>
+          <ul>
+            <li><strong>ETL clásico (Extract → Transform → Load)</strong>: Dataflow lee source → transforma en memoria → escribe a destino ya transformado.</li>
+            <li><strong>ELT moderno (Extract → Load → Transform)</strong>: <strong>Pipeline</strong> copia datos raw al lakehouse (bronze) y el <strong>Dataflow</strong> lee del lakehouse, aplica transformaciones y escribe curado (silver/gold).</li>
+          </ul>
+          <p>Fabric potencia el patrón ELT, especialmente con <strong>Fast Copy + staging</strong>.</p>
         </article>
 
-        <div class="category-header" id="gen1-gen2"><span class="category-header__icon">🔄</span><h2 class="category-header__title">3. Dataflow Gen1 vs Gen2</h2></div>
+        <!-- ============ 3. GEN1 VS GEN2 ============ -->
+        <div class="category-header" id="gen1-gen2">
+          <span class="category-header__icon">🔄</span>
+          <h2 class="category-header__title">3. Dataflow Gen1 vs Gen2 (diferencias clave)</h2>
+        </div>
+
         <article class="concept-card">
+          <p>Si has usado <strong>Power BI Dataflows</strong> clásicos, ese es <strong>Gen1</strong>. En Fabric tenemos la nueva generación: <strong>Gen2</strong>.</p>
+
+          <h4>Qué cambia</h4>
           <div class="table-scroll">
             <table class="md-table">
               <thead><tr><th>Feature</th><th>Gen1 (Power BI)</th><th>Gen2 (Fabric)</th></tr></thead>
               <tbody>
-                <tr><td>Destinos</td><td>Solo Power BI dataset</td><td>Lakehouse, Warehouse, SQL DB, Azure SQL, ADX, Synapse</td></tr>
-                <tr><td>Fast Copy / Modern Evaluator</td><td>❌</td><td>✅</td></tr>
-                <tr><td>Incremental refresh</td><td>Post-publish</td><td>First-class, en editor</td></tr>
+                <tr><td>Destinos</td><td>Solo Power BI dataset</td><td><strong>Lakehouse, Warehouse, SQL DB, Azure SQL, ADX, Synapse</strong></td></tr>
+                <tr><td>Ubicación</td><td>Solo Power BI workspace</td><td>Data Factory, Power BI workspace, o lakehouse</td></tr>
+                <tr><td>Fast Copy</td><td>❌</td><td>✅</td></tr>
+                <tr><td>Modern Evaluator</td><td>❌</td><td>✅</td></tr>
+                <tr><td>Partitioned Compute</td><td>❌</td><td>✅ Preview</td></tr>
+                <tr><td>Incremental refresh</td><td>Config post-publish</td><td><strong>First-class</strong>, en editor</td></tr>
+                <tr><td>Historia de datos incremental</td><td>Especificas rango</td><td>Sin rango (más simple)</td></tr>
                 <tr><td>CI/CD + Git</td><td>❌</td><td>✅</td></tr>
                 <tr><td>Requiere capacidad Fabric</td><td>❌ (Power BI Pro)</td><td>✅</td></tr>
               </tbody>
             </table>
           </div>
-          <div class="note note--tip">🎯 En DP-700 asume <strong>siempre Gen2</strong>. Si un enunciado menciona Power BI Pro/Premium sin Fabric, puede ser Gen1.</div>
+
+          <div class="note note--tip">
+            🎯 <strong>Cambio importante para preguntas de examen:</strong> en preguntas antiguas puedes ver <strong>"Dataflow"</strong> a secas — presta atención al contexto. Si menciona Power BI Premium o Power BI Pro → probablemente Gen1. Si menciona Fabric, Lakehouse o Warehouse → Gen2. En DP-700 asumimos <strong>siempre Gen2</strong>.
+          </div>
         </article>
 
-        <div class="category-header" id="limitaciones"><span class="category-header__icon">⚠️</span><h2 class="category-header__title">4. Beneficios y limitaciones oficiales</h2></div>
+        <!-- ============ 4. BENEFICIOS ============ -->
+        <div class="category-header" id="beneficios">
+          <span class="category-header__icon">✅</span>
+          <h2 class="category-header__title">4. Beneficios y limitaciones oficiales</h2>
+        </div>
+
         <article class="concept-card">
-          <p><strong>Beneficios:</strong> dimensiones consistentes, self-service para analistas, extraer una vez y reutilizar, simplificar complejidad, consistencia y calidad, integración low-code.</p>
-          <h4>⚠️ Las 3 limitaciones (oro para el examen)</h4>
+          <h3>Beneficios (según la doc)</h3>
+          <ol>
+            <li><strong>Extender datos</strong> con dimensiones consistentes (ej: tabla de fechas estándar).</li>
+            <li><strong>Self-service</strong> para analistas: acceso a subsets de warehouse.</li>
+            <li><strong>Optimizar performance</strong> extrayendo datos una vez y reutilizando.</li>
+            <li><strong>Simplificar complejidad</strong>: exponer solo dataflows a analistas grandes.</li>
+            <li><strong>Consistencia y calidad</strong>: limpiar y transformar antes de cargar al destino.</li>
+            <li><strong>Integración simplificada</strong>: interfaz low-code para muchos orígenes.</li>
+          </ol>
+
+          <div class="note note--warning">
+            ⚠️ <strong>Limitaciones (¡MUY examinables!):</strong>
+            <ol>
+              <li>❌ Los Dataflows <strong>NO son un reemplazo del data warehouse</strong>.</li>
+              <li>❌ <strong>NO soportan Row-Level Security (RLS)</strong>. Si necesitas RLS → hazlo en el semantic model o en el warehouse.</li>
+              <li>❌ <strong>Requieren Fabric capacity workspace</strong> (no funcionan en workspaces "libres").</li>
+            </ol>
+          </div>
+          <p>Estas 3 limitaciones son <strong>oro para preguntas de examen</strong>. La de RLS especialmente, porque suele venir en escenarios tipo <em>"quiero aplicar RLS al Dataflow"</em> → <strong>respuesta: no se puede, aplícalo en downstream</strong>.</p>
+        </article>
+
+        <!-- ============ 5. CREAR ============ -->
+        <div class="category-header" id="crear">
+          <span class="category-header__icon">🛠️</span>
+          <h2 class="category-header__title">5. Cómo crear un Dataflow Gen2</h2>
+        </div>
+
+        <article class="concept-card">
+          <p>En Fabric puedes crear un Dataflow Gen2 desde <strong>tres sitios</strong>:</p>
+          <ol>
+            <li><strong>Data Factory workload</strong> → New → Dataflow Gen2. La forma más común.</li>
+            <li><strong>Power BI workspace</strong> → New → Dataflow Gen2.</li>
+            <li><strong>Directamente desde el lakehouse</strong> → New → Dataflow Gen2.</li>
+          </ol>
+          <p>Los tres crean el mismo objeto. La UX y capabilities son idénticas.</p>
+
+          <h4>Requisitos previos</h4>
           <ul>
-            <li>❌ <strong>NO son un reemplazo del data warehouse.</strong></li>
-            <li>❌ <strong>NO soportan Row-Level Security (RLS).</strong> Aplica RLS en el semantic model o warehouse downstream.</li>
-            <li>❌ <strong>Requieren workspace en Fabric capacity</strong> (F SKU o Trial).</li>
+            <li>Workspace en <strong>Fabric capacity</strong> (F SKU o Trial).</li>
+            <li>Rol <strong>Member</strong> o superior en el workspace.</li>
+            <li>Conector a la fuente que necesitas.</li>
           </ul>
-          <div class="note note--warning">⚠️ La trampa de RLS es clásica: "quiero aplicar RLS al Dataflow" → respuesta: <strong>no se puede</strong>, hazlo downstream.</div>
+
+          <h4>Flujo típico de creación</h4>
+          <ol>
+            <li>Crear nuevo Dataflow Gen2.</li>
+            <li><strong>Get data</strong> → seleccionar conector → configurar credenciales.</li>
+            <li>Aplicar transformaciones visuales en Power Query Online.</li>
+            <li>Configurar <strong>data destination</strong> (opcional).</li>
+            <li><strong>Save</strong> (Gen2 publica automáticamente).</li>
+            <li>Programar refresh o llamarlo desde un pipeline.</li>
+          </ol>
         </article>
 
-        <div class="category-header" id="interfaz"><span class="category-header__icon">🎨</span><h2 class="category-header__title">5. Interfaz y conectores</h2></div>
+        <!-- ============ 6. INTERFAZ ============ -->
+        <div class="category-header" id="interfaz">
+          <span class="category-header__icon">🎨</span>
+          <h2 class="category-header__title">6. La interfaz de Power Query Online (tour completo)</h2>
+        </div>
+
         <article class="concept-card">
-          <p>Se crea desde Data Factory, Power BI workspace o el lakehouse (los tres crean el mismo objeto). La interfaz de <strong>Power Query Online</strong> tiene ribbon, panel de queries, Diagram View, Data Preview y Query Settings (Applied Steps).</p>
-          <h4>Conceptos clave de queries</h4>
+          <p>La interfaz de Dataflow Gen2 tiene <strong>5 áreas principales</strong>. Es idéntica a Power Query Desktop, así que si vienes de Power BI te será familiar 🌸</p>
+
+          <h3>Power Query ribbon (arriba)</h3>
+          <p>La cinta superior contiene:</p>
           <ul>
-            <li><strong>Duplicar</strong> (copia independiente) vs <strong>Referenciar</strong> (cambios en la original afectan).</li>
-            <li><strong>Disable load</strong>: "helper queries" que no cargan a destino pero se referencian.</li>
+            <li><strong>Get data</strong>: añadir orígenes.</li>
+            <li><strong>Transform data</strong>: transformaciones sobre queries.</li>
+            <li><strong>Data source settings</strong>: gestionar credenciales.</li>
+            <li><strong>Parameters</strong>: parámetros del dataflow.</li>
+            <li><strong>Manage data destinations</strong>: configurar dónde escribir.</li>
           </ul>
-          <p>Cientos de conectores: BBDD relacionales, ficheros, storage (ADLS, Blob, S3), SaaS, nativos Fabric (Lakehouse, Warehouse, KQL) y Web/OData. Autenticación como <strong>cloud connections</strong> gestionadas centralmente.</p>
-        </article>
 
-        <div class="category-header" id="destinations"><span class="category-header__icon">🎯</span><h2 class="category-header__title">6. Data destinations</h2></div>
-        <article class="concept-card">
-          <p>Destinos: <strong>Lakehouse, Warehouse, SQL DB in Fabric, KQL Database</strong>, y Azure SQL, Azure Data Explorer, Synapse. Update method: <strong>Append</strong> o <strong>Replace</strong>.</p>
-          <div class="note note--tip">✨ El destino es <strong>opcional</strong>: un dataflow sin destino preserva las transformaciones y puede usarse como source discoverable desde Power BI Desktop. Al cargar a Lakehouse por primera vez, puede crear la tabla automáticamente.</div>
-        </article>
-
-        <div class="category-header" id="folding"><span class="category-header__icon">⚡</span><h2 class="category-header__title">7. Query folding: el concepto más examinable</h2></div>
-        <article class="concept-card">
-          <h3>Traducir Power Query a queries nativas del source</h3>
-          <p><strong>Query folding</strong> = traducir tus transformaciones a SQL/KQL que se ejecutan <strong>en el source</strong>, no en el dataflow. Con folding se transfiere solo lo necesario: mejor rendimiento, menos CU, refresh más rápido.</p>
-          <h4>Indicadores en Applied Steps</h4>
+          <h3>Queries pane (izquierda)</h3>
           <ul>
-            <li>🟢 Círculo verde relleno: paso folded.</li>
-            <li>⚠️ Círculo naranja: no folded (se ejecuta local). <strong>Cuando un step deja de foldear, todos los siguientes tampoco.</strong></li>
+            <li>Muestra las <strong>queries</strong> (equivalentes a tablas al cargar).</li>
+            <li>Puedes:
+              <ul>
+                <li><strong>Duplicar</strong> una query (copia independiente).</li>
+                <li><strong>Referenciar</strong> una query (referencia; cambios en la original afectan).</li>
+                <li><strong>Disable load</strong>: no cargar esta query al destino (útil para queries auxiliares).</li>
+                <li>Agrupar en carpetas.</li>
+              </ul>
+            </li>
           </ul>
-          <p>Rompen folding: <code>Table.AddIndexColumn</code>, custom columns complejas, <code>Table.Buffer</code>, merges (según conector), loops. Suelen foldear: filter, select, group by simple, sort. Fuentes sin folding: CSV/Excel/JSON, REST APIs (no relacionales).</p>
-          <div class="note note--tip">🎯 Maximizar folding: filtros primero, transformaciones simples al inicio, rompe folding solo al final, y usa <strong>staging</strong> para volver a foldear. Ve la native query con <em>View Native Query</em>.</div>
-        </article>
+          <p><strong>Concepto clave</strong>: puedes tener queries que <strong>no cargan a destino</strong> pero se referencian por otras. Se llaman "helper queries" o "reference queries".</p>
 
-        <div class="category-header" id="staging"><span class="category-header__icon">🎨</span><h2 class="category-header__title">8. Staging queries: el patrón ELT</h2></div>
-        <article class="concept-card">
-          <p><strong>Staging</strong> materializa el output de una query en el <strong>staging Lakehouse/Warehouse</strong> interno de Gen2. Filosofía "stage once, reference many": las queries downstream referencian la staged y foldean al <strong>staging SQL endpoint</strong>.</p>
-          <h4>Beneficios</h4>
+          <h3>Diagram View (opcional)</h3>
+          <p>Vista visual de todas las queries y sus relaciones. Muestra:</p>
           <ul>
-            <li>Compute pushdown al staging Warehouse (folding sobre SQL).</li>
-            <li>Evitar leer el source varias veces, habilitar transforms complejas, data quality, fan-out a múltiples destinos.</li>
+            <li>Cada query como una forma.</li>
+            <li>Líneas conectando queries que se duplican/referencian.</li>
+            <li>Iconos indicando transformaciones aplicadas.</li>
           </ul>
-          <div class="note note--warning">⚠️ Staging <strong>no siempre mejora</strong>: añade coste de storage + write. No lo actives si la query ya fold end-to-end o tiene una sola salida sin ramificaciones.</div>
-          <div class="note note--tip">🎯 Patrón <strong>Extract Previous</strong>: right-click en el paso donde se rompe el folding → <em>Extract previous</em> → nueva query con los pasos que sí foldean → <strong>Enable staging</strong>. La parte inicial fold al source, la compleja al staging warehouse.</div>
-        </article>
+          <p>Se puede activar/desactivar. Muy útil para entender dataflows complejos.</p>
 
-        <div class="category-header" id="fast-copy"><span class="category-header__icon">🚀</span><h2 class="category-header__title">9. Fast Copy</h2></div>
-        <article class="concept-card">
-          <p><strong>Fast Copy</strong> acelera la ingesta con movimiento nativo paralelizado que bypasea el mashup engine. Benchmark oficial: Gen1 1h39, Gen2 sin Fast Copy 35min, Gen2 <strong>con Fast Copy 9min (11× más rápido, 83% menos CU)</strong>.</p>
-          <h4>Requisitos</h4>
+          <h3>Data Preview pane (centro)</h3>
+          <p>Muestra un <strong>subset de datos</strong> para que veas cómo van tus transformaciones. Puedes arrastrar columnas para reordenar, hacer right-click para filtrar o transformar y ver tipos de datos en las cabeceras.</p>
+          <p><strong>Ojo</strong>: es solo preview, no todo el dataset. Para datasets grandes puede ser lento.</p>
+
+          <h3>Query Settings pane (derecha)</h3>
+          <p>Aquí ves los <strong>Applied Steps</strong> — cada transformación se registra como un paso.</p>
           <ul>
-            <li>Source compatible (ADLS Gen2, S3, Azure SQL...), transformaciones limitadas (solo folding), destino compatible (Lakehouse) y feature habilitada en Options → Scale.</li>
+            <li>Cada paso tiene un icono ⚙️ para modificarlo (algunos no).</li>
+            <li>Right-click para renombrar, reordenar o borrar pasos.</li>
+            <li>Puedes ver el <strong>código M</strong> del paso.</li>
           </ul>
-          <div class="note note--warning">⚠️ <strong>Antipatrón:</strong> no combines Fast Copy con transformaciones no-folding en la misma query. Patrón correcto: query 1 Fast Copy pura → staging; query 2 referencia y transforma. Verifica en detalles que Engine type = <code>CopyActivity</code>.</div>
+          <p>También incluye <strong>Data Destination</strong> para configurar el destino, opciones de <strong>incremental refresh</strong> y el toggle <strong>Enable staging</strong>.</p>
         </article>
 
-        <div class="category-header" id="capacidades"><span class="category-header__icon">🧩</span><h2 class="category-header__title">10. Modern Evaluator y otras capacidades</h2></div>
+        <!-- ============ 7. CONECTORES ============ -->
+        <div class="category-header" id="conectores">
+          <span class="category-header__icon">🔌</span>
+          <h2 class="category-header__title">7. Conectores de origen soportados</h2>
+        </div>
+
         <article class="concept-card">
+          <p>Dataflow Gen2 soporta <strong>cientos de conectores</strong>. Los más comunes, por categorías:</p>
+
+          <h4>Bases de datos relacionales (cloud y on-prem)</h4>
           <ul>
-            <li><strong>Modern Evaluator:</strong> acelera transforms heavy sobre conectores no-foldable (files, APIs). <strong>Automático</strong>, no hay que activarlo.</li>
-            <li><strong>Optimized copy to Lakehouse (Preview):</strong> acelera la "última milla" staging → Lakehouse. Se activa en Options → Scale.</li>
-            <li><strong>Partitioned Compute (Preview):</strong> paraleliza transforms across particiones en datasets grandes. Automático.</li>
+            <li>Azure SQL Database</li>
+            <li>SQL Server (on-prem con gateway)</li>
+            <li>Oracle</li>
+            <li>PostgreSQL</li>
+            <li>MySQL</li>
+            <li>Snowflake</li>
+            <li>Amazon Redshift</li>
+            <li>Google BigQuery</li>
           </ul>
-        </article>
 
-        <div class="category-header" id="incremental"><span class="category-header__icon">🔁</span><h2 class="category-header__title">11. Incremental refresh</h2></div>
-        <article class="concept-card">
-          <h3>Refrescar solo lo que cambió</h3>
-          <p>Requisitos: la query debe <strong>fully fold</strong> al source e incluir una columna <strong>DateTime / Date / DateTimeZone</strong>. Se activa con right-click en la query → <em>Incremental refresh</em>.</p>
-          <h4>Los 4 settings</h4>
+          <h4>Ficheros</h4>
           <ul>
-            <li><strong>DateTime column</strong> para filtrar.</li>
-            <li><strong>Extract data from the past</strong>: cuánta historia inicial (días/semanas/meses/años).</li>
-            <li><strong>Bucket size</strong>: tamaño de cada bucket (pequeño = más granularidad pero más overhead).</li>
-            <li><strong>Detect changes</strong>: columna para detectar cambios (max value).</li>
+            <li>Excel (.xlsx)</li>
+            <li>CSV / delimitados</li>
+            <li>JSON</li>
+            <li>XML</li>
+            <li>Parquet</li>
+            <li>PDF (con extracción)</li>
           </ul>
-          <h4>Cómo funciona</h4>
-          <p>Lee el max value de la columna, compara con el último refresh, procesa solo los buckets cambiados en paralelo y hace <strong>delete + insert por bucket</strong>. Solo afecta al rango del bucket.</p>
-          <div class="note note--warning">⚠️ Update method: solo <code>replace</code>. Límites: <strong>50 buckets por query, 150 por dataflow</strong>. No borra data fuera del rango. Si va más lento que full refresh, <strong>aumenta el bucket size</strong>.</div>
+
+          <h4>Storage</h4>
+          <ul>
+            <li>Azure Data Lake Storage Gen2</li>
+            <li>Azure Blob Storage</li>
+            <li>Amazon S3 (Preview)</li>
+          </ul>
+
+          <h4>SaaS y aplicaciones</h4>
+          <ul>
+            <li>SharePoint (list, folder)</li>
+            <li>Salesforce</li>
+            <li>Dynamics 365</li>
+            <li>Google Analytics</li>
+            <li>Snowflake</li>
+          </ul>
+
+          <h4>Fabric nativos</h4>
+          <ul>
+            <li>Lakehouse</li>
+            <li>Warehouse</li>
+            <li>KQL Database</li>
+            <li>Datamart</li>
+            <li>Power BI semantic model</li>
+          </ul>
+
+          <h4>Web</h4>
+          <ul>
+            <li>HTTP / REST APIs</li>
+            <li>OData feeds</li>
+          </ul>
+
+          <h4>Autenticación</h4>
+          <p>Según el conector, las opciones típicas: <strong>Anonymous</strong>, <strong>Basic</strong> (username + password), <strong>OAuth 2.0</strong> (con browser), <strong>Windows</strong> (para on-prem), <strong>Account Key</strong> y <strong>Service Principal</strong>.</p>
+          <p>Se almacenan como <strong>cloud connections</strong>, gestionadas centralmente en Fabric.</p>
         </article>
 
-        <div class="category-header" id="cicd"><span class="category-header__icon">🔀</span><h2 class="category-header__title">12. CI/CD y Git integration</h2></div>
+        <!-- ============ 8. TRANSFORMACIONES ============ -->
+        <div class="category-header" id="transformaciones">
+          <span class="category-header__icon">🔧</span>
+          <h2 class="category-header__title">8. Transformaciones disponibles</h2>
+        </div>
+
         <article class="concept-card">
-          <p>Gen2 soporta Git integration, deployment pipelines (dev → test → prod), workspace folders y Public APIs (preview).</p>
-          <div class="note note--tip">🎯 <strong>Save reemplaza Publish</strong> (just-in-time publishing): al guardar, los cambios se publican para el siguiente refresh. Al guardar se hace validación "zero row" (si el schema no se determina en 10 min, falla).</div>
-          <div class="note note--warning">⚠️ Post-Feb 2026: si el publish falla y el dataflow fue guardado después de esa fecha, el refresh <strong>falla</strong> (fail-fast) en vez de usar la última versión exitosa. El Power Automate connector no funciona con la versión CI/CD.</div>
+          <p>Dataflow Gen2 soporta <strong>prácticamente todas las transformaciones</strong> de Power Query. Las más usadas:</p>
+
+          <h4>Sobre filas</h4>
+          <ul>
+            <li><strong>Filter rows</strong> (aplicar condiciones)</li>
+            <li><strong>Sort rows</strong> (ordenar)</li>
+            <li><strong>Remove duplicates</strong></li>
+            <li><strong>Choose Top N / Bottom N</strong></li>
+            <li><strong>Keep range of rows</strong> / <strong>Remove range of rows</strong></li>
+            <li><strong>Group by</strong> (agregaciones)</li>
+          </ul>
+
+          <h4>Sobre columnas</h4>
+          <ul>
+            <li><strong>Add column</strong> (custom, from examples, index, conditional)</li>
+            <li><strong>Rename columns</strong></li>
+            <li><strong>Reorder / Delete columns</strong></li>
+            <li><strong>Split column</strong> (por delimitador, posición, casing)</li>
+            <li><strong>Merge columns</strong></li>
+            <li><strong>Replace values</strong></li>
+            <li><strong>Change type</strong></li>
+            <li><strong>Fill down / Fill up</strong></li>
+            <li><strong>Rank column</strong> / <strong>Percentage calculator</strong></li>
+          </ul>
+
+          <h4>Estructurales</h4>
+          <ul>
+            <li><strong>Merge queries</strong> (equivalente a JOIN)</li>
+            <li><strong>Append queries</strong> (equivalente a UNION)</li>
+            <li><strong>Pivot column</strong> / <strong>Unpivot columns</strong></li>
+            <li><strong>Transpose</strong></li>
+            <li><strong>Reverse rows</strong></li>
+          </ul>
+
+          <h4>Sobre texto</h4>
+          <ul>
+            <li><strong>Format</strong> (uppercase, lowercase, trim, clean...)</li>
+            <li><strong>Extract</strong> (before delimiter, between, length...)</li>
+            <li><strong>Parse</strong> (JSON, XML)</li>
+          </ul>
+
+          <h4>Sobre fechas</h4>
+          <ul>
+            <li><strong>Extract</strong> (year, month, day, week, quarter)</li>
+            <li><strong>Duration</strong> (calcular entre fechas)</li>
+            <li><strong>Age</strong></li>
+          </ul>
+
+          <h4>Otras</h4>
+          <ul>
+            <li><strong>Split into new column</strong> vs <strong>Split into rows</strong></li>
+            <li><strong>Conditional column</strong></li>
+            <li><strong>Fuzzy grouping</strong> / <strong>Fuzzy matching</strong></li>
+          </ul>
         </article>
 
-        <div class="category-header" id="costes"><span class="category-header__icon">💰</span><h2 class="category-header__title">13. Costes y consumo de CU</h2></div>
+        <!-- ============ 9. CÓDIGO M ============ -->
+        <div class="category-header" id="codigo-m">
+          <span class="category-header__icon">💻</span>
+          <h2 class="category-header__title">9. El código M y el Advanced Editor</h2>
+        </div>
+
         <article class="concept-card">
+          <p>Detrás de la interfaz visual, cada transformación se traduce a <strong>código M</strong> (lenguaje de Power Query).</p>
+
+          <h4>Ejemplo de código M</h4>
+          <p>Un query simple que lee un CSV y aplica transformaciones:</p>
+          <pre><code class="language-powerquery">let
+    Source = Csv.Document(
+        File.Contents("Files/products.csv"),
+        [Delimiter=",", Columns=4, Encoding=1252, QuoteStyle=QuoteStyle.None]
+    ),
+    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers", {
+        {"ProductID", Int64.Type},
+        {"ProductName", type text},
+        {"Category", type text},
+        {"ListPrice", type number}
+    }),
+    #"Filtered Rows" = Table.SelectRows(#"Changed Type", each ([Category] = "Bikes")),
+    #"Sorted Rows" = Table.Sort(#"Filtered Rows", {{"ListPrice", Order.Descending}})
+in
+    #"Sorted Rows"</code></pre>
+
+          <h4>Estructura de una query M</h4>
+          <ul>
+            <li><strong><code>let</code></strong>: inicio de la definición.</li>
+            <li>Cada línea es un <strong>step</strong> con nombre y expresión.</li>
+            <li>Los steps se <strong>referencian entre sí</strong> por nombre.</li>
+            <li><strong><code>in</code></strong>: qué devolver como resultado final (normalmente el último step).</li>
+          </ul>
+
+          <h4>Cómo abrir el Advanced Editor</h4>
+          <p>En la ribbon: <strong>View → Advanced Editor</strong>. O right-click en la query → <strong>Advanced Editor</strong>.</p>
+          <p>Ahí puedes editar directamente el código M. Útil para:</p>
+          <ul>
+            <li>Transformaciones complejas que la UI no cubre.</li>
+            <li>Copiar/pegar queries entre dataflows.</li>
+            <li>Refactorizar / limpiar código.</li>
+          </ul>
+
+          <div class="note note--tip">
+            🎯 <strong>Cuándo aprender M:</strong> si eres analista Power BI → <strong>muy útil</strong> saber M básico para debugging y optimización. Si eres data engineer → M es una herramienta más; no hace falta dominarlo, pero conocer la sintaxis básica ayuda a leer los dataflows del equipo.
+          </div>
+        </article>
+
+        <!-- ============ 10. DESTINATIONS ============ -->
+        <div class="category-header" id="destinations">
+          <span class="category-header__icon">🎯</span>
+          <h2 class="category-header__title">10. Data destinations</h2>
+        </div>
+
+        <article class="concept-card">
+          <p>Dataflow Gen2 puede escribir el resultado de sus queries a <strong>múltiples destinos</strong>.</p>
+
+          <h4>Destinos soportados en Fabric</h4>
+          <ul>
+            <li>✅ <strong>Lakehouse</strong> (Delta table)</li>
+            <li>✅ <strong>Warehouse</strong> (T-SQL table)</li>
+            <li>✅ <strong>SQL database in Fabric</strong></li>
+            <li>✅ <strong>KQL Database</strong></li>
+          </ul>
+
+          <h4>Destinos Azure</h4>
+          <ul>
+            <li>✅ <strong>Azure SQL Database</strong></li>
+            <li>✅ <strong>Azure Data Explorer</strong> (Kusto)</li>
+            <li>✅ <strong>Azure Synapse Analytics</strong></li>
+          </ul>
+
+          <h4>Cómo configurar destino</h4>
+          <p>Por cada query:</p>
+          <ol>
+            <li>En <strong>Query Settings pane</strong> → botón <strong>Data Destination</strong>.</li>
+            <li>Seleccionar tipo (Lakehouse, Warehouse, etc.).</li>
+            <li>Configurar workspace, tabla destino, mapping de columnas.</li>
+            <li>Elegir <strong>update method</strong>:
+              <ul>
+                <li><strong>Append</strong>: añade filas nuevas.</li>
+                <li><strong>Replace</strong>: sobrescribe la tabla completa.</li>
+              </ul>
+            </li>
+          </ol>
+
+          <h4>Destination opcional</h4>
+          <p>Un dataflow <strong>no está obligado a tener destination</strong>. Puedes:</p>
+          <ul>
+            <li>Crear un dataflow sin destino → las transformaciones se preservan.</li>
+            <li>Usarlo como fuente de datos desde Power BI Desktop (<strong>discoverable dataflows</strong>).</li>
+            <li>Incorporarlo en un pipeline para orquestar carga posterior.</li>
+          </ul>
+
+          <h4>Auto-create de tabla</h4>
+          <p>Cuando cargas a un Lakehouse por primera vez, Dataflow puede <strong>crear la tabla automáticamente</strong>. También puedes elegir una tabla existente.</p>
+        </article>
+
+        <!-- ============ 11. QUERY FOLDING ============ -->
+        <div class="category-header" id="query-folding">
+          <span class="category-header__icon">🎯</span>
+          <h2 class="category-header__title">11. Query folding: el concepto más importante</h2>
+        </div>
+
+        <article class="concept-card">
+          <p><strong>Query folding</strong> es probablemente <strong>EL concepto más examinable</strong> del módulo. Vamos a fondo.</p>
+
+          <h3>¿Qué es query folding?</h3>
+          <p><strong>Query folding</strong> = capacidad de traducir tus transformaciones Power Query a <strong>queries nativas del source</strong> (SQL, KQL, etc.) que se ejecutan <strong>en el source</strong>, no en el dataflow.</p>
+          <p>Ejemplo:</p>
+          <ul>
+            <li>Tienes una query: leer tabla <code>Products</code> + filtrar <code>Category = 'Bikes'</code> + seleccionar 3 columnas.</li>
+            <li><strong>Sin folding</strong>: dataflow trae <strong>toda</strong> la tabla <code>Products</code> (millones de filas) y filtra localmente.</li>
+            <li><strong>Con folding</strong>: dataflow ejecuta <code>SELECT ProductName, Category, Price FROM Products WHERE Category = 'Bikes'</code> en el source. Solo se transfieren las filas necesarias.</li>
+          </ul>
+
+          <h4>Por qué importa tantísimo</h4>
+          <ul>
+            <li>⚡ <strong>Rendimiento MUCHO mejor</strong>: menos datos transferidos.</li>
+            <li>💰 <strong>Costes más bajos</strong>: menos CU consumidas.</li>
+            <li>🧠 <strong>Aprovecha el motor optimizado del source</strong> (índices, particiones, etc.).</li>
+            <li>🔄 <strong>Refresh más rápido</strong>.</li>
+          </ul>
+
+          <h4>Cómo saber si tu query se folded</h4>
+          <p>En el editor de Power Query, los <strong>Applied Steps</strong> tienen indicadores visuales:</p>
+          <ul>
+            <li>🟢 <strong>Círculo verde relleno</strong>: paso se folded a source. Todo bien.</li>
+            <li>🟡 <strong>Círculo verde parcial</strong>: parcialmente folded.</li>
+            <li>⚠️ <strong>Círculo naranja/amarillo</strong>: no se folded, se ejecuta localmente.</li>
+          </ul>
+          <p>Cuando cualquier step deja de foldear, <strong>todos los siguientes tampoco foldean</strong> (el folding se "rompe" desde ahí).</p>
+
+          <h4>Transformaciones que suelen romper folding</h4>
+          <p>Estas transformaciones <strong>suelen NO foldear</strong>:</p>
+          <ul>
+            <li><code>Table.AddIndexColumn</code> (añadir índice)</li>
+            <li>Custom columns con funciones Power Query específicas</li>
+            <li>Ciertas conversiones de tipo complejas</li>
+            <li>Merges (según el conector)</li>
+            <li><code>Table.Buffer</code></li>
+            <li>Iteraciones o loops en M</li>
+          </ul>
+          <p>Transformaciones que <strong>suelen SÍ foldear</strong>: Filter rows, Select columns, Group by simple, Sort rows, Merge queries (con conectores compatibles) y basic type changes.</p>
+
+          <h4>Ver la query native (source query)</h4>
+          <p>Right-click en un step → <strong>View Native Query</strong> (si está disponible). Te muestra el SQL/KQL que se generará. Útil para debugging.</p>
+
+          <div class="note note--practice">
+            📌 <strong>🎯 Cómo maximizar folding (consejos oficiales):</strong>
+            <ol>
+              <li><strong>Aplica filtros primero</strong>, transformaciones complejas después.</li>
+              <li><strong>Mantén las transformaciones simples</strong> al inicio.</li>
+              <li><strong>Break folding intencionalmente al final</strong> si necesitas transformaciones complejas.</li>
+              <li><strong>Divide queries</strong>: parte que fold en una, parte que no fold en otra referenciada.</li>
+              <li><strong>Usa staging</strong> para "materializar" y volver a foldear después.</li>
+            </ol>
+          </div>
+
+          <h4>Query folding y source system</h4>
+          <p>Depende del source si puede recibir queries folded:</p>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Source</th><th>Soporta folding</th></tr></thead>
+              <tbody>
+                <tr><td>SQL databases (Azure SQL, SQL Server, etc.)</td><td>✅ Excelente</td></tr>
+                <tr><td>Snowflake</td><td>✅</td></tr>
+                <tr><td>PostgreSQL, Oracle, MySQL</td><td>✅</td></tr>
+                <tr><td>Fabric Lakehouse (via SQL endpoint)</td><td>✅</td></tr>
+                <tr><td>Fabric Warehouse</td><td>✅</td></tr>
+                <tr><td>SharePoint</td><td>⚠️ Limitado</td></tr>
+                <tr><td>CSV/Excel/JSON files</td><td>❌ (source no relacional)</td></tr>
+                <tr><td>REST APIs genéricas</td><td>❌</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </article>
+
+        <!-- ============ 12. STAGING ============ -->
+        <div class="category-header" id="staging">
+          <span class="category-header__icon">🎨</span>
+          <h2 class="category-header__title">12. Staging queries: el patrón ELT</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>¿Qué es staging?</h3>
+          <p><strong>Staging</strong> = marcar una query para que <strong>su output se materialice</strong> temporalmente en un <strong>staging area</strong> interno de Dataflow Gen2.</p>
+          <p>Dataflow Gen2 tiene dos áreas internas de staging: <strong>Staging Lakehouse</strong> y <strong>Staging Warehouse</strong>.</p>
+          <p>Cuando activas staging en una query, esa query escribe a estos staging areas primero, y las queries downstream pueden leer de ahí.</p>
+
+          <h4>Filosofía: "stage once, reference many"</h4>
+          <p>El patrón central:</p>
+          <ol>
+            <li>Una query lee del source y hace transformaciones simples → <strong>staged</strong>.</li>
+            <li>Queries downstream <strong>referencian esa query staged</strong> en lugar de re-leer el source.</li>
+            <li>Las queries downstream pueden <strong>foldear al staging SQL endpoint</strong> (el warehouse interno).</li>
+          </ol>
+
+          <h4>Beneficios del staging</h4>
+          <ul>
+            <li>✅ <strong>Compute pushdown al staging Warehouse</strong> (folding sobre SQL).</li>
+            <li>✅ <strong>Evitar leer el source múltiples veces</strong>.</li>
+            <li>✅ <strong>Habilita transformaciones complejas</strong> que no folded al source original.</li>
+            <li>✅ <strong>Data quality y auditoría</strong>: verificar staged data sin re-leer.</li>
+            <li>✅ <strong>Fan-out a múltiples destinos</strong> desde un solo staged.</li>
+          </ul>
+
+          <h4>Casos de uso típicos (ELT patterns)</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Caso</th><th>Descripción</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Modelado analítico</strong></td><td>Staged data → shaped en dimensiones/hechos, agregados, KPIs</td></tr>
+                <tr><td><strong>Fold-down compute</strong></td><td>Referenced queries foldean al staging SQL endpoint</td></tr>
+                <tr><td><strong>Data quality</strong></td><td>Referenced queries validan (nulls, constraints, row counts)</td></tr>
+                <tr><td><strong>Fan-out</strong></td><td>Múltiples referenced queries → distintos destinos desde 1 stage</td></tr>
+                <tr><td><strong>Stage-then-merge</strong></td><td>Cada source staged → merge downstream con folding</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="note note--warning">
+            ⚠️ <strong>Cuándo NO usar staging:</strong> añade costes (storage + write). No lo actives cuando la transformación <strong>ya fold end-to-end</strong> al source original, cuando el dataflow tiene <strong>una sola salida sin ramificaciones</strong>, o cuando la latencia del source es el cuello de botella y <strong>no puede paralelizarse</strong>.
+          </div>
+
+          <h4>Cómo activar staging</h4>
+          <p>En Query Settings pane → <strong>Enable staging</strong> toggle en el context menu de la query. También puedes hacer right-click sobre la query.</p>
+
+          <h4>🎯 Patrón "Extract Previous"</h4>
+          <p>Si notas que en tus applied steps hay un punto donde el folding se rompe:</p>
+          <ol>
+            <li>Right-click en el paso donde <strong>se rompe el folding</strong>.</li>
+            <li>Selecciona <strong>Extract previous</strong>.</li>
+            <li>Se crea una <strong>nueva query</strong> con todos los pasos anteriores (que sí foldean).</li>
+            <li><strong>Enable staging</strong> en esa nueva query.</li>
+            <li>La query original ahora comienza desde el staged data.</li>
+          </ol>
+          <p>Resultado: la parte inicial folded al source, y la parte compleja folded al staging warehouse. <strong>Máxima performance</strong>.</p>
+        </article>
+
+        <!-- ============ 13. FAST COPY ============ -->
+        <div class="category-header" id="fast-copy">
+          <span class="category-header__icon">⚡</span>
+          <h2 class="category-header__title">13. Fast Copy: aceleración de ingesta</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>¿Qué es Fast Copy?</h3>
+          <p><strong>Fast Copy</strong> es una feature que <strong>acelera masivamente la ingesta</strong> de datos en Dataflow Gen2 usando <strong>native, parallelized data movement</strong> que bypasea el mashup engine.</p>
+
+          <h4>🎯 Benchmarks oficiales (impresionantes)</h4>
+          <p>En un test oficial de copia de 5 ficheros Parquet consolidados a Lakehouse:</p>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Configuración</th><th>Tiempo</th><th>vs Gen1</th></tr></thead>
+              <tbody>
+                <tr><td>Dataflow Gen1 baseline</td><td>1h 39min</td><td>—</td></tr>
+                <tr><td>Dataflow Gen2 sin Fast Copy</td><td>35min</td><td>2.8× más rápido</td></tr>
+                <tr><td>Dataflow Gen2 <strong>con Fast Copy</strong></td><td><strong>9min</strong></td><td><strong>11× más rápido</strong></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>Y consumió <strong>83% menos capacidad</strong> (14.593 CU vs 84.411 CU en Gen1).</p>
+
+          <h4>Requisitos para Fast Copy</h4>
+          <p>Fast Copy no funciona en cualquier query. Requiere:</p>
+          <ol>
+            <li><strong>Source compatible</strong> con Fast Copy (ADLS Gen2, S3, Azure SQL, etc.).</li>
+            <li><strong>Transformaciones limitadas</strong> en la query — solo las que fold a source.</li>
+            <li><strong>Destino compatible</strong> (típicamente Lakehouse).</li>
+            <li>Feature <strong>habilitada</strong> en workspace settings.</li>
+          </ol>
+
+          <h4>Cómo habilitarlo</h4>
+          <p><strong>Habilitar Fast Copy en el dataflow</strong>:</p>
+          <ol>
+            <li>En Dataflow Gen2 → Home tab → <strong>Options</strong>.</li>
+            <li>Tab <strong>Scale</strong> → activar <strong>Allow use of fast copy connectors</strong>.</li>
+          </ol>
+          <p><strong>Requerir Fast Copy en una query específica</strong>: right-click en query → <strong>Require Fast Copy</strong>.</p>
+          <p>Si activas "Require Fast Copy" y la query <strong>no es compatible</strong>, el dataflow <strong>falla</strong>. Es una salvaguarda para asegurar que la performance esperada se cumple.</p>
+
+          <h4>Verificar que se usa</h4>
+          <p>Después del refresh, en detalles → <strong>Engine type</strong> debe mostrar <code>CopyActivity</code>. Si dice otra cosa, no se usó Fast Copy.</p>
+
+          <div class="note note--warning">
+            ⚠️ <strong>🎯 Antipatrón crítico:</strong> NO combines Fast Copy con transformaciones no-folding en la misma query. Rompe Fast Copy.
+            <br><strong>Patrón correcto</strong>: Query 1 = Fast Copy pura (sin transformaciones) → staging. Query 2 = referencia la query 1 → transformaciones complejas → destination.
+          </div>
+
+          <h4>Facturación de Fast Copy</h4>
+          <ul>
+            <li><strong>Standard Compute</strong> (mashup engine): 12 CU/segundo hasta 10 minutos, luego 1,5 CU/segundo.</li>
+            <li><strong>Fast Copy</strong>: <strong>1,5 CU/segundo</strong> de copy activity (medido across todos los cores usados).</li>
+          </ul>
+          <p>Fast Copy es <strong>~8× más barato por segundo</strong> que el mashup engine. Además, tarda menos.</p>
+        </article>
+
+        <!-- ============ 14. MODERN EVALUATOR ============ -->
+        <div class="category-header" id="modern-evaluator">
+          <span class="category-header__icon">🚀</span>
+          <h2 class="category-header__title">14. Modern Evaluator (nuevo)</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>¿Qué es?</h3>
+          <p><strong>Modern Evaluator</strong> es un motor de ejecución mejorado para Dataflow Gen2 que <strong>acelera transformaciones heavy sobre conectores no-foldable</strong> (o parcialmente foldable).</p>
+
+          <h4>Cuándo se activa</h4>
+          <p>Automáticamente cuando:</p>
+          <ul>
+            <li>Trabajas con <strong>conectores no-foldable</strong> (files, APIs).</li>
+            <li>Aplicas <strong>filters, derivations, cleansing</strong> complejos.</li>
+          </ul>
+          <p>No necesitas hacer nada especial — Fabric lo aplica cuando toca.</p>
+
+          <h4>Beneficio</h4>
+          <p><strong>Ejecución más rápida sin cambiar la lógica</strong>. Es una mejora de infraestructura transparente.</p>
+
+          <h4>Casos de uso</h4>
+          <ul>
+            <li>Ingesta de ficheros grandes con muchas transformaciones.</li>
+            <li>Procesamiento de datos semi-estructurados (JSON, XML).</li>
+            <li>Data cleansing intensivo en fuentes no-relacionales.</li>
+          </ul>
+        </article>
+
+        <!-- ============ 15. OPTIMIZED COPY ============ -->
+        <div class="category-header" id="optimized-copy">
+          <span class="category-header__icon">🎯</span>
+          <h2 class="category-header__title">15. Optimized copy to Lakehouse</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>¿Qué es?</h3>
+          <p><strong>Optimized copy to Lakehouse (Preview)</strong> es una feature que <strong>optimiza el movimiento</strong> de datos desde el <strong>staging Warehouse</strong> hacia un <strong>destino Lakehouse</strong>.</p>
+
+          <h4>Cuándo aplica</h4>
+          <p>Cuando tienes staging activado en una query que escribe a un Lakehouse destination. La feature acelera esa "última milla" (staging → lakehouse).</p>
+
+          <h4>Cómo habilitarla</h4>
+          <p>En Options → tab <strong>Scale</strong> → activar <strong>Optimized copy to Lakehouse (Preview)</strong>.</p>
+
+          <h4>Beneficio</h4>
+          <p>Reduce overhead del staging-to-Lakehouse hop en escenarios ELT.</p>
+        </article>
+
+        <!-- ============ 16. PARTITIONED COMPUTE ============ -->
+        <div class="category-header" id="partitioned-compute">
+          <span class="category-header__icon">🧩</span>
+          <h2 class="category-header__title">16. Partitioned Compute (preview)</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>¿Qué es?</h3>
+          <p><strong>Partitioned Compute (Preview)</strong> permite <strong>paralelizar transformaciones</strong> across particiones/ficheros de datasets grandes.</p>
+
+          <h4>Cuándo usarlo</h4>
+          <ul>
+            <li>Datasets <strong>muy grandes</strong>.</li>
+            <li>Datos <strong>particionados</strong> o <strong>multi-fichero</strong>.</li>
+            <li>Transformaciones que pueden ejecutarse en paralelo.</li>
+            <li>Se puede combinar con Modern Evaluator.</li>
+          </ul>
+
+          <h4>Beneficio</h4>
+          <p>Ejecución paralela across particiones = tiempos mucho menores en datasets grandes.</p>
+        </article>
+
+        <!-- ============ 17. INCREMENTAL REFRESH ============ -->
+        <div class="category-header" id="incremental-refresh">
+          <span class="category-header__icon">🔁</span>
+          <h2 class="category-header__title">17. Incremental refresh</h2>
+        </div>
+
+        <article class="concept-card">
+          <p>Este es uno de los temas <strong>más importantes y examinables</strong> del módulo. Vamos a fondo 🌸</p>
+
+          <h3>¿Qué es incremental refresh?</h3>
+          <p><strong>Incremental refresh</strong> = en lugar de refrescar toda la tabla cada vez, <strong>refrescar solo los datos que han cambiado</strong> desde el último refresh.</p>
+          <p>Beneficios:</p>
+          <ul>
+            <li>⚡ Refresh <strong>mucho más rápido</strong>.</li>
+            <li>💰 Menos recursos consumidos.</li>
+            <li>🌐 Menos carga en el source system.</li>
+          </ul>
+
+          <h4>Requisitos previos</h4>
+          <ol>
+            <li>La query debe <strong>fully fold</strong> al source (query folding end-to-end).</li>
+            <li>La query debe <strong>incluir una columna DateTime, Date, o DateTimeZone</strong> para filtrar.</li>
+            <li>Configurar los settings.</li>
+          </ol>
+          <p>Si tu query no fold, <strong>incremental refresh no funciona bien</strong>.</p>
+
+          <h4>Cómo activarlo</h4>
+          <ol>
+            <li>Crea o abre el dataflow.</li>
+            <li>En el data preview, verifica que tu query devuelve datos con columna temporal.</li>
+            <li><strong>Right-click en la query</strong> → <strong>Incremental refresh</strong>.</li>
+            <li>Configura los settings requeridos.</li>
+            <li>Publica el dataflow.</li>
+          </ol>
+
+          <h4>🎯 Los 4 settings principales</h4>
+          <p><strong>A) Choose a DateTime column to filter by</strong><br>
+          Columna que usarás para filtrar. Debe ser DateTime, Date, o DateTimeZone.</p>
+          <p><strong>B) Extract data from the past</strong><br>
+          Cuánta historia inicial cargar. Valores posibles: x days, x weeks, x months, x quarters, x years. Ejemplo: "1 month" → carga inicial de 1 mes hacia atrás.</p>
+          <p><strong>C) Bucket size</strong><br>
+          Tamaño de cada bucket temporal:</p>
+          <ul>
+            <li><strong>Menor bucket</strong>: menos datos por iteración, más iteraciones.</li>
+            <li><strong>Mayor bucket</strong>: más datos por iteración, menos iteraciones.</li>
+          </ul>
+          <p>Trade-off: buckets pequeños = más granularidad pero más overhead. Buckets grandes = menos overhead pero más datos por iteración.</p>
+          <p><strong>D) Only extract new data when the maximum value in this column changes</strong><br>
+          Columna que se usa para detectar cambios. Suele ser la misma que la de filtrado.</p>
+
+          <h4>Setting opcional: "Only extract data for concluded periods"</h4>
+          <p>Si lo activas, <strong>solo extrae data para periodos completos</strong>. Ejemplo con bucket = month:</p>
+          <ul>
+            <li>✅ Extrae enero, febrero, marzo (completos)</li>
+            <li>❌ NO extrae el mes actual (incompleto)</li>
+          </ul>
+          <p>Útil para evitar datos parciales que aún están cambiando.</p>
+
+          <h4>Advanced: "Require incremental refresh query to fully fold"</h4>
+          <p>Setting avanzado (recomendado: <strong>enabled</strong>). Fuerza que la query fully fold. Si no puede foldear, el dataflow falla al guardar.</p>
+          <p>Beneficio: previene que subas un dataflow que pretende ser incremental pero no lo es realmente.</p>
+
+          <h4>🎯 Cómo funciona incremental refresh (behind the scenes)</h4>
+          <p><strong>Paso 1: Evaluate changes</strong></p>
+          <ul>
+            <li>El dataflow lee el <strong>max value</strong> de la columna DateTime en el source.</li>
+            <li>Compara con el max value del último refresh.</li>
+            <li>Si cambió → marca el bucket como "changed". Si no cambió → skip.</li>
+          </ul>
+          <p><strong>Paso 2: Get the data</strong></p>
+          <ul>
+            <li>Para cada bucket cambiado, extrae los datos.</li>
+            <li>Procesa múltiples buckets <strong>en paralelo</strong>.</li>
+            <li>Los carga a un staging area.</li>
+          </ul>
+          <p><strong>Paso 3: Replace in destination</strong></p>
+          <ul>
+            <li>Para cada bucket cambiado: <strong>delete + insert</strong> en el destino.</li>
+            <li><strong>Solo afecta al rango del bucket</strong>. Data fuera del rango permanece intacta.</li>
+          </ul>
+
+          <div class="note note--warning">
+            ⚠️ <strong>Limitaciones importantes:</strong>
+            <ul>
+              <li><strong>Update method: solo "replace"</strong>. El único método soportado es <code>replace</code> — reemplaza los datos del bucket. Data fuera del rango del bucket <strong>no se toca</strong>. Si hay data en destino más antigua que el primer bucket, incremental refresh no la afecta.</li>
+              <li><strong>Buckets: 50 por query, 150 por dataflow</strong>. Si excedes, reduce buckets aumentando el bucket size o reduciendo rango.</li>
+            </ul>
+          </div>
+
+          <h4>Diferencias Gen1 vs Gen2</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th></th><th>Gen1</th><th>Gen2</th></tr></thead>
+              <tbody>
+                <tr><td>Cuándo se configura</td><td>Post-publish</td><td><strong>En el editor</strong> (first-class)</td></tr>
+                <tr><td>Rango histórico</td><td>Especificas</td><td><strong>Sin rango</strong> — no borra data fuera</td></tr>
+                <tr><td>Parámetros</td><td>Manuales</td><td><strong>Automáticos</strong> (dataflow los añade)</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>Gen2 simplifica mucho vs Gen1.</p>
+
+          <h4>Troubleshooting: refresh MÁS lento tras activar incremental</h4>
+          <p>Bug conocido documentado: puede pasar que <strong>incremental refresh sea más lento</strong> que full refresh. Causa: overhead de gestionar muchos buckets pequeños.</p>
+          <p>Soluciones:</p>
+          <ul>
+            <li><strong>Aumenta bucket size</strong> → menos buckets, menos overhead.</li>
+            <li><strong>Considera full refresh</strong> si tu scenario no se beneficia.</li>
+          </ul>
+        </article>
+
+        <!-- ============ 18. CI/CD ============ -->
+        <div class="category-header" id="cicd">
+          <span class="category-header__icon">🔀</span>
+          <h2 class="category-header__title">18. Dataflow Gen2 con CI/CD y Git integration</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>¿Qué es?</h3>
+          <p>Dataflow Gen2 soporta <strong>CI/CD (Continuous Integration/Deployment) y Git integration</strong>. Puedes:</p>
+          <ul>
+            <li>Crear, editar y gestionar dataflows en un <strong>repositorio Git</strong> conectado al workspace.</li>
+            <li>Usar <strong>deployment pipelines</strong> para mover dataflows entre workspaces (dev → test → prod).</li>
+            <li>Refresh y editar settings desde herramientas Fabric.</li>
+            <li>Crear Dataflow Gen2 en <strong>workspace folders</strong> directamente.</li>
+            <li>Usar <strong>Public APIs</strong> (preview) para gestionar dataflows.</li>
+          </ul>
+
+          <h4>Prerequisitos</h4>
+          <ul>
+            <li>Fabric tenant + subscription activa.</li>
+            <li>Workspace Fabric-enabled.</li>
+            <li><strong>Git integration habilitada</strong> en el workspace.</li>
+          </ul>
+
+          <h4>🎯 Save vs Publish (importante)</h4>
+          <p>En Dataflow Gen2 con CI/CD:</p>
+          <ul>
+            <li><strong>Save reemplaza publish</strong>: al guardar, los cambios se publican automáticamente.</li>
+            <li>Si quieres descartar cambios: <strong>Discard changes</strong> al cerrar el editor.</li>
+          </ul>
+
+          <h4>Validación al guardar</h4>
+          <p>Al guardar, el sistema hace <strong>"zero row" evaluation</strong>:</p>
+          <ul>
+            <li>Verifica schemas sin devolver filas.</li>
+            <li>Si el schema no se determina en 10 minutos → falla.</li>
+            <li>Si validation falla → usa la última versión guardada exitosamente para refreshes.</li>
+          </ul>
+
+          <h4>🎯 Just-in-time publishing</h4>
+          <p>Modelo automatizado moderno:</p>
+          <ul>
+            <li>Cuando guardas → cambios disponibles para el siguiente refresh.</li>
+            <li>Sincronizar desde Git o deployment pipelines → guarda el updated dataflow en el workspace.</li>
+            <li>El siguiente refresh intenta publicar la última versión guardada.</li>
+            <li>Si el publish falla → error visible en refresh history.</li>
+          </ul>
+          <div class="note note--warning">
+            ⚠️ <strong>Cambio importante (post-Feb 2026):</strong> si el publish falla y el dataflow fue guardado después de febrero de 2026 → <strong>el refresh falla</strong>. Previamente, los refreshes usaban la última versión exitosa; ahora es fail-fast. Esto previene que ejecutes versiones desactualizadas sin darte cuenta.
+          </div>
+
+          <h4>Limitaciones y issues conocidos</h4>
+          <ol>
+            <li>Al borrar el último Dataflow Gen2 con CI/CD → <strong>staging items quedan visibles</strong> y se pueden borrar manualmente.</li>
+            <li>Al hacer <strong>branching a otro workspace</strong> → un refresh puede fallar con "staging lakehouse not found". Fix: crear un nuevo Dataflow Gen2 en el workspace, se recrea el staging.</li>
+            <li>Al sincronizar cambios desde Git o deployment pipelines → <strong>hay que abrir el dataflow y guardar</strong> manualmente para triggerar el publish. O usar la API <code>on-demand Dataflow publish job</code>.</li>
+            <li><strong>Power Automate connector para dataflows NO funciona</strong> con esta nueva versión CI/CD.</li>
+          </ol>
+        </article>
+
+        <!-- ============ 19. PIPELINES ============ -->
+        <div class="category-header" id="pipelines">
+          <span class="category-header__icon">🔗</span>
+          <h2 class="category-header__title">19. Integración con Pipelines</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>Combinar Dataflows con Pipelines</h3>
+          <p>Los Dataflows son excelentes para transformación, pero cuando necesitas <strong>orquestación multi-paso</strong>, los combinas con <strong>Pipelines</strong>.</p>
+
+          <h4>Actividades típicas de un pipeline</h4>
+          <p>Un pipeline puede orquestar:</p>
+          <ul>
+            <li><strong>Copy Data</strong> (movimiento raw)</li>
+            <li><strong>Dataflow Gen2 activity</strong> (transformación)</li>
+            <li><strong>Notebook</strong> (Spark)</li>
+            <li><strong>Get Metadata</strong></li>
+            <li><strong>Execute Script / Stored Procedure</strong></li>
+            <li><strong>Conditional / Loop activities</strong></li>
+          </ul>
+
+          <h4>Patterns comunes</h4>
+          <p><strong>Pattern A: Pipeline orquesta un dataflow que hace todo</strong></p>
+          <pre><code class="language-plaintext">Pipeline
+  └── Dataflow Gen2 (extract + transform + load)</code></pre>
+          <p><strong>Pattern B: ELT clásico</strong></p>
+          <pre><code class="language-plaintext">Pipeline
+  ├── Copy Data (raw → bronze lakehouse)
+  ├── Dataflow Gen2 (bronze → silver, transformación)
+  └── Notebook (silver → gold, agregaciones)</code></pre>
+          <p><strong>Pattern C: Con schedule y trigger</strong></p>
+          <pre><code class="language-plaintext">Trigger (schedule diario 6 AM)
+  └── Pipeline
+        └── Dataflow Gen2 activity
+              └── Send email on failure</code></pre>
+
+          <h4>Ventaja de scheduling desde pipeline</h4>
+          <p>Puedes tener un pipeline programado que ejecute el dataflow <strong>en lugar del schedule interno del dataflow</strong>. Ventajas:</p>
+          <ul>
+            <li>Orquestación con dependencias (dataflow → notebook).</li>
+            <li>Retry logic.</li>
+            <li>Notifications on failure.</li>
+            <li>Passing parameters.</li>
+          </ul>
+        </article>
+
+        <!-- ============ 20. COSTES ============ -->
+        <div class="category-header" id="costes">
+          <span class="category-header__icon">💰</span>
+          <h2 class="category-header__title">20. Costes y consumo de CU</h2>
+        </div>
+
+        <article class="concept-card">
+          <h4>Modelo de facturación</h4>
+          <p>Dataflow Gen2 factura <strong>por motor separadamente</strong>:</p>
           <div class="table-scroll">
             <table class="md-table">
               <thead><tr><th>Motor</th><th>Rate</th></tr></thead>
               <tbody>
-                <tr><td>Standard Compute (mashup)</td><td>12 CU/seg hasta 10 min, luego 1.5 CU/seg</td></tr>
-                <tr><td>Fast Copy</td><td>1.5 CU/seg (~8× más barato por segundo)</td></tr>
+                <tr><td><strong>Standard Compute</strong> (mashup engine)</td><td>12 CU/seg hasta 10 min, luego 1,5 CU/seg</td></tr>
+                <tr><td><strong>Fast Copy</strong> (movimiento de datos)</td><td>1,5 CU/seg de copy activity</td></tr>
               </tbody>
             </table>
           </div>
-          <p>Optimizar: usa Fast Copy, fold todo lo posible, staging solo cuando aporta, optimiza buckets, desactiva refreshes innecesarios y divide queries.</p>
+
+          <h4>Capabilities y sus costes/beneficios</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Capability</th><th>Cuándo usar</th><th>Beneficio</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Fast Copy</strong></td><td>Copy directo sin transformación, source compatible</td><td>Ingesta más rápida, menor coste</td></tr>
+                <tr><td><strong>Modern Evaluator</strong></td><td>Non-foldable connectors, filters/cleansing</td><td>Ejecución más rápida sin cambios</td></tr>
+                <tr><td><strong>Optimized copy to Lakehouse</strong></td><td>Staging + destino Lakehouse</td><td>Throughput mejor en staging→lakehouse</td></tr>
+                <tr><td><strong>Partitioned Compute</strong> (Preview)</td><td>Datasets grandes particionados</td><td>Paralelización across particiones</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="note note--practice">
+            📌 <strong>Optimización de costes (consejos oficiales):</strong>
+            <ol>
+              <li><strong>Usa Fast Copy</strong> para ingestas simples.</li>
+              <li><strong>Fold everything</strong> que puedas al source.</li>
+              <li><strong>Usa staging</strong> solo cuando aporta valor (evitar staging innecesario).</li>
+              <li><strong>Optimiza buckets</strong> en incremental refresh (no demasiados pequeños).</li>
+              <li><strong>Desactiva refreshes</strong> que no necesitas.</li>
+              <li><strong>Divide queries</strong> para separar fast copy de transformaciones no-foldable.</li>
+            </ol>
+          </div>
         </article>
 
-        <div class="category-header" id="trampas"><span class="category-header__icon">⚠️</span><h2 class="category-header__title">14. Trampas típicas</h2></div>
+        <!-- ============ 21. TRAMPAS ============ -->
+        <div class="category-header" id="trampas">
+          <span class="category-header__icon">⚠️</span>
+          <h2 class="category-header__title">21. Trampas típicas y confusiones frecuentes</h2>
+        </div>
+
         <article class="concept-card">
-          <ul>
-            <li><strong>"Gen2 soporta RLS"</strong> → ❌ no, hazlo downstream.</li>
-            <li><strong>"Funciona sin capacidad Fabric"</strong> → ❌ requiere F SKU o Trial.</li>
-            <li><strong>"Todos los conectores soportan Fast Copy"</strong> → ❌ solo compatibles.</li>
-            <li><strong>"Fast Copy + transforms complejas en la misma query"</strong> → ❌ rompe Fast Copy; divide en dos.</li>
-            <li><strong>"Query folding siempre pasa"</strong> → ❌ depende del conector y transforms.</li>
-            <li><strong>"Incremental refresh con cualquier query"</strong> → ❌ requiere folding + columna DateTime.</li>
-            <li><strong>"Incremental borra data histórica fuera de rango"</strong> → ❌ en Gen2 no la toca.</li>
-            <li><strong>"500 buckets por dataflow"</strong> → ❌ 50 por query, 150 por dataflow.</li>
-            <li><strong>"Save y Publish son distintos en CI/CD"</strong> → ❌ Save = Publish.</li>
-            <li><strong>"Un Dataflow debe tener destination"</strong> → ❌ es opcional.</li>
-            <li><strong>"Staging siempre mejora"</strong> → ❌ añade coste; no si ya fold end-to-end.</li>
-            <li><strong>"Dataflows reemplazan al Data Warehouse"</strong> → ❌ limitación oficial.</li>
+          <ul class="trap-list">
+            <li><strong class="trap-title">Trampa 1: "Dataflow Gen2 soporta RLS"</strong>
+              ❌ <strong>NO</strong>. Es una de las limitaciones oficiales. Para RLS → hazlo en el semantic model o warehouse downstream.</li>
+            <li><strong class="trap-title">Trampa 2: "Dataflows Gen2 funcionan sin capacidad Fabric"</strong>
+              ❌ <strong>Requieren workspace en Fabric capacity</strong> (F SKU o Trial). Otra limitación oficial.</li>
+            <li><strong class="trap-title">Trampa 3: "Dataflow Gen2 = Dataflow Gen1"</strong>
+              ❌ <strong>Muy distintos</strong>. Gen2 tiene destinos múltiples, Fast Copy, CI/CD, first-class incremental refresh, y más.</li>
+            <li><strong class="trap-title">Trampa 4: "Todos los conectores soportan Fast Copy"</strong>
+              ❌ Solo <strong>conectores compatibles</strong> (ADLS, S3, Azure SQL, etc.). Ver docs oficiales.</li>
+            <li><strong class="trap-title">Trampa 5: "Puedo combinar Fast Copy con transformaciones complejas en la misma query"</strong>
+              ❌ Rompe Fast Copy. <strong>Divide en dos queries</strong>: una Fast Copy pura, otra con transformaciones sobre staged data.</li>
+            <li><strong class="trap-title">Trampa 6: "Query folding es automático y siempre pasa"</strong>
+              ❌ Depende del conector y de las transformaciones. Muchas cosas rompen folding (custom columns, <code>Table.AddIndex</code>, etc.). Vigila los indicadores.</li>
+            <li><strong class="trap-title">Trampa 7: "Incremental refresh funciona con cualquier query"</strong>
+              ❌ Requiere <strong>fully folding query</strong> + <strong>columna DateTime/Date</strong>. Si no fold, no funciona bien.</li>
+            <li><strong class="trap-title">Trampa 8: "Incremental refresh borra la data histórica fuera de rango"</strong>
+              ❌ En Gen2 <strong>NO borra data fuera del rango del bucket</strong>. Solo hace replace de los buckets que cambian.</li>
+            <li><strong class="trap-title">Trampa 9: "Puedo tener 500 buckets en un dataflow"</strong>
+              ❌ Límites: <strong>50 buckets por query, 150 por dataflow</strong>.</li>
+            <li><strong class="trap-title">Trampa 10: "Save y Publish son operaciones distintas en Gen2 con CI/CD"</strong>
+              ❌ En Gen2 con CI/CD, <strong>Save reemplaza Publish</strong> (just-in-time publishing).</li>
+            <li><strong class="trap-title">Trampa 11: "Un Dataflow debe tener destination"</strong>
+              ❌ Es <strong>opcional</strong>. Puedes tener dataflow sin destination y usarlo como source discoverable.</li>
+            <li><strong class="trap-title">Trampa 12: "Staging siempre mejora performance"</strong>
+              ❌ Añade costes de storage + write. Si la query <strong>ya fold end-to-end</strong>, staging es contraproducente.</li>
+            <li><strong class="trap-title">Trampa 13: "Dataflow Gen2 y Datamart son lo mismo"</strong>
+              ❌ Son items <strong>distintos</strong> en Fabric. Datamart es más para modelado self-service. Dataflow es para ETL.</li>
+            <li><strong class="trap-title">Trampa 14: "Modern Evaluator hay que activarlo manualmente"</strong>
+              ❌ Se activa <strong>automáticamente</strong> cuando aplica.</li>
+            <li><strong class="trap-title">Trampa 15: "Los dataflows reemplazan al Data Warehouse"</strong>
+              ❌ Es una <strong>limitación oficial explícita</strong>. Los Dataflows son ETL, no son warehouse.</li>
           </ul>
         </article>
 
-        <div class="category-header" id="comparativas"><span class="category-header__icon">🆚</span><h2 class="category-header__title">15. Comparativas clave (chuleta)</h2></div>
+        <!-- ============ 22. COMPARATIVAS ============ -->
+        <div class="category-header" id="comparativas">
+          <span class="category-header__icon">🆚</span>
+          <h2 class="category-header__title">22. Comparativas clave (chuleta)</h2>
+        </div>
+
         <article class="concept-card">
+          <h4>Dataflow Gen2 vs Notebook vs Pipeline</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Necesito...</th><th>Herramienta</th></tr></thead>
+              <tbody>
+                <tr><td>Low-code visual Power Query</td><td><strong>Dataflow Gen2</strong></td></tr>
+                <tr><td>Código Spark/Python</td><td><strong>Notebook</strong></td></tr>
+                <tr><td>Copiar datos raw</td><td><strong>Pipeline con Copy Data</strong></td></tr>
+                <tr><td>Orquestar múltiples pasos</td><td><strong>Pipeline</strong></td></tr>
+                <tr><td>Reutilizar transforms entre reports</td><td><strong>Dataflow Gen2</strong></td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h4>Dataflow Gen1 vs Gen2</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th></th><th>Gen1</th><th>Gen2</th></tr></thead>
+              <tbody>
+                <tr><td>Ubicación</td><td>Solo Power BI</td><td><strong>Fabric completo</strong></td></tr>
+                <tr><td>Destinos</td><td>Solo PBI dataset</td><td><strong>Múltiples (LH, WH, SQL DB)</strong></td></tr>
+                <tr><td>Fast Copy</td><td>❌</td><td>✅</td></tr>
+                <tr><td>CI/CD + Git</td><td>❌</td><td>✅</td></tr>
+                <tr><td>Incremental refresh</td><td>Post-publish</td><td>First-class</td></tr>
+                <tr><td>Requiere Fabric capacity</td><td>❌</td><td>✅</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h4>Capabilities de performance</h4>
           <div class="table-scroll">
             <table class="md-table">
               <thead><tr><th>Capability</th><th>Cuándo</th><th>Automático</th></tr></thead>
               <tbody>
                 <tr><td>Fast Copy</td><td>Copy pura, source compatible</td><td>Opcional (activar)</td></tr>
                 <tr><td>Modern Evaluator</td><td>Non-foldable + heavy shaping</td><td>Automático</td></tr>
-                <tr><td>Optimized copy to Lakehouse</td><td>Staging + destino lakehouse</td><td>Opcional</td></tr>
+                <tr><td>Optimized copy to Lakehouse</td><td>Staging + lakehouse destino</td><td>Opcional (activar)</td></tr>
                 <tr><td>Partitioned Compute</td><td>Datasets grandes particionados</td><td>Automático (Preview)</td></tr>
-                <tr><td>Query folding</td><td>Source foldable + transforms simples</td><td>Automático</td></tr>
-                <tr><td>Staging</td><td>ELT, flujos complejos</td><td>Opcional</td></tr>
+                <tr><td>Query folding</td><td>Foldable source + transforms simples</td><td>Automático</td></tr>
+                <tr><td>Staging</td><td>ELT patterns, complex flows</td><td>Opcional (activar)</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h4>Motores de facturación</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Motor</th><th>Rate</th><th>Cuándo aplica</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Standard Compute</strong></td><td>12 CU/seg (10 min), luego 1,5 CU/seg</td><td>Mashup engine queries</td></tr>
+                <tr><td><strong>Fast Copy</strong></td><td>1,5 CU/seg</td><td>Data movement con Fast Copy</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h4>Incremental refresh limits</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Concepto</th><th>Límite</th></tr></thead>
+              <tbody>
+                <tr><td>Buckets por query</td><td>50</td></tr>
+                <tr><td>Buckets por dataflow</td><td>150</td></tr>
+                <tr><td>Update method</td><td>Solo <code>replace</code></td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h4>CI/CD Save vs Publish</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Modo</th><th>Comportamiento</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Dataflow Gen2 clásico</strong></td><td>Save y Publish separados</td></tr>
+                <tr><td><strong>Dataflow Gen2 con CI/CD</strong></td><td>Save = Publish (just-in-time publishing)</td></tr>
               </tbody>
             </table>
           </div>
         </article>
 
-        <div class="note note--next">🚀 <strong>¡Módulo 5 completado!</strong> Ya dominas el ETL low-code de Fabric. Sigue con el <a href="modulo-6.html">Módulo 6: Pipelines y orquestación</a>. 🌸</div>
+        <!-- ============ 23. FUENTES ============ -->
+        <div class="category-header" id="fuentes">
+          <span class="category-header__icon">📚</span>
+          <h2 class="category-header__title">23. Fuentes oficiales consultadas</h2>
+        </div>
 
+        <article class="concept-card">
+          <ul class="sources-list">
+            <li>Módulo Learn: <a href="https://learn.microsoft.com/training/modules/use-dataflow-gen-2-fabric/" target="_blank" rel="noopener noreferrer">use-dataflow-gen-2-fabric</a></li>
+            <li>Dataflow Gen2 overview: <a href="https://learn.microsoft.com/fabric/data-factory/dataflows-overview" target="_blank" rel="noopener noreferrer">dataflows-overview</a></li>
+            <li>Best practices performance: <a href="https://learn.microsoft.com/fabric/data-factory/dataflow-gen2-performance-best-practices" target="_blank" rel="noopener noreferrer">dataflow-gen2-performance-best-practices</a></li>
+            <li>Fast Copy: <a href="https://learn.microsoft.com/fabric/data-factory/dataflows-gen2-fast-copy" target="_blank" rel="noopener noreferrer">dataflows-gen2-fast-copy</a></li>
+            <li>CI/CD y Git integration: <a href="https://learn.microsoft.com/fabric/data-factory/dataflow-gen2-cicd-and-git-integration" target="_blank" rel="noopener noreferrer">dataflow-gen2-cicd-and-git-integration</a></li>
+            <li>Incremental refresh: <a href="https://learn.microsoft.com/fabric/data-factory/dataflow-gen2-incremental-refresh" target="_blank" rel="noopener noreferrer">dataflow-gen2-incremental-refresh</a></li>
+            <li>Cost and performance benchmarks: <a href="https://learn.microsoft.com/fabric/data-factory/dataflow-gen2-cost-performance-benchmarks" target="_blank" rel="noopener noreferrer">dataflow-gen2-cost-performance-benchmarks</a></li>
+            <li>Data destinations and managed settings: <a href="https://learn.microsoft.com/fabric/data-factory/dataflow-gen2-data-destinations-and-managed-settings" target="_blank" rel="noopener noreferrer">dataflow-gen2-data-destinations-and-managed-settings</a></li>
+            <li>Data in Dataflow Gen2 staging items: <a href="https://learn.microsoft.com/fabric/data-factory/data-in-staging-items" target="_blank" rel="noopener noreferrer">data-in-staging-items</a></li>
+            <li>Modern Evaluator: <a href="https://learn.microsoft.com/fabric/data-factory/dataflow-gen2-modern-evaluator" target="_blank" rel="noopener noreferrer">dataflow-gen2-modern-evaluator</a></li>
+            <li>Partitioned Compute: <a href="https://learn.microsoft.com/fabric/data-factory/dataflow-gen2-partitioned-compute" target="_blank" rel="noopener noreferrer">dataflow-gen2-partitioned-compute</a></li>
+            <li>Query folding basics: <a href="https://learn.microsoft.com/power-query/query-folding-basics" target="_blank" rel="noopener noreferrer">query-folding-basics</a></li>
+          </ul>
+        </article>
+
+        <div class="note note--next">
+          🚀 <strong>¡Módulo 5 completado!</strong> Ya sabes hacer ETL low-code en Fabric con todos sus trucos de performance. Sigue con el <a href="modulo-6.html">Módulo 6: Pipelines y orquestación</a>. 🌸
+        </div>
+
+        <!-- Navegación del curso -->
         <div class="course-nav">
-          <a href="modulo-4.html"><span class="course-nav__label">← Anterior</span><span class="course-nav__title">Módulo 4 · Tablas Delta Lake</span></a>
-          <a href="modulo-6.html" class="next"><span class="course-nav__label">Siguiente →</span><span class="course-nav__title">Módulo 6 · Pipelines</span></a>
+          <a href="modulo-4.html">
+            <span class="course-nav__label">← Anterior</span>
+            <span class="course-nav__title">Módulo 4 · Tablas Delta Lake</span>
+          </a>
+          <a href="modulo-6.html" class="next">
+            <span class="course-nav__label">Siguiente →</span>
+            <span class="course-nav__title">Módulo 6 · Pipelines</span>
+          </a>
         </div>
 
       </div>
