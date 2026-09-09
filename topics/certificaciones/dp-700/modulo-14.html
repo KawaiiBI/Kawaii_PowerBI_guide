@@ -1,0 +1,1409 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="DP-700 Módulo 14: implementar CI/CD en Microsoft Fabric. Git integration, branch out to new workspace, deployment pipelines, variable libraries, fabric-cicd, REST APIs y best practices.">
+  <title>DP-700 · Módulo 14: CI/CD en Fabric | Power BI Guide by Kawaii BI</title>
+  <link rel="canonical" href="https://kawaiibi.es/topics/certificaciones/dp-700/modulo-14.html">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Kawaii Power BI Guide">
+  <meta property="og:locale" content="es_ES">
+  <meta property="og:title" content="DP-700 · Módulo 14: CI/CD en Fabric | Power BI Guide by Kawaii BI">
+  <meta property="og:description" content="DP-700 Módulo 14: CI/CD en Fabric. Git integration, deployment pipelines, variable libraries, fabric-cicd y best practices.">
+  <meta property="og:url" content="https://kawaiibi.es/topics/certificaciones/dp-700/modulo-14.html">
+  <meta property="og:image" content="https://kawaiibi.es/assets/images/og-banner.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="1200">
+  <meta property="og:image:alt" content="Sara Lozano Marti - Kawaii Power BI">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="DP-700 · Módulo 14: CI/CD en Fabric | Power BI Guide by Kawaii BI">
+  <meta name="twitter:description" content="DP-700 Módulo 14: CI/CD en Fabric. Git integration, deployment pipelines y variable libraries.">
+  <meta name="twitter:image" content="https://kawaiibi.es/assets/images/og-banner.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/prismjs@1/themes/prism-okaidia.min.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="../../../assets/css/main.css">
+  <link rel="stylesheet" href="../../../assets/css/themes.css">
+  <link rel="stylesheet" href="../../../assets/css/components.css">
+  <link rel="stylesheet" href="../../../assets/css/layout.css">
+
+  <style>
+    .topic-header { text-align: center; padding: 2.25rem 0 1.75rem; border-bottom: 2px solid var(--color-mauve); margin-bottom: 2rem; }
+    .topic-header__eyebrow { font-family: 'Fira Code', monospace; font-size: 0.8125rem; font-weight: 600; color: var(--color-coral); letter-spacing: 0.05em; }
+    .topic-header__icon { font-size: 3.5rem; margin: 0.5rem 0; display: block; }
+    .topic-header__title { font-size: clamp(1.75rem, 4vw, 2.25rem); font-weight: 800; color: var(--color-dark); margin-bottom: 0.625rem; line-height: 1.2; }
+    .topic-header__subtitle { font-size: 1rem; color: var(--color-slate); margin-bottom: 1.25rem; line-height: 1.55; max-width: 680px; margin-left: auto; margin-right: auto; }
+    .topic-header__levels { display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap; align-items: center; }
+
+    .toc { background: var(--color-rose); border-radius: var(--border-radius); padding: 1.25rem 1.5rem; margin-bottom: 2rem; border: 1.5px solid var(--color-mauve); }
+    .toc__title { font-size: 1rem; font-weight: 700; margin: 0 0 0.75rem; }
+    .toc__list { display: flex; flex-wrap: wrap; gap: 0.5rem; list-style: none; padding: 0; margin: 0; }
+    .toc__list a { font-size: 0.8125rem; color: var(--color-coral); text-decoration: none; padding: 0.25rem 0.625rem; background: var(--color-white); border-radius: 999px; border: 1px solid var(--color-mauve); }
+    .toc__list a:hover { background: var(--color-coral); color: #fff; }
+
+    .category-header { display: flex; align-items: center; gap: 0.75rem; margin: 2.5rem 0 1.25rem; padding: 0.875rem 1.25rem; background: var(--color-rose); border-radius: var(--border-radius-sm); border-left: 4px solid var(--color-coral); scroll-margin-top: 20px; }
+    .category-header__icon { font-size: 1.5rem; }
+    .category-header__title { font-size: 1.25rem; font-weight: 700; margin: 0; }
+
+    .concept-card { background: var(--color-white); border: 1.5px solid var(--color-mauve); border-radius: var(--border-radius); padding: 1.5rem 1.75rem; margin-bottom: 1.25rem; }
+    .concept-card h3 { font-size: 1.0625rem; font-weight: 700; color: var(--color-coral); margin: 0 0 0.6rem; }
+    .concept-card h4 { font-size: 0.9375rem; font-weight: 700; color: var(--color-dark); margin: 1.1rem 0 0.4rem; }
+    .concept-card p { font-size: 0.9375rem; line-height: 1.7; color: var(--color-dark); margin-bottom: 0.7rem; }
+    .concept-card ul, .concept-card ol { padding-left: 1.25rem; font-size: 0.9375rem; line-height: 1.75; color: var(--color-dark); margin: 0.4rem 0; }
+    .concept-card code { background: var(--color-blush); padding: 0.1em 0.4em; border-radius: 4px; font-family: 'Fira Code', monospace; font-size: 0.85em; color: var(--color-coral); }
+    .concept-card pre { margin: 0.75rem 0; }
+
+    .md-table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.84rem; }
+    .md-table th, .md-table td { border: 1px solid var(--color-mauve); padding: 0.5rem 0.7rem; text-align: left; vertical-align: top; }
+    .md-table th { background: var(--color-rose); font-weight: 700; color: var(--color-dark); }
+    .md-table tr:nth-child(even) td { background: var(--color-blush); }
+    .table-scroll { overflow-x: auto; }
+
+    .trap-list { list-style: none; padding: 0; margin: 0; }
+    .trap-list > li { background: var(--color-white); border: 1.5px solid var(--color-mauve); border-left: 4px solid var(--color-warning); border-radius: var(--border-radius-sm); padding: 0.875rem 1.125rem; margin-bottom: 0.75rem; font-size: 0.9375rem; line-height: 1.7; }
+    .trap-list strong.trap-title { display: block; color: var(--color-dark); margin-bottom: 0.25rem; }
+
+    .course-nav { display: flex; justify-content: space-between; gap: 1rem; margin-top: 2.5rem; flex-wrap: wrap; }
+    .course-nav a { flex: 1 1 220px; display: block; background: var(--color-white); border: 1.5px solid var(--color-mauve); border-radius: var(--border-radius); padding: 1rem 1.25rem; text-decoration: none; color: inherit; transition: var(--transition); }
+    .course-nav a:hover { border-color: var(--color-coral); box-shadow: var(--shadow-md); text-decoration: none; }
+    .course-nav__label { font-size: 0.75rem; color: var(--color-slate); text-transform: uppercase; letter-spacing: 0.05em; }
+    .course-nav__title { font-weight: 700; color: var(--color-coral); }
+    .course-nav a.next { text-align: right; }
+
+    .sources-list { font-size: 0.875rem; line-height: 1.9; word-break: break-word; }
+  </style>
+</head>
+<body>
+
+  <aside class="site-sidebar">
+    <div class="site-sidebar__profile">
+      <img src="../../../assets/images/avatar-sara.png" alt="Sara Lozano Martí" class="site-sidebar__avatar">
+      <p class="site-sidebar__name">Sara Lozano Martí</p>
+      <p class="site-sidebar__subtitle">Power BI Expert</p>
+    </div>
+    <nav class="site-sidebar__nav" aria-label="Navegación principal">
+      <ul>
+        <li><a href="../../../index.html" class="site-sidebar__link"><span class="site-sidebar__icon">🏠</span> Inicio</a></li>
+        <li><a href="../../dax.html" class="site-sidebar__link"><span class="site-sidebar__icon">⚡</span> Funciones DAX</a></li>
+        <li><a href="../../power-query.html" class="site-sidebar__link"><span class="site-sidebar__icon">🔄</span> Power Query</a></li>
+        <li><a href="../../lenguaje-m.html" class="site-sidebar__link"><span class="site-sidebar__icon">〽️</span> Lenguaje M</a></li>
+        <li><a href="../../modelado.html" class="site-sidebar__link"><span class="site-sidebar__icon">🗄️</span> Modelado</a></li>
+        <li><a href="../../conceptos-powerbi.html" class="site-sidebar__link"><span class="site-sidebar__icon">📊</span> Conceptos Power BI</a></li>
+        <li><a href="../../fabric.html" class="site-sidebar__link"><span class="site-sidebar__icon">🧵</span> Microsoft Fabric</a></li>
+        <li><a href="../../tmdl.html" class="site-sidebar__link"><span class="site-sidebar__icon">📝</span> TMDL</a></li>
+        <li><a href="../../diseno-ux.html" class="site-sidebar__link"><span class="site-sidebar__icon">🎨</span> Diseño y UX</a></li>
+        <li><a href="../../gobernanza.html" class="site-sidebar__link"><span class="site-sidebar__icon">🔒</span> Gobernanza</a></li>
+        <li><a href="../../certificaciones.html" class="site-sidebar__link is-active"><span class="site-sidebar__icon">🎓</span> Certificaciones</a></li>
+      </ul>
+    </nav>
+    <div class="site-sidebar__divider"></div>
+    <div class="site-sidebar__footer">
+      <a href="../../../quien-soy.html" class="site-sidebar__link site-sidebar__link--highlight"><span class="site-sidebar__icon">👩‍💻</span> ¿Quién soy?</a>
+      <div class="site-sidebar__social">
+        <a href="https://www.linkedin.com/in/saralozanomarti" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><img src="../../../assets/images/logo-linkedin.png" alt="LinkedIn" class="site-sidebar__social-icon"></a>
+        <a href="https://www.youtube.com/@KawaiiPowerBI" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><img src="../../../assets/images/logo-youtube.png" alt="YouTube" class="site-sidebar__social-icon"></a>
+        <a href="https://github.com/KawaiiBI" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><img src="../../../assets/images/logo-github.png" alt="GitHub" class="site-sidebar__social-icon"></a>
+      </div>
+      <div class="site-sidebar__logo-bottom"><img src="../../../assets/images/logo-kawaii.jpg" alt="Kawaii BI" class="site-sidebar__logo-img"></div>
+      <p class="site-sidebar__copyright">Power BI Guide 🌸<br>© 2026 Kawaii BI</p>
+    </div>
+  </aside>
+
+  <div class="page-wrapper">
+    <main class="main-content">
+      <div class="topic-page">
+
+        <nav class="breadcrumb" aria-label="Ruta de navegación">
+          <span class="breadcrumb__item"><a href="../../../index.html">🏠 Inicio</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item"><a href="../../certificaciones.html">Certificaciones</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item"><a href="../dp-700.html">DP-700</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item">Módulo 14</span>
+        </nav>
+
+        <header class="topic-header">
+          <span class="topic-header__eyebrow">DP-700 · MÓDULO 14</span>
+          <span class="topic-header__icon">🔀</span>
+          <h1 class="topic-header__title">Implementar CI/CD en Microsoft Fabric</h1>
+          <p class="topic-header__subtitle">El ciclo de vida completo de tus items: Git integration, branch out to new workspace, deployment pipelines, variable libraries, fabric-cicd y las best practices oficiales. 🌸</p>
+          <div class="topic-header__levels">
+            <span class="badge badge--intermediate">Intermedio</span>
+            <span class="badge badge--advanced">Avanzado</span>
+          </div>
+        </header>
+
+        <nav class="toc" aria-label="Índice del módulo">
+          <p class="toc__title">📑 En este módulo:</p>
+          <ul class="toc__list">
+            <li><a href="#objetivos">1. Objetivos y encaje</a></li>
+            <li><a href="#que-es-cicd">2. ¿Qué es CI/CD?</a></li>
+            <li><a href="#ci">3. Continuous Integration</a></li>
+            <li><a href="#cd">4. Continuous Deployment</a></li>
+            <li><a href="#why-cicd">5. Por qué usar CI/CD</a></li>
+            <li><a href="#git-integration">6. Git integration</a></li>
+            <li><a href="#providers">7. GitHub y Azure DevOps</a></li>
+            <li><a href="#conectar-git">8. Conectar workspace a Git</a></li>
+            <li><a href="#commit-update">9. Commit y update</a></li>
+            <li><a href="#branching">10. Branching scenarios</a></li>
+            <li><a href="#branch-out">11. Branch out to new workspace</a></li>
+            <li><a href="#client-tools">12. Client tools</a></li>
+            <li><a href="#deployment-pipelines">13. Deployment pipelines</a></li>
+            <li><a href="#crear-pipeline">14. Crear un pipeline</a></li>
+            <li><a href="#stages">15. Stages (2-10)</a></li>
+            <li><a href="#assign">16. Assign workspace</a></li>
+            <li><a href="#deploy-modes">17. Modos de deployment</a></li>
+            <li><a href="#git-plus-dp">18. Git + deployment pipelines</a></li>
+            <li><a href="#deployment-rules">19. Deployment rules</a></li>
+            <li><a href="#variable-libraries">20. Variable libraries</a></li>
+            <li><a href="#variable-types">21. Types y value sets</a></li>
+            <li><a href="#rest-apis">22. Fabric REST APIs</a></li>
+            <li><a href="#fabric-cicd-lib">23. fabric-cicd</a></li>
+            <li><a href="#bulk-apis">24. Bulk Import/Export</a></li>
+            <li><a href="#branching-strategies">25. GitFlow vs Trunk-based</a></li>
+            <li><a href="#best-practices">26. Best practices</a></li>
+            <li><a href="#trampas">27. Trampas típicas</a></li>
+            <li><a href="#comparativas">28. Comparativas clave</a></li>
+            <li><a href="#fuentes">29. Fuentes oficiales</a></li>
+          </ul>
+        </nav>
+
+        <!-- ============ 1. OBJETIVOS ============ -->
+        <div class="category-header" id="objetivos">
+          <span class="category-header__icon">🎯</span>
+          <h2 class="category-header__title">1. Objetivos y encaje en el DP-700</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>¿Qué te enseña este módulo?</h3>
+          <p>Este módulo cubre <strong>CI/CD en Fabric</strong> — cómo gestionar el ciclo de vida de tus items desde development hasta production de forma automatizada y con control de versiones. Los objetivos oficiales:</p>
+          <ol>
+            <li>Definir CI/CD y describir cómo se implementa en Fabric.</li>
+            <li>Implementar <strong>version control y Git integration</strong>.</li>
+            <li>Usar <strong>deployment pipelines</strong> para automatizar el deployment.</li>
+            <li>Automatizar CI/CD usando las <strong>Fabric APIs</strong>.</li>
+          </ol>
+
+          <h4>Peso en el examen DP-700</h4>
+          <p>Este módulo es <strong>fundamental</strong> para el Dominio 1:</p>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Dominio</th><th>Cómo aparece</th></tr></thead>
+              <tbody>
+                <tr><td>Implement and manage (30-35%)</td><td><strong>⭐⭐⭐ CI/CD es un tema ENORME</strong>: Git integration, deployment pipelines, variable libraries, branching, promoción entre stages, automation</td></tr>
+                <tr><td>Ingest and transform (30-35%)</td><td>Poco directamente</td></tr>
+                <tr><td>Monitor and optimize (30-35%)</td><td>Poco directamente</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="note note--tip">
+            🎯 <strong>Qué es CRÍTICO dominar:</strong>
+            <ul>
+              <li><strong>Git integration</strong> setup y workflows (GitHub, Azure DevOps)</li>
+              <li><strong>Branch out to new workspace</strong> (feature muy examinable)</li>
+              <li><strong>Deployment pipelines</strong>: stages, deployment modes, workspace assignment</li>
+              <li><strong>Full vs Selective vs Backward deployment</strong></li>
+              <li><strong>Variable libraries</strong> (moderno) vs <strong>deployment rules</strong> (legacy)</li>
+              <li><strong>Value sets</strong> y activación</li>
+              <li><strong>Connection reference variables</strong> e <strong>item reference variables</strong></li>
+              <li>La librería <strong>fabric-cicd</strong> (Python)</li>
+              <li><strong>Bulk Import/Export Item Definitions APIs</strong></li>
+              <li>Patrones de <strong>combinar Git + deployment pipelines</strong></li>
+            </ul>
+          </div>
+
+          <div class="note note--tip">
+            🌸 <strong>Sobre el módulo:</strong> si vienes del mundo DevOps clásico, ya sabes el 60%. Si vienes solo del mundo Power BI/BI, probablemente sea todo nuevo. <strong>Tómate esta sección con calma</strong>, porque el vocabulario y los patrones son importantes para el examen 💕
+          </div>
+        </article>
+
+        <!-- ============ 2. QUÉ ES CI/CD ============ -->
+        <div class="category-header" id="que-es-cicd">
+          <span class="category-header__icon">🔄</span>
+          <h2 class="category-header__title">2. ¿Qué es CI/CD?</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>Definición</h3>
+          <p><strong>CI/CD</strong> = <strong>Continuous Integration y Continuous Deployment (o Delivery)</strong>. Es una <strong>práctica de desarrollo y release</strong> para versionar los items del workspace de Fabric, mover cambios entre entornos y mantener consistentes las soluciones desplegadas entre workspaces.</p>
+
+          <h4>Por qué en Fabric</h4>
+          <p>Una solución de Fabric puede incluir <strong>muchos tipos de items, data sources y settings específicos del entorno</strong>. Un plan de CI/CD te ayuda a:</p>
+          <ul>
+            <li><strong>Colaborar sin sobrescribirse</strong> entre developers.</li>
+            <li>Evitar la <strong>reconfiguración manual</strong> durante el deployment.</li>
+            <li>Mantener la consistencia entre dev, test y prod.</li>
+          </ul>
+
+          <h4>Los dos "C"</h4>
+          <ul>
+            <li><strong>CI = Continuous Integration</strong> — integrar cambios de código frecuentemente en un repo compartido, con testing automático.</li>
+            <li><strong>CD = Continuous Deployment/Delivery</strong> — desplegar los cambios verificados a producción o entornos destino de forma automatizada.</li>
+          </ul>
+
+          <h4>Los 2 tools nativos de Fabric</h4>
+          <p>Fabric implementa CI/CD con <strong>dos features clave</strong>:</p>
+          <ol>
+            <li><strong>Git integration</strong> — version control para tus workspace items.</li>
+            <li><strong>Deployment pipelines</strong> — mover items entre stages (dev → test → prod).</li>
+          </ol>
+          <p>Puedes usar <strong>uno, el otro o ambos</strong>. Lo veremos en detalle.</p>
+
+          <div class="note note--tip">
+            🌷 <strong>Analogía kawaii:</strong> piénsalo como <strong>cocinar galletas para vender</strong>. <strong>Development kitchen</strong> = pruebas de nuevas recetas. <strong>Test kitchen</strong> = valida que salgan igual siempre. <strong>Production kitchen</strong> = producción masiva para vender.
+            <br>Sin CI/CD tienes que <strong>llevar la receta a mano</strong> entre cocinas, y si cambias algo en producción olvidas actualizarlo en dev. Un lío. Con CI/CD tienes una <strong>cinta transportadora automática</strong> que lleva las recetas verificadas de una cocina a otra 🍪✨
+          </div>
+        </article>
+
+        <!-- ============ 3. CI ============ -->
+        <div class="category-header" id="ci">
+          <span class="category-header__icon">🔨</span>
+          <h2 class="category-header__title">3. Continuous Integration (CI)</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>Concepto</h3>
+          <p>Los developers <strong>commitean frecuentemente a una main branch gestionada por Git</strong>, disparando <strong>tests automáticos</strong> y <strong>builds automáticos</strong> para la integración. Git <strong>trackea los cambios</strong> para permitir el fetching y testing automático de los nuevos commits.</p>
+
+          <h4>Beneficios de CI</h4>
+          <ul>
+            <li>✅ <strong>Detectar conflictos rápido</strong> (antes de que se acumulen).</li>
+            <li>✅ <strong>Feedback inmediato</strong> sobre si el código funciona.</li>
+            <li>✅ <strong>Historia clara</strong> de qué cambió y cuándo.</li>
+            <li>✅ <strong>Múltiples developers</strong> trabajando sin pisarse.</li>
+          </ul>
+
+          <h4>En Fabric</h4>
+          <ul>
+            <li>Git integration a nivel workspace.</li>
+            <li>Los cambios en los items (notebooks, pipelines, semantic models, etc.) se <strong>commitean al repo</strong>.</li>
+            <li>Otros developers pueden <strong>hacer pull de los cambios</strong> y trabajar en paralelo en branches distintas.</li>
+          </ul>
+        </article>
+
+        <!-- ============ 4. CD ============ -->
+        <div class="category-header" id="cd">
+          <span class="category-header__icon">🚀</span>
+          <h2 class="category-header__title">4. Continuous Deployment/Delivery (CD)</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>Concepto</h3>
+          <p><strong>CD</strong> = desplegar los cambios verificados a los entornos de producción a través de <strong>stages de deployment estructuradas</strong> dentro de los deployment pipelines.</p>
+
+          <h4>Stages típicas</h4>
+          <p>Típicamente separadas en <strong>3 entornos</strong>:</p>
+          <ul>
+            <li><strong>Development</strong> (compilar código, iterar).</li>
+            <li><strong>Test</strong> (ejecutar tests, QA).</li>
+            <li><strong>Production</strong> (desplegar la aplicación).</li>
+          </ul>
+          <p>Cada stage tiene sus propios <strong>jobs</strong> y validaciones.</p>
+
+          <h4>Automated workflows</h4>
+          <p>Los deployment pipelines <strong>automatizan todo el proceso</strong> de <strong>building</strong> (compilar), <strong>testing</strong> (validar) y <strong>deploying</strong> (desplegar).</p>
+          <p><strong>Beneficios</strong>:</p>
+          <ul>
+            <li>🎯 <strong>Reduce el riesgo de error humano</strong>.</li>
+            <li>⚡ <strong>Acelera el desarrollo</strong>.</li>
+            <li>🔄 <strong>Entrega consistente y fiable</strong> a producción.</li>
+          </ul>
+
+          <div class="note note--tip">
+            🌸 <strong>Ojo cosita con la sutil diferencia:</strong> <strong>Continuous Delivery</strong> = los cambios están <strong>listos</strong> para desplegar (con aprobación manual). <strong>Continuous Deployment</strong> = los cambios se <strong>auto-despliegan</strong> sin intervención. Fabric soporta ambos patrones según cómo configures tus pipelines.
+          </div>
+        </article>
+
+        <!-- ============ 5. WHY ============ -->
+        <div class="category-header" id="why-cicd">
+          <span class="category-header__icon">💡</span>
+          <h2 class="category-header__title">5. Por qué usar CI/CD</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>Pain points sin CI/CD</h3>
+          <p><strong>A) Problemas de integración manual</strong>: sin CI/CD, integrar cambios manualmente causa <strong>conflictos y errores</strong>, y <strong>ralentiza el desarrollo</strong>.</p>
+          <p><strong>B) Retrasos en el desarrollo</strong>: los deployments manuales son <strong>lentos y propensos a errores</strong>, retrasando la entrega de nuevas features y updates.</p>
+          <p><strong>C) Entornos inconsistentes</strong>: los distintos entornos (dev, test, prod) pueden tener <strong>inconsistencias</strong>, causando problemas <strong>difíciles de depurar</strong>.</p>
+          <p><strong>D) Falta de visibilidad</strong>: sin CI/CD, <strong>trackear cambios</strong> y entender el estado del codebase es difícil.</p>
+
+          <h4>Beneficios con Fabric CI/CD</h4>
+          <ul>
+            <li>✅ Version control de todos los items.</li>
+            <li>✅ Colaboración con el equipo.</li>
+            <li>✅ Rollback fácil si algo falla.</li>
+            <li>✅ Entornos consistentes automáticamente.</li>
+            <li>✅ Visibilidad de qué se desplegó y cuándo.</li>
+            <li>✅ La automatización reduce errores.</li>
+          </ul>
+        </article>
+
+        <!-- ============ 6. GIT INTEGRATION ============ -->
+        <div class="category-header" id="git-integration">
+          <span class="category-header__icon">🌸</span>
+          <h2 class="category-header__title">6. Git integration en Fabric</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>¿Qué es?</h3>
+          <p>La <strong>Git integration en Fabric</strong> conecta tu <strong>workspace a un repositorio Git</strong> para tener <strong>version control</strong> de los items, <strong>trackear cambios</strong> a lo largo del tiempo, <strong>contribuir de forma colaborativa</strong> al desarrollo y <strong>revertir a versiones anteriores</strong> si lo necesitas.</p>
+
+          <h4>Scope: nivel workspace</h4>
+          <p>La <strong>integración con el control de versiones es a NIVEL WORKSPACE</strong>. Es decir:</p>
+          <ul>
+            <li><strong>Un workspace ↔ una branch</strong> (típicamente).</li>
+            <li>Todos los items <strong>del workspace</strong> se versionan juntos.</li>
+            <li>No puedes versionar solo algunos items del workspace.</li>
+          </ul>
+
+          <div class="note note--practice">
+            📌 <strong>Best practice: workspace aislado.</strong> Un workspace de Fabric es un <strong>entorno compartido</strong> que accede a <strong>items vivos</strong>. Cualquier cambio directo en el workspace <strong>sobrescribe y afecta a todos los usuarios</strong> del workspace.
+            <br>Por eso: <strong>desarrolla en un workspace aislado</strong>, fuera del shared live workspace. En tu <strong>workspace protegido</strong>: conecta a tu propia <strong>branch</strong>, sincroniza el contenido desde el live workspace y commitea tus cambios de vuelta a tu branch o a main.
+          </div>
+
+          <div class="note note--tip">
+            🌸 <strong>Analogía kawaii:</strong> como un <strong>restaurante compartido</strong>. <strong>Live workspace</strong> = cocina principal donde comen los clientes. <strong>Personal workspace</strong> = cocina de pruebas donde experimentas. <strong>Git repo</strong> = libro de recetas oficial. <strong>Feature branch</strong> = borrador de nueva receta. <strong>Main branch</strong> = recetas aprobadas y publicadas.
+            <br>Cuando terminas tu receta, la <strong>envías</strong> al libro oficial (main) mediante un <strong>pull request</strong>. Después, la cocina principal se actualiza automáticamente ✨
+          </div>
+        </article>
+
+        <!-- ============ 7. PROVIDERS ============ -->
+        <div class="category-header" id="providers">
+          <span class="category-header__icon">📚</span>
+          <h2 class="category-header__title">7. Providers soportados: GitHub y Azure DevOps</h2>
+        </div>
+
+        <article class="concept-card">
+          <h4>Los 2 providers</h4>
+          <ol>
+            <li><strong>GitHub</strong> — el estándar open source y muy popular.</li>
+            <li><strong>Azure DevOps</strong> — el estándar enterprise de Microsoft.</li>
+          </ol>
+
+          <h4>¿Cuál elegir?</h4>
+          <p><strong>GitHub</strong> ✅ cuando ya usas GitHub para otros proyectos, prefieres su UX, o valoras su comunidad grande e integraciones abundantes.</p>
+          <p><strong>Azure DevOps</strong> ✅ cuando el setup enterprise ya está en el ecosistema Microsoft, necesitas <strong>integración profunda con Azure Pipelines</strong>, o ⭐ quieres lo <strong>recomendado para Fabric</strong> (menos limitaciones que GitHub actualmente).</p>
+
+          <div class="note note--warning">
+            ⚠️ <strong>Nota importante</strong> según la doc oficial: <em>"Azure DevOps Git integration is recommended as GitHub Git integration has more limitations"</em>. Sin embargo, ambos son perfectamente válidos. Depende de tu setup enterprise.
+          </div>
+
+          <h4>Mejoras recientes</h4>
+          <p><strong>Nuevas features 2025-2026</strong>:</p>
+          <ul>
+            <li><strong>Mapeo selectivo de branch por workspace o carpeta</strong> — apuntar a una branch específica por workspace.</li>
+            <li><strong>Experiencia de diff integrada</strong> — comparar los items del workspace con los commits de la branch antes de commitear o hacer pull.</li>
+            <li><strong>Mejor gestión de branched workspaces</strong>.</li>
+          </ul>
+        </article>
+
+        <!-- ============ 8. CONECTAR GIT ============ -->
+        <div class="category-header" id="conectar-git">
+          <span class="category-header__icon">🔌</span>
+          <h2 class="category-header__title">8. Conectar workspace a Git</h2>
+        </div>
+
+        <article class="concept-card">
+          <h4>Pasos</h4>
+          <p><strong>Paso 1: preparar el repositorio Git</strong> — crear un repo en <strong>GitHub o Azure DevOps</strong>. Es la <strong>ubicación central</strong> para almacenar y gestionar los items.</p>
+          <p><strong>Paso 2: conectar el workspace de Fabric al repo</strong> — dentro del workspace que quieres conectar → <strong>workspace settings</strong> → <strong>Git integration</strong> → establecer la conexión.</p>
+          <p><strong>Paso 3: seleccionar branch</strong> — <strong>crear o seleccionar una branch existente</strong> del repositorio con la que sincronizar. Fabric sincroniza el contenido entre workspace y Git → <strong>mismo contenido</strong>.</p>
+
+          <h4>Git status column</h4>
+          <p>Después de conectar, el workspace muestra una <strong>columna Git status</strong> indicando el <strong>estado de sincronización</strong> de los items del workspace frente a los de la remote branch, con iconos de modified, added, deleted y up-to-date.</p>
+          <p>El <strong>icono de source control</strong> muestra el <strong>número de items que difieren</strong> entre workspace y repo.</p>
+
+          <h4>Autenticación</h4>
+          <ul>
+            <li><strong>Microsoft Entra ID</strong> para la autenticación.</li>
+            <li><strong>Service principals</strong> posibles para automation.</li>
+            <li><strong>Personal Access Tokens (PATs)</strong> para GitHub cuando aplique.</li>
+          </ul>
+        </article>
+
+        <!-- ============ 9. COMMIT Y UPDATE ============ -->
+        <div class="category-header" id="commit-update">
+          <span class="category-header__icon">🔄</span>
+          <h2 class="category-header__title">9. Commit y update workflows</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>Los 2 movimientos</h3>
+          <p><strong>A) Workspace → Git (Commit)</strong>: cuando <strong>haces cambios</strong> en el workspace, sincronizas con la branch de Git usando la selección <strong>Changes</strong> en la ventana de <strong>Source control</strong>. El <strong>commit</strong> envía tus cambios al repo.</p>
+          <p><strong>B) Git → Workspace (Update)</strong>: cuando hay <strong>nuevos commits</strong> en la branch de Git (tuyos o de otros), sincronizas al workspace usando la selección <strong>Updates</strong> en la ventana de <strong>Source control</strong>. El <strong>update</strong> trae los cambios del repo al workspace.</p>
+
+          <h4>Cuándo cada uno</h4>
+          <ul>
+            <li><strong>Trabajaste en la Fabric UI</strong> → commit para llevarlo al repo.</li>
+            <li><strong>Alguien commiteó al repo desde otro sitio</strong> → update para traerlo al workspace.</li>
+            <li><strong>Trabajaste en un client tool</strong> (VS Code, Power BI Desktop) → después del push, update para verlo en el workspace.</li>
+          </ul>
+
+          <h4>Diff view (nuevo)</h4>
+          <p>Feature reciente: la <strong>experiencia de diff integrada</strong> te permite comparar los items del workspace con los commits de la branch <strong>antes de commitear o hacer pull</strong>, para revisar los cambios. Muy útil para evitar cambios accidentales.</p>
+        </article>
+
+        <!-- ============ 10. BRANCHING ============ -->
+        <div class="category-header" id="branching">
+          <span class="category-header__icon">🌳</span>
+          <h2 class="category-header__title">10. Branching scenarios</h2>
+        </div>
+
+        <article class="concept-card">
+          <h4>Por qué branches</h4>
+          <p>Los cambios que haces al workspace <strong>afectan a todos sus usuarios</strong>. Best practice: <strong>trabajar en aislamiento fuera de los shared workspaces</strong>.</p>
+
+          <h4>Las 2 opciones de desarrollo aislado</h4>
+          <p><strong>A) Workspace aislado separado</strong>: tu <strong>propio workspace</strong> conectado a tu propia branch, con desarrollo web-based en la Fabric UI.</p>
+          <p><strong>B) Client tools</strong>: <strong>Power BI Desktop</strong> para reports y semantic models, <strong>VS Code</strong> para Notebooks. Desarrollo local + push a Git.</p>
+
+          <h4>Patrón común</h4>
+          <p>En ambos escenarios: <strong>desarrollo de features en una branch dedicada</strong> (no main), múltiples developers trabajando en features distintas simultáneamente, y <strong>Pull Requests</strong> para hacer merge a main.</p>
+
+          <h4>Diagrama mental</h4>
+          <pre><code class="language-plaintext">        main branch (protected)
+             ↑
+             │ Pull Request + Review
+             │
+     ┌───────┼───────┐
+     │       │       │
+   feat-A  feat-B  feat-C
+     │       │       │
+   Dev1    Dev2    Dev3
+   (own    (own    (own
+    ws)     ws)     ws)</code></pre>
+          <p>Cada dev trabaja en su feature branch en su workspace personal → PR → merge a main.</p>
+        </article>
+
+        <!-- ============ 11. BRANCH OUT ============ -->
+        <div class="category-header" id="branch-out">
+          <span class="category-header__icon">🌸</span>
+          <h2 class="category-header__title">11. Branch out to new workspace (feature clave)</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>La feature estrella</h3>
+          <p><strong>Branch out to new workspace</strong> es una feature muy examinable. Permite crear una <strong>nueva branch y un nuevo workspace</strong> en un solo click.</p>
+
+          <h4>Cómo funciona</h4>
+          <ol>
+            <li>Estás en el <strong>development workspace</strong> conectado a la main branch.</li>
+            <li><strong>Source control</strong> → <strong>Branch out to new workspace</strong>.</li>
+            <li>Nombras la <strong>branch</strong>.</li>
+            <li>La asocias con un <strong>nuevo workspace</strong> (se crea, o eliges uno existente).</li>
+            <li>El nuevo workspace <strong>sincroniza con la nueva branch</strong>.</li>
+          </ol>
+
+          <h4>Resultado</h4>
+          <ul>
+            <li>✅ <strong>Nueva branch en Git</strong>.</li>
+            <li>✅ <strong>Nuevo workspace en Fabric</strong> (aislado).</li>
+            <li>✅ <strong>Sync automático</strong> entre ambos.</li>
+            <li>✅ <strong>Entorno de trabajo dedicado</strong> para tu feature.</li>
+          </ul>
+
+          <h4>Workflow completo</h4>
+          <pre><code class="language-plaintext">1. Estás en Dev workspace (main branch)
+   ↓
+2. Branch out to new workspace
+   ↓
+3. Nueva branch "feature/new-report" + nuevo workspace "Dev-Feature"
+   ↓
+4. Trabajas en Dev-Feature workspace
+   ↓
+5. Commit changes → van a "feature/new-report" branch
+   ↓
+6. PR en Git para merge a main
+   ↓
+7. Merge aprobado → main actualizada
+   ↓
+8. Dev workspace prompted a sync con new content</code></pre>
+
+          <h4>Otros comandos de source control</h4>
+          <p><strong>Switch branch</strong>: cambia la conexión del workspace actual de una branch a otra del mismo repo. <strong>Antes</strong> debes commitear o descartar los cambios sin commitear. Fabric ejecuta un <strong>Update from Git</strong> que puede añadir, actualizar o borrar items.</p>
+          <p><strong>Check out new branch</strong>: cambia de la branch actual a una nueva <strong>sin descartar los cambios</strong> de la actual. Útil para <strong>resolver merge conflicts</strong> entre la feature branch y la integration branch.</p>
+
+          <h4>Ventajas</h4>
+          <ul>
+            <li>⚡ <strong>Rápido</strong>: un click en vez de setup manual.</li>
+            <li>🎯 <strong>Consistente</strong>: branch + workspace siempre sincronizados.</li>
+            <li>👥 <strong>Colaboración</strong>: cada developer con su entorno.</li>
+            <li>🔒 <strong>Aislamiento</strong>: no rompes el shared workspace.</li>
+          </ul>
+        </article>
+
+        <!-- ============ 12. CLIENT TOOLS ============ -->
+        <div class="category-header" id="client-tools">
+          <span class="category-header__icon">💻</span>
+          <h2 class="category-header__title">12. Development con client tools</h2>
+        </div>
+
+        <article class="concept-card">
+          <h4>Alternativa al web</h4>
+          <p>Además de trabajar en la Fabric UI, puedes usar <strong>client tools locales</strong>:</p>
+          <ul>
+            <li><strong>Power BI Desktop</strong> — reports y semantic models.</li>
+            <li><strong>VS Code</strong> — Notebooks (con la extensión Fabric Data Engineering).</li>
+            <li><strong>Azure Data Studio / SSMS</strong> — Warehouse y SQL Database.</li>
+          </ul>
+
+          <h4>Workflow típico con client tools</h4>
+          <ol>
+            <li><strong>Conectar el development workspace a la main branch</strong> (Git integration).</li>
+            <li><strong>Clonar el repositorio</strong> en tu máquina local (<code>git clone</code>).</li>
+            <li>Trabajar <strong>en local</strong> con tu tool preferido.</li>
+            <li><strong>Push de los cambios</strong> al remote repo cuando esté listo para testear.</li>
+            <li><strong>Testear</strong> conectando tu branch aislada a un <strong>workspace separado</strong>.</li>
+            <li><strong>Pull Request en Git</strong> para hacer merge a main.</li>
+            <li>Cuando abres el <strong>shared workspace de main</strong>, se te pide <strong>sincronizar desde el repo</strong>.</li>
+          </ol>
+
+          <h4>Ventajas de los client tools</h4>
+          <ul>
+            <li>✅ <strong>Tooling familiar</strong> (Git CLI, VS Code, etc.).</li>
+            <li>✅ <strong>Desarrollo offline</strong> posible.</li>
+            <li>✅ <strong>Features ricas de IDE</strong> (debugging, refactoring, extensiones).</li>
+            <li>✅ <strong>Colaboración en equipo</strong> vía pull requests.</li>
+          </ul>
+
+          <h4>Cuándo cada approach</h4>
+          <p><strong>Desarrollo web-based</strong> ✅ para cambios rápidos y sencillos, equipos menos técnicos o preferencia visual.</p>
+          <p><strong>Client tools</strong> ✅ para desarrollo intensivo (muchos notebooks), preferencia por features de IDE, necesidad de integraciones locales (Docker, testing frameworks) o equipos que vienen del mundo dev.</p>
+        </article>
+
+        <!-- ============ 13. DEPLOYMENT PIPELINES ============ -->
+        <div class="category-header" id="deployment-pipelines">
+          <span class="category-header__icon">🎯</span>
+          <h2 class="category-header__title">13. Deployment pipelines</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>¿Qué son?</h3>
+          <p>Los <strong>deployment pipelines de Fabric</strong> son un <strong>mecanismo de CI/CD integrado</strong> en Fabric que permite <strong>desplegar items de Fabric</strong> entre distintos entornos (dev, test, prod), <strong>automatizar el movimiento</strong> de contenido entre stages y <strong>testear y validar</strong> antes de producción.</p>
+
+          <h4>Diferencia con Git integration</h4>
+          <p><strong>Git integration</strong> = version control (BYO Git). <strong>Deployment pipelines</strong> = <strong>CI/CD integrado</strong> que mueve items entre workspaces. Son <strong>complementarios</strong> — típicamente se usan juntos.</p>
+
+          <h4>Estructura básica</h4>
+          <pre><code class="language-plaintext">Development WS  →  Test WS  →  Production WS
+     (Stage 1)     (Stage 2)      (Stage 3)</code></pre>
+          <p>Cada stage está <strong>asociada a un workspace</strong>. El botón Deploy promueve los items al siguiente stage.</p>
+
+          <h4>Deployment pipelines vs GitHub Actions/Azure Pipelines</h4>
+          <p>Los <strong>deployment pipelines de Fabric</strong> ≠ <strong>GitHub Actions / Azure Pipelines</strong>:</p>
+          <ul>
+            <li>Los <strong>deployment pipelines de Fabric</strong> están <strong>integrados en Fabric</strong> y son específicos para promover items entre workspaces.</li>
+            <li><strong>GitHub Actions / Azure Pipelines</strong> son plataformas <strong>generales de CI/CD</strong> que puedes usar para automation externa (desplegar items, correr scripts, etc.).</li>
+          </ul>
+          <p>Puedes usar los dos: los deployment pipelines de Fabric para promover items, y GitHub Actions para disparar pipelines externos, correr tests, etc.</p>
+
+          <div class="note note--tip">
+            🎯 <strong>Auto-rebinding:</strong> los deployment pipelines <strong>reenlazan automáticamente las relaciones entre items</strong> al desplegar. Ejemplo: el lakehouse en dev es <code>lh_dev</code>; al desplegar a test se crea <code>lh_test</code>, y el notebook que referenciaba <code>lh_dev</code> se <strong>actualiza automáticamente</strong> a <code>lh_test</code>. Sin auto-rebinding tendrías que <strong>actualizar manualmente</strong> todas las referencias.
+          </div>
+        </article>
+
+        <!-- ============ 14. CREAR PIPELINE ============ -->
+        <div class="category-header" id="crear-pipeline">
+          <span class="category-header__icon">🛠️</span>
+          <h2 class="category-header__title">14. Crear un deployment pipeline</h2>
+        </div>
+
+        <article class="concept-card">
+          <h4>Prerequisites</h4>
+          <ul>
+            <li><strong>Suscripción activa de Microsoft Fabric</strong>.</li>
+            <li><strong>Acceso Admin</strong> a un workspace de Fabric.</li>
+          </ul>
+
+          <h4>Los 2 puntos de entrada</h4>
+          <p><strong>A) Desde el icono de Workspaces</strong>: navegación izquierda → icono <strong>Workspaces</strong> → <strong>Deployment pipelines</strong> → <strong>Create pipeline</strong> o <strong>+ New pipeline</strong>.</p>
+          <p><strong>B) Desde el workspace</strong>: parte superior del workspace → <strong>Create deployment pipeline</strong>.</p>
+
+          <h4>Setup steps</h4>
+          <p><strong>Step 1: nombre y stages</strong> — introducir <strong>nombre y descripción</strong>, seleccionar <strong>Next</strong>, definir las <strong>stages</strong> (por defecto: Development, Test, Production) y seleccionar <strong>Create y continue</strong>.</p>
+          <p><strong>Step 2: asignar workspaces</strong> — asignar un <strong>workspace a cada stage</strong>. Se puede asignar <strong>cualquier workspace</strong> a <strong>cualquier stage</strong>.</p>
+          <p><strong>Step 3: desplegar contenido</strong> — cuando esté listo, el botón <strong>Deploy</strong> mueve el contenido al siguiente stage.</p>
+        </article>
+
+        <!-- ============ 15. STAGES ============ -->
+        <div class="category-header" id="stages">
+          <span class="category-header__icon">🎨</span>
+          <h2 class="category-header__title">15. Stages: default y configurable (2-10)</h2>
+        </div>
+
+        <article class="concept-card">
+          <h4>Default: 3 stages</h4>
+          <p>Por defecto, el pipeline tiene <strong>3 stages</strong>: <strong>Development</strong> (dev), <strong>Test</strong> y <strong>Production</strong> (prod).</p>
+
+          <h4>🎯 Configurable: 2-10 stages</h4>
+          <p><strong>Puedes personalizar</strong>: <strong>añadir stages</strong> adicionales, <strong>renombrar stages</strong> y <strong>borrar stages</strong>. Mínimo <strong>2 stages</strong>, máximo <strong>10 stages</strong>.</p>
+
+          <div class="note note--warning">
+            ⚠️ <strong>Importante:</strong> el <strong>número de stages es permanente</strong> — <strong>no se puede cambiar</strong> después de crear el pipeline.
+          </div>
+
+          <h4>Casos con stages extras</h4>
+          <ul>
+            <li><strong>5 stages típicos</strong>: Dev → QA → UAT → Staging → Prod.</li>
+            <li><strong>Simplificado 2 stages</strong>: Dev → Prod (para equipos pequeños o proyectos simples).</li>
+            <li><strong>Multi-region</strong>: Dev → Test → Prod-EU → Prod-US → Prod-APAC.</li>
+          </ul>
+
+          <div class="note note--practice">
+            📌 <strong>Best practice:</strong> no sobreingenierices. <strong>3-4 stages es el punto dulce</strong> para la mayoría. Más stages = más gestión y ceremonia.
+          </div>
+        </article>
+
+        <!-- ============ 16. ASSIGN ============ -->
+        <div class="category-header" id="assign">
+          <span class="category-header__icon">🔗</span>
+          <h2 class="category-header__title">16. Assign workspace a stage</h2>
+        </div>
+
+        <article class="concept-card">
+          <h4>Cómo asignar</h4>
+          <ol>
+            <li>Seleccionar el stage vacío.</li>
+            <li>Botón <strong>Assign workspace</strong>.</li>
+            <li>Seleccionar el workspace deseado.</li>
+            <li>Aparece un checkmark verde.</li>
+          </ol>
+
+          <h4>Reglas de assignment</h4>
+          <ul>
+            <li><strong>Un workspace por stage</strong> (puede tener múltiples items, pero un solo WS).</li>
+            <li><strong>Un workspace puede estar en un solo pipeline</strong> a la vez.</li>
+            <li>El workspace puede estar <strong>en cualquier stage</strong> — no tienen orden requerido.</li>
+          </ul>
+
+          <h4>Workspaces según stages</h4>
+          <p><strong>Best practice</strong>: que los nombres de workspace reflejen su rol — <code>MyProject-Dev</code>, <code>MyProject-Test</code>, <code>MyProject-Prod</code>. O con prefijos: <code>[DEV] MyProject</code>, <code>[TEST] MyProject</code>, <code>[PROD] MyProject</code>.</p>
+        </article>
+
+        <!-- ============ 17. DEPLOY MODES ============ -->
+        <div class="category-header" id="deploy-modes">
+          <span class="category-header__icon">🚀</span>
+          <h2 class="category-header__title">17. Full vs Selective vs Backward deployment</h2>
+        </div>
+
+        <article class="concept-card">
+          <p><strong>Los 3 modos de deployment</strong>. Muy examinable.</p>
+
+          <h4>Full deployment</h4>
+          <p><strong>Despliega TODO el contenido</strong> al stage destino.</p>
+          <p><strong>Cuándo</strong>: la primera vez que despliegas, en un refactor big-bang, o para un sync completo (la fuente es la source of truth).</p>
+          <p>⚠️ <strong>Sobrescribe</strong> los paired items del destino.</p>
+
+          <h4>Selective deployment ⭐</h4>
+          <p><strong>Seleccionas qué contenido desplegar</strong> al stage destino. Control fino.</p>
+          <p><strong>Cuándo</strong>: solo quieres promover ciertos items nuevos, haces cambios pequeños incrementales, o quieres mantener sin cambios los items existentes en el destino.</p>
+
+          <h4>Backward deployment</h4>
+          <p><strong>Despliega contenido de un stage POSTERIOR a uno ANTERIOR</strong> del pipeline. <strong>Ejemplo</strong>: promover contenido de <strong>Production a Development</strong> (para depurar o para "resetear" dev).</p>
+
+          <div class="note note--warning">
+            ⚠️ <strong>Limitación crítica:</strong> <em>"Currently, backward deployment is only possible when the target stage is EMPTY"</em> (sin workspace asignado). Es decir: no puedes hacer backward deployment si el stage destino ya tiene un workspace con contenido.
+          </div>
+
+          <h4>Paired items</h4>
+          <p><strong>Concepto clave</strong>: al desplegar contenido, Fabric identifica los items <strong>emparejados entre stages</strong> (el mismo item que existe en varias stages). Al desplegar:</p>
+          <ul>
+            <li>Los <strong>paired items del destino se sobrescriben</strong>.</li>
+            <li>Los <strong>items nuevos se crean</strong>.</li>
+            <li>Los <strong>items del destino que no están en el origen se mantienen</strong> (a menos que especifiques borrarlos).</li>
+          </ul>
+
+          <h4>Review y notes</h4>
+          <p>Antes de desplegar puedes <strong>revisar tu deployment</strong> (ver qué se va a cambiar) y <strong>dejar una nota</strong> documentando el porqué del deployment.</p>
+          <p>El <strong>deployment history</strong> guarda cada deployment con fecha, usuario, items desplegados y notas. Útil para <strong>auditoría y rollback</strong>.</p>
+        </article>
+
+        <!-- ============ 18. GIT + DP ============ -->
+        <div class="category-header" id="git-plus-dp">
+          <span class="category-header__icon">🎨</span>
+          <h2 class="category-header__title">18. Combinar Git + deployment pipelines</h2>
+        </div>
+
+        <article class="concept-card">
+          <p><strong>Patrón muy examinable</strong>: cómo combinar ambas herramientas.</p>
+
+          <h4>El patrón recomendado</h4>
+          <ol>
+            <li>Conectar <strong>solo el Development workspace a Git</strong>.</li>
+            <li>Git integration para <strong>version control durante el desarrollo</strong>.</li>
+            <li>Deployment pipelines para <strong>la promoción a Test y Production</strong>.</li>
+          </ol>
+          <p><strong>Beneficio</strong>: evita <strong>posibles conflictos de sincronización con Git</strong> al desplegar contenido a través de múltiples stages.</p>
+
+          <h4>Workflow completo</h4>
+          <pre><code class="language-plaintext">┌─────────────────────────────────────────────────┐
+│              GIT REPOSITORY                     │
+│   ┌───────────┐         ┌────────────┐          │
+│   │  feat-A   │         │  feat-B    │          │
+│   └─────┬─────┘         └─────┬──────┘          │
+│         │  PR                  │  PR            │
+│         ↓                      ↓                │
+│         ┌──── main branch ─────┐                │
+│                    ↕                            │
+└────────────────────┼────────────────────────────┘
+                     │ Git sync
+                     ↓
+┌────────────────────────────────────────────────┐
+│   Dev workspace (Git connected)                │
+└────────────────────────────────────────────────┘
+                     │ Deployment pipeline (deploy button)
+                     ↓
+┌────────────────────────────────────────────────┐
+│   Test workspace                                │
+└────────────────────────────────────────────────┘
+                     │ Deployment pipeline
+                     ↓
+┌────────────────────────────────────────────────┐
+│   Prod workspace                                │
+└────────────────────────────────────────────────┘</code></pre>
+          <p><strong>Steps</strong>:</p>
+          <ol>
+            <li>Los developers trabajan en <strong>feature branches</strong> desde sus propios workspaces (branch out).</li>
+            <li>Merge a main vía <strong>PRs</strong>.</li>
+            <li>El Dev workspace <strong>se auto-sincroniza</strong> desde main.</li>
+            <li>El <strong>botón Deploy</strong> promueve Dev → Test.</li>
+            <li>Tras el testing, el <strong>botón Deploy</strong> promueve Test → Prod.</li>
+          </ol>
+
+          <h4>Otro patrón: solo Git</h4>
+          <p>Alternativa: <strong>cada workspace conectado a su propia branch</strong>:</p>
+          <ul>
+            <li>Dev workspace ↔ branch <code>dev</code></li>
+            <li>Test workspace ↔ branch <code>test</code></li>
+            <li>Prod workspace ↔ branch <code>main</code></li>
+          </ul>
+          <p>La <strong>promoción</strong> = merge de una branch a otra vía PRs.</p>
+          <p><strong>Pros</strong>: workflow Git-native, sin dependencia de los deployment pipelines de Fabric. <strong>Contras</strong>: setup más complejo, requiere disciplina de branching.</p>
+
+          <h4>Cuál elegir</h4>
+          <p><strong>Git + deployment pipelines (recomendado)</strong> cuando el equipo es mixto (data engineers + analistas), quieres deployment simple basado en UI, o la solución es mediana o pequeña.</p>
+          <p><strong>Solo branches de Git</strong> cuando el equipo es dev-heavy, tienes CI/CD enterprise con GitHub Actions o Azure Pipelines, o hay múltiples entornos complejos.</p>
+        </article>
+
+        <!-- ============ 19. DEPLOYMENT RULES ============ -->
+        <div class="category-header" id="deployment-rules">
+          <span class="category-header__icon">🎛️</span>
+          <h2 class="category-header__title">19. Deployment rules (legacy)</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>¿Qué son?</h3>
+          <p>Las <strong>deployment rules</strong> son el <strong>mecanismo original</strong> (introducido en el servicio de Power BI hace años) para la <strong>parametrización</strong> en los deployment pipelines.</p>
+          <p><strong>Uso típico</strong>: configurar un semantic model con una deployment rule para <strong>actualizar la ubicación de su data source</strong> al desplegar. <strong>Ejemplo</strong>: el semantic model en dev conecta a <code>dev-db</code>; al desplegar a test la regla lo cambia a <code>test-db</code>, y al desplegar a prod, a <code>prod-db</code>.</p>
+
+          <h4>Cómo funcionan</h4>
+          <p>Se definen a nivel <strong>stage</strong>: la regla dice "cuando despliegues A este stage, cambia X por Y". Hay tipos de reglas de conexión, de parámetros, etc.</p>
+
+          <div class="note note--warning">
+            🎯 <strong>Estado actual: legacy.</strong> Los deployment pipelines de Fabric <strong>siguen soportando deployment rules</strong>. Pero las <strong>variable libraries deberían ser tu PRIMERA OPCIÓN</strong> para parametrización, porque son la <strong>capability estratégica de Fabric</strong> para la configuración específica de entorno.
+            <br>Las deployment rules <strong>siguen funcionando</strong> pero son más limitadas, no integran tan bien con Git y tienen un diseño legacy.
+          </div>
+
+          <h4>Cuándo usar deployment rules</h4>
+          <p>Por compatibilidad con setups existentes que ya las usan, en casos muy específicos que las variable libraries no cubren, o durante una migración progresiva a variable libraries. Para proyectos nuevos → <strong>variable libraries siempre</strong>.</p>
+        </article>
+
+        <!-- ============ 20. VARIABLE LIBRARIES ============ -->
+        <div class="category-header" id="variable-libraries">
+          <span class="category-header__icon">🌟</span>
+          <h2 class="category-header__title">20. Variable libraries (moderno, recomendado)</h2>
+        </div>
+
+        <article class="concept-card">
+          <p><strong>Feature moderna y súper examinable</strong>. Este es EL mecanismo actual para la parametrización.</p>
+
+          <h3>¿Qué es una variable library?</h3>
+          <p>Una <strong>variable library</strong> es un <strong>tipo de workspace item</strong> que puedes crear, donde defines un <strong>conjunto de variables</strong>. Otros items del workspace (notebooks, pipelines, copy jobs, dataflows) pueden <strong>leer los valores de las variables desde la variable library</strong>. Esto permite <strong>evitar hardcodear settings de configuración</strong> que cambian entre entornos.</p>
+
+          <h4>El problema que resuelven</h4>
+          <p><strong>Sin variable library</strong>:</p>
+          <pre><code class="language-python"># Notebook hardcoded para dev
+database_server = 'devsql.database.windows.net'
+database_name = 'ProductSalesDev'</code></pre>
+          <p><strong>Con variable library</strong>:</p>
+          <pre><code class="language-python"># Notebook lee variables
+database_server = variables.get('database_server')
+database_name = variables.get('database_name')</code></pre>
+          <p>En cada stage, la variable library <strong>tiene distintos valores activos</strong> → mismo código, distinto comportamiento.</p>
+
+          <h4>Los 2 beneficios clave</h4>
+          <p><strong>A) Personalizar configuraciones</strong>: configurar el valor de la variable <strong>según el stage del release pipeline</strong>. Un <strong>ajuste único</strong> del <strong>value set activo</strong> por stage → se usa automáticamente el valor correcto. Ejemplos: cambiar la conexión de un item según el stage, cambiar a otro cloud data source según el stage, o ajustar la cantidad de datos de una query según el stage.</p>
+          <p><strong>B) Compartir configuraciones</strong>: una <strong>forma centralizada</strong> de gestionar configuraciones entre items del workspace. Si tienes varios lakehouses con shortcuts al mismo data source → una variable library con ese source como variable. <strong>Lo cambias una vez</strong> en la variable library, no en cada lakehouse.</p>
+
+          <h4>Estructura</h4>
+          <p>Una <strong>variable library</strong> contiene:</p>
+          <ul>
+            <li><strong>Variables definidas por el usuario</strong> con tipos (string, integer, boolean, etc.).</li>
+            <li><strong>Value sets</strong> — conjuntos alternativos de valores para distintos entornos.</li>
+            <li><strong>Active value set</strong> — cuál está activo en el workspace actual.</li>
+          </ul>
+
+          <div class="note note--tip">
+            🌷 <strong>Analogía kawaii:</strong> piénsalo como <strong>una app de traducción</strong>. Las <strong>variables</strong> son las frases ("hello", "goodbye"), los <strong>value sets</strong> son los idiomas (English, Español, Català) y el <strong>active value set</strong> es el idioma seleccionado. Tu app <strong>usa siempre las mismas variables</strong>, pero la <strong>traducción cambia según el idioma activo</strong>. Aquí igual: mismos nombres de variable, distintos valores según el entorno 🌍
+          </div>
+        </article>
+
+        <!-- ============ 21. VARIABLE TYPES ============ -->
+        <div class="category-header" id="variable-types">
+          <span class="category-header__icon">🎨</span>
+          <h2 class="category-header__title">21. Variable types y value sets</h2>
+        </div>
+
+        <article class="concept-card">
+          <h4>Standard types</h4>
+          <p>Puedes crear variables basadas en tipos estándar:</p>
+          <ul>
+            <li><strong>String</strong> — texto.</li>
+            <li><strong>Number</strong> — decimal.</li>
+            <li><strong>Integer</strong> — entero.</li>
+            <li><strong>DateTime</strong> — fecha y hora.</li>
+            <li><strong>GUID</strong> — identificador único global.</li>
+          </ul>
+
+          <h4>Reference variable types (¡importantes!)</h4>
+          <p><strong>A) Connection reference variables</strong> ⭐</p>
+          <ul>
+            <li><strong>Parametrizan conexiones</strong> para items de ETL.</li>
+            <li>Ejemplos: pipelines, shortcuts en un lakehouse.</li>
+            <li>Al editar el valor, la <strong>UI de Fabric muestra un item picker</strong> con las conexiones candidatas.</li>
+            <li><strong>Elimina los valores específicos del entorno</strong> de la definición del item.</li>
+          </ul>
+          <p><strong>Uso</strong>: un pipeline que conecta a una base de datos. En dev usa <code>conn_dev</code>, en prod usa <code>conn_prod</code>. La variable dice cuál usar.</p>
+          <p><strong>B) Item reference variables</strong> ⭐</p>
+          <ul>
+            <li><strong>Gestionan dependencias</strong> entre items de la misma solución.</li>
+            <li>Especialmente útiles cuando las dependencias <strong>cruzan workspaces</strong>.</li>
+            <li>Al editar, la <strong>UI de Fabric muestra un item picker</strong>.</li>
+          </ul>
+          <p><strong>Uso</strong>: un notebook del workspace staging necesita escribir output a un lakehouse del workspace presentation. La item reference variable parametriza el lakehouse destino.</p>
+
+          <h4>Value sets</h4>
+          <p><strong>Value set</strong> = <strong>conjunto alternativo de valores</strong> para un entorno específico.</p>
+          <pre><code class="language-plaintext">Variable library "MyLib":
+
+Variables:
+  - database_server (String)
+  - database_name (String)
+  - conn_id (Connection reference)
+
+Value sets:
+  - default:
+      database_server = "devsql.database.windows.net"
+      database_name = "ProductSalesDev"
+      conn_id = &lt;dev connection&gt;
+  - test:
+      database_server = "testsql.database.windows.net"
+      database_name = "ProductSalesTest"
+      conn_id = &lt;test connection&gt;
+  - prod:
+      database_server = "prodsql.database.windows.net"
+      database_name = "ProductSales"
+      conn_id = &lt;prod connection&gt;</code></pre>
+
+          <h4>Active value set</h4>
+          <p>Un <strong>value set</strong> se designa como <strong>"activo"</strong> por workspace → determina qué valores se usan <strong>en tiempo de ejecución</strong>.</p>
+          <p><strong>Workflow</strong>:</p>
+          <ol>
+            <li>Desplegar la variable library al workspace de test.</li>
+            <li><strong>Activar el value set "test"</strong> en el workspace de test.</li>
+            <li>Los items del workspace de test <strong>usan automáticamente los valores de test</strong>.</li>
+          </ol>
+
+          <h4>Diagrama mental</h4>
+          <pre><code class="language-plaintext">                 Variable Library
+                 (mismas variables)
+                        ↓
+        ┌───────────────┼───────────────┐
+        │               │               │
+   Dev workspace   Test workspace  Prod workspace
+        │               │               │
+   Active:         Active:         Active:
+   "default"       "test"          "prod"
+        │               │               │
+   dev values      test values     prod values</code></pre>
+          <p><strong>Misma library</strong>, valores distintos según el <strong>active value set</strong>.</p>
+
+          <div class="note note--tip">
+            🎯 <strong>Auto-activación por naming:</strong> feature poderosa con la librería <code>fabric-cicd</code>. Si el <strong>nombre del entorno</strong> coincide con el <strong>nombre del value set</strong>, este <strong>se auto-activa</strong>. Ejemplo: el deploy job pasa el entorno <code>test</code> → se auto-activa el value set <code>test</code>. Por eso <strong>mantén los nombres de value set iguales a los de entorno</strong> (dev, test, prod).
+          </div>
+        </article>
+
+        <!-- ============ 22. REST APIS ============ -->
+        <div class="category-header" id="rest-apis">
+          <span class="category-header__icon">🔌</span>
+          <h2 class="category-header__title">22. Fabric REST APIs para CI/CD</h2>
+        </div>
+
+        <article class="concept-card">
+          <h4>Por qué usar APIs</h4>
+          <p>Las <strong>Fabric REST APIs</strong> permiten <strong>automatizar procedimientos y procesos de Fabric</strong>, mejorando la eficiencia y la productividad.</p>
+          <p><strong>Ventajas</strong>:</p>
+          <ul>
+            <li>✅ <strong>Automatizar procesos repetitivos</strong> con consistencia.</li>
+            <li>✅ <strong>Integración fluida</strong> con otros sistemas y aplicaciones.</li>
+            <li>✅ <strong>Data pipeline eficiente y simplificado</strong>.</li>
+          </ul>
+
+          <h4>2 grupos de APIs para CI/CD</h4>
+          <p><strong>A) Deployment pipelines REST APIs</strong>: gestionar los deployment pipelines, listar stages, desplegar contenido, etc.</p>
+          <p><strong>B) Git REST APIs</strong>: gestionar la Git integration — commit, update, status.</p>
+
+          <h4>Operaciones típicas vía API</h4>
+          <p><strong>Deployment pipelines</strong>:</p>
+          <ul>
+            <li><strong>List Deployment Pipeline Stage Items</strong> — items soportados del workspace asignado al stage.</li>
+            <li><strong>Deploy Stage Content</strong> — desplegar los items del stage especificado.</li>
+            <li>Ver el deployment history.</li>
+          </ul>
+          <p><strong>Git</strong>:</p>
+          <ul>
+            <li><strong>Commit</strong> de los cambios del workspace a la remote branch conectada.</li>
+            <li><strong>Update workspace</strong> con los commits pusheados a la branch conectada.</li>
+            <li><strong>Git status API</strong> — ver los items con cambios entrantes y los que no se han commiteado.</li>
+          </ul>
+
+          <h4>Ejemplo mental</h4>
+          <p>Con las REST APIs puedes hacer <strong>auto-deploy</strong> cuando se hace merge a main, <strong>auto-commit</strong> tras un data refresh programado, <strong>testing automatizado</strong> que ejecuta queries y valida resultados, o <strong>dashboards custom</strong> de estado de deployment.</p>
+
+          <h4>Autenticación</h4>
+          <p>Las APIs requieren autenticación con <strong>Microsoft Entra ID</strong>: <strong>service principals</strong> para automation y <strong>user tokens</strong> para scripts interactivos. Permisos típicos: <code>Workspace.ReadWrite.All</code>, <code>Item.ReadWrite.All</code>.</p>
+        </article>
+
+        <!-- ============ 23. FABRIC-CICD ============ -->
+        <div class="category-header" id="fabric-cicd-lib">
+          <span class="category-header__icon">🐍</span>
+          <h2 class="category-header__title">23. fabric-cicd Python library</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>¿Qué es?</h3>
+          <p><strong><code>fabric-cicd</code></strong> = librería Python de Microsoft que <strong>simplifica los workflows de CI/CD</strong> para Fabric. Es <strong>el approach recomendado</strong> para la automation moderna.</p>
+
+          <h4>Instalación</h4>
+          <pre><code class="language-bash">pip install fabric-cicd</code></pre>
+          <p>Se puede instalar <strong>on-demand</strong> en pipelines de GitHub Actions o Azure DevOps.</p>
+
+          <h4>Configuración</h4>
+          <p>Un <strong>fichero de config</strong> (<code>deploy.yml</code>) define los entornos destino y sus workspaces:</p>
+          <pre><code class="language-yaml">environments:
+  test:
+    workspace_id: &lt;test-workspace-id&gt;
+  prod:
+    workspace_id: &lt;prod-workspace-id&gt;</code></pre>
+          <p>También puedes usar <code>workspace</code> (display name) en vez de <code>workspace_id</code>.</p>
+
+          <h4>Ejemplo Python mínimo</h4>
+          <pre><code class="language-python">from azure.identity import EnvironmentCredential
+from fabric_cicd import deploy_with_config
+
+# Auth como service principal
+credential = EnvironmentCredential()
+
+# Deploy job
+deploy_with_config(
+    token_credential=credential,
+    config_file_path='deploy.yml',
+    environment='test'
+)</code></pre>
+          <p>Pasas el parámetro <code>environment</code> → despliega a ese workspace destino.</p>
+
+          <div class="note note--tip">
+            ⭐ <strong>Gestión especial de las variable libraries:</strong> <code>fabric-cicd</code> las trata de forma especial:
+            <ol>
+              <li><strong>Siempre despliega las variable libraries primero</strong>, antes de los items que dependen de ellas.</li>
+              <li><strong>Auto-activa los value sets</strong> que coinciden con el nombre del entorno: entorno <code>test</code> → value set <code>test</code>; entorno <code>prod</code> → value set <code>prod</code>.</li>
+            </ol>
+            <strong>Requisito</strong>: los nombres de los value sets <strong>deben coincidir con los nombres de entorno</strong>.
+          </div>
+
+          <h4>Features avanzadas</h4>
+          <p><code>fabric-cicd</code> soporta:</p>
+          <ul>
+            <li>✅ Orquestación de deployment integrada.</li>
+            <li>✅ Parametrización.</li>
+            <li>✅ <strong>Post-deploy actions</strong> (llamar a las Fabric REST APIs tras el deploy).</li>
+            <li>✅ <strong>Orphan control</strong> — borrar items cuando Git ya no contiene su definición fuente.</li>
+            <li>✅ <strong>Variables dinámicas</strong> — por ejemplo <code>$sqlendpoint</code> de un lakehouse.</li>
+          </ul>
+
+          <h4>Post-deploy actions</h4>
+          <p>Puedes configurar <strong>post-deploy actions</strong> que ejecutan scripts después del deploy: crear shortcuts, ejecutar notebooks, refrescar datasets o notificar a Teams/Slack.</p>
+        </article>
+
+        <!-- ============ 24. BULK APIS ============ -->
+        <div class="category-header" id="bulk-apis">
+          <span class="category-header__icon">📦</span>
+          <h2 class="category-header__title">24. Bulk Import/Export APIs</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>¿Qué son?</h3>
+          <p><strong>Bulk Import Item Definitions API</strong> y <strong>Bulk Export Item Definitions API</strong> (<strong>preview</strong>). Permiten <strong>sincronizar múltiples items a escala</strong>, hacer <strong>import/export</strong> de los items del workspace en batch, y trabajar con <strong>paquetes JSON de item-definition</strong> que puedes persistir, mover e importar.</p>
+
+          <h4>Cuándo usar bulk APIs vs fabric-cicd</h4>
+          <p><strong>Prefiere <code>fabric-cicd</code></strong> para el <strong>deployment CI/CD estándar de Fabric</strong>, por sus beneficios integrados: orquestación, parametrización, post-deploy y orphan control.</p>
+          <p><strong>Prefiere las Bulk APIs</strong> para la <strong>integración con un Git provider no soportado</strong> (ej: GitLab), para <strong>backup, clonado o migración cross-tenant</strong>, o para scripts custom que necesitan control total.</p>
+
+          <h4>Trade-offs</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th></th><th>fabric-cicd</th><th>Bulk APIs</th></tr></thead>
+              <tbody>
+                <tr><td>Parametrización</td><td>✅ Integrada</td><td>Requiere código custom</td></tr>
+                <tr><td>Post-deploy actions</td><td>✅ Integradas</td><td>Requiere llamadas REST custom</td></tr>
+                <tr><td>Orphan control</td><td>✅ Integrado</td><td>Manual</td></tr>
+                <tr><td>Variables dinámicas</td><td>✅ (ej: <code>$sqlendpoint</code>)</td><td>Gestión manual</td></tr>
+                <tr><td>Migración cross-tenant</td><td>⚠️ Limitada</td><td>✅ Muy buena</td></tr>
+                <tr><td>Soporte GitLab</td><td>❌</td><td>✅ (implementación custom)</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h4>Ejemplo: caso GitLab</h4>
+          <p>Si tu equipo usa <strong>GitLab</strong> (no soportado nativamente por la Git integration de Fabric):</p>
+          <ol>
+            <li><strong>Bulk Export API</strong> → extraer las definiciones JSON de los items del workspace.</li>
+            <li>Commitear el JSON a GitLab.</li>
+            <li>Cuando quieras desplegar → <strong>Bulk Import API</strong> con el JSON del commit de GitLab.</li>
+          </ol>
+          <p>Sirve como equivalente de <strong>Commit to Git</strong> y <strong>Update from Git</strong>.</p>
+        </article>
+
+        <!-- ============ 25. BRANCHING STRATEGIES ============ -->
+        <div class="category-header" id="branching-strategies">
+          <span class="category-header__icon">🌳</span>
+          <h2 class="category-header__title">25. GitFlow vs Trunk-based development</h2>
+        </div>
+
+        <article class="concept-card">
+          <h4>Las 2 estrategias principales</h4>
+          <p><strong>Fabric CI/CD soporta ambas</strong>:</p>
+          <p><strong>A) GitFlow</strong></p>
+          <ul>
+            <li><strong>Modelo de branching estructurado</strong>.</li>
+            <li>Branches de larga vida: <code>main</code>, <code>develop</code>, <code>release</code>, <code>hotfix</code>.</li>
+            <li>Feature branches → merge a <code>develop</code> → merge a <code>release</code> → merge a <code>main</code>.</li>
+            <li><strong>Más ceremonial</strong> y estructurado.</li>
+          </ul>
+          <p><strong>B) Trunk-based development</strong></p>
+          <ul>
+            <li><strong>Una única main branch</strong> (trunk).</li>
+            <li>Feature branches de vida corta.</li>
+            <li><strong>Integración continua frecuente</strong>.</li>
+            <li><strong>Menos overhead</strong>.</li>
+          </ul>
+
+          <h4>Cuándo cada uno</h4>
+          <p><strong>GitFlow</strong> ✅ con equipos grandes, <strong>ciclos de release largos</strong>, varias versiones concurrentes en soporte, o entornos enterprise con procesos de aprobación complejos.</p>
+          <p><strong>Trunk-based</strong> ✅ con un enfoque de <strong>DevOps moderno</strong>, deploys frecuentes (varias veces al día), un equipo disciplinado con feature flags, o ambición de continuous delivery.</p>
+
+          <div class="note note--practice">
+            📌 <strong>En Fabric:</strong> ambas funcionan bien; elige según la cultura del equipo y la complejidad del proyecto. <strong>Recomendación</strong>: para <strong>la mayoría de equipos de Fabric</strong>, <strong>trunk-based es más apropiado</strong> — Fabric CI/CD está diseñado para ciclos cortos.
+          </div>
+
+          <h4>Feature branches de vida corta</h4>
+          <p><strong>Best practice independientemente de la estrategia</strong>: <strong>feature branches de vida corta</strong>. Lo ideal son <strong>días</strong>, no semanas. <strong>Borra las feature branches tras los PRs</strong> para mantenerlas cortas, y <strong>recicla los feature workspaces</strong> entre varias feature branches para equipos dedicados.</p>
+        </article>
+
+        <!-- ============ 26. BEST PRACTICES ============ -->
+        <div class="category-header" id="best-practices">
+          <span class="category-header__icon">🎨</span>
+          <h2 class="category-header__title">26. Best practices oficiales</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>Proceso de desarrollo (Continuous Integration)</h3>
+          <ol>
+            <li>Crear el <strong>repositorio Git</strong> y configurar las branches según la estrategia elegida (GitFlow o trunk-based).</li>
+            <li>Crear una <strong>única fuente de verdad</strong> en la <strong>integration branch</strong> con las definiciones de los items.</li>
+            <li>Crear la <strong>conexión Git</strong> entre el dev workspace y la integration branch.</li>
+            <li>Crear las conexiones Git con la opción <strong>Git folder</strong> para separar las carpetas de definiciones de items de otros ficheros del workflow.</li>
+            <li>Para soluciones multi-workspace, usar <strong>Git folder settings únicos</strong> para conectar todos los workspaces a una única branch de Git.</li>
+            <li>Configurar la <strong>política de la integration branch</strong> para <strong>prohibir commits directos</strong> y <strong>requerir pull requests</strong> para hacer merge.</li>
+            <li>Usar las capacidades de <strong>branched workspaces</strong> para crear y gestionar feature branches y feature workspaces.</li>
+            <li><strong>Borrar las feature branches</strong> tras los PRs para mantenerlas cortas.</li>
+            <li><strong>Reciclar los feature workspaces</strong> entre varias feature branches para equipos dedicados.</li>
+            <li>Revisar las <strong>estructuras de definición de items</strong> para entender qué ficheros requiere o soporta cada tipo de item.</li>
+            <li>Para <strong>notebooks</strong>, habilitar el <strong>auto-binding</strong> añadiendo <code>notebook-settings.json</code> a su definición.</li>
+            <li>Para items que <strong>no soportan auto-binding</strong>, escribir <strong>post-sync scripts</strong> para restablecer las relaciones.</li>
+          </ol>
+
+          <h3>Proceso de release (Continuous Deployment)</h3>
+          <ol>
+            <li>Configurar el <strong>repo Git con variables</strong> (ej: workspace IDs, Microsoft Entra IDs).</li>
+            <li>Configurar el <strong>repo Git con secrets</strong> (ej: credenciales de autenticación del service principal).</li>
+            <li>Usar <strong><code>fabric-cicd</code></strong> y su soporte de <strong>deployment basado en configuración</strong>.</li>
+            <li>Configurar los <strong>nombres de entorno de <code>fabric-cicd</code> para que coincidan con los nombres de los value sets</strong> de la variable library, y habilitar así la <strong>auto-activación</strong>.</li>
+            <li>Usar el <strong>soporte de parametrización</strong> de <code>fabric-cicd</code> para actualizar los settings específicos de entorno.</li>
+            <li>Cuando sea posible, usar <strong>pull requests</strong> para configurar procesos de aprobación manual de los deployment jobs.</li>
+            <li>Al usar <strong>trunk-based development</strong>, crear entornos en el repositorio host para configurar los procesos de aprobación manual.</li>
+          </ol>
+
+          <h3>Parametrización de settings específicos de entorno</h3>
+          <ol>
+            <li>Determinar qué items contienen settings con valores específicos de entorno (rutas de data source, connection IDs).</li>
+            <li>Crear una <strong>variable library</strong> y añadir <strong>variables</strong> para parametrizar esos settings.</li>
+            <li>Actualizar los settings de los items para que <strong>lean las variables</strong> de la variable library.</li>
+            <li>Usar <strong>connection reference variables</strong> para parametrizar las conexiones a data sources externos.</li>
+            <li>Usar <strong>item reference variables</strong> en soluciones multi-workspace para gestionar las dependencias entre items.</li>
+            <li>Extender la variable library creando <strong>value sets</strong> para los entornos de testing y producción.</li>
+          </ol>
+
+          <h3>Estrategia de orquestación de datos</h3>
+          <ol>
+            <li>Implementar la <strong>arquitectura medallion</strong> con items lakehouse como contenedores de almacenamiento (bronze/silver/gold).</li>
+            <li>Implementar la lógica ETL con items como notebooks, pipelines, copy jobs, dataflows y user-defined functions.</li>
+            <li>Exponer un <strong>único pipeline o notebook de nivel superior</strong> para ejecutar el procesamiento ETL end-to-end.</li>
+            <li>Escribir un <strong>post-deploy script</strong> para automatizar la ejecución de ese pipeline de nivel superior tras el deployment.</li>
+            <li>Configurar los items de ETL con <strong>scheduled jobs</strong> vía ficheros <code>.schedules</code> en las definiciones de los items.</li>
+            <li>Gestionar los cambios de schema de las tablas del lakehouse con lógica de gestión de tablas en notebooks.</li>
+            <li>Gestionar los cambios de schema del warehouse con el tooling de <strong>SqlPackage</strong> y el <strong>Data-tier Application Framework</strong>.</li>
+          </ol>
+        </article>
+
+        <!-- ============ 27. TRAMPAS ============ -->
+        <div class="category-header" id="trampas">
+          <span class="category-header__icon">⚠️</span>
+          <h2 class="category-header__title">27. Trampas típicas y confusiones frecuentes</h2>
+        </div>
+
+        <article class="concept-card">
+          <ul class="trap-list">
+            <li><strong class="trap-title">Trampa 1: "Git integration y deployment pipelines son lo mismo"</strong>
+              ❌ <strong>Distintos</strong>. Git = version control (BYO Git). Deployment pipelines = CI/CD integrado que mueve items entre workspaces. <strong>Se usan juntos</strong>.</li>
+            <li><strong class="trap-title">Trampa 2: "Puedo cambiar el número de stages después de crear el pipeline"</strong>
+              ❌ <strong>No</strong>. El número de stages es <strong>permanente</strong>. Piénsalo bien al crearlo.</li>
+            <li><strong class="trap-title">Trampa 3: "Solo puedo tener 3 stages en un deployment pipeline"</strong>
+              ❌ Puedes tener <strong>2-10 stages</strong>. Por defecto son 3, pero son configurables.</li>
+            <li><strong class="trap-title">Trampa 4: "El backward deployment siempre funciona"</strong>
+              ❌ <strong>Solo cuando el stage destino está VACÍO</strong> (sin workspace asignado). Si tiene workspace, actualmente no funciona.</li>
+            <li><strong class="trap-title">Trampa 5: "Las deployment rules son la mejor forma de parametrización"</strong>
+              ❌ Son <strong>legacy</strong>. Las <strong>variable libraries son la capability estratégica de Fabric</strong> y la primera opción actual.</li>
+            <li><strong class="trap-title">Trampa 6: "La variable library es opcional"</strong>
+              ❌ Es <strong>muy recomendable</strong>. Sin ella hardcodeas todo → mantenimiento de pesadilla.</li>
+            <li><strong class="trap-title">Trampa 7: "Un workspace puede estar en múltiples deployment pipelines"</strong>
+              ❌ <strong>Un workspace en un solo pipeline</strong> a la vez.</li>
+            <li><strong class="trap-title">Trampa 8: "Puedo mezclar Git providers entre workspaces del mismo pipeline"</strong>
+              ❌ En la práctica, mantén <strong>un provider consistente</strong> (GitHub o Azure DevOps).</li>
+            <li><strong class="trap-title">Trampa 9: "GitHub y Azure DevOps son equivalentes en Fabric"</strong>
+              ❌ Similares, pero <strong>Azure DevOps es el recomendado</strong> por tener menos limitaciones actualmente.</li>
+            <li><strong class="trap-title">Trampa 10: "El full deployment siempre es mejor"</strong>
+              ❌ Puede ser <strong>destructivo</strong> al sobrescribir los paired items. El <strong>selective deployment</strong> es más seguro para cambios incrementales.</li>
+            <li><strong class="trap-title">Trampa 11: "El value set activo se configura una vez y ya"</strong>
+              ✅ Correcto en cierto sentido: configuras el activo por workspace <strong>una vez</strong> y luego los items lo usan automáticamente. Pero si cambias el value set activo, el comportamiento de los items se actualiza automáticamente.</li>
+            <li><strong class="trap-title">Trampa 12: "fabric-cicd es solo para uso avanzado"</strong>
+              ❌ Es el <strong>approach recomendado por Microsoft</strong> para la automation. Perfectamente accesible.</li>
+            <li><strong class="trap-title">Trampa 13: "Los nombres de value set pueden ser cualquier cosa"</strong>
+              ⚠️ <strong>Deben coincidir con los nombres de entorno</strong> en fabric-cicd para la auto-activación. Best practice: nombres consistentes (dev, test, prod).</li>
+            <li><strong class="trap-title">Trampa 14: "Puedo commitear directamente a main"</strong>
+              ❌ Best practice: la <strong>política de la integration branch prohíbe los commits directos</strong> y requiere PRs.</li>
+            <li><strong class="trap-title">Trampa 15: "Las Fabric REST APIs son para casos muy específicos"</strong>
+              ❌ Son <strong>útiles para muchos escenarios</strong> de automation: integraciones CI/CD, monitorización, UIs custom.</li>
+            <li><strong class="trap-title">Trampa 16: "Puedo modificar el logicalId libremente"</strong>
+              ❌ <strong>NUNCA modifiques el <code>logicalId</code></strong>. Es una propiedad interna; modificarlo puede causar comportamientos impredecibles.</li>
+            <li><strong class="trap-title">Trampa 17: "Las Bulk APIs son mejores que fabric-cicd"</strong>
+              ❌ <strong>fabric-cicd es lo preferido</strong> para escenarios estándar. Las Bulk APIs, para casos específicos (GitLab, cross-tenant).</li>
+            <li><strong class="trap-title">Trampa 18: "El auto-rebinding lo maneja todo automáticamente"</strong>
+              ⚠️ Maneja <strong>la mayoría</strong> de las relaciones entre items. Los casos límite pueden requerir <strong>post-sync scripts</strong>.</li>
+            <li><strong class="trap-title">Trampa 19: "Los feature workspaces son permanentes"</strong>
+              ❌ Best practice: <strong>de vida corta</strong>. Recíclalos entre features y bórralos cuando ya no hagan falta.</li>
+          </ul>
+        </article>
+
+        <!-- ============ 28. COMPARATIVAS ============ -->
+        <div class="category-header" id="comparativas">
+          <span class="category-header__icon">🆚</span>
+          <h2 class="category-header__title">28. Comparativas clave (chuleta)</h2>
+        </div>
+
+        <article class="concept-card">
+          <h4>Git integration vs Deployment pipelines</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th></th><th>Git integration</th><th>Deployment pipelines</th></tr></thead>
+              <tbody>
+                <tr><td>Propósito</td><td>Version control</td><td>Promoción de items entre stages</td></tr>
+                <tr><td>Provider</td><td>GitHub / Azure DevOps (BYO Git)</td><td>Integrado en Fabric</td></tr>
+                <tr><td>Trigger</td><td>Commits, PRs</td><td>Botón Deploy / API</td></tr>
+                <tr><td>Scope</td><td>Workspace ↔ branch</td><td>Stage → stage</td></tr>
+                <tr><td>Combinar</td><td colspan="2">✅ <strong>Sí, típicamente se combinan</strong></td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h4>Deployment modes</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th></th><th>Full</th><th>Selective</th><th>Backward</th></tr></thead>
+              <tbody>
+                <tr><td>Contenido</td><td>Todo</td><td>Items seleccionados</td><td>Desde un stage posterior</td></tr>
+                <tr><td>Uso típico</td><td>Primer deploy, sync completo</td><td>Cambios incrementales</td><td>Debugging, resetear dev</td></tr>
+                <tr><td>Sobrescribe paired items</td><td>✅</td><td>✅ (los seleccionados)</td><td>✅</td></tr>
+                <tr><td>Requiere destino vacío</td><td>❌</td><td>❌</td><td>✅ <strong>Sí</strong></td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h4>Variable libraries vs Deployment rules</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th></th><th>Variable libraries ⭐</th><th>Deployment rules (legacy)</th></tr></thead>
+              <tbody>
+                <tr><td>Estado</td><td><strong>Recomendado</strong></td><td>Legacy (aún soportado)</td></tr>
+                <tr><td>Scope</td><td>Workspace-wide</td><td>Por stage</td></tr>
+                <tr><td>Types</td><td>String, Number, Integer, DateTime, GUID, Connection ref, Item ref</td><td>Limitados</td></tr>
+                <tr><td>Value sets</td><td>✅ (múltiples)</td><td>❌</td></tr>
+                <tr><td>Auto-activación</td><td>✅ (con fabric-cicd)</td><td>❌</td></tr>
+                <tr><td>Git integration</td><td>✅ Nativa</td><td>Limitada</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h4>Variable types</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Type</th><th>Uso</th></tr></thead>
+              <tbody>
+                <tr><td><strong>String</strong></td><td>Valores de texto</td></tr>
+                <tr><td><strong>Number</strong></td><td>Decimal</td></tr>
+                <tr><td><strong>Integer</strong></td><td>Entero</td></tr>
+                <tr><td><strong>DateTime</strong></td><td>Fecha/hora</td></tr>
+                <tr><td><strong>GUID</strong></td><td>Identificadores únicos</td></tr>
+                <tr><td><strong>Connection reference</strong></td><td>Parametrizar conexiones</td></tr>
+                <tr><td><strong>Item reference</strong></td><td>Gestionar dependencias entre items</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h4>Approaches de automation</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Tool</th><th>Mejor para</th></tr></thead>
+              <tbody>
+                <tr><td><strong>fabric-cicd</strong> ⭐</td><td>CI/CD estándar, recomendado</td></tr>
+                <tr><td><strong>Bulk Import/Export APIs</strong></td><td>GitLab, cross-tenant, custom</td></tr>
+                <tr><td><strong>Fabric REST APIs</strong></td><td>Integraciones custom, monitorización</td></tr>
+                <tr><td><strong>Fabric CLI</strong></td><td>Automation interactiva, scripts</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h4>Branching strategies</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th></th><th>GitFlow</th><th>Trunk-based</th></tr></thead>
+              <tbody>
+                <tr><td>Estructura</td><td>Compleja, múltiples branches</td><td>Simple, main + features cortas</td></tr>
+                <tr><td>Ceremonia</td><td>Alta</td><td>Baja</td></tr>
+                <tr><td>Mejor para</td><td>Equipos grandes, releases complejos</td><td>DevOps moderno, deploy frecuente</td></tr>
+                <tr><td>Recomendación Fabric</td><td>Enterprise legacy</td><td><strong>Recomendado para equipos modernos</strong></td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h4>Los 4 pilares del CI/CD en Fabric</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Pilar</th><th>Herramienta</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Version control</strong></td><td>Git integration (GitHub/Azure DevOps)</td></tr>
+                <tr><td><strong>Parametrización de entorno</strong></td><td>Variable libraries</td></tr>
+                <tr><td><strong>Promoción de contenido</strong></td><td>Deployment pipelines</td></tr>
+                <tr><td><strong>Automation</strong></td><td>fabric-cicd + REST APIs</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h4>Deployment pipeline stages</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Aspecto</th><th>Detalle</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Default</strong></td><td>3 (Dev, Test, Prod)</td></tr>
+                <tr><td><strong>Mínimo</strong></td><td>2</td></tr>
+                <tr><td><strong>Máximo</strong></td><td>10</td></tr>
+                <tr><td><strong>Renombrables</strong></td><td>✅ Sí</td></tr>
+                <tr><td><strong>Borrables</strong></td><td>✅ Sí (durante el setup)</td></tr>
+                <tr><td><strong>Cambiar el número después</strong></td><td>❌ <strong>No</strong></td></tr>
+                <tr><td><strong>Assign workspace</strong></td><td>✅ Sí (cualquier workspace)</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </article>
+
+        <!-- ============ 29. FUENTES ============ -->
+        <div class="category-header" id="fuentes">
+          <span class="category-header__icon">📚</span>
+          <h2 class="category-header__title">29. Fuentes oficiales consultadas</h2>
+        </div>
+
+        <article class="concept-card">
+          <ul class="sources-list">
+            <li>Módulo Learn: <a href="https://learn.microsoft.com/training/modules/implement-cicd-in-fabric/" target="_blank" rel="noopener noreferrer">implement-cicd-in-fabric</a></li>
+            <li>CI/CD concepts and best practices: <a href="https://learn.microsoft.com/fabric/fundamentals/understand-best-practices-fabric-cicd" target="_blank" rel="noopener noreferrer">understand-best-practices-fabric-cicd</a></li>
+            <li>Git integration overview: <a href="https://learn.microsoft.com/fabric/cicd/git-integration/intro-to-git-integration" target="_blank" rel="noopener noreferrer">intro-to-git-integration</a></li>
+            <li>Git get started: <a href="https://learn.microsoft.com/fabric/cicd/git-integration/git-get-started" target="_blank" rel="noopener noreferrer">git-get-started</a></li>
+            <li>Git integration process: <a href="https://learn.microsoft.com/fabric/cicd/git-integration/git-integration-process" target="_blank" rel="noopener noreferrer">git-integration-process</a></li>
+            <li>Branched workspace: <a href="https://learn.microsoft.com/fabric/cicd/git-integration/branched-workspace" target="_blank" rel="noopener noreferrer">branched-workspace</a></li>
+            <li>Granular compare: <a href="https://learn.microsoft.com/fabric/cicd/git-integration/granular-compare" target="_blank" rel="noopener noreferrer">granular-compare</a></li>
+            <li>Deployment pipelines: <a href="https://learn.microsoft.com/fabric/cicd/deployment-pipelines/intro-to-deployment-pipelines" target="_blank" rel="noopener noreferrer">intro-to-deployment-pipelines</a></li>
+            <li>Assign workspace to pipeline: <a href="https://learn.microsoft.com/fabric/cicd/deployment-pipelines/assign-pipeline" target="_blank" rel="noopener noreferrer">assign-pipeline</a></li>
+            <li>Deploy content: <a href="https://learn.microsoft.com/fabric/cicd/deployment-pipelines/deploy-content" target="_blank" rel="noopener noreferrer">deploy-content</a></li>
+            <li>Compare content in stages: <a href="https://learn.microsoft.com/fabric/cicd/deployment-pipelines/compare-pipeline-content" target="_blank" rel="noopener noreferrer">compare-pipeline-content</a></li>
+            <li>Variable library overview: <a href="https://learn.microsoft.com/fabric/cicd/variable-library/variable-library-overview" target="_blank" rel="noopener noreferrer">variable-library-overview</a></li>
+            <li>Variable types: <a href="https://learn.microsoft.com/fabric/cicd/variable-library/variable-types" target="_blank" rel="noopener noreferrer">variable-types</a></li>
+            <li>Item reference variable: <a href="https://learn.microsoft.com/fabric/cicd/variable-library/item-reference-variable-type" target="_blank" rel="noopener noreferrer">item-reference-variable-type</a></li>
+            <li>Value sets: <a href="https://learn.microsoft.com/fabric/cicd/variable-library/value-sets" target="_blank" rel="noopener noreferrer">value-sets</a></li>
+            <li>Variable library tutorial: <a href="https://learn.microsoft.com/fabric/cicd/variable-library/tutorial-variable-library" target="_blank" rel="noopener noreferrer">tutorial-variable-library</a></li>
+            <li>Deployment pipelines REST APIs: <a href="https://learn.microsoft.com/rest/api/fabric/core/deployment-pipelines" target="_blank" rel="noopener noreferrer">core/deployment-pipelines</a></li>
+            <li>Git REST APIs: <a href="https://learn.microsoft.com/rest/api/fabric/core/git" target="_blank" rel="noopener noreferrer">core/git</a></li>
+            <li>fabric-cicd library tutorial: <a href="https://learn.microsoft.com/fabric/cicd/tutorial-fabric-cicd-azure-devops" target="_blank" rel="noopener noreferrer">tutorial-fabric-cicd-azure-devops</a></li>
+            <li>Fabric CLI documentation: <a href="https://learn.microsoft.com/rest/api/fabric/articles/fabric-command-line-interface" target="_blank" rel="noopener noreferrer">fabric-command-line-interface</a></li>
+            <li>Manage deployment: <a href="https://learn.microsoft.com/fabric/cicd/manage-deployment" target="_blank" rel="noopener noreferrer">manage-deployment</a></li>
+            <li>CI/CD Data Factory pipelines: <a href="https://learn.microsoft.com/fabric/data-factory/cicd-pipelines" target="_blank" rel="noopener noreferrer">cicd-pipelines</a></li>
+            <li>Logical ID conflicts: <a href="https://learn.microsoft.com/fabric/cicd/git-integration/logical-id-conflict-resolution" target="_blank" rel="noopener noreferrer">logical-id-conflict-resolution</a></li>
+            <li>Conflict resolution: <a href="https://learn.microsoft.com/fabric/cicd/git-integration/conflict-resolution" target="_blank" rel="noopener noreferrer">conflict-resolution</a></li>
+            <li>Eventstream CI/CD: <a href="https://learn.microsoft.com/fabric/real-time-intelligence/event-streams/eventstream-cicd" target="_blank" rel="noopener noreferrer">eventstream-cicd</a></li>
+          </ul>
+        </article>
+
+        <div class="note note--next">
+          🚀 <strong>¡Módulo 14 completado!</strong> Ya sabes llevar tu solución de dev a producción con control de versiones y sin sustos. Sigue con el <a href="modulo-15.html">Módulo 15: Secure Data Access</a>. 🌸
+        </div>
+
+        <!-- Navegación del curso -->
+        <div class="course-nav">
+          <a href="modulo-13.html">
+            <span class="course-nav__label">← Anterior</span>
+            <span class="course-nav__title">Módulo 13 · GraphQL</span>
+          </a>
+          <a href="modulo-15.html" class="next">
+            <span class="course-nav__label">Siguiente →</span>
+            <span class="course-nav__title">Módulo 15 · Secure Data Access</span>
+          </a>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <button id="back-to-top" class="back-to-top" aria-label="Volver arriba" title="Volver arriba">↑</button>
+
+  <script src="https://cdn.jsdelivr.net/npm/i18next@23/dist/umd/i18next.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1/prism.min.js"></script>
+  <script src="../../../assets/js/theme.js"></script>
+  <script src="../../../assets/js/main.js"></script>
+  <script src="../../../assets/js/cursor.js"></script>
+</body>
+</html>

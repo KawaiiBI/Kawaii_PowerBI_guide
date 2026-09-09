@@ -1,0 +1,1426 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="DP-700 Módulo 13: API for GraphQL en Microsoft Fabric. Queries y mutations, schema autogenerado, SSO vs saved credentials, relationships, multi-source, stored procedures y MCP para AI agents.">
+  <title>DP-700 · Módulo 13: API for GraphQL | Power BI Guide by Kawaii BI</title>
+  <link rel="canonical" href="https://kawaiibi.es/topics/certificaciones/dp-700/modulo-13.html">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Kawaii Power BI Guide">
+  <meta property="og:locale" content="es_ES">
+  <meta property="og:title" content="DP-700 · Módulo 13: API for GraphQL | Power BI Guide by Kawaii BI">
+  <meta property="og:description" content="DP-700 Módulo 13: API for GraphQL en Fabric. Queries y mutations, autenticación SSO vs saved credentials, relationships y multi-source.">
+  <meta property="og:url" content="https://kawaiibi.es/topics/certificaciones/dp-700/modulo-13.html">
+  <meta property="og:image" content="https://kawaiibi.es/assets/images/og-banner.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="1200">
+  <meta property="og:image:alt" content="Sara Lozano Marti - Kawaii Power BI">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="DP-700 · Módulo 13: API for GraphQL | Power BI Guide by Kawaii BI">
+  <meta name="twitter:description" content="DP-700 Módulo 13: API for GraphQL en Fabric. Queries, mutations, autenticación y multi-source.">
+  <meta name="twitter:image" content="https://kawaiibi.es/assets/images/og-banner.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/prismjs@1/themes/prism-okaidia.min.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="../../../assets/css/main.css">
+  <link rel="stylesheet" href="../../../assets/css/themes.css">
+  <link rel="stylesheet" href="../../../assets/css/components.css">
+  <link rel="stylesheet" href="../../../assets/css/layout.css">
+
+  <style>
+    .topic-header { text-align: center; padding: 2.25rem 0 1.75rem; border-bottom: 2px solid var(--color-mauve); margin-bottom: 2rem; }
+    .topic-header__eyebrow { font-family: 'Fira Code', monospace; font-size: 0.8125rem; font-weight: 600; color: var(--color-coral); letter-spacing: 0.05em; }
+    .topic-header__icon { font-size: 3.5rem; margin: 0.5rem 0; display: block; }
+    .topic-header__title { font-size: clamp(1.75rem, 4vw, 2.25rem); font-weight: 800; color: var(--color-dark); margin-bottom: 0.625rem; line-height: 1.2; }
+    .topic-header__subtitle { font-size: 1rem; color: var(--color-slate); margin-bottom: 1.25rem; line-height: 1.55; max-width: 680px; margin-left: auto; margin-right: auto; }
+    .topic-header__levels { display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap; align-items: center; }
+
+    .toc { background: var(--color-rose); border-radius: var(--border-radius); padding: 1.25rem 1.5rem; margin-bottom: 2rem; border: 1.5px solid var(--color-mauve); }
+    .toc__title { font-size: 1rem; font-weight: 700; margin: 0 0 0.75rem; }
+    .toc__list { display: flex; flex-wrap: wrap; gap: 0.5rem; list-style: none; padding: 0; margin: 0; }
+    .toc__list a { font-size: 0.8125rem; color: var(--color-coral); text-decoration: none; padding: 0.25rem 0.625rem; background: var(--color-white); border-radius: 999px; border: 1px solid var(--color-mauve); }
+    .toc__list a:hover { background: var(--color-coral); color: #fff; }
+
+    .category-header { display: flex; align-items: center; gap: 0.75rem; margin: 2.5rem 0 1.25rem; padding: 0.875rem 1.25rem; background: var(--color-rose); border-radius: var(--border-radius-sm); border-left: 4px solid var(--color-coral); scroll-margin-top: 20px; }
+    .category-header__icon { font-size: 1.5rem; }
+    .category-header__title { font-size: 1.25rem; font-weight: 700; margin: 0; }
+
+    .concept-card { background: var(--color-white); border: 1.5px solid var(--color-mauve); border-radius: var(--border-radius); padding: 1.5rem 1.75rem; margin-bottom: 1.25rem; }
+    .concept-card h3 { font-size: 1.0625rem; font-weight: 700; color: var(--color-coral); margin: 0 0 0.6rem; }
+    .concept-card h4 { font-size: 0.9375rem; font-weight: 700; color: var(--color-dark); margin: 1.1rem 0 0.4rem; }
+    .concept-card p { font-size: 0.9375rem; line-height: 1.7; color: var(--color-dark); margin-bottom: 0.7rem; }
+    .concept-card ul, .concept-card ol { padding-left: 1.25rem; font-size: 0.9375rem; line-height: 1.75; color: var(--color-dark); margin: 0.4rem 0; }
+    .concept-card code { background: var(--color-blush); padding: 0.1em 0.4em; border-radius: 4px; font-family: 'Fira Code', monospace; font-size: 0.85em; color: var(--color-coral); }
+    .concept-card pre { margin: 0.75rem 0; }
+
+    .md-table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.84rem; }
+    .md-table th, .md-table td { border: 1px solid var(--color-mauve); padding: 0.5rem 0.7rem; text-align: left; vertical-align: top; }
+    .md-table th { background: var(--color-rose); font-weight: 700; color: var(--color-dark); }
+    .md-table tr:nth-child(even) td { background: var(--color-blush); }
+    .table-scroll { overflow-x: auto; }
+
+    .trap-list { list-style: none; padding: 0; margin: 0; }
+    .trap-list > li { background: var(--color-white); border: 1.5px solid var(--color-mauve); border-left: 4px solid var(--color-warning); border-radius: var(--border-radius-sm); padding: 0.875rem 1.125rem; margin-bottom: 0.75rem; font-size: 0.9375rem; line-height: 1.7; }
+    .trap-list strong.trap-title { display: block; color: var(--color-dark); margin-bottom: 0.25rem; }
+
+    .course-nav { display: flex; justify-content: space-between; gap: 1rem; margin-top: 2.5rem; flex-wrap: wrap; }
+    .course-nav a { flex: 1 1 220px; display: block; background: var(--color-white); border: 1.5px solid var(--color-mauve); border-radius: var(--border-radius); padding: 1rem 1.25rem; text-decoration: none; color: inherit; transition: var(--transition); }
+    .course-nav a:hover { border-color: var(--color-coral); box-shadow: var(--shadow-md); text-decoration: none; }
+    .course-nav__label { font-size: 0.75rem; color: var(--color-slate); text-transform: uppercase; letter-spacing: 0.05em; }
+    .course-nav__title { font-weight: 700; color: var(--color-coral); }
+    .course-nav a.next { text-align: right; }
+
+    .sources-list { font-size: 0.875rem; line-height: 1.9; word-break: break-word; }
+  </style>
+</head>
+<body>
+
+  <aside class="site-sidebar">
+    <div class="site-sidebar__profile">
+      <img src="../../../assets/images/avatar-sara.png" alt="Sara Lozano Martí" class="site-sidebar__avatar">
+      <p class="site-sidebar__name">Sara Lozano Martí</p>
+      <p class="site-sidebar__subtitle">Power BI Expert</p>
+    </div>
+    <nav class="site-sidebar__nav" aria-label="Navegación principal">
+      <ul>
+        <li><a href="../../../index.html" class="site-sidebar__link"><span class="site-sidebar__icon">🏠</span> Inicio</a></li>
+        <li><a href="../../dax.html" class="site-sidebar__link"><span class="site-sidebar__icon">⚡</span> Funciones DAX</a></li>
+        <li><a href="../../power-query.html" class="site-sidebar__link"><span class="site-sidebar__icon">🔄</span> Power Query</a></li>
+        <li><a href="../../lenguaje-m.html" class="site-sidebar__link"><span class="site-sidebar__icon">〽️</span> Lenguaje M</a></li>
+        <li><a href="../../modelado.html" class="site-sidebar__link"><span class="site-sidebar__icon">🗄️</span> Modelado</a></li>
+        <li><a href="../../conceptos-powerbi.html" class="site-sidebar__link"><span class="site-sidebar__icon">📊</span> Conceptos Power BI</a></li>
+        <li><a href="../../fabric.html" class="site-sidebar__link"><span class="site-sidebar__icon">🧵</span> Microsoft Fabric</a></li>
+        <li><a href="../../tmdl.html" class="site-sidebar__link"><span class="site-sidebar__icon">📝</span> TMDL</a></li>
+        <li><a href="../../diseno-ux.html" class="site-sidebar__link"><span class="site-sidebar__icon">🎨</span> Diseño y UX</a></li>
+        <li><a href="../../gobernanza.html" class="site-sidebar__link"><span class="site-sidebar__icon">🔒</span> Gobernanza</a></li>
+        <li><a href="../../certificaciones.html" class="site-sidebar__link is-active"><span class="site-sidebar__icon">🎓</span> Certificaciones</a></li>
+      </ul>
+    </nav>
+    <div class="site-sidebar__divider"></div>
+    <div class="site-sidebar__footer">
+      <a href="../../../quien-soy.html" class="site-sidebar__link site-sidebar__link--highlight"><span class="site-sidebar__icon">👩‍💻</span> ¿Quién soy?</a>
+      <div class="site-sidebar__social">
+        <a href="https://www.linkedin.com/in/saralozanomarti" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><img src="../../../assets/images/logo-linkedin.png" alt="LinkedIn" class="site-sidebar__social-icon"></a>
+        <a href="https://www.youtube.com/@KawaiiPowerBI" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><img src="../../../assets/images/logo-youtube.png" alt="YouTube" class="site-sidebar__social-icon"></a>
+        <a href="https://github.com/KawaiiBI" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><img src="../../../assets/images/logo-github.png" alt="GitHub" class="site-sidebar__social-icon"></a>
+      </div>
+      <div class="site-sidebar__logo-bottom"><img src="../../../assets/images/logo-kawaii.jpg" alt="Kawaii BI" class="site-sidebar__logo-img"></div>
+      <p class="site-sidebar__copyright">Power BI Guide 🌸<br>© 2026 Kawaii BI</p>
+    </div>
+  </aside>
+
+  <div class="page-wrapper">
+    <main class="main-content">
+      <div class="topic-page">
+
+        <nav class="breadcrumb" aria-label="Ruta de navegación">
+          <span class="breadcrumb__item"><a href="../../../index.html">🏠 Inicio</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item"><a href="../../certificaciones.html">Certificaciones</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item"><a href="../dp-700.html">DP-700</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item">Módulo 13</span>
+        </nav>
+
+        <header class="topic-header">
+          <span class="topic-header__eyebrow">DP-700 · MÓDULO 13</span>
+          <span class="topic-header__icon">🔮</span>
+          <h1 class="topic-header__title">Empezar con GraphQL en Microsoft Fabric</h1>
+          <p class="topic-header__subtitle">La forma moderna de exponer datos de Fabric a aplicaciones: schema autogenerado sin código, queries y mutations, SSO vs saved credentials, relationships y un solo endpoint para múltiples sources. 🌸</p>
+          <div class="topic-header__levels">
+            <span class="badge badge--intermediate">Intermedio</span>
+            <span class="badge badge--advanced">Avanzado</span>
+          </div>
+        </header>
+
+        <nav class="toc" aria-label="Índice del módulo">
+          <p class="toc__title">📑 En este módulo:</p>
+          <ul class="toc__list">
+            <li><a href="#objetivos">1. Objetivos y encaje</a></li>
+            <li><a href="#que-es-graphql">2. ¿Qué es GraphQL?</a></li>
+            <li><a href="#graphql-vs-rest">3. GraphQL vs REST</a></li>
+            <li><a href="#api-fabric">4. Fabric API for GraphQL</a></li>
+            <li><a href="#sources">5. Data sources soportados</a></li>
+            <li><a href="#queries-mutations">6. Queries y mutations</a></li>
+            <li><a href="#schema">7. GraphQL schema</a></li>
+            <li><a href="#auth">8. SSO vs saved credentials</a></li>
+            <li><a href="#crear">9. Crear un API</a></li>
+            <li><a href="#enable-disable">10. Enable/disable operations</a></li>
+            <li><a href="#relationships">11. Relationships</a></li>
+            <li><a href="#editor">12. GraphQL editor</a></li>
+            <li><a href="#query-examples">13. Query examples</a></li>
+            <li><a href="#mutation-examples">14. Mutation examples</a></li>
+            <li><a href="#multi-source">15. Multiple data sources</a></li>
+            <li><a href="#stored-procs">16. Stored procedures</a></li>
+            <li><a href="#schema-view">17. Schema view y explorer</a></li>
+            <li><a href="#conectar-apps">18. Conectar aplicaciones</a></li>
+            <li><a href="#entra">19. Microsoft Entra ID</a></li>
+            <li><a href="#generate-code">20. Generate code</a></li>
+            <li><a href="#mcp">21. MCP para AI agents</a></li>
+            <li><a href="#casos-uso">22. Casos de uso</a></li>
+            <li><a href="#trampas">23. Trampas típicas</a></li>
+            <li><a href="#comparativas">24. Comparativas clave</a></li>
+            <li><a href="#fuentes">25. Fuentes oficiales</a></li>
+          </ul>
+        </nav>
+
+        <!-- ============ 1. OBJETIVOS ============ -->
+        <div class="category-header" id="objetivos">
+          <span class="category-header__icon">🎯</span>
+          <h2 class="category-header__title">1. Objetivos y encaje en el DP-700</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>¿Qué te enseña este módulo?</h3>
+          <p>Este módulo cubre <strong>API for GraphQL en Fabric</strong> — la forma moderna de <strong>exponer datos de Fabric a aplicaciones</strong>. Los objetivos oficiales:</p>
+          <ol>
+            <li>Explicar los componentes principales de GraphQL en Fabric y cómo funcionan.</li>
+            <li>Crear un API for GraphQL en Fabric.</li>
+            <li>Entender cómo gestionar relationships.</li>
+            <li>Consultar datos usando el editor.</li>
+          </ol>
+
+          <h4>Peso en el examen DP-700</h4>
+          <p>GraphQL aparece principalmente en el <strong>Dominio 1</strong> (implementar y gestionar):</p>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Dominio</th><th>Cómo aparece</th></tr></thead>
+              <tbody>
+                <tr><td>Implement and manage (30-35%)</td><td><strong>API for GraphQL setup, autenticación, permisos, integraciones</strong></td></tr>
+                <tr><td>Ingest and transform (30-35%)</td><td>Exposición de múltiples data sources unificados</td></tr>
+                <tr><td>Monitor and optimize (30-35%)</td><td>Poco, pero puede aparecer en troubleshooting</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="note note--tip">
+            🎯 <strong>Qué es CRÍTICO dominar:</strong>
+            <ul>
+              <li><strong>Queries vs mutations</strong> (fundamental)</li>
+              <li><strong>SSO vs saved credentials</strong> (elegir según escenario)</li>
+              <li><strong>Data sources soportados</strong> (Warehouse, SQL DB, Lakehouse SQL endpoint, Mirrored DBs, Azure SQL DB)</li>
+              <li><strong>Multi-source queries</strong> (feature poderosa)</li>
+              <li><strong>Requisito de primary key</strong> para mutations</li>
+              <li>Requisito de autenticación con <strong>Microsoft Entra ID</strong></li>
+            </ul>
+          </div>
+
+          <div class="note note--tip">
+            🌸 <strong>Sobre GraphQL:</strong> si nunca lo has visto, no te asustes — es <strong>muy intuitivo</strong>. Es como decirle a la API "dame exactamente esto y nada más" con una sintaxis visual. Muy diferente a REST y muy poderoso 💕
+          </div>
+        </article>
+
+        <!-- ============ 2. QUÉ ES GRAPHQL ============ -->
+        <div class="category-header" id="que-es-graphql">
+          <span class="category-header__icon">🎨</span>
+          <h2 class="category-header__title">2. ¿Qué es GraphQL?</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>Definición</h3>
+          <p><strong>GraphQL</strong> es un <strong>query language para APIs</strong> que permite a las aplicaciones <strong>pedir exactamente los datos que necesitan</strong>. Creado por Facebook en 2012, open-sourced en 2015. Es el estándar moderno para APIs.</p>
+
+          <h4>Los 4 beneficios clave</h4>
+          <ol>
+            <li><strong>Strong type system</strong> — describe claramente la data disponible.</li>
+            <li><strong>Precise data fetching</strong> — evita el over-fetching pidiendo campos específicos.</li>
+            <li><strong>Backward compatibility</strong> — actualizaciones fáciles sin romper el código existente.</li>
+            <li><strong>Rich tooling</strong> — ecosistema enorme de developer tools.</li>
+          </ol>
+
+          <div class="note note--tip">
+            🍰 <strong>Analogía kawaii:</strong> imagina un restaurante. <strong>REST tradicional</strong> = menú fijo: pides "combinado 3" y te traen sopa + entrante + postre, <strong>recibes todo aunque solo quieras el postre</strong>. <strong>GraphQL</strong> = a la carta: pides "solo el postre de fresa con la salsa aparte" y <strong>recibes exactamente lo que pediste, ni más ni menos</strong> 🍨
+          </div>
+
+          <h4>Estructura básica de una query</h4>
+          <pre><code class="language-graphql">query {
+  productModels {
+    items {
+      ProductModelID
+      Name
+      ModifiedDate
+    }
+  }
+}</code></pre>
+          <p>Se lee: "de <code>productModels</code>, quiero <code>items</code> con solo <code>ProductModelID</code>, <code>Name</code> y <code>ModifiedDate</code>".</p>
+          <p>Sin GraphQL, quizás tendrías que llamar a <code>/api/productmodels</code> y recibirías <strong>20 campos</strong>, aunque solo necesites 3.</p>
+        </article>
+
+        <!-- ============ 3. GRAPHQL VS REST ============ -->
+        <div class="category-header" id="graphql-vs-rest">
+          <span class="category-header__icon">🆚</span>
+          <h2 class="category-header__title">3. GraphQL vs REST: por qué GraphQL</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>Los problemas típicos sin GraphQL</h3>
+          <p>Sin GraphQL, exponer data de Fabric a apps típicamente requiere:</p>
+          <p><strong>A) Direct database connections</strong></p>
+          <ul>
+            <li>Las apps conectan directo con SQL drivers (ODBC, JDBC).</li>
+            <li><strong>Acopla fuertemente</strong> el código a la BBDD.</li>
+            <li>Los cambios de schema <strong>rompen las apps</strong>.</li>
+            <li>Gestionar credenciales y drivers en cada app.</li>
+            <li>SQL queries embebidas en el código = difíciles de testear.</li>
+          </ul>
+          <p><strong>B) Custom REST APIs</strong></p>
+          <ul>
+            <li>Construir y mantener backend services (ASP.NET, Node.js).</li>
+            <li>Controller code, routing, data access layer.</li>
+            <li><strong>API versioning</strong> (v1, v2, v3) cuando cambia el schema.</li>
+            <li><strong>Over-fetching</strong> (traer 30 campos cuando quieres 3).</li>
+            <li><strong>Under-fetching</strong> (múltiples round trips para data relacionada → <strong>problema N+1</strong>).</li>
+          </ul>
+
+          <h4>Cómo GraphQL lo resuelve todo</h4>
+          <p><strong>Fabric API for GraphQL</strong>:</p>
+          <ol>
+            <li>✅ <strong>No hace falta código backend</strong> — Fabric autogenera schema, resolvers y endpoint.</li>
+            <li>✅ <strong>Pides exactamente lo que necesitas</strong> — campos específicos, sin over-fetching.</li>
+            <li>✅ <strong>Traes data relacionada en 1 request</strong> — recorriendo relationships (<strong>sin problema N+1</strong>).</li>
+            <li>✅ <strong>Schema evolution sin breaking changes</strong> — añades campos sin afectar a las queries existentes.</li>
+            <li>✅ <strong>Type safety y self-documenting</strong> — schema con introspección integrada.</li>
+            <li>✅ <strong>Acceso unificado a múltiples sources</strong> — query cross-source con un solo endpoint.</li>
+          </ol>
+
+          <h4>Comparativa rápida</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th></th><th>REST</th><th>GraphQL</th></tr></thead>
+              <tbody>
+                <tr><td>Endpoints</td><td>Múltiples (uno por resource)</td><td><strong>Uno solo</strong></td></tr>
+                <tr><td>Response shape</td><td>Fija por endpoint</td><td><strong>Definida por el cliente</strong></td></tr>
+                <tr><td>Over-fetching</td><td>Común</td><td>❌ Evitado</td></tr>
+                <tr><td>Under-fetching</td><td>Común</td><td>❌ Evitado (nested queries)</td></tr>
+                <tr><td>Versioning</td><td>v1, v2, v3...</td><td>Schema evolution</td></tr>
+                <tr><td>Type safety</td><td>Manual (docs)</td><td>✅ Built-in</td></tr>
+                <tr><td>Backend code</td><td>Mucho</td><td><strong>Cero en Fabric</strong></td></tr>
+                <tr><td>Multi-source</td><td>Múltiples calls</td><td>✅ <strong>1 query</strong></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </article>
+
+        <!-- ============ 4. API FABRIC ============ -->
+        <div class="category-header" id="api-fabric">
+          <span class="category-header__icon">🏛️</span>
+          <h2 class="category-header__title">4. Fabric API for GraphQL: qué es</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>Definición</h3>
+          <p><strong>Microsoft Fabric API for GraphQL</strong> = <strong>managed service</strong> que permite crear un GraphQL API <strong>en segundos</strong> sobre tus data sources de Fabric.</p>
+
+          <h4>Por qué es especial</h4>
+          <ul>
+            <li>🚀 <strong>Generación automática de schema</strong>: Fabric mira tus tablas y <strong>genera el GraphQL schema automáticamente</strong>.</li>
+            <li>🔧 <strong>Resolvers automáticos</strong>: no escribes código, Fabric los crea.</li>
+            <li>⚡ <strong>Listo en minutos</strong>: setup completo en pocos minutos.</li>
+            <li>🎯 <strong>Sin setup de infraestructura</strong>: es SaaS.</li>
+            <li>🌐 <strong>Endpoint unificado</strong>: una sola URL para múltiples data sources.</li>
+          </ul>
+
+          <h4>Quién debería usar API for GraphQL</h4>
+          <ol>
+            <li><strong>Application developers</strong> — apps web/mobile que consumen data de Fabric.</li>
+            <li><strong>Data engineers</strong> — exponer data de Fabric a apps downstream sin backend custom.</li>
+            <li><strong>Integration developers</strong> — conectar Fabric a apps custom y workflows automatizados.</li>
+            <li><strong>BI developers</strong> — apps de analytics custom que complementan Power BI.</li>
+            <li><strong>Data scientists</strong> — exponer data de Fabric e insights de ML vía APIs programáticas.</li>
+          </ol>
+
+          <h4>Proceso end-to-end</h4>
+          <p>Exponer data sources en un item GraphQL = <strong>minutos</strong> vía el Fabric portal:</p>
+          <ol>
+            <li><strong>Crear un item GraphQL API</strong> en tu workspace de Fabric.</li>
+            <li><strong>Conectar tus data sources</strong> — lakehouse, warehouse, database.</li>
+            <li><strong>Elegir qué objects exponer</strong> — tables, views, stored procedures.</li>
+            <li><strong>Definir relationships (opcional)</strong> — para nested queries.</li>
+            <li><strong>Configurar permisos</strong> — control de acceso.</li>
+          </ol>
+          <p>Una vez configurado, Fabric autogenera el GraphQL schema, crea los resolvers necesarios, te da un <strong>endpoint URL</strong> y el <strong>API queda listo para aceptar queries</strong> — sin deployment ni infra.</p>
+        </article>
+
+        <!-- ============ 5. SOURCES ============ -->
+        <div class="category-header" id="sources">
+          <span class="category-header__icon">🗂️</span>
+          <h2 class="category-header__title">5. Data sources soportados</h2>
+        </div>
+
+        <article class="concept-card">
+          <h4>Tabla completa</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>#</th><th>Data source</th></tr></thead>
+              <tbody>
+                <tr><td>1</td><td><strong>Fabric Data Warehouse</strong></td></tr>
+                <tr><td>2</td><td><strong>SQL database in Fabric</strong></td></tr>
+                <tr><td>3</td><td><strong>Fabric Lakehouse</strong> (vía SQL Analytics Endpoint)</td></tr>
+                <tr><td>4</td><td><strong>Fabric Mirrored Databases</strong> (vía SQL Analytics Endpoint):</td></tr>
+                <tr><td>4.1</td><td>· Azure SQL Database</td></tr>
+                <tr><td>4.2</td><td>· Azure SQL Managed Instance</td></tr>
+                <tr><td>4.3</td><td>· Azure Cosmos DB</td></tr>
+                <tr><td>4.4</td><td>· SQL database in Fabric</td></tr>
+                <tr><td>4.5</td><td>· Azure Databricks</td></tr>
+                <tr><td>4.6</td><td>· Snowflake</td></tr>
+                <tr><td>4.7</td><td>· Open mirrored databases</td></tr>
+                <tr><td>5</td><td><strong>Azure SQL Database</strong> (external, directo)</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="note note--warning">
+            🎯 <strong>Regla importante: los SQL Analytics Endpoints son read-only.</strong> Cuando expones data vía <strong>SQL Analytics Endpoint</strong> (Lakehouse, Mirrored DB, Warehouse SQL endpoint), <strong>solo tienes queries (read)</strong>. <strong>Las mutations NO están disponibles</strong>.
+            <br>Para tener <strong>writes (mutations)</strong>: el <strong>Warehouse nativo</strong> las soporta pero requiere <strong>primary key definida</strong>; la <strong>SQL database in Fabric</strong> las soporta con primary key; y <strong>Azure SQL Database</strong> también con primary key.
+          </div>
+
+          <h4>⚠️ Requisito: Primary Key</h4>
+          <p><strong>Muy importante</strong>: cuando trabajas con <strong>warehouses y SQL Databases</strong>, debes <strong>definir una primary key</strong> para que las mutations se generen automáticamente. Sin primary key = no puedes hacer INSERT/UPDATE/DELETE vía GraphQL en ese objeto.</p>
+        </article>
+
+        <!-- ============ 6. QUERIES Y MUTATIONS ============ -->
+        <div class="category-header" id="queries-mutations">
+          <span class="category-header__icon">🔄</span>
+          <h2 class="category-header__title">6. Componentes: queries y mutations</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>Los 2 tipos de operaciones</h3>
+          <p>Fabric API for GraphQL soporta <strong>2 tipos de operaciones</strong>:</p>
+          <p><strong>A) Queries (read)</strong> 📖</p>
+          <ul>
+            <li><strong>Recuperan data</strong> de tus sources.</li>
+            <li>Ideales para <strong>operaciones read-only</strong>.</li>
+            <li>Relevantes para los SQL Analytics Endpoints (que son inherentemente read-only).</li>
+          </ul>
+          <p><strong>B) Mutations (write)</strong> ✏️</p>
+          <ul>
+            <li><strong>Modifican data</strong>: INSERT, UPDATE, DELETE.</li>
+            <li>Adecuadas para <strong>operaciones de escritura</strong>.</li>
+            <li>Requieren primary key en el objeto.</li>
+          </ul>
+
+          <h4>Otros tipos (NO soportados)</h4>
+          <p>El estándar GraphQL tiene además <strong>subscriptions</strong> (push en tiempo real). <strong>NO están soportadas</strong> en Fabric API for GraphQL. Solo queries y mutations.</p>
+
+          <h4>Auto-generation</h4>
+          <p>Cuando expones un objeto (table, view), Fabric <strong>genera automáticamente</strong>:</p>
+          <p><strong>Queries</strong>:</p>
+          <ul>
+            <li><code>&lt;tableName&gt;</code> (listar todo)</li>
+            <li><code>&lt;tableName&gt;(filter: ...)</code> (con filtros)</li>
+          </ul>
+          <p><strong>Mutations</strong> (si hay primary key):</p>
+          <ul>
+            <li><code>create&lt;TableName&gt;</code> (INSERT)</li>
+            <li><code>update&lt;TableName&gt;</code> (UPDATE)</li>
+            <li><code>delete&lt;TableName&gt;</code> (DELETE)</li>
+          </ul>
+          <p><strong>Cero código necesario</strong>. Fabric lo hace todo.</p>
+        </article>
+
+        <!-- ============ 7. SCHEMA ============ -->
+        <div class="category-header" id="schema">
+          <span class="category-header__icon">📚</span>
+          <h2 class="category-header__title">7. GraphQL schema: object types y fields</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>¿Qué es un GraphQL schema?</h3>
+          <p>Un <strong>GraphQL schema</strong> es <strong>esencial</strong> para definir los <strong>tipos de data</strong> que se pueden consultar o mutar y <strong>cómo se relacionan</strong> entre sí. Provee una manera <strong>clara y concisa</strong> de describir las capacidades de un API.</p>
+
+          <h4>Object types</h4>
+          <p>Los <strong>object types</strong> representan una <strong>data entity</strong> en el schema: organizan <strong>data relacionada</strong> y definen los <strong>fields</strong> que se pueden consultar en cada type.</p>
+          <p><strong>Analogía SQL</strong>: object types = <strong>tablas SQL</strong>.</p>
+          <pre><code class="language-graphql">type Product {
+  ProductID: Int
+  Name: String
+  Color: String
+  ListPrice: Float
+}</code></pre>
+
+          <h4>Fields</h4>
+          <p>Los <strong>fields</strong> especifican la data <strong>que se puede consultar</strong> en un object type. Pueden ser <strong>scalar values</strong> (Int, String, Float, Boolean) u <strong>otros object types</strong>, y pueden incluir <strong>argumentos</strong> para filtrar o modificar la data.</p>
+          <p><strong>Analogía SQL</strong>: fields = <strong>columnas SQL</strong>.</p>
+
+          <h4>Tabla comparativa</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>GraphQL</th><th>SQL</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Object type</strong></td><td><strong>Table</strong></td></tr>
+                <tr><td><strong>Field</strong></td><td><strong>Column</strong></td></tr>
+                <tr><td><strong>Field arguments</strong></td><td><strong>WHERE clause / filter</strong></td></tr>
+                <tr><td><strong>Relationships</strong></td><td><strong>Foreign keys</strong></td></tr>
+                <tr><td><strong>Query</strong></td><td><strong>SELECT</strong></td></tr>
+                <tr><td><strong>Mutation</strong></td><td><strong>INSERT/UPDATE/DELETE</strong></td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h4>Schema autogenerado</h4>
+          <p><strong>No escribes el schema a mano</strong>. Fabric inspecciona tus tablas, detecta columnas y tipos, y <strong>genera el GraphQL schema automáticamente</strong>. Puedes <strong>personalizarlo</strong> después (enable/disable operations, añadir relationships, ocultar fields).</p>
+        </article>
+
+        <!-- ============ 8. AUTH ============ -->
+        <div class="category-header" id="auth">
+          <span class="category-header__icon">🎯</span>
+          <h2 class="category-header__title">8. Autenticación: SSO vs saved credentials (CRÍTICO)</h2>
+        </div>
+
+        <article class="concept-card">
+          <p><strong>Este es un tema muy examinable</strong>. Vamos a fondo.</p>
+
+          <h4>Los 2 modos</h4>
+          <p>Fabric API for GraphQL soporta <strong>2 modos de autenticación</strong> para conectar al data source:</p>
+          <p><strong>A) Single Sign-On (SSO)</strong> 👤</p>
+          <ul>
+            <li>El <strong>usuario autenticado</strong> de la app que llama al GraphQL API <strong>debe tener</strong>:
+              <ul>
+                <li><strong>Execute permissions</strong> en el GraphQL API.</li>
+                <li><strong>Read/Write permissions</strong> en el data source.</li>
+              </ul>
+            </li>
+            <li>Cada usuario usa <strong>sus propias credenciales</strong>.</li>
+          </ul>
+          <p><strong>B) Saved credentials</strong> 💾</p>
+          <ul>
+            <li>Se guarda una <strong>credencial única</strong> para el API.</li>
+            <li>Los <strong>usuarios NO necesitan acceso directo</strong> al data source.</li>
+            <li>El API usa la saved credential para todos.</li>
+          </ul>
+
+          <h4>🎯 Diferencia clave</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th></th><th>SSO</th><th>Saved credentials</th></tr></thead>
+              <tbody>
+                <tr><td>Quién accede al data source</td><td><strong>Cada user con sus creds</strong></td><td><strong>Un único principal</strong> (compartido)</td></tr>
+                <tr><td>¿Los users necesitan permisos en el source?</td><td>✅ Sí</td><td>❌ No</td></tr>
+                <tr><td>Complejidad de setup</td><td>Alta (permisos individuales)</td><td>Baja</td></tr>
+                <tr><td>Auditoría por user</td><td>✅ Sí (trazable)</td><td>❌ Un solo actor</td></tr>
+                <tr><td>Row-level security por user</td><td>✅ Se aplica</td><td>⚠️ Aplica al principal guardado</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h4>Cuándo cada uno</h4>
+          <p><strong>SSO</strong> ✅ cuando necesitas <strong>RLS y CLS por usuario real</strong>, auditoría granular por usuario, cada usuario tiene distinto acceso, el compliance requiere identificación individual, o todos los usuarios tienen acceso al workspace de Fabric.</p>
+          <p><strong>Saved credentials</strong> ✅ cuando los usuarios <strong>no deben tener</strong> acceso al data source, la app expone data a <strong>usuarios externos</strong> (fuera del tenant), buscas <strong>simplicidad</strong> de gestión, o es <strong>obligatorio</strong> — como al exponer Azure SQL Database vía GraphQL (los usuarios no tienen credenciales para Azure SQL).</p>
+
+          <div class="note note--warning">
+            ⚠️ <strong>Regla importante:</strong> una vez seleccionado, el modo se aplica <strong>a TODOS los data sources añadidos al API después</strong>. <strong>NO puedes mezclar SSO y saved credentials</strong> en el mismo API. Elige bien desde el principio.
+          </div>
+
+          <h4>Workspace shortcut</h4>
+          <p>Alternativa práctica para SSO: añadir al usuario como <strong>workspace member con rol Contributor</strong> en el workspace donde viven el API y el data source. Le da los permisos requeridos a ambos items desde un solo sitio.</p>
+
+          <h4>UPN vs SPN</h4>
+          <p>Puedes usar <strong>User Principal Names (UPNs)</strong> o <strong>Service Principal Names (SPNs)</strong> para conectar al API, tanto con SSO como con saved credentials.</p>
+        </article>
+
+        <!-- ============ 9. CREAR ============ -->
+        <div class="category-header" id="crear">
+          <span class="category-header__icon">🛠️</span>
+          <h2 class="category-header__title">9. Crear un API for GraphQL en Fabric</h2>
+        </div>
+
+        <article class="concept-card">
+          <h4>Prerequisitos</h4>
+          <p><strong>Permisos del usuario</strong>: ser miembro del <strong>workspace de Fabric</strong> donde crearás el API, con al menos rol <strong>Contributor</strong> (o superior: Admin, Member).</p>
+          <p><strong>Setup organizacional</strong>: el admin o capacity admin ha habilitado el tenant setting <strong>"Users can create Fabric items"</strong>, y el workspace está respaldado por <strong>Fabric capacity</strong> (Premium, Trial o Fabric).</p>
+          <p><strong>Data source access</strong> (para pasos posteriores): <strong>read permissions</strong> en los data sources a exponer, concedidos vía workspace membership o permisos directos al data source.</p>
+
+          <h4>Pasos para crear</h4>
+          <p><strong>Opción A: desde el workspace</strong></p>
+          <ol>
+            <li>Cualquier workspace → <strong>New item</strong>.</li>
+            <li>Se abre el panel → <strong>Develop data</strong> → <strong>API for GraphQL</strong>.</li>
+          </ol>
+          <p><strong>Opción B: desde el home del Fabric portal</strong></p>
+          <ol>
+            <li><strong>Data Engineering</strong> en la lista de workloads.</li>
+            <li><strong>API for GraphQL</strong>.</li>
+          </ol>
+          <p>En ambas opciones: introducir un <strong>nombre</strong> y seleccionar <strong>Create</strong> → API creado y totalmente funcional.</p>
+
+          <h4>Conectar un data source</h4>
+          <ol>
+            <li>Bajo <strong>Add data to the API for GraphQL</strong> → seleccionar <strong>Select data source</strong>.</li>
+            <li>Aparece el diálogo <strong>Choose connectivity option</strong>.</li>
+            <li>Elegir: <strong>SSO</strong> o <strong>Saved credentials</strong>.</li>
+            <li>Aparece el <strong>OneLake catalog</strong> con los data sources disponibles.</li>
+            <li>Filtrar por tipo o buscar por palabra clave.</li>
+            <li>Seleccionar el data source → <strong>Connect</strong>.</li>
+            <li>Si es saved credentials y no existe una, se te pide crearla.</li>
+            <li>Página <strong>Choose data</strong>: seleccionar qué <strong>objects exponer</strong> (tables, views, procs).</li>
+            <li><strong>Load</strong> → schema generado y objects expuestos.</li>
+          </ol>
+
+          <h4>Qué se genera automáticamente</h4>
+          <p>Una vez cargas los datos, el motor GraphQL <strong>crea automáticamente</strong> las <strong>queries</strong> para cada object y las <strong>mutations</strong> para cada object (si tiene primary key). Listo para usar inmediatamente.</p>
+        </article>
+
+        <!-- ============ 10. ENABLE/DISABLE ============ -->
+        <div class="category-header" id="enable-disable">
+          <span class="category-header__icon">🎛️</span>
+          <h2 class="category-header__title">10. Enable/disable operations</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>Feature</h3>
+          <p>Puedes <strong>habilitar o deshabilitar queries y mutations específicas</strong> dentro del GraphQL schema, dando <strong>control fino</strong> sobre el acceso y uso del API. Esto significa que puedes <strong>gestionar las funcionalidades del API sin cambiar código ni redeployar</strong>.</p>
+
+          <h4>Casos de uso</h4>
+          <ul>
+            <li><strong>Desactivación temporal</strong> de funcionalidades por mantenimiento, seguridad o performance.</li>
+            <li><strong>Controlar las operaciones del API</strong> según roles de usuario u otros criterios.</li>
+            <li><strong>Read-only mode</strong>: desactivar todas las mutations temporalmente.</li>
+            <li><strong>Exposición selectiva</strong>: tabla expuesta pero solo con SELECT (sin INSERT/UPDATE/DELETE).</li>
+          </ul>
+
+          <h4>Ejemplo</h4>
+          <p>Tabla <code>ProductModel</code> de <code>AdventureWorksLT</code> expuesta. El motor genera automáticamente queries y mutations para insert, update y delete. Tú decides:</p>
+          <ul>
+            <li>✅ Mantener la query <code>productModels</code> habilitada.</li>
+            <li>✅ Mantener la mutation <code>createProductModel</code> habilitada.</li>
+            <li>❌ Deshabilitar la mutation <code>deleteProductModel</code> (por seguridad).</li>
+            <li>❌ Deshabilitar la mutation <code>updateProductModel</code> temporalmente.</li>
+          </ul>
+
+          <div class="note note--warning">
+            ⚠️ <strong>Comportamiento cuando está deshabilitada:</strong> cualquier intento de ejecutar una query o mutation deshabilitada <strong>devuelve un error</strong>. Los clientes reciben un error explícito, no un fallo silencioso.
+          </div>
+
+          <h4>Cómo cambiarlo</h4>
+          <p>Desde el GraphQL editor → schema explorer → property panel → toggle enable/disable. <strong>Los cambios son instantáneos</strong>, sin redeploy.</p>
+        </article>
+
+        <!-- ============ 11. RELATIONSHIPS ============ -->
+        <div class="category-header" id="relationships">
+          <span class="category-header__icon">🔗</span>
+          <h2 class="category-header__title">11. Manage relationships (1:1, 1:N, N:M)</h2>
+        </div>
+
+        <article class="concept-card">
+          <p>GraphQL soporta <strong>relationships</strong> entre types, permitiendo <strong>nested queries</strong> muy potentes. Fabric API for GraphQL soporta los <strong>3 tipos</strong>:</p>
+
+          <h4>One-to-one (1:1)</h4>
+          <p><strong>Cada instancia</strong> de un type está asociada con <strong>una única instancia</strong> de otro type. <strong>Ejemplo</strong>: el type <code>User</code> tiene una relación 1:1 con el type <code>Profile</code>. Cada user tiene exactamente un profile.</p>
+          <pre><code class="language-graphql">query {
+  users {
+    items {
+      id
+      name
+      profile {
+        bio
+        avatar
+      }
+    }
+  }
+}</code></pre>
+
+          <h4>One-to-many (1:N)</h4>
+          <p><strong>Una única instancia</strong> de un type asociada con <strong>múltiples instancias</strong> de otro type. <strong>Ejemplo</strong>: el type <code>User</code> tiene una relación 1:N con el type <code>Post</code>. Un user puede tener múltiples posts.</p>
+          <pre><code class="language-graphql">query {
+  users {
+    items {
+      id
+      name
+      posts {
+        title
+        publishedDate
+      }
+    }
+  }
+}</code></pre>
+
+          <h4>Many-to-many (N:M)</h4>
+          <p><strong>Múltiples instancias</strong> de un type asociadas con <strong>múltiples instancias</strong> de otro type. <strong>Ejemplo</strong>: <code>Student</code> tiene una relación N:M con <code>Course</code>. Cada student puede matricularse en varios courses, y cada course puede tener varios students.</p>
+          <pre><code class="language-graphql">query {
+  students {
+    items {
+      id
+      name
+      enrolledCourses {
+        title
+        instructor
+      }
+    }
+  }
+}</code></pre>
+
+          <h4>Por qué son poderosas</h4>
+          <p><strong>Sin relationships</strong>: cada query trae un solo type, hay múltiples round trips para data relacionada y el cliente tiene que hacer los joins en su código.</p>
+          <p><strong>Con relationships</strong>: <strong>modelos de datos ricos e interconectados</strong>, <strong>queries eficientes</strong> desde un solo request, y el cliente recibe una <strong>estructura jerárquica</strong> lista para usar.</p>
+
+          <h4>Cómo definirlas en Fabric</h4>
+          <p>Desde el GraphQL editor:</p>
+          <ol>
+            <li><strong>Schema explorer</strong>.</li>
+            <li>Click en un type → <strong>New relationship</strong>.</li>
+            <li>Configurar: type destino, cardinalidad (1:1, 1:N, N:M) y foreign key column.</li>
+            <li>Save → schema actualizado.</li>
+          </ol>
+
+          <div class="note note--warning">
+            ⚠️ <strong>Limitación importante:</strong> <strong>no puedes crear relationships entre types que están en data sources distintos</strong>. Las relationships <strong>solo funcionan dentro de un único data source</strong>. Si quieres cross-source, tienes que hacer varias queries en un solo request (ver la sección Multi-source).
+          </div>
+        </article>
+
+        <!-- ============ 12. EDITOR ============ -->
+        <div class="category-header" id="editor">
+          <span class="category-header__icon">💻</span>
+          <h2 class="category-header__title">12. GraphQL editor: los 4 componentes</h2>
+        </div>
+
+        <article class="concept-card">
+          <h4>Cómo acceder</h4>
+          <p>Navegar al item API for GraphQL en Fabric → buscar la opción <strong>Query</strong> (abajo a la izquierda) → seleccionar. Se abre el editor donde puedes construir y probar queries y mutations.</p>
+
+          <h4>Los 4 paneles</h4>
+          <p><strong>1. Schema explorer</strong> 📚 — <strong>visualizar rápidamente</strong> los types y fields disponibles, ver las queries y mutations definidas en el API, navegar la estructura y modificarla (enable/disable operations, añadir relationships).</p>
+          <p><strong>2. Run panel</strong> 🏃 — interfaz para <strong>ejecutar código</strong> y ver resultados en tiempo real. Test y debug de operaciones GraphQL.</p>
+          <p><strong>3. Query variables panel</strong> 🔧 — pasar <strong>parámetros como variables</strong> a queries o mutations. Igual que en cualquier lenguaje: declarar variables con nombre para acceder a su valor.</p>
+          <p><strong>4. Results panel</strong> 📊 — muestra el <strong>output</strong> de las queries/mutations ejecutadas, para verificar y analizar los resultados.</p>
+
+          <h4>Auto-complete y validation</h4>
+          <p>El editor tiene IntelliSense basado en el schema, syntax highlighting, validación en tiempo real y sugerencias de los fields disponibles.</p>
+
+          <h4>Integración con Copilot</h4>
+          <p>Copilot también puede ayudar con las queries GraphQL si está habilitado. Genera queries desde lenguaje natural, similar al Copilot de SQL Database.</p>
+        </article>
+
+        <!-- ============ 13. QUERY EXAMPLES ============ -->
+        <div class="category-header" id="query-examples">
+          <span class="category-header__icon">🌸</span>
+          <h2 class="category-header__title">13. Query examples</h2>
+        </div>
+
+        <article class="concept-card">
+          <h4>Query básica</h4>
+          <pre><code class="language-graphql">query {
+  productModels {
+    items {
+      ProductModelID
+      Name
+      ModifiedDate
+    }
+  }
+}</code></pre>
+          <p><strong>Traducción</strong>: dame de <code>productModels</code> todos los <code>items</code>, con los fields <code>ProductModelID</code>, <code>Name</code> y <code>ModifiedDate</code>.</p>
+
+          <h4>Query con filter</h4>
+          <pre><code class="language-graphql">query {
+  productModels(filter: {Name: {eq: "Mountain-100"}}) {
+    items {
+      ProductModelID
+      Name
+      ModifiedDate
+    }
+  }
+}</code></pre>
+          <p><strong>Traducción</strong>: dame los productModels donde <code>Name = "Mountain-100"</code>.</p>
+          <p><strong>Filter operators comunes</strong>: <code>eq</code> (equal), <code>neq</code> (not equal), <code>gt</code>, <code>gte</code>, <code>lt</code>, <code>lte</code> (greater/less), <code>contains</code>, <code>startsWith</code> y <code>endsWith</code>.</p>
+
+          <h4>Resultado esperado</h4>
+          <pre><code class="language-json">{
+  "data": {
+    "productModels": {
+      "items": [
+        {
+          "ProductModelID": 19,
+          "Name": "Mountain-100",
+          "rowguid": "fca0665b-b956-489a-a5ec-6f0b4aa14d02",
+          "ModifiedDate": "2005-06-01T00:00:00.000Z"
+        }
+      ]
+    }
+  }
+}</code></pre>
+
+          <h4>Query con nested (relationships)</h4>
+          <pre><code class="language-graphql">query {
+  customers {
+    items {
+      customerID
+      firstName
+      lastName
+      orders {
+        items {
+          orderID
+          orderDate
+          totalAmount
+        }
+      }
+    }
+  }
+}</code></pre>
+          <p>Una sola query devuelve los customers <strong>con sus orders anidadas</strong>. Sin GraphQL, esto serían N+1 llamadas.</p>
+
+          <h4>Query con variables</h4>
+          <pre><code class="language-graphql">query GetProduct($productName: String!) {
+  productModels(filter: {Name: {eq: $productName}}) {
+    items {
+      ProductModelID
+      Name
+    }
+  }
+}</code></pre>
+          <p>En el Query variables panel:</p>
+          <pre><code class="language-json">{
+  "productName": "Mountain-100"
+}</code></pre>
+          <p>Ventaja: puedes <strong>reutilizar</strong> la query cambiando solo la variable.</p>
+        </article>
+
+        <!-- ============ 14. MUTATION EXAMPLES ============ -->
+        <div class="category-header" id="mutation-examples">
+          <span class="category-header__icon">✏️</span>
+          <h2 class="category-header__title">14. Mutation examples</h2>
+        </div>
+
+        <article class="concept-card">
+          <h4>INSERT (create)</h4>
+          <pre><code class="language-graphql">mutation MyMutation {
+  createProduct(
+    name: "Mountain Bike",
+    productNumber: "BK-M68B-38",
+    color: "Black",
+    standardCost: 500.00,
+    listPrice: 800.00
+  ) {
+    productID
+    name
+    productNumber
+    color
+    standardCost
+    listPrice
+  }
+}</code></pre>
+          <p><strong>Traducción</strong>: crea un nuevo product con estos valores. Devuelve los fields del producto creado (incluyendo el ID generado).</p>
+          <p><strong>Resultado esperado</strong>:</p>
+          <pre><code class="language-json">{
+  "data": {
+    "createProduct": {
+      "productID": "1234",
+      "name": "Mountain Bike",
+      "productNumber": "BK-M68B-38",
+      "color": "Black",
+      "standardCost": 500.00,
+      "listPrice": 800.00
+    }
+  }
+}</code></pre>
+
+          <h4>UPDATE</h4>
+          <pre><code class="language-graphql">mutation {
+  updateProduct(
+    productID: 1234,
+    listPrice: 850.00
+  ) {
+    productID
+    listPrice
+  }
+}</code></pre>
+          <p>Actualiza el <code>listPrice</code> del product con ID 1234.</p>
+
+          <h4>DELETE</h4>
+          <pre><code class="language-graphql">mutation {
+  deleteProduct(productID: 1234) {
+    productID
+  }
+}</code></pre>
+          <p>Borra el product y devuelve su ID (confirmando el borrado).</p>
+
+          <div class="note note--warning">
+            ⚠️ <strong>Requisito: Primary key.</strong> Para que las <strong>mutations se generen automáticamente</strong>, las <strong>tablas del Warehouse</strong> y las <strong>tablas de SQL Database</strong> deben tener <strong>primary key</strong>. Sin primary key, Fabric no sabe cómo identificar rows únicas → <strong>no crea mutations</strong>. Solo verás <strong>queries</strong> en el schema, no <code>create*</code>, <code>update*</code> ni <code>delete*</code>.
+          </div>
+        </article>
+
+        <!-- ============ 15. MULTI-SOURCE ============ -->
+        <div class="category-header" id="multi-source">
+          <span class="category-header__icon">🌐</span>
+          <h2 class="category-header__title">15. Multiple data sources en un solo API</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>Feature clave</h3>
+          <p>Uno de los <strong>beneficios clave</strong> de GraphQL en Fabric: la capacidad de <strong>exponer múltiples data sources</strong> — lakehouses, warehouses, databases — <strong>a través de un único endpoint de API unificado</strong>.</p>
+          <p>Esto significa que las apps pueden <strong>recuperar data de distintas sources en una sola query GraphQL</strong>, eliminando la necesidad de conectar a múltiples APIs por separado.</p>
+
+          <h4>Cómo funciona</h4>
+          <p>Cuando lanzas una query GraphQL que abarca múltiples data sources, el API:</p>
+          <ol>
+            <li><strong>Distribuye automáticamente</strong> requests individuales a cada data source <strong>en paralelo</strong>.</li>
+            <li><strong>Combina los resultados</strong> en una única respuesta.</li>
+          </ol>
+
+          <h4>Los 3 beneficios</h4>
+          <ol>
+            <li><strong>Reduce round trips</strong>: 1 request en vez de múltiples llamadas secuenciales.</li>
+            <li><strong>Mejora la performance</strong>: ejecución paralela = <strong>tiempos de respuesta más rápidos</strong>.</li>
+            <li><strong>Simplifica el código cliente</strong>: una única interfaz de API <strong>independientemente de dónde viva la data</strong>.</li>
+          </ol>
+
+          <h4>Ejemplo real</h4>
+          <p><strong>Escenario</strong>: un dashboard que muestra info de customers e inventario de productos. La customer data está en el warehouse <strong>ContosoSales</strong> y el inventario en el lakehouse <strong>ContosoInventory</strong>.</p>
+          <p><strong>Sin multi-source</strong>: 2 llamadas al API, 2 conexiones y combinar la data en el código de la app.</p>
+          <p><strong>Con Fabric multi-source</strong>:</p>
+          <pre><code class="language-graphql">query {
+  customers(first: 1) {
+    items {
+      FirstName
+      LastName
+    }
+  }
+  inventories(first: 1) {
+    items {
+      Name
+    }
+  }
+}</code></pre>
+          <p>Un solo request, dos sources. <strong>Response</strong>:</p>
+          <pre><code class="language-json">{
+  "data": {
+    "customers": {
+      "items": [
+        {
+          "FirstName": "Orlando",
+          "LastName": "Gee"
+        }
+      ]
+    },
+    "inventories": {
+      "items": [
+        {
+          "Name": "AWC Logo Cap"
+        }
+      ]
+    }
+  }
+}</code></pre>
+
+          <div class="note note--warning">
+            ⚠️ <strong>Limitaciones importantes (muy examinables):</strong>
+            <ol>
+              <li>❌ <strong>NO puedes crear relationships entre types de data sources distintos</strong>. Las relationships solo funcionan <strong>dentro de un único data source</strong>.</li>
+              <li>❌ Los requests individuales a cada data source <strong>se ejecutan en paralelo</strong> — <strong>no hay orden garantizado</strong>.</li>
+              <li>❌ Cada request es <strong>independiente</strong> — <strong>no hay transacción</strong> que abarque varias sources.</li>
+            </ol>
+          </div>
+
+          <h4>Workaround para "joins" cross-source</h4>
+          <p>Si necesitas "joinar" data de 2 sources: consulta ambas en el mismo request (paralelo, rápido) y haz el merge client-side por foreign key. No es un JOIN nativo, pero sirve para muchos casos.</p>
+        </article>
+
+        <!-- ============ 16. STORED PROCS ============ -->
+        <div class="category-header" id="stored-procs">
+          <span class="category-header__icon">🔧</span>
+          <h2 class="category-header__title">16. Stored procedures como resolvers</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>Feature</h3>
+          <p>Además de tablas y views, Fabric API for GraphQL puede exponer <strong>stored procedures</strong> como operaciones GraphQL.</p>
+
+          <h4>Por qué</h4>
+          <p>Los <strong>resolvers</strong> son componentes GraphQL que <strong>proveen la business logic</strong> para resolver fields y realizar operaciones con la data.</p>
+          <p><strong>Generación automática</strong>: Fabric autogenera los resolvers cuando adjuntas un data source o expones nuevos objects.</p>
+          <p><strong>Limitación de personalización</strong>: actualmente <strong>no puedes personalizar los resolvers directamente</strong>.</p>
+          <p><strong>Workaround</strong>: para <strong>business logic personalizada</strong>, <strong>crea un stored procedure</strong> en el data source y <strong>exponlo en el GraphQL API</strong>.</p>
+
+          <h4>Casos de uso</h4>
+          <p>Cuando necesitas lógica que no es un CRUD trivial: <strong>business rules complejas</strong>, <strong>agregaciones custom</strong>, <strong>operaciones multi-tabla transaccionales</strong>, <strong>validación de datos compleja</strong> y <strong>cálculos derivados</strong>.</p>
+
+          <h4>Ejemplo mental</h4>
+          <p>Stored procedure en el warehouse:</p>
+          <pre><code class="language-sql">CREATE PROCEDURE dbo.usp_CalculateCustomerLifetimeValue
+    @CustomerID INT
+AS
+BEGIN
+    -- Lógica compleja de cálculo
+    SELECT
+        @CustomerID AS CustomerID,
+        SUM(o.TotalAmount) * 1.15 AS LTV,
+        COUNT(o.OrderID) AS OrderCount,
+        MAX(o.OrderDate) AS LastOrderDate
+    FROM Orders o
+    WHERE o.CustomerID = @CustomerID
+    -- Más lógica...
+END;</code></pre>
+          <p>Expuesto en GraphQL:</p>
+          <pre><code class="language-graphql">query {
+  calculateCustomerLifetimeValue(customerID: 123) {
+    CustomerID
+    LTV
+    OrderCount
+    LastOrderDate
+  }
+}</code></pre>
+          <p>Client-side, una llamada GraphQL. Server-side, un stored proc con toda la business logic.</p>
+        </article>
+
+        <!-- ============ 17. SCHEMA VIEW ============ -->
+        <div class="category-header" id="schema-view">
+          <span class="category-header__icon">📖</span>
+          <h2 class="category-header__title">17. Schema view y schema explorer</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>Schema autogenerado</h3>
+          <p>Fabric API for GraphQL <strong>genera automáticamente un schema</strong> que define la estructura de tu API basándose en los data sources conectados. El schema, escrito en <strong>GraphQL Schema Definition Language (SDL)</strong>, describe todos los <strong>types</strong>, <strong>fields</strong>, <strong>queries</strong> y <strong>mutations</strong> disponibles.</p>
+
+          <h4>Los 2 tools</h4>
+          <p><strong>A) Schema view</strong>: vista <strong>read-only, basada en texto</strong> de tu GraphQL schema completo. Para ver la definición completa y copiarla como referencia.</p>
+          <p><strong>B) Schema explorer</strong>: en el <strong>panel izquierdo</strong>. Para <strong>navegar, inspeccionar y modificar</strong> los objects expuestos vía API: enable/disable de operaciones y añadir relationships.</p>
+
+          <h4>Ejemplo de SDL</h4>
+          <pre><code class="language-graphql">type Product {
+  ProductID: Int!
+  Name: String!
+  Color: String
+  ListPrice: Float
+  StandardCost: Float
+  ModifiedDate: DateTime
+}
+
+type Query {
+  products(filter: ProductFilterInput, first: Int, after: String): ProductConnection
+  productModels(filter: ProductModelFilterInput): ProductModelConnection
+}
+
+type Mutation {
+  createProduct(name: String!, listPrice: Float!, ...): Product
+  updateProduct(productID: Int!, listPrice: Float): Product
+  deleteProduct(productID: Int!): Product
+}</code></pre>
+
+          <h4>Quién usa el schema view</h4>
+          <ul>
+            <li><strong>Data engineers</strong> configurando qué objects exponer.</li>
+            <li><strong>Application developers</strong> descubriendo los data types y relationships disponibles antes de escribir queries.</li>
+            <li><strong>Fabric workspace contributors</strong> entendiendo y gestionando la estructura de acceso a datos.</li>
+            <li><strong>BI developers</strong> revisando relationships al construir apps de analytics custom.</li>
+          </ul>
+        </article>
+
+        <!-- ============ 18. CONECTAR APPS ============ -->
+        <div class="category-header" id="conectar-apps">
+          <span class="category-header__icon">🔌</span>
+          <h2 class="category-header__title">18. Conectar aplicaciones: Client ID, Tenant ID, endpoint</h2>
+        </div>
+
+        <article class="concept-card">
+          <h4>Los 3 datos necesarios</h4>
+          <p>Para conectar una app a un GraphQL API en Fabric necesitas:</p>
+          <ol>
+            <li><strong>Client ID</strong> (de tu app registration de Entra ID).</li>
+            <li><strong>Tenant ID</strong> (del Entra ID de tu organización).</li>
+            <li><strong>GraphQL endpoint address</strong> (de Fabric).</li>
+          </ol>
+
+          <h4>Obtener el endpoint</h4>
+          <p>La opción <strong>Copy endpoint</strong> de la toolbar del item API te da el endpoint URI. Ejemplo:</p>
+          <pre><code class="language-plaintext">https://00001111-aaaa-2222-bbbb-3333cccc4444.z55.dailygraphql.fabric.microsoft.com/v1/workspaces/a0a0a0a0-bbbb-cccc-dddd-e1e1e1e1e1e1/graphqlapis/aaaaaaaa-bbbb-cccc-1111-222222222222/graphql</code></pre>
+
+          <h4>Ejemplo Python</h4>
+          <pre><code class="language-python">from azure.identity import InteractiveBrowserCredential
+import requests
+import json
+
+# 1. Get access token
+app = InteractiveBrowserCredential()
+scp = 'https://analysis.windows.net/powerbi/api/user_impersonation'
+result = app.get_token(scp)
+
+if not result.token:
+    print('Error:', "Could not get access token")
+
+# 2. Prepare headers
+headers = {
+    'Authorization': f'Bearer {result.token}',
+    'Content-Type': 'application/json'
+}
+
+# 3. Endpoint del API
+endpoint = 'https://&lt;...&gt;.dailygraphql.fabric.microsoft.com/v1/workspaces/&lt;...&gt;/graphqlapis/&lt;...&gt;/graphql'
+
+# 4. Query GraphQL
+query = """
+    query {
+        products {
+            items {
+                ProductID
+                Name
+            }
+        }
+        salesOrderDetails {
+            items {
+                SalesOrderID
+                OrderQty
+                UnitPrice
+            }
+        }
+    }
+"""
+
+# 5. Ejecutar
+try:
+    response = requests.post(endpoint, json={'query': query}, headers=headers)
+    response.raise_for_status()
+    data = response.json()
+    print(json.dumps(data, indent=4))
+except Exception as error:
+    print(f"Query failed with error: {error}")</code></pre>
+          <p><strong>Nota</strong>: el ejemplo consulta <strong>múltiples data sources en un solo request</strong>.</p>
+
+          <h4>Auth methods</h4>
+          <p><strong>Para user principals</strong>: <strong>Interactive</strong> (browser-based, para apps de escritorio) y <strong>Device code</strong> (para CLI/headless).</p>
+          <p><strong>Para service principals</strong>: <strong>Client secret</strong>, <strong>Certificate</strong> y <strong>Managed Identity</strong> (si es un workload de Azure).</p>
+        </article>
+
+        <!-- ============ 19. ENTRA ============ -->
+        <div class="category-header" id="entra">
+          <span class="category-header__icon">🔐</span>
+          <h2 class="category-header__title">19. Microsoft Entra ID registration</h2>
+        </div>
+
+        <article class="concept-card">
+          <h4>Requisito obligatorio</h4>
+          <p><strong>API for GraphQL requiere que las aplicaciones cliente usen Microsoft Entra ID para autenticarse</strong>. Tu app cliente <strong>debe estar registrada</strong> y configurada correctamente para ejecutar llamadas al API contra Fabric.</p>
+
+          <h4>Permisos requeridos</h4>
+          <p>La app registrada en Microsoft Entra ID requiere los API permissions <strong><code>GraphQLApi.Execute.All</code></strong> para el servicio Power BI.</p>
+
+          <h4>Setup steps (resumen)</h4>
+          <ol>
+            <li>Ir al portal de <strong>Microsoft Entra ID</strong>.</li>
+            <li><strong>App registrations</strong> → <strong>New registration</strong>.</li>
+            <li>Nombre y redirect URIs.</li>
+            <li><strong>API permissions</strong> → Add → <strong>Power BI Service</strong> → <code>GraphQLApi.Execute.All</code>.</li>
+            <li><strong>Admin consent</strong> (si aplica).</li>
+            <li>Copiar el <strong>Client ID</strong> y el <strong>Tenant ID</strong>.</li>
+            <li><strong>Certificates &amp; secrets</strong> → nuevo client secret (para service principals).</li>
+          </ol>
+          <p>Este setup es estándar de Azure/Entra ID, no específico de Fabric.</p>
+
+          <div class="note note--warning">
+            ⚠️ <strong>Consideraciones de seguridad:</strong> <strong>NUNCA embebas client secrets</strong> en código client-side (apps de navegador). Para <strong>web apps</strong>: usa el secret desde el backend. Para <strong>SPAs</strong>: usa OAuth2 authorization code flow con PKCE. Para <strong>mobile</strong>: usa la librería MSAL con secure storage.
+          </div>
+        </article>
+
+        <!-- ============ 20. GENERATE CODE ============ -->
+        <div class="category-header" id="generate-code">
+          <span class="category-header__icon">💻</span>
+          <h2 class="category-header__title">20. Generate code</h2>
+        </div>
+
+        <article class="concept-card">
+          <h4>Feature</h4>
+          <p>Puedes <strong>generar código automáticamente</strong> para tu aplicación seleccionando <strong>Generate code</strong> en la toolbar del item API dentro del GraphQL designer.</p>
+
+          <h4>Beneficio</h4>
+          <p>Esta capability es útil para <strong>verificar</strong> que las llamadas al API funcionan como esperas, obtener <strong>código de partida</strong> para tu app, ver la <strong>sintaxis exacta</strong> para tu lenguaje y comprobar que la data se <strong>recupera y procesa correctamente</strong>.</p>
+
+          <h4>Lenguajes soportados</h4>
+          <p>Habitualmente: <strong>Python</strong> (con <code>requests</code>), <strong>JavaScript / TypeScript</strong> (con <code>fetch</code> o Apollo Client), <strong>C#</strong> (con HttpClient) y <strong>Java</strong> (con HttpClient o clientes GraphQL específicos).</p>
+
+          <h4>Copy-paste-run</h4>
+          <p>El código generado incluye el setup de autenticación, la configuración de headers, la URL del endpoint, la query (o mutation) y un error handling básico. <strong>Listo para ejecutar</strong> con mínimas modificaciones.</p>
+        </article>
+
+        <!-- ============ 21. MCP ============ -->
+        <div class="category-header" id="mcp">
+          <span class="category-header__icon">🤖</span>
+          <h2 class="category-header__title">21. MCP para AI agents</h2>
+        </div>
+
+        <article class="concept-card">
+          <h4>Nueva integración</h4>
+          <p>Feature moderna: <strong>construir un GraphQL MCP server local para AI agents</strong>. <strong>MCP</strong> = <strong>Model Context Protocol</strong>, el protocolo de Anthropic para que los AI agents (como Claude) accedan a datos y herramientas externas.</p>
+
+          <h4>Cómo integra con Fabric</h4>
+          <p>Puedes configurar un <strong>GraphQL MCP server local</strong> que conecta a tu Fabric GraphQL API. Los AI agents (Claude Desktop, otros) pueden usar el MCP server como tool, y así <strong>consultar tus datos de Fabric</strong> en lenguaje natural.</p>
+
+          <h4>Casos de uso</h4>
+          <ul>
+            <li><strong>Chat con tus datos</strong>: "¿Cuáles fueron los top 5 productos vendidos el mes pasado?".</li>
+            <li><strong>Análisis conversacional</strong>: el AI agent explora tu warehouse.</li>
+            <li><strong>Insights guiados por IA</strong>: agents que generan queries a partir de preguntas de negocio.</li>
+            <li><strong>Reporting automatizado</strong>: agents periódicos que analizan y reportan.</li>
+          </ul>
+
+          <h4>Configuración</h4>
+          <p>Tutorial oficial: <strong>Build a local GraphQL MCP server for AI agents</strong>. Implica:</p>
+          <ol>
+            <li>Crear el GraphQL API en Fabric.</li>
+            <li>Montar el MCP server local (Python/Node.js).</li>
+            <li>Configurar la conexión al endpoint GraphQL de Fabric.</li>
+            <li>Registrar el MCP server en tu cliente de AI agent.</li>
+          </ol>
+        </article>
+
+        <!-- ============ 22. CASOS DE USO ============ -->
+        <div class="category-header" id="casos-uso">
+          <span class="category-header__icon">🎯</span>
+          <h2 class="category-header__title">22. Casos de uso: cuándo GraphQL</h2>
+        </div>
+
+        <article class="concept-card">
+          <h4>Casos ideales</h4>
+          <p><strong>A) Web/mobile apps con data de Fabric</strong>: la app consume data del warehouse o lakehouse, necesita queries flexibles y tiene múltiples vistas con distintas necesidades de datos.</p>
+          <p><strong>B) Aplicaciones que cruzan múltiples data sources</strong>: data en varios warehouses/lakehouses, donde un endpoint unificado simplifica la arquitectura.</p>
+          <p><strong>C) Apps de analytics custom que complementan Power BI</strong>: Power BI para dashboards estándar y una app custom para casos específicos con GraphQL.</p>
+          <p><strong>D) Integraciones y automatizaciones</strong>: herramientas de workflow que necesitan data de Fabric, scripts, cron jobs.</p>
+          <p><strong>E) AI agents y Copilot custom</strong>: MCP server sobre GraphQL, con agents que consumen data de Fabric.</p>
+          <p><strong>F) Data APIs para partners externos</strong>: exponer un subset de la data de Fabric a partners, con saved credentials y control granular del schema.</p>
+
+          <h4>Cuándo NO usar GraphQL</h4>
+          <ul>
+            <li><strong>A) Usuarios que solo usan reports de Power BI</strong>: Direct Lake es más simple y perfecto para BI.</li>
+            <li><strong>B) Analytics batch masivo</strong>: los notebooks o pipelines son mejores.</li>
+            <li><strong>C) Streaming en tiempo real</strong>: Eventstream + Eventhouse.</li>
+            <li><strong>D) ETL interno de data warehousing</strong>: pipelines de Data Factory.</li>
+            <li><strong>E) Apps que ya funcionan con ODBC/JDBC</strong>: la migración a GraphQL debe justificar el esfuerzo.</li>
+          </ul>
+
+          <h4>Combinación con otros items</h4>
+          <p>Muy común la <strong>coexistencia</strong>: el <strong>Warehouse</strong> guarda la data, el <strong>semantic model + Power BI</strong> cubren el BI estándar, el <strong>API for GraphQL</strong> sirve a las apps custom y los <strong>notebooks</strong> al data science. Todo desde la misma data subyacente en OneLake.</p>
+        </article>
+
+        <!-- ============ 23. TRAMPAS ============ -->
+        <div class="category-header" id="trampas">
+          <span class="category-header__icon">⚠️</span>
+          <h2 class="category-header__title">23. Trampas típicas y confusiones frecuentes</h2>
+        </div>
+
+        <article class="concept-card">
+          <ul class="trap-list">
+            <li><strong class="trap-title">Trampa 1: "GraphQL soporta subscriptions en Fabric"</strong>
+              ❌ <strong>Solo queries y mutations</strong>. Las subscriptions (push en tiempo real) NO están soportadas.</li>
+            <li><strong class="trap-title">Trampa 2: "Todas las tablas tienen mutations automáticamente"</strong>
+              ❌ Las mutations <strong>requieren primary key</strong> en warehouses y SQL Databases. Sin PK → solo queries.</li>
+            <li><strong class="trap-title">Trampa 3: "Puedo mezclar SSO y saved credentials en el mismo API"</strong>
+              ❌ <strong>NO se pueden mezclar</strong>. Es una decisión por API, y se aplica a todos los data sources añadidos después.</li>
+            <li><strong class="trap-title">Trampa 4: "Puedo crear relationships cross-data-source"</strong>
+              ❌ Las relationships funcionan <strong>solo dentro del mismo data source</strong>. Las multi-source queries son llamadas paralelas, no joins.</li>
+            <li><strong class="trap-title">Trampa 5: "Las multi-source queries son transaccionales"</strong>
+              ❌ Cada request es <strong>independiente, NO hay transacción</strong> que abarque varias sources.</li>
+            <li><strong class="trap-title">Trampa 6: "Puedo personalizar los resolvers directamente"</strong>
+              ❌ <strong>NO</strong>. Fabric los genera automáticamente. Para business logic custom → <strong>stored procedures</strong> en el data source, expuestos vía GraphQL.</li>
+            <li><strong class="trap-title">Trampa 7: "SSO requiere workspace membership"</strong>
+              ❌ Puedes usar SSO <strong>con permisos directos</strong> al data source, o <strong>con workspace membership</strong> (rol Contributor) como atajo.</li>
+            <li><strong class="trap-title">Trampa 8: "API for GraphQL no requiere Entra ID"</strong>
+              ❌ <strong>Requiere autenticación con Microsoft Entra ID SIEMPRE</strong>. Las apps cliente deben estar registradas.</li>
+            <li><strong class="trap-title">Trampa 9: "El Lakehouse expone mutations vía GraphQL"</strong>
+              ❌ El Lakehouse expone data vía <strong>SQL Analytics Endpoint</strong>, que es <strong>read-only</strong>. Solo queries, no mutations.</li>
+            <li><strong class="trap-title">Trampa 10: "GraphQL siempre es más lento que REST"</strong>
+              ❌ Al contrario: evita el over-fetching y el under-fetching, así que <strong>típicamente es más eficiente</strong> en casos complejos.</li>
+            <li><strong class="trap-title">Trampa 11: "Multi-source es un JOIN nativo"</strong>
+              ❌ Son <strong>llamadas paralelas combinadas en la response</strong>. Merge client-side si necesitas semántica de join.</li>
+            <li><strong class="trap-title">Trampa 12: "Saved credentials expone TODOS los datos a TODOS los usuarios"</strong>
+              ❌ Los usuarios siguen necesitando <strong>Execute permissions en el API</strong>. Solo se comparte el acceso al data source subyacente.</li>
+            <li><strong class="trap-title">Trampa 13: "Puedo cambiar el schema manualmente"</strong>
+              ❌ Fabric <strong>autogenera el schema</strong>. Puedes hacer enable/disable de operaciones y añadir relationships, pero no modificar types.</li>
+            <li><strong class="trap-title">Trampa 14: "El schema view permite editar"</strong>
+              ❌ El <strong>schema view es read-only</strong>. Para modificar usas el <strong>schema explorer</strong> (paneles y toggles).</li>
+            <li><strong class="trap-title">Trampa 15: "Las operaciones deshabilitadas siguen ejecutándose en silencio"</strong>
+              ❌ Los intentos sobre operaciones deshabilitadas <strong>devuelven error</strong>. No es un fallo silencioso.</li>
+            <li><strong class="trap-title">Trampa 16: "API for GraphQL sirve para data streaming"</strong>
+              ❌ Es para patrones <strong>request/response</strong>. Para streaming usa Eventstream.</li>
+            <li><strong class="trap-title">Trampa 17: "Puedo exponer stored procedures de cualquier data source"</strong>
+              ✅ Sí, para business logic custom. Los stored procs expuestos aparecen como operaciones en el schema.</li>
+            <li><strong class="trap-title">Trampa 18: "Los AI agents necesitan mi login de Fabric para GraphQL"</strong>
+              ✅ MCP server + service principal + Entra ID = AI agents autenticados. Muy flexible.</li>
+          </ul>
+        </article>
+
+        <!-- ============ 24. COMPARATIVAS ============ -->
+        <div class="category-header" id="comparativas">
+          <span class="category-header__icon">🆚</span>
+          <h2 class="category-header__title">24. Comparativas clave (chuleta)</h2>
+        </div>
+
+        <article class="concept-card">
+          <h4>GraphQL vs REST</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th></th><th>REST</th><th>GraphQL</th></tr></thead>
+              <tbody>
+                <tr><td>Endpoints</td><td>Múltiples</td><td>1</td></tr>
+                <tr><td>Response shape</td><td>Fija</td><td>Definida por el cliente</td></tr>
+                <tr><td>Over-fetching</td><td>✅ Común</td><td>❌</td></tr>
+                <tr><td>Under-fetching</td><td>✅ Común</td><td>❌</td></tr>
+                <tr><td>Versioning</td><td>v1, v2...</td><td>Schema evolution</td></tr>
+                <tr><td>Problema N+1</td><td>Común</td><td>Resuelto</td></tr>
+                <tr><td>Multi-source</td><td>Múltiples calls</td><td>1 query</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h4>Queries vs Mutations en Fabric GraphQL</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th></th><th>Queries</th><th>Mutations</th></tr></thead>
+              <tbody>
+                <tr><td>Propósito</td><td>Leer data</td><td>Escribir (INSERT/UPDATE/DELETE)</td></tr>
+                <tr><td>SQL Analytics Endpoint</td><td>✅</td><td>❌</td></tr>
+                <tr><td>Warehouse</td><td>✅</td><td>✅ (con PK)</td></tr>
+                <tr><td>SQL Database</td><td>✅</td><td>✅ (con PK)</td></tr>
+                <tr><td>Azure SQL DB</td><td>✅</td><td>✅ (con PK)</td></tr>
+                <tr><td>Subscriptions</td><td>N/A</td><td>N/A (no soportadas)</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h4>Data sources soportados</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Source</th><th>Read</th><th>Write</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Fabric Data Warehouse</strong></td><td>✅</td><td>✅ (con PK)</td></tr>
+                <tr><td><strong>SQL database in Fabric</strong></td><td>✅</td><td>✅ (con PK)</td></tr>
+                <tr><td><strong>Fabric Lakehouse (vía SQL EP)</strong></td><td>✅</td><td>❌ read-only</td></tr>
+                <tr><td><strong>Fabric Mirrored DBs (vía SQL EP)</strong></td><td>✅</td><td>❌ read-only</td></tr>
+                <tr><td><strong>Azure SQL Database</strong></td><td>✅</td><td>✅ (con PK)</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h4>SSO vs Saved credentials</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th></th><th>SSO</th><th>Saved credentials</th></tr></thead>
+              <tbody>
+                <tr><td>Acceso al data source</td><td>Cada user con sus creds</td><td>Un único principal compartido</td></tr>
+                <tr><td>Permisos en el data source</td><td>✅ Necesarios</td><td>❌ No</td></tr>
+                <tr><td>RLS/CLS por user</td><td>✅</td><td>❌ (aplica al principal guardado)</td></tr>
+                <tr><td>Complejidad</td><td>Alta</td><td>Baja</td></tr>
+                <tr><td>Cuándo</td><td>Enterprise interno con SSO</td><td>Apps externas, Azure SQL DB</td></tr>
+                <tr><td>Mezclar en 1 API</td><td colspan="2">❌ NO</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h4>Relationships (dentro de 1 source)</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Tipo</th><th>Ejemplo</th></tr></thead>
+              <tbody>
+                <tr><td><strong>1:1</strong></td><td>User → Profile</td></tr>
+                <tr><td><strong>1:N</strong></td><td>User → Posts</td></tr>
+                <tr><td><strong>N:M</strong></td><td>Student ↔ Course</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h4>Multi-source limitations</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Limitación</th><th>Detalle</th></tr></thead>
+              <tbody>
+                <tr><td>Relationships cross-source</td><td>❌ NO</td></tr>
+                <tr><td>Orden garantizado</td><td>❌ Paralelo</td></tr>
+                <tr><td>Transacciones</td><td>❌ Independientes</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h4>Los 4 paneles del editor</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Panel</th><th>Función</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Schema explorer</strong></td><td>Navegar types, fields, queries y mutations</td></tr>
+                <tr><td><strong>Run panel</strong></td><td>Ejecutar queries y ver resultados</td></tr>
+                <tr><td><strong>Query variables</strong></td><td>Pasar parámetros</td></tr>
+                <tr><td><strong>Results panel</strong></td><td>Ver el output</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h4>Componentes básicos del schema</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Componente</th><th>Analogía SQL</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Object type</strong></td><td>Table</td></tr>
+                <tr><td><strong>Field</strong></td><td>Column</td></tr>
+                <tr><td><strong>Field arguments</strong></td><td>WHERE clause</td></tr>
+                <tr><td><strong>Relationships</strong></td><td>Foreign key</td></tr>
+                <tr><td><strong>Query</strong></td><td>SELECT</td></tr>
+                <tr><td><strong>Mutation</strong></td><td>INSERT/UPDATE/DELETE</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h4>Custom business logic</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Approach</th><th>Cuándo</th></tr></thead>
+              <tbody>
+                <tr><td>Resolvers autogenerados</td><td>CRUD simple</td></tr>
+                <tr><td><strong>Stored procedures expuestos</strong></td><td>Lógica custom, business rules complejas</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </article>
+
+        <!-- ============ 25. FUENTES ============ -->
+        <div class="category-header" id="fuentes">
+          <span class="category-header__icon">📚</span>
+          <h2 class="category-header__title">25. Fuentes oficiales consultadas</h2>
+        </div>
+
+        <article class="concept-card">
+          <ul class="sources-list">
+            <li>Módulo Learn: <a href="https://learn.microsoft.com/training/modules/get-started-with-graphql-microsoft-fabric/" target="_blank" rel="noopener noreferrer">get-started-with-graphql-microsoft-fabric</a></li>
+            <li>What is Microsoft Fabric API for GraphQL?: <a href="https://learn.microsoft.com/fabric/data-engineering/api-graphql-overview" target="_blank" rel="noopener noreferrer">api-graphql-overview</a></li>
+            <li>Create an API for GraphQL in Fabric: <a href="https://learn.microsoft.com/fabric/data-engineering/get-started-api-graphql" target="_blank" rel="noopener noreferrer">get-started-api-graphql</a></li>
+            <li>GraphQL editor: <a href="https://learn.microsoft.com/fabric/data-engineering/api-graphql-editor" target="_blank" rel="noopener noreferrer">api-graphql-editor</a></li>
+            <li>Query multiple data sources: <a href="https://learn.microsoft.com/fabric/data-engineering/multiple-data-sources-graphql" target="_blank" rel="noopener noreferrer">multiple-data-sources-graphql</a></li>
+            <li>Connect applications: <a href="https://learn.microsoft.com/fabric/data-engineering/connect-apps-api-graphql" target="_blank" rel="noopener noreferrer">connect-apps-api-graphql</a></li>
+            <li>Stored procedures in GraphQL: <a href="https://learn.microsoft.com/fabric/data-engineering/api-graphql-stored-procedures" target="_blank" rel="noopener noreferrer">api-graphql-stored-procedures</a></li>
+            <li>Schema view y explorer: <a href="https://learn.microsoft.com/fabric/data-engineering/graphql-schema-view" target="_blank" rel="noopener noreferrer">graphql-schema-view</a></li>
+            <li>FAQ: <a href="https://learn.microsoft.com/fabric/data-engineering/graphql-faq" target="_blank" rel="noopener noreferrer">graphql-faq</a></li>
+            <li>Build local GraphQL MCP server for AI agents: <a href="https://learn.microsoft.com/fabric/data-engineering/api-graphql-local-model-context-protocol" target="_blank" rel="noopener noreferrer">api-graphql-local-model-context-protocol</a></li>
+            <li>Data API builder GraphQL: <a href="https://learn.microsoft.com/azure/data-api-builder/graphql" target="_blank" rel="noopener noreferrer">data-api-builder/graphql</a></li>
+            <li>Create Entra app: <a href="https://learn.microsoft.com/rest/api/fabric/articles/get-started/create-entra-app" target="_blank" rel="noopener noreferrer">create-entra-app</a></li>
+          </ul>
+        </article>
+
+        <div class="note note--next">
+          🚀 <strong>¡Módulo 13 completado!</strong> Ya sabes exponer tus datos de Fabric a cualquier aplicación sin escribir backend. Sigue con el <a href="modulo-14.html">Módulo 14: CI/CD en Fabric</a>. 🌸
+        </div>
+
+        <!-- Navegación del curso -->
+        <div class="course-nav">
+          <a href="modulo-12.html">
+            <span class="course-nav__label">← Anterior</span>
+            <span class="course-nav__title">Módulo 12 · SQL Database</span>
+          </a>
+          <a href="modulo-14.html" class="next">
+            <span class="course-nav__label">Siguiente →</span>
+            <span class="course-nav__title">Módulo 14 · CI/CD</span>
+          </a>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <button id="back-to-top" class="back-to-top" aria-label="Volver arriba" title="Volver arriba">↑</button>
+
+  <script src="https://cdn.jsdelivr.net/npm/i18next@23/dist/umd/i18next.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1/prism.min.js"></script>
+  <script src="../../../assets/js/theme.js"></script>
+  <script src="../../../assets/js/main.js"></script>
+  <script src="../../../assets/js/cursor.js"></script>
+</body>
+</html>
