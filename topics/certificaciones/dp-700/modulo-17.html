@@ -1,0 +1,1658 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="DP-700 Módulo 17: monitorizar actividades en Microsoft Fabric. Monitoring Hub, Activator, Capacity Metrics, CUs, bursting, smoothing, throttling, SKUs, troubleshooting y optimización de Lakehouse, Spark, Warehouse y Eventhouse.">
+  <title>DP-700 · Módulo 17: Monitorizar y optimizar | Power BI Guide by Kawaii BI</title>
+  <link rel="canonical" href="https://kawaiibi.es/topics/certificaciones/dp-700/modulo-17.html">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Kawaii Power BI Guide">
+  <meta property="og:locale" content="es_ES">
+  <meta property="og:title" content="DP-700 · Módulo 17: Monitorizar y optimizar | Power BI Guide by Kawaii BI">
+  <meta property="og:description" content="DP-700 Módulo 17: Monitoring Hub, Activator, capacidad y CUs, bursting, smoothing, throttling, troubleshooting y optimización.">
+  <meta property="og:url" content="https://kawaiibi.es/topics/certificaciones/dp-700/modulo-17.html">
+  <meta property="og:image" content="https://kawaiibi.es/assets/images/og-banner.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="1200">
+  <meta property="og:image:alt" content="Sara Lozano Marti - Kawaii Power BI">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="DP-700 · Módulo 17: Monitorizar y optimizar | Power BI Guide by Kawaii BI">
+  <meta name="twitter:description" content="DP-700 Módulo 17: Monitoring Hub, Activator, capacidad, throttling y optimización.">
+  <meta name="twitter:image" content="https://kawaiibi.es/assets/images/og-banner.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/prismjs@1/themes/prism-okaidia.min.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="../../../assets/css/main.css">
+  <link rel="stylesheet" href="../../../assets/css/themes.css">
+  <link rel="stylesheet" href="../../../assets/css/components.css">
+  <link rel="stylesheet" href="../../../assets/css/layout.css">
+
+  <style>
+    .topic-header { text-align: center; padding: 2.25rem 0 1.75rem; border-bottom: 2px solid var(--color-mauve); margin-bottom: 2rem; }
+    .topic-header__eyebrow { font-family: 'Fira Code', monospace; font-size: 0.8125rem; font-weight: 600; color: var(--color-coral); letter-spacing: 0.05em; }
+    .topic-header__icon { font-size: 3.5rem; margin: 0.5rem 0; display: block; }
+    .topic-header__title { font-size: clamp(1.75rem, 4vw, 2.25rem); font-weight: 800; color: var(--color-dark); margin-bottom: 0.625rem; line-height: 1.2; }
+    .topic-header__subtitle { font-size: 1rem; color: var(--color-slate); margin-bottom: 1.25rem; line-height: 1.55; max-width: 680px; margin-left: auto; margin-right: auto; }
+    .topic-header__levels { display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap; align-items: center; }
+
+    .toc { background: var(--color-rose); border-radius: var(--border-radius); padding: 1.25rem 1.5rem; margin-bottom: 2rem; border: 1.5px solid var(--color-mauve); }
+    .toc__title { font-size: 1rem; font-weight: 700; margin: 0 0 0.75rem; }
+    .toc__list { display: flex; flex-wrap: wrap; gap: 0.5rem; list-style: none; padding: 0; margin: 0; }
+    .toc__list a { font-size: 0.8125rem; color: var(--color-coral); text-decoration: none; padding: 0.25rem 0.625rem; background: var(--color-white); border-radius: 999px; border: 1px solid var(--color-mauve); }
+    .toc__list a:hover { background: var(--color-coral); color: #fff; }
+
+    .category-header { display: flex; align-items: center; gap: 0.75rem; margin: 2.5rem 0 1.25rem; padding: 0.875rem 1.25rem; background: var(--color-rose); border-radius: var(--border-radius-sm); border-left: 4px solid var(--color-coral); scroll-margin-top: 20px; }
+    .category-header__icon { font-size: 1.5rem; }
+    .category-header__title { font-size: 1.25rem; font-weight: 700; margin: 0; }
+
+    .concept-card { background: var(--color-white); border: 1.5px solid var(--color-mauve); border-radius: var(--border-radius); padding: 1.5rem 1.75rem; margin-bottom: 1.25rem; }
+    .concept-card h3 { font-size: 1.0625rem; font-weight: 700; color: var(--color-coral); margin: 0 0 0.6rem; }
+    .concept-card h4 { font-size: 0.9375rem; font-weight: 700; color: var(--color-dark); margin: 1.1rem 0 0.4rem; }
+    .concept-card p { font-size: 0.9375rem; line-height: 1.7; color: var(--color-dark); margin-bottom: 0.7rem; }
+    .concept-card ul, .concept-card ol { padding-left: 1.25rem; font-size: 0.9375rem; line-height: 1.75; color: var(--color-dark); margin: 0.4rem 0; }
+    .concept-card code { background: var(--color-blush); padding: 0.1em 0.4em; border-radius: 4px; font-family: 'Fira Code', monospace; font-size: 0.85em; color: var(--color-coral); }
+    .concept-card pre { margin: 0.75rem 0; }
+
+    .md-table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.84rem; }
+    .md-table th, .md-table td { border: 1px solid var(--color-mauve); padding: 0.5rem 0.7rem; text-align: left; vertical-align: top; }
+    .md-table th { background: var(--color-rose); font-weight: 700; color: var(--color-dark); }
+    .md-table tr:nth-child(even) td { background: var(--color-blush); }
+    .table-scroll { overflow-x: auto; }
+
+    .trap-list { list-style: none; padding: 0; margin: 0; }
+    .trap-list > li { background: var(--color-white); border: 1.5px solid var(--color-mauve); border-left: 4px solid var(--color-warning); border-radius: var(--border-radius-sm); padding: 0.875rem 1.125rem; margin-bottom: 0.75rem; font-size: 0.9375rem; line-height: 1.7; }
+    .trap-list strong.trap-title { display: block; color: var(--color-dark); margin-bottom: 0.25rem; }
+
+    .course-nav { display: flex; justify-content: space-between; gap: 1rem; margin-top: 2.5rem; flex-wrap: wrap; }
+    .course-nav a { flex: 1 1 220px; display: block; background: var(--color-white); border: 1.5px solid var(--color-mauve); border-radius: var(--border-radius); padding: 1rem 1.25rem; text-decoration: none; color: inherit; transition: var(--transition); }
+    .course-nav a:hover { border-color: var(--color-coral); box-shadow: var(--shadow-md); text-decoration: none; }
+    .course-nav__label { font-size: 0.75rem; color: var(--color-slate); text-transform: uppercase; letter-spacing: 0.05em; }
+    .course-nav__title { font-weight: 700; color: var(--color-coral); }
+    .course-nav a.next { text-align: right; }
+
+    .sources-list { font-size: 0.875rem; line-height: 1.9; word-break: break-word; }
+
+    .course-finale { background: var(--color-rose); border: 2px solid var(--color-coral); border-radius: var(--border-radius); padding: 2rem 1.75rem; margin: 2.5rem 0 1rem; text-align: center; }
+    .course-finale h2 { font-size: 1.5rem; font-weight: 800; color: var(--color-coral); margin: 0 0 0.5rem; }
+    .course-finale p { font-size: 0.9375rem; line-height: 1.7; color: var(--color-dark); }
+    .course-finale__phases { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin-top: 1.5rem; text-align: left; }
+    .course-finale__phase { background: var(--color-white); border: 1.5px solid var(--color-mauve); border-radius: var(--border-radius-sm); padding: 1rem 1.125rem; }
+    .course-finale__phase h3 { font-size: 0.9375rem; font-weight: 700; color: var(--color-dark); margin: 0 0 0.5rem; }
+    .course-finale__phase ol { font-size: 0.875rem; line-height: 1.7; padding-left: 1.25rem; margin: 0; }
+  </style>
+</head>
+<body>
+
+  <aside class="site-sidebar">
+    <div class="site-sidebar__profile">
+      <img src="../../../assets/images/avatar-sara.png" alt="Sara Lozano Martí" class="site-sidebar__avatar">
+      <p class="site-sidebar__name">Sara Lozano Martí</p>
+      <p class="site-sidebar__subtitle">Power BI Expert</p>
+    </div>
+    <nav class="site-sidebar__nav" aria-label="Navegación principal">
+      <ul>
+        <li><a href="../../../index.html" class="site-sidebar__link"><span class="site-sidebar__icon">🏠</span> Inicio</a></li>
+        <li><a href="../../dax.html" class="site-sidebar__link"><span class="site-sidebar__icon">⚡</span> Funciones DAX</a></li>
+        <li><a href="../../power-query.html" class="site-sidebar__link"><span class="site-sidebar__icon">🔄</span> Power Query</a></li>
+        <li><a href="../../lenguaje-m.html" class="site-sidebar__link"><span class="site-sidebar__icon">〽️</span> Lenguaje M</a></li>
+        <li><a href="../../modelado.html" class="site-sidebar__link"><span class="site-sidebar__icon">🗄️</span> Modelado</a></li>
+        <li><a href="../../conceptos-powerbi.html" class="site-sidebar__link"><span class="site-sidebar__icon">📊</span> Conceptos Power BI</a></li>
+        <li><a href="../../fabric.html" class="site-sidebar__link"><span class="site-sidebar__icon">🧵</span> Microsoft Fabric</a></li>
+        <li><a href="../../tmdl.html" class="site-sidebar__link"><span class="site-sidebar__icon">📝</span> TMDL</a></li>
+        <li><a href="../../diseno-ux.html" class="site-sidebar__link"><span class="site-sidebar__icon">🎨</span> Diseño y UX</a></li>
+        <li><a href="../../gobernanza.html" class="site-sidebar__link"><span class="site-sidebar__icon">🔒</span> Gobernanza</a></li>
+        <li><a href="../../certificaciones.html" class="site-sidebar__link is-active"><span class="site-sidebar__icon">🎓</span> Certificaciones</a></li>
+      </ul>
+    </nav>
+    <div class="site-sidebar__divider"></div>
+    <div class="site-sidebar__footer">
+      <a href="../../../quien-soy.html" class="site-sidebar__link site-sidebar__link--highlight"><span class="site-sidebar__icon">👩‍💻</span> ¿Quién soy?</a>
+      <div class="site-sidebar__social">
+        <a href="https://www.linkedin.com/in/saralozanomarti" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><img src="../../../assets/images/logo-linkedin.png" alt="LinkedIn" class="site-sidebar__social-icon"></a>
+        <a href="https://www.youtube.com/@KawaiiPowerBI" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><img src="../../../assets/images/logo-youtube.png" alt="YouTube" class="site-sidebar__social-icon"></a>
+        <a href="https://github.com/KawaiiBI" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><img src="../../../assets/images/logo-github.png" alt="GitHub" class="site-sidebar__social-icon"></a>
+      </div>
+      <div class="site-sidebar__logo-bottom"><img src="../../../assets/images/logo-kawaii.jpg" alt="Kawaii BI" class="site-sidebar__logo-img"></div>
+      <p class="site-sidebar__copyright">Power BI Guide 🌸<br>© 2026 Kawaii BI</p>
+    </div>
+  </aside>
+
+  <div class="page-wrapper">
+    <main class="main-content">
+      <div class="topic-page">
+
+        <nav class="breadcrumb" aria-label="Ruta de navegación">
+          <span class="breadcrumb__item"><a href="../../../index.html">🏠 Inicio</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item"><a href="../../certificaciones.html">Certificaciones</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item"><a href="../dp-700.html">DP-700</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item">Módulo 17</span>
+        </nav>
+
+        <header class="topic-header">
+          <span class="topic-header__eyebrow">DP-700 · MÓDULO 17 · FINAL 🎓</span>
+          <span class="topic-header__icon">📊</span>
+          <h1 class="topic-header__title">Monitorizar actividades en Microsoft Fabric</h1>
+          <p class="topic-header__subtitle">El Dominio 3 al completo: Monitoring Hub, Activator, Capacity Metrics y CUs, bursting, smoothing, throttling, SKUs, troubleshooting y optimización de Lakehouse, Spark, Warehouse y Eventhouse. 🌸</p>
+          <div class="topic-header__levels">
+            <span class="badge badge--intermediate">Intermedio</span>
+            <span class="badge badge--advanced">Avanzado</span>
+          </div>
+        </header>
+
+        <nav class="toc" aria-label="Índice del módulo">
+          <p class="toc__title">📑 En este módulo:</p>
+          <ul class="toc__list">
+            <li><a href="#objetivos">1. Objetivos y encaje</a></li>
+            <li><a href="#que-es">2. ¿Qué es monitoring?</a></li>
+            <li><a href="#monitoring-hub">3. Monitoring Hub</a></li>
+            <li><a href="#items-supported">4. Item types soportados</a></li>
+            <li><a href="#activities">5. Activities page</a></li>
+            <li><a href="#historical">6. Historical runs</a></li>
+            <li><a href="#search-filter">7. Search y filter</a></li>
+            <li><a href="#schedule-failures">8. Schedule failures</a></li>
+            <li><a href="#activator">9. Activator</a></li>
+            <li><a href="#activator-concepts">10. Objects y rules</a></li>
+            <li><a href="#stateless-stateful">11. Stateless vs Stateful</a></li>
+            <li><a href="#alerts-kql">12. Alertas desde KQL Queryset</a></li>
+            <li><a href="#alerts-dashboard">13. Alertas desde dashboard</a></li>
+            <li><a href="#alerts-warehouse">14. Alertas desde Warehouse</a></li>
+            <li><a href="#actions">15. Actions de Activator</a></li>
+            <li><a href="#refresh-alerts">16. Refresh alerts</a></li>
+            <li><a href="#workspace-monitoring">17. Workspace monitoring</a></li>
+            <li><a href="#capacity-metrics">18. Capacity Metrics y CUs</a></li>
+            <li><a href="#skus">19. Fabric SKUs</a></li>
+            <li><a href="#bursting">20. Bursting</a></li>
+            <li><a href="#smoothing">21. Smoothing</a></li>
+            <li><a href="#throttling">22. Throttling</a></li>
+            <li><a href="#burstable-guardrails">23. Guardrails en Warehouse</a></li>
+            <li><a href="#troubleshooting">24. Troubleshooting</a></li>
+            <li><a href="#opt-lakehouse">25. Optimizar Lakehouse</a></li>
+            <li><a href="#opt-spark">26. Optimizar Spark</a></li>
+            <li><a href="#opt-warehouse">27. Optimizar Warehouse</a></li>
+            <li><a href="#opt-eventhouse">28. Optimizar Eventhouse</a></li>
+            <li><a href="#dmvs">29. DMVs y query insights</a></li>
+            <li><a href="#admin-workspace">30. Admin monitoring workspace</a></li>
+            <li><a href="#best-practices">31. Best practices</a></li>
+            <li><a href="#trampas">32. Trampas típicas</a></li>
+            <li><a href="#comparativas">33. Comparativas clave</a></li>
+            <li><a href="#fuentes">34. Fuentes oficiales</a></li>
+          </ul>
+        </nav>
+
+        <!-- ============ 1. OBJETIVOS ============ -->
+        <div class="category-header" id="objetivos">
+          <span class="category-header__icon">🎯</span>
+          <h2 class="category-header__title">1. Objetivos y encaje en el DP-700</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>¿Qué te enseña este módulo?</h3>
+          <p>Este módulo cubre <strong>cómo monitorizar, alertar y optimizar</strong> en Fabric — el Dominio 3 completo (30-35% del examen). Los objetivos oficiales:</p>
+          <ol>
+            <li>Aplicar conceptos de monitorización a Microsoft Fabric.</li>
+            <li>Usar el <strong>Monitoring Hub</strong> en Microsoft Fabric.</li>
+            <li>Disparar acciones usando <strong>Activator</strong> en Microsoft Fabric.</li>
+            <li>Resolver fallos comunes.</li>
+            <li>Optimizar el rendimiento de los items y de la capacidad.</li>
+          </ol>
+
+          <h4>Peso en el examen DP-700</h4>
+          <p><strong>Este módulo cubre todo el Dominio 3</strong> (30-35%):</p>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Sub-área</th><th>Detalle</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Monitor</strong></td><td>Monitoring Hub, Activator, alerts, refresh de semantic models, workspace monitoring</td></tr>
+                <tr><td><strong>Troubleshoot</strong></td><td>Pipelines, Dataflows Gen2, Notebooks, Eventhouse, Eventstreams, T-SQL, shortcuts</td></tr>
+                <tr><td><strong>Optimize</strong></td><td>V-Order, OPTIMIZE, VACUUM, particionado, performance de Spark, Warehouse y Eventhouse, performance de queries</td></tr>
+                <tr><td><strong>Capacity</strong></td><td>CU, bursting, smoothing, throttling, F SKU</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="note note--tip">
+            🎯 <strong>Qué es CRÍTICO dominar:</strong>
+            <ul>
+              <li><strong>Monitoring Hub</strong>: activities, historical runs, filtros</li>
+              <li><strong>Activator</strong>: rules, conditions, actions</li>
+              <li><strong>Stateless vs Stateful rules</strong></li>
+              <li><strong>Capacity Metrics app</strong> y <strong>CUs</strong></li>
+              <li><strong>Bursting, Smoothing y Throttling</strong> (los 3 conceptos clave)</li>
+              <li><strong>F SKUs</strong> y sus equivalencias</li>
+              <li><strong>V-Order</strong> en Lakehouse</li>
+              <li><strong>OPTIMIZE y VACUUM</strong> en tablas Delta</li>
+              <li><strong>Patrones de troubleshooting</strong></li>
+              <li><strong>Patrones de optimización de queries</strong></li>
+            </ul>
+          </div>
+
+          <div class="note note--tip">
+            🌸 <strong>Sobre este módulo:</strong> es EL módulo del Dominio 3 completo. <strong>Denso pero fundamental</strong> — se pregunta mucho de optimización y capacidad en el examen. <strong>¡Vamos a por ello!</strong> Y <strong>enhorabuena por llegar hasta el final del curso</strong> 🎓💕
+          </div>
+        </article>
+
+        <!-- ============ 2. QUÉ ES ============ -->
+        <div class="category-header" id="que-es">
+          <span class="category-header__icon">📊</span>
+          <h2 class="category-header__title">2. ¿Qué es monitoring en Fabric?</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>Definición</h3>
+          <p><strong>Monitoring</strong> = <strong>ganar visibilidad</strong> sobre la salud de tus sistemas de datos. El monitoring de Fabric te permite:</p>
+          <ul>
+            <li><strong>Seguir los jobs en ejecución y completados</strong>.</li>
+            <li><strong>Investigar fallos</strong>.</li>
+            <li><strong>Comparar el rendimiento</strong> a lo largo del tiempo.</li>
+            <li><strong>Configurar alertas</strong> para incidencias.</li>
+            <li><strong>Optimizar el uso de recursos</strong>.</li>
+          </ul>
+
+          <h4>Los pilares del monitoring en Fabric</h4>
+          <ol>
+            <li><strong>Monitoring Hub</strong> — actividades entre workspaces.</li>
+            <li><strong>Activator</strong> — alertas y acciones ante patrones o condiciones.</li>
+            <li><strong>Capacity Metrics app</strong> — consumo de CU y throttling.</li>
+            <li><strong>Admin monitoring workspace</strong> — gobernanza y analítica de uso.</li>
+            <li><strong>Monitorización específica por item</strong> — Spark UI, historial de queries del warehouse, insights del Eventhouse.</li>
+            <li><strong>Purview Audit</strong> — activity logs (visto en el Módulo 16).</li>
+          </ol>
+
+          <div class="note note--tip">
+            🌷 <strong>Analogía kawaii:</strong> piensa en Fabric como <strong>un centro comercial kawaii gigante</strong>. El <strong>Monitoring Hub</strong> son las pantallas del hall que te dicen qué tiendas están abiertas y su estado. <strong>Activator</strong> son los sensores + la megafonía que avisan cuando algo se sale de lo normal. <strong>Capacity Metrics</strong> son los medidores de consumo eléctrico del edificio. Y el <strong>admin workspace</strong> es el despacho de dirección con los reports globales. Todo trabaja <strong>junto</strong> para que el centro funcione fluido 🎠✨
+          </div>
+
+          <h4>¿Qué preguntas responde el monitoring?</h4>
+          <ol>
+            <li><strong>¿Cuál es el estado actual</strong> de un job — running, succeeded, failed?</li>
+            <li><strong>¿Dónde ha fallado</strong> y qué detalles de error hay disponibles?</li>
+            <li><strong>¿Ha fallado este job antes</strong> en los últimos 30 días?</li>
+            <li><strong>¿Qué items programados</strong> tienen notificaciones de fallo configuradas?</li>
+            <li>¿Estoy <strong>excediendo mi capacidad</strong>?</li>
+            <li>¿Está ocurriendo <strong>throttling</strong>?</li>
+            <li>¿Qué <strong>usuarios</strong> consumen más recursos?</li>
+          </ol>
+        </article>
+
+        <!-- ============ 3. MONITORING HUB ============ -->
+        <div class="category-header" id="monitoring-hub">
+          <span class="category-header__icon">🎯</span>
+          <h2 class="category-header__title">3. Monitoring Hub: la vista central</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>¿Qué es?</h3>
+          <p>La feature <strong>Fabric Monitor</strong> abre el <strong>Monitoring Hub</strong>: una vista centralizada de la <strong>salud, el progreso y los resultados de la ejecución de los jobs</strong>. Permite <strong>identificar problemas rápidamente y actuar</strong> desde un solo sitio.</p>
+
+          <h4>Cómo abrirlo</h4>
+          <p>En el <strong>panel de navegación</strong> → seleccionar <strong>Monitor</strong>.</p>
+
+          <h4>Las 2 páginas principales</h4>
+          <p><strong>A) Activities</strong> 📋 — seguir los <strong>jobs activos y recién completados</strong> entre workspaces. Muestra <strong>hasta 100 actividades de Fabric</strong> de los últimos 30 días, ordenadas por hora de inicio (las más recientes primero). La tabla muestra <strong>hasta 100 actividades por item de Fabric</strong>.</p>
+          <p><strong>B) Schedule failures (Preview)</strong> ⚠️ — <strong>ver y gestionar las notificaciones de fallo</strong> de los items programados. Ubicación central para toda la gestión de fallos.</p>
+
+          <h4>Key features</h4>
+          <ol>
+            <li><strong>Estado del run actual</strong> — jobs activos y recién completados.</li>
+            <li><strong>Historical runs</strong> — investigar fallos, comparar rendimiento, validar reruns.</li>
+            <li><strong>Detalles y diagnóstico de la actividad</strong> — estado, tiempos, detalles de error.</li>
+            <li><strong>Filtrado y búsqueda de actividades</strong> — acotar resultados.</li>
+            <li><strong>Notificaciones de fallo de schedule</strong> — gestión centralizada.</li>
+          </ol>
+
+          <div class="note note--warning">
+            ⚠️ <strong>Permisos:</strong> <strong>cualquier usuario de Fabric</strong> puede abrir el Monitoring Hub, pero <strong>solo verá las actividades de los items de Fabric que tenga permiso a ver</strong>. <strong>Sin permiso sobre el item</strong> → no verás sus actividades.
+          </div>
+
+          <h4>Acciones desde el hub</h4>
+          <p>Si tienes los <strong>permisos apropiados</strong> sobre un item de Fabric, puedes <strong>realizar acciones directamente desde el Monitoring Hub</strong>. Las acciones disponibles <strong>dependen del tipo de item</strong>: pipelines (rerun, cancel), notebooks (ver detalles, snapshot), semantic models (refresh, cancelar refresh), etc.</p>
+        </article>
+
+        <!-- ============ 4. ITEMS SUPPORTED ============ -->
+        <div class="category-header" id="items-supported">
+          <span class="category-header__icon">📦</span>
+          <h2 class="category-header__title">4. Item types soportados</h2>
+        </div>
+
+        <article class="concept-card">
+          <h4>Lista completa</h4>
+          <p>La página Activities muestra actividades para estos items de Fabric:</p>
+          <ol>
+            <li><strong>Copy Job</strong></li>
+            <li><strong>Dataflow Gen2</strong></li>
+            <li><strong>Dataflow Gen2 CI/CD</strong></li>
+            <li><strong>Datamart</strong></li>
+            <li><strong>Data Build Tool (dbt) Job</strong></li>
+            <li><strong>Digital Twin Builder Flow</strong></li>
+            <li><strong>Experiment</strong> (experimentos de ML)</li>
+            <li><strong>Graph model</strong></li>
+            <li><strong>Lakehouse</strong></li>
+            <li><strong>Map</strong></li>
+            <li><strong>Notebook</strong></li>
+            <li><strong>Pipeline</strong></li>
+            <li><strong>Semantic model</strong></li>
+            <li><strong>Snowflake database</strong></li>
+            <li><strong>Spark job definition</strong></li>
+            <li><strong>User data function</strong></li>
+          </ol>
+
+          <div class="note note--warning">
+            ⚠️ <strong>Notas importantes:</strong> <strong>Dataflow Gen1 NO está soportado</strong> y no aparece en la tabla.
+            <br>Para los <strong>Spark notebook jobs con jobType "NotebookInteractiveRun"</strong>, todos los notebooks terminados se muestran como "Stopped". Es un <strong>cambio temporal solo de UI</strong> con limitaciones: no puedes filtrar por el estado "Stopped", y el estado puede ser <strong>inconsistente</strong> entre la tabla del Monitoring Hub, la Public Job Status API y los eventos del job.
+          </div>
+
+          <h4>Item types aún NO soportados</h4>
+          <ul>
+            <li><strong>Dataflow Gen1</strong> (legacy).</li>
+            <li><strong>Eventstreams</strong> (usan su propia monitorización).</li>
+            <li><strong>KQL queries</strong> (usan su propia monitorización en el Eventhouse).</li>
+            <li><strong>Reports</strong> (usan usage metrics).</li>
+          </ul>
+        </article>
+
+        <!-- ============ 5. ACTIVITIES ============ -->
+        <div class="category-header" id="activities">
+          <span class="category-header__icon">📋</span>
+          <h2 class="category-header__title">5. Activities page y detalles</h2>
+        </div>
+
+        <article class="concept-card">
+          <h4>Estructura</h4>
+          <p>La página principal de <strong>Activities</strong> tiene una <strong>tabla</strong> con las actividades, <strong>filtros</strong> arriba, una <strong>búsqueda</strong> por palabra clave, <strong>opciones de columna</strong> para personalizar y un <strong>panel de detalles</strong> al seleccionar una actividad.</p>
+
+          <h4>Ver los detalles de una actividad</h4>
+          <p>Para abrir el <strong>panel de detalles</strong>: apunta al <strong>nombre de la actividad</strong> y selecciona el símbolo <strong>View details</strong> (<strong>ⓘ</strong>).</p>
+          <p>El panel muestra el <strong>estado</strong>, la <strong>hora de inicio</strong>, la <strong>duración</strong>, los <strong>detalles del error</strong> (si ha fallado), la <strong>información del item</strong>, quién lo <strong>envió</strong> y la <strong>ubicación</strong> (workspace).</p>
+
+          <h4>Estados</h4>
+          <p><strong>Cada item de Fabric tiene su propio conjunto</strong> de operaciones y estados. Para mostrar <strong>resultados consistentes</strong>, el Monitoring Hub puede mostrar una <strong>versión simplificada</strong> del estado. El <strong>estado exacto</strong> del item está en el panel de detalles.</p>
+          <p><strong>Estados comunes</strong>: <strong>Succeeded</strong> ✅, <strong>Failed</strong> ❌, <strong>In Progress</strong> 🔄, <strong>Queued</strong> ⏸️, <strong>Cancelled</strong> 🚫 y <strong>Stopped</strong> ⏹️ (para notebook interactive runs terminados).</p>
+
+          <h4>Cambiar columnas</h4>
+          <p>Puedes <strong>personalizar las columnas</strong> con <strong>Column Options</strong>: <strong>añadir/quitar columnas</strong>, <strong>reordenarlas</strong> arrastrando y ordenar haciendo click en la cabecera (la flecha indica el orden).</p>
+          <p><strong>Columnas típicas</strong>: nombre del item, tipo de item, estado, hora de inicio, duración, quién lo envió, ubicación (workspace) e intento de reintento.</p>
+        </article>
+
+        <!-- ============ 6. HISTORICAL ============ -->
+        <div class="category-header" id="historical">
+          <span class="category-header__icon">🕰️</span>
+          <h2 class="category-header__title">6. Historical runs (30 días)</h2>
+        </div>
+
+        <article class="concept-card">
+          <h4>Limitación de la vista principal</h4>
+          <p>La página principal de <strong>Activities muestra solo</strong> las 100 actividades más recientes de los últimos 30 días. <strong>Los jobs que se ejecutan con frecuencia pueden no mostrar todas sus ejecuciones</strong> en la vista principal.</p>
+
+          <h4>Historical runs</h4>
+          <p>Para ver el <strong>historial completo de 30 días</strong> de una actividad concreta:</p>
+          <ol>
+            <li>Apuntar al <strong>nombre de la actividad</strong>.</li>
+            <li>Seleccionar <strong>More options</strong> (<strong>...</strong>).</li>
+            <li>Seleccionar <strong>Historical runs</strong>.</li>
+          </ol>
+          <p>La tabla muestra hasta 30 días de información histórica de esa actividad. Con <strong>Back to main view</strong> vuelves a la vista principal.</p>
+
+          <h4>Uso típico</h4>
+          <ul>
+            <li><strong>Depurar</strong>: ver si un job siempre falla o solo a veces.</li>
+            <li><strong>Análisis de tendencias</strong>: ¿el job tarda cada vez más?</li>
+            <li><strong>Validar reruns</strong>: verificar que los reruns funcionan tras un fix.</li>
+            <li><strong>Comparar duraciones</strong>: identificar regresiones de rendimiento.</li>
+          </ul>
+        </article>
+
+        <!-- ============ 7. SEARCH FILTER ============ -->
+        <div class="category-header" id="search-filter">
+          <span class="category-header__icon">🔍</span>
+          <h2 class="category-header__title">7. Search y filter</h2>
+        </div>
+
+        <article class="concept-card">
+          <h4>Búsqueda por palabra clave</h4>
+          <p>La caja <strong>Filter by keyword</strong> encuentra actividades o items <strong>por nombre o palabra clave</strong>. La búsqueda consulta <strong>solo los datos ya cargados</strong>, no todas las actividades de la base de datos.</p>
+
+          <h4>Opciones de filtro</h4>
+          <p>El <strong>filtro</strong> acota los resultados por propiedades:</p>
+          <ol>
+            <li><strong>Status</strong> — seleccionar el tipo de estado a mostrar. Ojo: cada item tiene estados únicos; el hub puede mostrarlos simplificados.</li>
+            <li><strong>Item type</strong> — seleccionar los tipos de item de Fabric a mostrar. Se pueden seleccionar varios.</li>
+            <li><strong>Start time</strong> — periodo predeterminado, o <strong>Customize</strong> para un rango custom. Opciones: última hora, últimas 24 horas, últimos 7 días, últimos 30 días, etc.</li>
+            <li><strong>Submitted by</strong> — seleccionar el <strong>propietario</strong> del item de Fabric. Filtrar por usuario o grupo.</li>
+            <li><strong>Location</strong> — seleccionar <strong>de qué workspaces</strong> ver actividades. Filtrado multi-workspace.</li>
+          </ol>
+
+          <div class="note note--tip">
+            🌸 <strong>Persistencia del filtro:</strong> el <strong>Monitoring Hub recuerda</strong> tu selección de filtros para la próxima vez. Muy útil para investigaciones continuadas.
+          </div>
+
+          <h4>Ejemplo del examen</h4>
+          <p><strong>Escenario</strong>: quiero ver los <strong>jobs fallidos</strong> del <strong>workspace Production</strong> de las <strong>últimas 24 horas</strong>.</p>
+          <p><strong>Filtro</strong>: Status = Failed, Location = Production, Start time = Last 24 hours. La tabla muestra solo esos jobs → click en cada uno para ver los detalles.</p>
+        </article>
+
+        <!-- ============ 8. SCHEDULE FAILURES ============ -->
+        <div class="category-header" id="schedule-failures">
+          <span class="category-header__icon">⚠️</span>
+          <h2 class="category-header__title">8. Schedule failure notifications</h2>
+        </div>
+
+        <article class="concept-card">
+          <h4>Feature</h4>
+          <p>La página <strong>Schedule failures (Preview)</strong> del Monitoring Hub permite <strong>ver y gestionar las notificaciones de fallo</strong> de los items programados.</p>
+
+          <h4>Cómo configurarlas</h4>
+          <p><strong>Opción A: desde la página Schedule failures</strong> — ir a <strong>Schedule failures</strong>, seleccionar el item y configurar los destinatarios.</p>
+          <p><strong>Opción B: desde el panel de job scheduler del item</strong> — abrir el item, ir a los settings de <strong>Schedule</strong> y configurar las notificaciones.</p>
+
+          <h4>Permisos</h4>
+          <p><strong>Visibilidad</strong>: puedes <strong>ver las notificaciones de fallo</strong> de cualquier item programado sobre el que tengas <strong>permiso de vista</strong>.</p>
+          <p><strong>Edición</strong>: configurar nuevas notificaciones, editar destinatarios o eliminar notificaciones requiere al menos el rol <strong>Contributor</strong> en el workspace, o el <strong>permiso Write</strong> sobre el item.</p>
+
+          <div class="note note--warning">
+            ⚠️ <strong>Limitaciones:</strong>
+            <ol>
+              <li>Los <strong>semantic models aún NO están soportados</strong> en la página Schedule failures. Otros tipos de item sí.</li>
+              <li>Las notificaciones aplican <strong>solo a los runs programados</strong>. Los runs disparados manualmente o iniciados por otros medios <strong>no disparan notificaciones</strong>.</li>
+              <li>Las notificaciones se envían en el <strong>idioma de visualización</strong> de la cuenta de Fabric del destinatario, con <strong>inglés como fallback</strong>.</li>
+            </ol>
+          </div>
+
+          <h4>Contenido de la notificación</h4>
+          <p>El email de fallo incluye el nombre del item, los detalles del fallo, el timestamp y un enlace al Monitoring Hub para investigar.</p>
+
+          <h4>Editar / eliminar</h4>
+          <p><strong>Edit recipients</strong> para cambiar la lista. <strong>Remove notifications</strong> para ese item si quieres dejar de recibirlas.</p>
+        </article>
+
+        <!-- ============ 9. ACTIVATOR ============ -->
+        <div class="category-header" id="activator">
+          <span class="category-header__icon">🎯</span>
+          <h2 class="category-header__title">9. Activator (Fabric): qué es y para qué</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>Definición</h3>
+          <p><strong>Fabric Activator</strong> = experiencia <strong>no-code y sin scripting</strong> que permite tomar <strong>acciones automáticas</strong> cuando se detectan <strong>patrones o condiciones</strong> en los datos (streaming o batch).</p>
+
+          <h4>Uso típico</h4>
+          <ul>
+            <li><strong>Enviar emails de alerta</strong> cuando la temperatura de un congelador supera un umbral.</li>
+            <li><strong>Disparar un pipeline</strong> cuando llegan datos nuevos de ventas.</li>
+            <li><strong>Publicar un mensaje en Teams</strong> cuando un sensor detecta un fallo.</li>
+            <li><strong>Llamar a un flow de Power Automate</strong> para automatizaciones complejas.</li>
+          </ul>
+
+          <h4>Fuentes de datos</h4>
+          <p><strong>Activator puede monitorizar</strong>:</p>
+          <ol>
+            <li><strong>Eventstreams</strong> — datos de streaming en tiempo real.</li>
+            <li><strong>KQL Querysets</strong> — queries KQL programadas en el Eventhouse.</li>
+            <li><strong>Real-Time Dashboards</strong> — visualizaciones de datos KQL.</li>
+            <li><strong>Queries SQL de Fabric Data Warehouse (preview)</strong> — queries SQL programadas.</li>
+            <li><strong>Reports de Power BI</strong> (vía alertas en los visuals).</li>
+          </ol>
+
+          <h4>Acciones posibles</h4>
+          <p>Cuando se cumple la condición: <strong>notificación por email</strong>, <strong>mensaje de Microsoft Teams</strong> (individuos, chat de grupo, canal), <strong>ejecutar actividades de Fabric</strong> (pipeline, dataflow, notebook, User Data Function, copy job), <strong>publicar un business event</strong> (preview) o una <strong>acción custom</strong> (flow de Power Automate).</p>
+
+          <h4>Qué construye Activator</h4>
+          <p><strong>Activator crea inteligencia reactiva</strong> en tus data pipelines: sin scripting, sin montar infraestructura, <strong>totalmente gestionado</strong> y <strong>serverless</strong> — pagas por lo que usas vía consumo de CU.</p>
+
+          <div class="note note--tip">
+            🌷 <strong>Analogía kawaii:</strong> piensa en Activator como una <strong>guardiana kawaii</strong> que <strong>vigila</strong> tus datos constantemente, <strong>reacciona</strong> cuando algo se sale de lo normal, <strong>avisa</strong> a las personas indicadas y <strong>toma acciones</strong> automáticamente. Es tu <strong>butler proactivo</strong> para datos 🎀
+          </div>
+        </article>
+
+        <!-- ============ 10. ACTIVATOR CONCEPTS ============ -->
+        <div class="category-header" id="activator-concepts">
+          <span class="category-header__icon">🎨</span>
+          <h2 class="category-header__title">10. Activator core concepts: objects y rules</h2>
+        </div>
+
+        <article class="concept-card">
+          <h4>Los 3 conceptos core</h4>
+          <p>Activator gira en torno a 3 conceptos: <strong>Objects</strong> 📦, <strong>Rules</strong> 📏 y <strong>Actions</strong> 🎯.</p>
+
+          <h4>Objects</h4>
+          <p>Los <strong>business objects</strong> son las <strong>entidades que monitorizas</strong>. Pueden ser <strong>físicas</strong> (congeladores, vehículos, paquetes, usuarios) o <strong>conceptuales</strong> (campañas de publicidad, cuentas de cliente, sesiones de usuario).</p>
+
+          <h4>Object instances</h4>
+          <ul>
+            <li><strong>Object</strong> = la definición general (ej: "freezer" como tipo).</li>
+            <li><strong>Object instance</strong> = un ejemplo concreto (ej: freezer FR-001, freezer FR-002).</li>
+            <li><strong>Population</strong> = el conjunto completo de instancias monitorizadas.</li>
+          </ul>
+
+          <h4>Cómo modela los objects Activator</h4>
+          <p>Para <strong>modelar un business object</strong>:</p>
+          <ol>
+            <li><strong>Conectar uno o varios eventstreams</strong>.</li>
+            <li><strong>Seleccionar una columna</strong> que actúe como <strong>object ID</strong> (la primary key de la entidad).</li>
+            <li><strong>Especificar los campos</strong> que quieres tratar como <strong>propiedades</strong> del object.</li>
+          </ol>
+          <p>La <strong>creación del object es implícita</strong> — Activator agrupa los eventos usando la <strong>object key</strong> designada. Las <strong>rules están acotadas a los objects</strong>: toda la lógica de evaluación es object-aware e independiente entre instancias.</p>
+          <p><strong>Ejemplo</strong>: una rule que monitoriza <code>bikepoint_id</code> crea <strong>evaluaciones lógicas distintas</strong> para cada estación de bicis única.</p>
+
+          <h4>Rules</h4>
+          <p>Las <strong>rules definen</strong> las <strong>condiciones</strong> a detectar en tus objects y las <strong>acciones</strong> a tomar cuando se cumplen.</p>
+          <p><strong>Ejemplo</strong>: una rule sobre el object freezer podría detectar cuándo la <strong>temperatura sube por encima del umbral seguro</strong> y enviar automáticamente un email de alerta al técnico asignado.</p>
+        </article>
+
+        <!-- ============ 11. STATELESS/STATEFUL ============ -->
+        <div class="category-header" id="stateless-stateful">
+          <span class="category-header__icon">🔄</span>
+          <h2 class="category-header__title">11. Stateless vs Stateful rules</h2>
+        </div>
+
+        <article class="concept-card">
+          <h4>Los 2 tipos</h4>
+          <p><strong>A) Stateless rules</strong> 🎯 — evalúan <strong>cada evento de forma aislada</strong>, sin memoria de eventos anteriores. <strong>Ejemplo</strong>: <code>value &lt; 50</code>.</p>
+          <p><strong>B) Stateful rules</strong> 🧠 — <strong>mantienen memoria entre eventos por object</strong> y son conscientes del contexto temporal. <strong>Ejemplo</strong>: <code>value DECREASES</code>, <code>value BECOMES</code>, <code>EXIT RANGE</code>.</p>
+
+          <h4>La evaluación stateful depende de 3 cosas</h4>
+          <p><strong>1. Delta detection</strong> — sigue los <strong>cambios</strong> entre el valor del evento anterior y el actual. Detecta "cuándo el valor pasó a ser", "cuándo el valor cayó".</p>
+          <p><strong>2. Temporal sequencing</strong> — evalúa <strong>condiciones basadas en el tiempo</strong>, como la ausencia de eventos. <strong>Detección de heartbeat</strong>: "si no hay señal en 5 minutos → alerta".</p>
+          <p><strong>3. State transitions</strong> — las rules <strong>solo se disparan al ENTRAR en un nuevo estado</strong>. <strong>Evita disparos repetidos</strong> en condiciones que no cambian. Ejemplo: la alerta de temperatura &gt; 30 se dispara UNA vez, no en cada evento por encima de 30.</p>
+
+          <h4>Comparativa</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th></th><th>Stateless</th><th>Stateful</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Memoria</strong></td><td>❌</td><td>✅</td></tr>
+                <tr><td><strong>Tipos de condición</strong></td><td>Umbrales simples</td><td>Cambios, transiciones, ausencia</td></tr>
+                <tr><td><strong>Disparo</strong></td><td>En cada evento</td><td>Solo en transiciones</td></tr>
+                <tr><td><strong>Ejemplo</strong></td><td><code>temp &gt; 30</code></td><td><code>temp INCREASES BY 5 IN 10min</code></td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h4>SQL query rules (preview)</h4>
+          <p>Además del streaming, Activator soporta <strong>rules basadas en los resultados de queries SQL de Fabric Data Warehouse (preview)</strong>. Puedes <strong>definir rules</strong> que evalúen una query SQL con una frecuencia configurable, <strong>comprobar condiciones</strong> contra el result set y <strong>disparar acciones</strong> cuando se cumplan.</p>
+          <p><strong>Beneficio</strong>: monitorizar datos del warehouse <strong>sin necesitar fuentes de streaming</strong>.</p>
+        </article>
+
+        <!-- ============ 12. ALERTS KQL ============ -->
+        <div class="category-header" id="alerts-kql">
+          <span class="category-header__icon">📊</span>
+          <h2 class="category-header__title">12. Alertas Activator desde KQL Queryset</h2>
+        </div>
+
+        <article class="concept-card">
+          <h4>Los 2 escenarios</h4>
+          <p>Puedes configurar Activator para disparar notificaciones basadas en los resultados de un KQL Queryset en <strong>2 escenarios</strong>:</p>
+          <ol>
+            <li>Cuando las <strong>queries KQL programadas devuelven resultados</strong>.</li>
+            <li>Cuando las <strong>queries KQL programadas devuelven resultados con visualizaciones</strong> que cumplen condiciones específicas.</li>
+          </ol>
+
+          <h4>Escenarios de ejemplo</h4>
+          <p><strong>Monitorizar logs de aplicación en busca de errores</strong>: una KQL database que almacena los logs de aplicación, con una alerta si los registros de los últimos 5 minutos contienen <code>authorization error</code> en la columna <code>message</code>.</p>
+          <p><strong>Seguir las bicicletas disponibles</strong>: datos en streaming de bicicletas disponibles por barrio, una query KQL que renderiza un gráfico de tarta con los barrios, y una alerta cuando el número de bicicletas de cualquier barrio <strong>cae por debajo de un umbral</strong>.</p>
+
+          <h4>Setup: panel lateral Add Rule</h4>
+          <p><strong>1. Sección Details</strong> — introducir el <strong>nombre</strong> de la rule.</p>
+          <p><strong>2. Sección Monitor</strong> — <strong>frecuencia temporal</strong> con la que se ejecuta la query (por defecto 5 minutos).</p>
+          <p><strong>3. Sección Condition</strong> — especificar las condiciones de la alerta:</p>
+          <ul>
+            <li><strong>On each event when</strong> — visualización sin dimensiones.</li>
+            <li>Desplegable <strong>When</strong> — el valor a evaluar.</li>
+            <li>Desplegable <strong>Condition</strong> — la condición a evaluar.</li>
+            <li><strong>Occurrence</strong> — cuántas veces debe cumplirse la condición antes de disparar.</li>
+          </ul>
+          <p><strong>4. Sección Action</strong> — elegir la acción (email, Teams, actividades de Fabric, custom).</p>
+          <p><strong>5. Save location</strong> — dónde guardar la alerta. En un <strong>workspace existente</strong>, dentro de un activator existente o uno nuevo.</p>
+          <p><strong>6. Create</strong> — la rule se crea y aparece en el <strong>panel Rules</strong> del KQL Queryset.</p>
+        </article>
+
+        <!-- ============ 13. ALERTS DASHBOARD ============ -->
+        <div class="category-header" id="alerts-dashboard">
+          <span class="category-header__icon">📊</span>
+          <h2 class="category-header__title">13. Alertas Activator desde Real-Time Dashboard</h2>
+        </div>
+
+        <article class="concept-card">
+          <h4>Feature</h4>
+          <p><strong>Poner una alerta en un Real-Time Dashboard</strong> usando el <strong>panel lateral no-code de Fabric Activator</strong>. Permite monitorizar <strong>tendencias de datos en vivo</strong> poniendo condiciones sobre las visualizaciones.</p>
+
+          <h4>Pasos</h4>
+          <ol>
+            <li>En el Real-Time Dashboard, seleccionar el <strong>menú More [...]</strong> del tile deseado.</li>
+            <li><strong>Set an alert</strong>.</li>
+            <li>Definir las <strong>condiciones</strong> de la alerta y crearla.</li>
+            <li><strong>Opcionalmente</strong>, modificar después las condiciones y acciones en Activator.</li>
+          </ol>
+
+          <h4>Uso típico</h4>
+          <p><strong>Ejemplo</strong>: visualizar la <strong>distribución de ventas entre categorías de producto</strong> en un gráfico de tarta y poner una alerta si la cuota de cualquier categoría <strong>cae por debajo de cierto umbral</strong>. Ayuda a identificar y atender rápidamente los problemas de esa línea de producto.</p>
+        </article>
+
+        <!-- ============ 14. ALERTS WAREHOUSE ============ -->
+        <div class="category-header" id="alerts-warehouse">
+          <span class="category-header__icon">🏛️</span>
+          <h2 class="category-header__title">14. Alertas Activator desde Warehouse SQL query (preview)</h2>
+        </div>
+
+        <article class="concept-card">
+          <h4>Feature preview</h4>
+          <p><strong>Novedad (preview)</strong>: Activator soporta <strong>rules basadas en los resultados de queries SQL de Fabric Data Warehouse</strong>.</p>
+
+          <h4>Cómo funciona</h4>
+          <p>Defines rules que <strong>evalúan una query SQL</strong> con una <strong>frecuencia configurable</strong>, <strong>comprueban condiciones</strong> contra el result set y <strong>disparan acciones</strong> cuando se cumplen.</p>
+
+          <h4>Beneficio</h4>
+          <p><strong>Monitorizar datos del warehouse</strong> sin necesitar fuentes de streaming. Perfecto para datos orientados a batch que quieres vigilar.</p>
+
+          <h4>Uso típico</h4>
+          <ul>
+            <li><strong>Comprobación de row count</strong>: alerta si la tabla de ventas diarias tiene menos de X filas.</li>
+            <li><strong>Calidad de datos</strong>: alerta si el número de nulos en una columna crítica supera un umbral.</li>
+            <li><strong>Métrica de negocio</strong>: alerta si el revenue del mes en curso cae por debajo del objetivo.</li>
+            <li><strong>Detección de anomalías</strong>: alerta ante patrones inusuales detectados por analítica SQL.</li>
+          </ul>
+
+          <h4>Setup</h4>
+          <p>Similar al KQL Queryset: definir la query SQL, la frecuencia de ejecución, las condiciones sobre el resultado y las acciones (email, Teams, etc.).</p>
+        </article>
+
+        <!-- ============ 15. ACTIONS ============ -->
+        <div class="category-header" id="actions">
+          <span class="category-header__icon">🎯</span>
+          <h2 class="category-header__title">15. Actions: email, Teams, Fabric activities, Power Automate</h2>
+        </div>
+
+        <article class="concept-card">
+          <p><strong>Las 4 categorías de acciones</strong> que Activator puede disparar.</p>
+
+          <h4>Enviar notificación por email</h4>
+          <p><strong>Configuración</strong>:</p>
+          <ul>
+            <li><strong>To</strong>: dirección de email del receptor, o una propiedad dinámica (<code>@BikepointID_email</code>).</li>
+            <li><strong>Subject</strong>: asunto del email.</li>
+            <li><strong>Headline</strong>: titular del email.</li>
+            <li><strong>Notes</strong>: cuerpo de las notas.</li>
+            <li><strong>Context</strong>: valores de los datos a incluir.</li>
+          </ul>
+          <p><strong>Referencias a los datos</strong>: escribe <code>@</code> para autocompletar las propiedades.</p>
+
+          <h4>Enviar notificación de Microsoft Teams</h4>
+          <p><strong>3 sub-opciones</strong>:</p>
+          <ul>
+            <li><strong>A) Mensaje a individuos</strong> — introducir las direcciones de email o una propiedad dinámica. El mensaje de Teams se envía a esas personas.</li>
+            <li><strong>B) Mensaje a un chat de grupo</strong> — seleccionar el chat en el desplegable. El mensaje se publica en el chat.</li>
+            <li><strong>C) Publicación en un canal</strong> — seleccionar el equipo y el canal en los desplegables. El mensaje se publica en el canal.</li>
+          </ul>
+          <p><strong>Configuración común</strong>: <strong>Headline</strong>, <strong>Notes</strong> y <strong>Context</strong>, igual que en el email.</p>
+
+          <h4>Ejecutar actividades de Fabric</h4>
+          <p><strong>Disparar items de Fabric</strong> cuando se cumpla la condición. <strong>Items soportados</strong>: <strong>Pipeline</strong>, <strong>Dataflow</strong>, <strong>Spark job</strong>, <strong>Notebook</strong>, <strong>User Data Function</strong>, <strong>Copy job</strong> y <strong>Publish business event (preview)</strong>.</p>
+          <p><strong>Setup</strong>: seleccionar el <strong>tipo de item de Fabric</strong>, seleccionar el <strong>item a ejecutar</strong> de la lista y <strong>añadir parámetros</strong> (nombre y valor). <strong>Puedes pasar parámetros</strong> desde los datos de la alerta usando <code>@</code>.</p>
+          <div class="note note--warning">
+            ⚠️ <strong>Nota:</strong> los <strong>Copy jobs NO aceptan parámetros</strong>.
+          </div>
+
+          <h4>Acciones custom (flows de Power Automate)</h4>
+          <p><strong>Disparar un flow custom de Power Automate</strong> cuando se cumpla la condición:</p>
+          <ol>
+            <li>Seleccionar <strong>Create custom action</strong>.</li>
+            <li><strong>Crear primero la rule</strong>.</li>
+            <li>Completar el setup de la acción custom siguiendo los pasos oficiales de <strong>Trigger custom actions (Power Automate flows)</strong>.</li>
+            <li>Tras crear la acción custom, en el panel Definition de la rule, <strong>seleccionar la acción custom</strong> en el desplegable de acciones.</li>
+          </ol>
+          <p><strong>Uso</strong>: workflows complejos, integraciones con sistemas de terceros y lógica de negocio.</p>
+
+          <h4>Gestión desde el panel Rules</h4>
+          <p>Tras crear una rule, el <strong>panel Rules</strong> muestra la lista de rules. Puedes:</p>
+          <ol>
+            <li><strong>Botón toggle</strong> para arrancar/parar la rule. Una <strong>rule parada</strong> no se ejecuta y no envía alertas. Al testear, párala tras ver alertas de muestra para no recibir demasiadas.</li>
+            <li><strong>Opciones (...)</strong>: <strong>Edit</strong> (modificar la rule sin salir de la página), <strong>Delete</strong> (eliminarla del item de Fabric y del activator) y <strong>View in Activator</strong> (abrirla en Activator para ver el historial y las alertas disparadas).</li>
+            <li><strong>Add rule</strong> — añadir otra rule al item de Fabric y al Activator.</li>
+          </ol>
+        </article>
+
+        <!-- ============ 16. REFRESH ALERTS ============ -->
+        <div class="category-header" id="refresh-alerts">
+          <span class="category-header__icon">🔔</span>
+          <h2 class="category-header__title">16. Semantic model refresh alerts</h2>
+        </div>
+
+        <article class="concept-card">
+          <h4>Feature</h4>
+          <p>Puedes configurar <strong>notificaciones para los fallos de refresh de un semantic model</strong> desde los settings del propio semantic model. Es <strong>distinto de la página Schedule failures</strong> — los semantic models tienen su propio mecanismo.</p>
+
+          <h4>Setup</h4>
+          <p>En los settings del semantic model:</p>
+          <ol>
+            <li>Sección <strong>Scheduled refresh</strong>.</li>
+            <li><strong>Email notifications</strong>.</li>
+            <li>Elegir destinatarios y condiciones: <strong>al fallar</strong> o <strong>cuando el refresh tarda más de lo esperado</strong>.</li>
+          </ol>
+
+          <h4>Uso típico</h4>
+          <ul>
+            <li><strong>Propietarios del dataset</strong> notificados de refreshes fallidos.</li>
+            <li><strong>Data engineers</strong> al tanto de refreshes lentos.</li>
+            <li><strong>Managers</strong> al tanto de fallos críticos de negocio.</li>
+          </ul>
+
+          <h4>Combinar con Activator</h4>
+          <p>Para un setup más avanzado puedes registrar los resultados de los refreshes en una KQL DB y crear una alerta en Activator sobre patrones (ej: 3 fallos en 24 h → email de escalado).</p>
+        </article>
+
+        <!-- ============ 17. WORKSPACE MONITORING ============ -->
+        <div class="category-header" id="workspace-monitoring">
+          <span class="category-header__icon">📈</span>
+          <h2 class="category-header__title">17. Workspace monitoring</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>¿Qué es?</h3>
+          <p><strong>Workspace monitoring</strong> = feature para monitorizar <strong>todas las actividades dentro de un workspace concreto</strong>. Es distinto del <strong>Monitoring Hub global</strong>: el Monitoring Hub es cross-workspace y centrado en actividades; el workspace monitoring está acotado al workspace y centrado en los recursos.</p>
+
+          <h4>Configuración</h4>
+          <p>Se <strong>habilita</strong> en los settings del workspace: sección <strong>Workspace monitoring</strong> → <strong>Enable monitoring</strong>.</p>
+          <p>Al habilitarse, Fabric crea una <strong>base de datos de monitorización</strong> (un Eventhouse por detrás) y registra eventos de actividad de Fabric, eventos de items y métricas de rendimiento.</p>
+
+          <h4>Beneficios</h4>
+          <ul>
+            <li><strong>Telemetría detallada</strong> del workspace.</li>
+            <li><strong>Queries KQL</strong> sobre los datos para investigaciones custom.</li>
+            <li><strong>Dashboards custom</strong> sobre la actividad del workspace.</li>
+            <li><strong>Retención larga</strong> (configurable, generalmente &gt; 30 días).</li>
+          </ul>
+
+          <h4>Uso típico</h4>
+          <p><strong>Auditoría específica del workspace</strong>, <strong>troubleshooting granular de rendimiento</strong>, <strong>analítica de uso</strong> del workspace y <strong>dashboards de monitorización custom</strong> para stakeholders.</p>
+        </article>
+
+        <!-- ============ 18. CAPACITY METRICS ============ -->
+        <div class="category-header" id="capacity-metrics">
+          <span class="category-header__icon">🎯</span>
+          <h2 class="category-header__title">18. Capacity Metrics app y Capacity Units</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>¿Qué es la Capacity Metrics app?</h3>
+          <p>La <strong>Microsoft Fabric Capacity Metrics app</strong> es la <strong>app oficial</strong> que provee <strong>visibilidad completa</strong> del consumo de CU, los <strong>eventos de throttling</strong>, el desglose de <strong>uso por item</strong> y los insights de <strong>uso por usuario</strong>.</p>
+
+          <h4>Instalación</h4>
+          <p>El <strong>Fabric admin</strong> la instala desde <strong>AppSource</strong> o el <strong>admin portal</strong>. Una vez instalada, está disponible para los usuarios con <strong>permisos de capacity admin</strong>.</p>
+
+          <h4>Fundamentos de las Capacity Units (CU)</h4>
+          <p>Una <strong>Capacity Unit (CU)</strong> es la <strong>medida de potencia de cómputo</strong> disponible en cada SKU. Fabric <strong>mide el consumo en CUs</strong>: cada operación de Fabric consume algunas CUs, distintas operaciones tienen distintos costes, y se <strong>agregan en CU segundos</strong> para la facturación y el throttling.</p>
+
+          <h4>Timepoints y CU-seconds</h4>
+          <p><strong>Fabric evalúa la capacidad en timepoints de 30 segundos</strong>. En cada timepoint, el cómputo disponible es <strong>CUs del SKU × 30 segundos</strong>.</p>
+          <p><strong>Ejemplo</strong>: F8 tiene 8 CUs. Por timepoint: 8 × 30 = <strong>240 CU segundos</strong>.</p>
+
+          <h4>Categorías de operaciones</h4>
+          <p><strong>Operaciones interactivas</strong> 👤 — iniciadas por una acción del usuario (ver un report, query ad-hoc). Smoothing: <strong>al menos 5 minutos</strong> (o más). Impacto más inmediato.</p>
+          <p><strong>Operaciones background</strong> ⏰ — programadas o iniciadas por el sistema (refreshes, pipelines). Smoothing: <strong>24 horas</strong>. Impacto distribuido.</p>
+          <p>Esta distinción es <strong>fundamental</strong> para entender el bursting y el smoothing.</p>
+        </article>
+
+        <!-- ============ 19. SKUS ============ -->
+        <div class="category-header" id="skus">
+          <span class="category-header__icon">💎</span>
+          <h2 class="category-header__title">19. Fabric SKUs completos (F2 a F8192)</h2>
+        </div>
+
+        <article class="concept-card">
+          <h4>Tabla completa</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Fabric SKU</th><th>Premium SKU equivalente</th><th>Baseline CUs</th><th>CU en 30 seg</th><th>Burstable Scale Factor</th></tr></thead>
+              <tbody>
+                <tr><td><strong>F2</strong></td><td></td><td>2</td><td>60</td><td>1x - 32x</td></tr>
+                <tr><td><strong>F4</strong></td><td></td><td>4</td><td>120</td><td>1x - 16x</td></tr>
+                <tr><td><strong>F8</strong></td><td></td><td>8</td><td>240</td><td>1x - 12x</td></tr>
+                <tr><td><strong>F16</strong></td><td></td><td>16</td><td>480</td><td>1x - 12x</td></tr>
+                <tr><td><strong>F32</strong></td><td></td><td>32</td><td>960</td><td>1x - 12x</td></tr>
+                <tr><td><strong>F64</strong></td><td><strong>P1</strong></td><td>64</td><td>1.920</td><td>1x - 12x</td></tr>
+                <tr><td><strong>F128</strong></td><td><strong>P2</strong></td><td>128</td><td>3.840</td><td>1x - 12x</td></tr>
+                <tr><td><strong>F256</strong></td><td><strong>P3</strong></td><td>256</td><td>7.680</td><td>1x - 12x</td></tr>
+                <tr><td><strong>F512</strong></td><td><strong>P4</strong></td><td>512</td><td>15.360</td><td>1x - 12x</td></tr>
+                <tr><td><strong>F1024</strong></td><td><strong>P5</strong></td><td>1024</td><td>30.720</td><td>1x - 12x</td></tr>
+                <tr><td><strong>F2048</strong></td><td></td><td>2048</td><td>61.440</td><td>1x - 12x</td></tr>
+                <tr><td><strong>F4096</strong></td><td></td><td>4096</td><td>122.880</td><td>1x - 6x</td></tr>
+                <tr><td><strong>F8192</strong></td><td></td><td>8192</td><td>245.760</td><td>1x - 3x</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="note note--tip">
+            🎯 <strong>Puntos críticos del examen:</strong>
+            <ul>
+              <li><strong>F64 = P1</strong> — el umbral para muchas features: <strong>consumo gratuito de contenido de Power BI</strong> para los viewers, disponibilidad de <strong>Copilot</strong> y ciertas features enterprise.</li>
+              <li><strong>F2 (el más pequeño)</strong> tiene el <strong>burstable scale factor más alto</strong> (32x) — pensado para <strong>dev/test o uso ad hoc</strong>.</li>
+              <li><strong>F8192 (el más grande)</strong> tiene el <strong>burstable scale factor más bajo</strong> (3x) — ya provee muchísimo cómputo de baseline.</li>
+            </ul>
+          </div>
+
+          <h4>Escalado</h4>
+          <p>Los <strong>F SKUs pueden escalar</strong> hacia arriba y hacia abajo de forma dinámica. <strong>Cruzar la frontera F256/F512</strong> puede provocar una <strong>experiencia más lenta temporalmente</strong>.</p>
+
+          <h4>Precios</h4>
+          <ul>
+            <li><strong>F SKUs</strong>: pay-as-you-go, por hora.</li>
+            <li><strong>Pause/resume</strong>: sin coste cuando está pausada (dev/test).</li>
+            <li><strong>Reserved instances</strong>: descuentos a 1 o 3 años.</li>
+          </ul>
+        </article>
+
+        <!-- ============ 20. BURSTING ============ -->
+        <div class="category-header" id="bursting">
+          <span class="category-header__icon">🌸</span>
+          <h2 class="category-header__title">20. Bursting: usar más CUs del baseline</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>Concepto</h3>
+          <p><strong>Bursting</strong> = Fabric usa <strong>MÁS cómputo que el SKU aprovisionado</strong> de forma temporal. <strong>Beneficio</strong>: obtener resultados <strong>sin esperar</strong>. Una capacidad más pequeña puede ejecutar <strong>operaciones más grandes</strong> que normalmente requerirían una capacidad más cara.</p>
+
+          <h4>Por qué existe</h4>
+          <p><strong>Fabric entrega rendimiento rápido</strong>: tareas que en otras plataformas tardan minutos, en Fabric tardan segundos. Las operaciones grandes se ejecutan <strong>a cualquier hora del día</strong> sin necesidad de planificación cuidadosa. El bursting + el smoothing lo hacen posible.</p>
+
+          <h4>Ejemplo mental</h4>
+          <p><strong>F8 con 8 CUs de baseline</strong>: sin bursting, máximo 8 CUs simultáneas. <strong>Con bursting (factor 12x)</strong>, temporalmente puede usar hasta <strong>96 CUs</strong>, y una query compleja termina rápido en vez de esperar.</p>
+
+          <h4>Coste</h4>
+          <p>El <strong>bursting NO cuesta extra por separado</strong> — las CUs consumidas se contabilizan igual. Sin embargo, un bursting alto significa <strong>más CUs totales consumidas</strong> → <strong>más carryforward CUs</strong>.</p>
+
+          <div class="note note--tip">
+            🌷 <strong>Analogía kawaii:</strong> piensa en el SKU de capacidad como la <strong>potencia contratada de tu casa</strong>. El <strong>baseline</strong> son tus 3,3 kW normales. El <strong>bursting</strong> es cuando enciendes el aire acondicionado + el calentador + el horno a la vez y tu compañía te deja <strong>usar hasta 39 kW temporalmente</strong> en vez de saltarte los plomos. Después, en periodos de menos uso, se compensa 💡
+          </div>
+        </article>
+
+        <!-- ============ 21. SMOOTHING ============ -->
+        <div class="category-header" id="smoothing">
+          <span class="category-header__icon">🌸</span>
+          <h2 class="category-header__title">21. Smoothing: distribuir consumo en el tiempo</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>Concepto</h3>
+          <p><strong>Smoothing</strong> = Fabric <strong>reparte la evaluación del cómputo a lo largo de un periodo más largo</strong> para que los jobs se ejecuten con suavidad. <strong>Beneficio</strong>: gestión de capacidad simplificada.</p>
+
+          <h4>Los 2 tipos de smoothing</h4>
+          <p><strong>A) Jobs interactivos (usuarios)</strong> 👤 — smoothing durante <strong>al menos 5 minutos</strong> (o más). Reduce los picos temporales cortos.</p>
+          <p><strong>B) Jobs programados o background</strong> ⏰ — smoothing durante <strong>24 horas</strong>. Elimina la preocupación por la planificación de jobs y la contención.</p>
+
+          <div class="note note--warning">
+            ⚠️ <strong>El smoothing NO afecta al tiempo de ejecución.</strong> Muy importante: el <strong>smoothing NO retrasa tus jobs</strong>. Solo <strong>distribuye la contabilización</strong> de las CUs consumidas en el tiempo. Tu query tarda <strong>exactamente lo que tarda</strong>, pero los costes en CU se <strong>reparten entre timepoints</strong>.
+          </div>
+
+          <h4>Ejemplo concreto: operación background</h4>
+          <p><strong>Escenario</strong>: una operación background consume 1 CU hora.</p>
+          <p><strong>Capacidad F2</strong>: F2 provee 2 CUs = <strong>48 CU horas al día</strong> (2 × 24). El job <strong>contribuye 1/48 = ~2,1%</strong> a cada timepoint.</p>
+          <p><strong>Cálculo detallado</strong>:</p>
+          <ul>
+            <li>1 CU hora = 3.600 CU segundos.</li>
+            <li>24 horas = 2.880 timepoints (24 × 60 × 2).</li>
+            <li>El smoothing reparte 3.600 / 2.880 = <strong>1,25 CU segundos por timepoint</strong>.</li>
+            <li>F2 en cada timepoint: 2 × 30 = <strong>60 CU segundos disponibles</strong>.</li>
+            <li>Contribución: 1,25 / 60 = <strong>~2,1% de cada timepoint</strong>.</li>
+          </ul>
+          <p><strong>Resultado</strong>: aunque el job consumió 1 CU hora (más que 10 minutos de baseline de F2), la capacidad F2 <strong>NO hace throttling</strong> porque el smoothing distribuye el consumo a lo largo de 24 horas.</p>
+
+          <h4>Beneficio para la empresa</h4>
+          <p>El smoothing te permite <strong>dimensionar la capacidad según la MEDIA</strong>, no según el pico. Sin smoothing tendrías que comprar el SKU para el pico; con smoothing, un SKU más pequeño puede absorber picos temporales. <strong>Ahorros importantes</strong> en costes.</p>
+        </article>
+
+        <!-- ============ 22. THROTTLING ============ -->
+        <div class="category-header" id="throttling">
+          <span class="category-header__icon">🌸</span>
+          <h2 class="category-header__title">22. Throttling: qué pasa cuando saturas</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>¿Qué es el throttling?</h3>
+          <p><strong>Throttling</strong> = ocurre cuando las operaciones consumen <strong>más CU segundos de los que permite el SKU de la capacidad</strong>. <strong>Demasiado throttling</strong> → <strong>experiencia degradada para el usuario final</strong>.</p>
+
+          <h4>Se aplica a nivel de capacidad</h4>
+          <p><strong>Fabric aplica el throttling A NIVEL DE CAPACIDAD</strong>: una capacidad puede sufrir rendimiento reducido por sobrecarga mientras <strong>otras capacidades siguen normales</strong>.</p>
+          <p><strong>Cross-capacity</strong>: si la capacidad A produce items en OneLake y la capacidad B los consume, el <strong>estado de throttling de la capacidad CONSUMIDORA</strong> determina si hay throttling en esas llamadas.</p>
+
+          <h4>Overages, carryforward y burndown</h4>
+          <p><strong>Muy importante para entender el mecanismo</strong>:</p>
+          <p><strong>Overage</strong> = cuando las operaciones usan más capacidad de la que soporta el SKU en un único timepoint. Se computa <strong>después del smoothing</strong>. Si los overages <strong>exceden la ventana de throttling de 10 minutos permitida</strong> → se convierten en <strong>carryforward CUs</strong>.</p>
+          <p><strong>Overage protection</strong>: garantiza que la capacidad <strong>no haga throttling hasta que la ventana de throttling de 10 minutos esté llena</strong>. <strong>Reduce la frecuencia de retrasos interactivos</strong> por picos temporales.</p>
+          <p><strong>Carryforward CUs</strong>: se <strong>aplican a cada timepoint posterior</strong>. Si un timepoint no está lleno, las CUs no usadas <strong>reducen el carryforward</strong>.</p>
+          <p><strong>Burndown</strong>: la <strong>reducción del carryforward de CUs</strong> cuando la capacidad está infrautilizada. El <strong>throttling continúa</strong> hasta que la capacidad no usada <strong>salda todas las carryforward CUs</strong>.</p>
+
+          <h4>Cómo detectar el throttling</h4>
+          <p><strong>Códigos de error cuando la capacidad rechaza peticiones</strong>:</p>
+          <ol>
+            <li><strong>Status code</strong>: <code>CapacityLimitExceeded</code></li>
+            <li><strong>Mensaje de error</strong>: <em>"Your organization's Fabric compute capacity has exceeded its limits. Try again later"</em>.</li>
+            <li><strong>Mensaje de error</strong>: <em>"Cannot load model due to reaching capacity limits"</em>.</li>
+          </ol>
+
+          <div class="note note--warning">
+            ⚠️ <strong>Lento ≠ throttling.</strong> El <strong>rendimiento lento suele deberse al diseño del item</strong>. Solo a veces se debe al throttling de capacidad. Antes de escalar, <strong>investiga la optimización de la query, el notebook o el pipeline</strong>.
+          </div>
+
+          <h4>Capacity Metrics app: vistas de throttling</h4>
+          <p>En la página <strong>Compute</strong> de la Capacity Metrics app: la <strong>tabla System events</strong> muestra el historial de eventos de throttling, y los <strong>gráficos de throttling</strong> muestran cuándo el uso suavizado supera los límites.</p>
+
+          <h4>Right-sizing</h4>
+          <p>Niveles de throttling <strong>consistentemente altos</strong> indican que hay que <strong>balancear la carga entre varias capacidades</strong> o <strong>aumentar el tamaño del SKU</strong>. Para los <strong>F SKUs</strong>, puedes escalar la capacidad dinámicamente.</p>
+          <p><strong>⚠️ Escalar cruzando la frontera F256/F512</strong> puede provocar una experiencia más lenta temporalmente.</p>
+
+          <h4>Configurar alertas</h4>
+          <p>Los <strong>capacity admins</strong> pueden <strong>configurar alertas por email</strong> para los umbrales de capacidad, vía <strong>Capacity Overview Events</strong>. Se disparan cuando el uso supera el umbral configurado.</p>
+        </article>
+
+        <!-- ============ 23. GUARDRAILS ============ -->
+        <div class="category-header" id="burstable-guardrails">
+          <span class="category-header__icon">🎨</span>
+          <h2 class="category-header__title">23. Burstable capacity guardrails en Warehouse</h2>
+        </div>
+
+        <article class="concept-card">
+          <h4>Feature específica</h4>
+          <p>El <strong>Warehouse y el SQL analytics endpoint</strong> proveen <strong>capacidad burstable</strong> que permite a los workloads usar <strong>más recursos</strong> para mejorar el rendimiento.</p>
+
+          <h4>Cómo calcular el scale factor</h4>
+          <pre><code class="language-plaintext">Capacity Units (CU) / duración / Baseline CU = Scale factor</code></pre>
+          <p><strong>Ejemplo</strong>: capacidad F8, un workload que tarda 100 segundos y usa 1500 CU.</p>
+          <p><strong>Scale factor</strong> = 1500 / 100 / 8 = <strong>1,875</strong>.</p>
+          <p>Cuando el <strong>scale factor &gt; 1</strong> → se está usando capacidad burstable → se están <strong>tomando prestadas capacity units de un intervalo de tiempo futuro</strong> (smoothing).</p>
+
+          <h4>Guardrails por SKU</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>SKU</th><th>Baseline CUs</th><th>Burstable Scale Factor</th></tr></thead>
+              <tbody>
+                <tr><td>F2</td><td>2</td><td><strong>1x - 32x</strong></td></tr>
+                <tr><td>F4</td><td>4</td><td><strong>1x - 16x</strong></td></tr>
+                <tr><td>F8-F2048</td><td>8-2048</td><td><strong>1x - 12x</strong></td></tr>
+                <tr><td>F4096</td><td>4096</td><td><strong>1x - 6x</strong></td></tr>
+                <tr><td>F8192</td><td>8192</td><td><strong>1x - 3x</strong></td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h4>Fronteras de aislamiento</h4>
+          <p>El <strong>Warehouse aísla completamente</strong> la <strong>ingesta</strong> del procesamiento de queries, y el <strong>burstable scale factor</strong> se alcanza <strong>de forma independiente</strong> para cada uno.</p>
+          <p><strong>Máximo scale factor agregado de la capacidad</strong>:</p>
+          <pre><code class="language-plaintext">([Query burstable scale factor] + [Ingestion burstable scale factor]) × [número de workspaces]
+= aggregate burstable scale factor</code></pre>
+
+          <h4>Consideraciones</h4>
+          <p><strong>1. Rechazo de queries</strong>: si la recuperación o el procesamiento de datos <strong>no puede ejecutarse físicamente</strong> dentro del burstable scale factor, aparece el error <em>"This query was rejected due to current capacity constraints"</em>. <strong>Revisa las guías de rendimiento</strong> antes de escalar.</p>
+          <p><strong>2. Tras redimensionar</strong>: los <strong>nuevos guardrails se aplican</strong> cuando se ejecuta la siguiente query. El rendimiento <strong>se estabiliza en pocos segundos</strong>.</p>
+          <p><strong>3. Tamaño de capacidad no óptimo</strong>: puede provocar <strong>contención de recursos</strong> (spilling) y <strong>aumentar el uso de CU</strong> del workload.</p>
+        </article>
+
+        <!-- ============ 24. TROUBLESHOOTING ============ -->
+        <div class="category-header" id="troubleshooting">
+          <span class="category-header__icon">🔧</span>
+          <h2 class="category-header__title">24. Troubleshooting: patrones comunes</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>Pipelines fallando</h3>
+          <p><strong>Errores comunes</strong>:</p>
+          <ul>
+            <li><strong>Fallos de autenticación</strong> → verificar las credenciales en Connections.</li>
+            <li><strong>Timeout</strong> → máximo 7 días por defecto; ajustar el timeout de la actividad.</li>
+            <li><strong>Data source no disponible</strong> → firewall, VNet peering, estado del gateway.</li>
+            <li><strong>Schema mismatch</strong> → deriva de schema en el destino.</li>
+          </ul>
+          <p><strong>Investigación</strong>:</p>
+          <ol>
+            <li>Monitoring Hub → Pipeline → <strong>Historical runs</strong>.</li>
+            <li>Detalle del run → la actividad que ha fallado.</li>
+            <li><strong>Detalles del error</strong> en el panel de detalle.</li>
+            <li><strong>Rerun de la actividad fallida</strong> desde el monitoring hub.</li>
+          </ol>
+
+          <h3>Dataflows Gen2</h3>
+          <p><strong>Errores comunes</strong>: el <strong>query folding no funciona</strong> (verificar el código M, mirar el icono en Power Query), <strong>timeout</strong> en el refresh (simplificar la query, añadir staging) y problemas de <strong>conexión al data source</strong> (comprobar gateway/credenciales).</p>
+          <p><strong>Investigación</strong>: el <strong>refresh history</strong> del dataflow, los <strong>mensajes de error</strong> con el paso concreto que falló, y <strong>habilitar staging</strong> (por defecto en Dataflow Gen2) para dividir la lógica compleja.</p>
+
+          <h3>Notebooks (Spark)</h3>
+          <p><strong>Errores comunes</strong>: <strong>out of memory</strong> (aumentar el Spark pool u optimizar las particiones), <strong>executor lost</strong> (node reclaim, reintentar) y <strong>rendimiento lento</strong> (revisar el skew de particiones y el spilling de datos).</p>
+          <p><strong>Investigación</strong>:</p>
+          <ol>
+            <li><strong>Spark UI</strong> desde el notebook.</li>
+            <li>Vista <strong>Stages</strong> → identificar las stages lentas.</li>
+            <li>Vista <strong>Executors</strong> → comprobar el uso de memoria.</li>
+            <li>Tab <strong>SQL / DataFrame</strong> → planes de query.</li>
+          </ol>
+
+          <h3>Eventhouse</h3>
+          <p><strong>Errores comunes</strong>: <strong>latencia de ingesta alta</strong> (revisar la política de batch/streaming), <strong>timeouts de query</strong> (optimizar el KQL, añadir materialized views) y <strong>crecimiento del storage</strong> (revisar la política de retención).</p>
+          <p><strong>Investigación</strong>: la <strong>página Insights</strong> del Eventhouse, las estadísticas de <strong>caché</strong> y las métricas de <strong>ingesta</strong>.</p>
+
+          <h3>Eventstreams</h3>
+          <p><strong>Errores comunes</strong>: la <strong>fuente no conecta</strong> (auth, red), los <strong>datos no fluyen</strong> (revisar la lógica de transformación) y <strong>fallos de escritura en el destino</strong> (verificar los permisos del Lakehouse/KQL DB destino).</p>
+          <p><strong>Investigación</strong>: la <strong>vista Runtime</strong> del Eventstream y el <strong>data preview</strong> en cada nodo.</p>
+
+          <h3>T-SQL (Warehouse)</h3>
+          <p><strong>Errores comunes</strong>: <strong>query rechazada por restricciones de capacidad</strong> (optimizar o escalar), <strong>estadísticas obsoletas</strong> (CREATE/UPDATE STATISTICS) y <strong>conflictos de snapshot isolation</strong> (rediseñar el patrón).</p>
+          <p><strong>Investigación</strong>: los <strong>DMVs de query insights</strong> (ver la siguiente sección), los <strong>planes de query</strong> con SHOWPLAN y los DMVs de <strong>waits stats</strong>.</p>
+
+          <h3>Shortcuts</h3>
+          <p><strong>Errores comunes</strong>: <strong>shortcuts rotos</strong> (la fuente se movió, cambiaron los permisos), <strong>metadatos obsoletos</strong> (refrescar el shortcut) y <strong>problemas cross-tenant</strong> (verificar los settings de external sharing).</p>
+          <p><strong>Investigación</strong>: el <strong>estado del shortcut</strong> en el Lakehouse y <strong>verificar que el item origen</strong> sigue existiendo y siendo accesible.</p>
+        </article>
+
+        <!-- ============ 25. OPT LAKEHOUSE ============ -->
+        <div class="category-header" id="opt-lakehouse">
+          <span class="category-header__icon">🌸</span>
+          <h2 class="category-header__title">25. Optimización Lakehouse (V-Order, OPTIMIZE, VACUUM, particionado)</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>V-Order</h3>
+          <p><strong>V-Order</strong> = optimización <strong>en tiempo de escritura</strong> del formato de fichero Parquet que permite <strong>lecturas ultrarrápidas</strong> en los compute engines de Fabric (Power BI, SQL, Spark).</p>
+          <p><strong>Beneficios</strong>: típicamente <strong>50% más rápido en lecturas</strong>, <strong>mejor compresión</strong> y optimizado para el <strong>modo Direct Lake</strong>. Está <strong>habilitado POR DEFECTO</strong> en Fabric.</p>
+          <p><strong>Cómo funciona</strong>: al <strong>escribir</strong> un fichero Parquet aplica <strong>sorting, distribución de row groups, dictionary encoding y compresión</strong>. Es compatible con el Parquet estándar y su <strong>único coste está en el tiempo de escritura</strong> (~15% de overhead).</p>
+          <p><strong>Desactivarlo</strong>:</p>
+          <pre><code class="language-sql">SET spark.sql.parquet.vorder.enabled = false</code></pre>
+          <p><strong>Cuándo desactivarlo</strong>: workloads write-heavy que no se leen con frecuencia, o cuando el tiempo de escritura es crítico.</p>
+
+          <h3>OPTIMIZE (tablas Delta)</h3>
+          <p><strong>OPTIMIZE</strong> compacta los ficheros pequeños en otros más grandes. <strong>Beneficio</strong>: <strong>mejora el rendimiento de lectura</strong>, reduce el número de ficheros escaneados y mejora el ratio de compresión.</p>
+          <pre><code class="language-sql">OPTIMIZE my_table</code></pre>
+          <p><strong>Con Z-ORDER</strong> (co-localizar datos relacionados):</p>
+          <pre><code class="language-sql">OPTIMIZE my_table ZORDER BY (customer_id, order_date)</code></pre>
+          <p>Z-ORDER ayuda con las queries que filtran por esas columnas.</p>
+
+          <h3>VACUUM</h3>
+          <p><strong>VACUUM</strong> elimina los ficheros de datos <strong>que ya no referencia</strong> la tabla y que son <strong>más antiguos que el umbral de retención</strong>.</p>
+          <pre><code class="language-sql">VACUUM my_table RETAIN 168 HOURS</code></pre>
+          <p>Retención por defecto = <strong>7 días (168 horas)</strong>. <strong>Beneficio</strong>: <strong>reduce los costes de storage</strong> y limpia los ficheros borrados lógicamente (tras UPDATE/DELETE/MERGE).</p>
+          <div class="note note--warning">
+            ⚠️ <strong>Avisos:</strong> <strong>rompe el time travel</strong> más allá de la ventana de retención. Una retención &lt; 7 días requiere <code>spark.databricks.delta.retentionDurationCheck.enabled = false</code>.
+          </div>
+
+          <h3>Particionado</h3>
+          <p><strong>Particiona las tablas Delta</strong> por las columnas que filtras con frecuencia:</p>
+          <pre><code class="language-python">df.write.partitionBy("year", "month").format("delta").save(path)</code></pre>
+          <p><strong>Beneficios</strong>: <strong>partition pruning</strong> en las queries y <strong>lecturas más rápidas</strong> con filtros sobre las columnas de partición.</p>
+          <div class="note note--practice">
+            📌 <strong>Best practices:</strong> apunta a un <strong>tamaño de partición de 1 GB o más</strong>, <strong>no sobre-particiones</strong> (miles de particiones diminutas = lentitud) y <strong>elige columnas con buena cardinalidad</strong> (year/month sí, customer_id probablemente no).
+          </div>
+
+          <h4>Table Maintenance</h4>
+          <p>Fabric ofrece una <strong>UI de Table maintenance</strong> en el Lakehouse: ejecutar <strong>OPTIMIZE</strong> con un click, ejecutar <strong>VACUUM</strong> con retención configurable y programar jobs de mantenimiento.</p>
+        </article>
+
+        <!-- ============ 26. OPT SPARK ============ -->
+        <div class="category-header" id="opt-spark">
+          <span class="category-header__icon">⚡</span>
+          <h2 class="category-header__title">26. Optimización Spark</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>Native Execution Engine (NEE)</h3>
+          <p>El <strong>Native Execution Engine</strong> es un runtime de ejecución en C++ que provee <strong>mejoras de rendimiento significativas</strong>.</p>
+          <div class="note note--warning">
+            ⚠️ <strong>NO está habilitado por defecto</strong> — actívalo con:
+          </div>
+          <pre><code class="language-python">%%configure
+{
+    "conf": {
+        "spark.native.enabled": "true"
+    }
+}</code></pre>
+          <p><strong>Beneficio</strong>: <strong>2-4x más rápido</strong> en muchos workloads.</p>
+
+          <h4>Autoscale y sizing</h4>
+          <p>Los <strong>Spark pools de Fabric</strong> soportan <strong>autoscale</strong> (ajuste automático de executors), <strong>dynamic allocation</strong> (los recursos escalan con el workload) y <strong>tamaños de pool custom</strong> (small, medium, large, extra large).</p>
+          <p><strong>Best practices</strong>: <strong>pools pequeños</strong> para dev/testing, <strong>medianos</strong> para la mayoría de workloads de producción, y <strong>large/XL</strong> solo si es realmente necesario.</p>
+
+          <h4>Optimización de shuffle</h4>
+          <p><strong>Adaptive Query Execution (AQE)</strong> está habilitado por defecto: <strong>fusiona dinámicamente</strong> las particiones de shuffle, <strong>gestiona el skew</strong> automáticamente y <strong>elige las estrategias de join</strong> de forma adaptativa.</p>
+
+          <h4>Caching</h4>
+          <p><strong>Cachea los datasets</strong> que reutilizas con frecuencia:</p>
+          <pre><code class="language-python">df.cache()
+# o
+df.persist(StorageLevel.MEMORY_AND_DISK)</code></pre>
+          <p><strong>Best practice</strong>: haz <code>unpersist()</code> cuando termines, para liberar memoria.</p>
+
+          <h4>Data skew</h4>
+          <p><strong>Detectar el skew</strong>: algunas tasks tardan mucho más que otras; el <strong>Spark UI</strong> en stages muestra la distribución.</p>
+          <p><strong>Mitigarlo</strong>: <strong>salt keys</strong> (añadir un sufijo aleatorio), <strong>broadcast join</strong> para tablas pequeñas y <strong>repartition</strong> por una key mejor.</p>
+
+          <h4>Broadcast joins</h4>
+          <p>Para <strong>tablas pequeñas</strong> (&lt; 10 MB por defecto):</p>
+          <pre><code class="language-python">from pyspark.sql.functions import broadcast
+result = large_df.join(broadcast(small_df), "key")</code></pre>
+          <p>Elimina el shuffle.</p>
+        </article>
+
+        <!-- ============ 27. OPT WAREHOUSE ============ -->
+        <div class="category-header" id="opt-warehouse">
+          <span class="category-header__icon">🏛️</span>
+          <h2 class="category-header__title">27. Optimización Warehouse</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>Statistics</h3>
+          <p>El <strong>Warehouse se apoya en las estadísticas</strong> para planificar las queries. La <strong>creación automática de estadísticas</strong> está habilitada por defecto, y puedes hacer una <strong>actualización manual</strong> para tablas que cambian con frecuencia:</p>
+          <pre><code class="language-sql">UPDATE STATISTICS dbo.SalesFact WITH FULLSCAN;</code></pre>
+          <p><strong>Estadísticas obsoletas</strong> = malos planes de query = queries lentas.</p>
+
+          <h4>Star schema</h4>
+          <p>El <strong>Warehouse está optimizado para star schema</strong>: fact tables (grandes, transaccionales), dimension tables (más pequeñas, descriptivas) y foreign keys entre ellas. <strong>Evita</strong> modelos muy normalizados (muchos joins) y tablas anchas sin estructura.</p>
+
+          <h4>Patrones de query</h4>
+          <ul>
+            <li><strong>Filtrar pronto</strong> (WHERE en las subqueries).</li>
+            <li><strong>Proyectar solo las columnas necesarias</strong> (evitar SELECT *).</li>
+            <li><strong>Usar CTEs</strong> para legibilidad y optimización del plan.</li>
+            <li><strong>Evitar cursores</strong> — operaciones basadas en conjuntos.</li>
+          </ul>
+
+          <h4>Workload management</h4>
+          <p>El Warehouse tiene <strong>gestión autónoma del workload</strong>: gestiona los recursos automáticamente, aísla la ingesta del procesamiento de queries y normalmente <strong>no necesita tuning manual</strong>.</p>
+          <p><strong>Custom SQL pools (preview)</strong>: para workloads específicos que necesitan aislamiento, con guardrails acumulativos.</p>
+
+          <h4>V-Order en Warehouse</h4>
+          <p>El Warehouse <strong>usa V-Order automáticamente</strong> — beneficio implícito.</p>
+        </article>
+
+        <!-- ============ 28. OPT EVENTHOUSE ============ -->
+        <div class="category-header" id="opt-eventhouse">
+          <span class="category-header__icon">🌸</span>
+          <h2 class="category-header__title">28. Optimización Eventhouse</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>Materialized views</h3>
+          <p>Las <strong>materialized views</strong> precomputan resultados: se <strong>actualizan automáticamente</strong> con los datos nuevos y dan <strong>queries rápidas</strong> para las agregaciones comunes.</p>
+          <pre><code class="language-kusto">.create materialized-view MyView on table Events
+{
+    Events
+    | summarize count() by bin(Timestamp, 1h), Category
+}</code></pre>
+
+          <h4>Update policies</h4>
+          <p>Las <strong>update policies</strong> transforman en la ingesta: aplican una función a los datos cuando se ingestan y se <strong>disparan a la llegada de los datos</strong> (no por schedule).</p>
+
+          <h4>Caching</h4>
+          <p><strong>Hot cache</strong> para los datos de acceso frecuente: configurable por tabla, y a mayor caché, queries más rápidas.</p>
+          <pre><code class="language-kusto">.alter table Events policy caching hot = 30d</code></pre>
+
+          <h4>Particionado</h4>
+          <p>La <strong>política de particionado</strong> para datasets enormes divide los datos en particiones por el valor de una columna, mejorando el rendimiento de las queries con filtros.</p>
+
+          <h4>Best practices de KQL</h4>
+          <ul>
+            <li><strong><code>where</code> pronto</strong>: filtrar primero.</li>
+            <li><strong><code>project</code> solo las columnas necesarias</strong>.</li>
+            <li><strong>Evitar operadores <code>evaluate</code> costosos</strong> cuando no son necesarios.</li>
+            <li><strong><code>take</code>/<code>top</code></strong>: limitar los resultados.</li>
+            <li><strong><code>materialize()</code></strong>: reutilizar subqueries.</li>
+          </ul>
+        </article>
+
+        <!-- ============ 29. DMVS ============ -->
+        <div class="category-header" id="dmvs">
+          <span class="category-header__icon">📊</span>
+          <h2 class="category-header__title">29. DMVs y query insights</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>Dynamic Management Views (DMVs)</h3>
+          <p>El <strong>Warehouse expone DMVs</strong> para los query insights.</p>
+          <p><strong>Ejecución de queries</strong>:</p>
+          <pre><code class="language-sql">SELECT * FROM sys.dm_exec_requests;
+SELECT * FROM sys.dm_exec_sessions;</code></pre>
+          <p><strong>Historial de queries</strong>:</p>
+          <pre><code class="language-sql">SELECT * FROM queryinsights.exec_requests_history;</code></pre>
+          <p><strong>Estadísticas de queries</strong>:</p>
+          <pre><code class="language-sql">SELECT * FROM queryinsights.frequently_run_queries;
+SELECT * FROM queryinsights.long_running_queries;</code></pre>
+
+          <h4>Uso típico</h4>
+          <p><strong>Investigaciones</strong>: ¿cuáles son mis queries más lentas?, ¿qué queries se ejecutan más?, ¿cuánta CPU consume cada query?, ¿hay queries con malos planes?</p>
+          <p><strong>Ejemplo</strong>: las 10 queries más largas de las últimas 24 horas:</p>
+          <pre><code class="language-sql">SELECT TOP 10
+    login_name,
+    submit_time,
+    total_elapsed_time_ms,
+    command
+FROM queryinsights.exec_requests_history
+WHERE submit_time &gt; DATEADD(hour, -24, GETDATE())
+ORDER BY total_elapsed_time_ms DESC;</code></pre>
+
+          <h4>Spark query insights</h4>
+          <p><strong>Spark UI</strong> en los notebooks: vista <strong>Jobs</strong>, vista <strong>Stages</strong>, planes de query en <strong>SQL / DataFrame</strong> y memoria y CPU en <strong>Executors</strong>.</p>
+
+          <h4>Eventhouse insights</h4>
+          <p>La <strong>página Insights</strong> del Eventhouse: métricas de ingesta, patrones de query, estadísticas de caché y optimizaciones recomendadas.</p>
+        </article>
+
+        <!-- ============ 30. ADMIN WORKSPACE ============ -->
+        <div class="category-header" id="admin-workspace">
+          <span class="category-header__icon">🏛️</span>
+          <h2 class="category-header__title">30. Admin monitoring workspace</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>¿Qué es?</h3>
+          <p>El <strong>admin monitoring workspace</strong> es un workspace especial que <strong>provee capacidades de monitorización para toda la organización</strong>. Solo está disponible para los <strong>administradores de Fabric</strong> y los <strong>capacity admins</strong>.</p>
+
+          <h4>Contenido</h4>
+          <p><strong>Reports disponibles</strong>:</p>
+          <ol>
+            <li><strong>Feature usage y adoption report</strong> — consumo en toda la organización, con el semantic model incluido para reports custom.</li>
+            <li><strong>Purview hub</strong> (punto de integración).</li>
+            <li><strong>Usage metrics reports</strong> a nivel workspace.</li>
+          </ol>
+
+          <h4>Uso típico</h4>
+          <ul>
+            <li><strong>Admins</strong> entendiendo qué features usan los usuarios.</li>
+            <li><strong>Análisis de gobernanza</strong>: quién crea qué y dónde.</li>
+            <li><strong>Seguimiento de adopción</strong>: crecimiento del uso de Fabric.</li>
+            <li><strong>Reporting custom</strong>: crear reports sobre el semantic model.</li>
+          </ul>
+
+          <h4>Complemento a la Capacity Metrics app</h4>
+          <p>La <strong>Capacity Metrics app</strong> se centra en el <strong>consumo de CU</strong>; el <strong>admin monitoring workspace</strong> se centra en el <strong>uso y la adopción de features</strong>. <strong>Se complementan</strong> para tener la foto completa.</p>
+        </article>
+
+        <!-- ============ 31. BEST PRACTICES ============ -->
+        <div class="category-header" id="best-practices">
+          <span class="category-header__icon">🌸</span>
+          <h2 class="category-header__title">31. Best practices</h2>
+        </div>
+
+        <article class="concept-card">
+          <h4>Monitoring general</h4>
+          <ol>
+            <li><strong>Revisa el Monitoring Hub a diario</strong> durante los despliegues.</li>
+            <li><strong>Configura notificaciones de fallo</strong> para los items programados críticos.</li>
+            <li><strong>Historical runs</strong>: revisa las tendencias antes de escalar el problema.</li>
+            <li><strong>Los filtros se recuerdan</strong>: configura las vistas que uses a menudo.</li>
+          </ol>
+
+          <h4>Activator</h4>
+          <ol>
+            <li><strong>Para las rules</strong> durante las pruebas para evitar alertas de más.</li>
+            <li><strong>Rules stateful</strong> para transiciones, no disparos repetidos.</li>
+            <li><strong>Context</strong> en las acciones: incluye los datos relevantes en los emails/Teams.</li>
+            <li><strong>Acciones custom</strong> solo cuando las básicas no sean suficientes.</li>
+          </ol>
+
+          <h4>Gestión de capacidad</h4>
+          <ol>
+            <li><strong>Dimensiona la capacidad</strong> según la media, no el pico (el smoothing ayuda).</li>
+            <li><strong>Alertas</strong> para los umbrales de capacidad antes de llegar al throttling.</li>
+            <li><strong>Escalado dinámico del F SKU</strong> según las necesidades.</li>
+            <li><strong>Investiga el diseño</strong> antes de escalar (lento ≠ throttling).</li>
+            <li><strong>Pausa las capacidades</strong> de desarrollo cuando no se usan.</li>
+          </ol>
+
+          <h4>Optimización Lakehouse</h4>
+          <ol>
+            <li><strong>V-Order habilitado</strong> por defecto — déjalo así.</li>
+            <li><strong>OPTIMIZE con regularidad</strong> (semanal o cuando se acumulen ficheros pequeños).</li>
+            <li><strong>VACUUM</strong> tras borrados o actualizaciones masivas.</li>
+            <li><strong>Particiona con criterio</strong> — objetivo de 1 GB o más por partición.</li>
+            <li><strong>Z-ORDER</strong> solo cuando las queries se beneficien.</li>
+          </ol>
+
+          <h4>Optimización Spark</h4>
+          <ol>
+            <li><strong>Native Execution Engine</strong> para workloads intensivos.</li>
+            <li><strong>Adaptive Query Execution</strong> (por defecto).</li>
+            <li><strong>Broadcast joins</strong> para tablas pequeñas.</li>
+            <li><strong>Cachear los datasets</strong> reutilizados.</li>
+            <li><strong>Pools con autoscale</strong>.</li>
+          </ol>
+
+          <h4>Optimización Warehouse</h4>
+          <ol>
+            <li><strong>Estadísticas actualizadas</strong> para las tablas que cambian.</li>
+            <li>Diseño en <strong>star schema</strong>.</li>
+            <li><strong>Proyectar solo las columnas necesarias</strong>.</li>
+            <li><strong>CTEs</strong> para la lógica compleja.</li>
+            <li><strong>WLM autónomo</strong> — déjalo por defecto salvo casos específicos.</li>
+          </ol>
+
+          <h4>Optimización Eventhouse</h4>
+          <ol>
+            <li><strong>Materialized views</strong> para las agregaciones comunes.</li>
+            <li><strong>Update policies</strong> para las transformaciones.</li>
+            <li><strong>Cachear los datos hot</strong>.</li>
+            <li><strong>Best practices de KQL</strong> (filtrar pronto, proyectar menos).</li>
+          </ol>
+        </article>
+
+        <!-- ============ 32. TRAMPAS ============ -->
+        <div class="category-header" id="trampas">
+          <span class="category-header__icon">⚠️</span>
+          <h2 class="category-header__title">32. Trampas típicas</h2>
+        </div>
+
+        <article class="concept-card">
+          <ul class="trap-list">
+            <li><strong class="trap-title">Trampa 1: "El Monitoring Hub muestra TODOS los items"</strong>
+              ❌ <strong>Dataflow Gen1 NO está soportado</strong>. Y los NotebookInteractiveRun tienen limitaciones con el estado "Stopped".</li>
+            <li><strong class="trap-title">Trampa 2: "El Monitoring Hub muestra todas las actividades de los últimos 30 días"</strong>
+              ❌ Solo las <strong>100 más recientes</strong>. Para el historial completo de 30 días usa <strong>Historical runs</strong>.</li>
+            <li><strong class="trap-title">Trampa 3: "Cualquier usuario puede ver todas las actividades"</strong>
+              ❌ <strong>Solo las actividades de los items</strong> sobre los que el usuario tenga <strong>permiso de vista</strong>.</li>
+            <li><strong class="trap-title">Trampa 4: "Las notificaciones de fallo funcionan para los semantic models"</strong>
+              ❌ Los <strong>semantic models aún NO están soportados</strong> en la página Schedule failures (usan su propio mecanismo en los settings del dataset).</li>
+            <li><strong class="trap-title">Trampa 5: "Las notificaciones de fallo se disparan para todos los runs"</strong>
+              ❌ <strong>Solo para los runs PROGRAMADOS</strong>. Los disparados manualmente NO generan notificaciones.</li>
+            <li><strong class="trap-title">Trampa 6: "Activator solo soporta datos en streaming"</strong>
+              ❌ También <strong>KQL Querysets</strong>, <strong>Real-Time Dashboards</strong> y <strong>queries SQL de Warehouse (preview)</strong>. También datos batch.</li>
+            <li><strong class="trap-title">Trampa 7: "Las rules stateful se disparan en cada evento que cumple la condición"</strong>
+              ❌ <strong>Solo se disparan al ENTRAR en un nuevo estado</strong>. Evita los disparos repetidos.</li>
+            <li><strong class="trap-title">Trampa 8: "Los copy jobs aceptan parámetros en Activator"</strong>
+              ❌ <strong>NO</strong>. Los copy jobs NO aceptan parámetros.</li>
+            <li><strong class="trap-title">Trampa 9: "El bursting cuesta extra"</strong>
+              ❌ <strong>NO cuesta por separado</strong>. Las CUs se contabilizan igual, aunque pueden generar más carryforward.</li>
+            <li><strong class="trap-title">Trampa 10: "El smoothing hace que los jobs tarden más"</strong>
+              ❌ El <strong>smoothing NO afecta al tiempo de ejecución</strong>. Solo distribuye la contabilización de las CUs.</li>
+            <li><strong class="trap-title">Trampa 11: "El smoothing interactivo es de 24 horas"</strong>
+              ❌ <strong>Interactivo = mínimo 5 minutos</strong>. <strong>Background = 24 horas</strong>.</li>
+            <li><strong class="trap-title">Trampa 12: "F64 y P1 son diferentes"</strong>
+              ❌ <strong>F64 ≡ P1</strong> en cómputo. Es el umbral para el consumo gratuito de contenido de Power BI.</li>
+            <li><strong class="trap-title">Trampa 13: "El rendimiento lento siempre es throttling"</strong>
+              ❌ <strong>Muchas veces es el diseño del item</strong>. Solo a veces es throttling.</li>
+            <li><strong class="trap-title">Trampa 14: "F2 tiene el burstable factor más pequeño"</strong>
+              ❌ <strong>F2 tiene el MÁS GRANDE</strong> (32x). F8192 tiene el más pequeño (3x).</li>
+            <li><strong class="trap-title">Trampa 15: "V-Order requiere activación manual"</strong>
+              ❌ Está <strong>habilitado POR DEFECTO</strong> en Fabric.</li>
+            <li><strong class="trap-title">Trampa 16: "VACUUM sin retención es seguro"</strong>
+              ❌ <strong>VACUUM sin retención usa el default de 7 días</strong>. Bajar de ahí requiere un cambio de configuración y <strong>rompe el time travel</strong>.</li>
+            <li><strong class="trap-title">Trampa 17: "El Native Execution Engine está habilitado por defecto"</strong>
+              ❌ <strong>NO</strong>. Requiere activación con <code>%%configure</code>.</li>
+            <li><strong class="trap-title">Trampa 18: "El texto del error de throttling es siempre el mismo"</strong>
+              ❌ Hay 3 patrones: <code>CapacityLimitExceeded</code>, <em>"has exceeded its limits"</em> y <em>"Cannot load model due to reaching capacity limits"</em>.</li>
+            <li><strong class="trap-title">Trampa 19: "El burstable scale factor del Warehouse es igual en todos los SKUs"</strong>
+              ❌ <strong>Varía</strong>: F2 = 1x-32x, F8-F2048 = 1x-12x, F4096 = 1x-6x, F8192 = 1x-3x.</li>
+            <li><strong class="trap-title">Trampa 20: "La ingesta y el procesamiento de queries comparten el burstable en Warehouse"</strong>
+              ❌ Están <strong>completamente aislados</strong>. Cada uno puede hacer burst de forma independiente.</li>
+            <li><strong class="trap-title">Trampa 21: "OPTIMIZE ZORDER siempre mejora el rendimiento"</strong>
+              ❌ Solo cuando las queries filtran por esas columnas. Si no, puede añadir overhead.</li>
+            <li><strong class="trap-title">Trampa 22: "Las rules paradas siguen ejecutándose en silencio"</strong>
+              ❌ Una <strong>rule parada no se ejecuta</strong>. No se envían alertas.</li>
+            <li><strong class="trap-title">Trampa 23: "Las acciones custom son necesarias en la mayoría de casos"</strong>
+              ❌ Las acciones básicas (email, Teams, actividades de Fabric) cubren la mayoría. Las custom, solo para casos específicos.</li>
+            <li><strong class="trap-title">Trampa 24: "La Capacity Metrics app viene incluida por defecto"</strong>
+              ❌ <strong>Requiere instalación</strong> desde AppSource o el admin portal.</li>
+            <li><strong class="trap-title">Trampa 25: "La selección de filtros del Monitoring Hub se pierde entre sesiones"</strong>
+              ❌ El <strong>Monitoring Hub recuerda</strong> tu selección de filtros para la siguiente visita.</li>
+          </ul>
+        </article>
+
+        <!-- ============ 33. COMPARATIVAS ============ -->
+        <div class="category-header" id="comparativas">
+          <span class="category-header__icon">🆚</span>
+          <h2 class="category-header__title">33. Comparativas clave</h2>
+        </div>
+
+        <article class="concept-card">
+          <h4>Monitoring Hub vs Workspace monitoring</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th></th><th>Monitoring Hub</th><th>Workspace monitoring</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Scope</strong></td><td>Cross-workspace</td><td>Un solo workspace</td></tr>
+                <tr><td><strong>Foco</strong></td><td>Salud de las actividades</td><td>Telemetría detallada</td></tr>
+                <tr><td><strong>Setup</strong></td><td>Automático</td><td>Habilitar en settings</td></tr>
+                <tr><td><strong>Backend</strong></td><td>Plataforma Fabric</td><td>Eventhouse por debajo</td></tr>
+                <tr><td><strong>Retención</strong></td><td>30 días</td><td>Configurable (mayor)</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h4>Operaciones interactivas vs background (smoothing)</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th></th><th>Interactivas</th><th>Background</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Trigger</strong></td><td>Acción del usuario</td><td>Programado/sistema</td></tr>
+                <tr><td><strong>Ejemplos</strong></td><td>Ver un report, query ad-hoc</td><td>Refreshes, pipelines</td></tr>
+                <tr><td><strong>Smoothing</strong></td><td><strong>Mínimo 5 minutos</strong></td><td><strong>24 horas</strong></td></tr>
+                <tr><td><strong>Impacto</strong></td><td>Más inmediato</td><td>Distribuido</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h4>Stateless vs Stateful rules (Activator)</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th></th><th>Stateless</th><th>Stateful</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Memoria</strong></td><td>❌</td><td>✅</td></tr>
+                <tr><td><strong>Tipos de condición</strong></td><td>Umbrales simples</td><td>Cambios, transiciones, ausencia</td></tr>
+                <tr><td><strong>Disparo</strong></td><td>Cada evento</td><td>Solo transiciones</td></tr>
+                <tr><td><strong>Ejemplo</strong></td><td><code>temp &gt; 30</code></td><td><code>temp INCREASES BY 5 IN 10min</code></td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h4>Bursting vs Smoothing vs Throttling</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th></th><th>Bursting</th><th>Smoothing</th><th>Throttling</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Qué hace</strong></td><td>Usar más CUs temporalmente</td><td>Repartir la contabilización de CU</td><td>Rechazar/limitar operaciones</td></tr>
+                <tr><td><strong>Beneficio</strong></td><td>Rendimiento rápido</td><td>Gestionar sin planificar al detalle</td><td>Evitar el abuso de capacidad</td></tr>
+                <tr><td><strong>Cuándo</strong></td><td>Picos temporales</td><td>Siempre (según reglas interactive/background)</td><td>Al exceder los umbrales</td></tr>
+                <tr><td><strong>Visible al usuario</strong></td><td>✅ Finaliza rápido</td><td>❌ Transparente</td><td>✅ Errores/retrasos</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h4>Fabric SKUs y burstable factor</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>SKU</th><th>CUs</th><th>Burstable factor</th></tr></thead>
+              <tbody>
+                <tr><td>F2</td><td>2</td><td><strong>1x-32x</strong> ⭐ máximo</td></tr>
+                <tr><td>F4</td><td>4</td><td>1x-16x</td></tr>
+                <tr><td>F8-F2048</td><td>8-2048</td><td>1x-12x</td></tr>
+                <tr><td>F4096</td><td>4096</td><td>1x-6x</td></tr>
+                <tr><td>F8192</td><td>8192</td><td>1x-3x</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h4>Acciones posibles en Activator</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Acción</th><th>Ejemplo</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Email</strong></td><td>Avisar al técnico de un pico de temperatura</td></tr>
+                <tr><td><strong>Teams (individual/chat/canal)</strong></td><td>Alertar al canal del equipo</td></tr>
+                <tr><td><strong>Actividad de Fabric</strong></td><td>Ejecutar un pipeline al llegar datos nuevos</td></tr>
+                <tr><td><strong>Custom (Power Automate)</strong></td><td>Workflow complejo</td></tr>
+                <tr><td><strong>Business event (preview)</strong></td><td>Emitir un evento a los consumidores</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h4>Herramientas de optimización del Lakehouse</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Tool</th><th>Uso</th></tr></thead>
+              <tbody>
+                <tr><td><strong>V-Order</strong></td><td>Lecturas más rápidas (habilitado por defecto)</td></tr>
+                <tr><td><strong>OPTIMIZE</strong></td><td>Compactar ficheros pequeños</td></tr>
+                <tr><td><strong>OPTIMIZE ZORDER</strong></td><td>Co-localizar datos relacionados</td></tr>
+                <tr><td><strong>VACUUM</strong></td><td>Eliminar ficheros antiguos (default 7 días)</td></tr>
+                <tr><td><strong>Particionado</strong></td><td>Pruning de queries (1 GB+ por partición)</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h4>DMVs útiles del Warehouse</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>DMV</th><th>Uso</th></tr></thead>
+              <tbody>
+                <tr><td><code>sys.dm_exec_requests</code></td><td>Queries en ejecución ahora</td></tr>
+                <tr><td><code>sys.dm_exec_sessions</code></td><td>Sesiones activas</td></tr>
+                <tr><td><code>queryinsights.exec_requests_history</code></td><td>Histórico de queries</td></tr>
+                <tr><td><code>queryinsights.frequently_run_queries</code></td><td>Las más frecuentes</td></tr>
+                <tr><td><code>queryinsights.long_running_queries</code></td><td>Las más lentas</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h4>Fuentes de datos para Activator</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Fuente</th><th>Uso</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Eventstreams</strong></td><td>Streaming en tiempo real</td></tr>
+                <tr><td><strong>KQL Querysets</strong></td><td>KQL programado en Eventhouse</td></tr>
+                <tr><td><strong>Real-Time Dashboards</strong></td><td>Alertas sobre visualizaciones</td></tr>
+                <tr><td><strong>Warehouse SQL query (preview)</strong></td><td>Monitorización de datos batch</td></tr>
+                <tr><td><strong>Visuals de reports de Power BI</strong></td><td>Data alerts</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h4>Herramientas de monitorización según el uso</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Necesito...</th><th>Tool</th></tr></thead>
+              <tbody>
+                <tr><td>Ver el estado de los jobs recientes</td><td><strong>Monitoring Hub</strong></td></tr>
+                <tr><td>Alertas sobre patrones de datos</td><td><strong>Activator</strong></td></tr>
+                <tr><td>Tendencias de consumo de CU</td><td><strong>Capacity Metrics app</strong></td></tr>
+                <tr><td>Telemetría detallada del workspace</td><td><strong>Workspace monitoring</strong></td></tr>
+                <tr><td>Adopción de features a nivel organización</td><td><strong>Admin monitoring workspace</strong></td></tr>
+                <tr><td>Auditar las actividades de usuario</td><td><strong>Purview Audit</strong></td></tr>
+                <tr><td>Investigar el rendimiento de queries</td><td><strong>DMVs</strong> (Warehouse) o <strong>Spark UI</strong></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </article>
+
+        <!-- ============ 34. FUENTES ============ -->
+        <div class="category-header" id="fuentes">
+          <span class="category-header__icon">📚</span>
+          <h2 class="category-header__title">34. Fuentes oficiales consultadas</h2>
+        </div>
+
+        <article class="concept-card">
+          <ul class="sources-list">
+            <li>Módulo Learn: <a href="https://learn.microsoft.com/training/modules/monitor-fabric-items/" target="_blank" rel="noopener noreferrer">monitor-fabric-items</a></li>
+            <li>Monitoring Hub: <a href="https://learn.microsoft.com/fabric/admin/monitoring-hub" target="_blank" rel="noopener noreferrer">monitoring-hub</a></li>
+            <li>Activator introduction: <a href="https://learn.microsoft.com/fabric/real-time-intelligence/data-activator/activator-introduction" target="_blank" rel="noopener noreferrer">activator-introduction</a></li>
+            <li>Activator alerts KQL Queryset: <a href="https://learn.microsoft.com/fabric/real-time-intelligence/data-activator/activator-alert-queryset" target="_blank" rel="noopener noreferrer">activator-alert-queryset</a></li>
+            <li>Activator conditions: <a href="https://learn.microsoft.com/fabric/real-time-intelligence/data-activator/activator-detection-conditions" target="_blank" rel="noopener noreferrer">activator-detection-conditions</a></li>
+            <li>Activator custom actions: <a href="https://learn.microsoft.com/fabric/real-time-intelligence/data-activator/activator-trigger-power-automate-flows" target="_blank" rel="noopener noreferrer">activator-trigger-power-automate-flows</a></li>
+            <li>Set alert Real-Time Dashboard: <a href="https://learn.microsoft.com/fabric/real-time-intelligence/user-flow-6" target="_blank" rel="noopener noreferrer">user-flow-6</a></li>
+            <li>Set alerts warehouse SQL query: <a href="https://learn.microsoft.com/fabric/real-time-intelligence/data-activator/set-alerts-warehouse-sql-query" target="_blank" rel="noopener noreferrer">set-alerts-warehouse-sql-query</a></li>
+            <li>Fabric admin overview: <a href="https://learn.microsoft.com/fabric/admin/admin-overview" target="_blank" rel="noopener noreferrer">admin-overview</a></li>
+            <li>Capacity Metrics app: <a href="https://learn.microsoft.com/fabric/enterprise/metrics-app" target="_blank" rel="noopener noreferrer">metrics-app</a></li>
+            <li>Plan capacity: <a href="https://learn.microsoft.com/fabric/enterprise/plan-capacity" target="_blank" rel="noopener noreferrer">plan-capacity</a></li>
+            <li>Throttling policy: <a href="https://learn.microsoft.com/fabric/enterprise/throttling" target="_blank" rel="noopener noreferrer">throttling</a></li>
+            <li>Optimize capacity: <a href="https://learn.microsoft.com/fabric/enterprise/optimize-capacity" target="_blank" rel="noopener noreferrer">optimize-capacity</a></li>
+            <li>Scale capacity: <a href="https://learn.microsoft.com/fabric/enterprise/scale-capacity" target="_blank" rel="noopener noreferrer">scale-capacity</a></li>
+            <li>Pause resume capacity: <a href="https://learn.microsoft.com/fabric/enterprise/pause-resume" target="_blank" rel="noopener noreferrer">pause-resume</a></li>
+            <li>Burstable capacity Warehouse: <a href="https://learn.microsoft.com/fabric/data-warehouse/burstable-capacity" target="_blank" rel="noopener noreferrer">burstable-capacity</a></li>
+            <li>Compute capacity smoothing throttling: <a href="https://learn.microsoft.com/fabric/data-warehouse/compute-capacity-smoothing-throttling" target="_blank" rel="noopener noreferrer">compute-capacity-smoothing-throttling</a></li>
+            <li>Capacity planning plan deployment: <a href="https://learn.microsoft.com/fabric/enterprise/capacity-planning-plan-deployment" target="_blank" rel="noopener noreferrer">capacity-planning-plan-deployment</a></li>
+            <li>Track user activities: <a href="https://learn.microsoft.com/fabric/admin/track-user-activities" target="_blank" rel="noopener noreferrer">track-user-activities</a></li>
+            <li>Admin monitoring workspace: <a href="https://learn.microsoft.com/fabric/admin/monitoring-workspace" target="_blank" rel="noopener noreferrer">monitoring-workspace</a></li>
+            <li>Feature usage adoption: <a href="https://learn.microsoft.com/fabric/admin/feature-usage-adoption" target="_blank" rel="noopener noreferrer">feature-usage-adoption</a></li>
+            <li>Notifications capacity threshold: <a href="https://learn.microsoft.com/fabric/real-time-hub/tutorial-monitor-capacity-threshold" target="_blank" rel="noopener noreferrer">tutorial-monitor-capacity-threshold</a></li>
+            <li>Warehouse guidelines performance: <a href="https://learn.microsoft.com/fabric/data-warehouse/guidelines-warehouse-performance" target="_blank" rel="noopener noreferrer">guidelines-warehouse-performance</a></li>
+            <li>Delta Lake table optimization: <a href="https://learn.microsoft.com/fabric/data-engineering/delta-optimization-and-v-order" target="_blank" rel="noopener noreferrer">delta-optimization-and-v-order</a></li>
+          </ul>
+        </article>
+
+        <!-- ============ CIERRE DEL CURSO ============ -->
+        <div class="course-finale">
+          <h2>🎉 ¡Enhorabuena! Has completado el curso DP-700 al 100% 🎓</h2>
+          <p><strong>17 módulos ultra-profundos</strong> cubriendo todo el temario oficial de la certificación.</p>
+          <div class="course-finale__phases">
+            <div class="course-finale__phase">
+              <h3>🌟 Fase 1 — Foundation (Lakehouse y Delta)</h3>
+              <ol>
+                <li><a href="modulo-1.html">Introducción a Fabric</a></li>
+                <li><a href="modulo-2.html">Lakehouses</a></li>
+                <li><a href="modulo-3.html">Apache Spark</a></li>
+                <li><a href="modulo-4.html">Tablas Delta Lake</a></li>
+                <li><a href="modulo-5.html">Dataflows Gen2</a></li>
+                <li><a href="modulo-6.html">Pipelines</a></li>
+                <li><a href="modulo-7.html">Arquitectura Medallion</a></li>
+              </ol>
+            </div>
+            <div class="course-finale__phase">
+              <h3>⚡ Fase 2 — Real-Time Intelligence</h3>
+              <ol start="8">
+                <li><a href="modulo-8.html">Introducción a RTI</a></li>
+                <li><a href="modulo-9.html">Real-Time Eventstreams</a></li>
+                <li><a href="modulo-10.html">Eventhouse y KQL</a></li>
+              </ol>
+            </div>
+            <div class="course-finale__phase">
+              <h3>🏛️ Fase 3 — Warehouse y SQL Database</h3>
+              <ol start="11">
+                <li><a href="modulo-11.html">Data Warehouse</a></li>
+                <li><a href="modulo-12.html">SQL Database en Fabric</a></li>
+                <li><a href="modulo-13.html">API for GraphQL</a></li>
+              </ol>
+            </div>
+            <div class="course-finale__phase">
+              <h3>🔐 Fase 4 — Gobernanza, CI/CD y seguridad</h3>
+              <ol start="14">
+                <li><a href="modulo-14.html">CI/CD</a></li>
+                <li><a href="modulo-15.html">Secure data access y OneLake Security</a></li>
+                <li><a href="modulo-16.html">Purview y gobernanza</a></li>
+              </ol>
+            </div>
+            <div class="course-finale__phase">
+              <h3>📊 Fase 5 — Monitorizar y optimizar</h3>
+              <ol start="17">
+                <li><strong>Monitorizar actividades</strong> (este módulo)</li>
+              </ol>
+            </div>
+          </div>
+        </div>
+
+        <div class="note note--next">
+          🚀 <strong>¡Lo has hecho genial!</strong> Ya tienes el temario completo del DP-700. Ahora toca repasar las trampas de cada módulo y presentarte con confianza. ¡Mucha suerte! 🌸🎀
+        </div>
+
+        <!-- Navegación del curso -->
+        <div class="course-nav">
+          <a href="modulo-16.html">
+            <span class="course-nav__label">← Anterior</span>
+            <span class="course-nav__title">Módulo 16 · Purview y gobernanza</span>
+          </a>
+          <a href="../dp-700.html" class="next">
+            <span class="course-nav__label">Volver al →</span>
+            <span class="course-nav__title">Índice del curso DP-700</span>
+          </a>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <button id="back-to-top" class="back-to-top" aria-label="Volver arriba" title="Volver arriba">↑</button>
+
+  <script src="https://cdn.jsdelivr.net/npm/i18next@23/dist/umd/i18next.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1/prism.min.js"></script>
+  <script src="../../../assets/js/theme.js"></script>
+  <script src="../../../assets/js/main.js"></script>
+  <script src="../../../assets/js/cursor.js"></script>
+</body>
+</html>
