@@ -1,0 +1,1358 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Guía Maestra DP-700: 52 tips, trampas y chuletas para aprobar el examen. Reglas de oro, trampas clásicas y analogías kawaii organizadas por los tres dominios oficiales.">
+  <title>DP-700 · Guía Maestra: Tips y Trampas | Power BI Guide by Kawaii BI</title>
+  <link rel="canonical" href="https://kawaiibi.es/topics/certificaciones/dp-700/tips-y-trampas.html">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Kawaii Power BI Guide">
+  <meta property="og:locale" content="es_ES">
+  <meta property="og:title" content="DP-700 · Guía Maestra: Tips y Trampas | Power BI Guide by Kawaii BI">
+  <meta property="og:description" content="52 tips y trampas del examen DP-700: reglas de oro, trampas clásicas y analogías kawaii por dominio.">
+  <meta property="og:url" content="https://kawaiibi.es/topics/certificaciones/dp-700/tips-y-trampas.html">
+  <meta property="og:image" content="https://kawaiibi.es/assets/images/og-banner.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="1200">
+  <meta property="og:image:alt" content="Sara Lozano Marti - Kawaii Power BI">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="DP-700 · Guía Maestra: Tips y Trampas | Power BI Guide by Kawaii BI">
+  <meta name="twitter:description" content="52 tips y trampas del examen DP-700 con reglas de oro y analogías kawaii.">
+  <meta name="twitter:image" content="https://kawaiibi.es/assets/images/og-banner.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/prismjs@1/themes/prism-okaidia.min.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="../../../assets/css/main.css">
+  <link rel="stylesheet" href="../../../assets/css/themes.css">
+  <link rel="stylesheet" href="../../../assets/css/components.css">
+  <link rel="stylesheet" href="../../../assets/css/layout.css">
+
+  <style>
+    .topic-header { text-align: center; padding: 2.25rem 0 1.75rem; border-bottom: 2px solid var(--color-mauve); margin-bottom: 2rem; }
+    .topic-header__eyebrow { font-family: 'Fira Code', monospace; font-size: 0.8125rem; font-weight: 600; color: var(--color-coral); letter-spacing: 0.05em; }
+    .topic-header__icon { font-size: 3.5rem; margin: 0.5rem 0; display: block; }
+    .topic-header__title { font-size: clamp(1.75rem, 4vw, 2.25rem); font-weight: 800; color: var(--color-dark); margin-bottom: 0.625rem; line-height: 1.2; }
+    .topic-header__subtitle { font-size: 1rem; color: var(--color-slate); margin-bottom: 1.25rem; line-height: 1.55; max-width: 680px; margin-left: auto; margin-right: auto; }
+    .topic-header__levels { display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap; align-items: center; }
+
+    .toc { background: var(--color-rose); border-radius: var(--border-radius); padding: 1.25rem 1.5rem; margin-bottom: 2rem; border: 1.5px solid var(--color-mauve); }
+    .toc__title { font-size: 1rem; font-weight: 700; margin: 0 0 0.75rem; }
+    .toc__group { font-size: 0.8125rem; font-weight: 700; color: var(--color-slate); text-transform: uppercase; letter-spacing: 0.05em; margin: 1rem 0 0.5rem; }
+    .toc__group:first-of-type { margin-top: 0; }
+    .toc__list { display: flex; flex-wrap: wrap; gap: 0.5rem; list-style: none; padding: 0; margin: 0; }
+    .toc__list a { font-size: 0.8125rem; color: var(--color-coral); text-decoration: none; padding: 0.25rem 0.625rem; background: var(--color-white); border-radius: 999px; border: 1px solid var(--color-mauve); }
+    .toc__list a:hover { background: var(--color-coral); color: #fff; }
+
+    .category-header { display: flex; align-items: center; gap: 0.75rem; margin: 2.5rem 0 1.25rem; padding: 0.875rem 1.25rem; background: var(--color-rose); border-radius: var(--border-radius-sm); border-left: 4px solid var(--color-coral); scroll-margin-top: 20px; }
+    .category-header__icon { font-size: 1.5rem; }
+    .category-header__title { font-size: 1.25rem; font-weight: 700; margin: 0; }
+
+    .concept-card { background: var(--color-white); border: 1.5px solid var(--color-mauve); border-radius: var(--border-radius); padding: 1.5rem 1.75rem; margin-bottom: 1.25rem; scroll-margin-top: 20px; }
+    .concept-card h3 { font-size: 1.0625rem; font-weight: 700; color: var(--color-coral); margin: 0 0 0.6rem; }
+    .concept-card h4 { font-size: 0.9375rem; font-weight: 700; color: var(--color-dark); margin: 1.1rem 0 0.4rem; }
+    .concept-card p { font-size: 0.9375rem; line-height: 1.7; color: var(--color-dark); margin-bottom: 0.7rem; }
+    .concept-card ul, .concept-card ol { padding-left: 1.25rem; font-size: 0.9375rem; line-height: 1.75; color: var(--color-dark); margin: 0.4rem 0; }
+    .concept-card code { background: var(--color-blush); padding: 0.1em 0.4em; border-radius: 4px; font-family: 'Fira Code', monospace; font-size: 0.85em; color: var(--color-coral); }
+    .concept-card pre { margin: 0.75rem 0; }
+    .concept-card__num { display: inline-block; font-family: 'Fira Code', monospace; font-size: 0.75rem; font-weight: 700; color: #fff; background: var(--color-coral); border-radius: 999px; padding: 0.15rem 0.55rem; margin-right: 0.5rem; vertical-align: middle; }
+
+    .md-table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.84rem; }
+    .md-table th, .md-table td { border: 1px solid var(--color-mauve); padding: 0.5rem 0.7rem; text-align: left; vertical-align: top; }
+    .md-table th { background: var(--color-rose); font-weight: 700; color: var(--color-dark); }
+    .md-table tr:nth-child(even) td { background: var(--color-blush); }
+    .table-scroll { overflow-x: auto; }
+
+    .course-nav { display: flex; justify-content: space-between; gap: 1rem; margin-top: 2.5rem; flex-wrap: wrap; }
+    .course-nav a { flex: 1 1 220px; display: block; background: var(--color-white); border: 1.5px solid var(--color-mauve); border-radius: var(--border-radius); padding: 1rem 1.25rem; text-decoration: none; color: inherit; transition: var(--transition); }
+    .course-nav a:hover { border-color: var(--color-coral); box-shadow: var(--shadow-md); text-decoration: none; }
+    .course-nav__label { font-size: 0.75rem; color: var(--color-slate); text-transform: uppercase; letter-spacing: 0.05em; }
+    .course-nav__title { font-weight: 700; color: var(--color-coral); }
+    .course-nav a.next { text-align: right; }
+
+    .intro-card { background: var(--color-rose); border: 2px solid var(--color-coral); border-radius: var(--border-radius); padding: 1.5rem 1.75rem; margin-bottom: 2rem; }
+    .intro-card p { font-size: 0.9375rem; line-height: 1.75; color: var(--color-dark); margin-bottom: 0.6rem; }
+    .intro-card p:last-child { margin-bottom: 0; }
+  </style>
+</head>
+<body>
+
+  <aside class="site-sidebar">
+    <div class="site-sidebar__profile">
+      <img src="../../../assets/images/avatar-sara.png" alt="Sara Lozano Martí" class="site-sidebar__avatar">
+      <p class="site-sidebar__name">Sara Lozano Martí</p>
+      <p class="site-sidebar__subtitle">Power BI Expert</p>
+    </div>
+    <nav class="site-sidebar__nav" aria-label="Navegación principal">
+      <ul>
+        <li><a href="../../../index.html" class="site-sidebar__link"><span class="site-sidebar__icon">🏠</span> Inicio</a></li>
+        <li><a href="../../dax.html" class="site-sidebar__link"><span class="site-sidebar__icon">⚡</span> Funciones DAX</a></li>
+        <li><a href="../../power-query.html" class="site-sidebar__link"><span class="site-sidebar__icon">🔄</span> Power Query</a></li>
+        <li><a href="../../lenguaje-m.html" class="site-sidebar__link"><span class="site-sidebar__icon">〽️</span> Lenguaje M</a></li>
+        <li><a href="../../modelado.html" class="site-sidebar__link"><span class="site-sidebar__icon">🗄️</span> Modelado</a></li>
+        <li><a href="../../conceptos-powerbi.html" class="site-sidebar__link"><span class="site-sidebar__icon">📊</span> Conceptos Power BI</a></li>
+        <li><a href="../../fabric.html" class="site-sidebar__link"><span class="site-sidebar__icon">🧵</span> Microsoft Fabric</a></li>
+        <li><a href="../../tmdl.html" class="site-sidebar__link"><span class="site-sidebar__icon">📝</span> TMDL</a></li>
+        <li><a href="../../diseno-ux.html" class="site-sidebar__link"><span class="site-sidebar__icon">🎨</span> Diseño y UX</a></li>
+        <li><a href="../../gobernanza.html" class="site-sidebar__link"><span class="site-sidebar__icon">🔒</span> Gobernanza</a></li>
+        <li><a href="../../certificaciones.html" class="site-sidebar__link is-active"><span class="site-sidebar__icon">🎓</span> Certificaciones</a></li>
+      </ul>
+    </nav>
+    <div class="site-sidebar__divider"></div>
+    <div class="site-sidebar__footer">
+      <a href="../../../quien-soy.html" class="site-sidebar__link site-sidebar__link--highlight"><span class="site-sidebar__icon">👩‍💻</span> ¿Quién soy?</a>
+      <div class="site-sidebar__social">
+        <a href="https://www.linkedin.com/in/saralozanomarti" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><img src="../../../assets/images/logo-linkedin.png" alt="LinkedIn" class="site-sidebar__social-icon"></a>
+        <a href="https://www.youtube.com/@KawaiiPowerBI" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><img src="../../../assets/images/logo-youtube.png" alt="YouTube" class="site-sidebar__social-icon"></a>
+        <a href="https://github.com/KawaiiBI" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><img src="../../../assets/images/logo-github.png" alt="GitHub" class="site-sidebar__social-icon"></a>
+      </div>
+      <div class="site-sidebar__logo-bottom"><img src="../../../assets/images/logo-kawaii.jpg" alt="Kawaii BI" class="site-sidebar__logo-img"></div>
+      <p class="site-sidebar__copyright">Power BI Guide 🌸<br>© 2026 Kawaii BI</p>
+    </div>
+  </aside>
+
+  <div class="page-wrapper">
+    <main class="main-content">
+      <div class="topic-page">
+
+        <nav class="breadcrumb" aria-label="Ruta de navegación">
+          <span class="breadcrumb__item"><a href="../../../index.html">🏠 Inicio</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item"><a href="../../certificaciones.html">Certificaciones</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item"><a href="../dp-700.html">DP-700</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item">Tips y Trampas</span>
+        </nav>
+
+        <header class="topic-header">
+          <span class="topic-header__eyebrow">DP-700 · GUÍA MAESTRA</span>
+          <span class="topic-header__icon">🎯</span>
+          <h1 class="topic-header__title">Tips, Trampas y Chuletas del DP-700</h1>
+          <p class="topic-header__subtitle">52 apuntes vivos para el examen: la regla de oro que te hace acertar, la trampa clásica con la que te intentan despistar y la analogía kawaii para que se te quede. 🌸</p>
+          <div class="topic-header__levels">
+            <span class="badge badge--intermediate">Intermedio</span>
+            <span class="badge badge--advanced">Avanzado</span>
+          </div>
+        </header>
+
+        <div class="intro-card">
+          <p><strong>Filosofía:</strong> entender el <strong>porqué</strong>, no memorizar respuestas. Cada bloque trae la <strong>regla de oro</strong> (el truco para acertar), la <strong>trampa clásica</strong> (cómo te intentan despistar) y, cuando ayuda, una <strong>analogía kawaii</strong> para que se quede. 💜</p>
+          <p>Está organizado por los <strong>tres dominios oficiales</strong> del examen más los fundamentos transversales. Déjalo para el <strong>final</strong>, justo antes de presentarte, cuando ya domines los <a href="../dp-700.html">17 módulos</a>.</p>
+        </div>
+
+        <nav class="toc" aria-label="Índice de la guía">
+          <p class="toc__title">📑 En esta guía:</p>
+
+          <p class="toc__group">🧩 Fundamentos y modelado</p>
+          <ul class="toc__list">
+            <li><a href="#tip-1">1. Artefacto de almacenamiento</a></li>
+            <li><a href="#tip-2">2. Herramienta de transformación</a></li>
+            <li><a href="#tip-3">3. Medallion: herramienta por capa</a></li>
+            <li><a href="#tip-4">4. Modelado dimensional</a></li>
+            <li><a href="#tip-5">5. SCD: los 4 tipos</a></li>
+            <li><a href="#tip-6">6. Join a un SCD Type 2</a></li>
+            <li><a href="#tip-7">7. Hash functions</a></li>
+          </ul>
+
+          <p class="toc__group">🛡️ Dominio 1 · Implementar y gestionar</p>
+          <ul class="toc__list">
+            <li><a href="#tip-8">8. Roles de workspace</a></li>
+            <li><a href="#tip-9">9. Sharing de Lakehouse</a></li>
+            <li><a href="#tip-10">10. Roles de dominio</a></li>
+            <li><a href="#tip-11">11. La herencia que no existe</a></li>
+            <li><a href="#tip-12">12. Contributor bypasea OneLake</a></li>
+            <li><a href="#tip-13">13. Row-Level Security</a></li>
+            <li><a href="#tip-14">14. Column-Level Security</a></li>
+            <li><a href="#tip-15">15. Dynamic Data Masking</a></li>
+            <li><a href="#tip-16">16. Endorsement badges</a></li>
+            <li><a href="#tip-17">17. Deployment pipelines</a></li>
+            <li><a href="#tip-18">18. GitHub vs Azure DevOps</a></li>
+            <li><a href="#tip-19">19. Identidades</a></li>
+            <li><a href="#tip-20">20. Conectividad de red</a></li>
+            <li><a href="#tip-21">21. Orquestación</a></li>
+            <li><a href="#tip-22">22. runMultiple y DAGs</a></li>
+            <li><a href="#tip-23">23. Environments</a></li>
+          </ul>
+
+          <p class="toc__group">📥 Dominio 2 · Ingerir y transformar</p>
+          <ul class="toc__list">
+            <li><a href="#tip-24">24. Ingesta metadata-driven</a></li>
+            <li><a href="#tip-25">25. Qué item de ingesta</a></li>
+            <li><a href="#tip-26">26. Copy activity → Warehouse</a></li>
+            <li><a href="#tip-27">27. CDC</a></li>
+            <li><a href="#tip-28">28. Caché de shortcuts</a></li>
+            <li><a href="#tip-29">29. Overwrite vs merge</a></li>
+            <li><a href="#tip-30">30. Delta MERGE</a></li>
+            <li><a href="#tip-31">31. RTI: las 4 piezas</a></li>
+            <li><a href="#tip-32">32. Eventstream vs Notebook</a></li>
+            <li><a href="#tip-33">33. Windowing functions</a></li>
+            <li><a href="#tip-34">34. Operadores de Eventstream</a></li>
+            <li><a href="#tip-35">35. OneLake availability</a></li>
+            <li><a href="#tip-36">36. KQL: operadores y prev()</a></li>
+            <li><a href="#tip-37">37. KQL: crear tabla</a></li>
+            <li><a href="#tip-38">38. PySpark: when/split/dedup</a></li>
+            <li><a href="#tip-39">39. Parámetros: @ vs @{}</a></li>
+          </ul>
+
+          <p class="toc__group">📊 Dominio 3 · Monitorizar y optimizar</p>
+          <ul class="toc__list">
+            <li><a href="#tip-40">40. OPTIMIZE vs VACUUM</a></li>
+            <li><a href="#tip-41">41. V-Order: el trade-off</a></li>
+            <li><a href="#tip-42">42. Statistics</a></li>
+            <li><a href="#tip-43">43. Direct Lake: tipo de keys</a></li>
+            <li><a href="#tip-44">44. KQL: filtrar temprano</a></li>
+            <li><a href="#tip-45">45. Herramientas de monitorización</a></li>
+            <li><a href="#tip-46">46. DMVs: histórico vs tiempo real</a></li>
+            <li><a href="#tip-47">47. Refresh: execute vs monitor</a></li>
+            <li><a href="#tip-48">48. Debug: input vs output JSON</a></li>
+            <li><a href="#tip-49">49. Exhibit: Inactive y flechas</a></li>
+            <li><a href="#tip-50">50. Spark: History Server</a></li>
+          </ul>
+
+          <p class="toc__group">🎓 Extra</p>
+          <ul class="toc__list">
+            <li><a href="#tip-51">51. Pensar como el examinador</a></li>
+            <li><a href="#tip-52">52. Cuando la doc gana al dump</a></li>
+          </ul>
+        </nav>
+
+        <!-- ============ FUNDAMENTOS ============ -->
+        <div class="category-header" id="fundamentos">
+          <span class="category-header__icon">🧩</span>
+          <h2 class="category-header__title">Fundamentos y modelado</h2>
+        </div>
+
+        <article class="concept-card" id="tip-1">
+          <h3><span class="concept-card__num">01</span>Elegir el artefacto de almacenamiento correcto</h3>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Necesito...</th><th>Artefacto</th></tr></thead>
+              <tbody>
+                <tr><td>Spark <strong>escribe</strong> + lectura multi-motor (SQL/KQL/Spark)</td><td><strong>Lakehouse</strong> (el todoterreno de OneLake)</td></tr>
+                <tr><td>Streaming / telemetría / series temporales + KQL protagonista</td><td><strong>Eventhouse</strong></td></tr>
+                <tr><td>T-SQL de primera clase + escritura T-SQL + transacciones</td><td><strong>Warehouse</strong></td></tr>
+                <tr><td>Autoservicio ligero de Power BI, sin Spark</td><td><strong>Datamart</strong> (casi siempre trampa)</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>🎯 <strong>Método</strong>: tacha <strong>cada requisito uno a uno</strong> sobre cada opción. Gana la que <strong>no falla ninguno</strong>, no la que "encaja con la palabra que más suena".</p>
+          <div class="note note--warning">
+            ⚠️ <strong>Trampa:</strong> ver "KQL" y saltar a Eventhouse sin comprobar el resto. Si piden "escribe SOLO con Spark", el eventhouse falla (su escritura nativa es ingesta de eventos, no Spark) → gana <strong>Lakehouse</strong> (Spark escribe nativo; T-SQL vía SQL endpoint; KQL vía shortcut de OneLake).
+          </div>
+          <div class="note note--tip">
+            🌸 <strong>Analogía:</strong> el lakehouse es la <strong>nevera familiar</strong> — cualquiera abre, mete o saca comida por la puerta que quiera (Spark, SQL, KQL). El eventhouse es la <strong>cinta de sushi giratoria</strong> 🍣: brilla con cosas que fluyen sin parar. El warehouse es la <strong>despensa ordenada con etiquetas</strong> (T-SQL, estructura, transacciones).
+          </div>
+        </article>
+
+        <article class="concept-card" id="tip-2">
+          <h3><span class="concept-card__num">02</span>Elegir herramienta de transformación</h3>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Pista en el enunciado</th><th>Herramienta</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Low-code / simple / minimize effort / PK sencilla</strong></td><td><strong>Dataflow Gen2</strong> (Power Query, no-code)</td></tr>
+                <tr><td><strong>Custom visuals / development mode / explorar</strong></td><td><strong>Notebook</strong> (visualizaciones inline)</td></tr>
+                <tr><td><strong>Semiestructurado + código complejo</strong></td><td><strong>Notebook</strong> (PySpark)</td></tr>
+                <tr><td><strong>Windowing functions (ROW_NUMBER, RANK, LAG)</strong></td><td><strong>T-SQL</strong> (el dataflow NO las soporta)</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>🎯 Caza la palabra clave: "visuals" → notebook · "windowing" → T-SQL · "low-code/simple" → dataflow.</p>
+          <div class="note note--warning">
+            ⚠️ <strong>Dataflow Gen2 NO soporta</strong>: windowing functions avanzadas, visualización exploratoria ni lógica muy compleja.
+          </div>
+          <div class="note note--tip">
+            🌸 <strong>Analogía:</strong> elegir herramienta es como elegir utensilio de cocina 🍳. Para un corte rápido y sencillo, el pelador (dataflow). Para un plato elaborado con mil pasos, los cuchillos de chef (notebook). Para una receta con una técnica muy concreta de repostería (windowing), el molde especializado (T-SQL).
+          </div>
+        </article>
+
+        <article class="concept-card" id="tip-3">
+          <h3><span class="concept-card__num">03</span>Arquitectura medallion: herramienta por capa</h3>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Capa</th><th>Herramienta típica</th><th>Pista en el enunciado</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Bronze</strong> (raw, sin transformar, solo formato)</td><td><strong>Copy activity</strong> de pipeline</td><td>"no changes", "raw", "minimal effort", "built-in connection", "retry on error"</td></tr>
+                <tr><td><strong>Silver</strong> (cleansing, dedup, calidad)</td><td><strong>Notebook</strong> (PySpark)</td><td>"extensive cleansing", "deduplication", el equipo "prefers Python/SQL"</td></tr>
+                <tr><td><strong>Gold</strong> (modelo dimensional, agregaciones)</td><td>Notebook o <strong>stored procedure</strong> (T-SQL)</td><td>según el destino (warehouse → SP)</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>🎯 La respuesta sale de <strong>cazar la frase exacta del requisito</strong>, no de qué herramienta prefieres. Bronze pide <strong>cero transformación</strong> → <strong>Copy activity</strong> (¡NO dataflow, que transforma!). Silver pide <strong>limpieza pesada</strong> → <strong>notebook</strong>.</p>
+          <div class="note note--warning">
+            ⚠️ <strong>Trampa:</strong> poner Dataflow Gen2 en bronze. El dataflow es una herramienta de <strong>transformación</strong> (Power Query) → contradice el "no changes other than file format".
+          </div>
+          <div class="note note--tip">
+            🌸 <strong>Analogía:</strong> es una fábrica de mermelada 🍓. Bronze = recibir la fruta tal cual llega del campo (solo la metes en cajas, no la tocas → Copy). Silver = lavar, quitar lo malo, cortar (cleansing → notebook). Gold = hacer la mermelada lista para vender (modelo final → SP/notebook).
+          </div>
+        </article>
+
+        <article class="concept-card" id="tip-4">
+          <h3><span class="concept-card__num">04</span>Modelado dimensional (star schema)</h3>
+          <p>🎯 <strong>Reglas de oro:</strong></p>
+          <ul>
+            <li><strong>Star schema</strong> = dimensiones <strong>denormalizadas</strong> (planas, una tabla por dimensión). "Minimize joins / development effort / analytical performance" → estrella ⭐</li>
+            <li><strong>Snowflake</strong> = dimensiones normalizadas en varias tablas → más joins, más complejo.</li>
+            <li><strong>Joining key</strong> = siempre <strong>surrogate key</strong> (identificador único <strong>generado por el sistema</strong>), nunca nombres ni fechas de negocio.</li>
+          </ul>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Va en la DIMENSIÓN</th><th>Va en la FACT TABLE</th></tr></thead>
+              <tbody>
+                <tr><td>Clave de negocio (ProductID)</td><td>Claves foráneas (surrogate keys)</td></tr>
+                <tr><td>Atributos descriptivos (Name, Color)</td><td>Métricas (SalesAmount, Qty)</td></tr>
+                <tr><td>Surrogate key (PK generada)</td><td>Fechas de evento (transaction Date)</td></tr>
+                <tr><td>Columnas SCD (ValidFrom, ValidTo, IsCurrent)</td><td>IDs de evento (TransactionID)</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="note note--warning">
+            ⚠️ <strong>Trampa golosa:</strong> "denormalize into the FACT table" suena a denormalizar (bueno en estrella), pero mezclar dimensión con hechos = <strong>one-big-table</strong>, NO star schema. La denormalización correcta es <strong>dentro de la dimensión</strong>.
+          </div>
+          <p>💡 <strong>Por qué surrogate key y no la business key del origen</strong>: aísla de los cambios del origen, soporta SCD (historial) y hace joins más eficientes (entero pequeño).</p>
+          <div class="note note--tip">
+            🌸 <strong>Analogía:</strong> pregúntate siempre "¿esto <strong>describe</strong> al producto o describe la <strong>venta</strong>?". Nombre/color/categoría describen el producto → <strong>dimensión</strong>. Importe/fecha/nº de pedido describen la venta → <strong>fact</strong>. Es como separar la ficha del personaje (dimensión) de lo que hace en cada partida (hechos). 🎮
+          </div>
+        </article>
+
+        <article class="concept-card" id="tip-5">
+          <h3><span class="concept-card__num">05</span>SCD: los 4 tipos (0, 1, 2, 3)</h3>
+          <p>Qué hace cada tipo cuando un valor cambia (ejemplo: una clienta se muda de ciudad):</p>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Tipo</th><th>Qué hace</th><th>Histórico</th><th>Firma</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Type 0</strong></td><td>ignora el cambio (inmutable)</td><td>ninguno</td><td>valores fijos (fecha de nacimiento)</td></tr>
+                <tr><td><strong>Type 1</strong></td><td><strong>sobrescribe</strong> (pierde lo viejo)</td><td>ninguno</td><td>solo estado actual</td></tr>
+                <tr><td><strong>Type 2</strong></td><td><strong>fila nueva</strong> (conserva versiones)</td><td><strong>completo</strong></td><td><strong>ValidFrom / ValidTo / IsCurrent</strong> ⭐</td></tr>
+                <tr><td><strong>Type 3</strong></td><td>columna extra (valor anterior)</td><td>1 nivel</td><td>PreviousValue + CurrentValue</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>🎯 <strong>Identificar en el examen:</strong></p>
+          <ul>
+            <li><strong>"histórico / at the time of / point-in-time / track over time"</strong> + columnas <strong>ValidFrom/ValidTo</strong> → <strong>Type 2</strong>.</li>
+            <li><strong>"solo valor actual / overwrite / latest"</strong> → <strong>Type 1</strong>.</li>
+            <li><strong>"valor actual Y anterior" (un nivel)</strong> → <strong>Type 3</strong>.</li>
+            <li><strong>"nunca cambia / inmutable"</strong> → <strong>Type 0</strong>.</li>
+          </ul>
+          <div class="note note--tip">
+            🌸 <strong>Analogía de los carnets de identidad</strong> 🪪: cada versión de la clienta es un carnet con fecha de emisión (ValidFrom) y caducidad (ValidTo). Type 2 <strong>guarda todos los carnets</strong> (histórico completo). Type 1 <strong>rompe el carnet viejo</strong> y solo tiene el actual. Type 3 guarda <strong>el carnet de ahora y el anterior</strong> (solo uno hacia atrás). Type 0 nunca cambia el carnet (es tu partida de nacimiento).
+          </div>
+        </article>
+
+        <article class="concept-card" id="tip-6">
+          <h3><span class="concept-card__num">06</span>Join a un SCD Type 2: histórico vs actual</h3>
+          <p>Columnas de un SCD Type 2: <strong><code>valid_from</code></strong> (desde cuándo), <strong><code>valid_to</code></strong> (hasta cuándo) e <strong><code>is_current</code></strong> (¿es la versión de ahora? 1/0).</p>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Quiero analizar...</th><th>Condición del join</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Atributos HISTÓRICOS</strong> (como era en la fecha del pedido)</td><td>rango: <code>OrderDate &gt;= valid_from AND OrderDate &lt; valid_to</code></td></tr>
+                <tr><td><strong>Atributos ACTUALES</strong> (como es hoy)</td><td><code>is_current = 1</code></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>🎯 <strong>Regla:</strong> "historical / point-in-time / como era ENTONCES" → <strong>rango de fechas</strong>. "current / como es AHORA" → <strong>is_current = 1</strong>. El límite inferior es <code>&gt;= valid_from</code> (inclusivo) y el superior <code>&lt; valid_to</code> (exclusivo, para no solapar versiones).</p>
+          <div class="note note--tip">
+            🌸 <strong>Analogía:</strong> si preguntas "¿en qué ciudad vivía Ana cuando compró en 2022?" → miras qué <strong>carnet estaba vigente</strong> en 2022 (rango de fechas = histórico). Si preguntas "¿dónde vive Ana hoy?" → coges el carnet vigente (is_current = 1 = actual). 🪪
+          </div>
+        </article>
+
+        <article class="concept-card" id="tip-7">
+          <h3><span class="concept-card__num">07</span>Hash functions para detectar cambios</h3>
+          <p>Un <strong>hash</strong> es una "huella dactilar" de una fila: convierte todas las columnas en un código corto. Si CUALQUIER dato cambia → el hash cambia por completo.</p>
+          <p>🎯 <strong>Uso</strong>: detectar cambios en tablas <strong>anchas</strong> (muchas columnas) de forma <strong>eficiente</strong>. En vez de comparar 100 columnas × millones de filas, comparas <strong>un solo hash</strong> por fila.</p>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Método</th><th>Coste</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Hash function</strong> (huella de la fila)</td><td>⚡ bajo — 1 comparación por fila</td></tr>
+                <tr><td>Comparación directa (columna a columna)</td><td>🐌 alto — N comparaciones por fila</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>💡 <strong>Regla</strong>: "detectar cambios + muchas columnas + minimize resources" → <strong>hash function</strong> sobre los datos <strong>entrantes (source)</strong>. Implementación real: <code>HASHBYTES('SHA2_256', ...)</code> en T-SQL o <code>sha2()</code> en PySpark. También se llama "row hash" o "checksum column".</p>
+          <div class="note note--tip">
+            🌸 <strong>Analogía:</strong> comparar dos fichas de 100 campos a mano es agotador 😵. Pero si a cada ficha le pones una <strong>pegatina con un código único</strong> que cambia si cambias cualquier campo, solo comparas las pegatinas: ¿distintas? → algo cambió. Rápido y limpio. 🏷️
+          </div>
+        </article>
+
+        <!-- ============ DOMINIO 1 ============ -->
+        <div class="category-header" id="dominio-1">
+          <span class="category-header__icon">🛡️</span>
+          <h2 class="category-header__title">Dominio 1 · Implementar y gestionar (30-35%)</h2>
+        </div>
+
+        <article class="concept-card" id="tip-8">
+          <h3><span class="concept-card__num">08</span>Roles de workspace y least privilege</h3>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Rol</th><th>Puede...</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Viewer</strong></td><td>Ver items y leer datos vía SQL endpoint. El más bajo.</td></tr>
+                <tr><td><strong>Contributor</strong></td><td>Crear/editar items, ejecutar pipelines, escribir. El "trabajador".</td></tr>
+                <tr><td><strong>Member</strong></td><td>Todo lo de Contributor + compartir y gestionar acceso.</td></tr>
+                <tr><td><strong>Admin</strong></td><td>Control total del workspace.</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>🎯 <strong>Regla de oro (¡patrón que cae fijo!):</strong> cuando el enunciado dice <em>"you already assigned object-level / item permissions"</em> <strong>+</strong> <em>"least privilege"</em> → la respuesta es casi siempre <strong>Viewer</strong>, porque la escritura ya está cubierta por otra vía (object-level) y el rol de workspace solo tiene que aportar la <strong>visibilidad</strong>.</p>
+          <div class="note note--warning">
+            ⚠️ <strong>Trampa:</strong> ves "update the tables" y saltas a un rol con escritura (Contributor). Pero si la escritura ya está concedida por object-level permissions, solo necesitas el rol mínimo que dé "ver items" = Viewer. <strong>Los permisos se SUMAN</strong> (rol de workspace + permisos de objeto).
+          </div>
+          <p>💡 <strong>Lección transversal</strong>: lee dos veces las frases que parecen de relleno ("you already assigned..."). Suelen resolver medio requisito y cambiar la respuesta.</p>
+        </article>
+
+        <article class="concept-card" id="tip-9">
+          <h3><span class="concept-card__num">09</span>Sharing de Lakehouse y permisos</h3>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Quiero que...</th><th>Permiso al compartir</th></tr></thead>
+              <tbody>
+                <tr><td>Lea <strong>tablas</strong> por SQL</td><td><strong>Read all SQL endpoint data</strong> (ReadData)</td></tr>
+                <tr><td>Lea <strong>ficheros</strong> por Spark/OneLake</td><td><strong>Read all Apache Spark</strong> (ReadAll)</td></tr>
+                <tr><td>Construya <strong>informes</strong> de Power BI</td><td><strong>Build reports on the default semantic model</strong></td></tr>
+                <tr><td><strong>NO</strong> vea otros items del workspace</td><td><strong>NO</strong> asignar rol de workspace → solo sharing directo</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>🎯 <strong>Reglas de oro:</strong></p>
+          <ul>
+            <li><strong>"SQL sí, Spark no"</strong> → <code>Read all SQL endpoint data</code> <strong>sola</strong> (sin ReadAll). ReadData da las tablas por T-SQL pero NO los ficheros.</li>
+            <li><strong>"Que no vea el resto del workspace"</strong> → <strong>sharing directo del item, cero roles de workspace</strong>.</li>
+          </ul>
+          <div class="note note--warning">
+            ⚠️ <strong>Trampa:</strong> dar un <strong>rol de workspace</strong> (Viewer/Member) además del sharing. El rol da acceso a <strong>TODOS</strong> los items del workspace → viola el "que no acceda a otros items". El sharing de item da acceso SOLO a ese item.
+          </div>
+        </article>
+
+        <article class="concept-card" id="tip-10">
+          <h3><span class="concept-card__num">10</span>Roles de dominio y gobierno</h3>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Rol</th><th>Alcance</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Fabric admin</strong></td><td>Todo el tenant. Crea dominios y <strong>nombra</strong> a los domain admins.</td></tr>
+                <tr><td><strong>Domain admin</strong></td><td>Gestiona <strong>su</strong> dominio: subdominios, asignar/quitar workspaces, configuración, nombrar contributors.</td></tr>
+                <tr><td><strong>Domain contributor</strong></td><td>Solo <strong>asigna sus propios workspaces</strong> a dominios existentes. No crea nada.</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>🎯 <strong>Regla de oro:</strong> "gestionar dominio / crear subdominios / asignar workspaces" <strong>+</strong> "least privilege" → <strong>domain admin</strong> (NO Fabric admin).</p>
+          <div class="note note--warning">
+            ⚠️ <strong>Ambigüedad conocida:</strong> técnicamente, <strong>crear el PRIMER dominio</strong> es exclusivo del Fabric admin. Pero si el enunciado añade "least privilege", se espera <strong>domain admin</strong> (asume que un Fabric admin ya creó el contenedor y delegó). Si la pregunta fuera aislada <em>"Who can create a domain?"</em> → ahí sí, <strong>Fabric admin</strong>.
+          </div>
+          <p>💡 <strong>Señal luminosa</strong>: la coletilla <strong>"principle of least privilege"</strong> casi nunca lleva al rol más poderoso. Elige el permiso más ajustado que aún cumpla la tarea.</p>
+        </article>
+
+        <article class="concept-card" id="tip-11">
+          <h3><span class="concept-card__num">11</span>Dominios: la herencia que no existe</h3>
+          <p>🎯 <strong>Regla de oro:</strong> pertenecer a un <strong>dominio</strong> NUNCA da un <strong>rol de workspace</strong>. Son planos separados:</p>
+          <ul>
+            <li><strong>Dominio</strong> = gobierno (organización lógica, sensitivity labels, catálogo).</li>
+            <li><strong>Roles de workspace</strong> = acceso real (Viewer/Contributor/Member/Admin).</li>
+          </ul>
+          <p>Nadie "hereda" acceso a un workspace por estar en el mismo dominio o grupo → hay que asignar el rol <strong>explícitamente</strong>.</p>
+          <div class="note note--warning">
+            ⚠️ <strong>Trampa del "default domain" + orden temporal:</strong> te haces domain contributor automáticamente solo de los workspaces que el <strong>mecanismo del default domain ASIGNA</strong>. Si un workspace <strong>ya tenía dominio</strong> (ej. lo creó su domain admin) ANTES de añadir tu grupo al default domain → el default domain <strong>respeta</strong> esa asignación y <strong>NO lo reasigna</strong> → NO ganas domain contributor sobre él.
+          </div>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Escenario</th><th>¿WS asignado vía el default mechanism?</th><th>¿Grupo = domain contributor?</th></tr></thead>
+              <tbody>
+                <tr><td>WS creado ANTES de añadir el grupo al default</td><td>❌ No (se preserva la asignación previa)</td><td>❌ No</td></tr>
+                <tr><td>WS creado DESPUÉS de añadir el grupo al default</td><td>✅ Sí</td><td>✅ Sí</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="note note--tip">
+            🌸 <strong>Analogía del imán</strong> 🧲: el default domain es un imán que recoge canicas (workspaces) sueltas por el suelo y les pone tu pegatina de "domain contributor". Si una canica <strong>ya estaba guardada en la caja</strong> de otro dominio antes de activar el imán, el imán <strong>no la recoge</strong> (respeta que ya está guardada) → esa canica no lleva tu pegatina.
+          </div>
+        </article>
+
+        <article class="concept-card" id="tip-12">
+          <h3><span class="concept-card__num">12</span>Contributor bypasea OneLake Security (aislar PII) ⭐</h3>
+          <p>🎯 <strong>CONCEPTO CRÍTICO:</strong> los roles de workspace <strong>Admin/Member/Contributor BYPASEAN</strong> la seguridad de OneLake (RLS/CLS/table-level). Si un usuario necesita <strong>escribir</strong> en un lakehouse (requiere Contributor o superior), automáticamente puede <strong>leer TODO</strong> ese lakehouse, incluida cualquier PII.</p>
+          <div class="note note--warning">
+            ⚠️ Por eso "escribir en la tabla A sin leer la tabla B (PII) en el mismo lakehouse" es <strong>imposible con permisos granulares</strong>. La solución es <strong>separar físicamente</strong> la PII:
+            <ol>
+              <li>Crear un nuevo workspace + lakehouse.</li>
+              <li>Migrar la tabla de PII allí.</li>
+              <li>Dar Contributor en el workspace original (ya sin PII).</li>
+            </ol>
+          </div>
+          <p>💡 <strong>Nota del mundo real</strong>: "migrar la tabla" en el examen es un paso conceptual; en la práctica es un notebook/pipeline/CLI, y el deployment pipeline <strong>NO copia datos</strong>. El examen abstrae el "cómo".</p>
+          <div class="note note--tip">
+            🌸 <strong>Analogía:</strong> darle a alguien la llave para <strong>escribir</strong> en el cuarto (Contributor) es darle la llave maestra del cuarto entero — verá TODO lo que hay dentro, también la caja fuerte con datos sensibles. Si quieres que use el cuarto pero no toque la caja fuerte, la única forma es <strong>sacar la caja fuerte a otro cuarto</strong> (separar la PII). 🔐
+          </div>
+        </article>
+
+        <article class="concept-card" id="tip-13">
+          <h3><span class="concept-card__num">13</span>Row-Level Security (RLS)</h3>
+          <p>El RLS en Fabric Warehouse son <strong>dos piezas</strong>: una <strong>inline table-valued function (TVF)</strong> (el predicado) + un <strong><code>CREATE SECURITY POLICY</code></strong> que la aplica.</p>
+          <pre><code class="language-sql">-- 1️⃣ LA FUNCIÓN (predicado): inline TVF
+CREATE FUNCTION dbo.tvf_rlspredicate(@Author AS varchar(50))
+    RETURNS TABLE
+WITH SCHEMABINDING                    -- ← palabra clave tras WITH (NO "inline")
+AS
+    RETURN SELECT 1 AS resultado
+    WHERE @Author = USER_NAME()        -- ← compara con el usuario actual
+GO
+
+-- 2️⃣ LA POLÍTICA (aplica el filtro):
+CREATE SECURITY POLICY RLSFilter
+ADD FILTER PREDICATE Security.tvf_rlspredicate(AuthorEmail)  -- la columna aquí
+ON AuthorSales                          -- ← solo la TABLA, no tabla.columna
+WITH (STATE = ON)                       -- ON = activa la política</code></pre>
+          <p>🎯 <strong>Piezas clave:</strong></p>
+          <ul>
+            <li>Si piden <strong>UN</strong> objeto imprescindible → <strong>FUNCTION</strong>.</li>
+            <li>Tras <code>RETURNS TABLE</code> → <strong><code>WITH SCHEMABINDING</code></strong> (no <code>INLINE</code>; inline es el <em>tipo</em> de función, no una keyword).</li>
+            <li>El predicado usa <strong><code>USER_NAME()</code></strong> para identificar al usuario.</li>
+            <li>En el <code>ON</code> de la policy → solo el <strong>nombre de la tabla</strong>.</li>
+          </ul>
+          <div class="note note--warning">
+            ⚠️ <strong>Trampa:</strong> el <code>SCHEMA</code> (<code>Security</code>) aparece en todos los tutoriales, pero es solo <strong>buena práctica organizativa</strong>, no obligatorio.
+          </div>
+          <p>💡 <strong>Bonus</strong>: en <strong>Direct Lake</strong>, si hay RLS en el SQL endpoint, Power BI hace <strong>fallback a DirectQuery</strong>.</p>
+          <div class="note note--tip">
+            🌸 <strong>Analogía:</strong> la función es el <strong>portero con la lista</strong> ("¿tu nombre está en la fila? entonces pasas"), y la security policy es <strong>contratar a ese portero para una puerta concreta</strong> (la tabla). Sin portero no hay control; sin contratarlo para la puerta, no hace nada. 🚪
+          </div>
+        </article>
+
+        <article class="concept-card" id="tip-14">
+          <h3><span class="concept-card__num">14</span>Column-Level Security (CLS)</h3>
+          <p>Oculta columnas enteras (da error si las pides, no las ves).</p>
+          <pre><code class="language-sql">GRANT SELECT ON tabla(col1, col2, col3) TO [usuario@dominio.com];
+-- Las columnas OMITIDAS de la lista quedan ocultas</code></pre>
+          <p>🎯 <strong>Reglas de oro:</strong></p>
+          <ul>
+            <li>Permiso de lectura = <strong><code>SELECT</code></strong> (nunca "READ").</li>
+            <li>Usuario = <strong>email de Entra entre corchetes</strong> <code>[user@contoso.com]</code>.</li>
+            <li>Ocultar una columna = <strong>omitirla</strong> de la lista.</li>
+          </ul>
+          <p>💡 <strong>CLS vs DDM</strong>: el CLS <strong>oculta</strong> (error si la pides); el DDM <strong>enmascara</strong> (la ves con XXXX). "Prevent accessing" → CLS. "Ver parcial/enmascarado" → DDM.</p>
+          <div class="note note--tip">
+            🌸 <strong>Analogía:</strong> el CLS es tachar columnas con <strong>tinta negra opaca</strong> — esa columna no existe para ti. El DDM es poner una <strong>pegatina de XXXX encima</strong> — sabes que hay algo, pero no lo lees. 🖍️
+          </div>
+        </article>
+
+        <article class="concept-card" id="tip-15">
+          <h3><span class="concept-card__num">15</span>Dynamic Data Masking (DDM)</h3>
+          <p>Enmascara los datos sensibles (los ves con XXXX, no se ocultan).</p>
+          <pre><code class="language-sql">ALTER TABLE dbo.tabla
+ALTER COLUMN columna
+ADD MASKED WITH (FUNCTION = 'partial(2,"XXXXXXXXX",4)');</code></pre>
+          <p>🎯 <strong>Sintaxis fija: <code>ALTER TABLE ... ALTER COLUMN ... ADD MASKED WITH FUNCTION</code></strong> (siempre ALTER + ALTER).</p>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Función</th><th>Qué hace</th></tr></thead>
+              <tbody>
+                <tr><td><code>default()</code></td><td>enmascara todo</td></tr>
+                <tr><td><code>email()</code></td><td><code>aXXX@XXXX.com</code></td></tr>
+                <tr><td><code>random(a,b)</code></td><td>número aleatorio</td></tr>
+                <tr><td><strong><code>partial(prefix,"pad",suffix)</code></strong></td><td>X del inicio + relleno + Y del final</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="note note--warning">
+            ⚠️ <strong>"Ver los primeros X y los últimos Y"</strong> → <code>partial(X, "...", Y)</code>. "READ" y "REPLACE" NO son funciones válidas.
+          </div>
+          <p>💡 El Viewer lo ve enmascarado; Admin/Member/Contributor o quien tenga <code>UNMASK</code> ven los datos reales.</p>
+          <div class="note note--tip">
+            🌸 <strong>Analogía:</strong> el DDM es el número de tu tarjeta en el recibo del súper: <code>**** **** **** 1234</code>. Ves los últimos 4 (<code>partial</code>), el resto está tapado, pero la tarjeta sigue ahí. 💳
+          </div>
+        </article>
+
+        <article class="concept-card" id="tip-16">
+          <h3><span class="concept-card__num">16</span>Endorsement badges</h3>
+          <p>Solo existen <strong>3 badges</strong> (+ "no endorsement"):</p>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Badge</th><th>Significado</th><th>Items permitidos</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Promoted</strong></td><td>"ready to share/reuse" (autoservicio)</td><td>Cualquier item <strong>menos dashboards</strong></td></tr>
+                <tr><td><strong>Certified</strong></td><td>"meets standards / authoritative" (revisor autorizado)</td><td>Cualquier item <strong>menos dashboards</strong></td></tr>
+                <tr><td><strong>Master data</strong></td><td>"single source of truth / core data"</td><td><strong>SOLO items con datos</strong>: lakehouse, semantic model, warehouse</td></tr>
+                <tr><td><strong>Cannot be endorsed</strong></td><td>—</td><td><strong>Dashboards de Power BI</strong> (no admiten ningún badge)</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>🎯 <strong>Trucos:</strong></p>
+          <ul>
+            <li>El item es un <strong>dashboard</strong> → respuesta casi segura <strong>"Cannot be endorsed"</strong>.</li>
+            <li>"core / single source of truth" + lakehouse/semantic model → <strong>Master data</strong>.</li>
+            <li>"meets organizational standards" → <strong>Certified</strong>. "ready for sharing and reuse" → <strong>Promoted</strong>.</li>
+          </ul>
+          <div class="note note--warning">
+            ⚠️ <strong>Trampa:</strong> un dashboard "executive-level" te tienta hacia Certified/Master data, pero los dashboards <strong>no admiten ningún badge</strong>.
+          </div>
+          <div class="note note--tip">
+            🌸 <strong>Analogía:</strong> son los <strong>sellos de calidad de la mermelada</strong> 🍓. Promoted = "casera, recién hecha" (la pone quien cocina). Certified = "aprobada por sanidad" (un revisor oficial). Master data = "denominación de origen" (la fuente auténtica, solo para productos con sustancia = items con datos). El dashboard es el escaparate, no un producto → no lleva sello.
+          </div>
+        </article>
+
+        <article class="concept-card" id="tip-17">
+          <h3><span class="concept-card__num">17</span>Deployment pipelines: qué se despliega y qué no</h3>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Concepto</th><th>¿Se despliega?</th></tr></thead>
+              <tbody>
+                <tr><td>Metadata de los items (tablas, medidas, relaciones)</td><td>✅ Sí</td></tr>
+                <tr><td><strong>Datos</strong> de los semantic models</td><td>❌ No (solo metadata)</td></tr>
+                <tr><td><strong>Scheduled refresh</strong> (el horario)</td><td>❌ No (configuración operativa del destino)</td></tr>
+                <tr><td><strong>Incremental refresh policy</strong> (definida en el .pbix)</td><td>✅ Sí</td></tr>
+                <tr><td><strong>Dataflows Gen1</strong></td><td>❌ No soportados (solo Gen2)</td></tr>
+                <tr><td>Items de Real-Time Intelligence (Eventhouse, Eventstream, KQL DB...)</td><td>✅ Sí (nativos)</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>🎯 <strong>Regla de oro:</strong> los deployment pipelines despliegan <strong>metadata y contenido, NUNCA datos ni triggers operativos</strong> (schedules).</p>
+          <div class="note note--warning">
+            ⚠️ <strong>Trampa doble de "policy":</strong> el <em>scheduled</em> refresh <strong>NO</strong> se despliega; la <em>incremental</em> refresh policy <strong>SÍ</strong> se despliega.
+          </div>
+          <p>🔧 <strong>Nota del mundo real</strong>: el botón <strong>Compare</strong> puede marcar un dataflow como "Different" si tocaste su programación en un stage — es la metadata del item marcada como modificada (y el compare de dataflows da falsos positivos famosos). Eso NO significa que el schedule viaje al desplegar.</p>
+          <div class="note note--tip">
+            🌸 <strong>Analogía:</strong> el deployment pipeline es una <strong>fotocopiadora de planos</strong> 📐. Copia el diseño de la casa (metadata), pero NO los muebles de dentro (datos) ni la hora a la que riegas el jardín (schedule). Eso lo pones tú en cada casa nueva.
+          </div>
+        </article>
+
+        <article class="concept-card" id="tip-18">
+          <h3><span class="concept-card__num">18</span>Git integration: GitHub vs Azure DevOps</h3>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th></th><th>GitHub</th><th>Azure DevOps</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Autenticación</strong></td><td><strong>PAT</strong> (fine-grained token)</td><td><strong>OAuth2 automático</strong> (cuenta Entra)</td></tr>
+                <tr><td><strong>Permiso del token</strong></td><td><strong>Contents (Read and write)</strong></td><td>— (no hay PAT)</td></tr>
+                <tr><td><strong>Detalles a introducir</strong></td><td>Repository URL + token</td><td><strong>Organization, Project, Repository, Branch</strong> (+ folder opcional)</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>🎯 <strong>Reglas de oro:</strong></p>
+          <ul>
+            <li><strong>GitHub + commit + least privilege</strong> → <strong>Contents (Read and write) only</strong>. NO Actions, NO Commit statuses.</li>
+            <li><strong>Azure DevOps</strong> → detalles: <strong>org + project + repository + branch</strong>. Autenticación OAuth, NO PAT.</li>
+            <li>Si ves "<strong>PAT</strong>" en una pregunta de <strong>Azure DevOps</strong> → señuelo (el PAT es de GitHub).</li>
+            <li>Solo un <strong>workspace Admin</strong> conecta a Git.</li>
+          </ul>
+          <div class="note note--tip">
+            🌸 <strong>Analogía:</strong> GitHub te pide una <strong>llave física que tú fabricas</strong> (el PAT) y la dirección del portal (URL). Azure DevOps te reconoce por tu <strong>cara</strong> (OAuth, ya estás logueada) y solo necesita saber a qué edificio/piso/puerta ir (org/project/repo/branch). 🔑
+          </div>
+        </article>
+
+        <article class="concept-card" id="tip-19">
+          <h3><span class="concept-card__num">19</span>Identidades y autenticación</h3>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Identidad</th><th>Para qué</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Service principal</strong></td><td>Automatización <strong>externa</strong> contra las APIs de Fabric (CI/CD, scripts, Azure DevOps → Fabric).</td></tr>
+                <tr><td><strong>Managed identity</strong></td><td>Como el SPN pero sin gestionar secretos, para recursos que viven en Azure.</td></tr>
+                <tr><td><strong>Workspace identity</strong></td><td><strong>Fabric</strong> autenticándose contra <strong>Azure</strong> (trusted workspace access, shortcuts a ADLS con firewall).</td></tr>
+                <tr><td><strong>User (Entra) + password</strong></td><td>Trabajo interactivo de personas. <strong>Nunca</strong> para automatización.</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>🎯 <strong>Truco — pregúntate "¿quién llama a quién?":</strong></p>
+          <ul>
+            <li>Algo <strong>externo</strong> llama a <strong>Fabric</strong> (Azure DevOps ejecuta un deployment pipeline vía API) → <strong>service principal</strong>.</li>
+            <li><strong>Fabric</strong> necesita acceder a un recurso de <strong>Azure</strong> protegido → <strong>workspace identity</strong>.</li>
+          </ul>
+          <div class="note note--warning">
+            ⚠️ <strong>Trampa:</strong> "workspace identity" suena moderno y tentador, pero va en dirección Fabric→Azure. Para DevOps→Fabric API es <strong>service principal</strong>. "Username and password" para CI/CD es casi siempre el señuelo.
+          </div>
+          <div class="note note--tip">
+            🌸 <strong>Analogía:</strong> el service principal es un <strong>robot con su propio carnet</strong> que llama a la puerta de Fabric. La workspace identity es el <strong>carnet de Fabric para salir</strong> a buscar cosas a Azure. Un usuario con contraseña es una <strong>persona</strong> llamando a la puerta (no sirve para tareas automáticas que corren de madrugada). 🤖
+          </div>
+        </article>
+
+        <article class="concept-card" id="tip-20">
+          <h3><span class="concept-card__num">20</span>Conectividad de red</h3>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Necesito conectar...</th><th>Solución</th></tr></thead>
+              <tbody>
+                <tr><td>Fabric Spark → recurso <strong>Azure</strong> privado (SQL DB, Storage, Key Vault con acceso público bloqueado)</td><td><strong>Managed private endpoint</strong></td></tr>
+                <tr><td>Fuentes <strong>on-premises</strong> o en VNets no-Azure → Fabric</td><td><strong>On-premises data gateway</strong></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>🎯 <strong>Regla de oro:</strong> "Azure resource + public access disabled + Spark job/notebook" → <strong>managed private endpoint</strong>. "on-premises SQL Server + gateway + copy data" → <strong>pipeline</strong> (Copy activity).</p>
+          <div class="note note--warning">
+            ⚠️ <strong>Trampas:</strong>
+            <ul>
+              <li><strong>Integration runtime</strong> y <strong>data management gateway</strong> son de <strong>ADF/Synapse</strong>, NO de Fabric (señuelos). "Data management gateway" es el nombre <em>deprecado</em> del on-premises data gateway.</li>
+              <li><strong>Spark (notebook / SJD) NO puede usar el on-premises data gateway.</strong> En cuanto veas "gateway on-prem", descarta notebook/Spark job.</li>
+            </ul>
+          </div>
+          <p>💡 <strong>Efecto secundario del MPE</strong>: al crearlo se genera una <strong>managed virtual network</strong> que <strong>desactiva los starter pools</strong> → los Spark jobs arrancan en pools on-demand (3-5 min más lentos al inicio).</p>
+          <div class="note note--tip">
+            🌸 <strong>Analogía:</strong> el managed private endpoint es un <strong>túnel privado</strong> entre dos edificios de la misma ciudad (Fabric y Azure) sin salir a la calle. El on-premises gateway es el <strong>puente</strong> que cruza de tu pueblo (on-prem) a la ciudad (cloud). 🌉
+          </div>
+        </article>
+
+        <article class="concept-card" id="tip-21">
+          <h3><span class="concept-card__num">21</span>Orquestación: schedule vs evento vs encadenado</h3>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Necesito...</th><th>Solución</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Horario fijo</strong> ("every weekday at 8AM")</td><td><strong>Schedule</strong> en un <strong>pipeline</strong></td></tr>
+                <tr><td><strong>Reacción a un evento</strong> ("when a file is saved / a row arrives")</td><td><strong>Real-Time hub / event trigger (Activator/reflex item)</strong></td></tr>
+                <tr><td><strong>Encadenar A → luego B</strong> ("refresh after notebook succeeds")</td><td>Mismo <strong>pipeline</strong> con dependencia <strong>on-success</strong></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="note note--warning">
+            ⚠️ <strong>Trampa clásica — Apache Spark Job Definition (SJD):</strong> NO orquesta, NO programa y NO reacciona a eventos. Solo <strong>empaqueta código Spark</strong>. Casi siempre es un señuelo en las preguntas de orquestación.
+          </div>
+          <p>💡 <strong>Workflow event-driven</strong>: "when a file arrives → process it" = <strong>reflex item</strong> (el trigger que escucha el evento) + <strong>pipeline/notebook</strong> (la acción). Un fichero en la carpeta Files del lakehouse → <strong>OneLake event</strong>. "as soon as possible" → evento, NUNCA schedule.</p>
+          <div class="note note--tip">
+            🌸 <strong>Analogía:</strong> schedule = <strong>despertador</strong> (a las 8 en punto, pase lo que pase). Evento/reflex = <strong>sensor de movimiento</strong> (cuando pasa algo, salta). Encadenado = <strong>fichas de dominó</strong> (cuando cae la primera, cae la siguiente). El SJD es una <strong>fiambrera con código</strong> — guarda comida, no toca el despertador ni el sensor. ⏰
+          </div>
+        </article>
+
+        <article class="concept-card" id="tip-22">
+          <h3><span class="concept-card__num">22</span>runMultiple y DAGs</h3>
+          <p><strong>DAG</strong> = Directed Acyclic Graph = mapa de tareas con dependencias (qué va antes de qué), <strong>sin bucles</strong>. NO es un fichero: es una <strong>variable de Python</strong> dentro de una celda del notebook.</p>
+          <pre><code class="language-python">DAG = {
+    "activities": [                          # lista de tareas
+        {"name": "NB1", "path": "NB1", "timeoutPerCellInSeconds": 300},
+        {"name": "NB2", "path": "NB2", "dependencies": ["NB1"]}  # NB2 espera a NB1
+    ],
+    "timeoutInSeconds": 43200
+}
+mssparkutils.notebook.runMultiple(DAG)       # notebookutils = nuevo nombre</code></pre>
+          <p>🎯 <strong><code>activities</code></strong> = tareas · <strong><code>dependencies</code></strong> = orden · <strong><code>runMultiple</code></strong> = ejecuta.</p>
+          <p>💡 <strong>runMultiple</strong> (solo notebooks, comparten sesión de Spark, ahorra CU) vs <strong>pipeline</strong> (mezcla tipos de actividad, conectores, triggers).</p>
+          <div class="note note--tip">
+            🌸 <strong>Analogía:</strong> un DAG son las <strong>instrucciones de montar un mueble de IKEA</strong> 🪑 — algunos pasos van en paralelo, otros esperan (no atornillas la puerta antes de montar la caja) y nunca vuelves atrás (sin bucles). <code>runMultiple</code> es el manual que dice el orden; <code>activities</code> son los pasos y <code>dependencies</code> las flechas de "esto antes que esto".
+          </div>
+        </article>
+
+        <article class="concept-card" id="tip-23">
+          <h3><span class="concept-card__num">23</span>Environments (librerías por defecto)</h3>
+          <p>3 pasos <strong>en orden</strong> para tener librerías por defecto en el workspace:</p>
+          <ol>
+            <li><strong>Create an environment</strong> (el contenedor vacío).</li>
+            <li><strong>Install the libraries</strong> (llenarlo).</li>
+            <li><strong>Set the default environment</strong> (marcarlo como default).</li>
+          </ol>
+          <div class="note note--warning">
+            ⚠️ "Create a pool" y "Change runtime" son <strong>opcionales</strong>: distractores.
+          </div>
+          <div class="note note--tip">
+            🌸 <strong>Analogía de la fiambrera</strong> 🍱: primero necesitas la fiambrera (create), luego metes la comida (install librerías) y luego dices "esta es la que se lleva todo el mundo por defecto" (set default). No puedes llenar una fiambrera que no existe.
+          </div>
+        </article>
+
+        <!-- ============ DOMINIO 2 ============ -->
+        <div class="category-header" id="dominio-2">
+          <span class="category-header__icon">📥</span>
+          <h2 class="category-header__title">Dominio 2 · Ingerir y transformar (30-35%)</h2>
+        </div>
+
+        <article class="concept-card" id="tip-24">
+          <h3><span class="concept-card__num">24</span>Patrón de ingesta metadata-driven ⭐</h3>
+          <p>Para la ingesta <strong>dinámica</strong> de N tablas listadas en una tabla de control, en <strong>una sola ejecución</strong>:</p>
+          <pre><code class="language-plaintext">1. Lookup    → lee la lista de la tabla de control → array
+2. ForEach   → recorre cada tabla del array
+   └─ 3. Copy data (inner) → copia esa tabla (parametrizada con @item())</code></pre>
+          <p>🎯 <strong>Los 3 pasos en orden:</strong> Lookup (leer la lista) → ForEach (recorrer) → Copy data dentro del bucle.</p>
+          <div class="note note--warning">
+            ⚠️ <strong>Trampas:</strong>
+            <ul>
+              <li><strong>Lookup ≠ Get Metadata</strong>: el Lookup lee <strong>filas de una tabla/query</strong>; Get Metadata da info de <strong>ficheros y carpetas</strong>. Para leer la tabla de control → <strong>Lookup</strong>.</li>
+              <li><strong>ForEach ≠ Until</strong>: ForEach recorre una <strong>lista conocida</strong>; Until repite <strong>hasta que se cumple una condición</strong> (while). Para "por cada tabla" → <strong>ForEach</strong>.</li>
+            </ul>
+          </div>
+          <p>💡 Ventaja real: añadir una tabla = añadir una fila a la tabla de control, sin tocar el pipeline.</p>
+          <div class="note note--tip">
+            🌸 <strong>Analogía:</strong> es como una <strong>lista de la compra</strong> 🛒. Lookup = leer la lista. ForEach = recorrerla producto a producto. Copy = meter cada producto en el carro. Si mañana quieres comprar algo más, solo añades una línea a la lista, no rediseñas el supermercado.
+          </div>
+        </article>
+
+        <article class="concept-card" id="tip-25">
+          <h3><span class="concept-card__num">25</span>Ingesta: qué item usar</h3>
+          <p>🎯 <strong>Asociaciones fiables:</strong></p>
+          <ul>
+            <li><strong>On-premises + gateway + copy data</strong> → <strong>pipeline</strong> (Copy activity). <em>(Nunca notebook/Spark: no hablan con el gateway on-prem.)</em></li>
+            <li><strong>Copiar batch A→B sin transformar</strong> → <strong>pipeline con Copy activity</strong>.</li>
+            <li><strong>Near-real-time + streamed from REST API + only Fabric</strong> → <strong>eventstream</strong>.</li>
+            <li><strong>Transformación con código</strong> → notebook (si la fuente es accesible por Spark).</li>
+          </ul>
+          <div class="note note--warning">
+            ⚠️ <strong>Trampa:</strong> "streaming dataflow" y "streaming dataset" son señuelos frecuentes (el segundo es de Power BI clásico). La ingesta NRT nativa de Fabric es el <strong>eventstream</strong>.
+          </div>
+        </article>
+
+        <article class="concept-card" id="tip-26">
+          <h3><span class="concept-card__num">26</span>Copy activity → Warehouse (staging)</h3>
+          <p>🎯 El Warehouse ingesta con <strong><code>COPY INTO</code></strong>, que solo lee directamente de <strong>Azure Blob</strong> y <strong>ADLS Gen2</strong>. Si el origen NO es compatible (Snowflake, on-prem, etc.) → <strong>Enable staging</strong> (staged copy): pasa por un storage intermedio y luego hace el COPY.</p>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Origen → Warehouse</th><th>Configuración</th></tr></thead>
+              <tbody>
+                <tr><td>Blob/ADLS Gen2</td><td>directo</td></tr>
+                <tr><td><strong>Snowflake / on-prem / otros</strong></td><td><strong>Enable staging</strong> (obligatorio)</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="note note--warning">
+            ⚠️ El Lakehouse NO tiene esta restricción (usa Spark/Delta, no COPY INTO).
+          </div>
+          <div class="note note--tip">
+            🌸 <strong>Analogía:</strong> el <code>COPY INTO</code> del warehouse solo acepta paquetes de dos mensajerías concretas (Blob y ADLS Gen2). Si tu paquete viene de otra mensajería (Snowflake), primero hay que llevarlo a una <strong>oficina intermedia</strong> compatible (staging) y desde ahí entra. 📦
+          </div>
+        </article>
+
+        <article class="concept-card" id="tip-27">
+          <h3><span class="concept-card__num">27</span>CDC (Change Data Capture)</h3>
+          <p>🎯 <strong>CDC</strong> = función de una base de datos que <strong>registra automáticamente</strong> todos los cambios (inserts/updates/deletes). Es el "diario de cambios" que herramientas como el eventstream o el pipeline leen para propagarlos.</p>
+          <div class="note note--warning">
+            ⚠️ Sin CDC activado → la BD no emite sus cambios → el eventstream/pipeline no tiene qué leer → no se propagan eventos.
+          </div>
+          <p>💡 <strong>Regla</strong>: "stream record changes from a SQL DB" + "no se propagan" → <strong>Enable CDC</strong> en la BD origen.</p>
+          <p><strong>No confundir:</strong></p>
+          <ul>
+            <li><strong>CDC</strong> = captura cambios de <strong>DATOS</strong> (inserts/updates/deletes). ✅</li>
+            <li><strong>Extended Events</strong> = diagnóstico y rendimiento (queries lentas, deadlocks). NO cambios de datos. ❌ señuelo.</li>
+            <li><strong>Read-only replica</strong> = distribuir la carga de lecturas. ❌</li>
+          </ul>
+          <div class="note note--tip">
+            🌸 <strong>Analogía:</strong> el CDC es el <strong>diario personal de la base de datos</strong> 📔 donde apunta cada cosa que cambia ("hoy se añadió esta fila, se borró esta otra"). Sin ese diario abierto, nadie de fuera puede enterarse de qué cambió. Extended Events es otro cuaderno distinto: el de "cómo de rápido voy" (diagnóstico), no el de "qué cambió".
+          </div>
+        </article>
+
+        <article class="concept-card" id="tip-28">
+          <h3><span class="concept-card__num">28</span>Caché de shortcuts</h3>
+          <p>Para que un shortcut sirva datos <strong>desde la caché</strong> deben cumplirse <strong>LAS TRES</strong> condiciones:</p>
+          <ol>
+            <li><strong>Fuente cacheable</strong>: S3 / GCS / S3-compatible / on-premises gateway. ❌ <strong>ADLS Gen2 (Azure) NO</strong> (no hay egress cross-cloud que ahorrar).</li>
+            <li><strong>Tamaño</strong> del fichero <strong>≤ 1 GB</strong> (los &gt; 1 GB nunca se cachean).</li>
+            <li><strong>Último acceso</strong> dentro de la ventana de <strong>retención</strong> (por defecto <strong>24 h</strong>; configurable de 1 a 28 días; cada acceso resetea el contador).</li>
+          </ol>
+          <p>🎯 <strong>Algoritmo</strong> (aprende esto, no la respuesta — los números cambian):</p>
+          <ol>
+            <li>¿Fuente cacheable? (S3/GCS sí, ADLS Gen2 no).</li>
+            <li>¿≤ 1 GB?</li>
+            <li>¿Accedido dentro de la retención?</li>
+          </ol>
+          <p>Si falla <strong>cualquiera</strong> → va al origen, no a la caché.</p>
+          <div class="note note--tip">
+            🌸 <strong>Analogía:</strong> la caché es como guardar comida en la nevera para no ir al súper cada vez. Solo tiene sentido si (1) el súper está lejos y cobra por ir = fuente cross-cloud (a Azure no, que es la despensa de al lado), (2) el táper cabe en la nevera = ≤1 GB, y (3) no lleva ahí tanto tiempo que ya caducó = dentro de la retención. 🧊
+          </div>
+        </article>
+
+        <article class="concept-card" id="tip-29">
+          <h3><span class="concept-card__num">29</span>Patrón de carga: overwrite vs merge</h3>
+          <p>Patrón híbrido con <code>DeltaTable.forName</code> como comprobación de existencia:</p>
+          <ul>
+            <li>La tabla <strong>NO existe</strong> → <code>write.mode('overwrite')</code> (full load inicial) + <code>return</code>.</li>
+            <li>La tabla <strong>SÍ existe</strong> → <code>MERGE</code> (upsert incremental).</li>
+          </ul>
+          <p>🎯 <strong>Cuidado con "always"</strong> en las preguntas de Sí/No:</p>
+          <ul>
+            <li>"always overwritten" → <strong>No</strong> (solo la 1ª vez, cuando no existe).</li>
+            <li>"merge always runs" → <strong>No</strong> (solo si la tabla ya existe).</li>
+            <li>"supports full AND incremental" → <strong>Sí</strong> (overwrite = full la 1ª vez, merge = incremental después).</li>
+          </ul>
+          <p>💡 <strong><code>overwrite</code></strong> = "escribe en modo reemplazo": si la tabla no existe, la <strong>crea</strong>; si existe, la <strong>reemplaza</strong>. NO necesita nada previo. Todos los modos (overwrite/append/error/ignore) crean la tabla si no existe; difieren solo en qué hacen si YA existe.</p>
+          <div class="note note--tip">
+            🌸 <strong>Analogía de la pizarra</strong> 📋: <code>overwrite</code> es escribir con rotulador — si la pizarra está vacía, escribes; si tenía algo, lo borras y escribes. En ambos casos acaba con TU mensaje. No necesitas que hubiera algo antes.
+          </div>
+        </article>
+
+        <article class="concept-card" id="tip-30">
+          <h3><span class="concept-card__num">30</span>Delta MERGE: whenMatched / BySource ⭐</h3>
+          <pre><code class="language-python">targetDF.merge(sourceDF, "source.Key = target.Key")
+  .whenMatchedUpdate(set={...})              # existe en AMBAS → actualizar
+  .whenNotMatchedInsert(values={...})         # nueva en SOURCE → insertar
+  .whenNotMatchedBySourceUpdate(              # huérfana en TARGET → inactivar/borrar
+      condition="...", set={"Status": "inactive"})
+  .execute()</code></pre>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Cláusula</th><th>¿A qué filas afecta?</th></tr></thead>
+              <tbody>
+                <tr><td><strong><code>whenMatched</code></strong></td><td>existe en <strong>AMBAS</strong> (source ∩ target)</td></tr>
+                <tr><td><strong><code>whenNotMatched</code></strong></td><td>filas del <strong>SOURCE</strong> sin match → insertar</td></tr>
+                <tr><td><strong><code>whenNotMatchedBySource</code></strong></td><td>filas del <strong>TARGET</strong> que el source ya no trae (huérfanas) → actualizar/borrar</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>🎯 <strong>La clave es "BySource":</strong></p>
+          <ul>
+            <li><strong>Sin "BySource"</strong> → mira desde el <strong>source</strong> ("nueva del origen" → insertar).</li>
+            <li><strong>Con "BySource"</strong> → mira desde el <strong>target</strong> ("huérfana, el origen ya no la trae" → soft delete / inactivar).</li>
+          </ul>
+          <div class="note note--tip">
+            🌸 <strong>Analogía:</strong> imagina que comparas tu <strong>lista de contactos</strong> (target) con la <strong>lista nueva de la empresa</strong> (source). Los que están en ambas → actualizas su teléfono (matched). Los nuevos de la empresa → los añades (notMatched, insertar). Los tuyos que ya no están en la lista de la empresa → los marcas como "ya no trabaja aquí" (notMatchedBySource). 📇
+          </div>
+        </article>
+
+        <article class="concept-card" id="tip-31">
+          <h3><span class="concept-card__num">31</span>Real-Time Intelligence: las 4 piezas ⭐</h3>
+          <p>🌸 <strong>Analogía: una fábrica de paquetería</strong> 📦 donde los "paquetes" son datos que llegan sin parar:</p>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Pieza</th><th>Qué hace</th><th>Analogía</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Real-Time hub</strong></td><td><strong>catálogo/panel</strong> central de todo lo que fluye en tiempo real</td><td>la recepción/directorio 📋</td></tr>
+                <tr><td><strong>Eventstream</strong></td><td><strong>mueve y transforma</strong> (ligero, no-code) del origen al destino</td><td>la cinta transportadora 🎞️</td></tr>
+                <tr><td><strong>Eventhouse</strong></td><td><strong>almacena y consulta</strong> (KQL) datos de streaming</td><td>el almacén (= lakehouse RT) 🏬</td></tr>
+                <tr><td><strong>Activator</strong> (reflex item)</td><td><strong>vigila y reacciona</strong> ante eventos</td><td>el vigilante 👀</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>🎯 <strong>Identifica por el VERBO:</strong></p>
+          <ul>
+            <li>"descubrir/ver qué streams hay" → <strong>Real-Time hub</strong></li>
+            <li>"ingesta/mueve/transforma streaming" → <strong>Eventstream</strong></li>
+            <li>"guardar + consultar con KQL datos RT" → <strong>Eventhouse</strong> (+ la KQL database dentro)</li>
+            <li>"cuando pase X, dispara Y" → <strong>Activator / reflex item</strong></li>
+          </ul>
+          <p>💡 Flujo: los datos <strong>entran</strong> por el hub → <strong>viajan</strong> por el eventstream → <strong>descansan</strong> en el eventhouse → el activator los <strong>vigila</strong> para reaccionar.</p>
+        </article>
+
+        <article class="concept-card" id="tip-32">
+          <h3><span class="concept-card__num">32</span>Eventstream vs Notebook (transformar)</h3>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th></th><th>Eventstream</th><th>Notebook</th></tr></thead>
+              <tbody>
+                <tr><td>Datos</td><td><strong>streaming</strong> (en movimiento)</td><td><strong>batch</strong> (en reposo)</td></tr>
+                <tr><td>Cómo</td><td><strong>no-code</strong> (lienzo)</td><td><strong>código</strong> (PySpark)</td></tr>
+                <tr><td>Potencia</td><td>ligera (filtrar, agregar)</td><td>compleja (dedup, ML)</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>🎯 Los datos en streaming <strong>fluyen sin parar</strong> → transformaciones <strong>ligeras</strong> para no atascar el flujo → <strong>eventstream</strong> (no-code). Streaming + complejo + código → <strong>Spark Structured Streaming</strong> (notebook, la excepción). Batch + código → <strong>notebook</strong> normal.</p>
+          <div class="note note--tip">
+            🌸 <strong>Analogía:</strong> el eventstream transforma la fruta <strong>mientras va por la cinta</strong> 🎞️ (lavarla, quitarle hojas — cosas rápidas al vuelo, sin parar la cinta). El notebook coge una <strong>caja de fruta del almacén</strong> 📦 y hace mermelada con calma (transformación compleja sobre datos quietos). Por eso el streaming solo admite transformaciones ligeras: no puedes hacer mermelada en plena cinta a toda velocidad.
+          </div>
+        </article>
+
+        <article class="concept-card" id="tip-33">
+          <h3><span class="concept-card__num">33</span>Windowing functions</h3>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Ventana</th><th>Cómo es</th><th>¿Solapa?</th><th>Uso</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Tumbling</strong></td><td>fija, pegadas, sin solapar</td><td>❌ No</td><td>conteos/medias <strong>por intervalo</strong> (per-minute)</td></tr>
+                <tr><td><strong>Hopping</strong></td><td>fija, avanza a saltos</td><td>✅ Sí</td><td><strong>medias móviles</strong> (smoothed)</td></tr>
+                <tr><td><strong>Sliding</strong></td><td>recalcula por cada evento</td><td>✅ Sí</td><td><strong>detección de anomalías</strong></td></tr>
+                <tr><td><strong>Session</strong></td><td>dinámica, por huecos de inactividad</td><td>—</td><td><strong>sesiones de usuario</strong></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>🎯 <strong>Palabras clave que cantan cada una:</strong></p>
+          <ul>
+            <li><strong>"non-overlapping / contiguous / each event in exactly one window / fixed intervals"</strong> → <strong>TUMBLING</strong> ⭐</li>
+            <li><strong>"overlapping / moving average / smoothed / hop"</strong> → <strong>HOPPING</strong></li>
+            <li><strong>"every event / continuously / anomaly detection"</strong> → <strong>SLIDING</strong></li>
+            <li><strong>"inactivity gap / session / user activity / dynamic duration"</strong> → <strong>SESSION</strong></li>
+          </ul>
+          <div class="note note--tip">
+            🌸 <strong>Analogía de tumbling</strong> 🚌: es como los <strong>autobuses que salen cada hora en punto</strong> — cada pasajero (evento) coge exactamente uno, no se solapan y van pegados uno tras otro. Hopping serían autobuses que salen cada 30 min pero tardan 1 hora → te puedes montar en varios a la vez (solapan). Session es un autobús que espera hasta que deja de venir gente y entonces arranca (por huecos).
+          </div>
+        </article>
+
+        <article class="concept-card" id="tip-34">
+          <h3><span class="concept-card__num">34</span>Operadores de transformación de Eventstream</h3>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Operador</th><th>Qué hace</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Group by</strong></td><td>agrupa + agrega por ventana (Avg, Sum, Min, Max, Count, <strong>StdDev</strong>) ⭐</td></tr>
+                <tr><td><strong>Aggregate</strong></td><td>agregaciones básicas (Avg, Sum, Min, Max, Count)</td></tr>
+                <tr><td><strong>Filter</strong></td><td>filtra eventos</td></tr>
+                <tr><td><strong>Manage fields</strong></td><td>renombrar/añadir/quitar/castear columnas</td></tr>
+                <tr><td><strong>Union</strong></td><td>combinar streams</td></tr>
+                <tr><td><strong>Expand</strong></td><td>expandir arrays en filas</td></tr>
+                <tr><td><strong>Join</strong></td><td>unir con un stream de referencia</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>💡 Para agregaciones avanzadas por ventana temporal (como la <strong>desviación estándar</strong>) → <strong>Group by</strong> (permite elegir la ventana + la función estadística).</p>
+        </article>
+
+        <article class="concept-card" id="tip-35">
+          <h3><span class="concept-card__num">35</span>OneLake availability en Eventhouse</h3>
+          <p>Al activar la OneLake availability en un eventhouse/KQL, <strong>por defecto</strong>:</p>
+          <ul>
+            <li>Solo fluye a OneLake lo que se <strong>ingiere a partir de ese momento</strong> (datos nuevos).</li>
+            <li>Los <strong>datos existentes NO se rellenan</strong> hacia atrás (no hay backfill).</li>
+          </ul>
+          <p>🎯 <strong>Regla de oro:</strong> "you enable OneLake availability" (a secas) → <strong>only new data</strong>. Si mencionan explícitamente <strong>"apply to existing tables"</strong> → entonces new + existing.</p>
+          <p>💡 <strong>Bonus</strong>: con la OneLake availability activa en una tabla, NO puedes borrar/truncar/purgar datos, ni alterar el esquema, ni renombrar la tabla (restricciones del "one logical copy").</p>
+          <div class="note note--tip">
+            🌸 <strong>Analogía:</strong> activar la OneLake availability es como poner una <strong>cámara que empieza a grabar ahora</strong> 🎥 — graba de aquí en adelante, pero NO tiene grabado lo de antes (salvo que le pidas expresamente rellenar el histórico).
+          </div>
+        </article>
+
+        <article class="concept-card" id="tip-36">
+          <h3><span class="concept-card__num">36</span>KQL: operadores esenciales y prev()</h3>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Operador</th><th>Qué hace</th></tr></thead>
+              <tbody>
+                <tr><td><code>where</code> / <code>filter</code></td><td>filtrar filas</td></tr>
+                <tr><td><code>sort by</code> / <code>order by</code></td><td>ordenar (¡DESCENDENTE por defecto! necesita <code>asc</code>)</td></tr>
+                <tr><td><strong><code>extend</code></strong></td><td><strong>AÑADE</strong> una columna calculada</td></tr>
+                <tr><td><strong><code>project</code></strong></td><td><strong>SELECCIONA</strong> columnas</td></tr>
+                <tr><td><code>prev()</code> / <code>next()</code></td><td>valor de la fila anterior/siguiente (¡requiere <code>sort</code> antes!)</td></tr>
+                <tr><td><code>summarize</code></td><td>agrupa y agrega</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>🎯 <strong>Reglas de oro:</strong></p>
+          <ul>
+            <li><strong><code>sort</code>/<code>order by</code> es DESCENDENTE por defecto</strong> → si piden "ascending" y falta <code>asc</code> → <strong>No cumple</strong>.</li>
+            <li><strong><code>extend</code> CREA</strong> columna, <strong><code>project</code> ELIGE</strong> columnas.</li>
+            <li><strong><code>prev()</code>/<code>next()</code> necesitan <code>sort</code>/<code>order by</code> antes</strong> (serialización).</li>
+            <li><code>sort</code>/<code>order by</code> <strong>antes</strong> de <code>project</code> es <strong>válido</strong> (el orden entre operadores es flexible).</li>
+            <li><strong>KQL database + código T-SQL</strong> → No (lenguaje equivocado). KQL ordena DESCENDENTE por defecto; T-SQL ordena ASCENDENTE por defecto (son opuestos).</li>
+          </ul>
+          <div class="note note--tip">
+            🌸 <strong>Mnemotécnica:</strong> <strong>extend</strong> eXtiende (añade) · <strong>project</strong> = eliges qué "proyectas" en pantalla. Y <code>prev()</code> es como preguntar "¿qué había en la fila de arriba?" — solo tiene sentido si antes has <strong>ordenado</strong> las filas (si están desordenadas, "la de arriba" no significa nada).
+          </div>
+        </article>
+
+        <article class="concept-card" id="tip-37">
+          <h3><span class="concept-card__num">37</span>KQL: crear tabla (.create table + dynamic)</h3>
+          <pre><code class="language-kusto">.create table NombreTabla (
+    columna1:datetime,
+    columna2:string,
+    columna3:dynamic
+)</code></pre>
+          <p>🎯 <strong>Deducir el tipo mirando la muestra de datos:</strong> fecha → <code>datetime</code> · texto → <code>string</code> · <strong>JSON/objeto/array → <code>dynamic</code></strong> ⭐ · entero → <code>int</code>/<code>long</code> · decimal → <code>real</code> · true/false → <code>bool</code>.</p>
+          <div class="note note--warning">
+            ⚠️ <strong>Trampas:</strong> <strong>JSON → <code>dynamic</code></strong> (no <code>long</code>). Si una columna guarda JSON → dynamic. Y <strong><code>.create table</code></strong> es para tablas, <strong><code>.create function</code></strong> para funciones: no las confundas.
+          </div>
+          <div class="note note--tip">
+            🌸 <strong>Analogía:</strong> <code>dynamic</code> es el <strong>cajón desastre</strong> de KQL 🗄️ — donde metes lo que no tiene forma fija (JSON, listas, objetos anidados). Las columnas "normales" (fecha, texto, número) van en cajones etiquetados; el JSON, al cajón flexible.
+          </div>
+        </article>
+
+        <article class="concept-card" id="tip-38">
+          <h3><span class="concept-card__num">38</span>PySpark: when / split / dropDuplicates</h3>
+          <p>🎯 <strong>Detalles que caen en preguntas de Sí/No:</strong></p>
+          <ol>
+            <li><strong><code>when((A) | (B), valor)</code></strong> → el <code>|</code> es <strong>OR</strong>: cubre A <strong>O</strong> B. Dos condiciones con <code>|</code> → reemplaza <strong>ambos</strong> casos (ej. null Y empty: <code>isNull() | (col=="")</code>).</li>
+            <li><strong><code>split(col, "@").getItem(N)</code></strong> → índices base <strong>0</strong>: <code>getItem(0)</code> = <strong>antes</strong> del separador (primer trozo); <code>getItem(1)</code> = <strong>después</strong> del separador (segundo trozo). ⚠️ Si el statement dice "before" pero el código usa item(1) (after) → falso.</li>
+            <li><strong><code>dropDuplicates(["columna"])</code></strong> → dedup por <strong>esa columna exacta</strong>. Si dice "por año" pero el código pone <code>["OrderDate"]</code> (fecha completa) → no coincide → falso.</li>
+          </ol>
+          <div class="note note--tip">
+            🌸 <strong>Truco:</strong> el <code>|</code> (OR) es una red que pesca varios tipos de pez a la vez (null Y vacío). Y en <code>split(...).getItem(N)</code>, cuenta desde <strong>0</strong>: item 0 = lo de antes de la @, item 1 = lo de después. 🎣
+          </div>
+        </article>
+
+        <article class="concept-card" id="tip-39">
+          <h3><span class="concept-card__num">39</span>Parámetros de pipeline: @ vs @{}</h3>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Sintaxis</th><th>Devuelve</th></tr></thead>
+              <tbody>
+                <tr><td><strong><code>@expresión</code></strong> (sin llaves)</td><td>valor con <strong>tipo nativo</strong> (int, bool...)</td></tr>
+                <tr><td><strong><code>@{expresión}</code></strong> (con llaves)</td><td><strong>siempre string</strong> (interpolación)</td></tr>
+                <tr><td><code>@@</code></td><td>escape → string literal que empieza por @</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>🎯 "return as <strong>int</strong> / preserve type" → <strong><code>@</code> sin llaves</strong> (<code>@pipeline().parameters.param1</code>). "Construir un texto con valores dentro" → <strong><code>@{ }</code></strong> con llaves.</p>
+          <div class="note note--tip">
+            🌸 <strong>Analogía:</strong> las <strong>llaves <code>{}</code> son como comillas</strong> — todo lo que metes dentro se convierte en texto (string). Sin llaves, el valor sale "tal cual" con su tipo original (un número sigue siendo número). Si necesitas que siga siendo un int → sin llaves.
+          </div>
+        </article>
+
+        <!-- ============ DOMINIO 3 ============ -->
+        <div class="category-header" id="dominio-3">
+          <span class="category-header__icon">📊</span>
+          <h2 class="category-header__title">Dominio 3 · Monitorizar y optimizar (30-35%)</h2>
+        </div>
+
+        <article class="concept-card" id="tip-40">
+          <h3><span class="concept-card__num">40</span>Mantenimiento Delta: OPTIMIZE vs VACUUM</h3>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Necesito...</th><th>Comando</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Consolidar / compactar</strong> ficheros pequeños en grandes</td><td><strong>OPTIMIZE</strong></td></tr>
+                <tr><td>Co-localizar datos por columnas que se filtran a menudo</td><td><strong>OPTIMIZE ... ZORDER BY (col)</strong></td></tr>
+                <tr><td><strong>Borrar ficheros obsoletos</strong> / no referenciados / limpiar el historial</td><td><strong>VACUUM</strong> (por defecto retiene 7 días / 168 h)</td></tr>
+                <tr><td>Optimización de escritura de Fabric (lecturas rápidas)</td><td><strong>V-Order</strong> (activado por defecto)</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>🎯 <strong>El par que SIEMPRE confunden</strong> (verbos opuestos):</p>
+          <ul>
+            <li><strong>"consolidate / compact / small files / merge files"</strong> → <strong>OPTIMIZE</strong> (junta).</li>
+            <li><strong>"remove old / unreferenced / obsolete files / clean up"</strong> → <strong>VACUUM</strong> (tira).</li>
+          </ul>
+          <div class="note note--tip">
+            🌸 <strong>Analogía:</strong> OPTIMIZE es <strong>juntar mil papelitos sueltos en pocas carpetas ordenadas</strong> 📁 (menos ficheros, más grandes → lecturas rápidas). VACUUM es <strong>tirar a la basura los papeles viejos</strong> que ya no usas 🗑️. Uno junta, el otro tira.
+          </div>
+        </article>
+
+        <article class="concept-card" id="tip-41">
+          <h3><span class="concept-card__num">41</span>V-Order: el trade-off lectura/escritura ⭐</h3>
+          <p>🎯 <strong>V-Order optimiza LECTURAS pero añade overhead a las ESCRITURAS.</strong> Es un trade-off.</p>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Escenario</th><th>Acción</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Read-heavy</strong> (queries, dashboards)</td><td><strong>Enable V-Order</strong> (optimiza lecturas) ✅</td></tr>
+                <tr><td><strong>Write-heavy + pocas lecturas</strong> (staging efímero, load-once, read-once-and-drop)</td><td><strong>Disable V-Order</strong> (quita el overhead de escritura) ⭐</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>💡 <strong>Regla clave</strong> — pregúntate qué optimizar: optimizar <strong>LEER</strong> (queries) → Enable V-Order. Optimizar <strong>ESCRIBIR</strong> (minimize LOAD time, write-intensive) → <strong>Disable V-Order</strong>.</p>
+          <div class="note note--warning">
+            ⚠️ Pista: "write-intensive + minimize LOAD time + tables read once and dropped" → <strong>Disable V-Order</strong> (las tablas casi no se leen, no compensa el overhead de escritura). V-Order ya está ON por defecto.
+          </div>
+          <div class="note note--tip">
+            🌸 <strong>Analogía:</strong> V-Order es como <strong>doblar y ordenar la ropa perfectamente antes de guardarla</strong> 👕 — tardas más al guardar (escribir), pero luego la encuentras rapidísimo (leer). Si vas a sacar esa ropa <strong>una sola vez y tirarla</strong>, no merece la pena doblarla tan bien → mejor guardar rápido (disable V-Order).
+          </div>
+        </article>
+
+        <article class="concept-card" id="tip-42">
+          <h3><span class="concept-card__num">42</span>Statistics para optimizar queries</h3>
+          <p>🎯 Las <strong>statistics</strong> (histogramas, cardinalidad) las usa el <strong>query optimizer</strong> para elegir el mejor plan. Unas stats desactualizadas (tras crecer la tabla) → planes malos → queries lentas. Actualizarlas → queries rápidas.</p>
+          <p>💡 "optimize query experience / queries lentas porque los datos crecieron" → <strong>Create/update statistics</strong>.</p>
+          <div class="note note--warning">
+            ⚠️ No confundir con la optimización de <strong>escritura</strong> (eso es V-Order/OPTIMIZE). Las statistics optimizan <strong>lecturas y queries</strong>.
+          </div>
+          <div class="note note--tip">
+            🌸 <strong>Analogía:</strong> las statistics son el <strong>mapa actualizado del almacén</strong> 🗺️ que usa el mozo (el optimizer) para elegir la ruta más rápida. Si el almacén creció y el mapa está viejo, el mozo da vueltas de más (queries lentas). Actualizas el mapa → rutas óptimas.
+          </div>
+        </article>
+
+        <article class="concept-card" id="tip-43">
+          <h3><span class="concept-card__num">43</span>Direct Lake: el tipo de dato de las keys</h3>
+          <p>🎯 En <strong>Direct Lake</strong>, todo se carga comprimido en memoria. Los <strong>strings largos (MD5, SHA256, GUIDs) son enemigos</strong> cuando se repiten en millones de filas → hinchan el modelo → exceden los guardrails → fallback a DirectQuery o errores en los visuals. Los <strong>enteros (INT/BIGINT) son amigos</strong> (comprimen genial).</p>
+          <p>💡 Patrón: "surrogate keys con hash" + "Direct Lake" + "performance/errors" + "millones de filas" → sospecha del <strong>tipo de dato de las keys</strong> → cámbialas a entero.</p>
+          <div class="note note--warning">
+            ⚠️ NO "increase capacity" (viola el coste), NO SHA256 (un string aún más largo).
+          </div>
+          <div class="note note--tip">
+            🌸 <strong>Analogía:</strong> guardar en memoria un string MD5 largo repetido millones de veces es como <strong>meter cajas enormes vacías</strong> que ocupan toda la estantería. Un entero es una <strong>caja pequeñita</strong> que comprime genial. Cambias las cajas grandes por pequeñas → cabe todo y va rápido. 📦
+          </div>
+        </article>
+
+        <article class="concept-card" id="tip-44">
+          <h3><span class="concept-card__num">44</span>Optimización KQL: filtrar temprano ⭐</h3>
+          <p>🎯 <strong>LA optimización nº1: FILTRAR LO ANTES POSIBLE.</strong> Mover el <code>filter</code>/<code>where</code> <strong>antes</strong> de las operaciones costosas (join, summarize) reduce las filas que se procesan → mucho más rápido.</p>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Solución propuesta</th><th>¿Optimiza?</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Mover el <code>filter</code> antes del <code>join</code></strong></td><td>✅ Sí (filtra pronto)</td></tr>
+                <tr><td><code>hint.strategy=broadcast</code> (tabla pequeña)</td><td>✅ Sí</td></tr>
+                <tr><td>Cambiar <code>inner</code> → <code>outer</code></td><td>❌ No (más filas, cambia los resultados)</td></tr>
+                <tr><td>Cambiar <code>project</code> → <code>extend</code></td><td>❌ No (añade columnas)</td></tr>
+                <tr><td>Añadir <code>make_list()</code></td><td>❌ No (agregación extra)</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>💡 <strong>Truco</strong>: ¿el cambio REDUCE datos antes de la parte cara? → optimiza. ¿Añade trabajo o cambia resultados? → No.</p>
+          <div class="note note--tip">
+            🌸 <strong>Analogía:</strong> si vas a hacer un cóctel con solo las naranjas maduras 🍊, ¿qué es más rápido: exprimir TODAS las naranjas y luego tirar las verdes, o <strong>quitar las verdes primero</strong> y exprimir solo las buenas? Filtrar antes = menos trabajo. Aplica igual en KQL: filtra antes del join.
+          </div>
+        </article>
+
+        <article class="concept-card" id="tip-45">
+          <h3><span class="concept-card__num">45</span>Herramientas de monitorización (cuál es cuál)</h3>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Herramienta</th><th>Para qué sirve</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Fabric Monitor / Monitor hub</strong></td><td>Ver <strong>ejecuciones</strong> (runs) de notebooks, pipelines, dataflows y Spark jobs: estado, duración, snapshots, versión de runtime/Delta.</td></tr>
+                <tr><td><strong>Capacity Metrics app</strong></td><td>Consumo de <strong>capacidad (CU)</strong>: bursting, smoothing, throttling.</td></tr>
+                <tr><td><strong>Admin monitoring workspace</strong></td><td>Informes de <strong>uso y auditoría a nivel tenant</strong> (adopción, actividad de la organización).</td></tr>
+                <tr><td><strong>Real-Time hub</strong></td><td>Datos en <strong>streaming y eventos</strong> en tiempo real (no monitoriza jobs).</td></tr>
+                <tr><td><strong>OneLake catalog / data hub</strong></td><td><strong>Descubrir datos</strong> (encontrar items).</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>🎯 <strong>Trucos:</strong> "¿Qué pasó en una ejecución concreta?" (estado, duración, versión) → <strong>Monitor hub</strong>. "¿Cuánta capacidad se gastó?" → <strong>Capacity Metrics app</strong>. "Auditoría a nivel organización" → <strong>Admin monitoring workspace</strong>.</p>
+        </article>
+
+        <article class="concept-card" id="tip-46">
+          <h3><span class="concept-card__num">46</span>Monitorización de queries (DMVs): histórico vs tiempo real ⭐</h3>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Necesito...</th><th>Herramienta</th></tr></thead>
+              <tbody>
+                <tr><td>Queries <strong>históricas</strong> (últimos X min/días) + usuario + texto</td><td><strong>queryinsights schema</strong> ⭐</td></tr>
+                <tr><td>Query corriendo <strong>AHORA</strong> + duración</td><td><code>sys.dm_exec_requests</code></td></tr>
+                <tr><td><strong>Nombres de usuarios</strong> en sesiones activas</td><td><code>sys.dm_exec_sessions</code> (login_name)</td></tr>
+                <tr><td>Conexión física (IP, protocolo)</td><td><code>sys.dm_exec_connections</code></td></tr>
+                <tr><td>Consumo de capacidad (CU)</td><td>Capacity Metrics app</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>🎯 <strong>Reglas:</strong></p>
+          <ul>
+            <li><strong><code>sys.dm_exec_*</code> = TIEMPO REAL</strong> (lo que pasa ahora; desaparece al acabar).</li>
+            <li><strong><code>queryinsights.*</code> = HISTÓRICO</strong> (persistido, últimos 30 días).</li>
+            <li>"last 60 minutes / durante las últimas X" (pasado) → <strong>queryinsights</strong>.</li>
+            <li>"currently running / en vivo" → <strong>dm_exec_requests</strong>.</li>
+            <li>"names of users" → <strong>dm_exec_sessions</strong> (tiene login_name).</li>
+          </ul>
+          <div class="note note--tip">
+            🌸 <strong>Analogía:</strong> las DMVs <code>dm_exec_*</code> son la <strong>cámara en directo</strong> 📹 (ves lo que pasa AHORA; cuando acaba, se va). <code>queryinsights</code> es la <strong>grabación guardada</strong> 📼 (puedes ver lo de hace un rato). Para "los últimos 60 minutos" necesitas la grabación, no el directo.
+          </div>
+        </article>
+
+        <article class="concept-card" id="tip-47">
+          <h3><span class="concept-card__num">47</span>Refrescar semantic model: execute vs monitor</h3>
+          <p>🎯 <strong>La palabra clave manda:</strong></p>
+          <ul>
+            <li><strong>"dynamically EXECUTE" (+ monitor) un refresh</strong> → <strong>semantic link (<code>sempy</code>) en un notebook</strong>. Es el único que <strong>lanza</strong> el refresh Y lo monitoriza programáticamente.</li>
+            <li><strong>"MONITOR" (solo ver) el histórico</strong> → Monitoring hub, DMVs o el refresh history del modelo.</li>
+          </ul>
+          <div class="note note--warning">
+            ⚠️ <strong>Trampa:</strong> el <strong>Monitoring hub</strong> y las <strong>DMVs</strong> solo <strong>MONITORIZAN (leen)</strong>, NO <strong>EJECUTAN</strong> refreshes. Si el enunciado pide "execute" → necesitas código (semantic link).
+          </div>
+          <div class="note note--tip">
+            🌸 <strong>Analogía:</strong> el Monitoring hub es la <strong>ventana desde la que miras</strong> si la lavadora ha terminado 👀 (solo observas). Semantic link (sempy) es el <strong>mando a distancia</strong> que además <strong>enciende</strong> la lavadora 🎛️. Si te piden "encender Y vigilar" → necesitas el mando, no solo mirar por la ventana.
+          </div>
+        </article>
+
+        <article class="concept-card" id="tip-48">
+          <h3><span class="concept-card__num">48</span>Debug de pipeline: input vs output JSON ⭐</h3>
+          <p>Cuando una actividad falla, en el <strong>Monitoring hub</strong> → run fallido → tienes dos JSONs:</p>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>JSON</th><th>Contiene</th><th>Para...</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Input</strong></td><td>la <strong>configuración/query con la que se ejecutó</strong> (lo que recibió)</td><td>"¿QUÉ se le pidió hacer?" (la SQL query) ⭐</td></tr>
+                <tr><td><strong>Output</strong></td><td>resultado, filas copiadas, error, stats (lo que produjo)</td><td>"¿QUÉ obtuvo / qué error?"</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>🎯 <strong>"which SQL query was executed"</strong> → <strong>INPUT JSON</strong> (la query es un parámetro de entrada, especialmente con un source dinámico).</p>
+          <div class="note note--warning">
+            ⚠️ El output tiene el error y el resultado, pero NO la query. La query es lo que <strong>entra</strong>. Debug de pipeline → Monitoring hub, NO Real-time hub.
+          </div>
+          <div class="note note--tip">
+            🌸 <strong>Analogía:</strong> el <strong>input</strong> es la nota que le das a alguien ("hazme esta compra con esta lista") 📝; el <strong>output</strong> es lo que trae de vuelta (el ticket y las bolsas) 🛍️. Si quieres saber <strong>qué le pediste</strong> (la query), miras la nota (input), no las bolsas.
+          </div>
+        </article>
+
+        <article class="concept-card" id="tip-49">
+          <h3><span class="concept-card__num">49</span>Exhibit de pipeline: Inactive y flechas</h3>
+          <p>🎯 El estado <strong>"Inactive"</strong> de una actividad significa que está <strong>DESACTIVADA</strong> (comentada). Una actividad inactiva <strong>nunca se ejecuta</strong>: se <strong>salta (skipped)</strong> en cada run, sin importar las dependencias.</p>
+          <p><strong>Flechas de dependencia</strong> (cómo leer el exhibit):</p>
+          <ul>
+            <li><strong>Sin flecha</strong> entre cajas → <strong>paralelo</strong> (simultáneas).</li>
+            <li><strong>Con flecha</strong> → secuencia. Colores: 🟢 verde = on success, 🔴 rojo = on failure, 🔵 azul = on completion, ⚫ gris = on skip.</li>
+          </ul>
+          <div class="note note--tip">
+            🌸 <strong>Analogía:</strong> una actividad <strong>Inactive</strong> es como una tarea <strong>tachada en tu lista</strong> ✍️ — sigue escrita, pero no la haces. Y las flechas entre actividades son las reglas del dominó: sin flecha, las fichas caen a la vez (paralelo); con flecha, una espera a la otra (secuencia).
+          </div>
+        </article>
+
+        <article class="concept-card" id="tip-50">
+          <h3><span class="concept-card__num">50</span>Monitorización Spark: History Server vs run series</h3>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Necesito ver...</th><th>Herramienta</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Jobs/stages de UN run en timeline</strong></td><td><strong>Spark History Server</strong> (Event Timeline) ⭐</td></tr>
+                <tr><td><strong>Comparar VARIOS runs</strong> (tendencia de duración)</td><td><strong>run series</strong></td></tr>
+                <tr><td>Listado de ejecuciones y estado</td><td>Monitoring hub</td></tr>
+                <tr><td>Progreso en vivo por celda</td><td>contextual monitoring (dentro del notebook)</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>🎯 <strong>Diferencia clave:</strong> el <strong>run series</strong> compara VARIAS ejecuciones (cada barra = un run), mostrando la tendencia entre runs. El <strong>Spark History Server</strong> muestra los jobs/stages DENTRO de UN run, en timeline.</p>
+          <div class="note note--tip">
+            🌸 <strong>Analogía:</strong> el <strong>run series</strong> es comparar tus tiempos de las <strong>últimas 10 carreras</strong> 🏃‍♀️ (¿voy mejorando?). El <strong>Spark History Server</strong> es el desglose <strong>minuto a minuto de UNA carrera concreta</strong> (¿cuánto tardé en cada tramo?). Para "los jobs de un run en timeline" → la carrera concreta → History Server.
+          </div>
+        </article>
+
+        <!-- ============ EXTRA ============ -->
+        <div class="category-header" id="extra">
+          <span class="category-header__icon">🎓</span>
+          <h2 class="category-header__title">Extra: meta-estrategia</h2>
+        </div>
+
+        <article class="concept-card" id="tip-51">
+          <h3><span class="concept-card__num">51</span>Meta-estrategia: cómo pensar como el examinador</h3>
+          <p>Patrones de comportamiento de las preguntas que conviene interiorizar:</p>
+          <ul>
+            <li>🔑 <strong>"Least privilege"</strong> = descarta el rol o permiso más poderoso. Elige el mínimo que cumpla la tarea.</li>
+            <li>🔑 <strong>Frases "de relleno"</strong> ("you already assigned...", "Inactive") = NO son relleno. Resuelven medio requisito y cambian la respuesta. Léelas dos veces.</li>
+            <li>🔑 <strong>Case studies</strong>: la respuesta sale de <strong>cazar la frase exacta del requisito</strong> (busca el verbo clave: transform vs copy vs cleanse), no de tu preferencia de herramienta.</li>
+            <li>🔑 <strong>"Qué artefacto uso"</strong>: tacha cada requisito uno a uno sobre cada opción. Gana el que no falla ninguno, no el de la palabra que más suena.</li>
+            <li>🔑 <strong>Una sola palabra</strong> (ej. "KQL", "LOAD time", "last 60 minutes") puede desviarte o ser la clave. Léela con atención.</li>
+            <li>🔑 <strong>"always"</strong> en preguntas de Sí/No → casi siempre No (si el código tiene ramas if/try).</li>
+            <li>🔑 <strong>Series de preguntas</strong> que repiten el escenario → cambian UN detalle cada vez; lee cada una fresca.</li>
+            <li>🔑 <strong>Optimización de queries</strong> → filtrar temprano es casi siempre la respuesta.</li>
+            <li>🔑 <strong>Aprende algoritmos, no respuestas</strong>: las preguntas de caché, permisos y DMVs tienen variantes con los números cambiados. Domina el procedimiento.</li>
+            <li>🔑 <strong>El examen abstrae la implementación</strong>: "migrate table" es un paso en el examen; en la vida real es un proyecto entero.</li>
+          </ul>
+          <div class="note note--next">
+            🌸 <strong>La lección más útil de todas:</strong> si una pregunta parece imposible, casi siempre es que <strong>aún no la has leído despacio</strong>. Respira, léela dos veces, mira los datos con calma y descompón en piezas. La respuesta suele estar ahí.
+          </div>
+        </article>
+
+        <article class="concept-card" id="tip-52">
+          <h3><span class="concept-card__num">52</span>Cuando la doc gana al dump</h3>
+          <p>Los volcados de preguntas de examen ("dumps") son útiles para practicar el <strong>formato</strong> y los temas, pero tienen errores: respuestas mal marcadas, opciones que faltan o contenido desactualizado (Fabric cambia rápido). <strong>Cuando una respuesta marcada choca con la documentación oficial de Microsoft Learn, gana la documentación.</strong></p>
+          <p>Casos donde conviene desconfiar del dump y verificar en la doc:</p>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Tema</th><th>Lo que suele marcar el dump</th><th>Lo que dice la doc</th></tr></thead>
+              <tbody>
+                <tr><td>Aislamiento de sesiones Spark</td><td>custom pool</td><td><strong>disable high concurrency</strong></td></tr>
+                <tr><td>OneLake availability (eventhouse)</td><td>new + existing</td><td><strong>only new data</strong> por defecto (sin backfill)</td></tr>
+                <tr><td>Scheduled refresh en deployment pipelines</td><td>se despliega</td><td><strong>NO se despliega</strong></td></tr>
+                <tr><td>Endorsement de dashboards</td><td>Certified/Master data</td><td><strong>Cannot be endorsed</strong></td></tr>
+                <tr><td>DMV para usuarios activos</td><td>dm_exec_requests</td><td><strong>dm_exec_sessions</strong> (tiene login_name)</td></tr>
+                <tr><td>Direct Lake + MD5 keys</td><td>varias</td><td><strong>cambiar el tipo de dato</strong> (string→int)</td></tr>
+                <tr><td>StdDev en Eventstream</td><td>Aggregate</td><td><strong>Group by</strong></td></tr>
+                <tr><td>Optimizar queries del warehouse</td><td>V-Order</td><td><strong>statistics</strong> (V-Order ya está ON)</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>🎯 <strong>Meta-regla</strong>: aprende el <strong>procedimiento y el razonamiento</strong>, no la respuesta memorizada. Ante una opción "que suena bien pero no cuadra con la doc", confía en tu razonamiento + la documentación oficial.</p>
+        </article>
+
+        <div class="note note--next">
+          💜 <strong>Guía maestra viva.</strong> Se irá ampliando y puliendo con la experiencia. Hecha con cariño para ayudar a quien venga detrás a preparar el DP-700. 🌸✨
+        </div>
+
+        <!-- Navegación del curso -->
+        <div class="course-nav">
+          <a href="../dp-700.html">
+            <span class="course-nav__label">← Volver al</span>
+            <span class="course-nav__title">Índice del curso DP-700</span>
+          </a>
+          <a href="modulo-1.html" class="next">
+            <span class="course-nav__label">Empezar por el →</span>
+            <span class="course-nav__title">Módulo 1 · Introducción a Fabric</span>
+          </a>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <button id="back-to-top" class="back-to-top" aria-label="Volver arriba" title="Volver arriba">↑</button>
+
+  <script src="https://cdn.jsdelivr.net/npm/i18next@23/dist/umd/i18next.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1/prism.min.js"></script>
+  <script src="../../../assets/js/theme.js"></script>
+  <script src="../../../assets/js/main.js"></script>
+  <script src="../../../assets/js/cursor.js"></script>
+</body>
+</html>

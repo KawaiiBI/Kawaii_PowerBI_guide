@@ -226,6 +226,14 @@ function generateTopicsGrid() {
       url: 'topics/gobernanza.html'
     },
     {
+      id: 'certificaciones',
+      icon: '🎓',
+      title: 'Certificaciones',
+      description: 'Prepara tus certificaciones de Microsoft paso a paso. Curso completo del DP-700 con 17 módulos y las trampas típicas del examen.',
+      levels: ['intermediate', 'advanced'],
+      url: 'topics/certificaciones.html'
+    },
+    {
       id: 'quien-soy',
       icon: '👩‍💻',
       title: '¿Quién soy?',
