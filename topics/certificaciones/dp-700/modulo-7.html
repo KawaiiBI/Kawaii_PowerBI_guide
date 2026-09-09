@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="DP-700 Módulo 7: arquitectura Medallion (Bronze, Silver, Gold) en Fabric. Single vs multiple lakehouses, schemas, Materialized Lake Views, star schema, serving y seguridad por capa.">
+  <meta name="description" content="DP-700 Módulo 7: organizar un lakehouse de Fabric con arquitectura medallion. Bronze, Silver y Gold, estructura del lakehouse, schemas, Materialized Lake Views, star schema, serving, seguridad por capa y CI/CD.">
   <title>DP-700 · Módulo 7: Arquitectura Medallion | Power BI Guide by Kawaii BI</title>
   <link rel="canonical" href="https://kawaiibi.es/topics/certificaciones/dp-700/modulo-7.html">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Kawaii Power BI Guide">
   <meta property="og:locale" content="es_ES">
   <meta property="og:title" content="DP-700 · Módulo 7: Arquitectura Medallion | Power BI Guide by Kawaii BI">
-  <meta property="og:description" content="DP-700 Módulo 7: Medallion (Bronze/Silver/Gold). Materialized Lake Views, star schema, serving y seguridad por capa.">
+  <meta property="og:description" content="DP-700 Módulo 7: arquitectura medallion en Fabric. Bronze/Silver/Gold, Materialized Lake Views, star schema y seguridad por capa.">
   <meta property="og:url" content="https://kawaiibi.es/topics/certificaciones/dp-700/modulo-7.html">
   <meta property="og:image" content="https://kawaiibi.es/assets/images/og-banner.png">
   <meta property="og:image:width" content="1200">
@@ -18,7 +18,7 @@
   <meta property="og:image:alt" content="Sara Lozano Marti - Kawaii Power BI">
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="DP-700 · Módulo 7: Arquitectura Medallion | Power BI Guide by Kawaii BI">
-  <meta name="twitter:description" content="DP-700 Módulo 7: Medallion (Bronze/Silver/Gold). Materialized Lake Views, star schema y serving.">
+  <meta name="twitter:description" content="DP-700 Módulo 7: medallion en Fabric. Bronze/Silver/Gold, Materialized Lake Views y star schema.">
   <meta name="twitter:image" content="https://kawaiibi.es/assets/images/og-banner.png">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -63,12 +63,22 @@
     .md-table tr:nth-child(even) td { background: var(--color-blush); }
     .table-scroll { overflow-x: auto; }
 
+    .trap-list { list-style: none; padding: 0; margin: 0; }
+    .trap-list > li { background: var(--color-white); border: 1.5px solid var(--color-mauve); border-left: 4px solid var(--color-warning); border-radius: var(--border-radius-sm); padding: 0.875rem 1.125rem; margin-bottom: 0.75rem; font-size: 0.9375rem; line-height: 1.7; }
+    .trap-list strong.trap-title { display: block; color: var(--color-dark); margin-bottom: 0.25rem; }
+
     .course-nav { display: flex; justify-content: space-between; gap: 1rem; margin-top: 2.5rem; flex-wrap: wrap; }
     .course-nav a { flex: 1 1 220px; display: block; background: var(--color-white); border: 1.5px solid var(--color-mauve); border-radius: var(--border-radius); padding: 1rem 1.25rem; text-decoration: none; color: inherit; transition: var(--transition); }
     .course-nav a:hover { border-color: var(--color-coral); box-shadow: var(--shadow-md); text-decoration: none; }
     .course-nav__label { font-size: 0.75rem; color: var(--color-slate); text-transform: uppercase; letter-spacing: 0.05em; }
     .course-nav__title { font-weight: 700; color: var(--color-coral); }
     .course-nav a.next { text-align: right; }
+
+    .sources-list { font-size: 0.875rem; line-height: 1.9; word-break: break-word; }
+
+    .phase-finale { background: var(--color-rose); border: 2px solid var(--color-coral); border-radius: var(--border-radius); padding: 1.75rem; margin: 2.5rem 0 1rem; }
+    .phase-finale h2 { font-size: 1.25rem; font-weight: 800; color: var(--color-coral); margin: 0 0 0.5rem; }
+    .phase-finale ol { font-size: 0.9375rem; line-height: 1.8; padding-left: 1.25rem; }
   </style>
 </head>
 <body>
@@ -124,8 +134,8 @@
         <header class="topic-header">
           <span class="topic-header__eyebrow">DP-700 · MÓDULO 7</span>
           <span class="topic-header__icon">🥇</span>
-          <h1 class="topic-header__title">Arquitectura Medallion en Fabric</h1>
-          <p class="topic-header__subtitle">El gran patrón del data engineering: Bronze, Silver y Gold. Single vs multiple lakehouses, schemas, Materialized Lake Views, star schema, serving del gold y seguridad por capa. 🌸</p>
+          <h1 class="topic-header__title">Organizar un lakehouse de Fabric con arquitectura medallion</h1>
+          <p class="topic-header__subtitle">El gran patrón arquitectónico del data engineering moderno: Bronze, Silver y Gold, estructura del lakehouse, Materialized Lake Views, star schema, serving, seguridad por capa y CI/CD. 🌸</p>
           <div class="topic-header__levels">
             <span class="badge badge--intermediate">Intermedio</span>
             <span class="badge badge--advanced">Avanzado</span>
@@ -135,245 +145,1048 @@
         <nav class="toc" aria-label="Índice del módulo">
           <p class="toc__title">📑 En este módulo:</p>
           <ul class="toc__list">
-            <li><a href="#objetivos">1. Objetivos</a></li>
-            <li><a href="#que-es">2. ¿Qué es medallion?</a></li>
-            <li><a href="#capas">3. Bronze, Silver, Gold</a></li>
-            <li><a href="#por-que">4. Por qué separar</a></li>
+            <li><a href="#objetivos">1. Objetivos y encaje</a></li>
+            <li><a href="#que-es">2. ¿Qué es la medallion?</a></li>
+            <li><a href="#capas">3. Bronze, Silver y Gold</a></li>
+            <li><a href="#por-que">4. Por qué separar en capas</a></li>
             <li><a href="#adaptar">5. Adaptar la arquitectura</a></li>
-            <li><a href="#estructura">6. Single vs multiple</a></li>
-            <li><a href="#schemas">7. Schemas por capa</a></li>
-            <li><a href="#bronze">8. Bronze a fondo</a></li>
-            <li><a href="#silver">9. Silver a fondo</a></li>
-            <li><a href="#mlv">10. Materialized Lake Views</a></li>
-            <li><a href="#gold">11. Gold y star schema</a></li>
-            <li><a href="#dimensiones">12. Dimensiones especiales</a></li>
-            <li><a href="#serving">13. Serving del gold</a></li>
-            <li><a href="#seguridad">14. Seguridad por capa</a></li>
-            <li><a href="#trampas">15. Trampas</a></li>
-            <li><a href="#comparativas">16. Comparativas</a></li>
+            <li><a href="#decisiones">6. Decisiones de diseño</a></li>
+            <li><a href="#estructura">7. Single vs multiple</a></li>
+            <li><a href="#schemas">8. Schemas por capa</a></li>
+            <li><a href="#bronze">9. Bronze a fondo</a></li>
+            <li><a href="#silver">10. Silver a fondo</a></li>
+            <li><a href="#materialized-views">11. Materialized Lake Views</a></li>
+            <li><a href="#gold">12. Gold a fondo</a></li>
+            <li><a href="#star-schema">13. Star schema</a></li>
+            <li><a href="#dimensiones">14. Dimensiones especiales</a></li>
+            <li><a href="#serving">15. Serving del gold</a></li>
+            <li><a href="#warehouse-gold">16. Warehouse como gold</a></li>
+            <li><a href="#seguridad">17. Seguridad por capa</a></li>
+            <li><a href="#onelake-roles">18. OneLake data access roles</a></li>
+            <li><a href="#cicd">19. Git y deployment pipelines</a></li>
+            <li><a href="#patrones">20. Patrones de orquestación</a></li>
+            <li><a href="#trampas">21. Trampas típicas</a></li>
+            <li><a href="#comparativas">22. Comparativas clave</a></li>
+            <li><a href="#fuentes">23. Fuentes oficiales</a></li>
           </ul>
         </nav>
 
-        <div class="category-header" id="objetivos"><span class="category-header__icon">🎯</span><h2 class="category-header__title">1. Objetivos y encaje en el DP-700</h2></div>
+        <!-- ============ 1. OBJETIVOS ============ -->
+        <div class="category-header" id="objetivos">
+          <span class="category-header__icon">🎯</span>
+          <h2 class="category-header__title">1. Objetivos y encaje en el DP-700</h2>
+        </div>
+
         <article class="concept-card">
-          <p>Objetivos: describir el patrón medallion, identificar decisiones clave al planificarlo en Fabric, describir el serving del gold y las best practices de seguridad y gobierno. Aparece <strong>transversalmente en todos los dominios</strong>.</p>
-          <div class="note note--tip">🎯 <strong>Crítico:</strong> las 3 capas y qué va en cada una, single vs multiple lakehouses/workspaces, <strong>Materialized Lake Views</strong>, star schema en gold, OneLake data access roles y serving (SQL endpoint vs semantic model).</div>
+          <h3>¿Qué te enseña este módulo?</h3>
+          <p>Este es <strong>el módulo del gran patrón arquitectónico</strong> del data engineering moderno: la <strong>arquitectura medallion</strong>. Los objetivos oficiales:</p>
+          <ol>
+            <li>Describir el patrón de arquitectura medallion y por qué se usa en la analítica de lakehouse.</li>
+            <li>Identificar las decisiones clave al planificar un medallion en Fabric.</li>
+            <li>Describir cómo se sirve la capa gold para queries y reporting.</li>
+            <li>Describir las best practices para asegurar y gobernar las capas del medallion.</li>
+          </ol>
+
+          <h4>Peso en el examen DP-700</h4>
+          <p>Aunque no es un dominio en sí, aparece <strong>transversalmente</strong> en TODOS los dominios:</p>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Dominio</th><th>Cómo aparece la medallion</th></tr></thead>
+              <tbody>
+                <tr><td>Implement and manage (30-35%)</td><td>Diseño de workspaces, permisos por capa, Git + deployment pipelines</td></tr>
+                <tr><td>Ingest and transform (30-35%)</td><td>Ingesta en bronze, limpieza en silver, modelado en gold, herramientas por capa</td></tr>
+                <tr><td>Monitor and optimize (30-35%)</td><td>Optimización específica por capa, Materialized Lake Views, patrones incrementales</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="note note--tip">
+            🎯 <strong>Qué es CRÍTICO dominar:</strong>
+            <ul>
+              <li><strong>Las 3 capas y qué va en cada una</strong> (la base absoluta)</li>
+              <li><strong>Cuándo usar un solo lakehouse, varios lakehouses o varios workspaces</strong></li>
+              <li><strong>Materialized Lake Views</strong> (feature nueva muy potente)</li>
+              <li><strong>Star schema en gold</strong> (fact + dimensions)</li>
+              <li><strong>OneLake data access roles</strong> para la seguridad granular</li>
+              <li><strong>Patrones de serving</strong>: SQL endpoint vs semantic model</li>
+              <li><strong>Warehouse como capa gold alternativa</strong></li>
+            </ul>
+          </div>
+
+          <div class="note note--tip">
+            🌸 <strong>Buenas noticias:</strong> si vienes de la DP-600, ya conoces el <strong>concepto de star schema</strong> y el modelado dimensional para Power BI. Aquí lo aplicamos al mundo del data engineering.
+          </div>
         </article>
 
-        <div class="category-header" id="que-es"><span class="category-header__icon">🥇</span><h2 class="category-header__title">2. ¿Qué es la medallion architecture?</h2></div>
+        <!-- ============ 2. QUÉ ES ============ -->
+        <div class="category-header" id="que-es">
+          <span class="category-header__icon">🥇</span>
+          <h2 class="category-header__title">2. ¿Qué es la medallion architecture?</h2>
+        </div>
+
         <article class="concept-card">
-          <p>Patrón de diseño para organizar los datos de un lakehouse en <strong>tres capas de calidad creciente</strong>. Es el enfoque recomendado por Microsoft para Fabric.</p>
-          <pre><code class="language-plaintext">Source Systems
+          <h3>Definición oficial</h3>
+          <p>La <strong>medallion architecture</strong> (también llamada <strong>medallion lakehouse architecture</strong>) es un <strong>patrón de diseño</strong> para organizar los datos en un lakehouse. Es el <strong>enfoque recomendado por Microsoft para Fabric</strong>.</p>
+          <p>Consiste en <strong>tres capas jerárquicas</strong>, cada una con una calidad progresivamente mayor:</p>
+          <ul>
+            <li>🥉 <strong>Bronze</strong> — datos raw, sin procesar.</li>
+            <li>🥈 <strong>Silver</strong> — datos validados, limpios y enriquecidos.</li>
+            <li>🥇 <strong>Gold</strong> — datos curados, listos para el consumo de negocio.</li>
+          </ul>
+
+          <h4>La idea central</h4>
+          <p>Los <strong>sistemas origen</strong> (ERPs, CRMs, logs, IoT) organizan los datos para la <strong>eficiencia operacional</strong>, no para la analítica. Sus schemas son normalizados, complejos y a veces caóticos.</p>
+          <p>La medallion <strong>remodela progresivamente</strong> ese caos, capa a capa, preservando el original como <strong>fuente de verdad</strong> y preparando cada capa para su audiencia:</p>
+          <pre><code class="language-plaintext">Sistemas origen
     ↓
-🥉 Bronze  (raw landing → Data Engineers)
+🥉 Bronze  (landing zone raw → Data Engineers)
     ↓
-🥈 Silver  (clean, integrated → Analysts + Data Scientists)
+🥈 Silver  (limpio e integrado → Analistas + Data Scientists)
     ↓
-🥇 Gold    (business-ready → Business Users)</code></pre>
-          <div class="note note--tip">🌸 Como cocinar: Bronze = ingredientes del mercado, Silver = ingredientes preparados, Gold = platos listos para servir. Cada capa mejora la calidad y preserva el raw como source of truth (coherente con ACID de Delta).</div>
+🥇 Gold    (listo para negocio → Usuarios de negocio)</code></pre>
+
+          <div class="note note--tip">
+            🌸 <strong>Analogía kawaii:</strong> piénsalo como cocinar. 🥉 <strong>Bronze</strong> = los ingredientes tal como vienen del mercado (sin lavar, sin pelar). 🥈 <strong>Silver</strong> = los ingredientes preparados (lavados, cortados, mezclados según la receta). 🥇 <strong>Gold</strong> = los platos listos para servir en la mesa 🍽️.
+            <br>Cada capa tiene su propósito. No puedes servir los ingredientes crudos, ni tirar la comida y volver al mercado si algo sale mal. Se hace paso a paso.
+          </div>
+
+          <h4>ACID y calidad progresiva</h4>
+          <p>La medallion es coherente con los principios <strong>ACID</strong> de las tablas Delta: los datos empiezan en su forma raw, se <strong>preservan las copias originales</strong> como fuente de verdad, los <strong>pipelines de validación y transformación</strong> los preparan para la analítica y cada capa mejora la calidad respecto a la anterior.</p>
         </article>
 
-        <div class="category-header" id="capas"><span class="category-header__icon">🎨</span><h2 class="category-header__title">3. Las 3 capas en detalle</h2></div>
+        <!-- ============ 3. CAPAS ============ -->
+        <div class="category-header" id="capas">
+          <span class="category-header__icon">🎨</span>
+          <h2 class="category-header__title">3. Las 3 capas en detalle: Bronze, Silver, Gold</h2>
+        </div>
+
         <article class="concept-card">
+          <h3>🥉 Bronze layer</h3>
+          <p><strong>Propósito</strong>: <strong>landing zone</strong> para TODOS los datos, sean estructurados, semiestructurados o no estructurados.</p>
+          <p><strong>Características</strong>:</p>
+          <ul>
+            <li>✅ Datos <strong>almacenados en formato original</strong>, sin modificar.</li>
+            <li>✅ <strong>Fuente de verdad</strong>: si algo va mal downstream, puedes reprocesar desde bronze sin volver al origen.</li>
+            <li>✅ <strong>Trazabilidad</strong>: preservas la historia exacta de qué llegó y cuándo.</li>
+          </ul>
+          <p><strong>Audiencia</strong>: <strong>data engineers</strong> principalmente.</p>
+          <p><strong>Ejemplos de contenido</strong>: CSVs raw de exports diarios, JSON de APIs, logs de aplicaciones, ficheros Parquet ya generados por los sistemas origen, imágenes y PDFs.</p>
+
+          <h3>🥈 Silver layer</h3>
+          <p><strong>Propósito</strong>: <strong>validar y refinar</strong> los datos para tener un dataset consistente e integrado.</p>
+          <p><strong>Actividades típicas</strong>: estandarizar formatos (fechas, monedas, encoding), <strong>eliminar nulls</strong> e inconsistencias, <strong>deduplicar</strong> registros, hacer <strong>merge/join</strong> de datos de varios orígenes de bronze, aplicar <strong>reglas de calidad de datos</strong> y correcciones y enriquecimiento básico.</p>
+          <p><strong>Resultado</strong>: un dataset <strong>consistente, integrado y fiable</strong> que analistas y data scientists pueden usar directamente.</p>
+          <p><strong>Audiencia</strong>: <strong>analistas y data scientists</strong>.</p>
+          <p><strong>Ejemplos de contenido</strong>: la tabla <code>customers</code> deduplicada con emails normalizados, la tabla <code>sales</code> con los nulls eliminados y los tipos corregidos, o la tabla <code>products</code> con el merge de catálogos de varios orígenes.</p>
+
+          <h3>🥇 Gold layer</h3>
+          <p><strong>Propósito</strong>: <strong>modelar los datos para el consumo de negocio</strong>.</p>
+          <p><strong>Modelo típico</strong>: <strong>star schema</strong> con <strong>fact tables</strong> (eventos y mediciones: sales, transactions, events) y <strong>dimension tables</strong> (contexto descriptivo: customers, products, dates, locations), <strong>agregado</strong> a la granularidad necesaria para el reporting.</p>
+          <p><strong>Audiencia</strong>: <strong>usuarios de negocio, analistas, data scientists y directivos</strong>.</p>
+          <p><strong>Ejemplos de contenido</strong>: <code>fact_sales</code> con las métricas de ventas por día/producto/región, <code>dim_customer</code>, <code>dim_product</code>, <code>dim_date</code>, vistas agregadas para dashboards ("sales_by_region_monthly") y tablas planas para feature engineering de ML.</p>
+
+          <h4>Tabla resumen</h4>
           <div class="table-scroll">
             <table class="md-table">
               <thead><tr><th></th><th>Bronze 🥉</th><th>Silver 🥈</th><th>Gold 🥇</th></tr></thead>
               <tbody>
-                <tr><td>Propósito</td><td>Landing raw</td><td>Cleansing + integración</td><td>Modelado business</td></tr>
+                <tr><td>Propósito</td><td>Landing raw</td><td>Limpieza + integración</td><td>Modelado de negocio</td></tr>
                 <tr><td>Modificación</td><td>Ninguna</td><td>Sí (validación)</td><td>Sí (agregación + star schema)</td></tr>
-                <tr><td>Audiencia</td><td>Data Engineers</td><td>Analysts + Data Scientists</td><td>Business Users</td></tr>
-                <tr><td>Formatos</td><td>Cualquiera</td><td>Delta</td><td>Delta (star schema)</td></tr>
+                <tr><td>Audiencia</td><td>Data Engineers</td><td>Analistas + Data Scientists</td><td>Usuarios de negocio</td></tr>
+                <tr><td>Formatos</td><td>Cualquiera</td><td>Delta (típicamente)</td><td>Delta (star schema)</td></tr>
+                <tr><td>Uso principal</td><td>Reprocesamiento</td><td>Análisis directo</td><td>Reporting y dashboards</td></tr>
                 <tr><td>Retención</td><td>Larga</td><td>Media</td><td>Corta (agregados)</td></tr>
               </tbody>
             </table>
           </div>
-          <p><strong>Bronze:</strong> landing de todos los datos sin modificar, source of truth, trazabilidad. <strong>Silver:</strong> standardizar formatos, quitar nulls, deduplicar, merge de fuentes, data quality rules. <strong>Gold:</strong> star schema, agregados a la granularidad de reporting.</p>
         </article>
 
-        <div class="category-header" id="por-que"><span class="category-header__icon">💡</span><h2 class="category-header__title">4. Por qué separar en capas</h2></div>
+        <!-- ============ 4. POR QUÉ ============ -->
+        <div class="category-header" id="por-que">
+          <span class="category-header__icon">💡</span>
+          <h2 class="category-header__title">4. Por qué separar en capas</h2>
+        </div>
+
         <article class="concept-card">
-          <ul>
-            <li><strong>Cada equipo tiene lo que necesita</strong> sin interferir.</li>
-            <li><strong>Resilience:</strong> si silver rompe, reprocesas desde bronze sin volver al source (caro/lento/inaccesible).</li>
-            <li><strong>Trazabilidad y compliance:</strong> rastrear cualquier dato de gold hasta bronze.</li>
-            <li><strong>Iteración independiente</strong> (loose coupling) y <strong>reutilización</strong> (múltiples silvers/golds del mismo origen).</li>
-          </ul>
-          <p>Tradeoff: más storage, más compute y más complejidad, que se compensan en cualquier proyecto serio.</p>
+          <h4>Beneficios</h4>
+          <p><strong>A) Cada equipo tiene lo que necesita</strong>: los data engineers no interfieren con lo que consumen los analistas, los analistas no ven la complejidad del raw y los usuarios de negocio tienen métricas listas para consumir.</p>
+          <p><strong>B) Resiliencia: si algo falla, no lo pierdes todo</strong>: un pipeline de silver roto → sigues teniendo bronze intacto. Puedes <strong>reprocesar desde bronze</strong> sin volver a extraer del sistema origen (que puede ser caro, lento o incluso inaccesible).</p>
+          <p><strong>C) Trazabilidad y auditoría</strong>: puedes rastrear cualquier dato de gold hasta su origen en bronze. <strong>Compliance</strong>: guardas el raw para las auditorías.</p>
+          <p><strong>D) Iteración independiente</strong>: puedes cambiar la lógica de silver sin tocar bronze, y rediseñar gold sin tocar silver. <strong>Acoplamiento débil</strong> entre capas.</p>
+          <p><strong>E) Reutilización</strong>: varios silvers pueden derivar del mismo bronze, y varios golds del mismo silver (uno para BI, otro para ML).</p>
+
+          <h4>Análisis de tradeoffs</h4>
+          <p><strong>No es gratis</strong>: más storage (guardas los datos varias veces), más cómputo (varios pipelines) y más complejidad operativa. Pero los beneficios de resiliencia, auditoría y separación de responsabilidades <strong>compensan de sobra</strong> en cualquier proyecto serio.</p>
         </article>
 
-        <div class="category-header" id="adaptar"><span class="category-header__icon">🔧</span><h2 class="category-header__title">5. Adaptar la arquitectura</h2></div>
+        <!-- ============ 5. ADAPTAR ============ -->
+        <div class="category-header" id="adaptar">
+          <span class="category-header__icon">🔧</span>
+          <h2 class="category-header__title">5. Adaptar la arquitectura (más capas, menos capas)</h2>
+        </div>
+
         <article class="concept-card">
-          <p>Las 3 capas son un <strong>starting point</strong>, no un dogma. Puedes añadir una landing antes de bronze, golds específicos por dominio (Gold-Finance, Gold-Marketing) o simplificar a 2 capas (raw + curated). Los nombres bronze/silver/gold son convención (también raw/cleansed/curated, L0/L1/L2). Lo importante: <strong>cada capa con propósito y audiencia claros</strong>.</p>
+          <h4>No es una regla estricta</h4>
+          <p>El patrón de 3 capas es un <strong>punto de partida</strong>, no un dogma. Puedes adaptarlo:</p>
+          <p><strong>Añadir una landing zone antes de bronze</strong>: para datos que llegan en un formato específico (ej: XML raw, EDIFACT). Se llama a veces capa <strong>"raw"</strong> o <strong>"landing"</strong>.</p>
+          <p><strong>Añadir capas específicas de dominio después de gold</strong>: <strong>Gold-Finance</strong>, <strong>Gold-Marketing</strong>, <strong>Gold-Operations</strong> para equipos concretos, cada uno modelado para las preguntas de ese equipo.</p>
+          <p><strong>Simplificar a 2 capas</strong>: para casos sencillos, <strong>raw + curated</strong> (sin capa intermedia). Válido cuando la complejidad de la transformación es baja.</p>
+
+          <h4>Nombres flexibles</h4>
+          <p>Los nombres <strong>bronze/silver/gold</strong> son una convención. Puedes usar <strong>raw / cleansed / curated</strong>, <strong>staging / integration / semantic</strong> o <strong>L0 / L1 / L2</strong>. Lo importante es que <strong>cada capa tenga un propósito y una audiencia claros</strong>.</p>
+
+          <h4>Ejemplos de arquitecturas variantes</h4>
+          <p><strong>Caso 1: añadir capa landing</strong></p>
+          <pre><code class="language-plaintext">Landing → Bronze → Silver → Gold</code></pre>
+          <p>Landing es donde caen los ficheros originales; bronze es el mismo dato pero ya cargado como tabla Delta.</p>
+          <p><strong>Caso 2: varios golds</strong></p>
+          <pre><code class="language-plaintext">                        → Gold-BI (star schema)
+Bronze → Silver → Gold →
+                        → Gold-ML (tabla plana y ancha)</code></pre>
+          <p><strong>Caso 3: preparado para Fabric IQ</strong></p>
+          <pre><code class="language-plaintext">Bronze → Silver → Gold → Ontology (Fabric IQ)</code></pre>
+          <p>Con Fabric IQ, después de gold puedes tener una capa semántica "ontológica" para los AI agents.</p>
         </article>
 
-        <div class="category-header" id="estructura"><span class="category-header__icon">🏢</span><h2 class="category-header__title">6. Single vs multiple lakehouses vs workspaces</h2></div>
+        <!-- ============ 6. DECISIONES ============ -->
+        <div class="category-header" id="decisiones">
+          <span class="category-header__icon">🎯</span>
+          <h2 class="category-header__title">6. Decisiones de diseño en Fabric</h2>
+        </div>
+
         <article class="concept-card">
+          <p>Hay <strong>3 decisiones críticas</strong> cuando planeas una medallion en Fabric:</p>
+          <ol>
+            <li><strong>Cómo estructurar el lakehouse</strong> (uno solo vs varios).</li>
+            <li><strong>Qué herramientas usar para mover datos entre capas</strong> (dataflows, notebooks, pipelines).</li>
+            <li><strong>Cómo servir la capa gold</strong> a los consumidores.</li>
+          </ol>
+          <p>Cada decisión tiene sus tradeoffs. Vamos una por una.</p>
+        </article>
+
+        <!-- ============ 7. ESTRUCTURA ============ -->
+        <div class="category-header" id="estructura">
+          <span class="category-header__icon">🏢</span>
+          <h2 class="category-header__title">7. Estructura del lakehouse: single vs multiple</h2>
+        </div>
+
+        <article class="concept-card">
+          <h4>Las 3 opciones oficiales</h4>
+          <p><strong>Opción A: un solo lakehouse con schemas</strong> — todo (bronze, silver, gold) en un único lakehouse, con cada capa como un schema (<code>bronze</code>, <code>silver</code>, <code>gold</code>).</p>
+          <p><strong>Opción B: lakehouses separados</strong> — un lakehouse por capa: <code>lh_bronze</code>, <code>lh_silver</code>, <code>lh_gold</code>. Pueden estar en el mismo workspace o en distintos.</p>
+          <p><strong>Opción C: workspaces separados</strong> — un workspace por capa: <code>ws_bronze</code>, <code>ws_silver</code>, <code>ws_gold</code>. Máximo aislamiento.</p>
+
+          <h4>Comparativa oficial</h4>
           <div class="table-scroll">
             <table class="md-table">
-              <thead><tr><th>Opción</th><th>Aislamiento</th><th>Best for</th></tr></thead>
+              <thead><tr><th>Opción</th><th>Mejor para</th></tr></thead>
               <tbody>
-                <tr><td>Single lakehouse + schemas</td><td>Bajo</td><td>Equipos pequeños, early stage, simplicidad</td></tr>
-                <tr><td>Multiple lakehouses</td><td>Medio</td><td>Permisos distintos por capa</td></tr>
-                <tr><td>Multiple workspaces</td><td>Alto</td><td>Compliance/regulatory, capacity aislada por capa</td></tr>
+                <tr><td>Un lakehouse con schemas</td><td>Más simple de gestionar; equipos pequeños o proyectos en fase temprana</td></tr>
+                <tr><td>Lakehouses separados</td><td>Separación más clara; permisos distintos por capa</td></tr>
+                <tr><td>Workspaces separados</td><td><strong>Aislamiento más fuerte</strong>; obligatorio en escenarios de compliance o regulatorios</td></tr>
               </tbody>
             </table>
           </div>
-          <div class="note note--tip">🎯 Con <strong>separate workspaces</strong>, cada uno puede tener <strong>su propia capacity</strong>: aísla el compute y evita que la ingesta pesada tumbe los reports de gold.</div>
+
+          <h4>Cuándo elegir cada uno</h4>
+          <p><strong>Un lakehouse con schemas</strong> ✅ en proyectos pequeños o medianos, con un solo equipo trabajando en todas las capas, sin requisitos estrictos de aislamiento y cuando quieres simplicidad operativa.</p>
+          <p><strong>Lakehouses separados (mismo workspace)</strong>: equipos distintos con permisos ligeramente diferentes, o cuando quieres control granular de permisos por capa sin tanto overhead.</p>
+          <p><strong>Lakehouses separados en workspaces separados</strong> ⭐: compliance/regulatorio (SOX, GDPR, HIPAA), cada capa gestionada por un equipo distinto, cada capa necesita <strong>su propia capacidad</strong> (para aislar el cómputo), deployment pipelines por capa y empresas grandes.</p>
+
+          <div class="note note--tip">
+            🎯 <strong>Consideración de capacidad:</strong> con <strong>workspaces separados</strong>, cada uno puede tener <strong>su propia capacity</strong>: el workspace bronze con capacidad dedicada a la ingesta pesada, el de silver para la transformación y el de gold optimizado para el consumo (Direct Lake). Esto <strong>aísla el cómputo</strong> entre capas y evita que una ingesta pesada tumbe los reports de gold.
+          </div>
         </article>
 
-        <div class="category-header" id="schemas"><span class="category-header__icon">📁</span><h2 class="category-header__title">7. Schemas para organizar layers</h2></div>
-        <article class="concept-card">
-          <p>Los schemas están habilitados por defecto en Fabric. Nombra <code>bronze</code>, <code>silver</code>, <code>gold</code>:</p>
-          <pre><code class="language-sql">CREATE SCHEMA bronze;
-CREATE SCHEMA silver;
-CREATE SCHEMA gold;
+        <!-- ============ 8. SCHEMAS ============ -->
+        <div class="category-header" id="schemas">
+          <span class="category-header__icon">📁</span>
+          <h2 class="category-header__title">8. Uso de schemas para organizar layers</h2>
+        </div>
 
--- Cross-schema query en el mismo lakehouse
-SELECT f.order_id, d.customer_name, f.total_amount
+        <article class="concept-card">
+          <h4>Schemas: por defecto en Fabric</h4>
+          <p>Cuando creas un lakehouse en Fabric, <strong>los schemas están habilitados por defecto</strong>. Ya lo vimos en el Módulo 2, pero ahora lo aplicamos a la medallion.</p>
+
+          <h4>Nombrar los schemas por capa</h4>
+          <p>Crea schemas llamados <strong><code>bronze</code>, <code>silver</code> y <code>gold</code></strong> en tu lakehouse:</p>
+          <pre><code class="language-sql">CREATE SCHEMA bronze
+CREATE SCHEMA silver
+CREATE SCHEMA gold</code></pre>
+          <p>Ahora las tablas se organizan por capa:</p>
+          <pre><code class="language-plaintext">Lakehouse
+├── bronze
+│   ├── customers_raw
+│   ├── orders_raw
+│   └── products_raw
+├── silver
+│   ├── customers
+│   ├── orders
+│   └── products
+└── gold
+    ├── fact_sales
+    ├── dim_customer
+    ├── dim_product
+    └── dim_date</code></pre>
+
+          <h4>Beneficios de usar schemas</h4>
+          <ul>
+            <li>🎯 <strong>Descubribilidad</strong>: es fácil encontrar las tablas por capa.</li>
+            <li>🔐 <strong>Permisos por schema</strong>: distintos roles para bronze/silver/gold.</li>
+            <li>🧩 <strong>Sin el overhead</strong> de tener varios lakehouses.</li>
+            <li>📊 <strong>Queries más limpias</strong>: <code>SELECT * FROM gold.fact_sales</code>.</li>
+          </ul>
+
+          <h4>Queries cross-schema</h4>
+          <pre><code class="language-sql">-- Query cross-schema en el mismo lakehouse
+SELECT
+    f.order_id,
+    d.customer_name,
+    f.total_amount
 FROM gold.fact_sales f
-JOIN gold.dim_customer d ON f.customer_key = d.customer_key;</code></pre>
-          <p>Beneficios: discoverability, permisos por schema, sin overhead de multiple lakehouses, queries más limpias y data quality checks entre capas.</p>
+JOIN gold.dim_customer d
+    ON f.customer_key = d.customer_key</code></pre>
+          <p>O comparando con silver:</p>
+          <pre><code class="language-sql">SELECT COUNT(*) AS bronze_count FROM bronze.orders_raw
+UNION ALL
+SELECT COUNT(*) AS silver_count FROM silver.orders</code></pre>
+          <p>Útil para las <strong>comprobaciones de calidad de datos</strong> entre capas.</p>
         </article>
 
-        <div class="category-header" id="bronze"><span class="category-header__icon">🥉</span><h2 class="category-header__title">8. Bronze layer a fondo</h2></div>
+        <!-- ============ 9. BRONZE ============ -->
+        <div class="category-header" id="bronze">
+          <span class="category-header__icon">🥉</span>
+          <h2 class="category-header__title">9. Bronze layer a fondo</h2>
+        </div>
+
         <article class="concept-card">
-          <p>Raw landing zone: los datos llegan <strong>exactamente como los envió el source</strong>. Suele mantener tipos originales (a veces strings) y añadir metadata (<code>ingestion_timestamp</code>, <code>source_file</code>, <code>_ingest_batch_id</code>). No se deduplica (eso es silver).</p>
-          <h4>Cómo cargar bronze</h4>
-          <ul>
-            <li><strong>Source en cloud storage (OneLake, ADLS, S3, GCS):</strong> usa un <strong>OneLake shortcut</strong> (sin copia, sin pipeline, sync automático). ✅ Enfoque recomendado.</li>
-            <li><strong>Otros (BBDD, APIs, on-prem):</strong> Pipelines con Copy Data, Dataflows Gen2 o Notebooks.</li>
-          </ul>
-          <p>Retención larga (compliance, reprocesamiento). Considera particionar por fecha. Automatización fuerte (schedule o event triggers) con idempotencia.</p>
+          <h4>Filosofía</h4>
+          <p>Bronze es tu <strong>landing zone de datos raw</strong>. Los datos llegan <strong>exactamente como los envió el origen</strong>: sin cambios, sin limpieza.</p>
+          <p><strong>Es intencional</strong>: si una transformación se rompe downstream, puedes reprocesar desde bronze sin volver al sistema origen (que puede ser caro, lento o incluso ya no tener los datos).</p>
+
+          <h4>Cómo cargar datos en bronze</h4>
+          <p>Depende de dónde viva el origen:</p>
+          <p><strong>Origen en cloud storage (OneLake, ADLS Gen2, S3, GCS)</strong> ✅ — usar un <strong>shortcut de OneLake</strong> para referenciarlo in-place. <strong>No hay copia</strong> ni pipeline, y bronze se mantiene sincronizado con el origen automáticamente. 🎯 <strong>Es el enfoque recomendado</strong> cuando aplica.</p>
+          <p><strong>Origen en otros sitios (BBDD, APIs, on-prem)</strong> — usar <strong>Pipelines</strong> con la actividad Copy Data, <strong>Dataflows Gen2</strong> para lo low-code, o <strong>notebooks</strong> para transformaciones complejas o formatos raros.</p>
+
+          <h4>Estructura típica de una tabla bronze</h4>
+          <p>Suele replicar la estructura del origen:</p>
+          <pre><code class="language-plaintext">bronze.orders_raw
+├── order_id (INT)
+├── customer_id (INT)
+├── order_date (STRING — ¡sin castear!)
+├── quantity (STRING — ¡sin castear!)
+├── total (STRING — ¡sin castear!)
+├── raw_json (STRING — payload original opcional)
+├── ingestion_timestamp (TIMESTAMP)   ← metadata añadida
+├── source_file (STRING)              ← metadata añadida
+└── _ingest_batch_id (STRING)         ← metadata añadida</code></pre>
+          <p><strong>Cositas comunes</strong>: mantener los <strong>tipos originales</strong> (a veces strings) para preservar la exactitud, añadir <strong>columnas de metadata</strong> (timestamp de ingesta, fichero origen, batch id) y no borrar duplicados (de eso se encarga silver).</p>
+
+          <h4>Retención en bronze</h4>
+          <p>Bronze suele tener <strong>retención larga</strong> (años, incluso indefinida) por requisitos de compliance, reprocesamiento futuro con lógica nueva y auditoría. Conviene considerar el <strong>particionado por fecha</strong> para ser eficiente:</p>
+          <pre><code class="language-python">df.write.format("delta") \
+    .partitionBy("ingestion_year", "ingestion_month") \
+    .saveAsTable("bronze.orders_raw")</code></pre>
+
+          <h4>Automatización</h4>
+          <p>La capa bronze se <strong>automatiza mucho</strong>: schedule diario u horario para los pipelines de ingesta, triggers por evento para la llegada de ficheros e idempotencia (reingerir el mismo fichero no debe duplicar).</p>
         </article>
 
-        <div class="category-header" id="silver"><span class="category-header__icon">🥈</span><h2 class="category-header__title">9. Silver layer a fondo</h2></div>
+        <!-- ============ 10. SILVER ============ -->
+        <div class="category-header" id="silver">
+          <span class="category-header__icon">🥈</span>
+          <h2 class="category-header__title">10. Silver layer a fondo</h2>
+        </div>
+
         <article class="concept-card">
-          <p>Limpieza e integración: standardizar formatos, quitar nulls, deduplicar, joins de múltiples bronze, casting, business rules. Tres formas en Fabric:</p>
-          <ul>
-            <li><strong>Dataflows Gen2</strong> (low-code, analistas Power BI).</li>
-            <li><strong>Notebooks</strong> (código, lógica compleja, ML, joins big data).</li>
-            <li><strong>Materialized Lake Views</strong> (SQL declarativo con auto-refresh).</li>
-          </ul>
-          <pre><code class="language-python">from pyspark.sql.functions import col, upper, trim, to_date
-silver_df = (spark.table("bronze.orders_raw")
+          <h4>Filosofía</h4>
+          <p>Silver es donde los datos <strong>se limpian y se integran</strong>. Las transformaciones se centran en la <strong>calidad y la consistencia</strong>: estandarizar formatos (fechas, divisas, encodings), eliminar nulls, deduplicar registros, hacer join de datos de varios orígenes de bronze, castear a los tipos correctos y aplicar reglas de negocio básicas.</p>
+          <p><strong>Resultado</strong>: un dataset <strong>fiable e integrado</strong> que analistas y data scientists pueden usar directamente. También alimenta a la capa gold.</p>
+
+          <h4>Las 3 opciones de Fabric para silver</h4>
+          <p><strong>A) Dataflows Gen2 (low-code)</strong> — perfectos para transformaciones directas: filtrar, renombrar, cambiar tipos, sin escribir código. Ideal para analistas que vienen de Power BI.</p>
+          <p><strong>B) Notebooks (código completo)</strong> — control total con PySpark o Spark SQL. Ideal para datasets grandes, lógica compleja, cálculos custom, llamadas a APIs y joins complejos.</p>
+          <p><strong>C) Materialized Lake Views</strong> 🎯 (SQL declarativo) — defines la transformación en SQL y Fabric crea y mantiene la tabla por ti, con <strong>actualizaciones incrementales automáticas</strong>.</p>
+
+          <h4>Cuándo usar cada uno</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Situación</th><th>Herramienta</th></tr></thead>
+              <tbody>
+                <tr><td>Analista con background de Power BI</td><td>Dataflow Gen2</td></tr>
+                <tr><td>Transformación con lógica Python compleja</td><td>Notebook</td></tr>
+                <tr><td>Merge de varias fuentes de big data</td><td>Notebook</td></tr>
+                <tr><td>Feature engineering para ML</td><td>Notebook</td></tr>
+                <tr><td><strong>Transformación expresable en SQL</strong></td><td><strong>Materialized Lake View</strong> ⭐</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h4>Ejemplo de notebook de silver</h4>
+          <pre><code class="language-python">from pyspark.sql.functions import col, upper, trim, to_date, when
+
+# Leer de bronze
+bronze_df = spark.table("bronze.orders_raw")
+
+# Aplicar la limpieza
+silver_df = (bronze_df
+    # Castear tipos
     .withColumn("order_date", to_date(col("order_date"), "yyyy-MM-dd"))
     .withColumn("quantity", col("quantity").cast("int"))
+    .withColumn("total", col("total").cast("decimal(10,2)"))
+    # Estandarizar strings
     .withColumn("region", upper(trim(col("region"))))
+    # Eliminar nulls críticos
     .filter(col("order_id").isNotNull())
-    .filter(col("quantity") > 0)
-    .dropDuplicates(["order_id"]))
-silver_df.write.format("delta").mode("overwrite").saveAsTable("silver.orders")</code></pre>
+    .filter(col("customer_id").isNotNull())
+    # Regla de negocio: solo cantidades positivas
+    .filter(col("quantity") &gt; 0)
+    # Deduplicar por order_id (quedarse con el último)
+    .dropDuplicates(["order_id"])
+)
+
+# Escribir a silver
+silver_df.write \
+    .format("delta") \
+    .mode("overwrite") \
+    .saveAsTable("silver.orders")
+
+print(f"Silver orders: {silver_df.count()} rows")</code></pre>
         </article>
 
-        <div class="category-header" id="mlv"><span class="category-header__icon">🌟</span><h2 class="category-header__title">10. Materialized Lake Views (feature clave)</h2></div>
+        <!-- ============ 11. MATERIALIZED VIEWS ============ -->
+        <div class="category-header" id="materialized-views">
+          <span class="category-header__icon">🌟</span>
+          <h2 class="category-header__title">11. Materialized Lake Views (feature clave)</h2>
+        </div>
+
         <article class="concept-card">
-          <p>Una <strong>Materialized Lake View</strong> se define en SQL y Fabric la mantiene actualizada automáticamente. Es como una vista, pero con los resultados <strong>persistidos como tabla Delta real</strong>.</p>
-          <pre><code class="language-sql">CREATE MATERIALIZED LAKE VIEW silver.sales AS
-SELECT order_id, customer_id,
-       UPPER(TRIM(region)) AS region,
-       CAST(order_date AS DATE) AS order_date,
-       unit_price * quantity AS total_amount
+          <p>Esta es <strong>una feature nueva y súper importante</strong>. Muy examinable en el DP-700 actualizado 💎</p>
+
+          <h3>¿Qué es una Materialized Lake View?</h3>
+          <p>Una <strong>materialized lake view</strong> es una tabla que se <strong>define en SQL</strong> y que <strong>Fabric mantiene actualizada automáticamente</strong> a partir de las tablas origen. Es como una vista SQL, pero <strong>con los resultados persistidos como tabla Delta</strong>.</p>
+
+          <h4>Sintaxis</h4>
+          <pre><code class="language-sql">CREATE MATERIALIZED LAKE VIEW silver.sales
+AS
+SELECT
+    order_id,
+    customer_id,
+    UPPER(TRIM(region))        AS region,
+    CAST(order_date AS DATE)   AS order_date,
+    unit_price * quantity      AS total_amount
 FROM bronze.sales
-WHERE order_id IS NOT NULL;</code></pre>
-          <div class="note note--tip">✨ <strong>La magia:</strong> a diferencia de una SQL view (rerun cada query), la MLV guarda los resultados y, aprovechando el <strong>Delta transaction log</strong>, actualiza <strong>solo las rows que cambiaron</strong>, sin schedules ni triggers.</div>
-          <div class="note note--warning">⚠️ <strong>Solo SQL.</strong> Si necesitas Python, API calls, ML inline, UDFs complejas o SCD Type 2 con historial, usa notebook.</div>
+WHERE order_id IS NOT NULL</code></pre>
+          <p>Esto crea una <strong>tabla real</strong> llamada <code>silver.sales</code>. Puedes hacer <code>SELECT * FROM silver.sales</code> como con cualquier tabla.</p>
+
+          <div class="note note--tip">
+            🎯 <strong>La magia: el refresh incremental automático.</strong> Diferencia crítica frente a una view SQL normal:
+            <ul>
+              <li>🆚 <strong>View SQL normal</strong>: reejecuta la query <strong>cada vez</strong> que alguien la consulta. Coste alto en queries.</li>
+              <li>✨ <strong>Materialized Lake View</strong>: los resultados <strong>se guardan como tabla real</strong>. Cuando llegan datos nuevos a bronze, Fabric <strong>actualiza solo las filas que cambiaron</strong>.</li>
+            </ul>
+          </div>
+
+          <h4>¿Cómo lo consigue Fabric?</h4>
+          <p>Aprovecha el <strong>transaction log de Delta</strong>:</p>
+          <ol>
+            <li>Todas las tablas de Fabric son Delta.</li>
+            <li>Delta registra <strong>cada cambio en un log JSON</strong>.</li>
+            <li>Fabric monitoriza el log del origen (bronze).</li>
+            <li>Cuando llegan filas nuevas → Fabric <strong>procesa solo esas filas</strong> y actualiza la materialized view.</li>
+          </ol>
+          <p><strong>No hay que programar ni disparar nada</strong>. La tabla se mantiene actualizada automáticamente. 🌸</p>
+
+          <h4>Ventajas</h4>
+          <ul>
+            <li>🚀 <strong>Rendimiento</strong>: las lecturas son como las de una tabla normal (rápidas).</li>
+            <li>🤖 <strong>Automatización</strong>: sin schedules ni triggers.</li>
+            <li>💰 <strong>Eficiencia de coste</strong>: solo procesa lo que cambió (incremental).</li>
+            <li>📝 <strong>Declarativa</strong>: defines el "qué" en SQL, no el "cómo".</li>
+          </ul>
+
+          <div class="note note--warning">
+            ⚠️ <strong>Limitación clave:</strong> la transformación tiene que ser <strong>expresable como SQL</strong>. Si necesitas lógica en Python, llamadas a APIs, predicciones de ML inline o UDFs custom complejas → <strong>usa un notebook</strong>, no una materialized view.
+          </div>
+
+          <h4>Casos de uso ideales</h4>
+          <ul>
+            <li><strong>Silver</strong>: limpieza en SQL puro (<code>UPPER</code>, <code>TRIM</code>, <code>CAST</code>, <code>WHERE</code>, joins simples).</li>
+            <li><strong>Gold</strong>: agregaciones simples (<code>SUM</code>, <code>COUNT</code>, <code>GROUP BY</code>).</li>
+            <li><strong>Poblar facts/dims</strong>: si la lógica es SQL, la materialized view queda más limpia que un notebook.</li>
+          </ul>
+
+          <h4>Cuándo NO usar materialized views</h4>
+          <ul>
+            <li>❌ La lógica requiere Python o Scala.</li>
+            <li>❌ Necesitas control fino del incremental (schedule custom, batching específico).</li>
+            <li>❌ Necesitas SCD Type 2 con lógica de historial.</li>
+            <li>❌ Queries que dependen de fuentes externas (APIs, BBDD).</li>
+          </ul>
         </article>
 
-        <div class="category-header" id="gold"><span class="category-header__icon">⭐</span><h2 class="category-header__title">11. Gold layer y star schema</h2></div>
+        <!-- ============ 12. GOLD ============ -->
+        <div class="category-header" id="gold">
+          <span class="category-header__icon">🥇</span>
+          <h2 class="category-header__title">12. Gold layer a fondo</h2>
+        </div>
+
         <article class="concept-card">
-          <p>Gold modela para consumo de negocio, normalmente con <strong>star schema</strong>: <strong>fact tables</strong> (mediciones, alta cardinalidad, dimension keys + valores agregables) rodeadas de <strong>dimension tables</strong> (entidades descriptivas, baja cardinalidad). Puede haber múltiples golds desde el mismo silver (BI star, ML flat wide, finance aggregates).</p>
-          <p><strong>Por qué star schema:</strong> menos joins → queries más rápidas, comprensible, mantenible y requerido para modelos semánticos de Power BI.</p>
+          <h4>Filosofía</h4>
+          <p>Gold es donde los datos <strong>se moldean para el consumo de negocio</strong>. El modelo típico es un <strong>star schema</strong>, pero <strong>no es la única opción</strong>. La forma del gold depende de <strong>quién lo consume</strong>:</p>
+          <ul>
+            <li><strong>BI / dashboards</strong> → star schema clásico.</li>
+            <li><strong>Feature engineering para ML</strong> → tabla plana y ancha.</li>
+            <li><strong>Reports financieros</strong> → agregados precalculados.</li>
+            <li><strong>Dashboards ejecutivos</strong> → agregados de más alto nivel.</li>
+          </ul>
+
+          <h4>Varios golds desde el mismo silver</h4>
+          <p>Un patrón muy común:</p>
+          <pre><code class="language-plaintext">                              → gold.bi_sales_star
+silver.sales, customers  →   → gold.ml_features_flat
+                              → gold.finance_pnl_aggregated</code></pre>
+          <p>El mismo silver por debajo, distintos golds para distintas audiencias, cada uno modelado como necesite ese equipo.</p>
+
+          <h4>Herramientas para construir gold</h4>
+          <p>Las <strong>mismas</strong> que para silver: <strong>Dataflows Gen2</strong> (low-code), <strong>notebooks</strong> (código), <strong>Materialized Lake Views</strong> (SQL declarativo) y <strong>pipelines</strong> para orquestar.</p>
+
+          <h4>Ejemplo: fact table en gold</h4>
+          <pre><code class="language-sql">CREATE MATERIALIZED LAKE VIEW gold.fact_sales
+AS
+SELECT
+    s.order_id           AS sales_order_id,
+    dc.customer_key      AS customer_key,
+    dp.product_key       AS product_key,
+    dd.date_key          AS order_date_key,
+    dr.region_key        AS region_key,
+    s.quantity           AS quantity,
+    s.unit_price         AS unit_price,
+    s.quantity * s.unit_price AS total_amount
+FROM silver.sales s
+JOIN gold.dim_customer dc ON s.customer_id = dc.customer_id
+JOIN gold.dim_product dp ON s.product_id = dp.product_id
+JOIN gold.dim_date dd ON s.order_date = dd.date
+JOIN gold.dim_region dr ON s.region = dr.region</code></pre>
+          <p>La fact table conectada a las dimensions por surrogate keys.</p>
+        </article>
+
+        <!-- ============ 13. STAR SCHEMA ============ -->
+        <div class="category-header" id="star-schema">
+          <span class="category-header__icon">⭐</span>
+          <h2 class="category-header__title">13. Star schema: fact y dimension tables</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>¿Qué es un star schema?</h3>
+          <p><strong>Star schema</strong> = técnica de modelado dimensional que consiste en una <strong>fact table</strong> en el centro y <strong>dimension tables</strong> rodeándola (formando una estrella ⭐). Es el estándar de facto para los data warehouses relacionales y los modelos semánticos de Power BI.</p>
+
+          <h4>Dimension tables</h4>
+          <p><strong>Describen las entidades</strong> relevantes para tu organización: products, customers, locations, dates, employees, etc. Representan <strong>"las cosas"</strong> que modelas.</p>
+          <p><strong>Características</strong>: baja cardinalidad (respecto al fact), descriptivas (muchas columnas de texto), actualizaciones poco frecuentes y cada fila es una entidad única.</p>
+
+          <h4>Fact tables</h4>
+          <p><strong>Almacenan las mediciones</strong> asociadas a observaciones o eventos: sales orders, stock balances, exchange rates, temperature readings.</p>
+          <p><strong>Características</strong>: alta cardinalidad (muchas filas) y contienen las <strong>dimension keys</strong> más los <strong>valores granulares</strong> que se pueden agregar. Ejemplo: <code>fact_sales</code> con <code>customer_key</code>, <code>product_key</code>, <code>date_key</code>, <code>quantity</code> y <code>total_amount</code>.</p>
+
+          <h4>🎯 Por qué usar star schema</h4>
+          <ul>
+            <li>⚡ <strong>Rendimiento</strong>: <strong>menos joins</strong> que un modelo normalizado → queries más rápidas.</li>
+            <li>📚 <strong>Comprensible</strong>: fácil de entender para los analistas.</li>
+            <li>🔧 <strong>Mantenible</strong>: añadir columnas a una dimension es sencillo.</li>
+            <li>🎨 <strong>Adaptable</strong>: puede evolucionar con el negocio.</li>
+            <li>⭐ <strong>Requerido para Power BI</strong>: los semantic models enterprise funcionan mejor con star.</li>
+          </ul>
+
+          <h4>Ejemplo visual</h4>
           <pre><code class="language-plaintext">                    dim_customer
+                          |
                           |
      dim_date --- fact_sales --- dim_product
                           |
+                          |
                     dim_region</code></pre>
+          <p><code>fact_sales</code> es la estrella central y las dimensions son las puntas. Suele haber <strong>varios facts en el mismo modelo</strong> (varias estrellas) compartiendo dimensions (conformed dimensions).</p>
+
+          <h4>ETL / ELT del star schema</h4>
+          <p>Periódicamente (típicamente a diario), un proceso ETL actualiza las dimensions (filas nuevas, cambios), añade filas nuevas al fact y puede reprocesar datos si hay correcciones. En Fabric esto se orquesta con <strong>pipelines</strong> que ejecutan <strong>notebooks</strong> o <strong>materialized views</strong>.</p>
         </article>
 
-        <div class="category-header" id="dimensiones"><span class="category-header__icon">📐</span><h2 class="category-header__title">12. Dimensiones especiales</h2></div>
+        <!-- ============ 14. DIMENSIONES ============ -->
+        <div class="category-header" id="dimensiones">
+          <span class="category-header__icon">📐</span>
+          <h2 class="category-header__title">14. Dimensiones especiales (SCD, junk, degenerate, role-playing)</h2>
+        </div>
+
         <article class="concept-card">
-          <ul>
-            <li><strong>SCD Type 1:</strong> sobrescribir (pierdes historia). <strong>Type 2:</strong> nueva fila con Valid_From/Valid_To/Is_Current y surrogate key (preserva historia).</li>
-            <li><strong>Role-playing:</strong> una misma dimension usada varias veces con roles distintos (ej: dim_airport como Departure y Arrival). En Power BI, con USERELATIONSHIP.</li>
-            <li><strong>Junk dimension:</strong> consolidar varias dimensions pequeñas de baja cardinalidad en una (producto cartesiano de combinaciones).</li>
-            <li><strong>Degenerate dimension:</strong> dimension al mismo grain que el fact (ej: <code>sales_order_number</code>); se deja en el fact table.</li>
-          </ul>
+          <p>En el modelado dimensional avanzado hay varios patrones que aparecen en el examen:</p>
+
+          <h4>Slowly Changing Dimensions (SCD)</h4>
+          <p>Ya vimos las SCD en el Módulo 4. Recordatorio rápido:</p>
+          <p><strong>SCD Type 1</strong>: sobrescribir el historial. Un cliente cambia de región → sobrescribes <code>region</code> en su fila. Simple, pero pierdes la historia.</p>
+          <p><strong>SCD Type 2</strong>: mantener el historial con versionado. Un cliente cambia de región → creas una <strong>fila nueva</strong> con <code>Valid_From</code>, <code>Valid_To</code> e <code>Is_Current</code>. Preservas la historia completa y cada versión tiene un <strong>surrogate key</strong> único.</p>
+          <p>Ejemplo de SCD Type 2:</p>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>CustomerKey</th><th>CustomerID</th><th>Name</th><th>Region</th><th>Valid_From</th><th>Valid_To</th><th>Is_Current</th></tr></thead>
+              <tbody>
+                <tr><td>1001</td><td>C-123</td><td>Acme</td><td>CA</td><td>2023-01-15</td><td>2026-02-20</td><td>No</td></tr>
+                <tr><td>1002</td><td>C-123</td><td>Acme</td><td>NY</td><td>2026-02-20</td><td>NULL</td><td>Yes</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h4>Role-playing dimensions</h4>
+          <p>Cuando <strong>una misma dimension se usa varias veces</strong> en una fact table con distintos roles. <strong>Ejemplo</strong>: el fact <code>Flight</code> tiene <code>Departure Airport</code> y <code>Arrival Airport</code>. Ambos apuntan a la <strong>misma tabla</strong> <code>dim_airport</code> pero con <strong>roles distintos</strong>.</p>
+          <pre><code class="language-plaintext">fact_flight
+├── departure_airport_key → dim_airport (rol: Departure)
+├── arrival_airport_key   → dim_airport (rol: Arrival)</code></pre>
+          <p>En Power BI se implementan con <strong>varias relaciones activas/inactivas</strong> o con dimensions "virtualizadas" vía USERELATIONSHIP.</p>
+
+          <h4>Junk dimensions</h4>
+          <p>Una <strong>junk dimension</strong> consiste en <strong>consolidar varias dimensiones pequeñas</strong> en una sola. Útil cuando tienes muchas dimensions con pocos atributos (a veces solo 1) y baja cardinalidad (pocos valores).</p>
+          <p><strong>Ejemplo</strong>: en vez de tener <code>dim_order_status</code>, <code>dim_delivery_status</code> y <code>dim_payment_status</code>, los unificas en <code>dim_sales_status</code> con el <strong>producto cartesiano</strong> de todas las combinaciones.</p>
+          <p><strong>Beneficios</strong>: menos dimensions, menos keys en la fact table, fact table más pequeña y menos ruido en el panel de datos de Power BI.</p>
+
+          <h4>Degenerate dimensions</h4>
+          <p>Una <strong>degenerate dimension</strong> ocurre cuando la dimension <strong>está al mismo grano que el fact</strong>, es decir, cada fila del fact tiene un valor único.</p>
+          <p><strong>Ejemplo clásico</strong>: <code>sales_order_number</code>. Cada venta tiene un número de pedido único, así que no tiene sentido crear una <code>dim_order_number</code> con solo 1 fila por pedido: se <strong>deja en la fact table</strong> directamente.</p>
+          <p>Opcionalmente se puede exponer como una <strong>view</strong> que hace <code>SELECT DISTINCT sales_order_number FROM fact_sales</code> para las queries que lo necesiten como dimension.</p>
         </article>
 
-        <div class="category-header" id="serving"><span class="category-header__icon">🎯</span><h2 class="category-header__title">13. Serving del gold</h2></div>
+        <!-- ============ 15. SERVING ============ -->
+        <div class="category-header" id="serving">
+          <span class="category-header__icon">🎯</span>
+          <h2 class="category-header__title">15. Serving del gold: SQL endpoint + semantic model</h2>
+        </div>
+
         <article class="concept-card">
+          <p>Una vez tienes tu capa gold, hay que <strong>servirla a los consumidores</strong>. Dos opciones principales en Fabric:</p>
+
+          <h4>Opción A: SQL analytics endpoint</h4>
+          <p><strong>Para</strong>: analistas y data scientists con conocimiento de SQL que quieren acceso directo.</p>
+          <p><strong>Características</strong>: interfaz <strong>T-SQL</strong> sobre las tablas Delta de gold, <strong>read-only</strong>, puedes crear <strong>views y funciones</strong> que exponen queries curadas, aplica la <strong>seguridad SQL</strong> (RLS, CLS, OLS) y no requiere mover datos.</p>
+          <pre><code class="language-plaintext">SQL endpoint del Lakehouse
+├── bronze (schema visible pero con acceso restringido)
+├── silver (lo mismo)
+└── gold  ← los analistas consultan aquí
+    ├── fact_sales
+    ├── dim_customer
+    └── ...</code></pre>
+          <p>Queries típicas:</p>
+          <pre><code class="language-sql">SELECT
+    d.date_key,
+    dc.customer_name,
+    SUM(f.total_amount) AS total_sales
+FROM gold.fact_sales f
+JOIN gold.dim_customer dc ON f.customer_key = dc.customer_key
+JOIN gold.dim_date d ON f.order_date_key = d.date_key
+WHERE d.year = 2026
+GROUP BY d.date_key, dc.customer_name
+ORDER BY total_sales DESC</code></pre>
+
+          <h4>Opción B: semantic model de Power BI</h4>
+          <p><strong>Para</strong>: usuarios de Power BI, usuarios de negocio y dashboards.</p>
+          <p><strong>Cómo crearlo</strong>:</p>
+          <ol>
+            <li>Desde el lakehouse → <strong>New semantic model</strong>.</li>
+            <li>Seleccionar las tablas de la capa gold.</li>
+            <li>Definir relationships, measures, jerarquías y nombres de negocio.</li>
+            <li>Los reports de Power BI conectan al <strong>semantic model</strong>, no directamente a las tablas.</li>
+          </ol>
+          <p><strong>Beneficios</strong>: <strong>capa de negocio</strong> con nombres amigables y measures predefinidas, <strong>gobernanza centralizada</strong> (measures y lógica definidas una vez), <strong>reutilización</strong> (varios reports usan el mismo modelo) y <strong>modo Direct Lake</strong>.</p>
+
+          <h4>Direct Lake mode</h4>
+          <p>Los semantic models se conectan a la capa gold usando <strong>Direct Lake</strong>: <strong>leen directamente los ficheros Delta</strong> de OneLake, <strong>NO importan una copia</strong> a Power BI, y los reports siempre muestran <strong>datos actuales</strong> sin un paso de refresh separado.</p>
+          <p>Direct Lake da lo mejor de dos mundos: ⚡ el <strong>rendimiento de Import</strong> (in-memory), 🔄 <strong>datos siempre frescos</strong> (como DirectQuery) y 💾 <strong>sin duplicación</strong> de storage. Requiere <strong>Fabric capacity</strong> o Power BI Premium.</p>
+
+          <h4>Comparativa SQL endpoint vs semantic model</h4>
           <div class="table-scroll">
             <table class="md-table">
               <thead><tr><th></th><th>SQL endpoint</th><th>Semantic model</th></tr></thead>
               <tbody>
-                <tr><td>Audiencia</td><td>SQL users, data scientists</td><td>Power BI users, business</td></tr>
-                <tr><td>Interfaz</td><td>T-SQL (read-only)</td><td>DAX, reports</td></tr>
-                <tr><td>Data</td><td>Directo desde Delta</td><td>Direct Lake (o import)</td></tr>
-                <tr><td>Business logic</td><td>Views y functions</td><td>Measures, calculated columns</td></tr>
+                <tr><td>Audiencia</td><td>Usuarios SQL, data scientists</td><td>Usuarios de Power BI y de negocio</td></tr>
+                <tr><td>Interfaz</td><td>T-SQL</td><td>DAX, reports de Power BI</td></tr>
+                <tr><td>Datos</td><td>Directo desde Delta</td><td>Direct Lake (o import)</td></tr>
+                <tr><td>Lógica de negocio</td><td>Views y funciones</td><td>Measures y columnas calculadas</td></tr>
+                <tr><td>Gobernanza</td><td>Seguridad SQL</td><td>Endorsement, sensitivity labels</td></tr>
+                <tr><td>RLS/CLS/OLS</td><td>Sí (a nivel del SQL endpoint)</td><td>Sí (en el modelo)</td></tr>
               </tbody>
             </table>
           </div>
-          <div class="note note--tip">🎯 <strong>Direct Lake</strong> lee directamente los ficheros Delta en OneLake, <strong>sin importar copia ni refresh</strong>: performance de Import + fresh data como DirectQuery, sin duplicar storage. Requiere Fabric capacity o Power BI Premium.</div>
-          <p><strong>Gold en Warehouse</strong> (alternativa): para equipos SQL-first o enterprise BI tradicional; T-SQL completo (INSERT/UPDATE/DELETE/MERGE) vs el SQL endpoint del lakehouse que es read-only.</p>
+          <p>Muchas organizaciones ofrecen <strong>ambos</strong> para distintas audiencias.</p>
         </article>
 
-        <div class="category-header" id="seguridad"><span class="category-header__icon">🔐</span><h2 class="category-header__title">14. Seguridad y gobierno por capa</h2></div>
+        <!-- ============ 16. WAREHOUSE GOLD ============ -->
+        <div class="category-header" id="warehouse-gold">
+          <span class="category-header__icon">🏛️</span>
+          <h2 class="category-header__title">16. Data Warehouse como gold layer alternativo</h2>
+        </div>
+
         <article class="concept-card">
-          <p>Medallion crea una frontera natural de acceso. Dos niveles: <strong>workspace/item permissions</strong> y <strong>OneLake data access roles</strong> (granular, por tabla/folder dentro de un lakehouse).</p>
+          <h4>Cuándo usar Warehouse en vez de Lakehouse</h4>
+          <p>Aunque el patrón medallion se define típicamente sobre <strong>lakehouses</strong>, para gold puedes usar un <strong>Fabric Data Warehouse</strong> cuando tu equipo trabaja <strong>principalmente en SQL</strong>, necesitas un <strong>modelado relacional más fuerte</strong>, requieres features específicas del Warehouse (T-SQL completo, ACID, queries transaccionales) o estás implementando <strong>BI empresarial tradicional</strong>.</p>
+
+          <h4>Arquitectura mixta típica</h4>
+          <pre><code class="language-plaintext">Bronze (Lakehouse) → Silver (Lakehouse) → Gold (Warehouse)</code></pre>
+          <p>Bronze y silver aprovechan la flexibilidad del lakehouse (Spark, cualquier formato) y gold usa la potencia relacional del Warehouse (T-SQL puro, índices, estadísticas).</p>
+
+          <h4>Cómo cargar del Silver Lakehouse al Gold Warehouse</h4>
+          <p><strong>Opción A</strong>: usar <code>CREATE TABLE AS SELECT</code> cross-database:</p>
+          <pre><code class="language-sql">-- En el Warehouse
+CREATE TABLE gold.fact_sales AS
+SELECT * FROM [lakehouse_silver].[dbo].silver.sales</code></pre>
+          <p><strong>Opción B</strong>: un notebook que lee del Silver Lakehouse y escribe en el Warehouse.</p>
+          <p><strong>Opción C</strong>: un pipeline con la actividad Copy Data.</p>
+
+          <h4>El serving cambia según el gold</h4>
           <ul>
-            <li><strong>Single lakehouse + schemas:</strong> OneLake data access roles por schema (ej: <code>role_gold_readers</code> solo a <code>gold.*</code>).</li>
-            <li><strong>Multiple lakehouses:</strong> item permissions por lakehouse.</li>
-            <li><strong>Multiple workspaces:</strong> workspace roles distintos, aislamiento máximo.</li>
+            <li><strong>Gold en Lakehouse</strong> → SQL endpoint + semantic model en Direct Lake.</li>
+            <li><strong>Gold en Warehouse</strong> → T-SQL nativo + semantic model (Import o Direct Lake).</li>
           </ul>
-          <div class="note note--tip">🎯 Cada lakehouse tiene el rol built-in <strong>DefaultReader</strong> (acceso a todo para usuarios ReadAll). <strong>Se puede modificar o borrar</strong> para restringir el acceso por defecto.</div>
+          <p>En el Warehouse el T-SQL es <strong>completo</strong> (INSERT, UPDATE, DELETE, MERGE, transacciones). En el SQL endpoint del Lakehouse es <strong>read-only</strong>.</p>
         </article>
 
-        <div class="category-header" id="trampas"><span class="category-header__icon">⚠️</span><h2 class="category-header__title">15. Trampas típicas</h2></div>
-        <article class="concept-card">
-          <ul>
-            <li><strong>"bronze/silver/gold son obligatorios"</strong> → ❌ son convención.</li>
-            <li><strong>"Siempre 3 capas"</strong> → ❌ starting point; pueden ser 2, 4 o más.</li>
-            <li><strong>"Bronze debe estar en Fabric"</strong> → ❌ puede ser un shortcut a ADLS/S3/GCS.</li>
-            <li><strong>"Gold siempre es star schema"</strong> → ❌ lo más común, no obligatorio (flat wide para ML, etc.).</li>
-            <li><strong>"Necesito 3 workspaces para medallion"</strong> → ❌ vale un solo lakehouse con schemas.</li>
-            <li><strong>"MLV son solo para gold"</strong> → ❌ también silver o cualquier capa SQL-expressible.</li>
-            <li><strong>"MLV funcionan con Python"</strong> → ❌ solo SQL.</li>
-            <li><strong>"Direct Lake requiere refresh como Import"</strong> → ❌ lee directo de Delta, siempre current.</li>
-            <li><strong>"OneLake data access roles reemplazan workspace roles"</strong> → ❌ los complementan.</li>
-            <li><strong>"DefaultReader no se puede tocar"</strong> → ❌ se puede modificar o borrar.</li>
-            <li><strong>"El default semantic model = custom"</strong> → ❌ desde sept 2025 ya no se crean automáticamente.</li>
-          </ul>
-        </article>
+        <!-- ============ 17. SEGURIDAD ============ -->
+        <div class="category-header" id="seguridad">
+          <span class="category-header__icon">🔐</span>
+          <h2 class="category-header__title">17. Seguridad y gobierno por capa</h2>
+        </div>
 
-        <div class="category-header" id="comparativas"><span class="category-header__icon">🆚</span><h2 class="category-header__title">16. Comparativas clave (chuleta)</h2></div>
         <article class="concept-card">
+          <p>La medallion crea una <strong>frontera natural de control de acceso</strong>. Distintos equipos necesitan distintas capas: los data engineers → bronze + silver; los analytics engineers → silver + gold; y los analistas y usuarios de negocio → <strong>solo gold</strong>. Aplicar esas fronteras requiere un enfoque deliberado.</p>
+
+          <h4>Dos niveles de control de acceso</h4>
+          <p><strong>A) Workspace e item permissions</strong>: los <strong>workspace roles</strong> (Admin, Member, Contributor, Viewer) aplican a todo el workspace; los <strong>item permissions</strong> son más específicos y permiten compartir un lakehouse concreto sin dar acceso al workspace completo.</p>
+          <p><strong>B) OneLake data access roles</strong>: control granular <strong>dentro de un solo lakehouse</strong>, acotado a tablas o carpetas concretas. Ideal para restringir por capa dentro del mismo lakehouse.</p>
+
+          <h4>Estrategia según la arquitectura</h4>
+          <p><strong>Con un solo lakehouse + schemas</strong>: usa <strong>OneLake data access roles</strong> para dar acceso por schema — <code>role_gold_readers</code> con acceso solo a <code>gold.*</code>, <code>role_silver_engineers</code> con acceso a <code>silver.*</code> y <code>gold.*</code> (lectura), y <code>role_bronze_engineers</code> con acceso a todo.</p>
+          <p><strong>Con varios lakehouses</strong>: usa <strong>item permissions</strong> por lakehouse — <code>lh_bronze</code> solo para data engineers, <code>lh_silver</code> para data engineers + analistas y <code>lh_gold</code> para todos.</p>
+          <p><strong>Con varios workspaces</strong>: usa <strong>workspace roles</strong> distintos por capa. Aislamiento máximo y cada capa gestionada de forma independiente.</p>
+
+          <h4>Tabla comparativa</h4>
           <div class="table-scroll">
             <table class="md-table">
-              <thead><tr><th>Tool para transformar</th><th>Best for</th></tr></thead>
+              <thead><tr><th>Enfoque</th><th>Cuándo usarlo</th></tr></thead>
               <tbody>
-                <tr><td>Dataflow Gen2</td><td>Low-code, analistas, transforms simples</td></tr>
+                <tr><td><strong>OneLake data access roles</strong></td><td>Equipos que comparten workspace y necesitan distinto acceso por tabla/capa</td></tr>
+                <tr><td><strong>Workspaces separados por capa</strong></td><td>Aislamiento fuerte, fronteras de compliance o capacidad separada</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </article>
+
+        <!-- ============ 18. ONELAKE ROLES ============ -->
+        <div class="category-header" id="onelake-roles">
+          <span class="category-header__icon">🎯</span>
+          <h2 class="category-header__title">18. OneLake data access roles (granular)</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>¿Qué son?</h3>
+          <p>Los <strong>OneLake data access roles</strong> son <strong>roles personalizados dentro de un lakehouse</strong> que permiten definir acceso granular a <strong>tablas o carpetas concretas</strong>, sin necesidad de crear workspaces separados.</p>
+
+          <h4>DefaultReader role</h4>
+          <p>Cada lakehouse tiene un role integrado llamado <strong><code>DefaultReader</code></strong> que concede acceso a <strong>todos los datos</strong> del lakehouse para <strong>todos los usuarios con ReadAll</strong>. <strong>Puedes modificarlo o borrarlo</strong> para restringir el acceso por defecto.</p>
+
+          <h4>Configurar la seguridad de OneLake</h4>
+          <ol>
+            <li>Abrir el lakehouse.</li>
+            <li>Seleccionar <strong>Manage OneLake security</strong>.</li>
+            <li><strong>Crear un role</strong>.</li>
+            <li><strong>Definir su scope</strong> (tablas o carpetas concretas).</li>
+            <li><strong>Asignar miembros</strong> (usuarios o grupos).</li>
+          </ol>
+
+          <h4>Ejemplo práctico</h4>
+          <p>Escenario: un lakehouse con schemas bronze/silver/gold, donde quieres que los <strong>data engineers</strong> tengan acceso a bronze + silver + gold y los <strong>analistas</strong> solo a gold.</p>
+          <p><strong>Rol 1: <code>role_gold_only</code></strong> — scope: <code>gold.*</code> (todas las tablas del schema gold), miembros: el security group <code>Analysts</code>. Puedes borrar el <code>DefaultReader</code> para forzar que solo aplique este rol.</p>
+          <p><strong>Rol 2: <code>role_full_access</code></strong> — scope: <code>bronze.*</code>, <code>silver.*</code>, <code>gold.*</code>, miembros: el security group <code>Data Engineers</code>.</p>
+          <p>Ahora un analista <strong>NO puede</strong> ver las tablas de bronze o silver aunque tenga el rol Contributor del workspace.</p>
+
+          <div class="note note--tip">
+            🎯 <strong>Detalle importante:</strong> los OneLake data access roles trabajan con el <strong>modelo de permisos ReadAll</strong> (acceso a ficheros vía la API de OneLake y Spark). <strong>Complementan</strong> a los workspace roles, pero no los reemplazan del todo. Lo profundizamos en la Fase 4.
+          </div>
+        </article>
+
+        <!-- ============ 19. CICD ============ -->
+        <div class="category-header" id="cicd">
+          <span class="category-header__icon">🔀</span>
+          <h2 class="category-header__title">19. Git y deployment pipelines para medallion</h2>
+        </div>
+
+        <article class="concept-card">
+          <p>Una arquitectura medallion implica <strong>muchas piezas de código</strong>: pipelines, notebooks, definiciones de schema. Todas necesitan <strong>mantenerse sincronizadas</strong>. Sin control de versiones, un mal deployment puede <strong>corromper datos a mitad de capa</strong> sin una recuperación fácil.</p>
+
+          <h4>Git integration</h4>
+          <p>La <strong>Git integration</strong> de Fabric conecta tu workspace a un repositorio Git: notebooks, pipelines y definiciones del lakehouse <strong>versionados juntos</strong>. Si un cambio rompe la capa silver, <strong>puedes revertir al commit anterior</strong>. Los equipos pueden trabajar en <strong>branches</strong> y hacer merge vía <strong>pull requests</strong> (el mismo workflow que el código de aplicación).</p>
+
+          <h4>Deployment pipelines</h4>
+          <p>Los <strong>deployment pipelines</strong> lo extienden: <strong>promocionan</strong> tu workspace medallion de <strong>dev → test → prod</strong> en una secuencia controlada, y permiten <strong>comparar entornos</strong> y detectar diferencias antes de que lleguen a producción.</p>
+
+          <h4>Arquitectura CI/CD típica de una medallion</h4>
+          <pre><code class="language-plaintext">Repositorio Git (Azure DevOps o GitHub)
+    ↓
+Workspace de desarrollo (medallion completo)
+    ↓ (deployment pipeline)
+Workspace de test
+    ↓ (deployment pipeline)
+Workspace de producción</code></pre>
+          <p>Cada workspace tiene sus propias fuentes de datos (configuración específica): dev con datos de muestra o sintéticos, test con un subconjunto de producción y prod con los datos reales.</p>
+
+          <div class="note note--practice">
+            📌 <strong>Best practices de CI/CD para medallion:</strong>
+            <ol>
+              <li><strong>Un solo repositorio Git</strong> para toda la medallion.</li>
+              <li><strong>Branches por developer o feature</strong>.</li>
+              <li><strong>Pull requests con code review</strong>.</li>
+              <li><strong>Tests automatizados</strong> en los pipelines (comprobaciones de calidad de datos).</li>
+              <li><strong>Deployment pipelines</strong> con puertas de validación.</li>
+              <li><strong>Configuración específica por entorno</strong> (parámetros, variables, connection strings).</li>
+              <li><strong>Plan de rollback</strong> claro.</li>
+            </ol>
+            Vemos el CI/CD en profundidad en la <a href="modulo-14.html">Fase 4</a>. Aquí solo lo introducimos como parte del patrón medallion.
+          </div>
+        </article>
+
+        <!-- ============ 20. PATRONES ============ -->
+        <div class="category-header" id="patrones">
+          <span class="category-header__icon">🎨</span>
+          <h2 class="category-header__title">20. Patrones comunes de orquestación</h2>
+        </div>
+
+        <article class="concept-card">
+          <h4>Patrón 1: todo con notebooks + pipeline maestro</h4>
+          <pre><code class="language-plaintext">Pipeline "medallion_daily":
+  ├── Notebook: bronze_ingest.ipynb
+  ├── Notebook: silver_transform.ipynb (depende del anterior)
+  ├── Notebook: gold_star_schema.ipynb (depende del anterior)
+  └── Actividad de refresh del SQL Endpoint</code></pre>
+          <p><strong>Cuándo</strong>: casi todo con Spark, control total, casos complejos.</p>
+
+          <h4>Patrón 2: mezcla de dataflows y notebooks</h4>
+          <pre><code class="language-plaintext">Pipeline "medallion_daily":
+  ├── Copy Data: origen → bronze (SQL DB)
+  ├── Dataflow Gen2: bronze → silver (limpieza simple)
+  ├── Notebook: silver → gold (agregaciones complejas)
+  └── Refresh del semantic model</code></pre>
+          <p><strong>Cuándo</strong>: equipos mixtos (Power BI + Spark), aprovechando lo mejor de cada herramienta.</p>
+
+          <h4>Patrón 3: todo con materialized views (nuevo)</h4>
+          <pre><code class="language-plaintext">Bronze (shortcut a S3)
+  ↓ (sync automático)
+Silver (Materialized Lake View sobre Bronze)
+  ↓ (incremental automático)
+Gold (Materialized Lake View sobre Silver)
+  ↓ (incremental automático)
+Semantic Model (Direct Lake sobre Gold)</code></pre>
+          <p><strong>Cuándo</strong>: si todas las transformaciones son expresables en SQL, este patrón minimiza el overhead operativo. Fabric mantiene todo actualizado <strong>automáticamente</strong>, sin schedules ni triggers. 🌸</p>
+
+          <h4>Patrón 4: medallion orientada a eventos</h4>
+          <pre><code class="language-plaintext">Llega un fichero a la carpeta origen de OneLake
+  ↓ (trigger por evento)
+El pipeline se dispara automáticamente
+  ↓
+Notebook: procesar y cargar a bronze
+  ↓
+Notebook: silver (delta desde bronze)
+  ↓
+Materialized views: gold (automático)</code></pre>
+          <p><strong>Cuándo</strong>: requisitos near-real-time, para minimizar la latencia entre la llegada de los datos y su disponibilidad en gold.</p>
+
+          <h4>Consideraciones de orquestación</h4>
+          <ul>
+            <li><strong>El orden importa</strong>: siempre bronze → silver → gold.</li>
+            <li><strong>Gestión de fallos</strong>: si falla silver, ¿reintentar? ¿saltar y avisar?</li>
+            <li><strong>Idempotencia</strong>: reingerir el mismo bronze debe producir el mismo silver.</li>
+            <li><strong>Watermarks</strong>: para las cargas incrementales, saber qué se procesó ya.</li>
+            <li><strong>Puertas de calidad de datos</strong>: validar antes de pasar a la siguiente capa.</li>
+          </ul>
+        </article>
+
+        <!-- ============ 21. TRAMPAS ============ -->
+        <div class="category-header" id="trampas">
+          <span class="category-header__icon">⚠️</span>
+          <h2 class="category-header__title">21. Trampas típicas y confusiones frecuentes</h2>
+        </div>
+
+        <article class="concept-card">
+          <ul class="trap-list">
+            <li><strong class="trap-title">Trampa 1: "Los nombres bronze/silver/gold son obligatorios"</strong>
+              ❌ Son una <strong>convención</strong>. Puedes usar raw/cleansed/curated, L0/L1/L2, etc. Lo importante es el <strong>propósito claro</strong> de cada capa.</li>
+            <li><strong class="trap-title">Trampa 2: "Una medallion siempre tiene 3 capas"</strong>
+              ❌ Es un <strong>punto de partida</strong>. Puedes tener 2, 4 o incluso más capas según las necesidades.</li>
+            <li><strong class="trap-title">Trampa 3: "Bronze tiene que estar obligatoriamente en Fabric"</strong>
+              ❌ Bronze puede ser un <strong>shortcut a un ADLS/S3/GCS</strong> existente. No hace falta copiar. Recomendación oficial: <strong>usa un shortcut cuando el origen ya está en cloud storage</strong>.</li>
+            <li><strong class="trap-title">Trampa 4: "Silver siempre es Delta"</strong>
+              ✅ <strong>Sí, en Fabric silver debe ser Delta</strong> para tener las capabilities (SQL endpoint, ACID, Power BI). Pero conceptualmente la medallion no lo exige.</li>
+            <li><strong class="trap-title">Trampa 5: "Gold siempre es star schema"</strong>
+              ❌ Es lo <strong>más común</strong> pero no obligatorio. Puedes tener tablas planas y anchas para ML, preagregados para dashboards ejecutivos, etc.</li>
+            <li><strong class="trap-title">Trampa 6: "Necesito 3 workspaces separados para hacer medallion"</strong>
+              ❌ Es una <strong>opción</strong> para el máximo aislamiento, pero puedes hacer medallion en un solo lakehouse con schemas.</li>
+            <li><strong class="trap-title">Trampa 7: "Las Materialized Lake Views son solo para gold"</strong>
+              ❌ Se pueden usar también en <strong>silver</strong> (o en cualquier capa donde la transformación sea expresable en SQL).</li>
+            <li><strong class="trap-title">Trampa 8: "Las Materialized Lake Views funcionan con Python"</strong>
+              ❌ <strong>Solo SQL</strong>. Si necesitas Python, usa un notebook.</li>
+            <li><strong class="trap-title">Trampa 9: "La capa bronze se puede borrar después de un tiempo"</strong>
+              ⚠️ Depende del compliance. Suele tener <strong>retención larga</strong> (años) porque es tu fuente de verdad, por compliance/auditoría y para el reprocesamiento futuro.</li>
+            <li><strong class="trap-title">Trampa 10: "La capa gold siempre va en un Lakehouse"</strong>
+              ❌ Puede ir en un <strong>Warehouse</strong> también, especialmente para equipos SQL-first o BI empresarial tradicional.</li>
+            <li><strong class="trap-title">Trampa 11: "Direct Lake requiere refresh como Import"</strong>
+              ❌ Direct Lake <strong>NO requiere refresh</strong>: lee directamente de Delta y los datos siempre están actualizados.</li>
+            <li><strong class="trap-title">Trampa 12: "El default semantic model es lo mismo que un semantic model custom"</strong>
+              ❌ Desde septiembre de 2025, los <strong>default semantic models ya no se crean automáticamente</strong>. Tienes que crear uno custom explícitamente.</li>
+            <li><strong class="trap-title">Trampa 13: "Los OneLake data access roles reemplazan a los workspace roles"</strong>
+              ❌ Los <strong>complementan</strong>. Ambos operan a distinto nivel.</li>
+            <li><strong class="trap-title">Trampa 14: "El DefaultReader role no se puede tocar"</strong>
+              ❌ <strong>Sí se puede modificar o borrar</strong> para restringir el acceso por defecto.</li>
+            <li><strong class="trap-title">Trampa 15: "La medallion es solo para Fabric"</strong>
+              ❌ Es un patrón <strong>genérico</strong> (viene de Databricks). Fabric es una implementación. Es aplicable a cualquier plataforma de lakehouse.</li>
+          </ul>
+        </article>
+
+        <!-- ============ 22. COMPARATIVAS ============ -->
+        <div class="category-header" id="comparativas">
+          <span class="category-header__icon">🆚</span>
+          <h2 class="category-header__title">22. Comparativas clave (chuleta)</h2>
+        </div>
+
+        <article class="concept-card">
+          <h4>Bronze vs Silver vs Gold</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th></th><th>Bronze 🥉</th><th>Silver 🥈</th><th>Gold 🥇</th></tr></thead>
+              <tbody>
+                <tr><td>Propósito</td><td>Landing raw</td><td>Limpieza + integración</td><td>Modelado de negocio</td></tr>
+                <tr><td>Audiencia</td><td>Data Engineers</td><td>Analistas + Data Scientists</td><td>Usuarios de negocio</td></tr>
+                <tr><td>Modificación</td><td>Ninguna</td><td>Sí</td><td>Sí + agregaciones</td></tr>
+                <tr><td>Retención</td><td>Larga</td><td>Media</td><td>Corta</td></tr>
+                <tr><td>Formato</td><td>Original</td><td>Delta</td><td>Delta (star schema)</td></tr>
+                <tr><td>Herramientas típicas</td><td>Shortcut, Pipeline</td><td>Dataflow, Notebook, MLV</td><td>Notebook, MLV</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h4>Un lakehouse vs varios lakehouses vs varios workspaces</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Opción</th><th>Aislamiento</th><th>Complejidad</th><th>Mejor para</th></tr></thead>
+              <tbody>
+                <tr><td>Un lakehouse + schemas</td><td>Bajo</td><td>Baja</td><td>Equipos pequeños, fase temprana</td></tr>
+                <tr><td>Varios lakehouses</td><td>Medio</td><td>Media</td><td>Permisos por capa</td></tr>
+                <tr><td>Varios workspaces</td><td>Alto</td><td>Alta</td><td>Compliance, capacidad aislada</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h4>Herramientas para transformar en silver/gold</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Herramienta</th><th>Mejor para</th></tr></thead>
+              <tbody>
+                <tr><td>Dataflow Gen2</td><td>Low-code, analistas, transformaciones simples</td></tr>
                 <tr><td>Notebook</td><td>Código Spark/Python, lógica compleja, ML</td></tr>
                 <tr><td>Materialized Lake View</td><td>SQL declarativo, auto-refresh incremental</td></tr>
                 <tr><td>Pipeline (Copy Data)</td><td>Movimiento sin transformar</td></tr>
               </tbody>
             </table>
           </div>
+
+          <h4>Serving del gold</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Método</th><th>Para</th></tr></thead>
+              <tbody>
+                <tr><td>SQL analytics endpoint</td><td>Analistas SQL-first, data scientists</td></tr>
+                <tr><td>Semantic model (Direct Lake)</td><td>Usuarios de Power BI y de negocio</td></tr>
+                <tr><td>Semantic model (Import)</td><td>Casos legacy o críticos en rendimiento</td></tr>
+                <tr><td>API REST/GraphQL</td><td>Aplicaciones externas</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h4>Seguridad por capa</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Enfoque</th><th>Granularidad</th><th>Cuándo</th></tr></thead>
+              <tbody>
+                <tr><td>Workspace roles</td><td>Workspace entero</td><td>Simplicidad</td></tr>
+                <tr><td>Item permissions</td><td>Item concreto</td><td>Compartir sin dar acceso al workspace</td></tr>
+                <tr><td>OneLake data access roles</td><td>Tabla/carpeta</td><td>Granular por schema dentro del lakehouse</td></tr>
+                <tr><td>Varios workspaces</td><td>Un workspace por capa</td><td>Compliance, capacidad aislada</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h4>Materialized Lake View vs SQL View vs Delta Table</h4>
           <div class="table-scroll">
             <table class="md-table">
               <thead><tr><th></th><th>SQL View</th><th>Materialized Lake View</th><th>Delta Table</th></tr></thead>
               <tbody>
-                <tr><td>Almacena datos</td><td>❌</td><td>✅ (tabla real)</td><td>✅</td></tr>
-                <tr><td>Auto-refresh incremental</td><td>—</td><td>✅</td><td>Manual</td></tr>
+                <tr><td>Almacena datos</td><td>❌</td><td>✅ (como tabla real)</td><td>✅</td></tr>
+                <tr><td>Reejecuta la query en cada lectura</td><td>✅</td><td>❌</td><td>❌</td></tr>
+                <tr><td>Auto-refresh incremental</td><td>❌</td><td>✅</td><td>Manual</td></tr>
+                <tr><td>Lenguaje</td><td>SQL</td><td>SQL</td><td>Cualquiera</td></tr>
+                <tr><td>Requiere schedule</td><td>❌</td><td>❌</td><td>Manual</td></tr>
               </tbody>
             </table>
           </div>
         </article>
 
-        <div class="note note--next">🚀 <strong>¡Módulo 7 completado y Fase 1 al 100%!</strong> Ya dominas el data engineering batch de Fabric. Sigue con el <a href="modulo-8.html">Módulo 8: Real-Time Intelligence</a>. 🌸</div>
+        <!-- ============ 23. FUENTES ============ -->
+        <div class="category-header" id="fuentes">
+          <span class="category-header__icon">📚</span>
+          <h2 class="category-header__title">23. Fuentes oficiales consultadas</h2>
+        </div>
 
+        <article class="concept-card">
+          <ul class="sources-list">
+            <li>Módulo Learn: <a href="https://learn.microsoft.com/training/modules/describe-medallion-architecture/" target="_blank" rel="noopener noreferrer">describe-medallion-architecture</a></li>
+            <li>Medallion architecture in Fabric OneLake: <a href="https://learn.microsoft.com/fabric/onelake/onelake-medallion-lakehouse-architecture" target="_blank" rel="noopener noreferrer">onelake-medallion-lakehouse-architecture</a></li>
+            <li>Databricks medallion pattern: <a href="https://learn.microsoft.com/azure/databricks/lakehouse/medallion" target="_blank" rel="noopener noreferrer">lakehouse/medallion</a></li>
+            <li>Dimensional modeling in Fabric Warehouse: <a href="https://learn.microsoft.com/fabric/data-warehouse/dimensional-modeling-overview" target="_blank" rel="noopener noreferrer">dimensional-modeling-overview</a></li>
+            <li>Dimension tables: <a href="https://learn.microsoft.com/fabric/data-warehouse/dimensional-modeling-dimension-tables" target="_blank" rel="noopener noreferrer">dimensional-modeling-dimension-tables</a></li>
+            <li>Fact tables: <a href="https://learn.microsoft.com/fabric/data-warehouse/dimensional-modeling-fact-tables" target="_blank" rel="noopener noreferrer">dimensional-modeling-fact-tables</a></li>
+            <li>Load tables: <a href="https://learn.microsoft.com/fabric/data-warehouse/dimensional-modeling-load-tables" target="_blank" rel="noopener noreferrer">dimensional-modeling-load-tables</a></li>
+            <li>Understand star schema (Power BI guidance): <a href="https://learn.microsoft.com/power-bi/guidance/star-schema" target="_blank" rel="noopener noreferrer">star-schema</a></li>
+            <li>CI/CD best practices in Fabric: <a href="https://learn.microsoft.com/fabric/fundamentals/understand-best-practices-fabric-cicd" target="_blank" rel="noopener noreferrer">understand-best-practices-fabric-cicd</a></li>
+            <li>Enterprise Dataverse + Fabric medallion: <a href="https://learn.microsoft.com/power-platform/architecture/reference-architectures/enterprise-data-fabric-dataverse" target="_blank" rel="noopener noreferrer">enterprise-data-fabric-dataverse</a></li>
+            <li>OneLake data access control model: <a href="https://learn.microsoft.com/fabric/onelake/security/data-access-control-model" target="_blank" rel="noopener noreferrer">data-access-control-model</a></li>
+          </ul>
+        </article>
+
+        <!-- ============ CIERRE DE FASE 1 ============ -->
+        <div class="phase-finale">
+          <h2>🎉 ¡Fase 1 completada!</h2>
+          <p><strong>Módulos cubiertos en la Fase 1: Lakehouse y Delta (foundation)</strong> 🥇</p>
+          <ol>
+            <li>✅ <a href="modulo-1.html">Introducción a la analítica end-to-end con Microsoft Fabric</a></li>
+            <li>✅ <a href="modulo-2.html">Lakehouses en Microsoft Fabric</a></li>
+            <li>✅ <a href="modulo-3.html">Apache Spark en Microsoft Fabric</a></li>
+            <li>✅ <a href="modulo-4.html">Tablas Delta Lake en Microsoft Fabric</a></li>
+            <li>✅ <a href="modulo-5.html">Ingestar datos con Dataflows Gen2</a></li>
+            <li>✅ <a href="modulo-6.html">Orquestar procesos y movimiento de datos</a></li>
+            <li>✅ <strong>Organizar un lakehouse con arquitectura medallion</strong> (este módulo)</li>
+          </ol>
+          <p>Con estos 7 módulos tienes los <strong>fundamentos completos</strong> del data engineering en Fabric. Ya estás preparada para meterte de lleno en las siguientes fases: Real-Time Intelligence, Warehouses, CI/CD, gobernanza y monitorización. 🌸✨</p>
+        </div>
+
+        <div class="note note--next">
+          🚀 <strong>¡Módulo 7 completado!</strong> Cierras la Fase 1 con el gran patrón arquitectónico. Sigue con el <a href="modulo-8.html">Módulo 8: Real-Time Intelligence</a> y arranca la Fase 2. 🌸
+        </div>
+
+        <!-- Navegación del curso -->
         <div class="course-nav">
-          <a href="modulo-6.html"><span class="course-nav__label">← Anterior</span><span class="course-nav__title">Módulo 6 · Pipelines</span></a>
-          <a href="modulo-8.html" class="next"><span class="course-nav__label">Siguiente →</span><span class="course-nav__title">Módulo 8 · Real-Time Intelligence</span></a>
+          <a href="modulo-6.html">
+            <span class="course-nav__label">← Anterior</span>
+            <span class="course-nav__title">Módulo 6 · Pipelines</span>
+          </a>
+          <a href="modulo-8.html" class="next">
+            <span class="course-nav__label">Siguiente →</span>
+            <span class="course-nav__title">Módulo 8 · Real-Time Intelligence</span>
+          </a>
         </div>
 
       </div>
