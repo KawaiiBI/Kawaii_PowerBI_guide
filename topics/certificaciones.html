@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Cursos kawaii para aprobar las certificaciones de Microsoft: apuntes propios, resúmenes y práctica para sacarte cada examen sin dramas. Empezamos por la DP-700 de Microsoft Fabric.">
+  <title>Certificaciones — Cursos kawaii para aprobar | Power BI Guide by Kawaii BI</title>
+  <link rel="canonical" href="https://kawaiibi.es/topics/certificaciones.html">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Kawaii Power BI Guide">
+  <meta property="og:locale" content="es_ES">
+  <meta property="og:title" content="Certificaciones — Cursos kawaii para aprobar | Power BI Guide by Kawaii BI">
+  <meta property="og:description" content="Cursos kawaii para aprobar las certificaciones de Microsoft: apuntes propios, resúmenes y práctica. Empezamos por la DP-700 de Microsoft Fabric.">
+  <meta property="og:url" content="https://kawaiibi.es/topics/certificaciones.html">
+  <meta property="og:image" content="https://kawaiibi.es/assets/images/og-banner.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="1200">
+  <meta property="og:image:alt" content="Sara Lozano Marti - Kawaii Power BI">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Certificaciones — Cursos kawaii para aprobar | Power BI Guide by Kawaii BI">
+  <meta name="twitter:description" content="Cursos kawaii para aprobar las certificaciones de Microsoft: apuntes propios, resúmenes y práctica. Empezamos por la DP-700 de Microsoft Fabric.">
+  <meta name="twitter:image" content="https://kawaiibi.es/assets/images/og-banner.png">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+
+  <!-- Estilos CSS -->
+  <link rel="stylesheet" href="../assets/css/main.css">
+  <link rel="stylesheet" href="../assets/css/themes.css">
+  <link rel="stylesheet" href="../assets/css/components.css">
+  <link rel="stylesheet" href="../assets/css/layout.css">
+
+  <style>
+    .topic-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 1.25rem;
+      margin-bottom: 2rem;
+      padding: 1.75rem;
+      background: var(--color-rose);
+      border-radius: var(--border-radius);
+      border: 1.5px solid var(--color-mauve);
+    }
+    .topic-header__icon { font-size: 3rem; line-height: 1; flex-shrink: 0; }
+    .topic-header__title { font-size: 1.875rem; font-weight: 700; margin-bottom: 0.25rem; }
+    .topic-header__subtitle { color: var(--color-slate); font-size: 0.9375rem; margin-bottom: 0.75rem; line-height: 1.6; }
+    .topic-header__levels { display: flex; gap: 0.375rem; flex-wrap: wrap; }
+
+    .cert-intro {
+      background: linear-gradient(135deg, var(--color-rose) 0%, var(--color-blush) 100%);
+      border-radius: var(--border-radius);
+      padding: 2rem;
+      margin-bottom: 2.5rem;
+      border: 1.5px solid var(--color-mauve);
+    }
+    .cert-intro__title { font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem; }
+    .cert-intro__text { color: var(--color-slate); font-size: 0.9375rem; line-height: 1.7; }
+
+    /* Grid de certificaciones */
+    .cert-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.5rem;
+      margin-top: 1.5rem;
+    }
+    .cert-card {
+      background: var(--color-white);
+      border: 1.5px solid var(--color-mauve);
+      border-radius: var(--border-radius);
+      padding: 1.5rem;
+      text-decoration: none;
+      color: inherit;
+      transition: var(--transition);
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .cert-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 5px;
+      background: linear-gradient(90deg, var(--color-coral), var(--color-peach));
+    }
+    .cert-card:hover { border-color: var(--color-coral); transform: translateY(-4px); box-shadow: var(--shadow-md); text-decoration: none; }
+    .cert-card__head { display: flex; align-items: center; gap: 0.875rem; }
+    .cert-card__icon { font-size: 2.25rem; line-height: 1; }
+    .cert-card__code {
+      display: inline-block;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--color-coral);
+      background: var(--color-rose);
+      padding: 0.2rem 0.6rem;
+      border-radius: 999px;
+      border: 1px solid var(--color-mauve);
+      margin-bottom: 0.25rem;
+    }
+    .cert-card__title { font-size: 1.125rem; font-weight: 700; color: var(--color-dark); line-height: 1.3; }
+    .cert-card__desc { font-size: 0.875rem; color: var(--color-slate); line-height: 1.6; }
+    .cert-card__meta { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.25rem; }
+    .cert-card__cta {
+      margin-top: auto;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--color-coral);
+    }
+
+    .dark-theme .topic-header,
+    .dark-theme .cert-intro { background: var(--color-rose); border-color: var(--color-mauve); }
+    .dark-theme .cert-intro { background: linear-gradient(135deg, var(--color-rose) 0%, var(--color-blush) 100%); }
+    .dark-theme .cert-card { background: var(--color-white); border-color: var(--color-mauve); }
+  </style>
+</head>
+<body>
+
+  <!-- SIDEBAR -->
+  <aside class="site-sidebar">
+    <div class="site-sidebar__profile">
+      <img src="../assets/images/avatar-sara.png" alt="Sara Lozano Martí" class="site-sidebar__avatar" />
+      <p class="site-sidebar__name">Sara Lozano Martí</p>
+      <p class="site-sidebar__subtitle">Power BI Expert</p>
+    </div>
+    <nav class="site-sidebar__nav" aria-label="Navegación principal">
+      <ul>
+        <li><a href="../index.html" class="site-sidebar__link"><span class="site-sidebar__icon">🏠</span> Inicio</a></li>
+        <li><a href="dax.html" class="site-sidebar__link"><span class="site-sidebar__icon">⚡</span> Funciones DAX</a></li>
+        <li><a href="power-query.html" class="site-sidebar__link"><span class="site-sidebar__icon">🔄</span> Power Query</a></li>
+        <li><a href="lenguaje-m.html" class="site-sidebar__link"><span class="site-sidebar__icon">〽️</span> Lenguaje M</a></li>
+        <li><a href="modelado.html" class="site-sidebar__link"><span class="site-sidebar__icon">🗄️</span> Modelado</a></li>
+        <li><a href="conceptos-powerbi.html" class="site-sidebar__link"><span class="site-sidebar__icon">📊</span> Conceptos Power BI</a></li>
+        <li><a href="fabric.html" class="site-sidebar__link"><span class="site-sidebar__icon">🧵</span> Microsoft Fabric</a></li>
+        <li><a href="tmdl.html" class="site-sidebar__link"><span class="site-sidebar__icon">📝</span> TMDL</a></li>
+        <li><a href="diseno-ux.html" class="site-sidebar__link"><span class="site-sidebar__icon">🎨</span> Diseño y UX</a></li>
+        <li><a href="gobernanza.html" class="site-sidebar__link"><span class="site-sidebar__icon">🔒</span> Gobernanza</a></li>
+        <li><a href="certificaciones.html" class="site-sidebar__link is-active"><span class="site-sidebar__icon">🎓</span> Certificaciones</a></li>
+      </ul>
+    </nav>
+    <div class="site-sidebar__divider"></div>
+    <div class="site-sidebar__footer">
+      <a href="../quien-soy.html" class="site-sidebar__link site-sidebar__link--highlight"><span class="site-sidebar__icon">👩‍💻</span> ¿Quién soy?</a>
+      <div class="site-sidebar__social">
+        <a href="https://www.linkedin.com/in/saralozanomarti" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><img src="../assets/images/logo-linkedin.png" alt="LinkedIn" class="site-sidebar__social-icon" /></a>
+        <a href="https://www.youtube.com/@KawaiiPowerBI" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><img src="../assets/images/logo-youtube.png" alt="YouTube" class="site-sidebar__social-icon" /></a>
+        <a href="https://github.com/KawaiiBI" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><img src="../assets/images/logo-github.png" alt="GitHub" class="site-sidebar__social-icon" /></a>
+      </div>
+      <div class="site-sidebar__logo-bottom"><img src="../assets/images/logo-kawaii.jpg" alt="Kawaii BI" class="site-sidebar__logo-img" /></div>
+      <p class="site-sidebar__copyright">Power BI Guide 🌸<br>© 2026 Kawaii BI</p>
+    </div>
+  </aside>
+
+  <!-- CONTENIDO -->
+  <div class="page-wrapper">
+    <main class="main-content">
+      <div class="topic-page">
+
+        <!-- Breadcrumb -->
+        <nav class="breadcrumb" aria-label="Ruta de navegación">
+          <span class="breadcrumb__item"><a href="../index.html">🏠 Inicio</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item">Certificaciones</span>
+        </nav>
+
+        <!-- Cabecera del topic -->
+        <div class="topic-header">
+          <div class="topic-header__icon">🎓</div>
+          <div>
+            <h1 class="topic-header__title">Certificaciones</h1>
+            <p class="topic-header__subtitle">Cursos kawaii para aprobar las certificaciones de Microsoft, hechos con mis propios apuntes: resúmenes claros, esquemas bonitos y lo que de verdad entra en el examen. 🌸</p>
+            <div class="topic-header__levels">
+              <span class="badge badge--intermediate">Intermedio</span>
+              <span class="badge badge--advanced">Avanzado</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Introducción -->
+        <div class="cert-intro">
+          <h2 class="cert-intro__title">¿Qué vas a encontrar aquí? 🌸</h2>
+          <p class="cert-intro__text">
+            Mientras me preparaba las certificaciones de Microsoft fui creando mis propios
+            <strong>cursos con apuntes kawaii</strong>: resúmenes visuales, esquemas, trucos y
+            todo lo que necesitas para llegar al examen con confianza y sin agobios. Me han
+            funcionado tan bien que <strong>he decidido compartirlos contigo</strong> 💕.
+          </p>
+          <p class="cert-intro__text" style="margin-top: 0.75rem;">
+            Cada tarjeta de abajo es un curso completo para una certificación. Iré añadiendo más
+            poco a poco. <strong>Empezamos por la DP-700</strong>, la de <em>Fabric Data Engineer</em>.
+            ¡Vamos a por ese badge! 🚀
+          </p>
+        </div>
+
+        <!-- Grid de certificaciones -->
+        <h2 class="section-title">Cursos disponibles 📚</h2>
+        <div class="cert-grid">
+
+          <a href="certificaciones/dp-700.html" class="cert-card">
+            <div class="cert-card__head">
+              <span class="cert-card__icon">🧵</span>
+              <div>
+                <span class="cert-card__code">DP-700</span>
+                <div class="cert-card__title">Fabric Data Engineer Associate</div>
+              </div>
+            </div>
+            <p class="cert-card__desc">
+              Implementa soluciones de ingeniería de datos con Microsoft Fabric: Lakehouse,
+              Warehouse, pipelines, notebooks, Real-Time Intelligence y seguridad. Apuntes
+              kawaii, resúmenes y lo que entra en el examen. 🌸
+            </p>
+            <div class="cert-card__meta">
+              <span class="badge badge--intermediate">Intermedio</span>
+              <span class="badge badge--advanced">Avanzado</span>
+            </div>
+            <span class="cert-card__cta">Ver el curso →</span>
+          </a>
+
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <button id="back-to-top" class="back-to-top" aria-label="Volver arriba" title="Volver arriba">↑</button>
+
+  <script src="https://cdn.jsdelivr.net/npm/i18next@23/dist/umd/i18next.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1/prism.min.js"></script>
+  <script src="../assets/js/theme.js"></script>
+  <script src="../assets/js/main.js"></script>
+  <script src="../assets/js/cursor.js"></script>
+</body>
+</html>
