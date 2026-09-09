@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="DP-700 Módulo 5: ingesta con Dataflows Gen2 en Fabric. Query folding, staging, Fast Copy, incremental refresh, CI/CD y elección Dataflow vs Notebook vs Pipeline.">
+  <title>DP-700 · Módulo 5: Dataflows Gen2 | Power BI Guide by Kawaii BI</title>
+  <link rel="canonical" href="https://kawaiibi.es/topics/certificaciones/dp-700/modulo-5.html">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Kawaii Power BI Guide">
+  <meta property="og:locale" content="es_ES">
+  <meta property="og:title" content="DP-700 · Módulo 5: Dataflows Gen2 | Power BI Guide by Kawaii BI">
+  <meta property="og:description" content="DP-700 Módulo 5: Dataflows Gen2. Query folding, staging, Fast Copy, incremental refresh y CI/CD.">
+  <meta property="og:url" content="https://kawaiibi.es/topics/certificaciones/dp-700/modulo-5.html">
+  <meta property="og:image" content="https://kawaiibi.es/assets/images/og-banner.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="1200">
+  <meta property="og:image:alt" content="Sara Lozano Marti - Kawaii Power BI">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="DP-700 · Módulo 5: Dataflows Gen2 | Power BI Guide by Kawaii BI">
+  <meta name="twitter:description" content="DP-700 Módulo 5: Dataflows Gen2. Query folding, staging, Fast Copy, incremental refresh y CI/CD.">
+  <meta name="twitter:image" content="https://kawaiibi.es/assets/images/og-banner.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/prismjs@1/themes/prism-okaidia.min.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="../../../assets/css/main.css">
+  <link rel="stylesheet" href="../../../assets/css/themes.css">
+  <link rel="stylesheet" href="../../../assets/css/components.css">
+  <link rel="stylesheet" href="../../../assets/css/layout.css">
+
+  <style>
+    .topic-header { text-align: center; padding: 2.25rem 0 1.75rem; border-bottom: 2px solid var(--color-mauve); margin-bottom: 2rem; }
+    .topic-header__eyebrow { font-family: 'Fira Code', monospace; font-size: 0.8125rem; font-weight: 600; color: var(--color-coral); letter-spacing: 0.05em; }
+    .topic-header__icon { font-size: 3.5rem; margin: 0.5rem 0; display: block; }
+    .topic-header__title { font-size: clamp(1.75rem, 4vw, 2.25rem); font-weight: 800; color: var(--color-dark); margin-bottom: 0.625rem; line-height: 1.2; }
+    .topic-header__subtitle { font-size: 1rem; color: var(--color-slate); margin-bottom: 1.25rem; line-height: 1.55; max-width: 680px; margin-left: auto; margin-right: auto; }
+    .topic-header__levels { display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap; align-items: center; }
+
+    .toc { background: var(--color-rose); border-radius: var(--border-radius); padding: 1.25rem 1.5rem; margin-bottom: 2rem; border: 1.5px solid var(--color-mauve); }
+    .toc__title { font-size: 1rem; font-weight: 700; margin: 0 0 0.75rem; }
+    .toc__list { display: flex; flex-wrap: wrap; gap: 0.5rem; list-style: none; padding: 0; margin: 0; }
+    .toc__list a { font-size: 0.8125rem; color: var(--color-coral); text-decoration: none; padding: 0.25rem 0.625rem; background: var(--color-white); border-radius: 999px; border: 1px solid var(--color-mauve); }
+    .toc__list a:hover { background: var(--color-coral); color: #fff; }
+
+    .category-header { display: flex; align-items: center; gap: 0.75rem; margin: 2.5rem 0 1.25rem; padding: 0.875rem 1.25rem; background: var(--color-rose); border-radius: var(--border-radius-sm); border-left: 4px solid var(--color-coral); scroll-margin-top: 20px; }
+    .category-header__icon { font-size: 1.5rem; }
+    .category-header__title { font-size: 1.25rem; font-weight: 700; margin: 0; }
+
+    .concept-card { background: var(--color-white); border: 1.5px solid var(--color-mauve); border-radius: var(--border-radius); padding: 1.5rem 1.75rem; margin-bottom: 1.25rem; }
+    .concept-card h3 { font-size: 1.0625rem; font-weight: 700; color: var(--color-coral); margin: 0 0 0.6rem; }
+    .concept-card h4 { font-size: 0.9375rem; font-weight: 700; color: var(--color-dark); margin: 1.1rem 0 0.4rem; }
+    .concept-card p { font-size: 0.9375rem; line-height: 1.7; color: var(--color-dark); margin-bottom: 0.7rem; }
+    .concept-card ul, .concept-card ol { padding-left: 1.25rem; font-size: 0.9375rem; line-height: 1.75; color: var(--color-dark); margin: 0.4rem 0; }
+    .concept-card code { background: var(--color-blush); padding: 0.1em 0.4em; border-radius: 4px; font-family: 'Fira Code', monospace; font-size: 0.85em; color: var(--color-coral); }
+    .concept-card pre { margin: 0.75rem 0; }
+
+    .md-table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.84rem; }
+    .md-table th, .md-table td { border: 1px solid var(--color-mauve); padding: 0.5rem 0.7rem; text-align: left; vertical-align: top; }
+    .md-table th { background: var(--color-rose); font-weight: 700; color: var(--color-dark); }
+    .md-table tr:nth-child(even) td { background: var(--color-blush); }
+    .table-scroll { overflow-x: auto; }
+
+    .course-nav { display: flex; justify-content: space-between; gap: 1rem; margin-top: 2.5rem; flex-wrap: wrap; }
+    .course-nav a { flex: 1 1 220px; display: block; background: var(--color-white); border: 1.5px solid var(--color-mauve); border-radius: var(--border-radius); padding: 1rem 1.25rem; text-decoration: none; color: inherit; transition: var(--transition); }
+    .course-nav a:hover { border-color: var(--color-coral); box-shadow: var(--shadow-md); text-decoration: none; }
+    .course-nav__label { font-size: 0.75rem; color: var(--color-slate); text-transform: uppercase; letter-spacing: 0.05em; }
+    .course-nav__title { font-weight: 700; color: var(--color-coral); }
+    .course-nav a.next { text-align: right; }
+  </style>
+</head>
+<body>
+
+  <aside class="site-sidebar">
+    <div class="site-sidebar__profile">
+      <img src="../../../assets/images/avatar-sara.png" alt="Sara Lozano Martí" class="site-sidebar__avatar">
+      <p class="site-sidebar__name">Sara Lozano Martí</p>
+      <p class="site-sidebar__subtitle">Power BI Expert</p>
+    </div>
+    <nav class="site-sidebar__nav" aria-label="Navegación principal">
+      <ul>
+        <li><a href="../../../index.html" class="site-sidebar__link"><span class="site-sidebar__icon">🏠</span> Inicio</a></li>
+        <li><a href="../../dax.html" class="site-sidebar__link"><span class="site-sidebar__icon">⚡</span> Funciones DAX</a></li>
+        <li><a href="../../power-query.html" class="site-sidebar__link"><span class="site-sidebar__icon">🔄</span> Power Query</a></li>
+        <li><a href="../../lenguaje-m.html" class="site-sidebar__link"><span class="site-sidebar__icon">〽️</span> Lenguaje M</a></li>
+        <li><a href="../../modelado.html" class="site-sidebar__link"><span class="site-sidebar__icon">🗄️</span> Modelado</a></li>
+        <li><a href="../../conceptos-powerbi.html" class="site-sidebar__link"><span class="site-sidebar__icon">📊</span> Conceptos Power BI</a></li>
+        <li><a href="../../fabric.html" class="site-sidebar__link"><span class="site-sidebar__icon">🧵</span> Microsoft Fabric</a></li>
+        <li><a href="../../tmdl.html" class="site-sidebar__link"><span class="site-sidebar__icon">📝</span> TMDL</a></li>
+        <li><a href="../../diseno-ux.html" class="site-sidebar__link"><span class="site-sidebar__icon">🎨</span> Diseño y UX</a></li>
+        <li><a href="../../gobernanza.html" class="site-sidebar__link"><span class="site-sidebar__icon">🔒</span> Gobernanza</a></li>
+        <li><a href="../../certificaciones.html" class="site-sidebar__link is-active"><span class="site-sidebar__icon">🎓</span> Certificaciones</a></li>
+      </ul>
+    </nav>
+    <div class="site-sidebar__divider"></div>
+    <div class="site-sidebar__footer">
+      <a href="../../../quien-soy.html" class="site-sidebar__link site-sidebar__link--highlight"><span class="site-sidebar__icon">👩‍💻</span> ¿Quién soy?</a>
+      <div class="site-sidebar__social">
+        <a href="https://www.linkedin.com/in/saralozanomarti" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><img src="../../../assets/images/logo-linkedin.png" alt="LinkedIn" class="site-sidebar__social-icon"></a>
+        <a href="https://www.youtube.com/@KawaiiPowerBI" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><img src="../../../assets/images/logo-youtube.png" alt="YouTube" class="site-sidebar__social-icon"></a>
+        <a href="https://github.com/KawaiiBI" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><img src="../../../assets/images/logo-github.png" alt="GitHub" class="site-sidebar__social-icon"></a>
+      </div>
+      <div class="site-sidebar__logo-bottom"><img src="../../../assets/images/logo-kawaii.jpg" alt="Kawaii BI" class="site-sidebar__logo-img"></div>
+      <p class="site-sidebar__copyright">Power BI Guide 🌸<br>© 2026 Kawaii BI</p>
+    </div>
+  </aside>
+
+  <div class="page-wrapper">
+    <main class="main-content">
+      <div class="topic-page">
+
+        <nav class="breadcrumb" aria-label="Ruta de navegación">
+          <span class="breadcrumb__item"><a href="../../../index.html">🏠 Inicio</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item"><a href="../../certificaciones.html">Certificaciones</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item"><a href="../dp-700.html">DP-700</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item">Módulo 5</span>
+        </nav>
+
+        <header class="topic-header">
+          <span class="topic-header__eyebrow">DP-700 · MÓDULO 5</span>
+          <span class="topic-header__icon">🌊</span>
+          <h1 class="topic-header__title">Ingesta con Dataflows Gen2 en Fabric</h1>
+          <p class="topic-header__subtitle">El ETL low-code de Fabric con Power Query Online: query folding, staging, Fast Copy, incremental refresh, CI/CD y la clásica elección Dataflow vs Notebook vs Pipeline. 🌸</p>
+          <div class="topic-header__levels">
+            <span class="badge badge--beginner">Principiante</span>
+            <span class="badge badge--intermediate">Intermedio</span>
+          </div>
+        </header>
+
+        <nav class="toc" aria-label="Índice del módulo">
+          <p class="toc__title">📑 En este módulo:</p>
+          <ul class="toc__list">
+            <li><a href="#objetivos">1. Objetivos</a></li>
+            <li><a href="#que-es">2. ¿Qué es un Dataflow?</a></li>
+            <li><a href="#gen1-gen2">3. Gen1 vs Gen2</a></li>
+            <li><a href="#limitaciones">4. Beneficios y límites</a></li>
+            <li><a href="#interfaz">5. Interfaz y conectores</a></li>
+            <li><a href="#destinations">6. Data destinations</a></li>
+            <li><a href="#folding">7. Query folding</a></li>
+            <li><a href="#staging">8. Staging queries</a></li>
+            <li><a href="#fast-copy">9. Fast Copy</a></li>
+            <li><a href="#capacidades">10. Modern Evaluator y más</a></li>
+            <li><a href="#incremental">11. Incremental refresh</a></li>
+            <li><a href="#cicd">12. CI/CD y Git</a></li>
+            <li><a href="#costes">13. Costes y CU</a></li>
+            <li><a href="#trampas">14. Trampas</a></li>
+            <li><a href="#comparativas">15. Comparativas</a></li>
+          </ul>
+        </nav>
+
+        <div class="category-header" id="objetivos"><span class="category-header__icon">🎯</span><h2 class="category-header__title">1. Objetivos y encaje en el DP-700</h2></div>
+        <article class="concept-card">
+          <h3>El módulo del ETL low-code</h3>
+          <p>Objetivos: describir las capacidades de Dataflow, crear soluciones de ingesta/transformación e incluir un Dataflow en un pipeline. Cae sobre todo en el <strong>Dominio 2 (Ingest and transform)</strong>.</p>
+          <div class="note note--tip">🎯 <strong>Crítico:</strong> query folding, staging, Fast Copy, incremental refresh (buckets), CI/CD + Git y la elección <strong>Dataflow vs Notebook vs Pipeline</strong>.</div>
+          <div class="note note--practice">🌸 Si ya sabes Power Query M de Power BI, ya dominas el 80% de este módulo. Lo nuevo son las features Fabric: destinos, staging, Fast Copy, CI/CD.</div>
+        </article>
+
+        <div class="category-header" id="que-es"><span class="category-header__icon">🌊</span><h2 class="category-header__title">2. ¿Qué es un Dataflow?</h2></div>
+        <article class="concept-card">
+          <p>Un <strong>Dataflow</strong> es una herramienta ETL cloud, la forma <strong>low-code / visual</strong> de hacer ETL en Fabric usando <strong>Power Query Online</strong>. Extract (conectores), Transform (visual) y Load (a Lakehouse, Warehouse, SQL DB, etc.).</p>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Necesitas...</th><th>Herramienta</th></tr></thead>
+              <tbody>
+                <tr><td>Interfaz low-code visual, reutilizar transforms, que analistas lo mantengan</td><td><strong>Dataflow Gen2</strong> ✅</td></tr>
+                <tr><td>Transformaciones complejas con código (Python, Spark)</td><td>Notebook</td></tr>
+                <tr><td>Orquestar múltiples pasos con dependencias</td><td>Pipeline</td></tr>
+                <tr><td>Copiar datos raw sin transformar</td><td>Pipeline con Copy Data</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>Soporta <strong>ETL</strong> (transforma en memoria y escribe curado) y <strong>ELT</strong> (Pipeline copia raw a bronze, Dataflow transforma a silver/gold). Fabric potencia ELT con Fast Copy + staging.</p>
+        </article>
+
+        <div class="category-header" id="gen1-gen2"><span class="category-header__icon">🔄</span><h2 class="category-header__title">3. Dataflow Gen1 vs Gen2</h2></div>
+        <article class="concept-card">
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Feature</th><th>Gen1 (Power BI)</th><th>Gen2 (Fabric)</th></tr></thead>
+              <tbody>
+                <tr><td>Destinos</td><td>Solo Power BI dataset</td><td>Lakehouse, Warehouse, SQL DB, Azure SQL, ADX, Synapse</td></tr>
+                <tr><td>Fast Copy / Modern Evaluator</td><td>❌</td><td>✅</td></tr>
+                <tr><td>Incremental refresh</td><td>Post-publish</td><td>First-class, en editor</td></tr>
+                <tr><td>CI/CD + Git</td><td>❌</td><td>✅</td></tr>
+                <tr><td>Requiere capacidad Fabric</td><td>❌ (Power BI Pro)</td><td>✅</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="note note--tip">🎯 En DP-700 asume <strong>siempre Gen2</strong>. Si un enunciado menciona Power BI Pro/Premium sin Fabric, puede ser Gen1.</div>
+        </article>
+
+        <div class="category-header" id="limitaciones"><span class="category-header__icon">⚠️</span><h2 class="category-header__title">4. Beneficios y limitaciones oficiales</h2></div>
+        <article class="concept-card">
+          <p><strong>Beneficios:</strong> dimensiones consistentes, self-service para analistas, extraer una vez y reutilizar, simplificar complejidad, consistencia y calidad, integración low-code.</p>
+          <h4>⚠️ Las 3 limitaciones (oro para el examen)</h4>
+          <ul>
+            <li>❌ <strong>NO son un reemplazo del data warehouse.</strong></li>
+            <li>❌ <strong>NO soportan Row-Level Security (RLS).</strong> Aplica RLS en el semantic model o warehouse downstream.</li>
+            <li>❌ <strong>Requieren workspace en Fabric capacity</strong> (F SKU o Trial).</li>
+          </ul>
+          <div class="note note--warning">⚠️ La trampa de RLS es clásica: "quiero aplicar RLS al Dataflow" → respuesta: <strong>no se puede</strong>, hazlo downstream.</div>
+        </article>
+
+        <div class="category-header" id="interfaz"><span class="category-header__icon">🎨</span><h2 class="category-header__title">5. Interfaz y conectores</h2></div>
+        <article class="concept-card">
+          <p>Se crea desde Data Factory, Power BI workspace o el lakehouse (los tres crean el mismo objeto). La interfaz de <strong>Power Query Online</strong> tiene ribbon, panel de queries, Diagram View, Data Preview y Query Settings (Applied Steps).</p>
+          <h4>Conceptos clave de queries</h4>
+          <ul>
+            <li><strong>Duplicar</strong> (copia independiente) vs <strong>Referenciar</strong> (cambios en la original afectan).</li>
+            <li><strong>Disable load</strong>: "helper queries" que no cargan a destino pero se referencian.</li>
+          </ul>
+          <p>Cientos de conectores: BBDD relacionales, ficheros, storage (ADLS, Blob, S3), SaaS, nativos Fabric (Lakehouse, Warehouse, KQL) y Web/OData. Autenticación como <strong>cloud connections</strong> gestionadas centralmente.</p>
+        </article>
+
+        <div class="category-header" id="destinations"><span class="category-header__icon">🎯</span><h2 class="category-header__title">6. Data destinations</h2></div>
+        <article class="concept-card">
+          <p>Destinos: <strong>Lakehouse, Warehouse, SQL DB in Fabric, KQL Database</strong>, y Azure SQL, Azure Data Explorer, Synapse. Update method: <strong>Append</strong> o <strong>Replace</strong>.</p>
+          <div class="note note--tip">✨ El destino es <strong>opcional</strong>: un dataflow sin destino preserva las transformaciones y puede usarse como source discoverable desde Power BI Desktop. Al cargar a Lakehouse por primera vez, puede crear la tabla automáticamente.</div>
+        </article>
+
+        <div class="category-header" id="folding"><span class="category-header__icon">⚡</span><h2 class="category-header__title">7. Query folding: el concepto más examinable</h2></div>
+        <article class="concept-card">
+          <h3>Traducir Power Query a queries nativas del source</h3>
+          <p><strong>Query folding</strong> = traducir tus transformaciones a SQL/KQL que se ejecutan <strong>en el source</strong>, no en el dataflow. Con folding se transfiere solo lo necesario: mejor rendimiento, menos CU, refresh más rápido.</p>
+          <h4>Indicadores en Applied Steps</h4>
+          <ul>
+            <li>🟢 Círculo verde relleno: paso folded.</li>
+            <li>⚠️ Círculo naranja: no folded (se ejecuta local). <strong>Cuando un step deja de foldear, todos los siguientes tampoco.</strong></li>
+          </ul>
+          <p>Rompen folding: <code>Table.AddIndexColumn</code>, custom columns complejas, <code>Table.Buffer</code>, merges (según conector), loops. Suelen foldear: filter, select, group by simple, sort. Fuentes sin folding: CSV/Excel/JSON, REST APIs (no relacionales).</p>
+          <div class="note note--tip">🎯 Maximizar folding: filtros primero, transformaciones simples al inicio, rompe folding solo al final, y usa <strong>staging</strong> para volver a foldear. Ve la native query con <em>View Native Query</em>.</div>
+        </article>
+
+        <div class="category-header" id="staging"><span class="category-header__icon">🎨</span><h2 class="category-header__title">8. Staging queries: el patrón ELT</h2></div>
+        <article class="concept-card">
+          <p><strong>Staging</strong> materializa el output de una query en el <strong>staging Lakehouse/Warehouse</strong> interno de Gen2. Filosofía "stage once, reference many": las queries downstream referencian la staged y foldean al <strong>staging SQL endpoint</strong>.</p>
+          <h4>Beneficios</h4>
+          <ul>
+            <li>Compute pushdown al staging Warehouse (folding sobre SQL).</li>
+            <li>Evitar leer el source varias veces, habilitar transforms complejas, data quality, fan-out a múltiples destinos.</li>
+          </ul>
+          <div class="note note--warning">⚠️ Staging <strong>no siempre mejora</strong>: añade coste de storage + write. No lo actives si la query ya fold end-to-end o tiene una sola salida sin ramificaciones.</div>
+          <div class="note note--tip">🎯 Patrón <strong>Extract Previous</strong>: right-click en el paso donde se rompe el folding → <em>Extract previous</em> → nueva query con los pasos que sí foldean → <strong>Enable staging</strong>. La parte inicial fold al source, la compleja al staging warehouse.</div>
+        </article>
+
+        <div class="category-header" id="fast-copy"><span class="category-header__icon">🚀</span><h2 class="category-header__title">9. Fast Copy</h2></div>
+        <article class="concept-card">
+          <p><strong>Fast Copy</strong> acelera la ingesta con movimiento nativo paralelizado que bypasea el mashup engine. Benchmark oficial: Gen1 1h39, Gen2 sin Fast Copy 35min, Gen2 <strong>con Fast Copy 9min (11× más rápido, 83% menos CU)</strong>.</p>
+          <h4>Requisitos</h4>
+          <ul>
+            <li>Source compatible (ADLS Gen2, S3, Azure SQL...), transformaciones limitadas (solo folding), destino compatible (Lakehouse) y feature habilitada en Options → Scale.</li>
+          </ul>
+          <div class="note note--warning">⚠️ <strong>Antipatrón:</strong> no combines Fast Copy con transformaciones no-folding en la misma query. Patrón correcto: query 1 Fast Copy pura → staging; query 2 referencia y transforma. Verifica en detalles que Engine type = <code>CopyActivity</code>.</div>
+        </article>
+
+        <div class="category-header" id="capacidades"><span class="category-header__icon">🧩</span><h2 class="category-header__title">10. Modern Evaluator y otras capacidades</h2></div>
+        <article class="concept-card">
+          <ul>
+            <li><strong>Modern Evaluator:</strong> acelera transforms heavy sobre conectores no-foldable (files, APIs). <strong>Automático</strong>, no hay que activarlo.</li>
+            <li><strong>Optimized copy to Lakehouse (Preview):</strong> acelera la "última milla" staging → Lakehouse. Se activa en Options → Scale.</li>
+            <li><strong>Partitioned Compute (Preview):</strong> paraleliza transforms across particiones en datasets grandes. Automático.</li>
+          </ul>
+        </article>
+
+        <div class="category-header" id="incremental"><span class="category-header__icon">🔁</span><h2 class="category-header__title">11. Incremental refresh</h2></div>
+        <article class="concept-card">
+          <h3>Refrescar solo lo que cambió</h3>
+          <p>Requisitos: la query debe <strong>fully fold</strong> al source e incluir una columna <strong>DateTime / Date / DateTimeZone</strong>. Se activa con right-click en la query → <em>Incremental refresh</em>.</p>
+          <h4>Los 4 settings</h4>
+          <ul>
+            <li><strong>DateTime column</strong> para filtrar.</li>
+            <li><strong>Extract data from the past</strong>: cuánta historia inicial (días/semanas/meses/años).</li>
+            <li><strong>Bucket size</strong>: tamaño de cada bucket (pequeño = más granularidad pero más overhead).</li>
+            <li><strong>Detect changes</strong>: columna para detectar cambios (max value).</li>
+          </ul>
+          <h4>Cómo funciona</h4>
+          <p>Lee el max value de la columna, compara con el último refresh, procesa solo los buckets cambiados en paralelo y hace <strong>delete + insert por bucket</strong>. Solo afecta al rango del bucket.</p>
+          <div class="note note--warning">⚠️ Update method: solo <code>replace</code>. Límites: <strong>50 buckets por query, 150 por dataflow</strong>. No borra data fuera del rango. Si va más lento que full refresh, <strong>aumenta el bucket size</strong>.</div>
+        </article>
+
+        <div class="category-header" id="cicd"><span class="category-header__icon">🔀</span><h2 class="category-header__title">12. CI/CD y Git integration</h2></div>
+        <article class="concept-card">
+          <p>Gen2 soporta Git integration, deployment pipelines (dev → test → prod), workspace folders y Public APIs (preview).</p>
+          <div class="note note--tip">🎯 <strong>Save reemplaza Publish</strong> (just-in-time publishing): al guardar, los cambios se publican para el siguiente refresh. Al guardar se hace validación "zero row" (si el schema no se determina en 10 min, falla).</div>
+          <div class="note note--warning">⚠️ Post-Feb 2026: si el publish falla y el dataflow fue guardado después de esa fecha, el refresh <strong>falla</strong> (fail-fast) en vez de usar la última versión exitosa. El Power Automate connector no funciona con la versión CI/CD.</div>
+        </article>
+
+        <div class="category-header" id="costes"><span class="category-header__icon">💰</span><h2 class="category-header__title">13. Costes y consumo de CU</h2></div>
+        <article class="concept-card">
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Motor</th><th>Rate</th></tr></thead>
+              <tbody>
+                <tr><td>Standard Compute (mashup)</td><td>12 CU/seg hasta 10 min, luego 1.5 CU/seg</td></tr>
+                <tr><td>Fast Copy</td><td>1.5 CU/seg (~8× más barato por segundo)</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>Optimizar: usa Fast Copy, fold todo lo posible, staging solo cuando aporta, optimiza buckets, desactiva refreshes innecesarios y divide queries.</p>
+        </article>
+
+        <div class="category-header" id="trampas"><span class="category-header__icon">⚠️</span><h2 class="category-header__title">14. Trampas típicas</h2></div>
+        <article class="concept-card">
+          <ul>
+            <li><strong>"Gen2 soporta RLS"</strong> → ❌ no, hazlo downstream.</li>
+            <li><strong>"Funciona sin capacidad Fabric"</strong> → ❌ requiere F SKU o Trial.</li>
+            <li><strong>"Todos los conectores soportan Fast Copy"</strong> → ❌ solo compatibles.</li>
+            <li><strong>"Fast Copy + transforms complejas en la misma query"</strong> → ❌ rompe Fast Copy; divide en dos.</li>
+            <li><strong>"Query folding siempre pasa"</strong> → ❌ depende del conector y transforms.</li>
+            <li><strong>"Incremental refresh con cualquier query"</strong> → ❌ requiere folding + columna DateTime.</li>
+            <li><strong>"Incremental borra data histórica fuera de rango"</strong> → ❌ en Gen2 no la toca.</li>
+            <li><strong>"500 buckets por dataflow"</strong> → ❌ 50 por query, 150 por dataflow.</li>
+            <li><strong>"Save y Publish son distintos en CI/CD"</strong> → ❌ Save = Publish.</li>
+            <li><strong>"Un Dataflow debe tener destination"</strong> → ❌ es opcional.</li>
+            <li><strong>"Staging siempre mejora"</strong> → ❌ añade coste; no si ya fold end-to-end.</li>
+            <li><strong>"Dataflows reemplazan al Data Warehouse"</strong> → ❌ limitación oficial.</li>
+          </ul>
+        </article>
+
+        <div class="category-header" id="comparativas"><span class="category-header__icon">🆚</span><h2 class="category-header__title">15. Comparativas clave (chuleta)</h2></div>
+        <article class="concept-card">
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Capability</th><th>Cuándo</th><th>Automático</th></tr></thead>
+              <tbody>
+                <tr><td>Fast Copy</td><td>Copy pura, source compatible</td><td>Opcional (activar)</td></tr>
+                <tr><td>Modern Evaluator</td><td>Non-foldable + heavy shaping</td><td>Automático</td></tr>
+                <tr><td>Optimized copy to Lakehouse</td><td>Staging + destino lakehouse</td><td>Opcional</td></tr>
+                <tr><td>Partitioned Compute</td><td>Datasets grandes particionados</td><td>Automático (Preview)</td></tr>
+                <tr><td>Query folding</td><td>Source foldable + transforms simples</td><td>Automático</td></tr>
+                <tr><td>Staging</td><td>ELT, flujos complejos</td><td>Opcional</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </article>
+
+        <div class="note note--next">🚀 <strong>¡Módulo 5 completado!</strong> Ya dominas el ETL low-code de Fabric. Sigue con el <a href="modulo-6.html">Módulo 6: Pipelines y orquestación</a>. 🌸</div>
+
+        <div class="course-nav">
+          <a href="modulo-4.html"><span class="course-nav__label">← Anterior</span><span class="course-nav__title">Módulo 4 · Tablas Delta Lake</span></a>
+          <a href="modulo-6.html" class="next"><span class="course-nav__label">Siguiente →</span><span class="course-nav__title">Módulo 6 · Pipelines</span></a>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <button id="back-to-top" class="back-to-top" aria-label="Volver arriba" title="Volver arriba">↑</button>
+
+  <script src="https://cdn.jsdelivr.net/npm/i18next@23/dist/umd/i18next.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1/prism.min.js"></script>
+  <script src="../../../assets/js/theme.js"></script>
+  <script src="../../../assets/js/main.js"></script>
+  <script src="../../../assets/js/cursor.js"></script>
+</body>
+</html>

@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="DP-700 Módulo 6: orquestación con Pipelines de Data Factory en Fabric. Actividades, Copy Data vs Copy Job, control flow, parámetros, triggers event-based, monitoring y best practices.">
+  <title>DP-700 · Módulo 6: Pipelines y orquestación | Power BI Guide by Kawaii BI</title>
+  <link rel="canonical" href="https://kawaiibi.es/topics/certificaciones/dp-700/modulo-6.html">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Kawaii Power BI Guide">
+  <meta property="og:locale" content="es_ES">
+  <meta property="og:title" content="DP-700 · Módulo 6: Pipelines y orquestación | Power BI Guide by Kawaii BI">
+  <meta property="og:description" content="DP-700 Módulo 6: Pipelines de Fabric. Actividades, Copy Data vs Copy Job, triggers event-based, parámetros y monitoring.">
+  <meta property="og:url" content="https://kawaiibi.es/topics/certificaciones/dp-700/modulo-6.html">
+  <meta property="og:image" content="https://kawaiibi.es/assets/images/og-banner.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="1200">
+  <meta property="og:image:alt" content="Sara Lozano Marti - Kawaii Power BI">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="DP-700 · Módulo 6: Pipelines y orquestación | Power BI Guide by Kawaii BI">
+  <meta name="twitter:description" content="DP-700 Módulo 6: Pipelines de Fabric. Actividades, Copy Data vs Copy Job, triggers event-based y monitoring.">
+  <meta name="twitter:image" content="https://kawaiibi.es/assets/images/og-banner.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/prismjs@1/themes/prism-okaidia.min.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="../../../assets/css/main.css">
+  <link rel="stylesheet" href="../../../assets/css/themes.css">
+  <link rel="stylesheet" href="../../../assets/css/components.css">
+  <link rel="stylesheet" href="../../../assets/css/layout.css">
+
+  <style>
+    .topic-header { text-align: center; padding: 2.25rem 0 1.75rem; border-bottom: 2px solid var(--color-mauve); margin-bottom: 2rem; }
+    .topic-header__eyebrow { font-family: 'Fira Code', monospace; font-size: 0.8125rem; font-weight: 600; color: var(--color-coral); letter-spacing: 0.05em; }
+    .topic-header__icon { font-size: 3.5rem; margin: 0.5rem 0; display: block; }
+    .topic-header__title { font-size: clamp(1.75rem, 4vw, 2.25rem); font-weight: 800; color: var(--color-dark); margin-bottom: 0.625rem; line-height: 1.2; }
+    .topic-header__subtitle { font-size: 1rem; color: var(--color-slate); margin-bottom: 1.25rem; line-height: 1.55; max-width: 680px; margin-left: auto; margin-right: auto; }
+    .topic-header__levels { display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap; align-items: center; }
+
+    .toc { background: var(--color-rose); border-radius: var(--border-radius); padding: 1.25rem 1.5rem; margin-bottom: 2rem; border: 1.5px solid var(--color-mauve); }
+    .toc__title { font-size: 1rem; font-weight: 700; margin: 0 0 0.75rem; }
+    .toc__list { display: flex; flex-wrap: wrap; gap: 0.5rem; list-style: none; padding: 0; margin: 0; }
+    .toc__list a { font-size: 0.8125rem; color: var(--color-coral); text-decoration: none; padding: 0.25rem 0.625rem; background: var(--color-white); border-radius: 999px; border: 1px solid var(--color-mauve); }
+    .toc__list a:hover { background: var(--color-coral); color: #fff; }
+
+    .category-header { display: flex; align-items: center; gap: 0.75rem; margin: 2.5rem 0 1.25rem; padding: 0.875rem 1.25rem; background: var(--color-rose); border-radius: var(--border-radius-sm); border-left: 4px solid var(--color-coral); scroll-margin-top: 20px; }
+    .category-header__icon { font-size: 1.5rem; }
+    .category-header__title { font-size: 1.25rem; font-weight: 700; margin: 0; }
+
+    .concept-card { background: var(--color-white); border: 1.5px solid var(--color-mauve); border-radius: var(--border-radius); padding: 1.5rem 1.75rem; margin-bottom: 1.25rem; }
+    .concept-card h3 { font-size: 1.0625rem; font-weight: 700; color: var(--color-coral); margin: 0 0 0.6rem; }
+    .concept-card h4 { font-size: 0.9375rem; font-weight: 700; color: var(--color-dark); margin: 1.1rem 0 0.4rem; }
+    .concept-card p { font-size: 0.9375rem; line-height: 1.7; color: var(--color-dark); margin-bottom: 0.7rem; }
+    .concept-card ul, .concept-card ol { padding-left: 1.25rem; font-size: 0.9375rem; line-height: 1.75; color: var(--color-dark); margin: 0.4rem 0; }
+    .concept-card code { background: var(--color-blush); padding: 0.1em 0.4em; border-radius: 4px; font-family: 'Fira Code', monospace; font-size: 0.85em; color: var(--color-coral); }
+    .concept-card pre { margin: 0.75rem 0; }
+
+    .md-table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.84rem; }
+    .md-table th, .md-table td { border: 1px solid var(--color-mauve); padding: 0.5rem 0.7rem; text-align: left; vertical-align: top; }
+    .md-table th { background: var(--color-rose); font-weight: 700; color: var(--color-dark); }
+    .md-table tr:nth-child(even) td { background: var(--color-blush); }
+    .table-scroll { overflow-x: auto; }
+
+    .course-nav { display: flex; justify-content: space-between; gap: 1rem; margin-top: 2.5rem; flex-wrap: wrap; }
+    .course-nav a { flex: 1 1 220px; display: block; background: var(--color-white); border: 1.5px solid var(--color-mauve); border-radius: var(--border-radius); padding: 1rem 1.25rem; text-decoration: none; color: inherit; transition: var(--transition); }
+    .course-nav a:hover { border-color: var(--color-coral); box-shadow: var(--shadow-md); text-decoration: none; }
+    .course-nav__label { font-size: 0.75rem; color: var(--color-slate); text-transform: uppercase; letter-spacing: 0.05em; }
+    .course-nav__title { font-weight: 700; color: var(--color-coral); }
+    .course-nav a.next { text-align: right; }
+  </style>
+</head>
+<body>
+
+  <aside class="site-sidebar">
+    <div class="site-sidebar__profile">
+      <img src="../../../assets/images/avatar-sara.png" alt="Sara Lozano Martí" class="site-sidebar__avatar">
+      <p class="site-sidebar__name">Sara Lozano Martí</p>
+      <p class="site-sidebar__subtitle">Power BI Expert</p>
+    </div>
+    <nav class="site-sidebar__nav" aria-label="Navegación principal">
+      <ul>
+        <li><a href="../../../index.html" class="site-sidebar__link"><span class="site-sidebar__icon">🏠</span> Inicio</a></li>
+        <li><a href="../../dax.html" class="site-sidebar__link"><span class="site-sidebar__icon">⚡</span> Funciones DAX</a></li>
+        <li><a href="../../power-query.html" class="site-sidebar__link"><span class="site-sidebar__icon">🔄</span> Power Query</a></li>
+        <li><a href="../../lenguaje-m.html" class="site-sidebar__link"><span class="site-sidebar__icon">〽️</span> Lenguaje M</a></li>
+        <li><a href="../../modelado.html" class="site-sidebar__link"><span class="site-sidebar__icon">🗄️</span> Modelado</a></li>
+        <li><a href="../../conceptos-powerbi.html" class="site-sidebar__link"><span class="site-sidebar__icon">📊</span> Conceptos Power BI</a></li>
+        <li><a href="../../fabric.html" class="site-sidebar__link"><span class="site-sidebar__icon">🧵</span> Microsoft Fabric</a></li>
+        <li><a href="../../tmdl.html" class="site-sidebar__link"><span class="site-sidebar__icon">📝</span> TMDL</a></li>
+        <li><a href="../../diseno-ux.html" class="site-sidebar__link"><span class="site-sidebar__icon">🎨</span> Diseño y UX</a></li>
+        <li><a href="../../gobernanza.html" class="site-sidebar__link"><span class="site-sidebar__icon">🔒</span> Gobernanza</a></li>
+        <li><a href="../../certificaciones.html" class="site-sidebar__link is-active"><span class="site-sidebar__icon">🎓</span> Certificaciones</a></li>
+      </ul>
+    </nav>
+    <div class="site-sidebar__divider"></div>
+    <div class="site-sidebar__footer">
+      <a href="../../../quien-soy.html" class="site-sidebar__link site-sidebar__link--highlight"><span class="site-sidebar__icon">👩‍💻</span> ¿Quién soy?</a>
+      <div class="site-sidebar__social">
+        <a href="https://www.linkedin.com/in/saralozanomarti" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><img src="../../../assets/images/logo-linkedin.png" alt="LinkedIn" class="site-sidebar__social-icon"></a>
+        <a href="https://www.youtube.com/@KawaiiPowerBI" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><img src="../../../assets/images/logo-youtube.png" alt="YouTube" class="site-sidebar__social-icon"></a>
+        <a href="https://github.com/KawaiiBI" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><img src="../../../assets/images/logo-github.png" alt="GitHub" class="site-sidebar__social-icon"></a>
+      </div>
+      <div class="site-sidebar__logo-bottom"><img src="../../../assets/images/logo-kawaii.jpg" alt="Kawaii BI" class="site-sidebar__logo-img"></div>
+      <p class="site-sidebar__copyright">Power BI Guide 🌸<br>© 2026 Kawaii BI</p>
+    </div>
+  </aside>
+
+  <div class="page-wrapper">
+    <main class="main-content">
+      <div class="topic-page">
+
+        <nav class="breadcrumb" aria-label="Ruta de navegación">
+          <span class="breadcrumb__item"><a href="../../../index.html">🏠 Inicio</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item"><a href="../../certificaciones.html">Certificaciones</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item"><a href="../dp-700.html">DP-700</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item">Módulo 6</span>
+        </nav>
+
+        <header class="topic-header">
+          <span class="topic-header__eyebrow">DP-700 · MÓDULO 6</span>
+          <span class="topic-header__icon">🎼</span>
+          <h1 class="topic-header__title">Orquestación con Pipelines en Fabric</h1>
+          <p class="topic-header__subtitle">El director de orquesta de Fabric: actividades, Copy Data vs Copy Job, control flow, parámetros y expressions, triggers event-based con Activator, monitoring y best practices. 🌸</p>
+          <div class="topic-header__levels">
+            <span class="badge badge--intermediate">Intermedio</span>
+            <span class="badge badge--advanced">Avanzado</span>
+          </div>
+        </header>
+
+        <nav class="toc" aria-label="Índice del módulo">
+          <p class="toc__title">📑 En este módulo:</p>
+          <ul class="toc__list">
+            <li><a href="#objetivos">1. Objetivos</a></li>
+            <li><a href="#que-es">2. ¿Qué es un pipeline?</a></li>
+            <li><a href="#componentes">3. Componentes core</a></li>
+            <li><a href="#categorias">4. 3 categorías de actividades</a></li>
+            <li><a href="#data-movement">5. Copy Data vs Copy Job</a></li>
+            <li><a href="#transformation">6. Actividades de transformación</a></li>
+            <li><a href="#control-flow">7. Control flow</a></li>
+            <li><a href="#parametros">8. Parámetros y expressions</a></li>
+            <li><a href="#runs">9. Runs y triggers</a></li>
+            <li><a href="#events">10. Triggers event-based</a></li>
+            <li><a href="#settings">11. Timeout, retries, secure I/O</a></li>
+            <li><a href="#invoke">12. Invoke y Approval</a></li>
+            <li><a href="#monitoring">13. Monitoring</a></li>
+            <li><a href="#adf">14. Fabric vs ADF</a></li>
+            <li><a href="#trampas">15. Trampas</a></li>
+            <li><a href="#comparativas">16. Comparativas</a></li>
+          </ul>
+        </nav>
+
+        <div class="category-header" id="objetivos"><span class="category-header__icon">🎯</span><h2 class="category-header__title">1. Objetivos y encaje en el DP-700</h2></div>
+        <article class="concept-card">
+          <p>Objetivos: describir capacidades de pipelines, usar Copy Data, crear desde templates y ejecutar/monitorizar. Aparecen <strong>transversalmente en los tres dominios</strong>.</p>
+          <div class="note note--tip">🎯 <strong>Crítico:</strong> actividades más usadas (Copy Data, Dataflow, Notebook, Lookup, Get Metadata, ForEach, If), elección Pipeline vs Dataflow vs Notebook, <strong>triggers event-based con Activator</strong>, parámetros y dynamic content, retry logic y Copy Job.</div>
+        </article>
+
+        <div class="category-header" id="que-es"><span class="category-header__icon">🎼</span><h2 class="category-header__title">2. ¿Qué es un pipeline?</h2></div>
+        <article class="concept-card">
+          <p>Un <strong>pipeline</strong> encapsula una secuencia de <strong>actividades</strong> para mover y procesar datos. Es el <strong>director de orquesta</strong>: no transforma datos por sí mismo, coordina las actividades. Se diseña en un <strong>canvas gráfico</strong>, sin código.</p>
+          <p>Puede: mover datos, ejecutar transformaciones (dataflows, notebooks, SQL), orquestar con dependencias (success/failure/completion), aplicar lógica de control, ejecutarse por schedule o eventos, parametrizarse y notificar (Teams, Outlook, webhooks).</p>
+        </article>
+
+        <div class="category-header" id="componentes"><span class="category-header__icon">🧩</span><h2 class="category-header__title">3. Componentes core</h2></div>
+        <article class="concept-card">
+          <ul>
+            <li><strong>Actividades:</strong> tareas ejecutables. Cada una tiene un outcome (success, failure, completion, skipped) y se conectan según el outcome de la anterior.</li>
+            <li><strong>Parámetros:</strong> input externo, se pasan al ejecutar, <strong>inmutables</strong> durante el run.</li>
+            <li><strong>Variables:</strong> estado interno, <strong>mutables</strong>, se calculan durante el run.</li>
+            <li><strong>Pipeline runs:</strong> cada ejecución con ID único. On-demand, scheduled o event-based.</li>
+          </ul>
+        </article>
+
+        <div class="category-header" id="categorias"><span class="category-header__icon">🏷️</span><h2 class="category-header__title">4. Las 3 categorías de actividades</h2></div>
+        <article class="concept-card">
+          <ul>
+            <li><strong>Data movement:</strong> Copy Data, Copy Job.</li>
+            <li><strong>Data transformation:</strong> Dataflow Gen2, Notebook, Spark Job Definition, Stored Procedure, SQL Script, Delete Data.</li>
+            <li><strong>Control flow:</strong> loops, condicionales, esperas, invocación de pipelines.</li>
+          </ul>
+          <div class="note note--tip">🎯 Novedades Fabric vs ADF: <strong>Outlook, Teams, Semantic model refresh, Dataflow Gen2, Refresh SQL Endpoint, Lakehouse Maintenance</strong>.</div>
+        </article>
+
+        <div class="category-header" id="data-movement"><span class="category-header__icon">🚚</span><h2 class="category-header__title">5. Copy Data vs Copy Job</h2></div>
+        <article class="concept-card">
+          <p><strong>Copy Data</strong> es la actividad más usada: mueve datos de un source a un destino Fabric, sin transformar (o mínimo). Update methods según destino (Append, Overwrite, Upsert, Merge). Copy behavior de ficheros: PreserveHierarchy, FlattenHierarchy, MergeFiles.</p>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Aspecto</th><th>Copy Data</th><th>Copy Job</th></tr></thead>
+              <tbody>
+                <tr><td>Tipo</td><td>Actividad de pipeline</td><td>Item independiente</td></tr>
+                <tr><td>CDC</td><td>⚠️ Setup manual</td><td>✅ Nativo (Preview)</td></tr>
+                <tr><td>SCD</td><td>⚠️ Lógica adicional</td><td>✅ Type 1 y Type 2</td></tr>
+                <tr><td>Uso típico</td><td>Dentro de pipelines complejos</td><td>Movimiento standalone</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </article>
+
+        <div class="category-header" id="transformation"><span class="category-header__icon">🔄</span><h2 class="category-header__title">6. Actividades de transformación</h2></div>
+        <article class="concept-card">
+          <p>Cada una con su motor: Notebook y Spark Job Definition usan clusters Spark; Stored Procedure y SQL Script usan Azure SQL/Synapse/SQL Server/Warehouse; Copy Data, Dataflow y Delete Data usan compute de Fabric.</p>
+          <h4>Notebook activity (la más flexible)</h4>
+          <p>Ejecuta un notebook con <strong>base parameters</strong> que sobrescriben la celda con tag <code>parameters</code>. Notebook = interactivo (desarrollo); <strong>Spark Job Definition</strong> = script puro (producción).</p>
+        </article>
+
+        <div class="category-header" id="control-flow"><span class="category-header__icon">🔀</span><h2 class="category-header__title">7. Control flow (catálogo)</h2></div>
+        <article class="concept-card">
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Actividad</th><th>Para qué</th></tr></thead>
+              <tbody>
+                <tr><td><strong>If Condition</strong></td><td>if/else según expresión</td></tr>
+                <tr><td><strong>Switch</strong></td><td>switch/case, múltiples caminos</td></tr>
+                <tr><td><strong>ForEach</strong></td><td>Iterar colección (paralelo o secuencial, batch count 20)</td></tr>
+                <tr><td><strong>Until</strong></td><td>do/while hasta condición (requiere timeout)</td></tr>
+                <tr><td><strong>Wait</strong></td><td>Pausar N segundos</td></tr>
+                <tr><td><strong>Web / Webhook</strong></td><td>Llamar REST API (webhook espera callback)</td></tr>
+                <tr><td><strong>Lookup</strong></td><td>Leer un record/tabla para usar después</td></tr>
+                <tr><td><strong>Get Metadata</strong></td><td>Info de un dataset (existe, tamaño, timestamp)</td></tr>
+                <tr><td><strong>Set / Append Variable</strong></td><td>Asignar valor / acumular en array</td></tr>
+                <tr><td><strong>Filter</strong></td><td>Filtrar un array</td></tr>
+                <tr><td><strong>Invoke Pipeline</strong></td><td>Ejecutar otro pipeline</td></tr>
+                <tr><td><strong>Fail</strong></td><td>Fallo intencional con mensaje</td></tr>
+                <tr><td><strong>Refresh SQL Endpoint</strong></td><td>Sync metadata del SQL endpoint del lakehouse</td></tr>
+                <tr><td><strong>Lakehouse Maintenance</strong></td><td>OPTIMIZE + V-Order en tablas Delta</td></tr>
+                <tr><td><strong>Approval</strong></td><td>Pausa y pide aprobación humana</td></tr>
+                <tr><td><strong>Teams / Outlook</strong></td><td>Notificar (nuevas en Fabric)</td></tr>
+                <tr><td><strong>KQL</strong></td><td>Ejecutar KQL contra Eventhouse</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </article>
+
+        <div class="category-header" id="parametros"><span class="category-header__icon">🎨</span><h2 class="category-header__title">8. Parámetros, variables y expressions</h2></div>
+        <article class="concept-card">
+          <p>Las expressions empiezan con <code>@</code>. Referenciar: <code>@pipeline().parameters.x</code>, <code>@variables('x')</code>, <code>@activity('Lookup1').output.value</code>, <code>@pipeline().RunId</code>.</p>
+          <pre><code class="language-plaintext">@utcnow()
+@formatDateTime(utcnow(), 'yyyy-MM-dd')
+@concat('Files/ingested/', pipeline().parameters.source_name, '/', formatDateTime(utcnow(), 'yyyy/MM/dd'), '/')
+@if(equals(x, y), 'igual', 'distinto')
+@length(myArray)   @contains(myArray, item)   @first(myArray)</code></pre>
+          <p>El <strong>Dynamic content builder</strong> (icono fx / <em>Add dynamic content</em>) te deja componer expressions visualmente.</p>
+        </article>
+
+        <div class="category-header" id="runs"><span class="category-header__icon">🏃</span><h2 class="category-header__title">9. Pipeline runs y triggers</h2></div>
+        <article class="concept-card">
+          <ul>
+            <li><strong>On-demand:</strong> botón Run (guarda antes de ejecutar).</li>
+            <li><strong>Scheduled:</strong> start/end date, time zone, frequency (Minute, Hour, Day, Week, Month) e interval.</li>
+            <li><strong>Event-based:</strong> por eventos (fichero, job, workspace) usando Activator (ver siguiente sección).</li>
+          </ul>
+        </article>
+
+        <div class="category-header" id="events"><span class="category-header__icon">🚨</span><h2 class="category-header__title">10. Triggers event-based (Activator)</h2></div>
+        <article class="concept-card">
+          <p>Ejecutan un pipeline automáticamente ante un evento en OneLake, Azure Blob Storage, jobs de Fabric o workspace. Arquitectura: fichero llega → evento emitido → <strong>Eventstream</strong> capta → <strong>Activator</strong> evalúa → pipeline se ejecuta.</p>
+          <p>Eventos típicos: <code>Microsoft.Fabric.OneLake.FileCreated/FileDeleted</code>, <code>Microsoft.Storage.BlobCreated/BlobDeleted</code>. Filtros por folder path o file name pattern (vía Subject).</p>
+          <h4>🎯 Trigger parameters</h4>
+          <pre><code class="language-plaintext">@pipeline()?.TriggerEvent?.FileName
+@pipeline()?.TriggerEvent?.FolderPath</code></pre>
+          <div class="note note--warning">⚠️ El <code>?</code> es <strong>null-safe access</strong>: en run manual estos valores son NULL, y el <code>?</code> evita que el pipeline falle al testear.</div>
+        </article>
+
+        <div class="category-header" id="settings"><span class="category-header__icon">⚙️</span><h2 class="category-header__title">11. Timeout, retries y secure I/O</h2></div>
+        <article class="concept-card">
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Setting</th><th>Default</th><th>Máximo</th></tr></thead>
+              <tbody>
+                <tr><td>Timeout (formato D.HH:MM:SS)</td><td>12 horas</td><td>7 días</td></tr>
+                <tr><td>Retries</td><td>0 (desactivado)</td><td>—</td></tr>
+                <tr><td>Retry interval</td><td>30 seg</td><td>—</td></tr>
+                <tr><td>Actividades por pipeline</td><td>—</td><td><strong>120</strong> (incluye anidadas)</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p><strong>Secure input/output:</strong> el input/output no aparece en logs (para credenciales, tokens). Los datos siguen llegando al destino, solo se ocultan en logs.</p>
+        </article>
+
+        <div class="category-header" id="invoke"><span class="category-header__icon">🔗</span><h2 class="category-header__title">12. Invoke Pipeline y Approval</h2></div>
+        <article class="concept-card">
+          <p><strong>Invoke Pipeline:</strong> ejecuta otro pipeline (modularizar, reutilizar, escapar del límite de 120 actividades). Patrón master + workers: Lookup lista de sources → ForEach → Invoke Pipeline por cada source.</p>
+          <p><strong>Approval:</strong> pausa el pipeline y pide decisión humana (aprobar/rechazar) desde Teams o email. Approved → camino success; Rejected → failure. Queda auditable (quién y cuándo). Solo bloquea ese pipeline, no el workspace.</p>
+        </article>
+
+        <div class="category-header" id="monitoring"><span class="category-header__icon">📊</span><h2 class="category-header__title">13. Monitoring y notificaciones</h2></div>
+        <article class="concept-card">
+          <p>Monitoriza desde el tab <strong>Runs</strong> del pipeline, el <strong>Monitor Hub</strong> (todos los pipelines) y la lista del workspace. Real-time con indicadores por actividad (verde/rojo/amarillo/gris). Run history con timestamps, duración, input/output por actividad, trigger y parámetros.</p>
+          <p><strong>Failure notifications:</strong> por schedule (email), con Teams/Outlook activities en rama on-failure, o con Activator para acciones avanzadas.</p>
+        </article>
+
+        <div class="category-header" id="adf"><span class="category-header__icon">🆚</span><h2 class="category-header__title">14. Fabric vs Azure Data Factory</h2></div>
+        <article class="concept-card">
+          <p>El concepto de pipeline, actividades y expression language es casi idéntico. <strong>Fabric añade:</strong> Outlook, Teams, Semantic model refresh, Dataflow Gen2, Refresh SQL Endpoint, Lakehouse Maintenance, Copy Job. <strong>Fabric cambia:</strong> Wrangling Data Flow → Dataflow Gen2. Los features nuevos de Fabric <strong>no se backportan</strong> a ADF (roadmaps separados).</p>
+        </article>
+
+        <div class="category-header" id="trampas"><span class="category-header__icon">⚠️</span><h2 class="category-header__title">15. Trampas típicas</h2></div>
+        <article class="concept-card">
+          <ul>
+            <li><strong>"Pipeline = dataflow"</strong> → ❌ pipeline orquesta, dataflow transforma.</li>
+            <li><strong>"Copy Data es la única forma de mover datos"</strong> → ❌ también Copy Job, Dataflow, Notebook, Shortcuts, Mirroring.</li>
+            <li><strong>"500 actividades por pipeline"</strong> → ❌ máximo 120 (incluidas anidadas).</li>
+            <li><strong>"Retries automáticos"</strong> → ❌ desactivados por defecto.</li>
+            <li><strong>"Parámetros = variables"</strong> → ❌ parámetros inmutables/externos, variables mutables/internas.</li>
+            <li><strong>"Trigger parameters funcionan en run manual"</strong> → ❌ son NULL (por eso el <code>?</code>).</li>
+            <li><strong>"Timeout máximo 24h"</strong> → ❌ máximo 7 días (default 12h).</li>
+            <li><strong>"Refresh SQL Endpoint refresca datos"</strong> → ❌ refresca el metadata sync del SQL endpoint del lakehouse.</li>
+            <li><strong>"ForEach siempre en paralelo"</strong> → ❌ configurable (batch count default 20).</li>
+            <li><strong>"Event triggers solo con OneLake"</strong> → ❌ también Azure Blob Storage.</li>
+            <li><strong>"Secure I/O oculta datos en el destino"</strong> → ❌ solo en los logs.</li>
+          </ul>
+        </article>
+
+        <div class="category-header" id="comparativas"><span class="category-header__icon">🆚</span><h2 class="category-header__title">16. Comparativas clave (chuleta)</h2></div>
+        <article class="concept-card">
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Necesito...</th><th>Herramienta</th></tr></thead>
+              <tbody>
+                <tr><td>Orquestar pasos con dependencias / ejecución por eventos</td><td><strong>Pipeline</strong></td></tr>
+                <tr><td>Copiar datos raw sin transformar</td><td>Pipeline (Copy Data)</td></tr>
+                <tr><td>Transformación low-code visual</td><td>Dataflow Gen2 (como actividad)</td></tr>
+                <tr><td>Transformación con código Spark/Python</td><td>Notebook (como actividad)</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Trigger</th><th>Cuándo</th><th>Config</th></tr></thead>
+              <tbody>
+                <tr><td>On-demand</td><td>Manual</td><td>Botón Run</td></tr>
+                <tr><td>Scheduled</td><td>Por horario</td><td>Frequency + interval</td></tr>
+                <tr><td>Event-based</td><td>Por evento</td><td>Con Activator</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </article>
+
+        <div class="note note--next">🚀 <strong>¡Módulo 6 completado!</strong> Ya orquestas como una pro. Sigue con el <a href="modulo-7.html">Módulo 7: Arquitectura Medallion</a>. 🌸</div>
+
+        <div class="course-nav">
+          <a href="modulo-5.html"><span class="course-nav__label">← Anterior</span><span class="course-nav__title">Módulo 5 · Dataflows Gen2</span></a>
+          <a href="modulo-7.html" class="next"><span class="course-nav__label">Siguiente →</span><span class="course-nav__title">Módulo 7 · Medallion</span></a>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <button id="back-to-top" class="back-to-top" aria-label="Volver arriba" title="Volver arriba">↑</button>
+
+  <script src="https://cdn.jsdelivr.net/npm/i18next@23/dist/umd/i18next.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1/prism.min.js"></script>
+  <script src="../../../assets/js/theme.js"></script>
+  <script src="../../../assets/js/main.js"></script>
+  <script src="../../../assets/js/cursor.js"></script>
+</body>
+</html>
