@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="DP-700 Módulo 4: trabajar con tablas Delta Lake en Fabric. Anatomía, MERGE, SCD Type 1 y 2, schema evolution, time travel, OPTIMIZE, V-Order, VACUUM, particionado y streaming.">
+  <title>DP-700 · Módulo 4: Tablas Delta Lake | Power BI Guide by Kawaii BI</title>
+  <link rel="canonical" href="https://kawaiibi.es/topics/certificaciones/dp-700/modulo-4.html">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Kawaii Power BI Guide">
+  <meta property="og:locale" content="es_ES">
+  <meta property="og:title" content="DP-700 · Módulo 4: Tablas Delta Lake | Power BI Guide by Kawaii BI">
+  <meta property="og:description" content="DP-700 Módulo 4: tablas Delta Lake en Fabric. MERGE, SCD, schema evolution, time travel, OPTIMIZE, V-Order, VACUUM y streaming.">
+  <meta property="og:url" content="https://kawaiibi.es/topics/certificaciones/dp-700/modulo-4.html">
+  <meta property="og:image" content="https://kawaiibi.es/assets/images/og-banner.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="1200">
+  <meta property="og:image:alt" content="Sara Lozano Marti - Kawaii Power BI">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="DP-700 · Módulo 4: Tablas Delta Lake | Power BI Guide by Kawaii BI">
+  <meta name="twitter:description" content="DP-700 Módulo 4: tablas Delta Lake. MERGE, SCD, time travel, OPTIMIZE, V-Order, VACUUM y streaming.">
+  <meta name="twitter:image" content="https://kawaiibi.es/assets/images/og-banner.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/prismjs@1/themes/prism-okaidia.min.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="../../../assets/css/main.css">
+  <link rel="stylesheet" href="../../../assets/css/themes.css">
+  <link rel="stylesheet" href="../../../assets/css/components.css">
+  <link rel="stylesheet" href="../../../assets/css/layout.css">
+
+  <style>
+    .topic-header { text-align: center; padding: 2.25rem 0 1.75rem; border-bottom: 2px solid var(--color-mauve); margin-bottom: 2rem; }
+    .topic-header__eyebrow { font-family: 'Fira Code', monospace; font-size: 0.8125rem; font-weight: 600; color: var(--color-coral); letter-spacing: 0.05em; }
+    .topic-header__icon { font-size: 3.5rem; margin: 0.5rem 0; display: block; }
+    .topic-header__title { font-size: clamp(1.75rem, 4vw, 2.25rem); font-weight: 800; color: var(--color-dark); margin-bottom: 0.625rem; line-height: 1.2; }
+    .topic-header__subtitle { font-size: 1rem; color: var(--color-slate); margin-bottom: 1.25rem; line-height: 1.55; max-width: 680px; margin-left: auto; margin-right: auto; }
+    .topic-header__levels { display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap; align-items: center; }
+
+    .toc { background: var(--color-rose); border-radius: var(--border-radius); padding: 1.25rem 1.5rem; margin-bottom: 2rem; border: 1.5px solid var(--color-mauve); }
+    .toc__title { font-size: 1rem; font-weight: 700; margin: 0 0 0.75rem; }
+    .toc__list { display: flex; flex-wrap: wrap; gap: 0.5rem; list-style: none; padding: 0; margin: 0; }
+    .toc__list a { font-size: 0.8125rem; color: var(--color-coral); text-decoration: none; padding: 0.25rem 0.625rem; background: var(--color-white); border-radius: 999px; border: 1px solid var(--color-mauve); }
+    .toc__list a:hover { background: var(--color-coral); color: #fff; }
+
+    .category-header { display: flex; align-items: center; gap: 0.75rem; margin: 2.5rem 0 1.25rem; padding: 0.875rem 1.25rem; background: var(--color-rose); border-radius: var(--border-radius-sm); border-left: 4px solid var(--color-coral); scroll-margin-top: 20px; }
+    .category-header__icon { font-size: 1.5rem; }
+    .category-header__title { font-size: 1.25rem; font-weight: 700; margin: 0; }
+
+    .concept-card { background: var(--color-white); border: 1.5px solid var(--color-mauve); border-radius: var(--border-radius); padding: 1.5rem 1.75rem; margin-bottom: 1.25rem; }
+    .concept-card h3 { font-size: 1.0625rem; font-weight: 700; color: var(--color-coral); margin: 0 0 0.6rem; }
+    .concept-card h4 { font-size: 0.9375rem; font-weight: 700; color: var(--color-dark); margin: 1.1rem 0 0.4rem; }
+    .concept-card p { font-size: 0.9375rem; line-height: 1.7; color: var(--color-dark); margin-bottom: 0.7rem; }
+    .concept-card ul, .concept-card ol { padding-left: 1.25rem; font-size: 0.9375rem; line-height: 1.75; color: var(--color-dark); margin: 0.4rem 0; }
+    .concept-card code { background: var(--color-blush); padding: 0.1em 0.4em; border-radius: 4px; font-family: 'Fira Code', monospace; font-size: 0.85em; color: var(--color-coral); }
+    .concept-card pre { margin: 0.75rem 0; }
+
+    .md-table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.84rem; }
+    .md-table th, .md-table td { border: 1px solid var(--color-mauve); padding: 0.5rem 0.7rem; text-align: left; vertical-align: top; }
+    .md-table th { background: var(--color-rose); font-weight: 700; color: var(--color-dark); }
+    .md-table tr:nth-child(even) td { background: var(--color-blush); }
+    .table-scroll { overflow-x: auto; }
+
+    .course-nav { display: flex; justify-content: space-between; gap: 1rem; margin-top: 2.5rem; flex-wrap: wrap; }
+    .course-nav a { flex: 1 1 220px; display: block; background: var(--color-white); border: 1.5px solid var(--color-mauve); border-radius: var(--border-radius); padding: 1rem 1.25rem; text-decoration: none; color: inherit; transition: var(--transition); }
+    .course-nav a:hover { border-color: var(--color-coral); box-shadow: var(--shadow-md); text-decoration: none; }
+    .course-nav__label { font-size: 0.75rem; color: var(--color-slate); text-transform: uppercase; letter-spacing: 0.05em; }
+    .course-nav__title { font-weight: 700; color: var(--color-coral); }
+    .course-nav a.next { text-align: right; }
+  </style>
+</head>
+<body>
+
+  <aside class="site-sidebar">
+    <div class="site-sidebar__profile">
+      <img src="../../../assets/images/avatar-sara.png" alt="Sara Lozano Martí" class="site-sidebar__avatar">
+      <p class="site-sidebar__name">Sara Lozano Martí</p>
+      <p class="site-sidebar__subtitle">Power BI Expert</p>
+    </div>
+    <nav class="site-sidebar__nav" aria-label="Navegación principal">
+      <ul>
+        <li><a href="../../../index.html" class="site-sidebar__link"><span class="site-sidebar__icon">🏠</span> Inicio</a></li>
+        <li><a href="../../dax.html" class="site-sidebar__link"><span class="site-sidebar__icon">⚡</span> Funciones DAX</a></li>
+        <li><a href="../../power-query.html" class="site-sidebar__link"><span class="site-sidebar__icon">🔄</span> Power Query</a></li>
+        <li><a href="../../lenguaje-m.html" class="site-sidebar__link"><span class="site-sidebar__icon">〽️</span> Lenguaje M</a></li>
+        <li><a href="../../modelado.html" class="site-sidebar__link"><span class="site-sidebar__icon">🗄️</span> Modelado</a></li>
+        <li><a href="../../conceptos-powerbi.html" class="site-sidebar__link"><span class="site-sidebar__icon">📊</span> Conceptos Power BI</a></li>
+        <li><a href="../../fabric.html" class="site-sidebar__link"><span class="site-sidebar__icon">🧵</span> Microsoft Fabric</a></li>
+        <li><a href="../../tmdl.html" class="site-sidebar__link"><span class="site-sidebar__icon">📝</span> TMDL</a></li>
+        <li><a href="../../diseno-ux.html" class="site-sidebar__link"><span class="site-sidebar__icon">🎨</span> Diseño y UX</a></li>
+        <li><a href="../../gobernanza.html" class="site-sidebar__link"><span class="site-sidebar__icon">🔒</span> Gobernanza</a></li>
+        <li><a href="../../certificaciones.html" class="site-sidebar__link is-active"><span class="site-sidebar__icon">🎓</span> Certificaciones</a></li>
+      </ul>
+    </nav>
+    <div class="site-sidebar__divider"></div>
+    <div class="site-sidebar__footer">
+      <a href="../../../quien-soy.html" class="site-sidebar__link site-sidebar__link--highlight"><span class="site-sidebar__icon">👩‍💻</span> ¿Quién soy?</a>
+      <div class="site-sidebar__social">
+        <a href="https://www.linkedin.com/in/saralozanomarti" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><img src="../../../assets/images/logo-linkedin.png" alt="LinkedIn" class="site-sidebar__social-icon"></a>
+        <a href="https://www.youtube.com/@KawaiiPowerBI" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><img src="../../../assets/images/logo-youtube.png" alt="YouTube" class="site-sidebar__social-icon"></a>
+        <a href="https://github.com/KawaiiBI" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><img src="../../../assets/images/logo-github.png" alt="GitHub" class="site-sidebar__social-icon"></a>
+      </div>
+      <div class="site-sidebar__logo-bottom"><img src="../../../assets/images/logo-kawaii.jpg" alt="Kawaii BI" class="site-sidebar__logo-img"></div>
+      <p class="site-sidebar__copyright">Power BI Guide 🌸<br>© 2026 Kawaii BI</p>
+    </div>
+  </aside>
+
+  <div class="page-wrapper">
+    <main class="main-content">
+      <div class="topic-page">
+
+        <nav class="breadcrumb" aria-label="Ruta de navegación">
+          <span class="breadcrumb__item"><a href="../../../index.html">🏠 Inicio</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item"><a href="../../certificaciones.html">Certificaciones</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item"><a href="../dp-700.html">DP-700</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item">Módulo 4</span>
+        </nav>
+
+        <header class="topic-header">
+          <span class="topic-header__eyebrow">DP-700 · MÓDULO 4</span>
+          <span class="topic-header__icon">💎</span>
+          <h1 class="topic-header__title">Tablas Delta Lake en Microsoft Fabric</h1>
+          <p class="topic-header__subtitle">El módulo más importante de la Fase 1: anatomía de Delta, MERGE y SCD, schema evolution, time travel, OPTIMIZE, V-Order, VACUUM, particionado y streaming. 🌸</p>
+          <div class="topic-header__levels">
+            <span class="badge badge--intermediate">Intermedio</span>
+            <span class="badge badge--advanced">Avanzado</span>
+          </div>
+        </header>
+
+        <nav class="toc" aria-label="Índice del módulo">
+          <p class="toc__title">📑 En este módulo:</p>
+          <ul class="toc__list">
+            <li><a href="#objetivos">1. Objetivos</a></li>
+            <li><a href="#que-es">2. ¿Qué es Delta Lake?</a></li>
+            <li><a href="#anatomia">3. Anatomía de una tabla Delta</a></li>
+            <li><a href="#beneficios">4. Los 5 beneficios</a></li>
+            <li><a href="#crear">5. Crear tablas Delta</a></li>
+            <li><a href="#managed">6. Managed vs External</a></li>
+            <li><a href="#operaciones">7. SELECT, INSERT, UPDATE, DELETE</a></li>
+            <li><a href="#merge">8. MERGE INTO y SCD</a></li>
+            <li><a href="#schema">9. Schema evolution</a></li>
+            <li><a href="#time-travel">10. Time travel</a></li>
+            <li><a href="#optimizacion">11. OptimizeWrite, OPTIMIZE, V-Order</a></li>
+            <li><a href="#vacuum">12. VACUUM</a></li>
+            <li><a href="#particionado">13. Particionado</a></li>
+            <li><a href="#streaming">14. Streaming</a></li>
+            <li><a href="#trampas">15. Trampas</a></li>
+            <li><a href="#comparativas">16. Comparativas</a></li>
+          </ul>
+        </nav>
+
+        <!-- 1 -->
+        <div class="category-header" id="objetivos"><span class="category-header__icon">🎯</span><h2 class="category-header__title">1. Objetivos y encaje en el DP-700</h2></div>
+        <article class="concept-card">
+          <h3>La tecnología que sostiene todo el data engineering</h3>
+          <p>Objetivos: entender Delta Lake, crear y gestionar tablas Delta con Spark, optimizarlas, consultarlas/transformarlas y usarlas con Structured Streaming. Aparece de forma transversal en todo el examen.</p>
+          <div class="note note--tip">🎯 <strong>Crítico para dominar:</strong> <strong>MERGE</strong> (upserts, SCD Type 1 y 2), <strong>time travel</strong>, <strong>OPTIMIZE + V-Order + VACUUM</strong>, <strong>streaming</strong> con Delta y <strong>schema evolution</strong>.</div>
+        </article>
+
+        <!-- 2 -->
+        <div class="category-header" id="que-es"><span class="category-header__icon">💎</span><h2 class="category-header__title">2. ¿Qué es Delta Lake exactamente?</h2></div>
+        <article class="concept-card">
+          <h3>Semántica de base de datos sobre el data lake</h3>
+          <p><strong>Delta Lake</strong> es una storage layer open-source que hace que un montón de ficheros Parquet <strong>se comporten como una tabla de base de datos</strong> (transacciones, schema, versiones). En el Lakehouse explorer las tablas Delta llevan el <strong>icono triangular Δ</strong>. En Fabric, <strong>todas las tablas de un lakehouse son Delta por defecto</strong>.</p>
+          <div class="note note--tip">🌷 <strong>Analogía kawaii:</strong> Parquet son hojas sueltas; Delta Lake las encuaderna con un índice detallado y un registro de cambios. Ahora puedes actualizar, versionar y auditar.</div>
+        </article>
+
+        <!-- 3 -->
+        <div class="category-header" id="anatomia"><span class="category-header__icon">🩺</span><h2 class="category-header__title">3. Anatomía de una tabla Delta</h2></div>
+        <article class="concept-card">
+          <h3>Datos (Parquet) + transaction log</h3>
+          <pre><code class="language-plaintext">Tables/mi_tabla_delta/
+├── part-00000-....snappy.parquet   ← Datos (Parquet, inmutables)
+├── part-00001-....snappy.parquet
+└── _delta_log/                     ← Transaction log
+    ├── 00000000000000000000.json   ← Cada operación = 1 JSON
+    └── ...checkpoint.parquet       ← Checkpoint cada N versiones</code></pre>
+          <p>Los <strong>Parquet</strong> son inmutables (cada cambio genera ficheros nuevos). El <code>_delta_log</code> registra qué ficheros están activos en cada versión.</p>
+          <h4>🎯 ¿Cómo se hace UPDATE si Parquet es inmutable?</h4>
+          <p>Delta usa <strong>copy-on-write</strong>: lee los ficheros afectados, escribe <strong>ficheros nuevos</strong> con las filas actualizadas y marca los viejos como removidos en el nuevo JSON del log. Por eso se acumulan ficheros pequeños (que resolvemos con OPTIMIZE), y los viejos habilitan time travel hasta que hagas VACUUM.</p>
+        </article>
+
+        <!-- 4 -->
+        <div class="category-header" id="beneficios"><span class="category-header__icon">✨</span><h2 class="category-header__title">4. Los 5 grandes beneficios de Delta</h2></div>
+        <article class="concept-card">
+          <h3>Los 5 puntos oficiales</h3>
+          <ul>
+            <li>🎯 <strong>Tablas relacionales con CRUD:</strong> CREATE, SELECT, INSERT, UPDATE, DELETE, MERGE sobre tu data lake.</li>
+            <li>🎯 <strong>Transacciones ACID:</strong> varios notebooks escriben a la misma tabla sin corromperla.</li>
+            <li>🎯 <strong>Versionado y time travel:</strong> historial completo, consultar el pasado, auditar, recuperar errores.</li>
+            <li>🎯 <strong>Batch y streaming:</strong> Delta puede ser sink o source de un stream con la misma API.</li>
+            <li>🎯 <strong>Formato estándar:</strong> Parquet por debajo, interoperable con el SQL endpoint, Databricks, Snowflake, etc.</li>
+          </ul>
+        </article>
+
+        <!-- 5 -->
+        <div class="category-header" id="crear"><span class="category-header__icon">🛠️</span><h2 class="category-header__title">5. Crear tablas Delta: 5 formas</h2></div>
+        <article class="concept-card">
+          <pre><code class="language-python"># 1) saveAsTable desde un DataFrame (el más común, managed)
+df.write.format("delta").saveAsTable("mytable")
+
+# 2) saveAsTable con path (external)
+df.write.format("delta").saveAsTable("myext", path="Files/myext")
+
+# 3) DeltaTableBuilder (tabla vacía con schema)
+from delta.tables import *
+DeltaTable.create(spark).tableName("products") \
+  .addColumn("ProductId", "INT").addColumn("Price", "FLOAT").execute()
+
+# 5) Escribir Delta sin registrar en el catálogo
+df.write.format("delta").save("Files/mydatatable")</code></pre>
+          <pre><code class="language-sql">-- 4) SQL CREATE TABLE
+CREATE TABLE salesorders (OrderId INT, SalesTotal FLOAT) USING DELTA;</code></pre>
+          <div class="note note--tip">✨ <strong>Automatic table discovery:</strong> si guardas Delta en <code>Tables/nombre/</code> (en vez de <code>Files/</code>), Fabric crea el metadata automáticamente, sin <code>saveAsTable</code>.</div>
+        </article>
+
+        <!-- 6 -->
+        <div class="category-header" id="managed"><span class="category-header__icon">🔧</span><h2 class="category-header__title">6. Managed vs External</h2></div>
+        <article class="concept-card">
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th></th><th>Managed</th><th>External</th></tr></thead>
+              <tbody>
+                <tr><td>Ubicación datos</td><td><code>Tables/</code></td><td>Ruta que especificas (<code>path</code>/<code>LOCATION</code>)</td></tr>
+                <tr><td>DROP borra datos</td><td>✅ Sí</td><td>❌ Solo el metadata</td></tr>
+                <tr><td>Recomendado en Fabric</td><td>✅</td><td>Prefiere <strong>shortcuts</strong></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="note note--warning">⚠️ <strong>Oficial:</strong> los lakehouses soportan solo managed tables; <code>CREATE TABLE ... LOCATION</code> no está soportado. Para acceder a datos externos, la respuesta esperada en el examen es <strong>shortcuts</strong>.</div>
+        </article>
+
+        <!-- 7 -->
+        <div class="category-header" id="operaciones"><span class="category-header__icon">🔄</span><h2 class="category-header__title">7. Operaciones: SELECT, INSERT, UPDATE, DELETE</h2></div>
+        <article class="concept-card">
+          <h3>Relacional completo con Spark SQL o Delta API</h3>
+          <pre><code class="language-sql">SELECT * FROM products WHERE Category = 'Bikes';
+INSERT INTO products VALUES (1, 'Widget', 'Accessories', 2.99);
+UPDATE products SET ListPrice = 2.49 WHERE ProductId = 1;
+DELETE FROM products WHERE Discontinued = true;</code></pre>
+          <pre><code class="language-python">from delta.tables import *
+# Por nombre (catálogo) o por ruta
+dt = DeltaTable.forName(spark, "products")
+dt.update(condition="Category = 'Accessories'", set={"Price": "Price * 0.9"})
+dt.delete(condition="Discontinued = true")</code></pre>
+          <p>Usa <strong>Spark SQL</strong> para catalog tables y lógica declarativa; usa la <strong>Delta API</strong> (<code>forPath</code>/<code>forName</code>) para datos por ruta y operaciones programáticas complejas.</p>
+        </article>
+
+        <!-- 8 -->
+        <div class="category-header" id="merge"><span class="category-header__icon">👑</span><h2 class="category-header__title">8. MERGE INTO: el rey del upsert</h2></div>
+        <article class="concept-card">
+          <h3>INSERT + UPDATE + DELETE en una operación atómica</h3>
+          <pre><code class="language-sql">MERGE INTO people10m t
+USING people10m_updates s
+ON t.id = s.id
+WHEN MATCHED THEN UPDATE SET *
+WHEN NOT MATCHED THEN INSERT *</code></pre>
+          <p>Cláusulas: <code>WHEN MATCHED</code>, <code>WHEN NOT MATCHED</code> y <code>WHEN NOT MATCHED BY SOURCE</code> (útil para deletes de sincronización). Con condiciones (<code>AND</code>) haces UPDATE/DELETE/INSERT selectivos. Sin <code>WHEN MATCHED</code>, el MERGE actúa como <strong>deduplicación</strong> (exactly-once).</p>
+          <h4>🎯 SCD Type 1 (sobrescribir) vs Type 2 (historial)</h4>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th></th><th>SCD Type 1</th><th>SCD Type 2</th></tr></thead>
+              <tbody>
+                <tr><td>Historial</td><td>❌ No preservado</td><td>✅ Preservado (filas versionadas con Valid_From/To, Is_Current)</td></tr>
+                <tr><td>Deletes</td><td>Físicos</td><td>Soft (Is_Current=false)</td></tr>
+                <tr><td>Complejidad</td><td>Baja</td><td>Alta</td></tr>
+                <tr><td>Uso típico</td><td>Reporting operacional</td><td>Auditoría, compliance</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="note note--warning">⚠️ Si el <strong>source tiene filas duplicadas</strong> que hacen match con la misma fila del target, MERGE <strong>falla</strong>. Deduplica el source antes: <code>source.dropDuplicates(["id"])</code>. En Fabric, <strong>Copy Job soporta SCD Type 2 nativamente</strong> (preview).</div>
+        </article>
+
+        <!-- 9 -->
+        <div class="category-header" id="schema"><span class="category-header__icon">🔀</span><h2 class="category-header__title">9. Schema evolution</h2></div>
+        <article class="concept-card">
+          <h3>Modificar el schema sin romper compatibilidad</h3>
+          <pre><code class="language-python"># Añadir columnas nuevas del source al escribir
+new_df.write.format("delta").mode("append").option("mergeSchema", "true").saveAsTable("products")
+# Sobrescribir el schema completo (con cuidado)
+df.write.format("delta").mode("overwrite").option("overwriteSchema", "true").saveAsTable("products")</code></pre>
+          <pre><code class="language-sql">MERGE WITH SCHEMA EVOLUTION INTO sales AS target
+USING staged_sales AS source ON target.order_id = source.order_id
+WHEN MATCHED THEN UPDATE SET * WHEN NOT MATCHED THEN INSERT *;</code></pre>
+          <div class="note note--warning">⚠️ Por defecto Delta <strong>enforcea schema</strong> (rechaza escrituras que no cumplen). Schema evolution hay que <strong>activarlo explícitamente</strong> con <code>mergeSchema=true</code> o config. Es buena práctica: solo actívalo cuando de verdad quieras cambios.</div>
+        </article>
+
+        <!-- 10 -->
+        <div class="category-header" id="time-travel"><span class="category-header__icon">⏰</span><h2 class="category-header__title">10. Time travel y DESCRIBE HISTORY</h2></div>
+        <article class="concept-card">
+          <pre><code class="language-sql">DESCRIBE HISTORY products;                       -- historial de versiones
+SELECT * FROM products VERSION AS OF 0;          -- por versión
+SELECT * FROM products TIMESTAMP AS OF '2026-01-01T00:00:00';  -- por timestamp
+RESTORE TABLE products TO VERSION AS OF 3;       -- rollback</code></pre>
+          <div class="note note--warning">⚠️ El time travel funciona <strong>mientras existan los ficheros viejos</strong>. Tras un VACUUM más allá del retention, ya no puedes viajar a esas versiones. Propiedades: <code>delta.logRetentionDuration</code> (30 días) y <code>delta.deletedFileRetentionDuration</code> (7 días).</div>
+        </article>
+
+        <!-- 11 -->
+        <div class="category-header" id="optimizacion"><span class="category-header__icon">⚡</span><h2 class="category-header__title">11. OptimizeWrite, OPTIMIZE y V-Order</h2></div>
+        <article class="concept-card">
+          <h3>El "small files problem" y sus soluciones</h3>
+          <p>Muchas escrituras pequeñas acumulan muchos ficheros minúsculos y ralentizan las lecturas. Tres features lo resuelven:</p>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Feature</th><th>Cuándo actúa</th><th>Objetivo</th><th>Default en Fabric</th></tr></thead>
+              <tbody>
+                <tr><td><strong>OptimizeWrite</strong></td><td>Al escribir</td><td>Prevenir small files</td><td>✅ ON</td></tr>
+                <tr><td><strong>OPTIMIZE</strong></td><td>Manual/scheduled</td><td>Consolidar ficheros existentes</td><td>Manual</td></tr>
+                <tr><td><strong>V-Order</strong></td><td>Al escribir</td><td>Acelerar lecturas</td><td>✅ ON</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <pre><code class="language-sql">OPTIMIZE products;
+OPTIMIZE products ZORDER BY (Category);   -- co-localizar por columna</code></pre>
+          <div class="note note--tip">🎯 <strong>V-Order:</strong> exclusivo de Fabric, activado por defecto. Overhead ~15% al escribir, gran beneficio en lecturas (Power BI y SQL endpoint lo aprovechan al máximo). Es 100% Parquet compliant. Desactívalo solo en staging bronze write-intensive.</div>
+        </article>
+
+        <!-- 12 -->
+        <div class="category-header" id="vacuum"><span class="category-header__icon">🧹</span><h2 class="category-header__title">12. VACUUM: limpieza y sus peligros</h2></div>
+        <article class="concept-card">
+          <h3>Elimina físicamente los ficheros obsoletos</h3>
+          <p><code>VACUUM</code> borra los Parquet ya no referenciados y más antiguos que el retention. <strong>No borra el transaction log</strong>. Default: <strong>7 días (168h)</strong>, y el sistema impide bajarlo por debajo.</p>
+          <pre><code class="language-sql">VACUUM products RETAIN 168 HOURS;   -- 7 días
+VACUUM products RETAIN 720 HOURS;   -- 30 días (más seguro)</code></pre>
+          <div class="note note--warning">⚠️ Bajar de 7 días rompe el time travel y puede corromper lecturas concurrentes. Solo se puede desactivando <code>retentionDurationCheck</code>, nunca en producción sin entender las consecuencias.</div>
+        </article>
+
+        <!-- 13 -->
+        <div class="category-header" id="particionado"><span class="category-header__icon">📁</span><h2 class="category-header__title">13. Particionado en tablas Delta</h2></div>
+        <article class="concept-card">
+          <pre><code class="language-python">df.write.format("delta").partitionBy("Category").saveAsTable("partitioned_products")</code></pre>
+          <p>Beneficio: <strong>partition pruning / data skipping</strong> (Delta lee solo las particiones relevantes al filtrar por la columna).</p>
+          <div class="note note--warning">⚠️ Particiona por <strong>baja cardinalidad</strong> (year, country, category), nunca por alta (user_id, order_id, timestamp): generas miles de ficheros pequeños. Regla: ~1 GB por partición, no más de unos cientos de particiones. Alternativas modernas: Liquid Clustering y Z-ORDER.</div>
+        </article>
+
+        <!-- 14 -->
+        <div class="category-header" id="streaming"><span class="category-header__icon">🌊</span><h2 class="category-header__title">14. Streaming: Delta como source y sink</h2></div>
+        <article class="concept-card">
+          <h3>Structured Streaming con Delta</h3>
+          <pre><code class="language-python"># Delta como SINK (destino de un stream)
+stream_df.writeStream.format("delta") \
+    .option("checkpointLocation", "Files/checkpoints/iot") \
+    .start("Tables/iot_readings")
+
+# Delta como SOURCE (leer una tabla como stream)
+s = spark.readStream.format("delta").option("ignoreChanges", "true").table("orders_in")</code></pre>
+          <div class="note note--warning">⚠️ Como source, por defecto solo procesa <strong>appends</strong>; para UPDATE/DELETE del source usa <code>ignoreChanges</code> o <code>ignoreDeletes</code>. El <strong><code>checkpointLocation</code> es crítico</strong>: único por stream, permite recuperarse de fallos. Para MERGE desde un stream, usa <code>foreachBatch</code> (con MERGE idempotente).</div>
+          <p>Output modes: <code>append</code> (default), <code>update</code>, <code>complete</code>. Casos: IoT, CDC, clickstream, log processing.</p>
+        </article>
+
+        <!-- 15 -->
+        <div class="category-header" id="trampas"><span class="category-header__icon">⚠️</span><h2 class="category-header__title">15. Trampas típicas</h2></div>
+        <article class="concept-card">
+          <ul>
+            <li><strong>"UPDATE modifica el Parquet en sitio"</strong> → ❌ los Parquet son inmutables; genera ficheros nuevos.</li>
+            <li><strong>"Time travel funciona para siempre"</strong> → ❌ solo mientras existan los ficheros viejos.</li>
+            <li><strong>"OPTIMIZE incluye VACUUM"</strong> → ❌ son operaciones distintas.</li>
+            <li><strong>"OptimizeWrite = OPTIMIZE"</strong> → ❌ OptimizeWrite es preventivo al escribir; OPTIMIZE es mantenimiento post-hoc.</li>
+            <li><strong>"V-Order hay que activarlo"</strong> → ❌ está activado por defecto.</li>
+            <li><strong>"MERGE acepta duplicados en el source"</strong> → ❌ falla; deduplica antes.</li>
+            <li><strong>"En streaming no necesito checkpointLocation"</strong> → ❌ es crítico; único por stream.</li>
+            <li><strong>"Un stream desde Delta procesa UPDATEs"</strong> → ❌ solo appends por defecto (usa ignoreChanges/ignoreDeletes).</li>
+            <li><strong>"Schema evolution es automático"</strong> → ❌ por defecto se enforcea; actívalo con mergeSchema.</li>
+            <li><strong>"DROP de una external borra los datos"</strong> → ❌ solo el metadata.</li>
+            <li><strong>"V-Order es propietario y no lo lee nadie más"</strong> → ❌ es 100% Parquet compliant.</li>
+          </ul>
+        </article>
+
+        <!-- 16 -->
+        <div class="category-header" id="comparativas"><span class="category-header__icon">🆚</span><h2 class="category-header__title">16. Comparativas clave (chuleta)</h2></div>
+        <article class="concept-card">
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Delta como stream</th><th>Como source</th><th>Como sink</th></tr></thead>
+              <tbody>
+                <tr><td>Sintaxis</td><td><code>.readStream...table()</code></td><td><code>.writeStream...start()</code></td></tr>
+                <tr><td>Requiere checkpoint</td><td>No (lectura)</td><td>✅ Sí</td></tr>
+                <tr><td>Restricción</td><td>Solo appends por defecto</td><td>ninguna</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Retención</th><th>Default</th><th>Modificable</th></tr></thead>
+              <tbody>
+                <tr><td>VACUUM retention</td><td>7 días (168h)</td><td>✅ (bloqueado por debajo)</td></tr>
+                <tr><td>logRetentionDuration</td><td>30 días</td><td>✅ ALTER TABLE</td></tr>
+                <tr><td>deletedFileRetentionDuration</td><td>7 días</td><td>✅ ALTER TABLE</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </article>
+
+        <div class="note note--next">🚀 <strong>¡Módulo 4 completado!</strong> Ya dominas Delta Lake a fondo. Sigue con el <a href="modulo-5.html">Módulo 5: Dataflows Gen2</a>. 🌸</div>
+
+        <div class="course-nav">
+          <a href="modulo-3.html"><span class="course-nav__label">← Anterior</span><span class="course-nav__title">Módulo 3 · Apache Spark</span></a>
+          <a href="modulo-5.html" class="next"><span class="course-nav__label">Siguiente →</span><span class="course-nav__title">Módulo 5 · Dataflows Gen2</span></a>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <button id="back-to-top" class="back-to-top" aria-label="Volver arriba" title="Volver arriba">↑</button>
+
+  <script src="https://cdn.jsdelivr.net/npm/i18next@23/dist/umd/i18next.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1/prism.min.js"></script>
+  <script src="../../../assets/js/theme.js"></script>
+  <script src="../../../assets/js/main.js"></script>
+  <script src="../../../assets/js/cursor.js"></script>
+</body>
+</html>
