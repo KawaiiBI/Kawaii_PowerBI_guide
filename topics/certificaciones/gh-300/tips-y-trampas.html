@@ -262,6 +262,33 @@
             <li><strong>Fairness + Inclusiveness</strong> → "Copilot funciona peor con comentarios no ingleses" + "el auto-asignador sobrecarga a unos devs": ampliar datos no ingleses, testear entre idiomas y ajustar la lógica de reparto.</li>
             <li><strong>Accountability + Privacy &amp; Security</strong> → ante una fuga de datos personales: <strong>retirar los identificadores, reportar el incidente, documentar</strong> los cambios técnicos/de proceso y <strong>actualizar políticas</strong> (exigir consentimiento), manteniendo un <strong>registro auditable</strong>.</li>
             <li><strong>Privacy &amp; Security tiene prioridad</strong> cuando "mejorar la fairness" exigiría <strong>exceder el consentimiento</strong> del usuario (p. ej. meter atributos sensibles en el training). Solución: métodos <strong>sintéticos o que preserven la privacidad</strong>.</li>
+            <li><strong>Reliability &amp; Safety + Inclusiveness + Accountability</strong> → política de equipo: todo el código de Copilot pasa <strong>revisión de secure coding y tests</strong> antes del merge (Reliability &amp; Safety), se <strong>arreglan los problemas de accesibilidad</strong> del UI generado (Inclusiveness) y se <strong>documenta</strong> que se ha hecho (Accountability).</li>
+            <li><strong>Transparency bien entendida</strong> → publicar <strong>cómo funciona</strong> el sistema, su <strong>uso previsto</strong>, sus <strong>limitaciones conocidas</strong> y, a alto nivel, las <strong>fuentes de datos</strong> y los <strong>métodos de validación</strong>, <strong>protegiendo</strong> lo sensible o propietario. ❌ No es publicar todo el código y los datasets completos, ni datos personales de los usuarios, ni previsiones de ingresos y costes.</li>
+          </ul>
+        </article>
+
+        <article class="concept-card">
+          <h3>Los casos de Reliability &amp; Safety que despistan ⚠️</h3>
+          <p>En los tests reales hay varias preguntas que <em>suenan</em> a otro principio pero son <strong>Reliability &amp; Safety</strong>:</p>
+          <ul>
+            <li>Establecer procesos para <strong>identificar, evaluar y mitigar riesgos antes del despliegue</strong> → <strong>Reliability &amp; Safety</strong> (no Accountability).</li>
+            <li><strong>Probar</strong> exactitud, seguridad y fiabilidad <strong>antes de un lanzamiento amplio</strong> → <strong>Reliability &amp; Safety</strong>.</li>
+            <li>La IA genera <strong>contenido ofensivo o inseguro</strong> durante las pruebas → <strong>Reliability &amp; Safety</strong>.</li>
+            <li>Copilot sugiere a veces <strong>patrones de código obsoletos o inseguros</strong> → <strong>Reliability &amp; Safety</strong>.</li>
+            <li>🧠 Truco: si el enunciado va de que el sistema <strong>se comporte como debe y no haga daño</strong> (probar, evaluar riesgos, salidas inseguras) → <strong>Reliability &amp; Safety</strong>. Si va de <strong>quién responde</strong> → Accountability.</li>
+          </ul>
+        </article>
+
+        <article class="concept-card">
+          <h3>Uso responsable en el día a día (escenarios que caen)</h3>
+          <ul>
+            <li>Copilot sugiere <strong>loguear tokens JWT completos</strong> para depurar → <strong>rechazar o modificar</strong> la sugerencia: nada de secretos en logs, usar logging <strong>enmascarado o estructurado</strong>. ❌ Ni aceptarla "porque es temporal", ni apagar todo el logging.</li>
+            <li>Copilot propone algo muy parecido a un proyecto open source <strong>con su cabecera de licencia</strong> → <strong>revisar la licencia</strong> y <strong>atribuir correctamente</strong> o <strong>sustituirlo por una implementación propia</strong>. ❌ Ni quitar la cabecera, ni asumir que Copilot ya lo ha resuelto, ni rechazar todo lo que mencione una licencia.</li>
+            <li>Textos de UI y mensajes de error generados por Copilot → <strong>revisarlos para quitar lenguaje sesgado o excluyente</strong>. Si preocupa el sesgo en comentarios o docs: revisar y <strong>ajustar las guías del equipo y los prompts</strong>.</li>
+            <li>Miedo a la <strong>dependencia excesiva (over-reliance)</strong> → <strong>guías de equipo</strong>: las sugerencias se revisan, se testean y <strong>nunca se tratan como autoridad</strong>. ❌ Ni prohibir Copilot, ni auto-merge cuando pasan los tests.</li>
+            <li>Explicar Copilot a perfiles no técnicos → <em>"acelera el desarrollo, pero no garantiza corrección ni seguridad; el equipo sigue siendo responsable de testear y cumplir"</em>.</li>
+            <li><strong>Evaluar Copilot en la organización</strong> → medir <strong>dónde ahorra tiempo</strong> y, a la vez, vigilar <strong>tasa de bugs, hallazgos de seguridad y feedback</strong> del equipo. ❌ No: las líneas de código generadas ni el número de seats como prueba de productividad.</li>
+            <li><strong>Despliegue (rollout) responsable</strong> → <strong>piloto con un grupo pequeño</strong>, guías de uso aceptable y de revisión, configurar <strong>content exclusion</strong> y <strong>code referencing</strong>, y ampliar según <strong>feedback y métricas</strong>. Para el coding agent, igual: piloto, <strong>firewall activado</strong> y monitorización antes de abrirlo a todos.</li>
           </ul>
         </article>
 
@@ -274,6 +301,8 @@
             <li>¿Cómo se integra la equidad en una IA? → <em>Reduciendo el bias en datos y algoritmos</em> (no "más datos", no "accuracy", no "monitorizar").</li>
             <li>Principio que exige que <strong>personas</strong> sean responsables del despliegue y su impacto → <em>Accountability.</em></li>
             <li>Principio que evita excluir a personas con discapacidad → <em>Inclusiveness.</em></li>
+            <li>Principio que exige evaluar y mitigar riesgos antes de desplegar → <em>Reliability &amp; Safety.</em></li>
+            <li>Mejor forma de medir si Copilot funciona en tu organización → <em>Tiempo ahorrado + bugs, hallazgos de seguridad y feedback</em> (no líneas de código ni seats).</li>
           </ol>
         </article>
 
@@ -318,11 +347,24 @@
             <li><strong>Knowledge Bases</strong> (docs curados como contexto del Chat) → <strong>Enterprise only</strong>.</li>
             <li><strong>Chat consciente del repositorio en GitHub.com</strong> (referencia archivos/docs del repo remoto) → <strong>Enterprise</strong>.</li>
             <li><strong>Individual (Pro/Pro+):</strong> solo <strong>code completions + Chat</strong>. NO tiene Knowledge Bases, PR diff analysis avanzado ni gestión organizativa.</li>
+            <li><strong>Quién compra y asigna los seats:</strong> en <strong>Business</strong>, los <strong>org owners</strong>; en <strong>Enterprise</strong>, los <strong>enterprise owners</strong>. (No los devs desde el IDE, ni los repo admins.)</li>
+            <li><strong>Gestión centralizada de seats</strong> → <strong>Business y Enterprise</strong>. ⚠️ "GitHub Team" es un plan de GitHub, <strong>no</strong> un plan de Copilot (distractor).</li>
           </ul>
           <p>🧠 <strong>Cómo separar Business de Enterprise (regla de oro):</strong></p>
           <ul>
             <li><strong>Business</strong> = <strong>gestión + políticas + reporting + exclusions</strong> (para administrar un equipo).</li>
             <li><strong>Enterprise</strong> = todo lo anterior <strong>+ integraciones y "conocimiento de la organización"</strong>: SSO, audit logs, Knowledge Bases, Chat repo-aware en GitHub.com, proxy. Si la feature suena a "integración corporativa" o "contexto de toda la empresa" → <strong>Enterprise</strong>.</li>
+          </ul>
+        </article>
+
+        <article class="concept-card">
+          <h3>¿Business o Business + Enterprise? (respuesta única vs "elige todas") ⚠️</h3>
+          <p>Muchas features están en <strong>los dos</strong> planes de organización, y el examen las pregunta de dos maneras:</p>
+          <ul>
+            <li><strong>"Choose all that apply"</strong> (usage reporting, content exclusion, gestión de seats, actividad de Copilot en el audit log de la org, políticas como el filtro de código público) → marca <strong>Business y Enterprise</strong>.</li>
+            <li><strong>Respuesta única</strong> con la misma feature ("usage reporting", "content exclusion por repositorio", "políticas para las sugerencias"), sobre todo si añade <em>"sin integraciones enterprise"</em> → <strong>Business</strong>, que es el plan que la <strong>introduce</strong>.</li>
+            <li><strong>Audit logs:</strong> si la pregunta los junta con <strong>SSO y compliance avanzado</strong> → <strong>Enterprise</strong>. Si pregunta qué planes <strong>muestran la actividad de Copilot en el audit log de la org</strong> (elige todas) → <strong>Business y Enterprise</strong>.</li>
+            <li><strong>SLAs de soporte:</strong> "¿qué plan ofrece SLAs de soporte enterprise?" → <strong>Enterprise</strong> (porque se combina con Premium Support). "¿Vienen incluidos por defecto?" → <strong>No</strong>, Premium Support se compra aparte.</li>
           </ul>
         </article>
 
@@ -341,6 +383,15 @@
             <li>✅ <strong>Botones 👍 / 👎 debajo de cada respuesta</strong> (in-line). Es el mismo mecanismo en IDE, GitHub.com y <strong>GitHub Mobile</strong>.</li>
             <li>❌ NO es "el menú de ajustes de la app", "la sección de feedback de la web" ni "tuitear a la cuenta de GitHub en X".</li>
             <li>🧠 Feedback de <strong>una respuesta concreta</strong> → siempre <strong>👍/👎 in-line</strong>, sea cual sea la superficie.</li>
+          </ul>
+        </article>
+
+        <article class="concept-card">
+          <h3>Inline suggestions vs Chat, y dónde se configuran</h3>
+          <ul>
+            <li><strong>Inline suggestions:</strong> completions <strong>junto al cursor</strong> que aceptas con <strong>Tab</strong>. <strong>Chat:</strong> panel de conversación <strong>multi-turno</strong> donde eliges el contexto (selección, archivos). Ninguno se aplica solo sin que tú actúes.</li>
+            <li><strong>Activar o desactivar las inline suggestions en VS Code</strong> (global o por lenguaje) → <strong>Settings → Extensions → GitHub Copilot</strong> (<em>Inline Suggest: Enable</em> / <em>Enable for [Language]</em>).</li>
+            <li><strong>Copilot code review y PR summaries</strong> en GitHub.com → <strong>sugerencias de revisión</strong> y <strong>resúmenes en lenguaje natural</strong> de los cambios. ❌ No auto-mergean, no validan licencias y no son "solo análisis estático".</li>
           </ul>
         </article>
 
@@ -406,6 +457,7 @@
             <li>Solo indexa <strong>repos públicos</strong> (no privados ni código fuera de GitHub); el índice se <strong>refresca cada pocos meses</strong>; las coincidencias ocurren en <strong>menos del 1%</strong> de las sugerencias.</li>
             <li><strong>Se configura</strong> a nivel de <strong>cuenta individual</strong> y por <strong>políticas de organización/enterprise</strong>.</li>
             <li>⚠️ <strong>No confundir con content exclusion:</strong> code referencing gobierna las <strong>salidas</strong> (output que se parece a código público); content exclusion limita las <strong>entradas</strong> (lo que Copilot puede ver como contexto).</li>
+            <li>🧠 <strong>Exacto vs parecido:</strong> una coincidencia <strong>exacta y larga</strong> (≈150+ caracteres, p. ej. 200) la <strong>bloquean los filtros de duplication detection</strong>. Las sugerencias <strong>parecidas pero no exactas</strong> las gobierna el ajuste de <strong>code referencing</strong> (bloquear o mostrar con referencias). Fíjate si el enunciado dice <em>exact</em> o <em>similar</em>.</li>
           </ul>
         </article>
 
@@ -495,6 +547,24 @@
             <li>💡 <strong>Formato de salida para CI:</strong> <em>"Devuelve un array JSON de tests fallidos con campos name, file, line, message — sin prosa."</em></li>
             <li>💡 <strong>Tests parametrizados:</strong> <em>"Genera tests table-driven en Go para <code>Parse()</code>, cubriendo vacío, inválido y longitudes límite; incluye nombres y <code>wantErr</code>."</em></li>
             <li>🧠 <strong>Regla:</strong> nombra <strong>lenguaje + versión + alcance + formato + restricciones</strong>. Descarta lo genérico ("improve this", "make it cleaner", "write tests") y lo enorme ("fix everything in the repo").</li>
+            <li>Si Copilot da sugerencias <strong>irrelevantes</strong> o el prompt es <strong>ambiguo</strong> → <strong>reformular añadiendo contexto y detalles</strong>. ❌ No acortar el prompt, ni reintentar sin cambios, ni dejar de usar Copilot.</li>
+          </ul>
+        </article>
+
+        <article class="concept-card">
+          <h3>La trampa de las 4 opciones casi iguales ⚠️</h3>
+          <p>En muchas preguntas de prompts las 4 opciones ya son específicas. La correcta es la que reúne <strong>todas</strong> las restricciones <strong>y no cuela ninguna práctica insegura</strong>. Los patrones que se repiten:</p>
+          <ul>
+            <li>💡 <strong>SQL:</strong> versión del motor (<em>PostgreSQL 14</em>) + esquema + qué devolver + <strong>función de ventana para el ranking</strong> + columnas exactas de salida. Si falta una pieza, pierde.</li>
+            <li>💡 <strong>Explicar un archivo a alguien nuevo:</strong> <strong>audiencia</strong> (<em>new backend hire</em>) + qué cubrir (propósito, flujos de datos, dependencias, riesgos) + <strong>límite de longitud</strong> (<em>5 bullets max</em>).</li>
+            <li>💡 <strong>Rendimiento:</strong> restricciones medibles (<em>O(1) extra space</em>, entradas de 10MB+, <em>backpressure</em>, stub de benchmarks) frente a un vago "rápido y eficiente".</li>
+            <li>💡 <strong>Plan antes que código:</strong> "plan de <strong>5 pasos</strong> para migrar Flask → FastAPI con <strong>riesgos</strong>, <strong>pasos de rollback</strong> y cómo mantener las rutas <strong>compatibles hacia atrás</strong>".</li>
+            <li>💡 <strong>HTTP seguro:</strong> HTTPS + <strong>validar certificados TLS</strong> + timeouts y reintentos + <strong>ocultar secretos en los logs</strong> + backoff ante 429/5xx.</li>
+            <li>💡 <strong>Librerías sin alucinaciones:</strong> versión exacta (<em>Python 3.11; redis-py v5 only</em>), método concreto (<code>Redis.from_url</code>) y <strong>"sin APIs deprecadas"</strong>.</li>
+            <li>💡 <strong>CLI configurable:</strong> <code>argparse</code>, flags concretos, validación de ficheros, <strong>códigos de salida</strong> y ejemplos.</li>
+            <li>💡 <strong>Migración de BD segura:</strong> valor por defecto + backfill + <strong>online (sin downtime)</strong> + <strong>SQL de rollback</strong>.</li>
+            <li>💡 <strong>Logging con privacidad:</strong> logs JSON estructurados con <code>requestId</code>, <strong>sin PII</strong>, tokens ocultos y una línea por evento.</li>
+            <li>⚠️ Las opciones trampa suelen esconder <strong>un solo detalle inseguro</strong>: loguear cuerpos completos o tokens, saltarse la validación de certificados, una API key "de prueba" como respaldo, subir la configuración con secretos al repo o aceptar downtime. Con uno basta para descartarla.</li>
           </ul>
         </article>
 
@@ -584,6 +654,20 @@
         </article>
 
         <article class="concept-card">
+          <h3>Testing con Copilot: los flujos que pide el examen 📌</h3>
+          <ul>
+            <li><strong>TDD (red → green → refactor):</strong> Copilot redacta los <strong>tests o stubs que fallan</strong> a partir de una selección o una especificación, ayuda con cambios acotados hasta que pasan y luego a refactorizar. Con Agent mode: scaffold de tests que fallan → el agente implementa → revisas y refactorizas con los tests en verde.</li>
+            <li><strong>BDD (Given/When/Then):</strong> dale la especificación corta <em>Given/When/Then</em> + el framework de tests y pídele que genere los <strong>tests que fallan antes de implementar</strong>.</li>
+            <li><strong>Tests parametrizados (table-driven):</strong> selecciona la función y pide <em>parameterized/table-driven tests</em> en tu framework (p. ej. <em>pytest parametrize</em> o JUnit <code>@MethodSource</code>).</li>
+            <li><strong>Después de generar tests:</strong> revisar asserts y fixtures, <strong>añadir los edge cases</strong> que falten y ejecutar el suite para <strong>medir la cobertura</strong>. La cobertura la mides <strong>tú</strong>: Copilot da el punto de partida, no garantiza el 100 %.</li>
+            <li><strong>Tests flaky:</strong> aislar dependencias externas (<strong>mocks/fakes</strong>), <strong>fixtures deterministas</strong> y reducir la dependencia del tiempo. ❌ Ni desactivarlos, ni subir timeouts y reintentos a todo el suite, ni relanzar el CI hasta que pase una vez.</li>
+            <li><strong>Quality gates:</strong> aceptar la sugerencia → <strong>tests y cobertura en CI</strong> → <strong>code review</strong> apoyado en PR summaries → (opcional) <strong>code scanning</strong> → merge.</li>
+            <li>⚠️ En las preguntas de "¿cuál NO hace Copilot en testing?", la respuesta es <strong>ejecutar tu framework de tests en CI e informar de pass/fail</strong>. Generar plantillas, sugerir asserts, ayudar en TDD y organizar fixtures sí.</li>
+            <li>Las <strong>content exclusions también afectan a los archivos de test</strong>: no están exentos.</li>
+          </ul>
+        </article>
+
+        <article class="concept-card">
           <h3>📝 Mini-preguntas de repaso (Dominio 5)</h3>
           <ol>
             <li>Buena práctica para mejorar la calidad del código con Copilot → <em>revisar y refactorizar lo que sugiere.</em></li>
@@ -592,6 +676,7 @@
             <li>Definición de refactoring → <em>mejorar la estructura interna sin cambiar el comportamiento externo.</em></li>
             <li>¿Qué NO es un caso de uso de Copilot: generar tests, escribir docs, producir copys de marketing, explicar código? → <em>copys de marketing.</em></li>
             <li>¿Cómo ayuda Copilot a la consistencia de tus tests? → <em>detecta tu patrón y sugiere tests similares.</em></li>
+            <li>Tienes tests flaky generados con Copilot, ¿qué haces? → <em>Mocks/fakes, fixtures deterministas y menos dependencia del tiempo</em> (no desactivarlos ni subir los timeouts).</li>
           </ol>
         </article>
 
@@ -618,6 +703,7 @@
             <li><strong>Alcance de las de org:</strong> solo aplican a usuarios que reciben su seat <strong>de esa organización</strong>; las de enterprise aplican a <strong>toda</strong> la enterprise.</li>
             <li><strong>Aplican en todas las superficies</strong> (definen el límite del contexto de entrada) para inline suggestions; <strong>Copilot code review en GitHub.com</strong> también las respeta.</li>
             <li>⚠️ <strong>Dónde NO aplican:</strong> Copilot <strong>CLI</strong>, la app de Copilot, GitHub Mobile, y los modos <strong>Edit y Agent</strong> del Chat en editores.</li>
+            <li>🧠 <strong>Cómo responder en el examen:</strong> si preguntan <em>"¿aplica content exclusion en todas las superficies?"</em> con opciones tipo "solo VS Code / solo GitHub.com / solo JetBrains / sí", la respuesta que dan por buena los tests es <strong>sí: define el límite del contexto de entrada sea cual sea la superficie</strong>. Las excepciones de arriba son la letra pequeña de la documentación.</li>
             <li><strong>Propagación:</strong> hasta <strong>30 minutos</strong> en IDEs con la sesión ya cargada. Se fuerza con <code>Developer: Reload Window</code> (VS Code), reabriendo Visual Studio/JetBrains; Vim/Neovim recarga al abrir cada archivo.</li>
             <li>⚠️ <strong>Fuga de contexto (limitación oficial):</strong> aunque un archivo esté excluido, Copilot puede usar <strong>información semántica indirecta</strong> que le pasa el IDE (tipos, definiciones al hacer <em>hover</em> sobre símbolos, propiedades del proyecto) cuando <strong>código no excluido</strong> referencia algo del excluido (p. ej. una llamada a función). <strong>No "lee" el archivo</strong>, pero se le "escapa" contexto por las referencias. <code>@workspace</code> <strong>no</strong> salta una exclusión.</li>
             <li><strong>Validar si un archivo está excluido:</strong> por el <strong>icono de Copilot en la barra de estado</strong> del editor (cambia y muestra un mensaje). Una exclusión <strong>no es un error</strong> → no aparece en el "errors panel".</li>
@@ -709,7 +795,11 @@
             <li>📌 <strong>Disponible en Pro, Pro+, Business y Enterprise</strong> (NO en Free).</li>
             <li>Trabaja desde un <strong>issue de GitHub</strong>, arranca un <strong>entorno de desarrollo efímero en la nube (powered by GitHub Actions)</strong>, hace cambios en una <strong>rama</strong> y abre un <strong>pull request (draft)</strong> para revisión.</li>
             <li><strong>Respeta</strong> branch protections, required reviews, status checks y <strong>CODEOWNERS</strong> — igual que cualquier PR. Actúa con los <strong>mismos permisos que el usuario</strong> que lo invoca (no gana admin ni salta protecciones).</li>
-            <li><strong>Personalizar su entorno:</strong> fichero <strong><code>copilot-setup-steps.yml</code></strong> en <code>.github/workflows/</code> → pre-instala dependencias/herramientas para builds más rápidos y fiables.</li>
+            <li><strong>Personalizar su entorno:</strong> fichero <strong><code>copilot-setup-steps.yml</code></strong> en <code>.github/workflows/</code> → pre-instala dependencias/herramientas para builds más rápidos y fiables.
+              <ul>
+                <li>⚠️ Distractores del entorno: un <code>.copilot-env.json</code> en tu carpeta personal, un script en tu home, "el agente copia tu dev container local" o subir <code>node_modules</code> al repo. <strong>Nada de eso.</strong> (En algunas preguntas el fichero aparece como <code>.yaml</code>: es el mismo concepto.)</li>
+              </ul>
+            </li>
             <li><strong>Agent firewall</strong> (enterprise): controla <strong>qué dominios/URLs</strong> puede acceder el agente → reduce el riesgo de <strong>exfiltración de datos</strong>.</li>
             <li>Se puede <strong>extender con servidores MCP</strong> (Model Context Protocol) para llamar a herramientas/fuentes externas (p. ej. GitHub o Playwright MCP).</li>
             <li><strong>Control administrativo:</strong> políticas de <strong>org/enterprise</strong> habilitan/deshabilitan el agente por repos y usuarios.</li>
@@ -732,6 +822,29 @@
           <ul>
             <li><strong>Revisar y aprobar el PR</strong> antes de mergear; <strong>asegurar que pasan tests, linters y security scans</strong>; <strong>definir tareas/issues bien acotados</strong> para el agente.</li>
             <li>❌ Nunca: dejar que el agente <strong>auto-mergee a producción</strong> saltándose revisiones, ni desactivar branch protections "para ir más rápido".</li>
+          </ul>
+        </article>
+
+        <article class="concept-card">
+          <h3>Trabajar con el agente de forma segura (patrones que caen) 📌</h3>
+          <ul>
+            <li><strong>Límites seguros:</strong> <strong>rama de feature</strong>, <strong>commits pequeños</strong>, status checks obligatorios, ejecutar tests y tener un <strong>plan de rollback</strong> (revertir el PR si hace falta). ❌ Nunca en la rama por defecto, ni con force-push, ni con las protecciones desactivadas.</li>
+            <li><strong>Monorepo:</strong> acota la tarea a <strong>rutas o paquetes concretos</strong> y pide <strong>diffs revisables por paquete</strong>, para evitar cambios cruzados no deseados.</li>
+            <li><strong>Chat y Agent en la misma tarea:</strong> <strong>Chat</strong> → redactar tests y configuración; <strong>Agent</strong> → ejecutar comandos, iterar y abrir el PR.</li>
+            <li><strong>Agent mode es excesivo</strong> para cambios mínimos, como renombrar un parámetro y actualizar un docstring en un solo archivo.</li>
+            <li>"Ejecuta los tests y arregla los que fallan" → lo esperable es que <strong>ejecute los tests, proponga cambios mínimos con diff y suba a una rama</strong> para revisión por PR.</li>
+            <li>El mejor encargo para el agente es <strong>acotado y con criterios</strong>: <em>"Desde este issue, implementa el endpoint <code>order-cancellation</code> de punta a punta: actualiza la spec de la API, añade handler y routing, escribe tests de integración y abre un PR cuando pasen."</em> ❌ Nada de "arregla todo" o "refactoriza lo que veas".</li>
+            <li><strong>MCP en el coding agent:</strong> sirve para que llame a <strong>herramientas y fuentes especializadas</strong> (p. ej. GitHub o Playwright MCP). ❌ No reentrena los modelos ni desactiva el firewall ni las políticas.</li>
+          </ul>
+        </article>
+
+        <article class="concept-card">
+          <h3>Copilot en la revisión de PRs: siempre consultivo</h3>
+          <ul>
+            <li><strong>PR summaries:</strong> ayudan a entender rápido la <strong>intención</strong>, las <strong>zonas de riesgo</strong> y el <strong>alcance</strong> del cambio. No garantizan que no haya errores.</li>
+            <li><strong>Review suggestions:</strong> son <strong>consultivas</strong>. No cuentan como aprobación, no sustituyen a los <strong>required reviewers</strong> ni a <strong>CODEOWNERS</strong> y no saltan las protecciones, aunque el CI esté en verde.</li>
+            <li>Si aplicas una sugerencia de Copilot en la revisión → <strong>en la rama del PR</strong>, <strong>relanzas los checks</strong> y <strong>pides de nuevo la revisión</strong> obligatoria.</li>
+            <li>Quieres que <strong>expertos revisen siempre ciertas rutas</strong> → fichero <strong>CODEOWNERS</strong>. (No los PR summaries ni el agente "adivinando" revisores.)</li>
           </ul>
         </article>
 
@@ -767,6 +880,8 @@
             <li>¿En qué planes está el coding agent? → <em>Pro, Pro+, Business y Enterprise.</em></li>
             <li>¿El coding agent puede saltarse branch protections? → <em>No; respeta protecciones, reviews y CODEOWNERS.</em></li>
             <li>¿Edit mode o Agent mode para tocar 2 archivos con diff revisable? → <em>Edit mode.</em></li>
+            <li>¿Cuentan las review suggestions de Copilot como aprobación de un PR? → <em>No, son consultivas; siguen aplicando required reviewers, checks y CODEOWNERS.</em></li>
+            <li>¿Cómo garantizas que expertos revisen siempre ciertas rutas? → <em>Con un fichero CODEOWNERS.</em></li>
           </ol>
         </article>
 
@@ -786,7 +901,7 @@
             <li><strong>Enterprise = integraciones + conocimiento de la organización</strong> (SSO, audit, Knowledge Bases, repo-aware Chat). <strong>Business = gestión + políticas + exclusions</strong>, sin integraciones enterprise.</li>
             <li><strong>Copilot requiere la nube:</strong> GHES no soportado; no se entrena con tu código privado; los prompts pasan por el servicio cloud de Copilot.</li>
             <li><strong>Cuidado con las preguntas "NOT / cuál NO es":</strong> léelas dos veces; la correcta es la que <strong>rompe</strong> el patrón.</li>
-            <li><strong>Nombres inventados = fuera:</strong> <em>Copilot Teams, Copilot Premium, Copilot for Azure DevOps, Copilot Codespace, <code>copilot.policy</code>, <code>.copilotignore</code>, <code>/btw</code> como comando del IDE.</em></li>
+            <li><strong>Nombres inventados = fuera:</strong> <em>Copilot Teams, Copilot Premium, Copilot for Azure DevOps, Copilot Codespace, <code>copilot.policy</code>, <code>.copilotignore</code>, <code>.copilot-env.json</code>, <code>/btw</code> como comando del IDE.</em></li>
             <li><strong>El nombre del slash command = su función.</strong> <code>/fix</code> arregla, <code>/tests</code> genera tests, <code>/doc</code> documenta, <code>/explain</code> explica, <code>/optimize</code> optimiza (VS), <code>/simplify</code> simplifica (Xcode).</li>
           </ol>
         </article>
@@ -809,6 +924,9 @@
             <li><label><input type="checkbox"> Sé que la <strong>REST API/audit logs = admin + métricas</strong>, nunca contenido.</label></li>
             <li><label><input type="checkbox"> Me sé los <strong>slash commands</strong> y dónde vive cada uno.</label></li>
             <li><label><input type="checkbox"> Distingo <strong>Edit / Agent / Chat</strong> y cuándo usar el <strong>coding agent</strong>.</label></li>
+            <li><label><input type="checkbox"> Distingo cuándo marcar <strong>solo Business</strong> y cuándo <strong>Business + Enterprise</strong>.</label></li>
+            <li><label><input type="checkbox"> Sé elegir entre <strong>4 prompts casi iguales</strong> (todas las restricciones, ninguna práctica insegura).</label></li>
+            <li><label><input type="checkbox"> Me sé los flujos de <strong>testing</strong> (TDD, BDD, flaky, quality gates) y los <strong>límites seguros del agente</strong> (rama, rollback, CODEOWNERS).</label></li>
             <li><label><input type="checkbox"> Aplico los <strong>meta-trucos</strong> (absolutos falsos, Copilot asiste/tú validas, nombres inventados).</label></li>
           </ul>
         </article>
