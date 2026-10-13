@@ -279,6 +279,16 @@
         </article>
 
         <article class="concept-card">
+          <h3>🎯 Lo que cae en los tests reales</h3>
+          <ul>
+            <li><strong>¿Aplica content exclusion en todas las superficies?</strong> Si las opciones son del tipo "solo VS Code / solo GitHub.com / solo JetBrains / sí", la respuesta que dan por buena los tests es <strong>sí: define el límite del contexto de entrada sea cual sea la superficie</strong>. Las excepciones de arriba son la letra pequeña de la documentación; úsalas cuando la pregunta vaya de <em>limitaciones</em>.</li>
+            <li><strong>Quién la gestiona:</strong> administradores de repositorio, org owners y enterprise owners. ❌ No el rol <em>Maintain</em>, ni colaboradores externos, ni contributors.</li>
+            <li><strong>Qué se puede excluir:</strong> repositorios, rutas o directorios, tipos de archivo y patrones. ❌ Ni líneas sueltas ni ramas.</li>
+            <li><strong>Riesgo de que secretos o lógica propietaria viajen como contexto</strong> → la respuesta es <strong>content exclusion</strong> sobre esos repos, rutas o tipos de archivo (no desactivar el chat, ni code referencing).</li>
+          </ul>
+        </article>
+
+        <article class="concept-card">
           <h3>📝 Mini-repaso</h3>
           <ol>
             <li>¿Cómo puede Copilot "enterarse" de un archivo excluido a pesar de la exclusión?</li>
@@ -315,6 +325,18 @@
           <h3>⚠️ Trampa típica</h3>
           <ul>
             <li>Confundir <strong>bloquear</strong> código público (la salvaguarda que lo impide) con <strong>code referencing</strong> (que aparece cuando lo <em>permites</em>, para informarte de la coincidencia y su licencia).</li>
+          </ul>
+        </article>
+
+        <article class="concept-card">
+          <h3>🎯 Lo que cae en los tests reales</h3>
+          <ul>
+            <li><strong>"Allow + show references"</strong> → Copilot puede mostrar la sugerencia <strong>con enlaces a las fuentes públicas</strong>. No desactiva el filtro de duplicados ni ignora las content exclusions.</li>
+            <li><strong>Dónde se configura code referencing:</strong> a nivel de <strong>cuenta individual</strong> y mediante <strong>políticas de organización o empresa</strong>. ❌ No solo en el IDE, ni solo por repositorio.</li>
+            <li>Si la <strong>empresa impone</strong> "bloquear código público", <strong>ni la organización ni el repo pueden anularlo</strong>.</li>
+            <li><strong>Exacto vs parecido:</strong> coincidencia <strong>exacta y larga</strong> (≈150+ caracteres) → la bloquea <strong>duplication detection</strong>. Sugerencias <strong>parecidas</strong> → las gobierna <strong>code referencing</strong>.</li>
+            <li><strong>Content exclusion vs code referencing:</strong> exclusion limita lo que Copilot <strong>ve como entrada</strong>; referencing gobierna las <strong>salidas</strong> que se parecen a código público. 🧠 Entrada = exclusion · Salida = referencing.</li>
+            <li>¿Miedo a que Copilot <strong>reproduzca código open source tal cual</strong>? → los controles de <strong>duplication detection / matching public code</strong>, no content exclusion.</li>
           </ul>
         </article>
 
@@ -425,6 +447,16 @@
           <ul>
             <li>Responder "reinstala la extensión" a un bloqueo por código público → la solución es habilitar el matching de código público.</li>
             <li>Olvidar que la ausencia de sugerencias en un archivo puntual suele ser una content exclusion.</li>
+          </ul>
+        </article>
+
+        <article class="concept-card">
+          <h3>🎯 Lo que cae en los tests reales</h3>
+          <ul>
+            <li><strong>Recoger diagnósticos en VS Code:</strong> <code>Ctrl/Cmd+Shift+P</code> → escribe "Collect Diagnostics" → <strong>"GitHub Copilot: Collect Diagnostics"</strong>.</li>
+            <li><strong>Dónde están los logs en VS Code:</strong> los de Copilot y la extensión, en el <strong>panel Output</strong> (y la carpeta de logs de extensiones); los de Electron, en <strong>Developer Tools</strong>.</li>
+            <li><strong>¿Está excluido este archivo?</strong> Lo indica el <strong>icono de Copilot en la barra de estado</strong> del editor. Una exclusión no es un error, así que no aparece en el panel de errores.</li>
+            <li><strong>Acabas de cambiar una exclusión y no se nota:</strong> puede tardar hasta <strong>30 minutos</strong>; en VS Code se fuerza con <code>Developer: Reload Window</code>.</li>
           </ul>
         </article>
 

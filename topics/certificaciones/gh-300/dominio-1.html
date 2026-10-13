@@ -328,6 +328,26 @@
         </article>
 
         <article class="concept-card">
+          <h3>🎯 Lo que cae en los tests reales</h3>
+          <p><strong>Los casos de Reliability &amp; Safety que despistan.</strong> Varias preguntas <em>suenan</em> a otro principio pero son <strong>Reliability &amp; Safety</strong>:</p>
+          <ul>
+            <li>Establecer procesos para <strong>identificar, evaluar y mitigar riesgos antes del despliegue</strong> (no es Accountability).</li>
+            <li><strong>Probar</strong> exactitud, seguridad y fiabilidad <strong>antes de un lanzamiento amplio</strong>.</li>
+            <li>La IA genera <strong>contenido ofensivo o inseguro</strong> durante las pruebas.</li>
+            <li>Copilot sugiere a veces <strong>patrones de código obsoletos o inseguros</strong>.</li>
+          </ul>
+          <p>🧠 Si el enunciado va de que el sistema <strong>se comporte como debe y no haga daño</strong> → Reliability &amp; Safety. Si va de <strong>quién responde</strong> → Accountability.</p>
+          <p><strong>Transparency bien entendida.</strong> Publicar <strong>cómo funciona</strong> el sistema, su <strong>uso previsto</strong>, sus <strong>limitaciones conocidas</strong> y, a alto nivel, sus <strong>fuentes de datos</strong> y <strong>métodos de validación</strong>, <strong>protegiendo</strong> lo sensible o propietario. ❌ No es publicar todo el código y los datasets, ni datos personales, ni previsiones de ingresos. También es Transparency <strong>avisar a los usuarios</strong> de cuándo Copilot está generando sugerencias o cuándo una IA toma decisiones que les afectan.</p>
+          <p><strong>Escenarios que combinan principios:</strong></p>
+          <ul>
+            <li>Todo el código de Copilot pasa <strong>revisión de secure coding y tests</strong> (Reliability &amp; Safety), se <strong>arreglan los problemas de accesibilidad</strong> del UI generado (Inclusiveness) y se <strong>documenta</strong> que se ha hecho (Accountability).</li>
+            <li>Copilot rinde peor con comentarios <strong>no ingleses</strong> y un asignador automático <strong>sobrecarga</strong> a unos pocos devs → <strong>Fairness + Inclusiveness</strong>: ampliar datos no ingleses, probar entre idiomas y ajustar la lógica de reparto.</li>
+            <li>Código generado con <strong>identificadores personales</strong> o una extensión entrenada con <strong>datos reales sin consentimiento</strong> → <strong>Accountability + Privacy &amp; Security</strong>: retirar los identificadores, reportar, documentar, actualizar políticas y mantener un registro auditable.</li>
+            <li>Guardar <strong>API keys</strong> de forma segura → <strong>Azure Key Vault o Managed HSMs</strong> con acceso controlado (nunca en texto plano, en el repo ni por email).</li>
+          </ul>
+        </article>
+
+        <article class="concept-card">
           <h3>📝 Mini-repaso</h3>
           <ol>
             <li>¿Qué principio se ocupa de resistir manipulaciones dañinas y responder ante lo inesperado?</li>
@@ -417,6 +437,20 @@
           <h3>⚠️ Trampa típica</h3>
           <ul>
             <li>"Aceptar todas las sugerencias para ir más rápido" presentado como buena práctica → nunca.</li>
+          </ul>
+        </article>
+
+        <article class="concept-card">
+          <h3>🎯 Lo que cae en los tests reales: uso responsable en el día a día</h3>
+          <ul>
+            <li>Copilot sugiere <strong>loguear tokens JWT completos</strong> para depurar → <strong>rechazar o modificar</strong> la sugerencia: nada de secretos en logs, usar logging <strong>enmascarado o estructurado</strong>. ❌ Ni aceptarla "porque es temporal", ni apagar todo el logging.</li>
+            <li>Copilot propone algo muy parecido a un proyecto open source <strong>con su cabecera de licencia</strong> → <strong>revisar la licencia</strong> y <strong>atribuir correctamente</strong> o <strong>sustituirlo por una implementación propia</strong>. ❌ Ni quitar la cabecera, ni asumir que Copilot ya lo ha resuelto.</li>
+            <li>Textos de UI y mensajes de error generados → <strong>revisarlos para quitar lenguaje sesgado o excluyente</strong>, y ajustar las guías del equipo y los prompts.</li>
+            <li>Miedo a la <strong>dependencia excesiva</strong> → <strong>guías de equipo</strong>: las sugerencias se revisan, se testean y <strong>nunca se tratan como autoridad</strong>. ❌ Ni prohibir Copilot, ni auto-merge cuando pasan los tests.</li>
+            <li>"¿Podemos saltarnos la revisión si lo escribió Copilot?" → <strong>No</strong>: pasa las mismas revisiones, tests y checks que el código humano.</li>
+            <li>Explicar Copilot a perfiles no técnicos → <em>"acelera el desarrollo, pero no garantiza corrección ni seguridad; el equipo sigue siendo responsable de testear y cumplir"</em>.</li>
+            <li><strong>Evaluar Copilot en la organización</strong> → medir <strong>dónde ahorra tiempo</strong> y vigilar a la vez <strong>bugs, hallazgos de seguridad y feedback</strong> del equipo. ❌ No: líneas de código generadas ni número de seats.</li>
+            <li><strong>Despliegue responsable</strong> → <strong>piloto con un grupo pequeño</strong>, guías de uso aceptable y de revisión, configurar <strong>content exclusion</strong> y <strong>code referencing</strong>, y ampliar según feedback y métricas.</li>
           </ul>
         </article>
 

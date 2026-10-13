@@ -237,6 +237,18 @@
         </article>
 
         <article class="concept-card">
+          <h3>🎯 Lo que cae en los tests reales</h3>
+          <ul>
+            <li><strong>Dónde vive Copilot Chat:</strong> GitHub.com, VS Code, Visual Studio, JetBrains, Eclipse, Xcode, <strong>GitHub Mobile</strong> y <strong>Windows Terminal</strong>. ⚠️ <strong>GitHub Desktop NO</strong> (es el distractor de siempre).</li>
+            <li><strong>GitHub Enterprise Server (GHES) no está soportado:</strong> Copilot necesita el servicio en la nube. Nada de "Copilot on-premises" ni "modelo self-hosted en tu centro de datos".</li>
+            <li><strong>Aceptar una sugerencia inline</strong> solo la <strong>inserta en tu editor</strong>: tú decides si la mantienes, la editas o la descartas. No hace commit, no hace push, no mergea y no genera por sí sola una entrada en el audit log.</li>
+            <li><strong>Inline vs Chat:</strong> inline = completions junto al cursor (aceptas con <code>Tab</code>); Chat = conversación multi-turno donde eliges el contexto (selección, archivos).</li>
+            <li><strong>Activar o desactivar las inline suggestions en VS Code</strong> (global o por lenguaje): <strong>Settings → Extensions → GitHub Copilot</strong> (<em>Inline Suggest: Enable</em> / <em>Enable for [Language]</em>).</li>
+            <li><strong>Copilot en la CLI</strong> ayuda a <strong>redactar y explicar</strong> comandos de shell y Git con sus flags. No los ejecuta por su cuenta sin tu confirmación.</li>
+          </ul>
+        </article>
+
+        <article class="concept-card">
           <h3>📝 Mini-repaso</h3>
           <ol>
             <li>¿Qué diferencia hay entre el modo Ask y el modo Agent?</li>
@@ -379,6 +391,17 @@
         </article>
 
         <article class="concept-card">
+          <h3>🎯 Lo que cae en los tests reales: ¿Edit o Agent?</h3>
+          <ul>
+            <li><strong>Edit mode</strong> → cambios <strong>acotados y revisables</strong> en los archivos que <strong>tú eliges</strong>. Ejemplo típico: actualizar un helper en un archivo y añadir un <code>try/catch</code> en otro, revisando un diff pequeño, sin ejecutar tests ni comandos. ✅ Edit.</li>
+            <li><strong>Agent mode</strong> → tareas <strong>multi-paso</strong> que cruzan archivos y herramientas: ejecutar tests, arreglar fallos en varios módulos, actualizar configuración y abrir un PR. ✅ Agent.</li>
+            <li><strong>Agent es excesivo</strong> para cambios mínimos, como renombrar un parámetro y actualizar un docstring en un solo archivo.</li>
+            <li><strong>Chat y Agent en la misma tarea:</strong> Chat → redactar tests y configuración; Agent → ejecutar comandos, iterar y abrir el PR.</li>
+            <li>🧠 Regla: cambio pequeño con diff revisable → <strong>Edit</strong>. Varios pasos + comandos + PR → <strong>Agent</strong>. Solo explicar o preguntar → <strong>Ask</strong>.</li>
+          </ul>
+        </article>
+
+        <article class="concept-card">
           <h3>📝 Mini-repaso</h3>
           <ol>
             <li>Describe el bucle iterativo del Agent Mode en tus palabras.</li>
@@ -418,6 +441,25 @@
           <ul>
             <li>Situar el Cloud Agent en el plan <strong>Free</strong> → no está; necesita plan de pago (Pro ya vale).</li>
             <li>Pensar que funciona en cualquier host de git → solo repos de GitHub.</li>
+          </ul>
+        </article>
+
+        <article class="concept-card">
+          <h3>🎯 Lo que cae en los tests reales (el agente es de lo más preguntado ⭐)</h3>
+          <ul>
+            <li><strong>Cómo trabaja:</strong> arranca un <strong>entorno de desarrollo efímero en la nube, con GitHub Actions</strong>, explora el repo, hace los cambios en una <strong>rama</strong>, ejecuta tests y linters, y abre un <strong>pull request en borrador</strong> para revisión. No edita tu IDE local, no corre en GHES y no mergea solo.</li>
+            <li><strong>Personalizar su entorno:</strong> fichero <strong><code>.github/workflows/copilot-setup-steps.yml</code></strong> con los pasos de preparación (herramientas, dependencias, paquetes privados). Es lo que hace sus ejecuciones <strong>más rápidas y fiables</strong>. ⚠️ Distractores: un <code>.copilot-env.json</code> en tu carpeta personal, "copia tu dev container local", scripts en tu home o subir <code>node_modules</code> al repo.</li>
+            <li><strong>Permisos:</strong> actúa con los <strong>mismos permisos que la persona que lo invoca</strong>. No gana permisos de admin ni hace force-push.</li>
+            <li><strong>Protecciones:</strong> sus PRs siguen sujetos a <strong>branch protections, revisiones obligatorias, status checks y CODEOWNERS</strong>, como cualquier otro PR.</li>
+            <li><strong>Firewall del agente:</strong> controla <strong>a qué dominios y URLs</strong> puede acceder, para reducir el riesgo de <strong>exfiltración de datos</strong>. En entornos regulados se deja activado.</li>
+            <li><strong>Control administrativo (Business/Enterprise):</strong> las <strong>políticas de organización y empresa</strong> lo habilitan o deshabilitan por repositorios y usuarios. No lo decide cada dev desde su IDE.</li>
+            <li><strong>MCP:</strong> le permite usar herramientas y fuentes especializadas (p. ej. GitHub o Playwright MCP). No reentrena los modelos ni desactiva el firewall o las políticas.</li>
+            <li><strong>Cuándo SÍ:</strong> una feature de un <strong>issue bien definido con criterios de aceptación</strong>, cambios en varios archivos + tests + PR, actualizar una librería de componentes en todo el repo, añadir paginación, mejorar la cobertura de tests.</li>
+            <li><strong>Cuándo NO:</strong> incidentes en producción, fugas de PII o de tokens, rotar credenciales en vivo, configurar SSO o audit logs sin supervisión, o diseñar una arquitectura crítica desde cero sin tests ni criterios.</li>
+            <li><strong>El buen encargo:</strong> <em>"Desde este issue, implementa el endpoint <code>order-cancellation</code> de punta a punta: actualiza la spec de la API, añade handler y routing, escribe tests de integración y abre un PR cuando pasen."</em> ❌ Nada de "arregla todo" o "refactoriza lo que veas".</li>
+            <li><strong>Límites seguros:</strong> rama de feature, commits pequeños, status checks obligatorios y <strong>plan de rollback</strong> (revertir el PR). En un <strong>monorepo</strong>, acota la tarea a rutas o paquetes concretos y pide diffs por paquete.</li>
+            <li><strong>Responsabilidades que siguen siendo del equipo:</strong> revisar y aprobar el PR, asegurar que pasan tests, linters y security scans, y definir tareas bien acotadas. ❌ Nunca auto-merge a producción.</li>
+            <li><strong>Despliegue en la empresa:</strong> piloto con un grupo pequeño, <strong>firewall activado</strong> y monitorización antes de abrirlo a todos.</li>
           </ul>
         </article>
 
@@ -502,6 +544,17 @@
           </ul>
         </article>
 
+        <article class="concept-card">
+          <h3>🎯 Lo que cae en los tests reales: Copilot en la revisión de PRs</h3>
+          <ul>
+            <li><strong>PR summaries:</strong> ayudan a entender rápido la <strong>intención</strong>, las <strong>zonas de riesgo</strong> y el <strong>alcance</strong> del cambio. No garantizan que no haya errores.</li>
+            <li><strong>Review suggestions:</strong> son <strong>consultivas</strong>. No cuentan como aprobación, no sustituyen a los <strong>required reviewers</strong> ni a <strong>CODEOWNERS</strong> y no saltan las protecciones, aunque el CI esté en verde.</li>
+            <li>Si aplicas una sugerencia de Copilot en la revisión → <strong>en la rama del PR</strong>, <strong>relanzas los checks</strong> y <strong>pides de nuevo la revisión</strong> obligatoria.</li>
+            <li>¿Quieres que <strong>expertos revisen siempre ciertas rutas</strong>? → fichero <strong>CODEOWNERS</strong>. (Ni los PR summaries ni el agente "adivinan" revisores.)</li>
+            <li>❌ Copilot code review no auto-mergea, no valida licencias y no es "solo análisis estático".</li>
+          </ul>
+        </article>
+
         <!-- ============ 2.8 — Planes de Copilot: la tabla que MÁS cae ⭐ ============ -->
         <div class="category-header" id="apartado-2-8">
           <span class="category-header__icon">🌸</span>
@@ -531,7 +584,7 @@
                 <tr><td><strong>Org policy mgmt</strong></td><td>✗</td><td>✗</td><td>✗</td><td>✓</td><td>✓</td></tr>
                 <tr><td><strong>Org custom instructions</strong></td><td>✗</td><td>✗</td><td>✗</td><td>✓</td><td>✓</td></tr>
                 <tr><td>Spark (preview)</td><td>✗</td><td>✗</td><td>✓</td><td>✗</td><td>✓</td></tr>
-                <tr><td>Non-MS agents (preview)</td><td>✗</td><td>✗</td><td>✓</td><td>✗</td><td>✓</td></tr>
+                <tr><td>Non-MS agents (preview)</td><td>✗</td><td>✓</td><td>✓</td><td>✓</td><td>✓</td></tr>
               </tbody>
             </table>
           </div>
@@ -544,17 +597,30 @@
           <ol>
             <li><strong>Las funciones "de empresa/administración" empiezan en Business.</strong> Content exclusion, gestión de políticas de organización y organization custom instructions son <strong>solo Business y Enterprise</strong>. Tiene lógica: son cosas que administra una organización, no un individuo.</li>
             <li><strong>Los audit logs empiezan un escalón antes: en Pro+.</strong> Esta es la trampa favorita, porque intuitivamente pensarías que los logs son "cosa de empresa". Pero <strong>Pro+ ya los tiene</strong>, junto a Business y Enterprise.</li>
-            <li><strong>Spark y los agentes no-Microsoft viven en Pro+ y Enterprise… pero NO en Business.</strong> Esta es la frontera más contraintuitiva y la más preguntada.</li>
+            <li><strong>Spark vive en Pro+ y Enterprise… pero NO en Business.</strong> Esta es la frontera más contraintuitiva y la más preguntada. (Actualización de octubre de 2026: la documentación oficial ya incluye los <strong>agentes de terceros</strong> en Pro, Pro+, Business y Enterprise. Si un material antiguo te dice que son "solo Pro+ y Enterprise", está desactualizado.)</li>
           </ol>
           <div class="note note--tip">
-            <p>🌷 <strong class="note__label">Truco para la frontera rara:</strong> piensa que <strong>Spark</strong> y los agentes no-Microsoft son "juguetes nuevos experimentales", y esos juguetes van a los planes <em>individuales premium</em> (Pro+) y al <em>tope de gama</em> (Enterprise), pero se saltan el plan "de equipo estándar" (Business), que va más orientado a gestión y control que a experimentar. ✨</p>
+            <p>🌷 <strong class="note__label">Truco para la frontera rara:</strong> piensa que <strong>Spark</strong> es un "juguete nuevo experimental", y ese juguete va al plan <em>individual premium</em> (Pro+) y al <em>tope de gama</em> (Enterprise), pero se salta el plan "de equipo estándar" (Business), que va más orientado a gestión y control que a experimentar. ✨</p>
           </div>
         </article>
 
         <article class="concept-card">
           <h3>⚠️ Trampa mortal</h3>
           <ul>
-            <li>El examen mezcla constantemente Business y Enterprise como si fueran idénticos. Pero <strong>Spark y los agentes no-Microsoft están en Pro+ y Enterprise, no en Business</strong>. Cuando veas un escenario con "Business" y una de las opciones sea Spark, sospecha.</li>
+            <li>El examen mezcla constantemente Business y Enterprise como si fueran idénticos. Pero <strong>Spark está en Pro+ y Enterprise, no en Business</strong>. Cuando veas un escenario con "Business" y una de las opciones sea Spark, sospecha.</li>
+          </ul>
+        </article>
+
+        <article class="concept-card">
+          <h3>🎯 Lo que cae en los tests reales: los datos de planes que más se repiten</h3>
+          <ul>
+            <li><strong>Planes que existen:</strong> Free, Pro, Pro+, Business y Enterprise. ⚠️ Inventados: <em>Copilot Teams, Copilot Premium, Copilot for Azure DevOps</em>. Y "GitHub Team" es un plan de GitHub, <strong>no</strong> de Copilot. (La documentación de octubre de 2026 ya muestra también <strong>Copilot Student</strong> y <strong>Copilot Max</strong>; si no salen en tu examen, no te preocupes por ellos.)</li>
+            <li><strong>Pro gratis</strong> para estudiantes, profesores verificados y <em>maintainers</em> de proyectos open source populares. <strong>Free</strong> = para empezar, uso personal y funciones limitadas.</li>
+            <li><strong>Copilot Enterprise requiere GitHub Enterprise Cloud (GHEC)</strong> y <strong>no viene incluido gratis</strong> con GHEC: es una suscripción aparte. Matiz: la <strong>prueba gratuita de 30 días de GHEC</strong> incluye <strong>Copilot Business</strong> mientras dura.</li>
+            <li><strong>Solo Enterprise:</strong> <strong>Knowledge Bases</strong> (documentación curada como contexto del chat), <strong>Chat que conoce el repositorio en GitHub.com</strong>, soporte de <strong>proxy empresarial</strong> e integración con compliance avanzado.</li>
+            <li><strong>SSO</strong> no es "una feature del plan": es una capacidad de la <strong>organización en Enterprise Cloud</strong>, y Copilot Enterprise usa el SSO de tu org si está configurado. Si la pregunta es "¿qué plan se integra con SSO?" → <strong>Enterprise</strong>.</li>
+            <li><strong>Premium Support con SLAs:</strong> es una oferta <strong>aparte y de pago</strong> que se combina con Copilot Enterprise. "¿Qué plan ofrece SLAs de soporte?" → <strong>Enterprise</strong>. "¿Vienen incluidos por defecto?" → <strong>No</strong>.</li>
+            <li>🧠 <strong>Respuesta única vs "elige todas":</strong> usage reporting, content exclusion, gestión de seats y políticas de organización están en Business <strong>y</strong> Enterprise. Si es "choose all" → marca las dos. Si es de respuesta única y dice "sin integraciones enterprise" → <strong>Business</strong>, que es el plan que las introduce.</li>
           </ul>
         </article>
 
@@ -601,6 +667,16 @@
           <ul>
             <li>Ubicar la gestión de políticas "en el IDE" → es en GitHub.com.</li>
             <li>Confundir deshabilitar Copilot vía <strong>Group Policy / ADMX</strong> (nivel máquina/cliente, p. ej. en Visual Studio) con la gestión de <strong>licencias</strong> en GitHub.com (nivel cuenta). Son mecanismos distintos.</li>
+          </ul>
+        </article>
+
+        <article class="concept-card">
+          <h3>🎯 Lo que cae en los tests reales</h3>
+          <ul>
+            <li><strong>Quién compra y asigna los seats:</strong> en <strong>Business</strong>, los <strong>org owners</strong>; en <strong>Enterprise</strong>, los <strong>enterprise owners</strong>. Ni los devs desde el IDE, ni los repo admins.</li>
+            <li><strong>Actividad de Copilot en el audit log de la organización</strong> ("elige todas" entre Free, Pro, Business y Enterprise) → <strong>Business y Enterprise</strong>.</li>
+            <li><strong>Política impuesta por la empresa</strong> (p. ej. "bloquear código público" o limitar los modelos permitidos) → la organización solo puede configurar <strong>dentro de lo permitido</strong>; ni la org ni el repo la anulan.</li>
+            <li><strong>Telemetría y métricas de uso:</strong> señales de <strong>actividad y uso de funciones</strong> (sugerencias, chat, agentes), nunca un volcado de tu código fuente.</li>
           </ul>
         </article>
 

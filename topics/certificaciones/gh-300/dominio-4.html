@@ -293,6 +293,22 @@
         </article>
 
         <article class="concept-card">
+          <h3>🎯 Lo que cae en los tests reales: las 4 opciones casi iguales</h3>
+          <p>En muchas preguntas las cuatro opciones ya son específicas. La correcta es la que reúne <strong>todas</strong> las restricciones <strong>y no cuela ninguna práctica insegura</strong>:</p>
+          <ul>
+            <li><strong>SQL:</strong> versión del motor (<em>PostgreSQL 14</em>) + esquema + qué devolver + <strong>función de ventana para el ranking</strong> + columnas exactas de salida.</li>
+            <li><strong>Explicar un archivo a alguien nuevo:</strong> <strong>audiencia</strong> (<em>new backend hire</em>) + qué cubrir (propósito, flujos de datos, dependencias, riesgos) + <strong>límite</strong> (<em>5 bullets max</em>).</li>
+            <li><strong>Rendimiento:</strong> restricciones medibles (<em>O(1) extra space</em>, entradas de 10MB+, <em>backpressure</em>) frente a un vago "rápido y eficiente".</li>
+            <li><strong>Plan antes que código:</strong> "plan de <strong>5 pasos</strong> para migrar Flask → FastAPI con <strong>riesgos</strong>, <strong>rollback</strong> y rutas <strong>compatibles hacia atrás</strong>".</li>
+            <li><strong>HTTP seguro:</strong> HTTPS + <strong>validar certificados TLS</strong> + timeouts y reintentos + <strong>ocultar secretos en los logs</strong> + backoff ante 429/5xx.</li>
+            <li><strong>Librerías:</strong> versión exacta (<em>Python 3.11; redis-py v5 only</em>), método concreto y <strong>"sin APIs deprecadas"</strong>.</li>
+            <li><strong>Migración de BD segura:</strong> valor por defecto + backfill + <strong>online (sin downtime)</strong> + <strong>SQL de rollback</strong>.</li>
+            <li><strong>Logging con privacidad:</strong> JSON estructurado con <code>requestId</code>, <strong>sin PII</strong>, tokens ocultos y una línea por evento.</li>
+          </ul>
+          <p>⚠️ Las opciones trampa suelen esconder <strong>un solo detalle inseguro</strong>: loguear cuerpos completos o tokens, saltarse la validación de certificados, una API key "de prueba" como respaldo, subir secretos al repo o aceptar downtime. Con uno basta para descartarla. Y si Copilot da sugerencias <strong>irrelevantes</strong> o el prompt es <strong>ambiguo</strong> → <strong>reformula añadiendo contexto y detalles</strong> (no lo acortes ni repitas lo mismo).</p>
+        </article>
+
+        <article class="concept-card">
           <h3>📝 Mini-repaso</h3>
           <ol>
             <li>Explica "assert and iterate" y por qué es mejor que editar a mano.</li>

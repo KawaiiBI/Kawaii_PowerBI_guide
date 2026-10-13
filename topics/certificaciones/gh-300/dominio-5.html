@@ -299,6 +299,20 @@ columns: id, full_name, email, city, signup_date. Return as SQL INSERT statement
         </article>
 
         <article class="concept-card">
+          <h3>🎯 Lo que cae en los tests reales: los flujos de testing</h3>
+          <ul>
+            <li><strong>TDD (red → green → refactor):</strong> Copilot redacta los <strong>tests o stubs que fallan</strong> a partir de una selección o una especificación, ayuda con cambios acotados hasta que pasan y luego a refactorizar. Con Agent mode: tests que fallan → el agente implementa → revisas y refactorizas con los tests en verde.</li>
+            <li><strong>BDD (Given/When/Then):</strong> dale la especificación corta <em>Given/When/Then</em> + el framework y pídele que genere los <strong>tests que fallan antes de implementar</strong>.</li>
+            <li><strong>Tests parametrizados (table-driven):</strong> selecciona la función y pide <em>parameterized/table-driven tests</em> en tu framework (p. ej. <em>pytest parametrize</em> o JUnit <code>@MethodSource</code>).</li>
+            <li><strong>Después de generar tests:</strong> revisar asserts y fixtures, <strong>añadir los edge cases</strong> que falten y ejecutar el suite para <strong>medir la cobertura</strong>. La cobertura la mides <strong>tú</strong>.</li>
+            <li><strong>Tests flaky:</strong> aislar dependencias externas (<strong>mocks/fakes</strong>), <strong>fixtures deterministas</strong> y reducir la dependencia del tiempo. ❌ Ni desactivarlos, ni subir timeouts y reintentos a todo el suite, ni relanzar el CI hasta que pase una vez.</li>
+            <li><strong>Quality gates:</strong> aceptar la sugerencia → <strong>tests y cobertura en CI</strong> → <strong>code review</strong> apoyado en PR summaries → (opcional) <strong>code scanning</strong> → merge.</li>
+            <li>⚠️ "¿Cuál NO hace Copilot en testing?" → <strong>ejecutar tu framework de tests en CI e informar de pass/fail</strong>. Generar plantillas, sugerir asserts y ayudar en TDD sí.</li>
+            <li>Las <strong>content exclusions también afectan a los archivos de test</strong>: no están exentos.</li>
+          </ul>
+        </article>
+
+        <article class="concept-card">
           <h3>📝 Mini-repaso</h3>
           <ol>
             <li>¿Qué son los edge cases y cómo ayuda Copilot con ellos?</li>

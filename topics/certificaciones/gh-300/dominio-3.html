@@ -289,6 +289,16 @@
         </article>
 
         <article class="concept-card">
+          <h3>🎯 Lo que cae en los tests reales</h3>
+          <ul>
+            <li><strong>Qué marca el filtro de toxicidad:</strong> <em>hate speech</em> o lenguaje discriminatorio y contenido <strong>sexual o explícito</strong>. ❌ No marca código con errores lógicos ni opiniones fuertes en comentarios.</li>
+            <li><strong>Coincidencia exacta vs parecida:</strong> una sugerencia que coincide <strong>exactamente</strong> con unos 200 caracteres de un repo público la <strong>bloquean los filtros de duplication detection</strong> (umbral ≈150 caracteres). Las sugerencias <strong>parecidas pero no exactas</strong> las gobierna el ajuste de <strong>code referencing</strong>. Fíjate si el enunciado dice <em>exact</em> o <em>similar</em>.</li>
+            <li><strong>Copilot es multi-modelo:</strong> soporta <strong>varios modelos</strong> con capacidades y compromisos distintos, y la elección del modelo <strong>sí afecta</strong> a la latencia y a la calidad.</li>
+            <li><strong>Contexto de inferencia:</strong> tus prompts, el contenido del archivo actual y el código de alrededor. ❌ No ejecuta tu código, no usa plantillas guardadas y no "usa siempre todo el historial del repositorio".</li>
+          </ul>
+        </article>
+
+        <article class="concept-card">
           <h3>📝 Mini-repaso</h3>
           <ol>
             <li>¿Qué tres comprobaciones ocurren en el post-procesado?</li>
