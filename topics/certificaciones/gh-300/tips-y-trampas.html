@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="GH-300 Tips y Trampas: los 6 dominios del examen de GitHub Copilot con conceptos clave, datos que caen seguro, trampas típicas, trucos de memoria y checklist final.">
+  <title>GH-300 · Tips y Trampas | Power BI Guide by Kawaii BI</title>
+  <link rel="canonical" href="https://kawaiibi.es/topics/certificaciones/gh-300/tips-y-trampas.html">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Kawaii Power BI Guide">
+  <meta property="og:locale" content="es_ES">
+  <meta property="og:title" content="GH-300 · Tips y Trampas | Power BI Guide by Kawaii BI">
+  <meta property="og:description" content="GH-300 Tips y Trampas: los 6 dominios del examen de GitHub Copilot con conceptos clave, datos que caen seguro, trampas típicas, trucos de memoria y checklist final.">
+  <meta property="og:url" content="https://kawaiibi.es/topics/certificaciones/gh-300/tips-y-trampas.html">
+  <meta property="og:image" content="https://kawaiibi.es/assets/images/og-banner.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="1200">
+  <meta property="og:image:alt" content="Sara Lozano Marti - Kawaii Power BI">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="GH-300 · Tips y Trampas | Power BI Guide by Kawaii BI">
+  <meta name="twitter:description" content="GH-300 Tips y Trampas: los 6 dominios del examen de GitHub Copilot con conceptos clave, datos que caen seguro, trampas típicas, trucos de memoria y checklist final.">
+  <meta name="twitter:image" content="https://kawaiibi.es/assets/images/og-banner.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/prismjs@1/themes/prism-okaidia.min.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="../../../assets/css/main.css">
+  <link rel="stylesheet" href="../../../assets/css/themes.css">
+  <link rel="stylesheet" href="../../../assets/css/components.css">
+  <link rel="stylesheet" href="../../../assets/css/layout.css">
+
+  <style>
+    .topic-header { text-align: center; padding: 2.25rem 0 1.75rem; border-bottom: 2px solid var(--color-mauve); margin-bottom: 2rem; }
+    .topic-header__eyebrow { font-family: 'Fira Code', monospace; font-size: 0.8125rem; font-weight: 600; color: var(--color-coral); letter-spacing: 0.05em; }
+    .topic-header__icon { font-size: 3.5rem; margin: 0.5rem 0; display: block; }
+    .topic-header__title { font-size: clamp(1.75rem, 4vw, 2.25rem); font-weight: 800; color: var(--color-dark); margin-bottom: 0.625rem; line-height: 1.2; }
+    .topic-header__subtitle { font-size: 1rem; color: var(--color-slate); margin-bottom: 1.25rem; line-height: 1.55; max-width: 680px; margin-left: auto; margin-right: auto; }
+    .topic-header__levels { display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap; align-items: center; }
+
+    .toc { background: var(--color-rose); border-radius: var(--border-radius); padding: 1.25rem 1.5rem; margin-bottom: 2rem; border: 1.5px solid var(--color-mauve); }
+    .toc__title { font-size: 1rem; font-weight: 700; margin: 0 0 0.75rem; }
+    .toc__list { display: flex; flex-wrap: wrap; gap: 0.5rem; list-style: none; padding: 0; margin: 0; }
+    .toc__list a { font-size: 0.8125rem; color: var(--color-coral); text-decoration: none; padding: 0.25rem 0.625rem; background: var(--color-white); border-radius: 999px; border: 1px solid var(--color-mauve); display: inline-block; }
+    .toc__list a:hover { background: var(--color-coral); color: #fff; }
+
+    .category-header { display: flex; align-items: center; gap: 0.75rem; margin: 2.5rem 0 1.25rem; padding: 0.875rem 1.25rem; background: var(--color-rose); border-radius: var(--border-radius-sm); border-left: 4px solid var(--color-coral); scroll-margin-top: 20px; }
+    .category-header__icon { font-size: 1.5rem; }
+    .category-header__title { font-size: 1.25rem; font-weight: 700; margin: 0; }
+
+    .concept-card { background: var(--color-white); border: 1.5px solid var(--color-mauve); border-radius: var(--border-radius); padding: 1.5rem 1.75rem; margin-bottom: 1.25rem; }
+    .concept-card h3 { font-size: 1.0625rem; font-weight: 700; color: var(--color-coral); margin: 0 0 0.6rem; }
+    .concept-card p { font-size: 0.9375rem; line-height: 1.7; color: var(--color-dark); margin-bottom: 0.7rem; }
+    .concept-card ul, .concept-card ol { padding-left: 1.25rem; font-size: 0.9375rem; line-height: 1.75; color: var(--color-dark); margin: 0.4rem 0 0.7rem; }
+    .concept-card code, .note code, .quiz-q code, .answers code { background: var(--color-blush); padding: 0.1em 0.4em; border-radius: 4px; font-family: 'Fira Code', monospace; font-size: 0.85em; color: var(--color-coral); }
+    .concept-card pre { margin: 0.75rem 0; }
+    .concept-card pre code { background: none; color: inherit; padding: 0; }
+
+    /* Notas: el texto en negrita se queda en línea; solo la etiqueta inicial va como título */
+    .note strong { display: inline; margin: 0; font-size: inherit; }
+    .note strong.note__label { display: block; margin-bottom: 0.375rem; font-size: 0.875rem; }
+    .note p { margin: 0 0 0.5rem; line-height: 1.7; }
+    .note p:last-child { margin-bottom: 0; }
+    .note ul { padding-left: 1.25rem; margin: 0.25rem 0 0.5rem; line-height: 1.7; }
+    .note ul:last-child { margin-bottom: 0; }
+
+    .md-table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.84rem; }
+    .md-table th, .md-table td { border: 1px solid var(--color-mauve); padding: 0.5rem 0.7rem; text-align: left; vertical-align: top; }
+    .md-table th { background: var(--color-rose); font-weight: 700; color: var(--color-dark); }
+    .md-table tr:nth-child(even) td { background: var(--color-blush); }
+    .table-scroll { overflow-x: auto; }
+
+    .quiz-q { background: var(--color-white); border: 1.5px solid var(--color-mauve); border-left: 4px solid var(--color-coral); border-radius: var(--border-radius-sm); padding: 1rem 1.25rem; margin: 1rem 0; }
+    .quiz-q p { margin: 0 0 0.5rem; font-size: 0.9375rem; line-height: 1.6; }
+    .quiz-q__num { font-weight: 700; color: var(--color-coral); }
+    .quiz-q__options { list-style: none; margin: 0; padding-left: 0.5rem; font-size: 0.9rem; line-height: 1.7; }
+
+    /* Respuestas plegables de las preguntas trampa */
+    .answers { background: var(--color-rose); border: 1.5px solid var(--color-mauve); border-radius: var(--border-radius); margin: 1.25rem 0; }
+    .answers summary { cursor: pointer; padding: 1rem 1.25rem; color: var(--color-coral); }
+    .answers summary:focus-visible { outline: 2px solid var(--color-coral); outline-offset: 2px; border-radius: var(--border-radius); }
+    .answers__body { padding: 0 1.25rem 1rem; }
+    .answers__body p { font-size: 0.9375rem; line-height: 1.7; margin-bottom: 0.7rem; }
+
+    .checklist { list-style: none; padding-left: 0.25rem !important; }
+    .checklist label { display: flex; gap: 0.6rem; align-items: flex-start; cursor: pointer; }
+    .checklist input { margin-top: 0.35rem; accent-color: var(--color-coral); flex-shrink: 0; }
+    .page-footnote { font-size: 0.8125rem; color: var(--color-slate); line-height: 1.6; margin-top: 1.5rem; }
+
+    .course-nav { display: flex; justify-content: space-between; gap: 1rem; margin-top: 2.5rem; flex-wrap: wrap; }
+    .course-nav a { flex: 1 1 220px; display: block; background: var(--color-white); border: 1.5px solid var(--color-mauve); border-radius: var(--border-radius); padding: 1rem 1.25rem; text-decoration: none; color: inherit; transition: var(--transition); }
+    .course-nav a:hover { border-color: var(--color-coral); box-shadow: var(--shadow-md); text-decoration: none; }
+    .course-nav__label { font-size: 0.75rem; color: var(--color-slate); text-transform: uppercase; letter-spacing: 0.05em; display: block; }
+    .course-nav__title { font-weight: 700; color: var(--color-coral); }
+    .course-nav a.next { text-align: right; }
+  </style>
+</head>
+<body>
+
+  <aside class="site-sidebar">
+    <div class="site-sidebar__profile">
+      <img src="../../../assets/images/avatar-sara.png" alt="Sara Lozano Martí" class="site-sidebar__avatar">
+      <p class="site-sidebar__name">Sara Lozano Martí</p>
+      <p class="site-sidebar__subtitle">Power BI Expert</p>
+    </div>
+    <nav class="site-sidebar__nav" aria-label="Navegación principal">
+      <ul>
+        <li><a href="../../../index.html" class="site-sidebar__link"><span class="site-sidebar__icon">🏠</span> Inicio</a></li>
+        <li><a href="../../dax.html" class="site-sidebar__link"><span class="site-sidebar__icon">⚡</span> Funciones DAX</a></li>
+        <li><a href="../../power-query.html" class="site-sidebar__link"><span class="site-sidebar__icon">🔄</span> Power Query</a></li>
+        <li><a href="../../lenguaje-m.html" class="site-sidebar__link"><span class="site-sidebar__icon">〽️</span> Lenguaje M</a></li>
+        <li><a href="../../modelado.html" class="site-sidebar__link"><span class="site-sidebar__icon">🗄️</span> Modelado</a></li>
+        <li><a href="../../conceptos-powerbi.html" class="site-sidebar__link"><span class="site-sidebar__icon">📊</span> Conceptos Power BI</a></li>
+        <li><a href="../../fabric.html" class="site-sidebar__link"><span class="site-sidebar__icon">🧵</span> Microsoft Fabric</a></li>
+        <li><a href="../../tmdl.html" class="site-sidebar__link"><span class="site-sidebar__icon">📝</span> TMDL</a></li>
+        <li><a href="../../diseno-ux.html" class="site-sidebar__link"><span class="site-sidebar__icon">🎨</span> Diseño y UX</a></li>
+        <li><a href="../../gobernanza.html" class="site-sidebar__link"><span class="site-sidebar__icon">🔒</span> Gobernanza</a></li>
+        <li><a href="../../certificaciones.html" class="site-sidebar__link is-active"><span class="site-sidebar__icon">🎓</span> Certificaciones</a></li>
+      </ul>
+    </nav>
+    <div class="site-sidebar__divider"></div>
+    <div class="site-sidebar__footer">
+      <a href="../../../quien-soy.html" class="site-sidebar__link site-sidebar__link--highlight"><span class="site-sidebar__icon">👩‍💻</span> ¿Quién soy?</a>
+      <div class="site-sidebar__social">
+        <a href="https://www.linkedin.com/in/saralozanomarti" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><img src="../../../assets/images/logo-linkedin.png" alt="LinkedIn" class="site-sidebar__social-icon"></a>
+        <a href="https://www.youtube.com/@KawaiiPowerBI" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><img src="../../../assets/images/logo-youtube.png" alt="YouTube" class="site-sidebar__social-icon"></a>
+        <a href="https://github.com/KawaiiBI" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><img src="../../../assets/images/logo-github.png" alt="GitHub" class="site-sidebar__social-icon"></a>
+      </div>
+      <div class="site-sidebar__logo-bottom"><img src="../../../assets/images/logo-kawaii.jpg" alt="Kawaii BI" class="site-sidebar__logo-img"></div>
+      <p class="site-sidebar__copyright">Power BI Guide 🌸<br>© 2026 Kawaii BI</p>
+    </div>
+  </aside>
+
+  <div class="page-wrapper">
+    <main class="main-content">
+      <div class="topic-page">
+
+        <nav class="breadcrumb" aria-label="Ruta de navegación">
+          <span class="breadcrumb__item"><a href="../../../index.html">🏠 Inicio</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item"><a href="../../certificaciones.html">Certificaciones</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item"><a href="../gh-300.html">GH-300</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item">Tips y Trampas</span>
+        </nav>
+
+        <header class="topic-header">
+          <span class="topic-header__eyebrow">GH-300 · GUÍA MAESTRA</span>
+          <span class="topic-header__icon">🎯</span>
+          <h1 class="topic-header__title">GH-300 · Tips y Trampas</h1>
+          <p class="topic-header__subtitle">Las trampas típicas, los datos que caen seguro y los trucos para memorizar de los 6 dominios, todo junto para tu repaso final antes del examen. 🌸</p>
+          <div class="topic-header__levels">
+            <span class="badge badge--intermediate">Intermedio</span>
+            <span class="badge badge--special">Repaso final</span>
+          </div>
+        </header>
+
+        <nav class="toc" aria-label="Índice de la página">
+          <p class="toc__title">📑 En esta guía:</p>
+          <ul class="toc__list">
+            <li><a href="#dominio-1-ia-responsable-responsible">Dominio 1 · IA Responsable (Responsible AI)</a></li>
+            <li><a href="#dominio-2-planes-y-caracteristicas">Dominio 2 · Planes y Características</a></li>
+            <li><a href="#dominio-3-como-funciona-copilot">Dominio 3 · Cómo funciona Copilot (arquitectura y flujo de datos)</a></li>
+            <li><a href="#dominio-4-prompt-engineering">Dominio 4 · Prompt Engineering</a></li>
+            <li><a href="#dominio-5-casos-de-uso">Dominio 5 · Casos de uso y Productividad</a></li>
+            <li><a href="#dominio-6-privacidad-seguridad-content">Dominio 6 · Privacidad, Seguridad, Content Exclusions y Administración</a></li>
+            <li><a href="#los-meta-trucos-que-resuelven">Los "meta-trucos" que resuelven medio examen</a></li>
+            <li><a href="#checklist-rapido-antes-del-examen">Checklist rápido antes del examen</a></li>
+          </ul>
+        </nav>
+
+        <article class="concept-card">
+          <p>Guía de estudio para la certificación <strong>GH-300: GitHub Copilot</strong>, organizada por los <strong>6 dominios oficiales</strong> del examen. No es un banco de preguntas: es el destilado de <strong>conceptos explicados</strong>, <strong>hechos clave que caen seguro</strong>, <strong>trampas típicas</strong> y <strong>trucos para memorizar</strong>, contrastado con la documentación oficial de GitHub y Microsoft Learn.</p>
+          <div class="note note--tip">
+            <p><strong class="note__label">Objetivo:</strong> aprobar con <strong>700/1000</strong> o más (examen de ~60-65 preguntas, tipo test, con preguntas de opción única y de "elige N"). <strong>Hilo conductor:</strong> <em>Copilot <strong>asiste</strong>, tú <strong>validas</strong>.</em> Casi todo el examen se puede razonar desde esta idea.</p>
+          </div>
+          <p><strong>Leyenda:</strong> 🧠 truco de memoria · ⚠️ trampa típica · 📌 dato que cae seguro · 💡 ejemplo · ✅ correcto · ❌ incorrecto · 📝 mini-preguntas de repaso</p>
+        </article>
+
+        <!-- ============ Dominio 1 · IA Responsable (Responsible AI) ============ -->
+        <div class="category-header" id="dominio-1-ia-responsable-responsible">
+          <span class="category-header__icon">🌍</span>
+          <h2 class="category-header__title">Dominio 1 · IA Responsable (Responsible AI)</h2>
+        </div>
+
+        <article class="concept-card">
+          <p>Este dominio va de los <strong>6 principios de IA responsable de Microsoft</strong>. El examen casi nunca te pide la definición "de libro": te da un <strong>escenario</strong> y tienes que identificar <strong>qué principio aplica</strong>. Por eso lo importante no es memorizar la frase, sino reconocer la <strong>palabra clave</strong> que dispara cada principio.</p>
+        </article>
+
+        <article class="concept-card">
+          <h3>Los 6 principios (la tabla que hay que dominar)</h3>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Principio</th><th>Qué asegura</th><th>Palabra(s) clave en el examen</th><th>Con quién se confunde</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Fairness</strong> (Equidad)</td><td>Que la IA trate a todas las personas <strong>por igual</strong>, sin sesgos ni discriminación</td><td><em>bias</em>, <em>treat all people equally</em>, <em>avoid discrimination</em>, <em>fair</em></td><td>Inclusiveness</td></tr>
+                <tr><td><strong>Reliability &amp; Safety</strong></td><td>Que el sistema <strong>funcione como se espera</strong>, de forma fiable y segura, incluso ante situaciones inesperadas</td><td><em>works as expected</em>, <em>dependable</em>, <em>consistent</em>, <em>unexpected conditions</em>, <em>tested for accuracy</em></td><td>Privacy &amp; Security</td></tr>
+                <tr><td><strong>Privacy &amp; Security</strong></td><td>Proteger los <strong>datos</strong>, mantener la confidencialidad y evitar el mal uso</td><td><em>protect data</em>, <em>confidentiality</em>, <em>consent</em>, <em>prevent misuse</em>, <em>secrets</em></td><td>Reliability &amp; Safety</td></tr>
+                <tr><td><strong>Inclusiveness</strong></td><td>Que la IA <strong>empodere a todas las personas</strong> y sea accesible (capacidades, culturas, idiomas)</td><td><em>empower everyone</em>, <em>accessibility</em>, <em>diverse abilities</em>, <em>disabilities</em>, <em>languages</em></td><td>Fairness</td></tr>
+                <tr><td><strong>Transparency</strong></td><td>Que las personas <strong>entiendan</strong> cómo funciona la IA y sepan cuándo está actuando</td><td><em>understandable</em>, <em>explainable</em>, <em>know how it works</em>, <em>communicate limitations</em>, <em>inform users</em></td><td>Accountability</td></tr>
+                <tr><td><strong>Accountability</strong></td><td>Que las <strong>personas</strong> (no las máquinas) sean responsables del sistema y su impacto</td><td><em>people are responsible</em>, <em>human oversight</em>, <em>governance</em>, <em>answerable</em>, <em>auditable</em></td><td>Transparency</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <ul>
+            <li>📌 <strong>"Maximizing Profit" NO es un principio de IA responsable.</strong> Es la trampa clásica de la pregunta "cuál NO es un principio".</li>
+            <li>🧠 <strong>Regla de las palabras clave</strong> (las dos parejas que más se confunden):
+              <ul>
+                <li><strong>Fairness vs Inclusiveness</strong> → Fairness es <em>mismo trato</em> (igualdad, sin sesgo). Inclusiveness es <em>llegar a todos</em> (accesibilidad, empoderar a personas con distintas capacidades/culturas/idiomas). Truco: si dice <em>"equally / without bias / discrimination"</em> → <strong>Fairness</strong>; si dice <em>"accessible / everyone can use it / disabilities"</em> → <strong>Inclusiveness</strong>.</li>
+                <li><strong>Transparency vs Accountability</strong> → Transparency es <em>"lo entiendo"</em> (explicable). Accountability es <em>"alguien responde"</em> (supervisión humana, governance). Truco: verbo <em>entender/explicar</em> → <strong>Transparency</strong>; verbo <em>responsabilizarse/supervisar/rendir cuentas</em> → <strong>Accountability</strong>.</li>
+              </ul>
+            </li>
+          </ul>
+        </article>
+
+        <article class="concept-card">
+          <h3>¿Qué es <em>bias</em> (sesgo) en IA? — el concepto estrella del dominio</h3>
+          <p><strong>Bias</strong> = cuando un sistema de IA produce resultados <strong>sistemáticamente injustos o desviados</strong> hacia (o en contra de) ciertas personas o grupos. Lo importante: <strong>no es un error aleatorio</strong>, es una inclinación que se repite siempre en la misma dirección.</p>
+          <ul>
+            <li><strong>¿De dónde sale el sesgo?</strong> Casi siempre de los <strong>datos de entrenamiento</strong>. El modelo aprende de ejemplos; si esos ejemplos vienen desequilibrados o cargados de prejuicios históricos, el modelo los <strong>hereda</strong> e incluso los <strong>amplifica</strong>.
+              <ul>
+                <li>💡 Un modelo entrenado sobre todo con código/comentarios en inglés sugiere peor en otros idiomas.</li>
+                <li>💡 Datos históricos de contratación con sesgo humano → la IA reproduce ese sesgo como si fuera "lo normal".</li>
+              </ul>
+            </li>
+            <li><strong>Combatir el bias = trabajar la Fairness.</strong> Y no se hace con una sola medida, sino con una <strong>combinación</strong>: <strong>datos diversos y representativos</strong> + <strong>métricas de equidad</strong> (<em>fairness metrics</em>, para medir el sesgo objetivamente) + <strong>supervisión humana</strong> (<em>human oversight</em>).</li>
+            <li>⚠️ <strong>Las 3 trampas recurrentes</strong> que salen como "solución falsa" a fairness (memorízalas, aparecen en varias preguntas):
+              <ol>
+                <li><em>"Collect massive / large amounts of data"</em> → <strong>más datos ≠ datos sin sesgo</strong>. Si recoges toneladas de datos sesgados, tienes toneladas de sesgo. Cantidad no es representatividad.</li>
+                <li><em>"Focus on accuracy"</em> → precisión ≠ equidad. Un modelo puede ser muy "preciso" reproduciendo fielmente un sesgo histórico.</li>
+                <li><em>"Regularly monitor performance"</em> → monitorizar ayuda a <strong>detectar</strong> problemas, pero por sí solo <strong>no garantiza</strong> que los resultados sean justos.</li>
+              </ol>
+            </li>
+          </ul>
+        </article>
+
+        <article class="concept-card">
+          <h3>Los riesgos reales de la IA (los que reconoce el examen)</h3>
+          <ul>
+            <li><strong>Sesgos</strong> que se perpetúan o amplifican.</li>
+            <li><strong>Falta de interpretabilidad</strong> ("caja negra" / <em>black box</em>): decisiones difíciles de explicar → es justo lo que mitiga <em>Transparency</em>.</li>
+            <li><strong>Privacidad y seguridad</strong> de los datos.</li>
+            <li>🧠 Un "riesgo" real se redacta con <strong>matiz prudente</strong> (<em>can sometimes, may, difficult to interpret</em>). Desconfía de opciones <strong>optimistas y absolutas</strong> (<em>eliminates the need for regulations, incapable of perpetuating bias, replaces developers</em>) → esas son las incorrectas.</li>
+          </ul>
+        </article>
+
+        <article class="concept-card">
+          <h3>¿Por qué una IA generativa da salidas inexactas (alucina)?</h3>
+          <ul>
+            <li>✅ Porque <strong>los datos de entrenamiento pueden contener sesgos o inconsistencias</strong>.</li>
+            <li>❌ NO por "downtime / servicio caído" (si está caído, no responde) ni por "sobrecarga de peticiones" (eso afecta a la velocidad, no a la veracidad) ni por "estar programada para priorizar creatividad".</li>
+            <li>💡 Matiz técnico (por si te lo redactan bien): las alucinaciones también vienen de la <strong>naturaleza probabilística</strong> del modelo (predice el siguiente token, no "sabe" la verdad). Pero si esa opción no está, la respuesta del examen es <strong>los datos</strong>.</li>
+          </ul>
+        </article>
+
+        <article class="concept-card">
+          <h3>Escenarios de IA responsable — el patrón de la respuesta correcta</h3>
+          <p>El examen mete escenarios largos. La correcta casi siempre <strong>combina principios + acciones concretas</strong>, y descarta las que se apoyan en un solo principio "a medias" o en no hacer nada:</p>
+          <ul>
+            <li><strong>Fairness + Inclusiveness</strong> → "Copilot funciona peor con comentarios no ingleses" + "el auto-asignador sobrecarga a unos devs": ampliar datos no ingleses, testear entre idiomas y ajustar la lógica de reparto.</li>
+            <li><strong>Accountability + Privacy &amp; Security</strong> → ante una fuga de datos personales: <strong>retirar los identificadores, reportar el incidente, documentar</strong> los cambios técnicos/de proceso y <strong>actualizar políticas</strong> (exigir consentimiento), manteniendo un <strong>registro auditable</strong>.</li>
+            <li><strong>Privacy &amp; Security tiene prioridad</strong> cuando "mejorar la fairness" exigiría <strong>exceder el consentimiento</strong> del usuario (p. ej. meter atributos sensibles en el training). Solución: métodos <strong>sintéticos o que preserven la privacidad</strong>.</li>
+          </ul>
+        </article>
+
+        <article class="concept-card">
+          <h3>📝 Mini-preguntas de repaso (Dominio 1)</h3>
+          <ol>
+            <li>¿Qué principio busca que la IA trate a todas las personas por igual? → <em>Fairness.</em></li>
+            <li>¿Cuál NO es un principio de Microsoft: Fairness, Transparency, Maximizing Profit, Accountability? → <em>Maximizing Profit.</em></li>
+            <li>Un sistema recomienda pero no hay forma de entender su razonamiento. ¿Qué principio se viola? → <em>Transparency.</em></li>
+            <li>¿Cómo se integra la equidad en una IA? → <em>Reduciendo el bias en datos y algoritmos</em> (no "más datos", no "accuracy", no "monitorizar").</li>
+            <li>Principio que exige que <strong>personas</strong> sean responsables del despliegue y su impacto → <em>Accountability.</em></li>
+            <li>Principio que evita excluir a personas con discapacidad → <em>Inclusiveness.</em></li>
+          </ol>
+        </article>
+
+        <!-- ============ Dominio 2 · Planes y Características ============ -->
+        <div class="category-header" id="dominio-2-planes-y-caracteristicas">
+          <span class="category-header__icon">💳</span>
+          <h2 class="category-header__title">Dominio 2 · Planes y Características</h2>
+        </div>
+
+        <article class="concept-card">
+          <p>Aquí el examen premia saber <strong>qué plan existe</strong> y <strong>qué incluye cada uno</strong>. Muchas preguntas se resuelven descartando <strong>planes inventados</strong> o recordando <strong>qué feature pertenece a qué plan</strong>.</p>
+        </article>
+
+        <article class="concept-card">
+          <h3>Los planes que EXISTEN</h3>
+          <p><strong>Free · Pro · Pro+ · Business · Enterprise.</strong> ("Individual" es el término paraguas para <strong>Pro/Pro+</strong>.)</p>
+          <ul>
+            <li>⚠️ <strong>Planes inventados</strong> (distractores muy habituales): <em>Copilot Teams, Copilot for Azure DevOps, Copilot Premium, Copilot Codespace</em>. <strong>Ninguno existe</strong> → siempre incorrectos.</li>
+          </ul>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Plan</th><th>Para quién</th><th>Qué incluye (claves de examen)</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Free</strong></td><td>Individuos que empiezan, uso personal</td><td>Completions y Chat con <strong>funciones limitadas</strong>. Sin gobernanza.</td></tr>
+                <tr><td><strong>Pro / Pro+</strong></td><td>Desarrollador individual</td><td>Completions + Chat completos para 1 persona. <strong>Pro es gratis</strong> para estudiantes/profesores verificados y <em>maintainers</em> de OSS populares. Sin controles de organización.</td></tr>
+                <tr><td><strong>Business</strong></td><td>Organizaciones</td><td><strong>Gestión de licencias (seats), controles de política, usage reporting, content exclusion.</strong> SIN integraciones enterprise (nada de SSO ni compliance avanzado). Pensado para orgs en plan <strong>GitHub Team</strong>.</td></tr>
+                <tr><td><strong>Enterprise</strong></td><td>Empresas en GitHub Enterprise Cloud</td><td>Todo lo de Business <strong>+ audit logs, SSO (de la org), compliance avanzado, Chat consciente del repo en GitHub.com, Knowledge Bases, enterprise proxy support.</strong></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </article>
+
+        <article class="concept-card">
+          <h3>Datos que caen seguro 📌</h3>
+          <ul>
+            <li><strong>Copilot Enterprise ⇒ requiere GitHub Enterprise Cloud (GHEC).</strong> Es la dependencia estrella del dominio.</li>
+            <li><strong>Copilot NO viene incluido gratis con GHEC</strong> → es una suscripción/add-on <strong>aparte</strong> (matiz: una <em>trial</em> de 30 días de GHEC sí trae Copilot Business incluido durante la prueba).</li>
+            <li><strong>SSO</strong> no es "una feature suelta del plan": es una capacidad de la <strong>organización</strong> en Enterprise Cloud; Copilot Enterprise <strong>usa el SSO de tu org</strong> si está configurado.</li>
+            <li><strong>Premium Support con SLAs</strong> = oferta <strong>separada y de pago</strong> para clientes Enterprise; se puede combinar con Copilot Enterprise, <strong>no viene por defecto</strong>.</li>
+            <li><strong>Usage reporting / usage metrics</strong> → <strong>Business y Enterprise</strong> (ambos).</li>
+            <li><strong>Content exclusion</strong> → <strong>Business y Enterprise</strong>.</li>
+            <li><strong>Knowledge Bases</strong> (docs curados como contexto del Chat) → <strong>Enterprise only</strong>.</li>
+            <li><strong>Chat consciente del repositorio en GitHub.com</strong> (referencia archivos/docs del repo remoto) → <strong>Enterprise</strong>.</li>
+            <li><strong>Individual (Pro/Pro+):</strong> solo <strong>code completions + Chat</strong>. NO tiene Knowledge Bases, PR diff analysis avanzado ni gestión organizativa.</li>
+          </ul>
+          <p>🧠 <strong>Cómo separar Business de Enterprise (regla de oro):</strong></p>
+          <ul>
+            <li><strong>Business</strong> = <strong>gestión + políticas + reporting + exclusions</strong> (para administrar un equipo).</li>
+            <li><strong>Enterprise</strong> = todo lo anterior <strong>+ integraciones y "conocimiento de la organización"</strong>: SSO, audit logs, Knowledge Bases, Chat repo-aware en GitHub.com, proxy. Si la feature suena a "integración corporativa" o "contexto de toda la empresa" → <strong>Enterprise</strong>.</li>
+          </ul>
+        </article>
+
+        <article class="concept-card">
+          <h3>Superficies donde vive Copilot Chat 📌</h3>
+          <p>GitHub.com · VS Code · Visual Studio · JetBrains · <strong>Eclipse</strong> · <strong>Xcode</strong> · <strong>GitHub Mobile</strong> · <strong>Windows Terminal</strong>.</p>
+          <ul>
+            <li>⚠️ <strong>GitHub Desktop NO</strong> es una superficie de Copilot Chat (distractor típico).</li>
+            <li>⚠️ <strong>GHES (GitHub Enterprise Server, on-premises) NO está soportado</strong>: Copilot <strong>requiere el servicio en la nube</strong>. Nada de "Copilot corriendo on-prem" ni "modelo self-hosted".</li>
+          </ul>
+        </article>
+
+        <article class="concept-card">
+          <h3>Feedback de una respuesta del Chat</h3>
+          <ul>
+            <li>✅ <strong>Botones 👍 / 👎 debajo de cada respuesta</strong> (in-line). Es el mismo mecanismo en IDE, GitHub.com y <strong>GitHub Mobile</strong>.</li>
+            <li>❌ NO es "el menú de ajustes de la app", "la sección de feedback de la web" ni "tuitear a la cuenta de GitHub en X".</li>
+            <li>🧠 Feedback de <strong>una respuesta concreta</strong> → siempre <strong>👍/👎 in-line</strong>, sea cual sea la superficie.</li>
+          </ul>
+        </article>
+
+        <article class="concept-card">
+          <h3>📝 Mini-preguntas de repaso (Dominio 2)</h3>
+          <ol>
+            <li>¿Qué plan puede usar una org de Azure DevOps sin necesitar GitHub Enterprise? → <em>Copilot Individual (Pro).</em> (Enterprise requiere GHEC; "for Azure DevOps" y "Teams" no existen.)</li>
+            <li>¿Qué planes excluyen tus prompts/completions del entrenamiento por defecto? → <em>Business y Enterprise.</em> (Individual puede opt-out, pero no por defecto.)</li>
+            <li>¿Qué plan da Knowledge Bases y Chat repo-aware en GitHub.com? → <em>Enterprise.</em></li>
+            <li>¿Qué planes tienen content exclusion? → <em>Business y Enterprise.</em></li>
+            <li>¿Copilot Enterprise viene gratis con GHEC? → <em>No, es una suscripción aparte.</em></li>
+            <li>¿Está Copilot soportado en GHES? → <em>No, requiere la nube.</em></li>
+            <li>¿Cómo das feedback de una respuesta del Chat en GitHub Mobile? → <em>Con los 👍/👎 in-line.</em></li>
+          </ol>
+        </article>
+
+        <!-- ============ Dominio 3 · Cómo funciona Copilot (arquitectura y flujo de datos) ============ -->
+        <div class="category-header" id="dominio-3-como-funciona-copilot">
+          <span class="category-header__icon">⚙️</span>
+          <h2 class="category-header__title">Dominio 3 · Cómo funciona Copilot (arquitectura y flujo de datos)</h2>
+        </div>
+
+        <article class="concept-card">
+          <p>Este dominio es el más "conceptual". Si entiendes <strong>qué es Copilot por dentro</strong> y <strong>cómo viajan tus datos</strong>, caen muchas preguntas.</p>
+        </article>
+
+        <article class="concept-card">
+          <h3>Concepto clave: Copilot NO es un modelo, es un producto sobre LLMs</h3>
+          <ul>
+            <li><strong>Copilot = un producto / orquestador</strong> que se sienta <strong>encima</strong> de modelos de lenguaje (LLMs). Es <strong>multi-modelo</strong>: por debajo puedes <strong>elegir el modelo</strong> (proveedores como OpenAI/GPT, Anthropic/Claude, Google/Gemini…).</li>
+            <li>🚗 <strong>Analogía del coche:</strong> Copilot es el <strong>coche</strong> (volante, salpicadero, sistemas de seguridad, integración con GitHub); el <strong>LLM es el motor</strong> intercambiable. Cambias el motor y sigues conduciendo el mismo coche. El coche te da la <strong>experiencia</strong>; el motor, la <strong>potencia de razonamiento</strong>.</li>
+            <li><strong>Flujo de una sugerencia:</strong> tu <strong>contexto</strong> (prompt + código de alrededor + archivo actual + comentarios) → <strong>Copilot lo procesa y le aplica filtros</strong> → <strong>el LLM genera</strong> → Copilot te devuelve la sugerencia filtrada dentro del IDE.</li>
+            <li>📌 Los <strong>filtros</strong> (código público, toxicidad, content exclusions) los pone <strong>Copilot</strong>, no el modelo.</li>
+            <li>⚠️ Para el examen vale el <strong>concepto</strong> (Copilot ≠ modelo; es multi-modelo). NO memorices la lista exacta de modelos disponibles: es lo que más rápido se queda desactualizado.</li>
+          </ul>
+        </article>
+
+        <article class="concept-card">
+          <h3>Dónde se procesan los prompts y qué pasa con tus datos 📌</h3>
+          <ul>
+            <li>Los prompts se procesan en el <strong>servicio en la nube de Copilot</strong>, que los reenvía al modelo elegido según el <em>data pipeline</em> de GitHub. <strong>No</strong> es 100% local, ni tu CI, ni GHES.</li>
+            <li><strong>Tu código privado, prompts y completions NO se usan para entrenar</strong> los modelos base de Copilot. Ni "siempre", ni "solo para Enterprise", ni "salvo que desactives la telemetría". Es un <strong>no</strong> rotundo.</li>
+            <li><strong>Telemetría</strong> = señales <strong>agregadas de actividad y uso de features</strong> (completions, chat, agents) para reporting — <strong>NO</strong> un volcado de tu código fuente.</li>
+            <li><strong>Contexto de inferencia:</strong> Copilot usa el <strong>código de alrededor</strong>, el <strong>contenido del archivo actual</strong> y los <strong>comentarios</strong> para dar mejores sugerencias (no ejecuta tu código, no navega la web por su cuenta salvo integración, no usa "plantillas pre-guardadas").</li>
+            <li><strong>El historial del Chat</strong> aporta <strong>contexto</strong> para respuestas más relevantes y precisas (mantiene el hilo). NO entrena el modelo ni se comparte con otros usuarios.</li>
+          </ul>
+        </article>
+
+        <article class="concept-card">
+          <h3>Fuentes de las respuestas del Chat</h3>
+          <ul>
+            <li>Copilot Chat <strong>combina varias fuentes</strong>: los datos de entrenamiento del modelo + el <strong>contexto de tu código/repositorios</strong> + fuentes externas (p. ej. <strong>Bing</strong>) cuando la integración aplica.</li>
+            <li>🧠 Desconfía de las opciones con <em>"primarily / exclusively"</em> apuntando a <strong>una sola</strong> fuente → suelen ser las incorrectas. La correcta es la que dice <strong>"combina"</strong>.</li>
+          </ul>
+        </article>
+
+        <article class="concept-card">
+          <h3>Filtro de código público (code referencing / duplication detection)</h3>
+          <ul>
+            <li><strong>Qué hace:</strong> detecta o bloquea sugerencias que <strong>coinciden con código público</strong> en GitHub.</li>
+            <li><strong>Mecanismo:</strong> compara la sugerencia (+ unos <strong>~150 caracteres</strong> de contexto alrededor) contra un <strong>índice de todos los repos públicos de GitHub.com</strong>.</li>
+            <li>Bloquea coincidencias exactas largas (<strong>≈150+ caracteres</strong>). Con la opción <strong>"Allow + show references"</strong>, muestra la sugerencia con <strong>enlaces a las fuentes públicas</strong> (útil para atribuir licencias).</li>
+            <li>Solo indexa <strong>repos públicos</strong> (no privados ni código fuera de GitHub); el índice se <strong>refresca cada pocos meses</strong>; las coincidencias ocurren en <strong>menos del 1%</strong> de las sugerencias.</li>
+            <li><strong>Se configura</strong> a nivel de <strong>cuenta individual</strong> y por <strong>políticas de organización/enterprise</strong>.</li>
+            <li>⚠️ <strong>No confundir con content exclusion:</strong> code referencing gobierna las <strong>salidas</strong> (output que se parece a código público); content exclusion limita las <strong>entradas</strong> (lo que Copilot puede ver como contexto).</li>
+          </ul>
+        </article>
+
+        <article class="concept-card">
+          <h3>Modelos, latencia y calidad</h3>
+          <ul>
+            <li>Copilot soporta <strong>múltiples modelos</strong> con distintas capacidades y compromisos; la <strong>elección del modelo SÍ afecta</strong> a la latencia y a la calidad. (Falso: "un único modelo fijo", "el modelo nunca afecta a la latencia".)</li>
+          </ul>
+        </article>
+
+        <article class="concept-card">
+          <h3>Custom models (modelos personalizados)</h3>
+          <ul>
+            <li><strong>Beneficio:</strong> las respuestas <strong>usan las prácticas y patrones de tus repositorios</strong> → salen con el estilo propio de tu organización.</li>
+            <li>❌ No es "más rápido", ni "garantiza corrección", ni "usa el motor LLM de la organización" (frase-humo).</li>
+          </ul>
+        </article>
+
+        <article class="concept-card">
+          <h3>📝 Mini-preguntas de repaso (Dominio 3)</h3>
+          <ol>
+            <li>¿Copilot es un modelo de IA? → <em>No, es un producto/orquestador multi-modelo sobre LLMs.</em></li>
+            <li>¿Dónde se procesan los prompts? → <em>En el servicio en la nube de Copilot, que los reenvía al modelo.</em></li>
+            <li>¿Copilot entrena con tu código privado? → <em>No.</em></li>
+            <li>¿Qué incluye la telemetría? → <em>Actividad y uso de features, no el contenido del código.</em></li>
+            <li>¿Cómo genera el Chat sus respuestas? → <em>Combinando training data + tu código/repos + fuentes externas (Bing).</em></li>
+            <li>¿Contra qué compara el filtro de código público y cuántos caracteres? → <em>Contra un índice de repos públicos de GitHub, ~150 caracteres de contexto.</em></li>
+            <li>¿Qué rol juega el historial del chat? → <em>Aporta contexto (relevancia/precisión); no entrena ni se comparte.</em></li>
+          </ol>
+        </article>
+
+        <!-- ============ Dominio 4 · Prompt Engineering ============ -->
+        <div class="category-header" id="dominio-4-prompt-engineering">
+          <span class="category-header__icon">✍️</span>
+          <h2 class="category-header__title">Dominio 4 · Prompt Engineering</h2>
+        </div>
+
+        <article class="concept-card">
+          <p>El examen valora que sepas <strong>qué hace bueno a un prompt</strong> y que distingas las <strong>técnicas</strong> (zero/one/few-shot, role prompting). Muchas preguntas te dan 4 prompts y te piden el "mejor": gana <strong>siempre el más específico y acotado</strong>.</p>
+        </article>
+
+        <article class="concept-card">
+          <h3>Principios de un buen prompt 📌</h3>
+          <ul>
+            <li><strong>Clarity</strong> → enfócate en <strong>una sola tarea bien definida</strong>.</li>
+            <li><strong>Specificity</strong> → instrucciones <strong>claras y explícitas</strong> (lenguaje, versión, formato de salida…).</li>
+            <li><strong>Keep it simple</strong> → conciso, no recargado.</li>
+            <li><strong>Give examples</strong> → los ejemplos alinean la salida con el estilo/patrón que quieres.</li>
+            <li><strong>Provide context</strong> → contexto = sugerencias más relevantes y precisas.</li>
+            <li><strong>"Surround"</strong> → usa <strong>nombres de archivo descriptivos</strong> y mantén <strong>abiertos los archivos relacionados</strong> (Copilot aprovecha ese contexto).</li>
+            <li><strong>Break big tasks into small ones</strong> → trocea tareas grandes.</li>
+            <li>⚠️ <strong>"Verbosity / provide extensive descriptions" NO es un principio.</strong> El principio es <em>keep it simple</em> → más texto no es mejor prompt. (Es la respuesta a la pregunta "cuál NO es un principio".)</li>
+          </ul>
+        </article>
+
+        <article class="concept-card">
+          <h3>Herramientas del Chat para optimizar la experiencia</h3>
+          <ul>
+            <li><strong>Chat participants</strong> → los <code>@</code> (p. ej. <code>@workspace</code>, <code>@github</code>): amplían el contexto.</li>
+            <li><strong>Slash commands</strong> → los <code>/</code> (<code>/explain</code>, <code>/fix</code>, <code>/tests</code>…): acciones predefinidas.</li>
+            <li><strong>Chat variables</strong> → los <code>#</code> (<code>#file</code>, <code>#selection</code>…): inyectan contenido concreto como contexto.</li>
+            <li>⚠️ Malas prácticas (siempre incorrectas): ser <strong>vago</strong>, pedir <strong>tareas enormes de golpe</strong>, <strong>evitar ejemplos/snippets</strong>.</li>
+          </ul>
+        </article>
+
+        <article class="concept-card">
+          <h3>Técnicas de prompting (definiciones que caen)</h3>
+          <ul>
+            <li><strong>Zero-shot</strong> = le pides algo <strong>sin ejemplos</strong>.</li>
+            <li><strong>One-shot</strong> = le das <strong>un</strong> ejemplo.</li>
+            <li><strong>Few-shot</strong> = le das <strong>varios ejemplos</strong> de entrada→salida para que capte el patrón.</li>
+            <li><strong>Role prompting</strong> = le asignas un <strong>rol/persona</strong> ("actúa como experto en seguridad", "como desarrolladora backend, quiero…") para orientar el tipo y nivel de respuesta.</li>
+            <li>🧠 <strong>Ejemplos = few-shot · Rol = role prompting · Tono ≠ rol.</strong> El tono de voz puede formar parte de un rol, pero por sí solo no es role prompting.</li>
+          </ul>
+          <div class="note note--warning">
+            <p>⚠️ <strong class="note__label">Aviso de dumps:</strong> circula una pregunta "What is few-shot prompting?" cuyas 4 opciones <strong>no mencionan "ejemplos"</strong> (está mal redactada; suelen marcar la que habla de "el mecanismo que quieres que use"). La definición <strong>correcta</strong> siempre gira en torno a <strong>"providing examples"</strong> — esa es la que debes reconocer en la versión bien redactada.</p>
+          </div>
+        </article>
+
+        <article class="concept-card">
+          <h3>Ejemplos de prompts "ganadores" (por qué el específico gana)</h3>
+          <p>Copilot rinde mejor con alcance pequeño y contexto claro. Fíjate en el patrón de las opciones correctas:</p>
+          <ul>
+            <li>💡 <strong>Refactor acotado:</strong> <em>"Modifica SOLO la función <code>parseHeader</code>; mantén el comportamiento público; añade bounds checks; devuelve errores detallados."</em> (mejor que "mejora esto" o "limpia el parser").</li>
+            <li>💡 <strong>Reducir alucinaciones en API:</strong> <em>"Usa Foo API v3; solo endpoints <code>/users/{id}</code> y <code>/users/search</code>; TypeScript; <code>fetch</code>; sin campos no documentados; maneja errores 4xx/5xx."</em></li>
+            <li>💡 <strong>Código seguro con secretos:</strong> <em>"Lee la API key de una variable de entorno; no la hardcodees; falla rápido si falta; no loguees secretos."</em></li>
+            <li>💡 <strong>Formato de salida para CI:</strong> <em>"Devuelve un array JSON de tests fallidos con campos name, file, line, message — sin prosa."</em></li>
+            <li>💡 <strong>Tests parametrizados:</strong> <em>"Genera tests table-driven en Go para <code>Parse()</code>, cubriendo vacío, inválido y longitudes límite; incluye nombres y <code>wantErr</code>."</em></li>
+            <li>🧠 <strong>Regla:</strong> nombra <strong>lenguaje + versión + alcance + formato + restricciones</strong>. Descarta lo genérico ("improve this", "make it cleaner", "write tests") y lo enorme ("fix everything in the repo").</li>
+          </ul>
+        </article>
+
+        <article class="concept-card">
+          <h3>📝 Mini-preguntas de repaso (Dominio 4)</h3>
+          <ol>
+            <li>¿Qué es role prompting? → <em>Describir en el prompt qué rol/persona debe adoptar Copilot.</em></li>
+            <li>¿Qué es few-shot? → <em>Darle varios ejemplos de entrada→salida.</em></li>
+            <li>¿Cuál NO es un principio: Clarity, Verbosity, Specificity, Surround? → <em>Verbosity.</em></li>
+            <li>¿Cómo se optimiza la experiencia del Chat? → <em>Con participants (@), slash commands (/), variables (#) y siendo específica.</em></li>
+            <li>Entre "Improve this" y "Refactor to pure functions; keep public API; add docstrings; return early on invalid input" → <em>el segundo (específico).</em></li>
+          </ol>
+        </article>
+
+        <!-- ============ Dominio 5 · Casos de uso y Productividad ============ -->
+        <div class="category-header" id="dominio-5-casos-de-uso">
+          <span class="category-header__icon">🚀</span>
+          <h2 class="category-header__title">Dominio 5 · Casos de uso y Productividad</h2>
+        </div>
+
+        <article class="concept-card">
+          <p>Aquí el examen comprueba que sabes <strong>para qué sirve Copilot de verdad</strong> (siempre alrededor del <strong>código</strong>) y que distingues los casos reales de los distractores absurdos.</p>
+        </article>
+
+        <article class="concept-card">
+          <h3>Para qué SÍ sirve (casos de uso reales)</h3>
+          <ul>
+            <li><strong>Explicar código</strong> y entender un <strong>codebase desconocido</strong> (onboarding de un nuevo dev).</li>
+            <li><strong>Generar tests unitarios</strong> y scaffolding de integración.</li>
+            <li><strong>Documentación</strong>: docstrings, comentarios, secciones de README.</li>
+            <li><strong>Debugging</strong>: explicar mensajes de error/stack traces y proponer fixes o refactors.</li>
+            <li><strong>Boilerplate</strong> y <strong>prototipado rápido</strong>; explorar <strong>APIs/librerías desconocidas</strong>; <strong>aprender</strong> frameworks/lenguajes con ejemplos en tiempo real.</li>
+            <li><strong>Productividad en proyectos grandes</strong>: sugerencias que aprovechan el <strong>contexto del workspace</strong> (varios archivos).</li>
+            <li>⚠️ Para qué <strong>NO</strong> sirve (distractores que se repiten): nómina/RRHH, contratos legales, copys de marketing/publicidad, gestión de agenda/salas, ejecutar tu CI, hostear registries, sustituir tu servidor de control de versiones.</li>
+          </ul>
+        </article>
+
+        <article class="concept-card">
+          <h3>Buenas prácticas para la calidad del código</h3>
+          <ul>
+            <li>✅ <strong>Revisar y refactorizar</strong> siempre lo que sugiere; tratar las sugerencias como <strong>borradores (drafts)</strong>; pasar <strong>tests y security scans</strong> antes de mergear.</li>
+            <li>❌ Malas prácticas (siempre falsas): <em>"rely solely / commit without review"</em>, <em>"disable/avoid Copilot"</em>, <em>"skip code review porque lo escribió Copilot"</em>, <em>"auto-merge de PRs cuando pasan los tests"</em>.</li>
+            <li>🧠 <strong>Copilot acelera, pero NO garantiza</strong> corrección ni seguridad → el equipo sigue siendo <strong>responsable</strong> de testear, revisar y cumplir compliance. Este es <em>el</em> mensaje del dominio.</li>
+          </ul>
+        </article>
+
+        <article class="concept-card">
+          <h3>Riesgos de depender demasiado de Copilot</h3>
+          <ul>
+            <li>✅ Puede <strong>introducir vulnerabilidades</strong> (código con exploits conocidos) y <strong>no reflejar buenas prácticas ni los estándares más recientes</strong>.</li>
+            <li>❌ Falso: "aumenta el lead time" o "reduce la velocidad del desarrollador" → contradice el propósito de la herramienta.</li>
+          </ul>
+        </article>
+
+        <article class="concept-card">
+          <h3>Toxicity filter (filtro de toxicidad)</h3>
+          <ul>
+            <li>Marca/bloquea <strong>contenido dañino</strong>: <em>hate speech / lenguaje discriminatorio</em> y <em>contenido sexual o explícito</em>.</li>
+            <li>❌ NO marca: código con <strong>errores lógicos/bugs</strong> (eso no es toxicidad) ni <strong>opiniones/críticas fuertes</strong> en comentarios (opinión firme ≠ ofensa).</li>
+            <li>🧠 El toxicity filter va de <strong>daño humano</strong>, NO de calidad técnica ni de tono opinado.</li>
+          </ul>
+        </article>
+
+        <article class="concept-card">
+          <h3>Refactoring (definición)</h3>
+          <ul>
+            <li><strong>Refactorizar = mejorar la ESTRUCTURA INTERNA del código SIN alterar su comportamiento externo.</strong> Mejora legibilidad/mantenibilidad; el código sigue haciendo lo mismo por fuera.</li>
+            <li>❌ No es: cambiar la funcionalidad, añadir features nuevas, ni (necesariamente) optimizar el rendimiento.</li>
+            <li>Buen prompt de refactor → <strong>específico y acotado</strong> ("this function / this code segment") + un atributo de calidad nombrado (readability, maintainability).</li>
+          </ul>
+        </article>
+
+        <article class="concept-card">
+          <h3>Copilot y análisis estadístico</h3>
+          <ul>
+            <li>🧠 Copilot sugiere a partir de <strong>patrones estadísticos</strong> aprendidos → lo que propone es "lo habitual", <strong>puede no aplicar bien a tu dataset concreto</strong> → hay que <strong>revisar y validar</strong>.</li>
+            <li>❌ No "corrige errores estadísticos automáticamente", ni "verifica la significancia por su cuenta", ni "diseña métodos estadísticos nuevos no documentados".</li>
+          </ul>
+        </article>
+
+        <article class="concept-card">
+          <h3>Consistencia en tests</h3>
+          <ul>
+            <li>Copilot <strong>detecta el patrón con el que escribes tus tests</strong> (nombres, estructura, framework, estilo de asserts) y <strong>sugiere tests futuros con ese mismo patrón</strong> → coherencia en todo el suite.</li>
+            <li>❌ No "arregla todos los tests" ni "escribe el código de implementación de la función".</li>
+          </ul>
+        </article>
+
+        <article class="concept-card">
+          <h3>📝 Mini-preguntas de repaso (Dominio 5)</h3>
+          <ol>
+            <li>Buena práctica para mejorar la calidad del código con Copilot → <em>revisar y refactorizar lo que sugiere.</em></li>
+            <li>Dos riesgos reales de depender de Copilot → <em>vulnerabilidades de seguridad y sugerencias que no siguen buenas prácticas/estándares.</em></li>
+            <li>¿Qué marca el toxicity filter? → <em>hate speech y contenido sexual/explícito</em> (no bugs ni opiniones).</li>
+            <li>Definición de refactoring → <em>mejorar la estructura interna sin cambiar el comportamiento externo.</em></li>
+            <li>¿Qué NO es un caso de uso de Copilot: generar tests, escribir docs, producir copys de marketing, explicar código? → <em>copys de marketing.</em></li>
+            <li>¿Cómo ayuda Copilot a la consistencia de tus tests? → <em>detecta tu patrón y sugiere tests similares.</em></li>
+          </ol>
+        </article>
+
+        <!-- ============ Dominio 6 · Privacidad, Seguridad, Content Exclusions y Administración ============ -->
+        <div class="category-header" id="dominio-6-privacidad-seguridad-content">
+          <span class="category-header__icon">🔐</span>
+          <h2 class="category-header__title">Dominio 6 · Privacidad, Seguridad, Content Exclusions y Administración</h2>
+        </div>
+
+        <article class="concept-card">
+          <p>El dominio más "denso" en detalles. Aquí conviene tener súper claras <strong>content exclusions</strong>, la <strong>gobernanza</strong> (settings de org/enterprise), la <strong>REST API/audit logs</strong>, los <strong>slash commands</strong> y el <strong>coding agent</strong>.</p>
+        </article>
+
+        <article class="concept-card">
+          <h3>Content Exclusions — lo que cae seguro 📌</h3>
+          <ul>
+            <li><strong>Qué hace:</strong> impide que ciertos contenidos se usen como <strong>contexto de entrada (input)</strong> de Copilot. <strong>NO</strong> censura las salidas ni borra nada del historial de Git.</li>
+            <li><strong>Distinto de <code>.gitignore</code>:</strong> content exclusion limita lo que <strong>Copilot puede ver como input</strong>; <code>.gitignore</code> controla lo que <strong>Git rastrea</strong>. Son cosas totalmente distintas.</li>
+            <li><strong>En qué planes:</strong> <strong>Business y Enterprise</strong>.</li>
+            <li><strong>Quién puede gestionarla:</strong> administradores de <strong>repositorio</strong>, <strong>org owners</strong> y <strong>enterprise owners</strong>. (NO: colaboradores externos, ni el rol <em>Maintain</em>, ni contributors normales.)</li>
+            <li><strong>Qué targets/granularidad admite:</strong> <strong>repositorios, rutas/directorios, tipos de archivo y patrones</strong> (fnmatch, case-insensitive).</li>
+            <li>⚠️ <strong>NO se pueden excluir "líneas sueltas"</strong> de un archivo (mínimo, el archivo entero). Tampoco <strong>gists</strong>.</li>
+            <li><strong>Se acumulan, no se sobrescriben:</strong> las exclusiones heredadas de org/enterprise aparecen en el repo como <strong>cajas grises de solo lectura</strong>. Las políticas <strong>impuestas a nivel enterprise tienen prioridad</strong> y <strong>no se pueden anular</strong> ni en org ni en repo.</li>
+            <li><strong>Alcance de las de org:</strong> solo aplican a usuarios que reciben su seat <strong>de esa organización</strong>; las de enterprise aplican a <strong>toda</strong> la enterprise.</li>
+            <li><strong>Aplican en todas las superficies</strong> (definen el límite del contexto de entrada) para inline suggestions; <strong>Copilot code review en GitHub.com</strong> también las respeta.</li>
+            <li>⚠️ <strong>Dónde NO aplican:</strong> Copilot <strong>CLI</strong>, la app de Copilot, GitHub Mobile, y los modos <strong>Edit y Agent</strong> del Chat en editores.</li>
+            <li><strong>Propagación:</strong> hasta <strong>30 minutos</strong> en IDEs con la sesión ya cargada. Se fuerza con <code>Developer: Reload Window</code> (VS Code), reabriendo Visual Studio/JetBrains; Vim/Neovim recarga al abrir cada archivo.</li>
+            <li>⚠️ <strong>Fuga de contexto (limitación oficial):</strong> aunque un archivo esté excluido, Copilot puede usar <strong>información semántica indirecta</strong> que le pasa el IDE (tipos, definiciones al hacer <em>hover</em> sobre símbolos, propiedades del proyecto) cuando <strong>código no excluido</strong> referencia algo del excluido (p. ej. una llamada a función). <strong>No "lee" el archivo</strong>, pero se le "escapa" contexto por las referencias. <code>@workspace</code> <strong>no</strong> salta una exclusión.</li>
+            <li><strong>Validar si un archivo está excluido:</strong> por el <strong>icono de Copilot en la barra de estado</strong> del editor (cambia y muestra un mensaje). Una exclusión <strong>no es un error</strong> → no aparece en el "errors panel".</li>
+          </ul>
+        </article>
+
+        <article class="concept-card">
+          <h3>Content exclusion vs Code referencing (el par que confunden)</h3>
+          <ul>
+            <li><strong>Content exclusion</strong> → limita <strong>lo que Copilot ve como ENTRADA</strong> (contexto).</li>
+            <li><strong>Code referencing (matching public code)</strong> → gobierna las <strong>SALIDAS</strong> que se parecen a código público (bloquear/mostrar referencias).</li>
+            <li>🧠 Entrada = exclusion · Salida = referencing.</li>
+          </ul>
+        </article>
+
+        <article class="concept-card">
+          <h3>Gobernanza y políticas</h3>
+          <ul>
+            <li>Las <strong>políticas de Copilot</strong> (features, content exclusions, public code filter, modelos/superficies permitidas) se configuran en los <strong>settings de organización/enterprise</strong>, <strong>NUNCA</strong> en un archivo dentro del repo.</li>
+            <li>⚠️ Archivos inventados como distractores: <code>copilot.policy</code>, <code>.copilotignore</code> como <em>policy</em>, aplicar políticas "vía GitHub Actions". <strong>No existen / no es así.</strong></li>
+            <li>Si el <strong>enterprise</strong> impone una política (p. ej. "block matching public code" o restringir a ciertos modelos), la <strong>org y el repo NO pueden anularla</strong>; la org solo puede configurar <strong>dentro del conjunto permitido</strong>.</li>
+          </ul>
+        </article>
+
+        <article class="concept-card">
+          <h3>REST API de Copilot (admin + métricas, nunca contenido)</h3>
+          <ul>
+            <li>✅ Se puede: <strong>listar los seat assignments</strong> de una org (<code>GET /orgs/{org}/copilot/billing/seats</code>), obtener <strong>usage metrics</strong> de la organización (nº de sugerencias <strong>aceptadas y usadas</strong>, métricas de aceptación del Chat).</li>
+            <li>❌ NO se puede: <strong>ver las sugerencias/código de un usuario</strong> (privacidad), listar "unsubscribed members", medir <strong>calidad de código</strong>, dar <strong>feedback de estilo</strong> ni <strong>refactorizar</strong> (es una API de datos, no actúa sobre el código).</li>
+            <li>🧠 Regla: la API es <strong>administración + métricas de uso</strong>, nunca el <strong>contenido</strong> de lo que Copilot sugiere.</li>
+          </ul>
+        </article>
+
+        <article class="concept-card">
+          <h3>Audit logs</h3>
+          <ul>
+            <li>Registran <strong>eventos administrativos / de configuración</strong>: p. ej. <strong>cambios en la configuración de content exclusion</strong>, gestión de seats, y actividad de Copilot (quién usó qué y cuándo) en <strong>Business y Enterprise</strong>.</li>
+            <li>❌ NO registran el <strong>contenido</strong> de las sugerencias, ni "accepted/blocked suggestions" como tales.</li>
+            <li>🧠 Audit log = "quién administró/configuró qué", no "qué sugirió Copilot".</li>
+          </ul>
+        </article>
+
+        <article class="concept-card">
+          <h3>Slash commands (el nombre = la función)</h3>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Comando</th><th>Qué hace</th><th>Notas</th></tr></thead>
+              <tbody>
+                <tr><td><code>/explain</code></td><td>Explica el código seleccionado</td><td>Universal</td></tr>
+                <tr><td><code>/fix</code></td><td>Propone un arreglo (errores de sintaxis / bugs)</td><td>Universal. <strong>Genera</strong> el fix, no lo aplica ni ejecuta análisis estático</td></tr>
+                <tr><td><code>/tests</code></td><td><strong>Genera</strong> tests unitarios del código seleccionado</td><td>Universal. <strong>No los ejecuta</strong></td></tr>
+                <tr><td><code>/doc</code></td><td>Añade documentación / comentario al símbolo</td><td>Visual Studio, Xcode</td></tr>
+                <tr><td><code>/optimize</code></td><td>Analiza y <strong>mejora el runtime</strong> del código seleccionado</td><td><strong>Solo Visual Studio</strong></td></tr>
+                <tr><td><code>/simplify</code></td><td>Simplifica la selección de código</td><td>Xcode</td></tr>
+                <tr><td><code>/fixTestFailure</code></td><td>Encuentra y arregla un test que falla</td><td>VS Code</td></tr>
+                <tr><td><code>/new</code></td><td>Crea un nuevo proyecto</td><td>VS Code</td></tr>
+                <tr><td><code>/clear</code>, <code>/help</code></td><td>Nueva sesión / ayuda</td><td>Universal</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <ul>
+            <li>🧠 <strong><code>/optimize</code> → SOLO Visual Studio</strong> (si te lo ponen como comando de VS Code, cuidado). <strong><code>/simplify</code> → Xcode.</strong></li>
+            <li>🧠 En la <strong>web (GitHub.com)</strong> los <code>/</code> son para <strong>gestionar conversaciones</strong> (<code>/new</code>, <code>/clear</code>, <code>/rename</code>, <code>/delete</code>), NO para tocar código.</li>
+            <li>⚠️ <strong><code>/btw</code> NO es del examen:</strong> es una propuesta de <strong>comunidad para Copilot CLI</strong> (preguntas efímeras "by the way"), no un comando oficial del Chat del IDE. Si aparece como opción de "comando del IDE" → distractor.</li>
+          </ul>
+          <div class="note note--tip">
+            <p><strong class="note__label">💡 Comandos de Copilot CLI (interesantes, pero NO del examen):</strong> el <strong>Copilot CLI</strong> tiene sus propios comandos de sesión que no salen en el GH-300 pero conviene conocer:</p>
+            <ul>
+              <li><strong><code>/compact</code></strong> → <strong>comprime el contexto de la sesión actual</strong> del CLI (resume la conversación para liberar espacio de contexto y seguir trabajando sin perder el hilo). Muy útil en sesiones largas.</li>
+              <li><strong><code>/chronicle</code></strong> → revisa/analiza el historial de la sesión.</li>
+              <li><strong><code>/remote</code></strong> → habilita el control remoto de la sesión.</li>
+            </ul>
+            <p>Ojo: son del <strong>CLI</strong>, no del Chat del IDE. Si en el examen te los ponen como comandos del IDE (VS Code / Visual Studio) → <strong>distractor</strong>.</p>
+          </div>
+        </article>
+
+        <article class="concept-card">
+          <h3>Chat en el IDE vs Chat en GitHub.com</h3>
+          <ul>
+            <li><strong>IDE</strong> → gira sobre <strong>tu código</strong>: explicar, arreglar, testear, optimizar, documentar, mejorar, entender un codebase.</li>
+            <li><strong>GitHub.com</strong> → contexto del <strong>repositorio remoto</strong>: releases, commits, PRs, issues, y <strong>repo-aware Chat</strong> (Enterprise).</li>
+            <li>🧠 Si el enunciado dice "IDE" y la opción habla de <em>releases/commits/PRs</em> → incorrecta (eso es web).</li>
+          </ul>
+        </article>
+
+        <article class="concept-card">
+          <h3>Coding Agent (Agent mode)</h3>
+          <ul>
+            <li>📌 <strong>Disponible en Pro, Pro+, Business y Enterprise</strong> (NO en Free).</li>
+            <li>Trabaja desde un <strong>issue de GitHub</strong>, arranca un <strong>entorno de desarrollo efímero en la nube (powered by GitHub Actions)</strong>, hace cambios en una <strong>rama</strong> y abre un <strong>pull request (draft)</strong> para revisión.</li>
+            <li><strong>Respeta</strong> branch protections, required reviews, status checks y <strong>CODEOWNERS</strong> — igual que cualquier PR. Actúa con los <strong>mismos permisos que el usuario</strong> que lo invoca (no gana admin ni salta protecciones).</li>
+            <li><strong>Personalizar su entorno:</strong> fichero <strong><code>copilot-setup-steps.yml</code></strong> en <code>.github/workflows/</code> → pre-instala dependencias/herramientas para builds más rápidos y fiables.</li>
+            <li><strong>Agent firewall</strong> (enterprise): controla <strong>qué dominios/URLs</strong> puede acceder el agente → reduce el riesgo de <strong>exfiltración de datos</strong>.</li>
+            <li>Se puede <strong>extender con servidores MCP</strong> (Model Context Protocol) para llamar a herramientas/fuentes externas (p. ej. GitHub o Playwright MCP).</li>
+            <li><strong>Control administrativo:</strong> políticas de <strong>org/enterprise</strong> habilitan/deshabilitan el agente por repos y usuarios.</li>
+            <li>⚠️ <strong>Cuándo NO usarlo:</strong> incidentes en producción, fugas de PII, credenciales filtradas, decisiones de seguridad en caliente, o arquitecturas nuevas críticas sin tests ni criterios claros. ✅ <strong>Cuándo SÍ:</strong> implementar una feature de un <strong>issue bien definido con criterios de aceptación</strong>, cambios multi-archivo + tests + PR, actualizar una librería de componentes en todo el repo, mejorar cobertura de tests.</li>
+          </ul>
+        </article>
+
+        <article class="concept-card">
+          <h3>Edit mode vs Agent mode vs Chat</h3>
+          <ul>
+            <li><strong>Edit mode (Copilot Edits):</strong> cambios <strong>acotados y revisables</strong> (diffs) en los archivos que <strong>tú eliges</strong>. Ideal para tocar 1-2 ficheros con revisión, sin ejecutar comandos.</li>
+            <li><strong>Agent mode:</strong> <strong>autónomo y multi-paso</strong> (edita varios archivos, ejecuta comandos/herramientas, puede abrir un PR).</li>
+            <li><strong>Chat:</strong> conversación y razonamiento; propone, pero no ejecuta comandos por su cuenta.</li>
+            <li>🧠 Cambio pequeño y revisable → <strong>Edit</strong>. Tarea multi-paso que cruza archivos + tests + PR → <strong>Agent</strong>. Solo explicar/preguntar → <strong>Chat/Ask</strong>.</li>
+          </ul>
+        </article>
+
+        <article class="concept-card">
+          <h3>Responsabilidades que SIEMPRE quedan en el equipo</h3>
+          <ul>
+            <li><strong>Revisar y aprobar el PR</strong> antes de mergear; <strong>asegurar que pasan tests, linters y security scans</strong>; <strong>definir tareas/issues bien acotados</strong> para el agente.</li>
+            <li>❌ Nunca: dejar que el agente <strong>auto-mergee a producción</strong> saltándose revisiones, ni desactivar branch protections "para ir más rápido".</li>
+          </ul>
+        </article>
+
+        <article class="concept-card">
+          <h3>Copilot Spaces</h3>
+          <ul>
+            <li>Organizan <strong>contexto curado</strong> (archivos, repos, PRs, issues) para que el Chat esté <strong>anclado a tu proyecto</strong> ("project expert" — ideal para onboarding de un equipo a un servicio complejo).</li>
+            <li>Disponibles para <strong>cualquier usuario con suscripción a Copilot</strong>, en <strong>GitHub.com</strong>. <strong>Respetan</strong> las políticas de content exclusion y code referencing.</li>
+          </ul>
+        </article>
+
+        <article class="concept-card">
+          <h3>Otros datos de administración / soporte 📌</h3>
+          <ul>
+            <li><strong>Copilot en la CLI:</strong> ayuda a <strong>redactar y explicar</strong> comandos de shell/Git y sus flags (no los ejecuta por su cuenta).</li>
+            <li><strong>Diagnóstico en VS Code:</strong> comando <strong>"GitHub Copilot: Collect Diagnostics"</strong> (Command Palette: <code>Ctrl/Cmd+Shift+P</code>). Logs de la extensión en el panel <strong>Output</strong>; logs de Electron en <strong>Developer Tools</strong>.</li>
+            <li><strong>Aceptar una sugerencia inline</strong> = se <strong>inserta en tu editor</strong>; <strong>tú decides</strong> si la mantienes, editas o descartas (no se auto-commitea ni se mergea, no genera audit log por sí sola).</li>
+            <li><strong>Almacenar secretos / API keys</strong> de forma segura → <strong>Azure Key Vault / Managed HSMs</strong> con acceso controlado (nunca en texto plano, en el repo, ni por email).</li>
+          </ul>
+        </article>
+
+        <article class="concept-card">
+          <h3>📝 Mini-preguntas de repaso (Dominio 6)</h3>
+          <ol>
+            <li>¿Qué hace content exclusion? → <em>Impide que ciertos contenidos se usen como contexto de ENTRADA.</em></li>
+            <li>¿Qué targets admite? → <em>Repos, rutas/directorios, tipos de archivo y patrones</em> (no líneas sueltas, no gists).</li>
+            <li>¿Quién la gestiona? → <em>Admins de repo, org owners, enterprise owners.</em></li>
+            <li>¿Cuándo puede Copilot "ver" algo de un archivo excluido? → <em>Cuando código no excluido lo referencia (info semántica indirecta del IDE).</em></li>
+            <li>¿Dónde se configuran las políticas org-wide de Copilot? → <em>En los settings de la organización.</em></li>
+            <li>¿Qué NO puede la REST API de Copilot? → <em>Ver las sugerencias/código de un usuario.</em></li>
+            <li>¿Qué registran los audit logs? → <em>Eventos de config/admin, p. ej. cambios en content exclusion.</em></li>
+            <li>¿Qué hace <code>/optimize</code> y dónde? → <em>Mejora el runtime del código; solo en Visual Studio.</em></li>
+            <li>¿En qué planes está el coding agent? → <em>Pro, Pro+, Business y Enterprise.</em></li>
+            <li>¿El coding agent puede saltarse branch protections? → <em>No; respeta protecciones, reviews y CODEOWNERS.</em></li>
+            <li>¿Edit mode o Agent mode para tocar 2 archivos con diff revisable? → <em>Edit mode.</em></li>
+          </ol>
+        </article>
+
+        <!-- ============ Los "meta-trucos" que resuelven medio examen ============ -->
+        <div class="category-header" id="los-meta-trucos-que-resuelven">
+          <span class="category-header__icon">🧠</span>
+          <h2 class="category-header__title">Los "meta-trucos" que resuelven medio examen</h2>
+        </div>
+
+        <article class="concept-card">
+          <ol>
+            <li><strong>Absolutos = casi siempre falsos.</strong> <em>always, guaranteed, only, never, 100%, incapable of, replaces the need for, exclusively, limited to.</em> Si una opción promete algo absoluto, sospecha.</li>
+            <li><strong>Copilot asiste, tú validas.</strong> Toda opción que diga "confía a ciegas / sin revisar / auto-merge" → incorrecta. Toda opción que diga "revisa, testea, refactoriza, valida" → suele ser correcta.</li>
+            <li><strong>Lo específico gana a lo genérico.</strong> El buen prompt y la buena práctica son siempre <strong>acotados y concretos</strong>; descarta lo vago ("improve this") y lo enorme ("fix everything").</li>
+            <li><strong>Combinar principios/acciones</strong> gana en IA responsable; una sola medida "a medias" pierde.</li>
+            <li><strong>La REST API y los audit logs NO tocan el contenido</strong> de tus sugerencias (solo admin + métricas + eventos de config).</li>
+            <li><strong>Enterprise = integraciones + conocimiento de la organización</strong> (SSO, audit, Knowledge Bases, repo-aware Chat). <strong>Business = gestión + políticas + exclusions</strong>, sin integraciones enterprise.</li>
+            <li><strong>Copilot requiere la nube:</strong> GHES no soportado; no se entrena con tu código privado; los prompts pasan por el servicio cloud de Copilot.</li>
+            <li><strong>Cuidado con las preguntas "NOT / cuál NO es":</strong> léelas dos veces; la correcta es la que <strong>rompe</strong> el patrón.</li>
+            <li><strong>Nombres inventados = fuera:</strong> <em>Copilot Teams, Copilot Premium, Copilot for Azure DevOps, Copilot Codespace, <code>copilot.policy</code>, <code>.copilotignore</code>, <code>/btw</code> como comando del IDE.</em></li>
+            <li><strong>El nombre del slash command = su función.</strong> <code>/fix</code> arregla, <code>/tests</code> genera tests, <code>/doc</code> documenta, <code>/explain</code> explica, <code>/optimize</code> optimiza (VS), <code>/simplify</code> simplifica (Xcode).</li>
+          </ol>
+        </article>
+
+        <!-- ============ Checklist rápido antes del examen ============ -->
+        <div class="category-header" id="checklist-rapido-antes-del-examen">
+          <span class="category-header__icon">✅</span>
+          <h2 class="category-header__title">Checklist rápido antes del examen</h2>
+        </div>
+
+        <article class="concept-card">
+          <ul class="checklist">
+            <li><label><input type="checkbox"> Me sé los <strong>6 principios</strong> y la palabra clave de cada uno (y que "Maximizing Profit" no es uno).</label></li>
+            <li><label><input type="checkbox"> Distingo <strong>Fairness/Inclusiveness</strong> y <strong>Transparency/Accountability</strong>.</label></li>
+            <li><label><input type="checkbox"> Sé qué es <strong>bias</strong> y las 3 trampas (más datos / accuracy / monitorizar).</label></li>
+            <li><label><input type="checkbox"> Me sé los <strong>planes</strong> (Free/Pro/Pro+/Business/Enterprise) y qué incluye cada uno.</label></li>
+            <li><label><input type="checkbox"> Sé que <strong>Enterprise ⇒ GHEC</strong> y que <strong>Copilot no viene gratis con GHEC</strong>.</label></li>
+            <li><label><input type="checkbox"> Entiendo que <strong>Copilot es multi-modelo</strong> y que <strong>no entrena con mi código privado</strong>.</label></li>
+            <li><label><input type="checkbox"> Domino <strong>content exclusions</strong> (qué, quién, targets, se acumulan, fuga semántica).</label></li>
+            <li><label><input type="checkbox"> Sé que la <strong>REST API/audit logs = admin + métricas</strong>, nunca contenido.</label></li>
+            <li><label><input type="checkbox"> Me sé los <strong>slash commands</strong> y dónde vive cada uno.</label></li>
+            <li><label><input type="checkbox"> Distingo <strong>Edit / Agent / Chat</strong> y cuándo usar el <strong>coding agent</strong>.</label></li>
+            <li><label><input type="checkbox"> Aplico los <strong>meta-trucos</strong> (absolutos falsos, Copilot asiste/tú validas, nombres inventados).</label></li>
+          </ul>
+        </article>
+
+        <p class="page-footnote"><em>Última verificación de datos contra la documentación oficial de GitHub y Microsoft Learn: septiembre 2026. El temario de GH-300 cambia con frecuencia — ante cualquier duda, revisa siempre la documentación oficial.</em></p>
+
+        <!-- Navegación del curso -->
+        <div class="course-nav">
+          <a href="../gh-300.html">
+            <span class="course-nav__label">← Volver al</span>
+            <span class="course-nav__title">Índice del curso GH-300</span>
+          </a>
+          <a href="dominio-1.html" class="next">
+            <span class="course-nav__label">Empezar por el →</span>
+            <span class="course-nav__title">Dominio 1 · IA responsable</span>
+          </a>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <button id="back-to-top" class="back-to-top" aria-label="Volver arriba" title="Volver arriba">↑</button>
+
+  <script src="https://cdn.jsdelivr.net/npm/i18next@23/dist/umd/i18next.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1/prism.min.js"></script>
+  <script src="../../../assets/js/theme.js"></script>
+  <script src="../../../assets/js/main.js"></script>
+  <script src="../../../assets/js/cursor.js"></script>
+</body>
+</html>

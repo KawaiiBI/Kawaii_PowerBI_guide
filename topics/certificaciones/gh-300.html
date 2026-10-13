@@ -52,6 +52,12 @@
     .module-card__title { display: block; font-weight: 700; color: var(--color-dark); font-size: 1rem; margin-bottom: 0.2rem; }
     .module-card__desc { display: block; font-size: 0.8125rem; color: var(--color-slate); line-height: 1.5; }
     .module-card__weight { display: inline-block; margin-top: 0.4rem; font-family: 'Fira Code', monospace; font-size: 0.75rem; font-weight: 600; color: var(--color-coral); }
+
+    .tips-card { display: flex; gap: 1rem; align-items: center; background: linear-gradient(135deg, #FFF6F4, #FFF2F0); border: 2px dashed var(--color-coral); border-radius: var(--border-radius); padding: 1.5rem; text-decoration: none; color: inherit; transition: var(--transition); margin-top: 1.25rem; }
+    .tips-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); text-decoration: none; }
+    .tips-card__icon { font-size: 2.5rem; line-height: 1; flex-shrink: 0; }
+    .tips-card__title { font-weight: 800; color: var(--color-dark); font-size: 1.125rem; margin-bottom: 0.25rem; }
+    .tips-card__desc { font-size: 0.875rem; color: var(--color-slate); line-height: 1.55; }
   </style>
 </head>
 <body>
@@ -122,7 +128,8 @@
 
         <div class="note note--tip">
           💡 <strong>Cómo aprovecharlo:</strong> ve en orden si empiezas de cero, o salta al dominio que
-          necesites repasar. Ojo con los dominios 1 y 2: son los que más pesan en el examen. 🎀
+          necesites repasar. Ojo con los dominios 1 y 2: son los que más pesan en el examen. Y deja para el
+          <strong>final</strong> el apartado de <em>Tips y Trampas</em>, para rematar justo antes de presentarte. 🎀
         </div>
 
         <!-- Info del examen -->
@@ -201,6 +208,25 @@
           </a>
 
         </div>
+
+        <!-- Apartado separado: Tips y Trampas (para el final) -->
+        <div class="category-header" style="margin-top: 2.5rem;">
+          <span class="category-header__icon">⚠️</span>
+          <h2 class="category-header__title">Para el final: Tips y Trampas de examen</h2>
+        </div>
+        <p style="font-size: 0.9375rem; color: var(--color-slate); line-height: 1.7;">
+          Este apartado va aparte <strong>a propósito</strong>: son las <strong>trampas típicas del
+          examen</strong>, los datos que caen seguro y los trucos para memorizar. Déjalo para el
+          <strong>final</strong>, justo antes de presentarte, cuando ya domines los 6 dominios. 🌸
+        </p>
+
+        <a href="gh-300/tips-y-trampas.html" class="tips-card">
+          <span class="tips-card__icon">🎯</span>
+          <div>
+            <div class="tips-card__title">Guía Maestra · Tips y Trampas</div>
+            <div class="tips-card__desc">Los 6 dominios destilados: conceptos clave, trampas típicas, meta-trucos y checklist final para tu repaso. ¡Que no te pillen! 🚀</div>
+          </div>
+        </a>
 
       </div>
     </main>
