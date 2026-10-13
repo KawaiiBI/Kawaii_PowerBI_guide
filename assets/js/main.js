@@ -229,7 +229,7 @@ function generateTopicsGrid() {
       id: 'certificaciones',
       icon: '🎓',
       title: 'Certificaciones',
-      description: 'Prepara tus certificaciones de Microsoft paso a paso. Curso completo del DP-700 con 17 módulos y las trampas típicas del examen.',
+      description: 'Prepara tus certificaciones de Microsoft paso a paso. Cursos completos de la DP-700 (17 módulos) y la GH-300 de GitHub Copilot (6 dominios), con las trampas típicas del examen.',
       levels: ['intermediate', 'advanced'],
       url: 'topics/certificaciones.html'
     },

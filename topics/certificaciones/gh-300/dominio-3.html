@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Arquitectura y flujo de datos de GitHub Copilot en profundidad: procesamiento inbound, proxy filter, filtrado de toxicidad, generación con LLM, post-procesado outbound, ciclo de vida de la sugerencia y limitaciones de los LLM. Guía kawaii completa para la GH-300.">
+  <title>GH-300 · Dominio 3: Datos y arquitectura | Power BI Guide by Kawaii BI</title>
+  <link rel="canonical" href="https://kawaiibi.es/topics/certificaciones/gh-300/dominio-3.html">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Kawaii Power BI Guide">
+  <meta property="og:locale" content="es_ES">
+  <meta property="og:title" content="GH-300 · Dominio 3: Datos y arquitectura | Power BI Guide by Kawaii BI">
+  <meta property="og:description" content="Arquitectura y flujo de datos de GitHub Copilot en profundidad: procesamiento inbound, proxy filter, filtrado de toxicidad, generación con LLM, post-procesado outbound, ciclo de vida de la sugerencia y limitaciones de los LLM. Guía kawaii completa para la GH-300.">
+  <meta property="og:url" content="https://kawaiibi.es/topics/certificaciones/gh-300/dominio-3.html">
+  <meta property="og:image" content="https://kawaiibi.es/assets/images/og-banner.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="1200">
+  <meta property="og:image:alt" content="Sara Lozano Marti - Kawaii Power BI">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="GH-300 · Dominio 3: Datos y arquitectura | Power BI Guide by Kawaii BI">
+  <meta name="twitter:description" content="Arquitectura y flujo de datos de GitHub Copilot en profundidad: procesamiento inbound, proxy filter, filtrado de toxicidad, generación con LLM, post-procesado outbound, ciclo de vida de la sugerencia y limitaciones de los LLM. Guía kawaii completa para la GH-300.">
+  <meta name="twitter:image" content="https://kawaiibi.es/assets/images/og-banner.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/prismjs@1/themes/prism-okaidia.min.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="../../../assets/css/main.css">
+  <link rel="stylesheet" href="../../../assets/css/themes.css">
+  <link rel="stylesheet" href="../../../assets/css/components.css">
+  <link rel="stylesheet" href="../../../assets/css/layout.css">
+
+  <style>
+    .topic-header { text-align: center; padding: 2.25rem 0 1.75rem; border-bottom: 2px solid var(--color-mauve); margin-bottom: 2rem; }
+    .topic-header__eyebrow { font-family: 'Fira Code', monospace; font-size: 0.8125rem; font-weight: 600; color: var(--color-coral); letter-spacing: 0.05em; }
+    .topic-header__icon { font-size: 3.5rem; margin: 0.5rem 0; display: block; }
+    .topic-header__title { font-size: clamp(1.75rem, 4vw, 2.25rem); font-weight: 800; color: var(--color-dark); margin-bottom: 0.625rem; line-height: 1.2; }
+    .topic-header__subtitle { font-size: 1rem; color: var(--color-slate); margin-bottom: 1.25rem; line-height: 1.55; max-width: 680px; margin-left: auto; margin-right: auto; }
+    .topic-header__levels { display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap; align-items: center; }
+
+    .toc { background: var(--color-rose); border-radius: var(--border-radius); padding: 1.25rem 1.5rem; margin-bottom: 2rem; border: 1.5px solid var(--color-mauve); }
+    .toc__title { font-size: 1rem; font-weight: 700; margin: 0 0 0.75rem; }
+    .toc__list { display: flex; flex-wrap: wrap; gap: 0.5rem; list-style: none; padding: 0; margin: 0; }
+    .toc__list a { font-size: 0.8125rem; color: var(--color-coral); text-decoration: none; padding: 0.25rem 0.625rem; background: var(--color-white); border-radius: 999px; border: 1px solid var(--color-mauve); display: inline-block; }
+    .toc__list a:hover { background: var(--color-coral); color: #fff; }
+
+    .category-header { display: flex; align-items: center; gap: 0.75rem; margin: 2.5rem 0 1.25rem; padding: 0.875rem 1.25rem; background: var(--color-rose); border-radius: var(--border-radius-sm); border-left: 4px solid var(--color-coral); scroll-margin-top: 20px; }
+    .category-header__icon { font-size: 1.5rem; }
+    .category-header__title { font-size: 1.25rem; font-weight: 700; margin: 0; }
+
+    .concept-card { background: var(--color-white); border: 1.5px solid var(--color-mauve); border-radius: var(--border-radius); padding: 1.5rem 1.75rem; margin-bottom: 1.25rem; }
+    .concept-card h3 { font-size: 1.0625rem; font-weight: 700; color: var(--color-coral); margin: 0 0 0.6rem; }
+    .concept-card p { font-size: 0.9375rem; line-height: 1.7; color: var(--color-dark); margin-bottom: 0.7rem; }
+    .concept-card ul, .concept-card ol { padding-left: 1.25rem; font-size: 0.9375rem; line-height: 1.75; color: var(--color-dark); margin: 0.4rem 0 0.7rem; }
+    .concept-card code, .note code, .quiz-q code, .answers code { background: var(--color-blush); padding: 0.1em 0.4em; border-radius: 4px; font-family: 'Fira Code', monospace; font-size: 0.85em; color: var(--color-coral); }
+    .concept-card pre { margin: 0.75rem 0; }
+    .concept-card pre code { background: none; color: inherit; padding: 0; }
+
+    /* Notas: el texto en negrita se queda en línea; solo la etiqueta inicial va como título */
+    .note strong { display: inline; margin: 0; font-size: inherit; }
+    .note strong.note__label { display: block; margin-bottom: 0.375rem; font-size: 0.875rem; }
+    .note p { margin: 0 0 0.5rem; line-height: 1.7; }
+    .note p:last-child { margin-bottom: 0; }
+    .note ul { padding-left: 1.25rem; margin: 0.25rem 0 0.5rem; line-height: 1.7; }
+    .note ul:last-child { margin-bottom: 0; }
+
+    .md-table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.84rem; }
+    .md-table th, .md-table td { border: 1px solid var(--color-mauve); padding: 0.5rem 0.7rem; text-align: left; vertical-align: top; }
+    .md-table th { background: var(--color-rose); font-weight: 700; color: var(--color-dark); }
+    .md-table tr:nth-child(even) td { background: var(--color-blush); }
+    .table-scroll { overflow-x: auto; }
+
+    .quiz-q { background: var(--color-white); border: 1.5px solid var(--color-mauve); border-left: 4px solid var(--color-coral); border-radius: var(--border-radius-sm); padding: 1rem 1.25rem; margin: 1rem 0; }
+    .quiz-q p { margin: 0 0 0.5rem; font-size: 0.9375rem; line-height: 1.6; }
+    .quiz-q__num { font-weight: 700; color: var(--color-coral); }
+    .quiz-q__options { list-style: none; margin: 0; padding-left: 0.5rem; font-size: 0.9rem; line-height: 1.7; }
+
+    /* Respuestas plegables de las preguntas trampa */
+    .answers { background: var(--color-rose); border: 1.5px solid var(--color-mauve); border-radius: var(--border-radius); margin: 1.25rem 0; }
+    .answers summary { cursor: pointer; padding: 1rem 1.25rem; color: var(--color-coral); }
+    .answers summary:focus-visible { outline: 2px solid var(--color-coral); outline-offset: 2px; border-radius: var(--border-radius); }
+    .answers__body { padding: 0 1.25rem 1rem; }
+    .answers__body p { font-size: 0.9375rem; line-height: 1.7; margin-bottom: 0.7rem; }
+
+    .course-nav { display: flex; justify-content: space-between; gap: 1rem; margin-top: 2.5rem; flex-wrap: wrap; }
+    .course-nav a { flex: 1 1 220px; display: block; background: var(--color-white); border: 1.5px solid var(--color-mauve); border-radius: var(--border-radius); padding: 1rem 1.25rem; text-decoration: none; color: inherit; transition: var(--transition); }
+    .course-nav a:hover { border-color: var(--color-coral); box-shadow: var(--shadow-md); text-decoration: none; }
+    .course-nav__label { font-size: 0.75rem; color: var(--color-slate); text-transform: uppercase; letter-spacing: 0.05em; display: block; }
+    .course-nav__title { font-weight: 700; color: var(--color-coral); }
+    .course-nav a.next { text-align: right; }
+  </style>
+</head>
+<body>
+
+  <aside class="site-sidebar">
+    <div class="site-sidebar__profile">
+      <img src="../../../assets/images/avatar-sara.png" alt="Sara Lozano Martí" class="site-sidebar__avatar">
+      <p class="site-sidebar__name">Sara Lozano Martí</p>
+      <p class="site-sidebar__subtitle">Power BI Expert</p>
+    </div>
+    <nav class="site-sidebar__nav" aria-label="Navegación principal">
+      <ul>
+        <li><a href="../../../index.html" class="site-sidebar__link"><span class="site-sidebar__icon">🏠</span> Inicio</a></li>
+        <li><a href="../../dax.html" class="site-sidebar__link"><span class="site-sidebar__icon">⚡</span> Funciones DAX</a></li>
+        <li><a href="../../power-query.html" class="site-sidebar__link"><span class="site-sidebar__icon">🔄</span> Power Query</a></li>
+        <li><a href="../../lenguaje-m.html" class="site-sidebar__link"><span class="site-sidebar__icon">〽️</span> Lenguaje M</a></li>
+        <li><a href="../../modelado.html" class="site-sidebar__link"><span class="site-sidebar__icon">🗄️</span> Modelado</a></li>
+        <li><a href="../../conceptos-powerbi.html" class="site-sidebar__link"><span class="site-sidebar__icon">📊</span> Conceptos Power BI</a></li>
+        <li><a href="../../fabric.html" class="site-sidebar__link"><span class="site-sidebar__icon">🧵</span> Microsoft Fabric</a></li>
+        <li><a href="../../tmdl.html" class="site-sidebar__link"><span class="site-sidebar__icon">📝</span> TMDL</a></li>
+        <li><a href="../../diseno-ux.html" class="site-sidebar__link"><span class="site-sidebar__icon">🎨</span> Diseño y UX</a></li>
+        <li><a href="../../gobernanza.html" class="site-sidebar__link"><span class="site-sidebar__icon">🔒</span> Gobernanza</a></li>
+        <li><a href="../../certificaciones.html" class="site-sidebar__link is-active"><span class="site-sidebar__icon">🎓</span> Certificaciones</a></li>
+      </ul>
+    </nav>
+    <div class="site-sidebar__divider"></div>
+    <div class="site-sidebar__footer">
+      <a href="../../../quien-soy.html" class="site-sidebar__link site-sidebar__link--highlight"><span class="site-sidebar__icon">👩‍💻</span> ¿Quién soy?</a>
+      <div class="site-sidebar__social">
+        <a href="https://www.linkedin.com/in/saralozanomarti" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><img src="../../../assets/images/logo-linkedin.png" alt="LinkedIn" class="site-sidebar__social-icon"></a>
+        <a href="https://www.youtube.com/@KawaiiPowerBI" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><img src="../../../assets/images/logo-youtube.png" alt="YouTube" class="site-sidebar__social-icon"></a>
+        <a href="https://github.com/KawaiiBI" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><img src="../../../assets/images/logo-github.png" alt="GitHub" class="site-sidebar__social-icon"></a>
+      </div>
+      <div class="site-sidebar__logo-bottom"><img src="../../../assets/images/logo-kawaii.jpg" alt="Kawaii BI" class="site-sidebar__logo-img"></div>
+      <p class="site-sidebar__copyright">Power BI Guide 🌸<br>© 2026 Kawaii BI</p>
+    </div>
+  </aside>
+
+  <div class="page-wrapper">
+    <main class="main-content">
+      <div class="topic-page">
+
+        <nav class="breadcrumb" aria-label="Ruta de navegación">
+          <span class="breadcrumb__item"><a href="../../../index.html">🏠 Inicio</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item"><a href="../../certificaciones.html">Certificaciones</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item"><a href="../gh-300.html">GH-300</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item">Dominio 3</span>
+        </nav>
+
+        <header class="topic-header">
+          <span class="topic-header__eyebrow">GH-300 · DOMINIO 3</span>
+          <span class="topic-header__icon">📙</span>
+          <h1 class="topic-header__title">Dominio 3 — Entender los datos y la arquitectura de Copilot</h1>
+          <p class="topic-header__subtitle">Arquitectura y flujo de datos de GitHub Copilot en profundidad: procesamiento inbound, proxy filter, filtrado de toxicidad, generación con LLM, post-procesado outbound, ciclo de vida de la sugerencia y limitaciones de los LLM. Guía kawaii completa para la GH-300.</p>
+          <div class="topic-header__levels">
+            <span class="badge badge--special">Peso en el examen: 10-15%</span>
+          </div>
+        </header>
+
+        <nav class="toc" aria-label="Índice del dominio">
+          <p class="toc__title">📑 En este dominio:</p>
+          <ul class="toc__list">
+            <li><a href="#la-gran-analogia-el-viaje">La gran analogía: el viaje en avión de tu prompt</a></li>
+            <li><a href="#apartado-3-1">3.1 — Proceso inbound: la ida (facturación y control de salida)</a></li>
+            <li><a href="#apartado-3-2">3.2 — Proceso outbound: la vuelta (aduana de llegada)</a></li>
+            <li><a href="#apartado-3-3">3.3 — El ciclo de vida completo de la sugerencia</a></li>
+            <li><a href="#apartado-3-4">3.4 — Uso, flujo y compartición de datos</a></li>
+            <li><a href="#apartado-3-5">3.5 — Limitaciones de los LLM y de Copilot</a></li>
+            <li><a href="#preguntas-trampa-dominio-3">Preguntas trampa — Dominio 3</a></li>
+            <li><a href="#fuentes-oficiales">Fuentes oficiales</a></li>
+          </ul>
+        </nav>
+
+        <article class="concept-card">
+          <p><strong>Peso en el examen: 10-15%</strong></p>
+          <p>¡Holi! 🌸 Este dominio es más cortito en peso, pero muy conceptual y "de esquema", y tiene una ventaja enorme: si te aprendes <strong>el viaje que hace tu prompt</strong> desde que lo escribes hasta que recibes la sugerencia, tienes prácticamente todas las preguntas ganadas. Es un dominio muy "mecánico" — se trata de entender un proceso paso a paso y en orden. Y para que ese orden no se te olvide jamás, vamos a usar una analogía que lo convierte en algo visual e imposible de confundir: <strong>un viaje en avión</strong>. ✈️</p>
+          <p>Antes de empezar, una idea que vertebra todo el dominio: Copilot <strong>no</strong> manda tu prompt directamente al modelo de IA. Entre tu teclado y el LLM hay toda una infraestructura de recogida de contexto, filtrado y seguridad — de ida y de vuelta. Entender esa infraestructura es de lo que va este dominio.</p>
+          <div class="note note--best-practice">
+            <p>📋 <strong class="note__label">Lo que mide el examen en este dominio (objetivos oficiales):</strong></p>
+            <ul>
+              <li>Explicar el <strong>uso, flujo y compartición</strong> de datos.</li>
+              <li>Describir el <strong>procesamiento de entrada (inbound)</strong> y la creación del prompt.</li>
+              <li>Explicar el <strong>filtrado de proxy</strong> y el <strong>post-procesado (outbound)</strong>.</li>
+              <li>Visualizar el <strong>ciclo de vida</strong> de la sugerencia de código.</li>
+              <li>Describir las <strong>limitaciones de los LLM</strong> y de Copilot.</li>
+            </ul>
+          </div>
+        </article>
+
+        <!-- ============ La gran analogía: el viaje en avión de tu prompt ============ -->
+        <div class="category-header" id="la-gran-analogia-el-viaje">
+          <span class="category-header__icon">✈️</span>
+          <h2 class="category-header__title">La gran analogía: el viaje en avión de tu prompt</h2>
+        </div>
+
+        <article class="concept-card">
+          <p>Antes de entrar al detalle técnico, quédate con esta imagen mental, porque es el andamiaje sobre el que colgaremos todo lo demás. Tu prompt es una <strong>viajera</strong> que va a coger un vuelo, y todo el flujo de datos de Copilot es su <strong>viaje de ida y vuelta</strong>:</p>
+          <ol>
+            <li><strong>Facturación</strong> → recoges tu equipaje (Copilot recopila el contexto de tu código).</li>
+            <li><strong>Control de seguridad de salida</strong> → revisan que no lleves nada raro (el proxy filter + el filtro de toxicidad).</li>
+            <li><strong>El vuelo</strong> → el avión te lleva a destino (el LLM genera la respuesta).</li>
+            <li><strong>Aduana a la llegada</strong> → revisan lo que traes de vuelta (filtros de calidad, seguridad y código público).</li>
+            <li><strong>Sales del aeropuerto</strong> → llegas a tu destino con tu maleta (la sugerencia aparece en tu editor).</li>
+            <li><strong>Y si vuelves a viajar</strong> → repites todo el circuito (el feedback loop).</li>
+          </ol>
+          <p>Fíjate en un detalle que el examen adora: <strong>hay controles a la ida (inbound) Y a la vuelta (outbound)</strong>. Mucha gente solo recuerda los de entrada y falla las preguntas sobre el post-procesado. Con la imagen del aeropuerto — control de salida <em>y</em> aduana de llegada — no se te olvidará. Ahora desglosamos cada etapa. 🌸</p>
+        </article>
+
+        <!-- ============ 3.1 — Proceso inbound: la ida (facturación y control de salida) ============ -->
+        <div class="category-header" id="apartado-3-1">
+          <span class="category-header__icon">🌷</span>
+          <h2 class="category-header__title">3.1 — Proceso inbound: la ida (facturación y control de salida)</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>La explicación en profundidad</h3>
+          <p>Cuando escribes un prompt — ya sea un comentario en lenguaje natural o un mensaje en el chat —, arranca el <strong>procesamiento inbound</strong>, que tiene cuatro pasos bien definidos y <strong>en un orden concreto que el examen pregunta</strong>.</p>
+          <p><strong>Paso 1 — Transmisión segura + recogida de contexto.</strong> Lo primero: tu prompt viaja siempre cifrado por <strong>HTTPS</strong>, garantizando confidencialidad en el tránsito. Y simultáneamente, Copilot hace su "facturación de equipaje": recopila todo el <strong>contexto</strong> que le ayudará a darte una buena sugerencia. Ese contexto incluye:</p>
+          <ul>
+            <li>El código <strong>inmediatamente anterior y posterior</strong> a tu cursor.</li>
+            <li>El <strong>nombre y el tipo</strong> del archivo que estás editando (un <code>.py</code> le dice que es Python, un <code>test_</code> en el nombre le sugiere que son tests…).</li>
+            <li>El contenido de las <strong>pestañas abiertas adyacentes</strong> — por eso mantener abiertos los archivos relacionados mejora las sugerencias.</li>
+            <li>La <strong>estructura del proyecto</strong> y las rutas de los archivos.</li>
+            <li>Los <strong>lenguajes y frameworks</strong> en uso.</li>
+          </ul>
+          <p>Aquí entra una técnica clave que cae con frecuencia: <strong>Fill-in-the-Middle (FIM)</strong>. En lugar de mirar solo lo que has escrito <em>antes</em> del cursor, FIM considera también lo que hay <em>después</em>. Esto le da una comprensión mucho más rica de qué encaja en el hueco donde estás escribiendo.</p>
+          <div class="note note--tip">
+            <p>🧳 <strong class="note__label">Analogía FIM:</strong> es como completar la frase "Me tomé un ___ con leche". Si solo miras lo de antes ("me tomé un"), podrías poner mil cosas. Pero si miras también lo de después ("con leche"), enseguida deduces que es "café". FIM hace justo eso: mira el contexto anterior <strong>y</strong> el posterior para acertar con lo del medio. 🥐</p>
+          </div>
+          <p><strong>Paso 2 — Proxy filter.</strong> El prompt, ya con su contexto, viaja a un <strong>servidor proxy alojado en un tenant de Azure propiedad de GitHub</strong>. Graba esto a fuego, porque es de lo más preguntado: el proxy <strong>no está en tu máquina, no está en OpenAI, no está en tu repo — está en Azure, y es de GitHub</strong>. Este proxy filtra el tráfico y, entre otras cosas, <strong>bloquea intentos de manipular el prompt</strong> (los llamados "prompt hacking" o "jailbreaks", donde alguien intenta engañar al sistema para que revele cómo funciona o para saltarse sus restricciones).</p>
+          <p><strong>Paso 3 — Filtrado de toxicidad (toxicity filtering).</strong> Antes de que el prompt llegue al modelo, pasa por un filtro que detecta y bloquea <strong>discurso de odio, contenido inapropiado y datos personales</strong> (nombres, direcciones, identificaciones), protegiendo la privacidad.</p>
+          <p><strong>Paso 4 — Generación con el LLM.</strong> Solo ahora, con el prompt limpio, filtrado y enriquecido con contexto, llega al <strong>modelo de lenguaje</strong> para que genere las sugerencias.</p>
+          <div class="note note--tip">
+            <p>🎫 <strong class="note__label">El orden importa (y cae):</strong> contexto → proxy → toxicidad → LLM. Una trampa clásica es desordenar estas etapas, típicamente poniendo el LLM al principio o el contexto al final. Recuerda la secuencia del aeropuerto: primero facturas (contexto), luego pasas seguridad (proxy + toxicidad) y solo entonces subes al avión (LLM).</p>
+          </div>
+        </article>
+
+        <article class="concept-card">
+          <h3>⚠️ Trampas típicas</h3>
+          <ul>
+            <li>Colocar el proxy <em>después</em> de la generación → en el inbound el proxy va <strong>antes</strong> del LLM.</li>
+            <li>Situar el proxy en tu máquina, en OpenAI o en tu repo → está en un <strong>tenant de Azure de GitHub</strong>.</li>
+            <li>Entender FIM como "rellenar huecos en tu código" → es la técnica de <em>preprocesado</em> que usa contexto anterior <strong>y</strong> posterior.</li>
+          </ul>
+        </article>
+
+        <article class="concept-card">
+          <h3>📝 Mini-repaso</h3>
+          <ol>
+            <li>Ordena los cuatro pasos del proceso inbound.</li>
+            <li>¿Dónde se aloja el proxy filter?</li>
+            <li>¿Qué considera la técnica FIM que la distingue de un autocompletado normal?</li>
+          </ol>
+        </article>
+
+        <!-- ============ 3.2 — Proceso outbound: la vuelta (aduana de llegada) ============ -->
+        <div class="category-header" id="apartado-3-2">
+          <span class="category-header__icon">🌷</span>
+          <h2 class="category-header__title">3.2 — Proceso outbound: la vuelta (aduana de llegada)</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>La explicación en profundidad</h3>
+          <p>El modelo ya ha generado una respuesta… pero esa respuesta <strong>no llega directa a tu editor</strong>. Igual que al volver de un viaje pasas por la aduana, la sugerencia atraviesa varios controles de salida antes de aparecer en tu pantalla.</p>
+          <p><strong>Paso 5 — Post-procesado y validación.</strong> Aquí ocurren tres cosas:</p>
+          <ul>
+            <li>El <strong>filtro de toxicidad actúa de nuevo</strong>, ahora sobre el contenido <em>generado</em> (no solo sobre tu prompt de entrada). Tiene sentido: el modelo podría producir algo inapropiado aunque tu prompt fuera inofensivo.</li>
+            <li>El <strong>proxy aplica una capa final de comprobación de calidad y seguridad</strong>, buscando bugs comunes y vulnerabilidades como <strong>XSS (cross-site scripting) o inyección SQL</strong>. Si detecta problemas graves, la sugerencia se <strong>trunca o se descarta</strong>.</li>
+            <li><strong>Matching public code (filtro de código público, opcional).</strong> Si el administrador (o tú, en planes individuales) lo tiene activado, este filtro <strong>bloquea las sugerencias de más de ~150 caracteres</strong> que coincidan estrechamente con código público existente en GitHub. Es <em>opcional</em>: no está activado por defecto.</li>
+          </ul>
+          <p><strong>Paso 6 — Entrega y feedback loop.</strong> Solo lo que ha superado todos los filtros llega a tu editor. Y a partir de ahí, Copilot inicia un <strong>bucle de retroalimentación</strong>: aprende de qué haces con la sugerencia — si la aceptas, la editas o la rechazas — para mejorar la experiencia.</p>
+          <p><strong>Paso 7 — Repetición.</strong> El ciclo completo se repite con cada nuevo prompt.</p>
+          <div class="note note--tip">
+            <p>🛃 <strong class="note__label">Analogía de la aduana:</strong> al volver de un viaje, en la aduana revisan que no traigas nada prohibido. Aquí igual: la respuesta del modelo pasa un control que comprueba que no sea tóxica, que no tenga fallos graves de seguridad, y (si está activado) que no sea una copia calcada de código público. Lo que no pasa el control, se queda fuera. 🧳</p>
+          </div>
+        </article>
+
+        <article class="concept-card">
+          <h3>El detalle del filtro de código público (cae seguro)</h3>
+          <p>Este filtro merece atención porque genera muchas preguntas, y en el Dominio 6 lo veremos desde el ángulo de las salvaguardas. Por ahora, los tres datos clave: actúa en el <strong>outbound</strong> (a la vuelta, no a la ida), es <strong>opcional</strong> (lo activa el admin o el usuario individual), y su umbral es de <strong>~150 caracteres</strong>. Compara la sugerencia (más unos ~150 caracteres de contexto alrededor) contra un índice de repositorios públicos de GitHub. Solo indexa <strong>repos públicos</strong> (no los privados ni el código de fuera de GitHub), y las coincidencias ocurren en menos del 1% de las sugerencias.</p>
+        </article>
+
+        <article class="concept-card">
+          <h3>⚠️ Trampas típicas</h3>
+          <ul>
+            <li>Decir que el filtro de código público está <strong>siempre activo</strong> → es <strong>opcional</strong>.</li>
+            <li>Situarlo en el <strong>inbound</strong> → actúa en el <strong>outbound</strong>, después de que el LLM genere.</li>
+            <li>Olvidar que el filtro de toxicidad actúa <strong>dos veces</strong> (entrada y salida).</li>
+          </ul>
+        </article>
+
+        <article class="concept-card">
+          <h3>📝 Mini-repaso</h3>
+          <ol>
+            <li>¿Qué tres comprobaciones ocurren en el post-procesado?</li>
+            <li>¿El filtro de código público actúa a la ida o a la vuelta? ¿Está siempre activo?</li>
+            <li>¿Qué es el feedback loop?</li>
+          </ol>
+        </article>
+
+        <!-- ============ 3.3 — El ciclo de vida completo de la sugerencia ============ -->
+        <div class="category-header" id="apartado-3-3">
+          <span class="category-header__icon">🌷</span>
+          <h2 class="category-header__title">3.3 — El ciclo de vida completo de la sugerencia</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>La explicación en profundidad</h3>
+          <p>Si juntamos la ida y la vuelta, tenemos el <strong>ciclo de vida completo</strong> de una sugerencia de código, que es literalmente uno de los objetivos del examen ("visualizar el ciclo de vida"):</p>
+          <div class="note note--tip">
+            <p><strong class="note__label">Prompt + contexto → proxy filter → filtro de toxicidad → LLM (generación) → post-procesado (toxicidad + calidad/seguridad + código público opcional) → entrega + feedback loop → repetir.</strong></p>
+          </div>
+          <p>Si te acuerdas del <strong>aeropuerto ✈️</strong>, ya te sabes el ciclo entero de memoria: facturas el equipaje (contexto), pasas el control de seguridad de salida (proxy + toxicidad), vuelas (LLM), pasas la aduana de llegada (calidad + seguridad + código público), sales con tu maleta (entrega) y, si vuelves a viajar, repites el circuito (feedback loop). 🎀</p>
+          <p>Este esquema mental te permite responder cualquier pregunta de ordenación o de "en qué punto ocurre X" sin dudar.</p>
+        </article>
+
+        <!-- ============ 3.4 — Uso, flujo y compartición de datos ============ -->
+        <div class="category-header" id="apartado-3-4">
+          <span class="category-header__icon">🌷</span>
+          <h2 class="category-header__title">3.4 — Uso, flujo y compartición de datos</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>La explicación en profundidad</h3>
+          <p>Más allá del recorrido técnico, el examen quiere que entiendas <strong>qué garantías de privacidad</strong> rodean a tus datos. Este bloque conecta directamente con el Dominio 6 y con las preocupaciones legítimas de cualquier empresa que adopta Copilot.</p>
+          <p>Los puntos esenciales:</p>
+          <ul>
+            <li><strong>Todo el tránsito va cifrado (HTTPS).</strong> Tus datos nunca viajan en claro.</li>
+            <li><strong>El proxy es un servicio que preserva la privacidad</strong> (<em>privacy-preserving proxy</em>), alojado en el tenant de Azure de GitHub.</li>
+            <li><strong>Los prompts y las respuestas no se persisten</strong> al pasar por el proxy: no se almacena el contenido del chat.</li>
+            <li><strong>Los prompts y completions NO se usan para entrenar</strong> los modelos base de Copilot en los planes de negocio. Este punto es importantísimo y muy preguntado: tu código privado <strong>no</strong> acaba entrenando al modelo. Y ojo con los matices absolutos de las trampas: no es "solo si desactivas la telemetría", ni "solo en Enterprise" — sencillamente no se usa para entrenar.</li>
+            <li>La <strong>telemetría</strong> que sí se recoge son señales de <strong>actividad y uso de las funciones</strong> (cuántas completions, actividad del chat, uso de agentes) con fines de <em>reporting</em> — <strong>no</strong> el contenido de tu código fuente.</li>
+            <li>El <strong>historial del chat</strong> aporta contexto para respuestas más relevantes, pero <strong>no entrena al modelo</strong> ni se comparte con otros usuarios.</li>
+          </ul>
+          <div class="note note--tip">
+            <p>🔐 <strong class="note__label">Analogía kawaii:</strong> en los planes de empresa, tus prompts son como mensajitos que se autodestruyen tras entregarse: se usan para darte tu respuesta en el momento, pero <strong>no se guardan ni se usan para "enseñar" al modelo</strong>. Tu código no acaba en el libro de recetas de nadie, ni se lo pasan a otra desarrolladora en otra empresa. 💌</p>
+          </div>
+          <div class="note note--tip">
+            <p>💡 Para el detalle siempre actualizado sobre retención y manejo de datos, la fuente oficial de referencia es el <strong class="note__label">GitHub Copilot Trust Center</strong>. Es un buen enlace para tu web, porque es la fuente que GitHub mantiene al día.</p>
+          </div>
+        </article>
+
+        <article class="concept-card">
+          <h3>⚠️ Trampa típica</h3>
+          <ul>
+            <li>"Tu código privado se usa para entrenar el modelo (salvo que desactives la telemetría)" → <strong>falso</strong>. No se usa para entrenar, sin peros.</li>
+            <li>Confundir <strong>telemetría</strong> (señales de uso) con <strong>contenido del código</strong> (que no se recoge).</li>
+          </ul>
+        </article>
+
+        <article class="concept-card">
+          <h3>📝 Mini-repaso</h3>
+          <ol>
+            <li>¿Se usan tus prompts y completions para entrenar los modelos de Copilot?</li>
+            <li>¿Qué es exactamente la telemetría que sí se recoge?</li>
+            <li>¿El historial del chat entrena al modelo?</li>
+          </ol>
+        </article>
+
+        <!-- ============ 3.5 — Limitaciones de los LLM y de Copilot ============ -->
+        <div class="category-header" id="apartado-3-5">
+          <span class="category-header__icon">🌷</span>
+          <h2 class="category-header__title">3.5 — Limitaciones de los LLM y de Copilot</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>La explicación en profundidad</h3>
+          <p>Cerramos el dominio entendiendo <strong>por qué</strong> Copilot tiene límites — no basta con saber <em>que</em> los tiene, el examen quiere que comprendas la causa. Y la causa está en la naturaleza misma de un LLM.</p>
+          <div class="note note--tip">
+            <p>🐣 <strong class="note__label">Analogía kawaii:</strong> un LLM es como un pollito superlector que se ha leído millones de libros pero <strong>no razona ni comprueba hechos</strong>. Lo único que hace es adivinar, con muchísima soltura, qué palabra pega mejor después de la anterior, guiándose por todo lo que ha leído. A veces acierta de forma asombrosa; otras se inventa cosas con carita de absoluta seguridad. Esas invenciones son las "alucinaciones". 🐥</p>
+          </div>
+          <p>Las limitaciones concretas que confirma la documentación y que caen en el examen:</p>
+          <ul>
+            <li><strong>Alucinaciones:</strong> puede <strong>inventar APIs, funciones o elementos de esquema que no existen</strong>, sobre todo cuando el contexto es limitado. Suena real, pero no lo es.</li>
+            <li><strong>Sin conocimiento en tiempo real de archivos remotos:</strong> Copilot solo "ve" lo que tienes <strong>abierto en el editor</strong> (o la conexión/contexto activo). No navega por carpetas ni repositorios por su cuenta a menos que se los abras. Por eso una pregunta trampa que diga "Copilot conoce todos los archivos de tu repo aunque no los abras" es falsa.</li>
+            <li><strong>No mantiene tipos ni estado en conversaciones largas:</strong> según se alarga un chat, los resultados pueden <strong>derivar</strong> (perder relevancia y coherencia). Esto conecta con el consejo del Dominio 4 de resumir o resetear el historial.</li>
+            <li><strong>Requiere conexión a internet:</strong> necesita el servicio en la nube de Copilot; <strong>no hay modo offline</strong>.</li>
+            <li><strong>Ventana de contexto limitada:</strong> no procesa todo tu repositorio de golpe, solo el contexto que se le pasa.</li>
+            <li><strong>Corte de conocimiento temporal:</strong> puede desconocer librerías o APIs publicadas después de su entrenamiento.</li>
+            <li><strong>Rinde mejor en inglés</strong> y <strong>hereda sesgos</strong> de sus datos.</li>
+          </ul>
+        </article>
+
+        <article class="concept-card">
+          <h3>⚠️ Trampa típica</h3>
+          <ul>
+            <li>"Copilot conoce siempre la última versión de cualquier librería" → falso (corte de conocimiento).</li>
+            <li>"Copilot entiende todo tu repositorio completo aunque no abras los archivos" → falso (solo ve lo abierto; ventana de contexto limitada).</li>
+            <li>"Copilot funciona offline" → falso (necesita el servicio en la nube).</li>
+          </ul>
+        </article>
+
+        <article class="concept-card">
+          <h3>📝 Mini-repaso</h3>
+          <ol>
+            <li>¿Qué es una alucinación en un LLM?</li>
+            <li>¿Puede Copilot leer archivos de tu repo que no tienes abiertos?</li>
+            <li>¿Funciona Copilot sin conexión a internet?</li>
+          </ol>
+        </article>
+
+        <!-- ============ Preguntas trampa — Dominio 3 ============ -->
+        <div class="category-header" id="preguntas-trampa-dominio-3">
+          <span class="category-header__icon">💡</span>
+          <h2 class="category-header__title">Preguntas trampa — Dominio 3</h2>
+        </div>
+        <div class="quiz-q">
+          <p><span class="quiz-q__num">P1.</span> Ordena correctamente el flujo inbound de un prompt:</p>
+          <ul class="quiz-q__options">
+            <li>A) LLM → proxy → toxicidad → contexto</li>
+            <li>B) Recogida de contexto → proxy filter → filtro de toxicidad → generación con LLM</li>
+            <li>C) Proxy → LLM → contexto → toxicidad</li>
+            <li>D) Contexto → LLM → proxy → entrega</li>
+          </ul>
+        </div>
+        <div class="quiz-q">
+          <p><span class="quiz-q__num">P2.</span> Respecto al filtro de "matching public code", ¿cuáles son ciertas? (Elige 2)</p>
+          <ul class="quiz-q__options">
+            <li>A) Está activado por defecto para todos</li>
+            <li>B) Lo puede habilitar un administrador</li>
+            <li>C) Bloquea sugerencias de más de ~150 caracteres que coincidan con código público</li>
+            <li>D) Actúa en el flujo inbound, antes del LLM</li>
+          </ul>
+        </div>
+        <div class="quiz-q">
+          <p><span class="quiz-q__num">P3.</span> ¿Dónde se aloja el servidor proxy que filtra el tráfico de los prompts?</p>
+          <ul class="quiz-q__options">
+            <li>A) En la máquina local del desarrollador</li>
+            <li>B) En un tenant de Azure propiedad de GitHub</li>
+            <li>C) En los servidores de OpenAI</li>
+            <li>D) En el repositorio de GitHub del usuario</li>
+          </ul>
+        </div>
+        <div class="quiz-q">
+          <p><span class="quiz-q__num">P4.</span> ¿Cuáles son limitaciones reales de los LLM en Copilot? (Elige 2)</p>
+          <ul class="quiz-q__options">
+            <li>A) Pueden alucinar APIs o elementos que no existen</li>
+            <li>B) Conocen en tiempo real todos los archivos del repo aunque no los abras</li>
+            <li>C) No mantienen bien los tipos y el estado en conversaciones largas</li>
+            <li>D) Funcionan igual de bien sin conexión a internet</li>
+          </ul>
+        </div>
+        <div class="quiz-q">
+          <p><span class="quiz-q__num">P5.</span> Sobre el uso de datos en Copilot Business/Enterprise, ¿cuál es correcta?</p>
+          <ul class="quiz-q__options">
+            <li>A) Los prompts y completions se usan para entrenar los modelos base</li>
+            <li>B) Los prompts y completions NO se usan para entrenar los modelos base</li>
+            <li>C) El código privado entrena el modelo salvo que desactives la telemetría</li>
+            <li>D) El historial del chat se comparte con otros usuarios</li>
+          </ul>
+        </div>
+        <div class="quiz-q">
+          <p><span class="quiz-q__num">P6.</span> El filtro de toxicidad, ¿en qué momentos actúa?</p>
+          <ul class="quiz-q__options">
+            <li>A) Solo sobre el prompt de entrada</li>
+            <li>B) Solo sobre la respuesta generada</li>
+            <li>C) Tanto sobre la entrada (inbound) como sobre la salida (outbound)</li>
+            <li>D) Nunca, es opcional</li>
+          </ul>
+        </div>
+        <details class="answers">
+          <summary><strong>👉 Ver respuestas y explicación</strong></summary>
+          <div class="answers__body">
+            <p><strong>P1 → B).</strong> El orden es contexto → proxy → toxicidad → LLM. Las demás desordenan las etapas (trampa clásica: poner el LLM al principio o el contexto al final).</p>
+            <p><strong>P2 → B y C.</strong> A es falsa (es <strong>opcional</strong>, no viene activado). D es falsa: actúa en el <strong>outbound</strong>, después del LLM.</p>
+            <p><strong>P3 → B).</strong> Tenant de Azure propiedad de GitHub. No está en tu máquina; y aunque los modelos sean de proveedores como OpenAI, el <em>proxy</em> es de GitHub en Azure.</p>
+            <p><strong>P4 → A y C.</strong> B es falsa (solo accede a archivos abiertos, no a todo el repo en tiempo real). D es falsa (necesita conexión; no hay modo offline).</p>
+            <p><strong>P5 → B).</strong> No se usan para entrenar los modelos base. A es falsa; C mete la trampa de "salvo que desactives la telemetría" (no se entrena, sin peros); D es falsa (el historial no se comparte).</p>
+            <p><strong>P6 → C).</strong> El filtro de toxicidad actúa dos veces: sobre el prompt de entrada y sobre la respuesta generada. Es un detalle fino que distingue a quien ha estudiado el flujo completo.</p>
+          </div>
+        </details>
+
+        <!-- ============ Fuentes oficiales ============ -->
+        <div class="category-header" id="fuentes-oficiales">
+          <span class="category-header__icon">📚</span>
+          <h2 class="category-header__title">Fuentes oficiales</h2>
+        </div>
+
+        <article class="concept-card">
+          <ul>
+            <li><a href="https://learn.microsoft.com/training/modules/introduction-prompt-engineering-with-github-copilot/3-github-copilot-user-prompt-process-flow" target="_blank" rel="noopener noreferrer">Flujo del prompt (inbound/outbound) — Microsoft Learn</a></li>
+            <li><a href="https://learn.microsoft.com/training/modules/introduction-prompt-engineering-with-github-copilot/4-github-copilot-data" target="_blank" rel="noopener noreferrer">Datos de Copilot y LLMs</a></li>
+            <li><a href="https://github.com/trust-center" target="_blank" rel="noopener noreferrer">GitHub Copilot Trust Center (manejo y retención de datos)</a></li>
+          </ul>
+        </article>
+
+        <div class="note note--next">
+          <p>🌸 <em>Siguiente módulo:</em> <strong>Dominio 4 — Prompt engineering y creación de contexto</strong> (las 4 Ss y el zero/one/few-shot, con ejemplos de código). ¡Vamos! 💛</p>
+        </div>
+
+        <!-- Navegación del curso -->
+        <div class="course-nav">
+          <a href="dominio-2.html">
+            <span class="course-nav__label">← Anterior</span>
+            <span class="course-nav__title">Dominio 2 · Funciones de Copilot</span>
+          </a>
+          <a href="dominio-4.html" class="next">
+            <span class="course-nav__label">Siguiente →</span>
+            <span class="course-nav__title">Dominio 4 · Prompt engineering</span>
+          </a>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <button id="back-to-top" class="back-to-top" aria-label="Volver arriba" title="Volver arriba">↑</button>
+
+  <script src="https://cdn.jsdelivr.net/npm/i18next@23/dist/umd/i18next.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1/prism.min.js"></script>
+  <script src="../../../assets/js/theme.js"></script>
+  <script src="../../../assets/js/main.js"></script>
+  <script src="../../../assets/js/cursor.js"></script>
+</body>
+</html>

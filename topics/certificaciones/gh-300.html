@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Curso kawaii para aprobar la certificación GH-300 (GitHub Copilot): IA responsable, funciones de Copilot, arquitectura, prompt engineering, productividad y privacidad.">
+  <title>GH-300 · GitHub Copilot, Certificaciones | Power BI Guide by Kawaii BI</title>
+  <link rel="canonical" href="https://kawaiibi.es/topics/certificaciones/gh-300.html">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Kawaii Power BI Guide">
+  <meta property="og:locale" content="es_ES">
+  <meta property="og:title" content="GH-300 · GitHub Copilot, Certificaciones | Power BI Guide by Kawaii BI">
+  <meta property="og:description" content="Curso kawaii para aprobar la certificación GH-300 (GitHub Copilot): IA responsable, funciones de Copilot, arquitectura, prompt engineering, productividad y privacidad.">
+  <meta property="og:url" content="https://kawaiibi.es/topics/certificaciones/gh-300.html">
+  <meta property="og:image" content="https://kawaiibi.es/assets/images/og-banner.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="1200">
+  <meta property="og:image:alt" content="Sara Lozano Marti - Kawaii Power BI">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="GH-300 · GitHub Copilot, Certificaciones | Power BI Guide by Kawaii BI">
+  <meta name="twitter:description" content="Curso kawaii para aprobar la certificación GH-300 (GitHub Copilot): IA responsable, funciones de Copilot, arquitectura, prompt engineering, productividad y privacidad.">
+  <meta name="twitter:image" content="https://kawaiibi.es/assets/images/og-banner.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../../assets/css/main.css">
+  <link rel="stylesheet" href="../../assets/css/themes.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/layout.css">
+
+  <style>
+    .topic-header { text-align: center; padding: 2.5rem 0 2rem; border-bottom: 2px solid var(--color-mauve); margin-bottom: 2.5rem; }
+    .topic-header__icon { font-size: 4rem; margin-bottom: 0.75rem; display: block; }
+    .topic-header__title { font-size: clamp(1.875rem, 4vw, 2.5rem); font-weight: 800; color: var(--color-dark); margin-bottom: 0.625rem; line-height: 1.2; }
+    .topic-header__subtitle { font-size: 1.0625rem; color: var(--color-slate); margin-bottom: 1.25rem; line-height: 1.5; max-width: 640px; margin-left: auto; margin-right: auto; }
+    .topic-header__levels { display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap; align-items: center; }
+    .category-header { display: flex; align-items: center; gap: 0.75rem; margin: 2.5rem 0 1.25rem; padding: 0.875rem 1.25rem; background: var(--color-rose); border-radius: var(--border-radius-sm); border-left: 4px solid var(--color-coral); }
+    .category-header__icon { font-size: 1.5rem; }
+    .category-header__title { font-size: 1.25rem; font-weight: 700; margin: 0; }
+
+    .exam-info { display: flex; gap: 1rem; flex-wrap: wrap; margin: 1.5rem 0 0.5rem; }
+    .exam-info__item { flex: 1 1 200px; background: var(--color-rose); border: 1px solid var(--color-mauve); border-radius: var(--border-radius-sm); padding: 1rem 1.15rem; }
+    .exam-info__pct { font-size: 1.5rem; font-weight: 800; color: var(--color-coral); display: block; }
+    .exam-info__label { font-size: 0.8125rem; color: var(--color-slate); line-height: 1.4; }
+
+    .module-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1rem; margin-top: 1.25rem; }
+    .module-card { display: flex; gap: 1rem; align-items: flex-start; background: var(--color-white); border: 1.5px solid var(--color-mauve); border-radius: var(--border-radius); padding: 1.1rem 1.25rem; text-decoration: none; color: inherit; transition: var(--transition); }
+    .module-card:hover { border-color: var(--color-coral); transform: translateY(-3px); box-shadow: var(--shadow-md); text-decoration: none; }
+    .module-card__num { font-family: 'Fira Code', monospace; font-weight: 700; font-size: 1.05rem; color: #fff; background: linear-gradient(135deg, var(--color-coral), var(--color-peach)); border-radius: 10px; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .module-card__title { display: block; font-weight: 700; color: var(--color-dark); font-size: 1rem; margin-bottom: 0.2rem; }
+    .module-card__desc { display: block; font-size: 0.8125rem; color: var(--color-slate); line-height: 1.5; }
+    .module-card__weight { display: inline-block; margin-top: 0.4rem; font-family: 'Fira Code', monospace; font-size: 0.75rem; font-weight: 600; color: var(--color-coral); }
+  </style>
+</head>
+<body>
+
+  <aside class="site-sidebar">
+    <div class="site-sidebar__profile">
+      <img src="../../assets/images/avatar-sara.png" alt="Sara Lozano Martí" class="site-sidebar__avatar">
+      <p class="site-sidebar__name">Sara Lozano Martí</p>
+      <p class="site-sidebar__subtitle">Power BI Expert</p>
+    </div>
+    <nav class="site-sidebar__nav" aria-label="Navegación principal">
+      <ul>
+        <li><a href="../../index.html" class="site-sidebar__link"><span class="site-sidebar__icon">🏠</span> Inicio</a></li>
+        <li><a href="../dax.html" class="site-sidebar__link"><span class="site-sidebar__icon">⚡</span> Funciones DAX</a></li>
+        <li><a href="../power-query.html" class="site-sidebar__link"><span class="site-sidebar__icon">🔄</span> Power Query</a></li>
+        <li><a href="../lenguaje-m.html" class="site-sidebar__link"><span class="site-sidebar__icon">〽️</span> Lenguaje M</a></li>
+        <li><a href="../modelado.html" class="site-sidebar__link"><span class="site-sidebar__icon">🗄️</span> Modelado</a></li>
+        <li><a href="../conceptos-powerbi.html" class="site-sidebar__link"><span class="site-sidebar__icon">📊</span> Conceptos Power BI</a></li>
+        <li><a href="../fabric.html" class="site-sidebar__link"><span class="site-sidebar__icon">🧵</span> Microsoft Fabric</a></li>
+        <li><a href="../tmdl.html" class="site-sidebar__link"><span class="site-sidebar__icon">📝</span> TMDL</a></li>
+        <li><a href="../diseno-ux.html" class="site-sidebar__link"><span class="site-sidebar__icon">🎨</span> Diseño y UX</a></li>
+        <li><a href="../gobernanza.html" class="site-sidebar__link"><span class="site-sidebar__icon">🔒</span> Gobernanza</a></li>
+        <li><a href="../certificaciones.html" class="site-sidebar__link is-active"><span class="site-sidebar__icon">🎓</span> Certificaciones</a></li>
+      </ul>
+    </nav>
+    <div class="site-sidebar__divider"></div>
+    <div class="site-sidebar__footer">
+      <a href="../../quien-soy.html" class="site-sidebar__link site-sidebar__link--highlight"><span class="site-sidebar__icon">👩‍💻</span> ¿Quién soy?</a>
+      <div class="site-sidebar__social">
+        <a href="https://www.linkedin.com/in/saralozanomarti" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><img src="../../assets/images/logo-linkedin.png" alt="LinkedIn" class="site-sidebar__social-icon"></a>
+        <a href="https://www.youtube.com/@KawaiiPowerBI" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><img src="../../assets/images/logo-youtube.png" alt="YouTube" class="site-sidebar__social-icon"></a>
+        <a href="https://github.com/KawaiiBI" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><img src="../../assets/images/logo-github.png" alt="GitHub" class="site-sidebar__social-icon"></a>
+      </div>
+      <div class="site-sidebar__logo-bottom"><img src="../../assets/images/logo-kawaii.jpg" alt="Kawaii BI" class="site-sidebar__logo-img"></div>
+      <p class="site-sidebar__copyright">Power BI Guide 🌸<br>© 2026 Kawaii BI</p>
+    </div>
+  </aside>
+
+  <div class="page-wrapper">
+    <main class="main-content">
+      <div class="topic-page">
+
+        <nav class="breadcrumb" aria-label="Ruta de navegación">
+          <span class="breadcrumb__item"><a href="../../index.html">🏠 Inicio</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item"><a href="../certificaciones.html">Certificaciones</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item">GH-300</span>
+        </nav>
+
+        <header class="topic-header">
+          <span class="topic-header__icon">🤖</span>
+          <h1 class="topic-header__title">GH-300 · GitHub Copilot</h1>
+          <p class="topic-header__subtitle">Curso kawaii para aprobar la certificación GH-300: IA responsable, funciones de Copilot, arquitectura y datos, prompt engineering, productividad y privacidad. 🌸</p>
+          <div class="topic-header__levels">
+            <span class="badge badge--beginner">Principiante</span>
+            <span class="badge badge--intermediate">Intermedio</span>
+          </div>
+        </header>
+
+        <!-- Introducción al curso -->
+        <p style="font-size: 1.0625rem; line-height: 1.8; margin-bottom: 1rem;">
+          Bienvenida a mi curso kawaii para aprobar la <strong>GH-300 (GitHub Copilot)</strong> 🌸. Aquí tienes
+          los <strong>6 dominios</strong> del examen con mis apuntes: teoría con su porqué, analogías,
+          ejemplos, trampas típicas y preguntas para practicar. Cada dominio es una página independiente,
+          entra al que quieras cuando quieras.
+        </p>
+
+        <div class="note note--tip">
+          💡 <strong>Cómo aprovecharlo:</strong> ve en orden si empiezas de cero, o salta al dominio que
+          necesites repasar. Ojo con los dominios 1 y 2: son los que más pesan en el examen. 🎀
+        </div>
+
+        <!-- Info del examen -->
+        <div class="category-header">
+          <span class="category-header__icon">📋</span>
+          <h2 class="category-header__title">El examen de un vistazo</h2>
+        </div>
+        <div class="exam-info">
+          <div class="exam-info__item"><span class="exam-info__pct">15-20%</span><span class="exam-info__label">Usar GitHub Copilot de forma responsable</span></div>
+          <div class="exam-info__item"><span class="exam-info__pct">25-30%</span><span class="exam-info__label">Usar las funciones de GitHub Copilot</span></div>
+          <div class="exam-info__item"><span class="exam-info__pct">10-15%</span><span class="exam-info__label">Entender los datos y la arquitectura de Copilot</span></div>
+          <div class="exam-info__item"><span class="exam-info__pct">10-15%</span><span class="exam-info__label">Aplicar prompt engineering y creación de contexto</span></div>
+          <div class="exam-info__item"><span class="exam-info__pct">10-15%</span><span class="exam-info__label">Mejorar la productividad del desarrollador</span></div>
+          <div class="exam-info__item"><span class="exam-info__pct">10-15%</span><span class="exam-info__label">Configurar privacidad, exclusiones y salvaguardas</span></div>
+        </div>
+
+        <!-- Dominios -->
+        <div class="category-header">
+          <span class="category-header__icon">📚</span>
+          <h2 class="category-header__title">Los 6 dominios del curso</h2>
+        </div>
+        <div class="module-grid">
+
+          <a href="gh-300/dominio-1.html" class="module-card">
+            <span class="module-card__num">01</span>
+            <div class="module-card__body">
+              <span class="module-card__title">Usar GitHub Copilot de forma responsable</span>
+              <span class="module-card__desc">Los 6 principios de IA responsable, riesgos y limitaciones de la IA generativa, daños, mitigación y validación de resultados.</span>
+              <span class="module-card__weight">Peso: 15-20%</span>
+            </div>
+          </a>
+
+          <a href="gh-300/dominio-2.html" class="module-card">
+            <span class="module-card__num">02</span>
+            <div class="module-card__body">
+              <span class="module-card__title">Usar las funciones de GitHub Copilot</span>
+              <span class="module-card__desc">IDE, chat, CLI, Agent Mode, Copilot Edits, MCP, Spaces, Cloud Agent, planes, políticas, audit logs y REST API.</span>
+              <span class="module-card__weight">Peso: 25-30%</span>
+            </div>
+          </a>
+
+          <a href="gh-300/dominio-3.html" class="module-card">
+            <span class="module-card__num">03</span>
+            <div class="module-card__body">
+              <span class="module-card__title">Entender los datos y la arquitectura de Copilot</span>
+              <span class="module-card__desc">Flujo inbound y outbound, proxy filter, filtrado de toxicidad, ciclo de vida de la sugerencia y limitaciones de los LLM.</span>
+              <span class="module-card__weight">Peso: 10-15%</span>
+            </div>
+          </a>
+
+          <a href="gh-300/dominio-4.html" class="module-card">
+            <span class="module-card__num">04</span>
+            <div class="module-card__body">
+              <span class="module-card__title">Prompt engineering y creación de contexto</span>
+              <span class="module-card__desc">Las 4 Ss, zero-shot, one-shot y few-shot, role prompting, chain prompting y cómo se determina el contexto.</span>
+              <span class="module-card__weight">Peso: 10-15%</span>
+            </div>
+          </a>
+
+          <a href="gh-300/dominio-5.html" class="module-card">
+            <span class="module-card__num">05</span>
+            <div class="module-card__body">
+              <span class="module-card__title">Mejorar la productividad del desarrollador</span>
+              <span class="module-card__desc">Copilot en el SDLC, aprendizaje, datos de ejemplo, código legacy, testing, seguridad, rendimiento y medición de la productividad.</span>
+              <span class="module-card__weight">Peso: 10-15%</span>
+            </div>
+          </a>
+
+          <a href="gh-300/dominio-6.html" class="module-card">
+            <span class="module-card__num">06</span>
+            <div class="module-card__body">
+              <span class="module-card__title">Privacidad, exclusiones y salvaguardas</span>
+              <span class="module-card__desc">Content exclusions y sus limitaciones, filtro de código público, code referencing, protecciones contractuales y troubleshooting.</span>
+              <span class="module-card__weight">Peso: 10-15%</span>
+            </div>
+          </a>
+
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <button id="back-to-top" class="back-to-top" aria-label="Volver arriba" title="Volver arriba">↑</button>
+
+  <script src="https://cdn.jsdelivr.net/npm/i18next@23/dist/umd/i18next.min.js"></script>
+  <script src="../../assets/js/theme.js"></script>
+  <script src="../../assets/js/main.js"></script>
+  <script src="../../assets/js/cursor.js"></script>
+</body>
+</html>

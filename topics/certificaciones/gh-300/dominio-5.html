@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Productividad con GitHub Copilot en profundidad: generación de código, refactorización, documentación, aceleración del aprendizaje, datos de ejemplo, modernización de legacy, tests unitarios e integración, edge cases, aserciones, seguridad y rendimiento. Guía kawaii completa para la GH-300.">
+  <title>GH-300 · Dominio 5: Productividad | Power BI Guide by Kawaii BI</title>
+  <link rel="canonical" href="https://kawaiibi.es/topics/certificaciones/gh-300/dominio-5.html">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Kawaii Power BI Guide">
+  <meta property="og:locale" content="es_ES">
+  <meta property="og:title" content="GH-300 · Dominio 5: Productividad | Power BI Guide by Kawaii BI">
+  <meta property="og:description" content="Productividad con GitHub Copilot en profundidad: generación de código, refactorización, documentación, aceleración del aprendizaje, datos de ejemplo, modernización de legacy, tests unitarios e integración, edge cases, aserciones, seguridad y rendimiento. Guía kawaii completa para la GH-300.">
+  <meta property="og:url" content="https://kawaiibi.es/topics/certificaciones/gh-300/dominio-5.html">
+  <meta property="og:image" content="https://kawaiibi.es/assets/images/og-banner.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="1200">
+  <meta property="og:image:alt" content="Sara Lozano Marti - Kawaii Power BI">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="GH-300 · Dominio 5: Productividad | Power BI Guide by Kawaii BI">
+  <meta name="twitter:description" content="Productividad con GitHub Copilot en profundidad: generación de código, refactorización, documentación, aceleración del aprendizaje, datos de ejemplo, modernización de legacy, tests unitarios e integración, edge cases, aserciones, seguridad y rendimiento. Guía kawaii completa para la GH-300.">
+  <meta name="twitter:image" content="https://kawaiibi.es/assets/images/og-banner.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/prismjs@1/themes/prism-okaidia.min.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="../../../assets/css/main.css">
+  <link rel="stylesheet" href="../../../assets/css/themes.css">
+  <link rel="stylesheet" href="../../../assets/css/components.css">
+  <link rel="stylesheet" href="../../../assets/css/layout.css">
+
+  <style>
+    .topic-header { text-align: center; padding: 2.25rem 0 1.75rem; border-bottom: 2px solid var(--color-mauve); margin-bottom: 2rem; }
+    .topic-header__eyebrow { font-family: 'Fira Code', monospace; font-size: 0.8125rem; font-weight: 600; color: var(--color-coral); letter-spacing: 0.05em; }
+    .topic-header__icon { font-size: 3.5rem; margin: 0.5rem 0; display: block; }
+    .topic-header__title { font-size: clamp(1.75rem, 4vw, 2.25rem); font-weight: 800; color: var(--color-dark); margin-bottom: 0.625rem; line-height: 1.2; }
+    .topic-header__subtitle { font-size: 1rem; color: var(--color-slate); margin-bottom: 1.25rem; line-height: 1.55; max-width: 680px; margin-left: auto; margin-right: auto; }
+    .topic-header__levels { display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap; align-items: center; }
+
+    .toc { background: var(--color-rose); border-radius: var(--border-radius); padding: 1.25rem 1.5rem; margin-bottom: 2rem; border: 1.5px solid var(--color-mauve); }
+    .toc__title { font-size: 1rem; font-weight: 700; margin: 0 0 0.75rem; }
+    .toc__list { display: flex; flex-wrap: wrap; gap: 0.5rem; list-style: none; padding: 0; margin: 0; }
+    .toc__list a { font-size: 0.8125rem; color: var(--color-coral); text-decoration: none; padding: 0.25rem 0.625rem; background: var(--color-white); border-radius: 999px; border: 1px solid var(--color-mauve); display: inline-block; }
+    .toc__list a:hover { background: var(--color-coral); color: #fff; }
+
+    .category-header { display: flex; align-items: center; gap: 0.75rem; margin: 2.5rem 0 1.25rem; padding: 0.875rem 1.25rem; background: var(--color-rose); border-radius: var(--border-radius-sm); border-left: 4px solid var(--color-coral); scroll-margin-top: 20px; }
+    .category-header__icon { font-size: 1.5rem; }
+    .category-header__title { font-size: 1.25rem; font-weight: 700; margin: 0; }
+
+    .concept-card { background: var(--color-white); border: 1.5px solid var(--color-mauve); border-radius: var(--border-radius); padding: 1.5rem 1.75rem; margin-bottom: 1.25rem; }
+    .concept-card h3 { font-size: 1.0625rem; font-weight: 700; color: var(--color-coral); margin: 0 0 0.6rem; }
+    .concept-card p { font-size: 0.9375rem; line-height: 1.7; color: var(--color-dark); margin-bottom: 0.7rem; }
+    .concept-card ul, .concept-card ol { padding-left: 1.25rem; font-size: 0.9375rem; line-height: 1.75; color: var(--color-dark); margin: 0.4rem 0 0.7rem; }
+    .concept-card code, .note code, .quiz-q code, .answers code { background: var(--color-blush); padding: 0.1em 0.4em; border-radius: 4px; font-family: 'Fira Code', monospace; font-size: 0.85em; color: var(--color-coral); }
+    .concept-card pre { margin: 0.75rem 0; }
+    .concept-card pre code { background: none; color: inherit; padding: 0; }
+
+    /* Notas: el texto en negrita se queda en línea; solo la etiqueta inicial va como título */
+    .note strong { display: inline; margin: 0; font-size: inherit; }
+    .note strong.note__label { display: block; margin-bottom: 0.375rem; font-size: 0.875rem; }
+    .note p { margin: 0 0 0.5rem; line-height: 1.7; }
+    .note p:last-child { margin-bottom: 0; }
+    .note ul { padding-left: 1.25rem; margin: 0.25rem 0 0.5rem; line-height: 1.7; }
+    .note ul:last-child { margin-bottom: 0; }
+
+    .md-table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.84rem; }
+    .md-table th, .md-table td { border: 1px solid var(--color-mauve); padding: 0.5rem 0.7rem; text-align: left; vertical-align: top; }
+    .md-table th { background: var(--color-rose); font-weight: 700; color: var(--color-dark); }
+    .md-table tr:nth-child(even) td { background: var(--color-blush); }
+    .table-scroll { overflow-x: auto; }
+
+    .quiz-q { background: var(--color-white); border: 1.5px solid var(--color-mauve); border-left: 4px solid var(--color-coral); border-radius: var(--border-radius-sm); padding: 1rem 1.25rem; margin: 1rem 0; }
+    .quiz-q p { margin: 0 0 0.5rem; font-size: 0.9375rem; line-height: 1.6; }
+    .quiz-q__num { font-weight: 700; color: var(--color-coral); }
+    .quiz-q__options { list-style: none; margin: 0; padding-left: 0.5rem; font-size: 0.9rem; line-height: 1.7; }
+
+    /* Respuestas plegables de las preguntas trampa */
+    .answers { background: var(--color-rose); border: 1.5px solid var(--color-mauve); border-radius: var(--border-radius); margin: 1.25rem 0; }
+    .answers summary { cursor: pointer; padding: 1rem 1.25rem; color: var(--color-coral); }
+    .answers summary:focus-visible { outline: 2px solid var(--color-coral); outline-offset: 2px; border-radius: var(--border-radius); }
+    .answers__body { padding: 0 1.25rem 1rem; }
+    .answers__body p { font-size: 0.9375rem; line-height: 1.7; margin-bottom: 0.7rem; }
+
+    .course-nav { display: flex; justify-content: space-between; gap: 1rem; margin-top: 2.5rem; flex-wrap: wrap; }
+    .course-nav a { flex: 1 1 220px; display: block; background: var(--color-white); border: 1.5px solid var(--color-mauve); border-radius: var(--border-radius); padding: 1rem 1.25rem; text-decoration: none; color: inherit; transition: var(--transition); }
+    .course-nav a:hover { border-color: var(--color-coral); box-shadow: var(--shadow-md); text-decoration: none; }
+    .course-nav__label { font-size: 0.75rem; color: var(--color-slate); text-transform: uppercase; letter-spacing: 0.05em; display: block; }
+    .course-nav__title { font-weight: 700; color: var(--color-coral); }
+    .course-nav a.next { text-align: right; }
+  </style>
+</head>
+<body>
+
+  <aside class="site-sidebar">
+    <div class="site-sidebar__profile">
+      <img src="../../../assets/images/avatar-sara.png" alt="Sara Lozano Martí" class="site-sidebar__avatar">
+      <p class="site-sidebar__name">Sara Lozano Martí</p>
+      <p class="site-sidebar__subtitle">Power BI Expert</p>
+    </div>
+    <nav class="site-sidebar__nav" aria-label="Navegación principal">
+      <ul>
+        <li><a href="../../../index.html" class="site-sidebar__link"><span class="site-sidebar__icon">🏠</span> Inicio</a></li>
+        <li><a href="../../dax.html" class="site-sidebar__link"><span class="site-sidebar__icon">⚡</span> Funciones DAX</a></li>
+        <li><a href="../../power-query.html" class="site-sidebar__link"><span class="site-sidebar__icon">🔄</span> Power Query</a></li>
+        <li><a href="../../lenguaje-m.html" class="site-sidebar__link"><span class="site-sidebar__icon">〽️</span> Lenguaje M</a></li>
+        <li><a href="../../modelado.html" class="site-sidebar__link"><span class="site-sidebar__icon">🗄️</span> Modelado</a></li>
+        <li><a href="../../conceptos-powerbi.html" class="site-sidebar__link"><span class="site-sidebar__icon">📊</span> Conceptos Power BI</a></li>
+        <li><a href="../../fabric.html" class="site-sidebar__link"><span class="site-sidebar__icon">🧵</span> Microsoft Fabric</a></li>
+        <li><a href="../../tmdl.html" class="site-sidebar__link"><span class="site-sidebar__icon">📝</span> TMDL</a></li>
+        <li><a href="../../diseno-ux.html" class="site-sidebar__link"><span class="site-sidebar__icon">🎨</span> Diseño y UX</a></li>
+        <li><a href="../../gobernanza.html" class="site-sidebar__link"><span class="site-sidebar__icon">🔒</span> Gobernanza</a></li>
+        <li><a href="../../certificaciones.html" class="site-sidebar__link is-active"><span class="site-sidebar__icon">🎓</span> Certificaciones</a></li>
+      </ul>
+    </nav>
+    <div class="site-sidebar__divider"></div>
+    <div class="site-sidebar__footer">
+      <a href="../../../quien-soy.html" class="site-sidebar__link site-sidebar__link--highlight"><span class="site-sidebar__icon">👩‍💻</span> ¿Quién soy?</a>
+      <div class="site-sidebar__social">
+        <a href="https://www.linkedin.com/in/saralozanomarti" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><img src="../../../assets/images/logo-linkedin.png" alt="LinkedIn" class="site-sidebar__social-icon"></a>
+        <a href="https://www.youtube.com/@KawaiiPowerBI" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><img src="../../../assets/images/logo-youtube.png" alt="YouTube" class="site-sidebar__social-icon"></a>
+        <a href="https://github.com/KawaiiBI" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><img src="../../../assets/images/logo-github.png" alt="GitHub" class="site-sidebar__social-icon"></a>
+      </div>
+      <div class="site-sidebar__logo-bottom"><img src="../../../assets/images/logo-kawaii.jpg" alt="Kawaii BI" class="site-sidebar__logo-img"></div>
+      <p class="site-sidebar__copyright">Power BI Guide 🌸<br>© 2026 Kawaii BI</p>
+    </div>
+  </aside>
+
+  <div class="page-wrapper">
+    <main class="main-content">
+      <div class="topic-page">
+
+        <nav class="breadcrumb" aria-label="Ruta de navegación">
+          <span class="breadcrumb__item"><a href="../../../index.html">🏠 Inicio</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item"><a href="../../certificaciones.html">Certificaciones</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item"><a href="../gh-300.html">GH-300</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item">Dominio 5</span>
+        </nav>
+
+        <header class="topic-header">
+          <span class="topic-header__eyebrow">GH-300 · DOMINIO 5</span>
+          <span class="topic-header__icon">📗</span>
+          <h1 class="topic-header__title">Dominio 5 — Mejorar la productividad del desarrollador</h1>
+          <p class="topic-header__subtitle">Productividad con GitHub Copilot en profundidad: generación de código, refactorización, documentación, aceleración del aprendizaje, datos de ejemplo, modernización de legacy, tests unitarios e integración, edge cases, aserciones, seguridad y rendimiento. Guía kawaii completa para la GH-300.</p>
+          <div class="topic-header__levels">
+            <span class="badge badge--special">Peso en el examen: 10-15%</span>
+          </div>
+        </header>
+
+        <nav class="toc" aria-label="Índice del dominio">
+          <p class="toc__title">📑 En este dominio:</p>
+          <ul class="toc__list">
+            <li><a href="#apartado-5-1">5.1 — Copilot a lo largo del ciclo de vida del software (SDLC)</a></li>
+            <li><a href="#apartado-5-2">5.2 — Acelerar el aprendizaje y reducir el cambio de contexto</a></li>
+            <li><a href="#apartado-5-3">5.3 — Generar datos de ejemplo y modernizar código heredado</a></li>
+            <li><a href="#apartado-5-4">5.4 — Testing: tests, edge cases y aserciones</a></li>
+            <li><a href="#apartado-5-5">5.5 — Mejoras de seguridad y optimización de rendimiento</a></li>
+            <li><a href="#apartado-5-6">5.6 — Medir las ganancias de productividad</a></li>
+            <li><a href="#preguntas-trampa-dominio-5">Preguntas trampa — Dominio 5</a></li>
+            <li><a href="#fuentes-oficiales">Fuentes oficiales</a></li>
+          </ul>
+        </nav>
+
+        <article class="concept-card">
+          <p><strong>Peso en el examen: 10-15%</strong></p>
+          <p>¡Holi! 🌸 Este es probablemente el dominio que más "vives" en tu día a día, y por eso se te va a hacer ligerito. Aquí Copilot pasa de ser "un autocompletado" a ser un multiplicador de productividad en todo el ciclo de vida del software. Pero cuidado, que la familiaridad tiene su trampa: el examen no te pregunta si sabes usar Copilot para estas tareas (que lo sabes), sino que te tiende <strong>trampas de "exceso de confianza"</strong> — opciones que suenan geniales pero que cruzan la línea de lo que Copilot realmente garantiza. El hilo conductor del Dominio 1 vuelve aquí con fuerza: <em>Copilot acelera, pero no sustituye tu criterio ni tu revisión.</em></p>
+          <p>Vamos a recorrer los casos de uso reconocidos, entendiendo el <em>para qué</em> de cada uno. 💛</p>
+          <div class="note note--best-practice">
+            <p>📋 <strong class="note__label">Lo que mide el examen en este dominio (objetivos oficiales):</strong></p>
+            <ul>
+              <li>Usar Copilot para <strong>generación de código, refactorización y documentación</strong>.</li>
+              <li><strong>Acelerar el aprendizaje</strong> y <strong>reducir el cambio de contexto</strong>.</li>
+              <li><strong>Generar datos de ejemplo</strong> y <strong>modernizar código heredado</strong>.</li>
+              <li>Generar <strong>pruebas unitarias y de integración</strong>.</li>
+              <li>Identificar <strong>casos perimetrales (edge cases)</strong> y escribir <strong>aserciones</strong>.</li>
+              <li>Sugerir <strong>mejoras de seguridad</strong> y <strong>optimizaciones de rendimiento</strong>.</li>
+            </ul>
+          </div>
+        </article>
+
+        <!-- ============ 5.1 — Copilot a lo largo del ciclo de vida del software (SDLC) ============ -->
+        <div class="category-header" id="apartado-5-1">
+          <span class="category-header__icon">🍰</span>
+          <h2 class="category-header__title">5.1 — Copilot a lo largo del ciclo de vida del software (SDLC)</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>La explicación en profundidad</h3>
+          <p>El módulo oficial enmarca la productividad dentro del <strong>ciclo de vida de desarrollo de software (SDLC)</strong>, y esto es importante: Copilot no ayuda solo en la fase de "escribir código", sino en muchas etapas del proceso. Vamos a ver las tres tareas nucleares:</p>
+          <p><strong>Generar código.</strong> Desde un comentario en lenguaje natural, desde una firma de función o a partir del contexto existente, Copilot puede producir desde una línea hasta funciones completas o <em>scaffolding</em> de una aplicación. Reduce drásticamente el <strong>boilerplate</strong> (ese código repetitivo y aburrido) y los errores de tipeo, liberándote para lo que aporta valor.</p>
+          <p><strong>Refactorizar.</strong> Copilot ayuda a <strong>mejorar la estructura interna del código sin cambiar su comportamiento externo</strong>: hacerlo más legible, más mantenible, más limpio. Y aquí conviene precisar qué es y qué no es refactorizar, porque el examen lo pregunta: refactorizar es reestructurar <strong>preservando el comportamiento</strong>; NO es añadir funcionalidad nueva ni (necesariamente) optimizar el rendimiento. Un buen prompt de refactor es acotado: "refactoriza <em>esta función</em> para mejorar su legibilidad", no "mejora todo el proyecto".</p>
+          <p><strong>Documentar.</strong> Genera docstrings, comentarios inline, secciones de README y documentación de proyecto. Especialmente útil para esa documentación que siempre da pereza escribir.</p>
+          <p>Un caso de uso transversal potentísimo: <strong>explicar código desconocido</strong>. Cuando aterrizas en un codebase nuevo (onboarding), pedirle a Copilot "explícame qué hace este módulo" acelera enormemente la comprensión.</p>
+          <div class="note note--tip">
+            <p>🧁 <strong class="note__label">Analogía kawaii:</strong> Copilot es tu pinche de cocina de confianza. Te prepara la masa base para que tú te centres en la decoración creativa (<strong>generar</strong>), reorganiza la despensa para que todo esté más a mano sin cambiar los ingredientes (<strong>refactorizar</strong>) y pega etiquetitas monas en cada bote para que cualquiera sepa qué hay dentro (<strong>documentar</strong>). Pero la que dirige la cocina y prueba los platos sigues siendo tú, la chef. 👩‍🍳</p>
+          </div>
+        </article>
+
+        <article class="concept-card">
+          <h3>⚠️ Trampa típica</h3>
+          <ul>
+            <li>Presentar a Copilot como <strong>sustituto de la revisión humana</strong> → nunca.</li>
+            <li>Confundir refactorizar (preservar comportamiento) con "añadir features" o "optimizar rendimiento".</li>
+          </ul>
+        </article>
+
+        <article class="concept-card">
+          <h3>📝 Mini-repaso</h3>
+          <ol>
+            <li>¿Qué es refactorizar y qué NO es?</li>
+            <li>¿Por qué es útil Copilot en el onboarding a un codebase nuevo?</li>
+          </ol>
+        </article>
+
+        <!-- ============ 5.2 — Acelerar el aprendizaje y reducir el cambio de contexto ============ -->
+        <div class="category-header" id="apartado-5-2">
+          <span class="category-header__icon">🍰</span>
+          <h2 class="category-header__title">5.2 — Acelerar el aprendizaje y reducir el cambio de contexto</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>La explicación en profundidad</h3>
+          <p>Dos beneficios que el examen trata como casos de uso de primer nivel, y que son más "de flujo de trabajo" que de código en sí:</p>
+          <p><strong>Acelerar el aprendizaje.</strong> Copilot te ayuda a aprender lenguajes, frameworks o dominios nuevos dándote ejemplos y explicaciones <strong>en contexto, dentro de tu propio código</strong>. En vez de leer un tutorial genérico, ves cómo se aplica a <em>tu</em> caso concreto. Es como aprender con una tutora particular que adapta cada explicación a lo que tienes delante.</p>
+          <p><strong>Reducir el cambio de contexto (context switching).</strong> Este es sutil pero enorme. Cada vez que sales del editor para buscar algo en el navegador — la sintaxis de una función, un ejemplo en Stack Overflow, la documentación de una librería — rompes tu concentración, y volver al "flow" cuesta. Al responder tus dudas y generar código <strong>dentro del editor</strong>, Copilot te evita esos saltos, y menos saltos significan <strong>más foco y menos fatiga mental</strong>.</p>
+          <div class="note note--tip">
+            <p>🚪 <strong class="note__label">Analogía del context switching:</strong> cada vez que te levantas del sofá calentito a por un vaso de agua a la cocina, cuesta un mundo volver a concentrarte en la peli. Copilot es como tener una jarrita de agua al lado del sofá: te resuelve la sed sin romper el momento. Sigues en tu burbuja de concentración. 🛋️</p>
+          </div>
+        </article>
+
+        <article class="concept-card">
+          <h3>📝 Mini-repaso</h3>
+          <ol>
+            <li>¿Por qué reducir el context switching mejora la productividad?</li>
+            <li>¿Cómo acelera Copilot el aprendizaje de un framework nuevo?</li>
+          </ol>
+        </article>
+
+        <!-- ============ 5.3 — Generar datos de ejemplo y modernizar código heredado ============ -->
+        <div class="category-header" id="apartado-5-3">
+          <span class="category-header__icon">🍰</span>
+          <h2 class="category-header__title">5.3 — Generar datos de ejemplo y modernizar código heredado</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>La explicación en profundidad</h3>
+          <p><strong>Datos de ejemplo (sample/mock data).</strong> Copilot genera datos de prueba realistas a partir de tu esquema. Le puedes pasar un <code>CREATE TABLE</code> o un ejemplo de JSON y pedirle 100 filas coherentes, con nombres verosímiles, fechas plausibles, relaciones que cuadran… Sirve para demos, para poblar entornos de desarrollo (<em>seed</em>), o para probar cómo se comporta tu app con volumen. Ejemplo de prompt:</p>
+          <pre><code class="language-plaintext">Generate 50 rows of realistic sample data for a `customers` table with
+columns: id, full_name, email, city, signup_date. Return as SQL INSERT statements.</code></pre>
+          <p><strong>Modernizar código heredado (legacy).</strong> Copilot ayuda a actualizar y migrar código antiguo: subir versiones de frameworks, traducir de un lenguaje a otro, migrar a la nube… A veces con agentes de modernización dedicados que abordan la migración de forma más sistemática.</p>
+          <div class="note note--tip">
+            <p>🎭 <strong class="note__label">Analogía datos de ejemplo:</strong> imagina que montas un escaparate de juguete para una foto de catálogo. Necesitas cajas, etiquetas y "clientes" de mentira que parezcan de verdad. Copilot te fabrica todo ese atrezo realista en un momento, en vez de que te inventes 100 nombres y direcciones a mano uno a uno. 🧸</p>
+          </div>
+        </article>
+
+        <article class="concept-card">
+          <h3>📝 Mini-repaso</h3>
+          <ol>
+            <li>¿Para qué escenarios sirve la generación de datos de ejemplo?</li>
+            <li>¿Qué tipo de tareas cubre la "modernización de legacy"?</li>
+          </ol>
+        </article>
+
+        <!-- ============ 5.4 — Testing: tests, edge cases y aserciones ============ -->
+        <div class="category-header" id="apartado-5-4">
+          <span class="category-header__icon">🍰</span>
+          <h2 class="category-header__title">5.4 — Testing: tests, edge cases y aserciones</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>La explicación en profundidad</h3>
+          <p>Uno de los usos estrella de Copilot, con módulo oficial propio. Copilot puede:</p>
+          <ul>
+            <li>Generar <strong>tests unitarios y de integración</strong> a partir de tu código o de una especificación.</li>
+            <li>Identificar <strong>edge cases (casos límite)</strong> y escribir las <strong>aserciones</strong> correspondientes.</li>
+            <li>Generar datos que prueben restricciones concretas (valores en el borde, formatos inválidos, anomalías).</li>
+            <li>Ayudarte a <strong>crear el proyecto de tests</strong> y ejecutarlo (por ejemplo, en VS Code).</li>
+          </ul>
+          <p>Un matiz precioso sobre la <strong>consistencia</strong>: Copilot <strong>detecta el patrón con el que escribes tus tests</strong> (cómo nombras, cómo estructuras el arrange-act-assert, qué framework usas) y sugiere los siguientes tests siguiendo ese mismo patrón. Así tu suite de tests mantiene coherencia. Lo que <strong>no</strong> hace es "arreglar todos los tests solo" ni escribir la implementación por ti a partir de los tests.</p>
+          <div class="note note--tip">
+            <p>🧪 <strong class="note__label">Analogía kawaii de los edge cases:</strong> los edge cases son los "¿y si…?" traviesos que rompen las cosas. ¿Y si el usuario mete un número negativo? ¿Y si el campo va vacío? ¿Y si escribe su nombre con 500 emojis y un salto de línea? Copilot es esa amiga previsora que, antes de una fiesta, piensa en todas las travesuras posibles para que nada te pille por sorpresa. 🃏</p>
+          </div>
+        </article>
+
+        <article class="concept-card">
+          <h3>⚠️ Trampa típica</h3>
+          <ul>
+            <li>Asumir que los tests generados están <strong>siempre correctos y completos</strong> → hay que <strong>revisarlos y ejecutarlos</strong>; Copilot ayuda, no garantiza cobertura perfecta ni corrección total.</li>
+          </ul>
+        </article>
+
+        <article class="concept-card">
+          <h3>📝 Mini-repaso</h3>
+          <ol>
+            <li>¿Qué son los edge cases y cómo ayuda Copilot con ellos?</li>
+            <li>¿Copilot "arregla todos tus tests solo"? ¿Qué hace en realidad con el patrón de tus tests?</li>
+          </ol>
+        </article>
+
+        <!-- ============ 5.5 — Mejoras de seguridad y optimización de rendimiento ============ -->
+        <div class="category-header" id="apartado-5-5">
+          <span class="category-header__icon">🍰</span>
+          <h2 class="category-header__title">5.5 — Mejoras de seguridad y optimización de rendimiento</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>La explicación en profundidad</h3>
+          <p>Copilot puede <strong>sugerir mejoras de seguridad</strong> (sanitización de inputs, seguir buenas prácticas tipo OWASP, evitar patrones vulnerables) y <strong>optimizaciones de rendimiento</strong> (algoritmos más eficientes, mejores estructuras de datos, mejoras de escalabilidad). Este caso de uso conecta de forma natural con el <strong>role prompting</strong> del Dominio 4: un prompt como "actúa como experta en seguridad y revisa esta función" activa justo este tipo de sugerencias.</p>
+          <p>Pero — y aquí vuelve el hilo conductor — Copilot <strong>sugiere</strong>, no <strong>garantiza</strong>. Recuerda del Dominio 3 que el proxy hace comprobaciones de calidad y seguridad en la salida (XSS, inyección SQL), pero eso es una red de seguridad adicional, <strong>no</strong> un sustituto de tu revisión ni de tus análisis de seguridad (SAST, security scans). La responsabilidad de que el código sea seguro sigue siendo del equipo.</p>
+          <div class="note note--tip">
+            <p>🛡️ <strong class="note__label">Analogía kawaii:</strong> Copilot es como una amiga espabilada que te ayuda a revisar la casa antes de una fiesta: "oye, esta ventana no cierra bien (seguridad) y, mira, si mueves el sofá a esta esquina cabe más gente y se circula mejor (rendimiento)". Te da consejos buenísimos y te ahorra tiempo… pero quien decide si hace caso y quien responde si entra un ladrón sigues siendo tú. 🏠</p>
+          </div>
+        </article>
+
+        <article class="concept-card">
+          <h3>⚠️ Trampa típica</h3>
+          <ul>
+            <li>Creer que Copilot "<strong>garantiza</strong> código seguro" → solo <strong>sugiere</strong> mejoras; la validación y la responsabilidad son tuyas (enlaza con IA responsable, Dominio 1).</li>
+          </ul>
+        </article>
+
+        <article class="concept-card">
+          <h3>📝 Mini-repaso</h3>
+          <ol>
+            <li>¿Qué tipo de mejoras de seguridad puede sugerir Copilot?</li>
+            <li>¿Las comprobaciones del proxy sustituyen tus security scans?</li>
+          </ol>
+        </article>
+
+        <!-- ============ 5.6 — Medir las ganancias de productividad ============ -->
+        <div class="category-header" id="apartado-5-6">
+          <span class="category-header__icon">🍰</span>
+          <h2 class="category-header__title">5.6 — Medir las ganancias de productividad</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>La explicación en profundidad</h3>
+          <p>El módulo oficial también aborda cómo <strong>medir</strong> el impacto de Copilot — porque "me parece que voy más rápido" no es un dato. Las ganancias se evalúan combinando:</p>
+          <ul>
+            <li><strong>Métricas cuantitativas:</strong> tiempo ahorrado, velocidad de entrega, cantidad de código aceptado.</li>
+            <li><strong>Métricas cualitativas:</strong> satisfacción de la persona desarrolladora, reducción de la carga mental, calidad percibida.</li>
+          </ul>
+          <p>Y un matiz de encuadre que conviene recordar: Copilot busca mejorar <strong>tres dimensiones a la vez — productividad, calidad y seguridad —</strong>, no solo la velocidad bruta de tecleo. Una opción que reduzca todo a "escribir más rápido" se queda corta.</p>
+        </article>
+
+        <article class="concept-card">
+          <h3>📝 Mini-repaso</h3>
+          <ol>
+            <li>¿Con qué dos tipos de métricas se mide el impacto de Copilot?</li>
+            <li>¿Qué tres dimensiones busca mejorar Copilot?</li>
+          </ol>
+        </article>
+
+        <!-- ============ Preguntas trampa — Dominio 5 ============ -->
+        <div class="category-header" id="preguntas-trampa-dominio-5">
+          <span class="category-header__icon">💡</span>
+          <h2 class="category-header__title">Preguntas trampa — Dominio 5</h2>
+        </div>
+        <div class="quiz-q">
+          <p><span class="quiz-q__num">P1.</span> ¿Cuáles son beneficios de productividad reconocidos? (Elige 2)</p>
+          <ul class="quiz-q__options">
+            <li>A) Reducir el context switching manteniéndote en el editor</li>
+            <li>B) Garantizar el 100% de cobertura de tests automáticamente</li>
+            <li>C) Acelerar el aprendizaje de nuevos lenguajes y frameworks</li>
+            <li>D) Eliminar la necesidad de revisar el código generado</li>
+          </ul>
+        </div>
+        <div class="quiz-q">
+          <p><span class="quiz-q__num">P2.</span> Necesitas poblar una tabla con 100 registros de prueba realistas para una demo. ¿Qué capacidad aplica?</p>
+          <ul class="quiz-q__options">
+            <li>A) Content exclusion</li>
+            <li>B) Generación de datos de ejemplo (sample/mock data)</li>
+            <li>C) Proxy filtering</li>
+            <li>D) Zero-shot debugging</li>
+          </ul>
+        </div>
+        <div class="quiz-q">
+          <p><span class="quiz-q__num">P3.</span> Sobre el uso de Copilot para testing, ¿cuál es correcta?</p>
+          <ul class="quiz-q__options">
+            <li>A) Identifica edge cases y escribe aserciones, pero los tests deben revisarse</li>
+            <li>B) Los tests generados no necesitan revisión</li>
+            <li>C) Solo genera tests en el plan Enterprise</li>
+            <li>D) No puede generar tests de integración</li>
+          </ul>
+        </div>
+        <div class="quiz-q">
+          <p><span class="quiz-q__num">P4.</span> ¿Qué es refactorizar según la definición del examen?</p>
+          <ul class="quiz-q__options">
+            <li>A) Añadir nuevas funcionalidades al código</li>
+            <li>B) Mejorar la estructura interna sin cambiar el comportamiento externo</li>
+            <li>C) Optimizar siempre el rendimiento</li>
+            <li>D) Reescribir el código en otro lenguaje</li>
+          </ul>
+        </div>
+        <div class="quiz-q">
+          <p><span class="quiz-q__num">P5.</span> Un desarrollador confía en que Copilot "garantiza" que su código es seguro y no lo revisa. ¿Qué está mal?</p>
+          <ul class="quiz-q__options">
+            <li>A) Nada, Copilot garantiza la seguridad</li>
+            <li>B) Copilot solo sugiere mejoras de seguridad; la validación sigue siendo responsabilidad del equipo</li>
+            <li>C) Debería haber usado el plan Enterprise</li>
+            <li>D) El problema es que no activó la telemetría</li>
+          </ul>
+        </div>
+        <details class="answers">
+          <summary><strong>👉 Ver respuestas y explicación</strong></summary>
+          <div class="answers__body">
+            <p><strong>P1 → A y C.</strong> B y D son las trampas de "exceso de confianza": Copilot no garantiza cobertura total ni elimina la revisión humana.</p>
+            <p><strong>P2 → B).</strong> Generación de datos de ejemplo/mock. Las demás mezclan conceptos de otros dominios; "zero-shot debugging" no es un término real.</p>
+            <p><strong>P3 → A).</strong> Identifica edge cases y escribe assertions, pero <strong>siempre</strong> se revisan y ejecutan. C es falsa (los tests básicos no son exclusivos de Enterprise, aunque el testing avanzado requiere plan de pago); D es falsa.</p>
+            <p><strong>P4 → B).</strong> Refactorizar = mejorar la estructura interna preservando el comportamiento externo. No es añadir features (A), ni necesariamente optimizar rendimiento (C), ni traducir de lenguaje (D).</p>
+            <p><strong>P5 → B).</strong> Copilot sugiere, no garantiza. La seguridad sigue siendo responsabilidad del equipo (hilo conductor de la IA responsable).</p>
+          </div>
+        </details>
+
+        <!-- ============ Fuentes oficiales ============ -->
+        <div class="category-header" id="fuentes-oficiales">
+          <span class="category-header__icon">📚</span>
+          <h2 class="category-header__title">Fuentes oficiales</h2>
+        </div>
+
+        <article class="concept-card">
+          <ul>
+            <li><a href="https://learn.microsoft.com/es-es/training/modules/developer-use-cases-for-ai-with-github-copilot/" target="_blank" rel="noopener noreferrer">Casos de uso de desarrollador para IA con GitHub Copilot — Microsoft Learn</a></li>
+            <li><a href="https://learn.microsoft.com/es-es/training/modules/develop-unit-tests-using-github-copilot-tools/" target="_blank" rel="noopener noreferrer">Desarrollo de pruebas unitarias con GitHub Copilot</a></li>
+            <li><a href="https://learn.microsoft.com/training/paths/accelerate-app-development-using-github-copilot/" target="_blank" rel="noopener noreferrer">Accelerate app development using GitHub Copilot</a></li>
+          </ul>
+        </article>
+
+        <div class="note note--next">
+          <p>🌸 <em>Siguiente módulo:</em> <strong>Dominio 6 — Privacidad, exclusiones de contenido y salvaguardas</strong> (el último). ¡Ya casi lo tienes, crack! 💛</p>
+        </div>
+
+        <!-- Navegación del curso -->
+        <div class="course-nav">
+          <a href="dominio-4.html">
+            <span class="course-nav__label">← Anterior</span>
+            <span class="course-nav__title">Dominio 4 · Prompt engineering</span>
+          </a>
+          <a href="dominio-6.html" class="next">
+            <span class="course-nav__label">Siguiente →</span>
+            <span class="course-nav__title">Dominio 6 · Privacidad y salvaguardas</span>
+          </a>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <button id="back-to-top" class="back-to-top" aria-label="Volver arriba" title="Volver arriba">↑</button>
+
+  <script src="https://cdn.jsdelivr.net/npm/i18next@23/dist/umd/i18next.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1/prism.min.js"></script>
+  <script src="../../../assets/js/theme.js"></script>
+  <script src="../../../assets/js/main.js"></script>
+  <script src="../../../assets/js/cursor.js"></script>
+</body>
+</html>

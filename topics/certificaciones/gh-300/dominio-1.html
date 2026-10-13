@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="IA responsable en GitHub Copilot: los 6 principios de Microsoft, riesgos y limitaciones de la IA generativa, daños y mitigación, y validación de resultados. Guía kawaii completa para la certificación GH-300.">
+  <title>GH-300 · Dominio 1: IA responsable | Power BI Guide by Kawaii BI</title>
+  <link rel="canonical" href="https://kawaiibi.es/topics/certificaciones/gh-300/dominio-1.html">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Kawaii Power BI Guide">
+  <meta property="og:locale" content="es_ES">
+  <meta property="og:title" content="GH-300 · Dominio 1: IA responsable | Power BI Guide by Kawaii BI">
+  <meta property="og:description" content="IA responsable en GitHub Copilot: los 6 principios de Microsoft, riesgos y limitaciones de la IA generativa, daños y mitigación, y validación de resultados. Guía kawaii completa para la certificación GH-300.">
+  <meta property="og:url" content="https://kawaiibi.es/topics/certificaciones/gh-300/dominio-1.html">
+  <meta property="og:image" content="https://kawaiibi.es/assets/images/og-banner.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="1200">
+  <meta property="og:image:alt" content="Sara Lozano Marti - Kawaii Power BI">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="GH-300 · Dominio 1: IA responsable | Power BI Guide by Kawaii BI">
+  <meta name="twitter:description" content="IA responsable en GitHub Copilot: los 6 principios de Microsoft, riesgos y limitaciones de la IA generativa, daños y mitigación, y validación de resultados. Guía kawaii completa para la certificación GH-300.">
+  <meta name="twitter:image" content="https://kawaiibi.es/assets/images/og-banner.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/prismjs@1/themes/prism-okaidia.min.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="../../../assets/css/main.css">
+  <link rel="stylesheet" href="../../../assets/css/themes.css">
+  <link rel="stylesheet" href="../../../assets/css/components.css">
+  <link rel="stylesheet" href="../../../assets/css/layout.css">
+
+  <style>
+    .topic-header { text-align: center; padding: 2.25rem 0 1.75rem; border-bottom: 2px solid var(--color-mauve); margin-bottom: 2rem; }
+    .topic-header__eyebrow { font-family: 'Fira Code', monospace; font-size: 0.8125rem; font-weight: 600; color: var(--color-coral); letter-spacing: 0.05em; }
+    .topic-header__icon { font-size: 3.5rem; margin: 0.5rem 0; display: block; }
+    .topic-header__title { font-size: clamp(1.75rem, 4vw, 2.25rem); font-weight: 800; color: var(--color-dark); margin-bottom: 0.625rem; line-height: 1.2; }
+    .topic-header__subtitle { font-size: 1rem; color: var(--color-slate); margin-bottom: 1.25rem; line-height: 1.55; max-width: 680px; margin-left: auto; margin-right: auto; }
+    .topic-header__levels { display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap; align-items: center; }
+
+    .toc { background: var(--color-rose); border-radius: var(--border-radius); padding: 1.25rem 1.5rem; margin-bottom: 2rem; border: 1.5px solid var(--color-mauve); }
+    .toc__title { font-size: 1rem; font-weight: 700; margin: 0 0 0.75rem; }
+    .toc__list { display: flex; flex-wrap: wrap; gap: 0.5rem; list-style: none; padding: 0; margin: 0; }
+    .toc__list a { font-size: 0.8125rem; color: var(--color-coral); text-decoration: none; padding: 0.25rem 0.625rem; background: var(--color-white); border-radius: 999px; border: 1px solid var(--color-mauve); display: inline-block; }
+    .toc__list a:hover { background: var(--color-coral); color: #fff; }
+
+    .category-header { display: flex; align-items: center; gap: 0.75rem; margin: 2.5rem 0 1.25rem; padding: 0.875rem 1.25rem; background: var(--color-rose); border-radius: var(--border-radius-sm); border-left: 4px solid var(--color-coral); scroll-margin-top: 20px; }
+    .category-header__icon { font-size: 1.5rem; }
+    .category-header__title { font-size: 1.25rem; font-weight: 700; margin: 0; }
+
+    .concept-card { background: var(--color-white); border: 1.5px solid var(--color-mauve); border-radius: var(--border-radius); padding: 1.5rem 1.75rem; margin-bottom: 1.25rem; }
+    .concept-card h3 { font-size: 1.0625rem; font-weight: 700; color: var(--color-coral); margin: 0 0 0.6rem; }
+    .concept-card p { font-size: 0.9375rem; line-height: 1.7; color: var(--color-dark); margin-bottom: 0.7rem; }
+    .concept-card ul, .concept-card ol { padding-left: 1.25rem; font-size: 0.9375rem; line-height: 1.75; color: var(--color-dark); margin: 0.4rem 0 0.7rem; }
+    .concept-card code, .note code, .quiz-q code, .answers code { background: var(--color-blush); padding: 0.1em 0.4em; border-radius: 4px; font-family: 'Fira Code', monospace; font-size: 0.85em; color: var(--color-coral); }
+    .concept-card pre { margin: 0.75rem 0; }
+    .concept-card pre code { background: none; color: inherit; padding: 0; }
+
+    /* Notas: el texto en negrita se queda en línea; solo la etiqueta inicial va como título */
+    .note strong { display: inline; margin: 0; font-size: inherit; }
+    .note strong.note__label { display: block; margin-bottom: 0.375rem; font-size: 0.875rem; }
+    .note p { margin: 0 0 0.5rem; line-height: 1.7; }
+    .note p:last-child { margin-bottom: 0; }
+    .note ul { padding-left: 1.25rem; margin: 0.25rem 0 0.5rem; line-height: 1.7; }
+    .note ul:last-child { margin-bottom: 0; }
+
+    .md-table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.84rem; }
+    .md-table th, .md-table td { border: 1px solid var(--color-mauve); padding: 0.5rem 0.7rem; text-align: left; vertical-align: top; }
+    .md-table th { background: var(--color-rose); font-weight: 700; color: var(--color-dark); }
+    .md-table tr:nth-child(even) td { background: var(--color-blush); }
+    .table-scroll { overflow-x: auto; }
+
+    .quiz-q { background: var(--color-white); border: 1.5px solid var(--color-mauve); border-left: 4px solid var(--color-coral); border-radius: var(--border-radius-sm); padding: 1rem 1.25rem; margin: 1rem 0; }
+    .quiz-q p { margin: 0 0 0.5rem; font-size: 0.9375rem; line-height: 1.6; }
+    .quiz-q__num { font-weight: 700; color: var(--color-coral); }
+    .quiz-q__options { list-style: none; margin: 0; padding-left: 0.5rem; font-size: 0.9rem; line-height: 1.7; }
+
+    /* Respuestas plegables de las preguntas trampa */
+    .answers { background: var(--color-rose); border: 1.5px solid var(--color-mauve); border-radius: var(--border-radius); margin: 1.25rem 0; }
+    .answers summary { cursor: pointer; padding: 1rem 1.25rem; color: var(--color-coral); }
+    .answers summary:focus-visible { outline: 2px solid var(--color-coral); outline-offset: 2px; border-radius: var(--border-radius); }
+    .answers__body { padding: 0 1.25rem 1rem; }
+    .answers__body p { font-size: 0.9375rem; line-height: 1.7; margin-bottom: 0.7rem; }
+
+    .course-nav { display: flex; justify-content: space-between; gap: 1rem; margin-top: 2.5rem; flex-wrap: wrap; }
+    .course-nav a { flex: 1 1 220px; display: block; background: var(--color-white); border: 1.5px solid var(--color-mauve); border-radius: var(--border-radius); padding: 1rem 1.25rem; text-decoration: none; color: inherit; transition: var(--transition); }
+    .course-nav a:hover { border-color: var(--color-coral); box-shadow: var(--shadow-md); text-decoration: none; }
+    .course-nav__label { font-size: 0.75rem; color: var(--color-slate); text-transform: uppercase; letter-spacing: 0.05em; display: block; }
+    .course-nav__title { font-weight: 700; color: var(--color-coral); }
+    .course-nav a.next { text-align: right; }
+  </style>
+</head>
+<body>
+
+  <aside class="site-sidebar">
+    <div class="site-sidebar__profile">
+      <img src="../../../assets/images/avatar-sara.png" alt="Sara Lozano Martí" class="site-sidebar__avatar">
+      <p class="site-sidebar__name">Sara Lozano Martí</p>
+      <p class="site-sidebar__subtitle">Power BI Expert</p>
+    </div>
+    <nav class="site-sidebar__nav" aria-label="Navegación principal">
+      <ul>
+        <li><a href="../../../index.html" class="site-sidebar__link"><span class="site-sidebar__icon">🏠</span> Inicio</a></li>
+        <li><a href="../../dax.html" class="site-sidebar__link"><span class="site-sidebar__icon">⚡</span> Funciones DAX</a></li>
+        <li><a href="../../power-query.html" class="site-sidebar__link"><span class="site-sidebar__icon">🔄</span> Power Query</a></li>
+        <li><a href="../../lenguaje-m.html" class="site-sidebar__link"><span class="site-sidebar__icon">〽️</span> Lenguaje M</a></li>
+        <li><a href="../../modelado.html" class="site-sidebar__link"><span class="site-sidebar__icon">🗄️</span> Modelado</a></li>
+        <li><a href="../../conceptos-powerbi.html" class="site-sidebar__link"><span class="site-sidebar__icon">📊</span> Conceptos Power BI</a></li>
+        <li><a href="../../fabric.html" class="site-sidebar__link"><span class="site-sidebar__icon">🧵</span> Microsoft Fabric</a></li>
+        <li><a href="../../tmdl.html" class="site-sidebar__link"><span class="site-sidebar__icon">📝</span> TMDL</a></li>
+        <li><a href="../../diseno-ux.html" class="site-sidebar__link"><span class="site-sidebar__icon">🎨</span> Diseño y UX</a></li>
+        <li><a href="../../gobernanza.html" class="site-sidebar__link"><span class="site-sidebar__icon">🔒</span> Gobernanza</a></li>
+        <li><a href="../../certificaciones.html" class="site-sidebar__link is-active"><span class="site-sidebar__icon">🎓</span> Certificaciones</a></li>
+      </ul>
+    </nav>
+    <div class="site-sidebar__divider"></div>
+    <div class="site-sidebar__footer">
+      <a href="../../../quien-soy.html" class="site-sidebar__link site-sidebar__link--highlight"><span class="site-sidebar__icon">👩‍💻</span> ¿Quién soy?</a>
+      <div class="site-sidebar__social">
+        <a href="https://www.linkedin.com/in/saralozanomarti" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><img src="../../../assets/images/logo-linkedin.png" alt="LinkedIn" class="site-sidebar__social-icon"></a>
+        <a href="https://www.youtube.com/@KawaiiPowerBI" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><img src="../../../assets/images/logo-youtube.png" alt="YouTube" class="site-sidebar__social-icon"></a>
+        <a href="https://github.com/KawaiiBI" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><img src="../../../assets/images/logo-github.png" alt="GitHub" class="site-sidebar__social-icon"></a>
+      </div>
+      <div class="site-sidebar__logo-bottom"><img src="../../../assets/images/logo-kawaii.jpg" alt="Kawaii BI" class="site-sidebar__logo-img"></div>
+      <p class="site-sidebar__copyright">Power BI Guide 🌸<br>© 2026 Kawaii BI</p>
+    </div>
+  </aside>
+
+  <div class="page-wrapper">
+    <main class="main-content">
+      <div class="topic-page">
+
+        <nav class="breadcrumb" aria-label="Ruta de navegación">
+          <span class="breadcrumb__item"><a href="../../../index.html">🏠 Inicio</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item"><a href="../../certificaciones.html">Certificaciones</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item"><a href="../gh-300.html">GH-300</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item">Dominio 1</span>
+        </nav>
+
+        <header class="topic-header">
+          <span class="topic-header__eyebrow">GH-300 · DOMINIO 1</span>
+          <span class="topic-header__icon">📘</span>
+          <h1 class="topic-header__title">Dominio 1 — Usar GitHub Copilot de forma responsable</h1>
+          <p class="topic-header__subtitle">IA responsable en GitHub Copilot: los 6 principios de Microsoft, riesgos y limitaciones de la IA generativa, daños y mitigación, y validación de resultados. Guía kawaii completa para la certificación GH-300.</p>
+          <div class="topic-header__levels">
+            <span class="badge badge--special">Peso en el examen: 15-20%</span>
+          </div>
+        </header>
+
+        <nav class="toc" aria-label="Índice del dominio">
+          <p class="toc__title">📑 En este dominio:</p>
+          <ul class="toc__list">
+            <li><a href="#apartado-1-1">1.1 — Qué es (y qué no es) la IA generativa detrás de Copilot</a></li>
+            <li><a href="#apartado-1-2">1.2 — Riesgos y limitaciones de la IA generativa</a></li>
+            <li><a href="#apartado-1-3">1.3 — Los seis principios de IA responsable (el tema estrella ⭐)</a></li>
+            <li><a href="#apartado-1-4">1.4 — Daños potenciales y estrategias de mitigación</a></li>
+            <li><a href="#apartado-1-5">1.5 — Validar los resultados y operar Copilot de forma responsable</a></li>
+            <li><a href="#preguntas-trampa-dominio-1">Preguntas trampa — Dominio 1</a></li>
+            <li><a href="#fuentes-oficiales">Fuentes oficiales</a></li>
+          </ul>
+        </nav>
+
+        <article class="concept-card">
+          <p><strong>Peso en el examen: 15-20%</strong></p>
+          <p>¡Holi, bienvenida al primer dominio! 🌸 Este es, junto con el Dominio 2, uno de los que más pesa en el examen, y tiene una peculiaridad: es <strong>puramente conceptual</strong>. No lo aprendes tecleando en el IDE ni usando Copilot cada día — de hecho, mucha gente que lleva años usando Copilot suspende justamente aquí, porque nunca se ha parado a estudiar <em>el marco teórico</em> que hay detrás. Así que vamos a tomárnoslo con cariño y a construir una base sólida, que es lo que marca la diferencia entre "usar Copilot" y "aprobar la GH-300". 💛</p>
+          <p>Antes de entrar en materia, quédate con <strong>el hilo conductor de todo el dominio</strong> (y casi de todo el examen): <em>Copilot asiste, tú validas</em>. Cada vez que dudes en una pregunta de este bloque, vuelve a esa frase y elige la opción que ponga a la persona en el centro de la responsabilidad. Rara vez falla.</p>
+          <div class="note note--best-practice">
+            <p>📋 <strong class="note__label">Lo que mide el examen en este dominio (objetivos oficiales):</strong></p>
+            <ul>
+              <li>Describir los <strong>riesgos y limitaciones</strong> de las herramientas de IA generativa.</li>
+              <li>Describir el <strong>uso ético y responsable</strong> de la IA.</li>
+              <li>Identificar <strong>posibles daños y estrategias de mitigación</strong>.</li>
+              <li>Explicar la <strong>necesidad de validar</strong> los resultados de la IA.</li>
+              <li>Identificar cómo <strong>operar GitHub Copilot de forma responsable</strong>.</li>
+            </ul>
+          </div>
+        </article>
+
+        <!-- ============ 1.1 — Qué es (y qué no es) la IA generativa detrás de Copilot ============ -->
+        <div class="category-header" id="apartado-1-1">
+          <span class="category-header__icon">🌱</span>
+          <h2 class="category-header__title">1.1 — Qué es (y qué no es) la IA generativa detrás de Copilot</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>La explicación en profundidad</h3>
+          <p>Para entender los riesgos, primero hay que entender <strong>qué es Copilot por dentro</strong>. GitHub Copilot no es una base de datos de respuestas correctas ni un compilador que "sabe" programar. Es un producto construido sobre un <strong>modelo de lenguaje grande (LLM)</strong>, y un LLM funciona, en esencia, como un predictor de texto extraordinariamente sofisticado: dado un contexto (tu código, tus comentarios, el nombre del archivo…), calcula cuál es la secuencia de <em>tokens</em> (fragmentos de texto) más probable que vendría a continuación, basándose en los patrones que aprendió durante su entrenamiento con enormes cantidades de código público.</p>
+          <p>Esto tiene una consecuencia fundamental que el examen adora preguntar de mil formas distintas: <strong>Copilot genera lo más <em>plausible</em>, no lo más <em>correcto</em>.</strong> La mayoría de las veces, lo plausible y lo correcto coinciden — por eso Copilot es tan útil. Pero no siempre. Y cuando no coinciden, Copilot te dará una respuesta equivocada con exactamente la misma seguridad y fluidez con la que te daría una correcta. No hay un semáforo interno que se ponga en rojo cuando se equivoca.</p>
+          <div class="note note--tip">
+            <p>🍰 <strong class="note__label">Analogía kawaii:</strong> imagina a Copilot como una amiga repostera con muchísima experiencia que ha visto hornear millones de recetas. Cuando te ve echar harina y azúcar en un bol, te dice con total confianza "¡ah, estás haciendo un bizcocho!" y te suelta la receta más común que ha visto para esos ingredientes. Y acierta… casi siempre. Pero si tú en realidad querías hacer unas galletas, ella te va a dar la receta del bizcocho igual de convencida, porque está <strong>prediciendo lo más probable, no leyendo tu mente</strong>. Por eso tú, que eres la chef de tu cocina, siempre pruebas la masa antes de meterla al horno. 🧁</p>
+          </div>
+          <p>Esta distinción entre "plausible" y "correcto" es la raíz de la que brotan <strong>todos</strong> los riesgos que vamos a ver. Si la interiorizas, el resto del dominio cae por su propio peso.</p>
+        </article>
+
+        <article class="concept-card">
+          <h3>Por qué esto importa para el examen</h3>
+          <p>El examen te va a tentar constantemente con opciones que atribuyen a Copilot capacidades que <strong>no tiene</strong>: "garantiza código correcto", "asegura el cumplimiento de estándares", "aprende de tu sesión en tiempo real para no repetir errores", "verifica automáticamente la seguridad". Todas esas son falsas por la misma razón de fondo: Copilot es un predictor probabilístico, no un oráculo ni un sistema de verificación. Cuando dudes, pregúntate: <em>¿esto es algo que un predictor de texto puede realmente garantizar?</em> Si la respuesta es no, esa opción es la trampa.</p>
+        </article>
+
+        <article class="concept-card">
+          <h3>📝 Mini-repaso</h3>
+          <ol>
+            <li>¿Por qué se dice que Copilot genera lo "plausible" y no lo "correcto"?</li>
+            <li>Si Copilot se equivoca, ¿te avisa de alguna forma de que la sugerencia puede ser errónea?</li>
+          </ol>
+        </article>
+
+        <!-- ============ 1.2 — Riesgos y limitaciones de la IA generativa ============ -->
+        <div class="category-header" id="apartado-1-2">
+          <span class="category-header__icon">🌱</span>
+          <h2 class="category-header__title">1.2 — Riesgos y limitaciones de la IA generativa</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>La explicación en profundidad</h3>
+          <p>Ahora que sabemos <em>por qué</em> Copilot puede fallar, veamos <em>cómo</em> falla en la práctica. El examen espera que sepas identificar estos riesgos y, sobre todo, distinguirlos de "problemas de infraestructura" que no tienen nada que ver (esa es una trampa recurrente que veremos).</p>
+          <p><strong>1. Imprecisión y alucinaciones.</strong> Una "alucinación" es cuando el modelo genera algo que suena perfectamente real pero no existe: una función de una librería que nunca se creó, un parámetro inventado, un método de una API que no está en la documentación. Ocurre especialmente cuando el contexto es limitado y el modelo "rellena huecos" con lo que estadísticamente parecería ir ahí. Por ejemplo, si le pides usar una librería poco común, puede inventarse un método <code>parseAdvanced()</code> que suena lógico pero que no está en esa librería.</p>
+          <p><strong>2. Sesgos (bias).</strong> Como Copilot aprendió de grandes cantidades de código público escrito por personas, <strong>hereda los sesgos</strong> presentes en esos datos. Esto puede ir desde preferir ciertos estilos o tecnologías hasta reproducir patrones problemáticos. El sesgo no es un fallo aleatorio, sino una inclinación sistemática que viene de los datos de entrenamiento.</p>
+          <p><strong>3. Vulnerabilidades de seguridad.</strong> Si en los datos de entrenamiento había código con malas prácticas de seguridad (y había muchísimo), Copilot puede sugerir esos mismos patrones inseguros: consultas SQL sin parametrizar, secretos escritos directamente en el código, validaciones ausentes… El código <em>parece</em> funcional, pero esconde agujeros.</p>
+          <p><strong>4. Dependencia excesiva (over-reliance).</strong> Este es un riesgo más humano que técnico, pero el examen lo trata como riesgo de primer nivel. Consiste en que la persona desarrolladora empiece a aceptar sugerencias sin revisarlas, confiando ciegamente. El peligro no está solo en el código malo que pueda colarse, sino en la <strong>atrofia del criterio propio</strong> y en la pérdida de comprensión del propio código base.</p>
+          <p><strong>5. Privacidad y propiedad intelectual.</strong> El manejo de datos sensibles y de código con licencia requiere cuidado. ¿Qué pasa si una sugerencia se parece mucho a código con una licencia restrictiva? ¿Qué pasa con la información confidencial de tu empresa? (Esto lo desarrollamos en los Dominios 3 y 6.)</p>
+          <p><strong>6. Limitaciones de conocimiento y contexto.</strong> Copilot no conoce las librerías o APIs publicadas después de su corte de entrenamiento, no "ve" los archivos de tu repositorio que no tienes abiertos, y <strong>rinde notablemente mejor en inglés</strong> que en otros idiomas. Además, en conversaciones muy largas puede "perder el hilo" y dejar de mantener coherencia sobre tipos o estado.</p>
+        </article>
+
+        <article class="concept-card">
+          <h3>Un matiz que cae en el examen: riesgo ≠ problema de infraestructura</h3>
+          <p>Una trampa muy típica te pregunta "¿por qué una IA generativa puede dar salidas inexactas?" y te ofrece opciones como "por caídas del servicio (downtime)", "por sobrecarga de peticiones" o "porque prioriza la creatividad". Todas son <strong>falsas</strong>. La inexactitud de Copilot no viene de que el servidor esté saturado, sino de la <strong>naturaleza misma del modelo y de sus datos de entrenamiento</strong> (sesgos, inconsistencias, corte de conocimiento). Un servidor lentísimo te dará la respuesta tarde, pero no más incorrecta. Ojo con esta distinción.</p>
+          <div class="note note--tip">
+            <p>🧠 <strong class="note__label">Truco de detección:</strong> los riesgos reales de la IA se redactan con matices prudentes — "puede a veces", "en ocasiones", "es difícil que". Desconfía de opciones con absolutos optimistas: "elimina la necesidad de", "es incapaz de fallar", "sustituye por completo a". El lenguaje absoluto casi siempre delata a la opción incorrecta.</p>
+          </div>
+        </article>
+
+        <article class="concept-card">
+          <h3>🎯 Puntos clave que caen en el examen</h3>
+          <ul>
+            <li>Las sugerencias pueden ser <strong>inexactas, obsoletas, sesgadas o inseguras</strong>; siempre hay que revisarlas.</li>
+            <li>Las <strong>alucinaciones</strong> (inventar APIs/funciones inexistentes) son un riesgo central.</li>
+            <li>Copilot <strong>rinde mejor en inglés</strong>.</li>
+            <li><strong>No mantiene bien tipos ni estado</strong> en conversaciones largas.</li>
+            <li>La inexactitud viene del <strong>modelo y sus datos</strong>, no de la infraestructura.</li>
+            <li>La responsabilidad final del código es <strong>siempre de la persona desarrolladora</strong>.</li>
+          </ul>
+        </article>
+
+        <article class="concept-card">
+          <h3>⚠️ Trampas típicas</h3>
+          <ul>
+            <li>"Copilot <strong>garantiza</strong> código seguro/correcto" → falso siempre.</li>
+            <li>"El modelo <strong>aprende en tiempo real</strong> de tu sesión para autocorregirse" → falso; las sugerencias vienen del modelo ya entrenado.</li>
+            <li>"La inexactitud se debe a downtime/sobrecarga" → falso; es la naturaleza del modelo.</li>
+          </ul>
+        </article>
+
+        <article class="concept-card">
+          <h3>📝 Mini-repaso</h3>
+          <ol>
+            <li>Nombra tres riesgos reales de la IA generativa aplicada a Copilot.</li>
+            <li>¿Por qué "sobrecarga de peticiones" NO es una causa válida de inexactitud?</li>
+            <li>¿Qué es una alucinación y cuándo es más probable?</li>
+          </ol>
+        </article>
+
+        <!-- ============ 1.3 — Los seis principios de IA responsable (el tema estrella ⭐) ============ -->
+        <div class="category-header" id="apartado-1-3">
+          <span class="category-header__icon">🌱</span>
+          <h2 class="category-header__title">1.3 — Los seis principios de IA responsable (el tema estrella ⭐)</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>La explicación en profundidad</h3>
+          <p>Aquí está el corazón del dominio. Microsoft define <strong>seis principios</strong> de IA responsable, y GitHub los aplica a Copilot. El examen los pregunta de dos formas: dándote la definición para que elijas el principio, o dándote un escenario para que identifiques qué principio está en juego (o se está vulnerando). Por eso no basta con memorizar la lista: hay que <strong>entender qué protege cada uno</strong> y, sobre todo, saber distinguir los dos pares que más se confunden.</p>
+          <p>Vamos a verlos uno a uno, con su definición oficial, su aplicación a Copilot y cómo se mitiga cada uno.</p>
+          <div class="note note--tip">
+            <p>🏡 <strong class="note__label">Analogía kawaii marco:</strong> imagina que los seis principios son las <strong>seis normas de convivencia de una casita compartida</strong> donde vive la IA. Cada norma cuida un aspecto distinto de que todo el mundo esté a gustito, seguro y bien tratado. Vamos habitación por habitación. 🌸</p>
+          </div>
+          <p><strong>1. Fairness (Equidad).</strong> Los sistemas de IA deben <strong>tratar a todas las personas de forma justa</strong>, sin discriminar ni favorecer a unos grupos sobre otros. En el contexto de Copilot, esto significa vigilar que el modelo no reproduzca sesgos que perjudiquen sistemáticamente a ciertos colectivos. <em>¿Cómo se mitiga?</em> Revisando los datos de entrenamiento, probando el sistema con muestras demográficas equilibradas, aplicando técnicas de <em>debiasing</em> y monitorizando el rendimiento <strong>por segmentos</strong> de población (no solo el promedio global, que puede ocultar injusticias). La palabra clave que delata a Fairness en el examen es <strong>bias / sesgo / trato desigual</strong>.</p>
+          <p><em>La nevera de la casita es para todos por igual: nadie tiene más derecho a la comida por quién es. 🍓</em></p>
+          <p><strong>2. Reliability &amp; safety (Fiabilidad y seguridad).</strong> El sistema debe <strong>funcionar de forma fiable y segura</strong>, comportarse como se espera incluso ante <strong>condiciones inesperadas</strong>, y resistir intentos de manipulación dañina. <em>¿Cómo se mitiga?</em> Con pruebas exhaustivas, validación del output y supervisión humana. Las palabras clave son <strong>funciona como se espera, condiciones inesperadas, fiable, probado</strong>.</p>
+          <p><em>La alarma antiincendios de la casa funciona siempre, incluso de madrugada y aunque nadie la esté mirando. 🚨</em></p>
+          <p><strong>3. Privacy &amp; security (Privacidad y seguridad).</strong> El sistema debe ser <strong>seguro y respetar la privacidad</strong>: obtener consentimiento, recoger solo los datos estrictamente necesarios, anonimizar y cifrar. <em>¿Cómo se mitiga?</em> Minimización de datos, cifrado, controles de acceso y consentimiento explícito. Palabras clave: <strong>proteger datos, confidencialidad, consentimiento, evitar el uso indebido</strong>.</p>
+          <p><em>Cada habitante tiene su cajón con llave, y nadie fisgonea en las cosas de los demás. 🔑</em></p>
+          <p><strong>4. Inclusiveness (Inclusión).</strong> El sistema debe <strong>empoderar a todo el mundo</strong> y ser <strong>accesible</strong> independientemente de la capacidad física, el idioma, la cultura o la infraestructura disponible. <em>¿Cómo se mitiga?</em> Diseñando pensando en accesibilidad (lectores de pantalla, subtítulos, soporte multilingüe) y en distintas circunstancias de las personas usuarias. Palabras clave: <strong>empoderar a todos, accesibilidad, diversas capacidades/culturas/idiomas</strong>.</p>
+          <p><em>La casa tiene rampa, subtítulos en la tele y menús en varios idiomas para que cualquier visita pueda entrar y disfrutar. 🌈</em></p>
+          <p><strong>5. Transparency (Transparencia).</strong> Las decisiones del sistema deben ser <strong>comprensibles e interpretables</strong>: hay que poder entender cómo y por qué la IA llega a un resultado, y ser honestos sobre sus capacidades y limitaciones. <em>¿Cómo se mitiga?</em> Documentando el funcionamiento, comunicando limitaciones abiertamente y permitiendo auditoría. Palabras clave: <strong>entendible, explicable, saber cómo funciona, comunicar limitaciones</strong>.</p>
+          <p><em>Las normas de convivencia están pegadas en la nevera, a la vista de todos: nada de reglas secretas. 📋</em></p>
+          <p><strong>6. Accountability (Responsabilidad).</strong> Las <strong>personas</strong> deben rendir cuentas por los sistemas de IA. No es la IA quien responde, sino quienes la diseñan, despliegan y usan. <em>¿Cómo se mitiga?</em> Estableciendo gobernanza, supervisión humana y responsables claros. Palabras clave: <strong>las personas son responsables, supervisión humana, gobernanza, alguien responde</strong>.</p>
+          <p><em>Si algo se rompe en la casa, hay una persona responsable que responde — no vale decir "fue la casa". 🙋‍♀️</em></p>
+          <div class="note note--tip">
+            <p>💡 <strong class="note__label">Truco mnemotécnico: "FRPITA"</strong> → <strong>F</strong>airness, <strong>R</strong>eliability, <strong>P</strong>rivacy, <strong>I</strong>nclusiveness, <strong>T</strong>ransparency, <strong>A</strong>ccountability. Suena a "frita", así que imagínate una croquetita responsable con casco y chaleco reflectante. Una vez que se te mete la palabreja, no se va. 🍤</p>
+          </div>
+        </article>
+
+        <article class="concept-card">
+          <h3>Los dos pares que más se confunden (¡aquí se decide el dominio!)</h3>
+          <p><strong>Fairness vs. Inclusiveness</strong> — la confusión número uno. La regla de oro:</p>
+          <ul>
+            <li><strong>Fairness</strong> = igualdad de <strong>trato / resultado</strong>. La pregunta mental es <em>"¿a alguien se le trata o puntúa peor?"</em></li>
+            <li><strong>Inclusiveness</strong> = igualdad de <strong>acceso / capacidad de uso</strong>. La pregunta mental es <em>"¿alguien no puede usarlo o acceder?"</em></li>
+          </ul>
+          <div class="note note--tip">
+            <p>🎀 <strong class="note__label">Analogía definitiva:</strong> piensa en una fiesta de cumpleaños. <strong>Fairness</strong> es que a todos los invitados les den el mismo trozo de tarta — que nadie reciba una porción más pequeña por quién es. <strong>Inclusiveness</strong> es que la fiesta tenga rampa para sillas de ruedas y opciones sin gluten — que todos <em>puedan venir y disfrutar</em>. Una cuida el <strong>trato</strong>; la otra, el <strong>acceso</strong>. 🍰♿</p>
+            <p>Ejemplo tramposo del examen: "un sistema de reconocimiento facial funciona peor con ciertos tonos de piel". Puede sonar a Fairness (trato desigual), pero el ejemplo oficial lo clasifica como <strong>Inclusiveness</strong>, porque el problema de fondo es que el sistema <strong>no es igual de usable/accesible</strong> para todos los grupos. Lee siempre si el enunciado enfatiza <em>trato/resultado</em> (Fairness) o <em>acceso/usabilidad</em> (Inclusiveness).</p>
+          </div>
+          <p><strong>Transparency vs. Accountability</strong> — el segundo par confuso:</p>
+          <ul>
+            <li><strong>Transparency</strong> = <em>se entiende</em> cómo y por qué el sistema decide (interpretabilidad, explicabilidad).</li>
+            <li><strong>Accountability</strong> = <em>alguien responde</em> por el sistema (supervisión humana, gobernanza).</li>
+          </ul>
+          <p>Una es sobre <strong>comprender</strong>; la otra, sobre <strong>responsabilizarse</strong>. Puedes tener un sistema muy transparente del que nadie se hace responsable, y viceversa.</p>
+        </article>
+
+        <article class="concept-card">
+          <h3>⚠️ Trampas típicas</h3>
+          <ul>
+            <li>Colar "<strong>Sustainability</strong>", "<strong>Efficiency</strong>" o "<strong>Maximizing profit</strong>" como si fueran principios → <strong>no lo son</strong>. Solo hay esos seis. "Maximizar beneficio" es la trampa clásica de la pregunta "¿cuál NO es un principio?".</li>
+            <li>Atribuir la <strong>accountability a la propia IA</strong> → siempre son las personas.</li>
+            <li>Confundir Fairness con Inclusiveness (ver regla de oro arriba).</li>
+          </ul>
+        </article>
+
+        <article class="concept-card">
+          <h3>📝 Mini-repaso</h3>
+          <ol>
+            <li>¿Qué principio se ocupa de resistir manipulaciones dañinas y responder ante lo inesperado?</li>
+            <li>Un sistema con control por voz, subtítulos y lectores de pantalla, ¿qué principio ilustra?</li>
+            <li>Explica con tus palabras la diferencia entre Fairness e Inclusiveness.</li>
+            <li>"Maximizar el beneficio", ¿es un principio de IA responsable?</li>
+          </ol>
+        </article>
+
+        <!-- ============ 1.4 — Daños potenciales y estrategias de mitigación ============ -->
+        <div class="category-header" id="apartado-1-4">
+          <span class="category-header__icon">🌱</span>
+          <h2 class="category-header__title">1.4 — Daños potenciales y estrategias de mitigación</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>La explicación en profundidad</h3>
+          <p>El examen no se conforma con que sepas los principios: quiere que, ante un <strong>escenario de daño concreto</strong>, sepas elegir la <strong>mitigación adecuada</strong>. Y aquí la trampa favorita es ofrecerte una mitigación que "suena técnica y responsable" pero que <strong>no ataca el daño descrito</strong>. Es como llevar el botiquín equivocado: una tirita no cura una quemadura.</p>
+          <p>Vamos a emparejar cada daño con su mitigación y a entender <em>por qué</em> encajan:</p>
+          <p><strong>Daño: sesgo / resultados injustos.</strong> → Mitigación: datos de entrenamiento <strong>diversos y representativos</strong>, auditoría de datos, herramientas de detección de sesgo y <strong>human-in-the-loop</strong> (una persona revisa las decisiones sensibles). <em>Por qué:</em> el sesgo nace de los datos, así que se combate en los datos y con supervisión humana, no cifrando ni "recogiendo más datos" (más cantidad no equivale a más representatividad — de hecho, "recoger cantidades masivas de datos" es un distractor típico que no corrige el sesgo).</p>
+          <p><strong>Daño: contenido inexacto o alucinado.</strong> → Mitigación: <strong>validar siempre</strong> el output, con revisión de alguien capaz de evaluar su exactitud. <em>Por qué:</em> como el modelo no verifica hechos, la verificación tiene que ponerla la persona.</p>
+          <p><strong>Daño: exceso de confianza (over-reliance).</strong> → Mitigación: <strong>supervisión humana</strong> en las decisiones importantes, tratar las sugerencias como borradores. <em>Por qué:</em> el remedio a confiar de más es, precisamente, reintroducir el criterio humano donde importa.</p>
+          <p><strong>Daño: fugas de privacidad.</strong> → Mitigación: <strong>consentimiento, minimización de datos, anonimización y cifrado</strong>; y ante un incidente, retirar identificadores, reportarlo, documentarlo y actualizar políticas. <em>Por qué:</em> aquí sí toca cifrar y proteger — es el daño donde esas herramientas encajan.</p>
+          <p><strong>Daño: falta de trazabilidad.</strong> → Mitigación: <strong>logging y auditoría</strong> (conecta con Transparency y Accountability). <em>Por qué:</em> para poder responder por el sistema, primero hay que poder reconstruir qué pasó.</p>
+          <div class="note note--tip">
+            <p>🧸 <strong class="note__label">Analogía del "human-in-the-loop":</strong> imagina que dejas que tu peluche-robot ordene la habitación. Hace el trabajo pesado solito, pero antes de tirar algo a la basura te lo enseña y tú das el visto bueno. La IA <em>hace</em>, pero <strong>una persona revisa antes de lo importante</strong>. En el examen, cuando el escenario mencione decisiones sensibles, revisión o supervisión, "human-in-the-loop" suele ser parte de la respuesta correcta. 🤖</p>
+          </div>
+          <div class="note note--tip">
+            <p>⚖️ <strong class="note__label">Un matiz fino que a veces cae:</strong> cuando mejorar la equidad (Fairness) exigiría <strong>exceder el consentimiento</strong> de las personas usuarias (por ejemplo, recopilar datos demográficos sensibles sin permiso), <strong>la privacidad tiene prioridad</strong>. La respuesta correcta en ese caso es usar métodos que preserven la privacidad (datos sintéticos, técnicas que no requieran datos personales), no saltarse el consentimiento "por una buena causa".</p>
+          </div>
+        </article>
+
+        <article class="concept-card">
+          <h3>El patrón de la respuesta correcta en escenarios</h3>
+          <p>En las preguntas de escenario de IA responsable, la mejor respuesta suele <strong>combinar principios y acciones concretas</strong>, y descarta las opciones que se apoyan en un solo principio "a medias" o que proponen no hacer nada. Si una opción dice "documenta, reporta el incidente y actualiza las políticas de consentimiento", tiene mucha mejor pinta que una que dice solo "cifra los datos" ante un problema que no es de cifrado.</p>
+        </article>
+
+        <article class="concept-card">
+          <h3>⚠️ Trampa típica</h3>
+          <ul>
+            <li>Responder <strong>"cifrado"</strong> ante un problema de <strong>sesgo</strong>. El cifrado protege la privacidad, no corrige el sesgo. Cada tirita para su herida. 🩹</li>
+            <li>Proponer "recoger muchos más datos" para arreglar el sesgo → cantidad ≠ representatividad.</li>
+          </ul>
+        </article>
+
+        <article class="concept-card">
+          <h3>📝 Mini-repaso</h3>
+          <ol>
+            <li>¿Qué mitigación aplicarías a un modelo con resultados sesgados por demografía?</li>
+            <li>¿Por qué "recoger cantidades masivas de datos" no soluciona el sesgo?</li>
+            <li>Si mejorar la equidad requiriera exceder el consentimiento, ¿qué principio tiene prioridad?</li>
+          </ol>
+        </article>
+
+        <!-- ============ 1.5 — Validar los resultados y operar Copilot de forma responsable ============ -->
+        <div class="category-header" id="apartado-1-5">
+          <span class="category-header__icon">🌱</span>
+          <h2 class="category-header__title">1.5 — Validar los resultados y operar Copilot de forma responsable</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>La explicación en profundidad</h3>
+          <p>Llegamos al cierre, que es donde el dominio se vuelve <strong>práctico y personal</strong>: la IA responsable no es solo cosa de quien diseña el modelo, sino de <strong>cómo la usas tú en tu día a día</strong>. Y aquí el mensaje es tajante: <strong>validar el output no es opcional</strong>.</p>
+          <p>¿Por qué se insiste tanto? Porque el código generado puede tener errores sutiles, vulnerabilidades o problemas de licencia que solo se detectan revisando y probando. Aceptar una sugerencia que no entiendes es como firmar un documento sin leerlo: si algo sale mal, la responsabilidad sigue siendo tuya. Por eso la validación tiene tres capas: <strong>leer y entender</strong> (¿sé explicar qué hace esta línea?), <strong>probar</strong> (¿pasa los tests?, ¿pasa el análisis de seguridad?) y <strong>evaluar el encaje</strong> (¿respeta las licencias?, ¿sigue los estándares de mi proyecto?).</p>
+          <div class="note note--tip">
+            <p>🚗 <strong class="note__label">Analogía kawaii:</strong> Copilot es como el asistente de aparcamiento de un coche monísimo. Te ayuda un montonazo a meter el coche en el hueco, pero <strong>tú sigues con las manos en el volante y la responsabilidad legal es tuya</strong>. Si acabas subida a la acera, no cuela decirle a la policía "es que me lo dijo el coche". 🅿️</p>
+          </div>
+          <p>Operar de forma responsable, además, incluye <strong>respetar el marco de tu organización</strong>: las políticas de Copilot, las exclusiones de contenido y los estándares del equipo (que veremos en los Dominios 2 y 6). Y no olvides la <strong>transparencia hacia los demás</strong>: dejar claro cuándo un contenido ha sido generado o asistido por IA es parte de operar éticamente.</p>
+        </article>
+
+        <article class="concept-card">
+          <h3>La conexión con la productividad responsable</h3>
+          <p>Un error conceptual que el examen castiga: pensar que "ser productiva" y "ser responsable" están reñidas, y que aceptar todo sin revisar te hace ir más rápido. Es al revés. Aceptar código malo sin revisar genera deuda técnica, bugs y retrabajo que te ralentizan más adelante. La <strong>productividad responsable</strong> — rápida <em>y</em> sostenible — pasa siempre por la revisión. Cuando una opción presente "aceptar todas las sugerencias para ganar velocidad" como buena práctica, es la trampa.</p>
+        </article>
+
+        <article class="concept-card">
+          <h3>🎯 Puntos clave que caen en el examen</h3>
+          <ul>
+            <li>Validar el output es <strong>obligatorio</strong>: exactitud, seguridad, licencias y adecuación.</li>
+            <li>Hay que <strong>entender</strong> el código antes de aceptarlo; nada de aceptar a ciegas.</li>
+            <li>Operar responsablemente = respetar <strong>políticas de organización, exclusiones y estándares</strong>.</li>
+            <li><strong>Transparencia</strong>: señalar cuándo el contenido es generado por IA.</li>
+          </ul>
+        </article>
+
+        <article class="concept-card">
+          <h3>⚠️ Trampa típica</h3>
+          <ul>
+            <li>"Aceptar todas las sugerencias para ir más rápido" presentado como buena práctica → nunca.</li>
+          </ul>
+        </article>
+
+        <article class="concept-card">
+          <h3>📝 Mini-repaso</h3>
+          <ol>
+            <li>¿Cuáles son las tres capas de la validación de una sugerencia?</li>
+            <li>¿Por qué aceptar sin revisar NO te hace más productiva a largo plazo?</li>
+          </ol>
+        </article>
+
+        <!-- ============ Preguntas trampa — Dominio 1 ============ -->
+        <div class="category-header" id="preguntas-trampa-dominio-1">
+          <span class="category-header__icon">💡</span>
+          <h2 class="category-header__title">Preguntas trampa — Dominio 1</h2>
+        </div>
+        <div class="quiz-q">
+          <p><span class="quiz-q__num">P1.</span> Una empresa despliega una IA para revisar solicitudes de crédito. El equipo detecta que el modelo puntúa peor a solicitantes de determinadas zonas geográficas con perfiles financieros equivalentes. ¿Qué principio se está vulnerando?</p>
+          <ul class="quiz-q__options">
+            <li>A) Transparency</li>
+            <li>B) Reliability and safety</li>
+            <li>C) Fairness</li>
+            <li>D) Inclusiveness</li>
+          </ul>
+        </div>
+        <div class="quiz-q">
+          <p><span class="quiz-q__num">P2.</span> ¿Cuáles son limitaciones reales de GitHub Copilot? (Elige 2)</p>
+          <ul class="quiz-q__options">
+            <li>A) Puede generar código con vulnerabilidades de seguridad</li>
+            <li>B) Garantiza que el código cumple los estándares del proyecto</li>
+            <li>C) Rinde mejor en inglés que en otros idiomas</li>
+            <li>D) Aprende en tiempo real de tu sesión para no volver a equivocarse</li>
+          </ul>
+        </div>
+        <div class="quiz-q">
+          <p><span class="quiz-q__num">P3.</span> Según Accountability, ¿quién responde del comportamiento de un sistema de IA?</p>
+          <ul class="quiz-q__options">
+            <li>A) El propio modelo de IA</li>
+            <li>B) Las personas y organizaciones que lo desarrollan y despliegan</li>
+            <li>C) El proveedor del LLM en exclusiva</li>
+            <li>D) Nadie, si el output fue automático</li>
+          </ul>
+        </div>
+        <div class="quiz-q">
+          <p><span class="quiz-q__num">P4.</span> ¿Por qué una IA generativa puede producir salidas inexactas?</p>
+          <ul class="quiz-q__options">
+            <li>A) Porque los datos de entrenamiento pueden tener sesgos o inconsistencias</li>
+            <li>B) Por caídas del servicio (downtime)</li>
+            <li>C) Por sobrecarga de peticiones</li>
+            <li>D) Porque siempre prioriza la creatividad sobre la exactitud</li>
+          </ul>
+        </div>
+        <div class="quiz-q">
+          <p><span class="quiz-q__num">P5.</span> Un equipo quiere mejorar la equidad de un modelo, pero hacerlo requeriría recopilar datos demográficos sensibles sin consentimiento. ¿Qué enfoque es el correcto?</p>
+          <ul class="quiz-q__options">
+            <li>A) Recopilar los datos igualmente, porque la equidad es prioritaria</li>
+            <li>B) Usar métodos que preserven la privacidad (p. ej. datos sintéticos), porque la privacidad y el consentimiento tienen prioridad</li>
+            <li>C) Abandonar cualquier intento de mejorar la equidad</li>
+            <li>D) Cifrar los datos después de recopilarlos sin permiso</li>
+          </ul>
+        </div>
+        <div class="quiz-q">
+          <p><span class="quiz-q__num">P6.</span> ¿Cuál de estos NO es un principio de IA responsable de Microsoft?</p>
+          <ul class="quiz-q__options">
+            <li>A) Inclusiveness</li>
+            <li>B) Maximizing profit</li>
+            <li>C) Transparency</li>
+            <li>D) Reliability and safety</li>
+          </ul>
+        </div>
+        <details class="answers">
+          <summary><strong>👉 Ver respuestas y explicación</strong></summary>
+          <div class="answers__body">
+            <p><strong>P1 → C) Fairness.</strong> Trato desigual a perfiles equivalentes = sesgo = Fairness. <em>Trampa:</em> D (Inclusiveness) tienta por la mención a "geografía", pero el problema es el <em>trato/resultado sesgado</em>, no el <em>acceso</em>. Si dijera "la herramienta no está disponible en esas zonas", entonces sí sería Inclusiveness.</p>
+            <p><strong>P2 → A y C.</strong> B es falsa (Copilot nunca <em>garantiza</em>). D es la trampa golosa: no aprende en tiempo real de tu sesión para autocorregirse; sus sugerencias vienen del modelo ya entrenado.</p>
+            <p><strong>P3 → B).</strong> Las <em>personas</em> rinden cuentas, nunca la IA (descarta A y D). C es incompleta: la responsabilidad recae en quien desarrolla <strong>y</strong> despliega, no solo en el proveedor.</p>
+            <p><strong>P4 → A).</strong> La inexactitud nace del modelo y sus datos (sesgos, inconsistencias). B y C son problemas de infraestructura que afectan a la disponibilidad, no a la exactitud. D es un absoluto falso.</p>
+            <p><strong>P5 → B).</strong> Cuando mejorar la equidad chocaría con exceder el consentimiento, la privacidad tiene prioridad: se usan métodos que la preserven. A la vulnera; C es derrotista e innecesario; D sigue violando el consentimiento.</p>
+            <p><strong>P6 → B) Maximizing profit.</strong> No es un principio. Es la trampa clásica de "¿cuál NO es?". Los seis son FRPITA.</p>
+          </div>
+        </details>
+
+        <!-- ============ Fuentes oficiales ============ -->
+        <div class="category-header" id="fuentes-oficiales">
+          <span class="category-header__icon">📚</span>
+          <h2 class="category-header__title">Fuentes oficiales</h2>
+        </div>
+
+        <article class="concept-card">
+          <ul>
+            <li><a href="https://learn.microsoft.com/es-es/training/modules/responsible-ai-with-github-copilot/" target="_blank" rel="noopener noreferrer">IA responsable con GitHub Copilot — Microsoft Learn</a></li>
+            <li><a href="https://learn.microsoft.com/training/modules/responsible-ai-with-github-copilot/3-six-principles-of-responsible-ai" target="_blank" rel="noopener noreferrer">Los seis principios de IA responsable</a></li>
+            <li><a href="https://learn.microsoft.com/es-es/credentials/certifications/resources/study-guides/gh-300" target="_blank" rel="noopener noreferrer">Study guide oficial GH-300</a></li>
+          </ul>
+        </article>
+
+        <div class="note note--next">
+          <p>🌸 <em>Siguiente módulo:</em> <strong>Dominio 2 — Usar las funciones de GitHub Copilot</strong> (el más gordo del examen). Nos adentramos en planes, IDE, Agent Mode, MCP, Spaces y administración. ¡Vamos! 💛</p>
+        </div>
+
+        <!-- Navegación del curso -->
+        <div class="course-nav">
+          <a href="../gh-300.html">
+            <span class="course-nav__label">← Índice</span>
+            <span class="course-nav__title">Curso GH-300</span>
+          </a>
+          <a href="dominio-2.html" class="next">
+            <span class="course-nav__label">Siguiente →</span>
+            <span class="course-nav__title">Dominio 2 · Funciones de Copilot</span>
+          </a>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <button id="back-to-top" class="back-to-top" aria-label="Volver arriba" title="Volver arriba">↑</button>
+
+  <script src="https://cdn.jsdelivr.net/npm/i18next@23/dist/umd/i18next.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1/prism.min.js"></script>
+  <script src="../../../assets/js/theme.js"></script>
+  <script src="../../../assets/js/main.js"></script>
+  <script src="../../../assets/js/cursor.js"></script>
+</body>
+</html>

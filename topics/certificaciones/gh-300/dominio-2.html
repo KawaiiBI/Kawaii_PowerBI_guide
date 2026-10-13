@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Funciones de GitHub Copilot en profundidad: IDE, sugerencias inline, chat, CLI, Agent Mode, Copilot Edits, MCP, Copilot Spaces, Cloud Agent, planes, políticas de organización, audit logs y REST API. Guía kawaii completa para la GH-300.">
+  <title>GH-300 · Dominio 2: Funciones de Copilot | Power BI Guide by Kawaii BI</title>
+  <link rel="canonical" href="https://kawaiibi.es/topics/certificaciones/gh-300/dominio-2.html">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Kawaii Power BI Guide">
+  <meta property="og:locale" content="es_ES">
+  <meta property="og:title" content="GH-300 · Dominio 2: Funciones de Copilot | Power BI Guide by Kawaii BI">
+  <meta property="og:description" content="Funciones de GitHub Copilot en profundidad: IDE, sugerencias inline, chat, CLI, Agent Mode, Copilot Edits, MCP, Copilot Spaces, Cloud Agent, planes, políticas de organización, audit logs y REST API. Guía kawaii completa para la GH-300.">
+  <meta property="og:url" content="https://kawaiibi.es/topics/certificaciones/gh-300/dominio-2.html">
+  <meta property="og:image" content="https://kawaiibi.es/assets/images/og-banner.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="1200">
+  <meta property="og:image:alt" content="Sara Lozano Marti - Kawaii Power BI">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="GH-300 · Dominio 2: Funciones de Copilot | Power BI Guide by Kawaii BI">
+  <meta name="twitter:description" content="Funciones de GitHub Copilot en profundidad: IDE, sugerencias inline, chat, CLI, Agent Mode, Copilot Edits, MCP, Copilot Spaces, Cloud Agent, planes, políticas de organización, audit logs y REST API. Guía kawaii completa para la GH-300.">
+  <meta name="twitter:image" content="https://kawaiibi.es/assets/images/og-banner.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/prismjs@1/themes/prism-okaidia.min.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="../../../assets/css/main.css">
+  <link rel="stylesheet" href="../../../assets/css/themes.css">
+  <link rel="stylesheet" href="../../../assets/css/components.css">
+  <link rel="stylesheet" href="../../../assets/css/layout.css">
+
+  <style>
+    .topic-header { text-align: center; padding: 2.25rem 0 1.75rem; border-bottom: 2px solid var(--color-mauve); margin-bottom: 2rem; }
+    .topic-header__eyebrow { font-family: 'Fira Code', monospace; font-size: 0.8125rem; font-weight: 600; color: var(--color-coral); letter-spacing: 0.05em; }
+    .topic-header__icon { font-size: 3.5rem; margin: 0.5rem 0; display: block; }
+    .topic-header__title { font-size: clamp(1.75rem, 4vw, 2.25rem); font-weight: 800; color: var(--color-dark); margin-bottom: 0.625rem; line-height: 1.2; }
+    .topic-header__subtitle { font-size: 1rem; color: var(--color-slate); margin-bottom: 1.25rem; line-height: 1.55; max-width: 680px; margin-left: auto; margin-right: auto; }
+    .topic-header__levels { display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap; align-items: center; }
+
+    .toc { background: var(--color-rose); border-radius: var(--border-radius); padding: 1.25rem 1.5rem; margin-bottom: 2rem; border: 1.5px solid var(--color-mauve); }
+    .toc__title { font-size: 1rem; font-weight: 700; margin: 0 0 0.75rem; }
+    .toc__list { display: flex; flex-wrap: wrap; gap: 0.5rem; list-style: none; padding: 0; margin: 0; }
+    .toc__list a { font-size: 0.8125rem; color: var(--color-coral); text-decoration: none; padding: 0.25rem 0.625rem; background: var(--color-white); border-radius: 999px; border: 1px solid var(--color-mauve); display: inline-block; }
+    .toc__list a:hover { background: var(--color-coral); color: #fff; }
+
+    .category-header { display: flex; align-items: center; gap: 0.75rem; margin: 2.5rem 0 1.25rem; padding: 0.875rem 1.25rem; background: var(--color-rose); border-radius: var(--border-radius-sm); border-left: 4px solid var(--color-coral); scroll-margin-top: 20px; }
+    .category-header__icon { font-size: 1.5rem; }
+    .category-header__title { font-size: 1.25rem; font-weight: 700; margin: 0; }
+
+    .concept-card { background: var(--color-white); border: 1.5px solid var(--color-mauve); border-radius: var(--border-radius); padding: 1.5rem 1.75rem; margin-bottom: 1.25rem; }
+    .concept-card h3 { font-size: 1.0625rem; font-weight: 700; color: var(--color-coral); margin: 0 0 0.6rem; }
+    .concept-card p { font-size: 0.9375rem; line-height: 1.7; color: var(--color-dark); margin-bottom: 0.7rem; }
+    .concept-card ul, .concept-card ol { padding-left: 1.25rem; font-size: 0.9375rem; line-height: 1.75; color: var(--color-dark); margin: 0.4rem 0 0.7rem; }
+    .concept-card code, .note code, .quiz-q code, .answers code { background: var(--color-blush); padding: 0.1em 0.4em; border-radius: 4px; font-family: 'Fira Code', monospace; font-size: 0.85em; color: var(--color-coral); }
+    .concept-card pre { margin: 0.75rem 0; }
+    .concept-card pre code { background: none; color: inherit; padding: 0; }
+
+    /* Notas: el texto en negrita se queda en línea; solo la etiqueta inicial va como título */
+    .note strong { display: inline; margin: 0; font-size: inherit; }
+    .note strong.note__label { display: block; margin-bottom: 0.375rem; font-size: 0.875rem; }
+    .note p { margin: 0 0 0.5rem; line-height: 1.7; }
+    .note p:last-child { margin-bottom: 0; }
+    .note ul { padding-left: 1.25rem; margin: 0.25rem 0 0.5rem; line-height: 1.7; }
+    .note ul:last-child { margin-bottom: 0; }
+
+    .md-table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.84rem; }
+    .md-table th, .md-table td { border: 1px solid var(--color-mauve); padding: 0.5rem 0.7rem; text-align: left; vertical-align: top; }
+    .md-table th { background: var(--color-rose); font-weight: 700; color: var(--color-dark); }
+    .md-table tr:nth-child(even) td { background: var(--color-blush); }
+    .table-scroll { overflow-x: auto; }
+
+    .quiz-q { background: var(--color-white); border: 1.5px solid var(--color-mauve); border-left: 4px solid var(--color-coral); border-radius: var(--border-radius-sm); padding: 1rem 1.25rem; margin: 1rem 0; }
+    .quiz-q p { margin: 0 0 0.5rem; font-size: 0.9375rem; line-height: 1.6; }
+    .quiz-q__num { font-weight: 700; color: var(--color-coral); }
+    .quiz-q__options { list-style: none; margin: 0; padding-left: 0.5rem; font-size: 0.9rem; line-height: 1.7; }
+
+    /* Respuestas plegables de las preguntas trampa */
+    .answers { background: var(--color-rose); border: 1.5px solid var(--color-mauve); border-radius: var(--border-radius); margin: 1.25rem 0; }
+    .answers summary { cursor: pointer; padding: 1rem 1.25rem; color: var(--color-coral); }
+    .answers summary:focus-visible { outline: 2px solid var(--color-coral); outline-offset: 2px; border-radius: var(--border-radius); }
+    .answers__body { padding: 0 1.25rem 1rem; }
+    .answers__body p { font-size: 0.9375rem; line-height: 1.7; margin-bottom: 0.7rem; }
+
+    .course-nav { display: flex; justify-content: space-between; gap: 1rem; margin-top: 2.5rem; flex-wrap: wrap; }
+    .course-nav a { flex: 1 1 220px; display: block; background: var(--color-white); border: 1.5px solid var(--color-mauve); border-radius: var(--border-radius); padding: 1rem 1.25rem; text-decoration: none; color: inherit; transition: var(--transition); }
+    .course-nav a:hover { border-color: var(--color-coral); box-shadow: var(--shadow-md); text-decoration: none; }
+    .course-nav__label { font-size: 0.75rem; color: var(--color-slate); text-transform: uppercase; letter-spacing: 0.05em; display: block; }
+    .course-nav__title { font-weight: 700; color: var(--color-coral); }
+    .course-nav a.next { text-align: right; }
+  </style>
+</head>
+<body>
+
+  <aside class="site-sidebar">
+    <div class="site-sidebar__profile">
+      <img src="../../../assets/images/avatar-sara.png" alt="Sara Lozano Martí" class="site-sidebar__avatar">
+      <p class="site-sidebar__name">Sara Lozano Martí</p>
+      <p class="site-sidebar__subtitle">Power BI Expert</p>
+    </div>
+    <nav class="site-sidebar__nav" aria-label="Navegación principal">
+      <ul>
+        <li><a href="../../../index.html" class="site-sidebar__link"><span class="site-sidebar__icon">🏠</span> Inicio</a></li>
+        <li><a href="../../dax.html" class="site-sidebar__link"><span class="site-sidebar__icon">⚡</span> Funciones DAX</a></li>
+        <li><a href="../../power-query.html" class="site-sidebar__link"><span class="site-sidebar__icon">🔄</span> Power Query</a></li>
+        <li><a href="../../lenguaje-m.html" class="site-sidebar__link"><span class="site-sidebar__icon">〽️</span> Lenguaje M</a></li>
+        <li><a href="../../modelado.html" class="site-sidebar__link"><span class="site-sidebar__icon">🗄️</span> Modelado</a></li>
+        <li><a href="../../conceptos-powerbi.html" class="site-sidebar__link"><span class="site-sidebar__icon">📊</span> Conceptos Power BI</a></li>
+        <li><a href="../../fabric.html" class="site-sidebar__link"><span class="site-sidebar__icon">🧵</span> Microsoft Fabric</a></li>
+        <li><a href="../../tmdl.html" class="site-sidebar__link"><span class="site-sidebar__icon">📝</span> TMDL</a></li>
+        <li><a href="../../diseno-ux.html" class="site-sidebar__link"><span class="site-sidebar__icon">🎨</span> Diseño y UX</a></li>
+        <li><a href="../../gobernanza.html" class="site-sidebar__link"><span class="site-sidebar__icon">🔒</span> Gobernanza</a></li>
+        <li><a href="../../certificaciones.html" class="site-sidebar__link is-active"><span class="site-sidebar__icon">🎓</span> Certificaciones</a></li>
+      </ul>
+    </nav>
+    <div class="site-sidebar__divider"></div>
+    <div class="site-sidebar__footer">
+      <a href="../../../quien-soy.html" class="site-sidebar__link site-sidebar__link--highlight"><span class="site-sidebar__icon">👩‍💻</span> ¿Quién soy?</a>
+      <div class="site-sidebar__social">
+        <a href="https://www.linkedin.com/in/saralozanomarti" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><img src="../../../assets/images/logo-linkedin.png" alt="LinkedIn" class="site-sidebar__social-icon"></a>
+        <a href="https://www.youtube.com/@KawaiiPowerBI" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><img src="../../../assets/images/logo-youtube.png" alt="YouTube" class="site-sidebar__social-icon"></a>
+        <a href="https://github.com/KawaiiBI" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><img src="../../../assets/images/logo-github.png" alt="GitHub" class="site-sidebar__social-icon"></a>
+      </div>
+      <div class="site-sidebar__logo-bottom"><img src="../../../assets/images/logo-kawaii.jpg" alt="Kawaii BI" class="site-sidebar__logo-img"></div>
+      <p class="site-sidebar__copyright">Power BI Guide 🌸<br>© 2026 Kawaii BI</p>
+    </div>
+  </aside>
+
+  <div class="page-wrapper">
+    <main class="main-content">
+      <div class="topic-page">
+
+        <nav class="breadcrumb" aria-label="Ruta de navegación">
+          <span class="breadcrumb__item"><a href="../../../index.html">🏠 Inicio</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item"><a href="../../certificaciones.html">Certificaciones</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item"><a href="../gh-300.html">GH-300</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item">Dominio 2</span>
+        </nav>
+
+        <header class="topic-header">
+          <span class="topic-header__eyebrow">GH-300 · DOMINIO 2</span>
+          <span class="topic-header__icon">📗</span>
+          <h1 class="topic-header__title">Dominio 2 — Usar las funciones de GitHub Copilot</h1>
+          <p class="topic-header__subtitle">Funciones de GitHub Copilot en profundidad: IDE, sugerencias inline, chat, CLI, Agent Mode, Copilot Edits, MCP, Copilot Spaces, Cloud Agent, planes, políticas de organización, audit logs y REST API. Guía kawaii completa para la GH-300.</p>
+          <div class="topic-header__levels">
+            <span class="badge badge--special">Peso en el examen: 25-30%</span>
+          </div>
+        </header>
+
+        <nav class="toc" aria-label="Índice del dominio">
+          <p class="toc__title">📑 En este dominio:</p>
+          <ul class="toc__list">
+            <li><a href="#apartado-2-1">2.1 — Copilot en el IDE: las cuatro formas de interactuar</a></li>
+            <li><a href="#apartado-2-2">2.2 — Content exclusions (visión general)</a></li>
+            <li><a href="#apartado-2-3">2.3 — GitHub Copilot CLI</a></li>
+            <li><a href="#apartado-2-4">2.4 — Agent Mode, Copilot Edits y MCP (el trío avanzado ⭐)</a></li>
+            <li><a href="#apartado-2-5">2.5 — Cloud Agent (el agente asíncrono en la nube)</a></li>
+            <li><a href="#apartado-2-6">2.6 — Copilot Spaces</a></li>
+            <li><a href="#apartado-2-7">2.7 — Code review, Spark, PR summaries e instruction files</a></li>
+            <li><a href="#apartado-2-8">2.8 — Planes de Copilot: la tabla que MÁS cae ⭐</a></li>
+            <li><a href="#apartado-2-9">2.9 — Administración: políticas, audit logs y REST API</a></li>
+            <li><a href="#preguntas-trampa-dominio-2">Preguntas trampa — Dominio 2</a></li>
+            <li><a href="#fuentes-oficiales">Fuentes oficiales</a></li>
+          </ul>
+        </nav>
+
+        <article class="concept-card">
+          <p><strong>Peso en el examen: 25-30%</strong></p>
+          <p>¡Holi de nuevo! 🌸 Este es <strong>el dominio más grande de toda la certificación</strong> — entre un cuarto y un tercio de las preguntas salen de aquí. Y tiene una ironía que conviene tener presente: es el dominio que más "castiga" a quien usa Copilot a diario sin haber estudiado. ¿Por qué? Porque tú ya sabes <em>usar</em> el chat, las sugerencias inline y el Agent Mode con los ojos cerrados… pero el examen no te pregunta si sabes usarlos, sino los <strong>matices de qué función pertenece a qué plan, dónde se configura cada política y qué puede y no puede hacer cada modo</strong>. Y eso no se aprende tecleando, se aprende estudiando.</p>
+          <p>Así que la estrategia aquí es clara: en la parte de "usar Copilot en el IDE" iremos con paso ligero (te sonará todo), y frenaremos con lupa en <strong>planes, MCP, Spaces, Cloud Agent y administración</strong>, que es donde de verdad se ganan o se pierden puntos. ¡Vamos allá! 💛</p>
+          <div class="note note--best-practice">
+            <p>📋 <strong class="note__label">Lo que mide el examen en este dominio (objetivos oficiales):</strong></p>
+            <ul>
+              <li>Habilitar y <strong>activar Copilot en el IDE</strong> (sugerencias inline, chat, CLI, modo agente).</li>
+              <li>Configurar <strong>exclusiones de contenido</strong> (conocimiento de aplicación).</li>
+              <li>Definir, <strong>instalar y usar la CLI</strong> de Copilot.</li>
+              <li>Usar <strong>Agent Mode, Copilot Edits y MCP</strong>; gestionar Agent Sessions y delegar en Sub-Agents.</li>
+              <li>Usar Copilot para <strong>code review</strong>, <strong>Spaces</strong>, <strong>Spark</strong>, <strong>PR summaries</strong> e <strong>instruction files</strong>.</li>
+              <li>Configurar <strong>administración de directivas de organización</strong>, <strong>audit log</strong> y la <strong>REST API</strong> de suscripciones.</li>
+            </ul>
+          </div>
+        </article>
+
+        <!-- ============ 2.1 — Copilot en el IDE: las cuatro formas de interactuar ============ -->
+        <div class="category-header" id="apartado-2-1">
+          <span class="category-header__icon">🌸</span>
+          <h2 class="category-header__title">2.1 — Copilot en el IDE: las cuatro formas de interactuar</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>La explicación en profundidad</h3>
+          <p>Copilot se integra como extensión en los principales editores: <strong>VS Code, Visual Studio, JetBrains, Vim/Neovim, Eclipse y Xcode</strong>. Pero más allá de <em>dónde</em> vive, lo importante para el examen es entender las <strong>cuatro formas de interactuar con él</strong>, ordenadas de menor a mayor autonomía. Piensa en ellas como una escalera: cada peldaño le da a Copilot más libertad para actuar, y tú eliges en qué peldaño te subes según la tarea.</p>
+          <p><strong>1. Sugerencias inline (inline suggestions).</strong> Es la forma más básica y la que probablemente más usas: mientras escribes, Copilot te propone completar la línea o el bloque en <strong>texto gris tenue</strong>. Aceptas con <code>Tab</code>, rechazas siguiendo a lo tuyo. Funciona como un autocompletado con esteroides. Una variante importante son las <strong>next edit suggestions</strong>: Copilot no solo sugiere código <em>nuevo</em>, sino que puede proponerte <em>ediciones</em> sobre código que ya existe.</p>
+          <p><strong>2. Copilot Chat.</strong> Un panel conversacional donde le preguntas en lenguaje natural. La diferencia crucial frente a un chatbot genérico es que Copilot Chat <strong>adapta sus respuestas al contexto de tus archivos y dependencias</strong> — no responde en abstracto, sino sobre <em>tu</em> código. Tiene varias presentaciones: la vista de chat (panel lateral), el inline chat (dentro del propio código, ideal para modificar lo que tienes delante) y el quick chat (para preguntas rápidas).</p>
+          <p><strong>3. Copilot Edits.</strong> Cuando necesitas cambios <strong>estructurados que tocan varios archivos a la vez</strong>, Edits te deja aplicarlos de forma coordinada, con revisión inline de los <em>diffs</em> (aceptas con <code>Tab</code>, rechazas con <code>Alt+Supr</code>) y con <em>checkpoints</em> para volver a un estado anterior si algo no te gusta.</p>
+          <p><strong>4. Agent Mode.</strong> El peldaño más alto de autonomía. Le das una tarea de alto nivel y él orquesta todos los pasos por su cuenta. Lo desarrollamos en detalle más abajo, porque es de lo más preguntado.</p>
+          <div class="note note--tip">
+            <p>🎨 <strong class="note__label">Analogía kawaii:</strong> piensa en estas cuatro formas como niveles de ayuda de una amiga en tu cocina. Las <strong>sugerencias inline</strong> son ella diciéndote "échale una pizca más de sal" mientras cocinas tú. El <strong>chat</strong> es cuando paras y le preguntas "oye, ¿cómo hago la bechamel?". <strong>Edits</strong> es que te reorganice varios platos a la vez siguiendo tus indicaciones. Y <strong>Agent Mode</strong> es soltarle "prepárame la cena entera" y que ella decida el menú, cocine, pruebe y ajuste — aunque siempre te pregunta antes de encender el fuego. 👩‍🍳</p>
+          </div>
+        </article>
+
+        <article class="concept-card">
+          <h3>Un detalle técnico que cae: IntelliSense vs Copilot</h3>
+          <p>En Visual Studio, cuando <strong>IntelliSense está activo</strong> (mostrando la lista de miembros o la información de parámetros), las completions de Copilot <strong>se suprimen temporalmente</strong> para no abrumarte con dos sugerencias a la vez. En cuanto cierras o confirmas IntelliSense, Copilot vuelve a proponer. Es el comportamiento por defecto y no requiere configurar nada — pero es justo el tipo de detalle "de letra pequeña" que el examen usa para distinguir a quien ha estudiado.</p>
+        </article>
+
+        <article class="concept-card">
+          <h3>Los modos del chat: Ask, Plan y Agent</h3>
+          <p>Dentro del chat conviven tres modos con niveles de intervención distintos, y <strong>confundirlos es una de las trampas más frecuentes</strong>:</p>
+          <ul>
+            <li><strong>Ask:</strong> responde y aconseja, pero <strong>no modifica tu código</strong> a menos que tú apliques manualmente lo que propone.</li>
+            <li><strong>Plan:</strong> explora el problema y elabora un plan de acción <strong>antes</strong> de tocar nada, para que lo revises.</li>
+            <li><strong>Agent:</strong> edita de forma <strong>autónoma</strong>, ejecutando los pasos necesarios.</li>
+          </ul>
+          <div class="note note--tip">
+            <p>🐾 <strong class="note__label">Analogía Ask vs Agent:</strong> Ask es como una amiga que te <em>aconseja</em> qué ponerte pero no abre tu armario. Agent es la amiga de confianza a la que le dices "arréglame el armario entero" y ella saca, dobla y coloca sola — eso sí, te pregunta antes de tirar nada. 👚</p>
+          </div>
+        </article>
+
+        <article class="concept-card">
+          <h3>🎯 Puntos clave que caen en el examen</h3>
+          <ul>
+            <li>Cuatro formas de interactuar: inline, chat, Edits, Agent (autonomía creciente).</li>
+            <li><strong>Next edit suggestions:</strong> sugiere ediciones a código existente, no solo código nuevo.</li>
+            <li>IntelliSense tiene <strong>prioridad</strong> sobre las completions inline en Visual Studio (comportamiento por defecto).</li>
+            <li><strong>Ask no modifica</strong> el código sin que apliques; <strong>Agent sí</strong> actúa de forma autónoma.</li>
+          </ul>
+        </article>
+
+        <article class="concept-card">
+          <h3>📝 Mini-repaso</h3>
+          <ol>
+            <li>¿Qué diferencia hay entre el modo Ask y el modo Agent?</li>
+            <li>¿Qué son las "next edit suggestions"?</li>
+            <li>En Visual Studio, ¿qué pasa con las completions de Copilot cuando IntelliSense está activo?</li>
+          </ol>
+        </article>
+
+        <!-- ============ 2.2 — Content exclusions (visión general) ============ -->
+        <div class="category-header" id="apartado-2-2">
+          <span class="category-header__icon">🌸</span>
+          <h2 class="category-header__title">2.2 — Content exclusions (visión general)</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>La explicación en profundidad</h3>
+          <p>Las <em>content exclusions</em> permiten a los administradores <strong>excluir archivos o repositorios concretos</strong> para que Copilot no los use — ni como contexto para sus sugerencias, ni como material a partir del cual generar. Aquí las vemos en su versión "de funciones"; en el Dominio 6 profundizaremos en sus limitaciones (que son una mina de preguntas trampa).</p>
+          <p>La idea de fondo es proteger contenido sensible: imagina un archivo con lógica propietaria, claves de configuración o algoritmos que no quieres que alimenten las sugerencias de Copilot. Con una exclusión, ese archivo queda "invisible" para Copilot.</p>
+          <div class="note note--tip">
+            <p>🙈 <strong class="note__label">Analogía kawaii:</strong> es como colgar una cortinita monísima delante de ciertos cajones para que tu amiga repostera (Copilot) no mire dentro. Ella sigue cocinando con todo lo demás, pero esos cajones quedan tapaditos. 🎀</p>
+          </div>
+        </article>
+
+        <article class="concept-card">
+          <h3>🎯 Puntos clave que caen en el examen</h3>
+          <ul>
+            <li>Es una función <strong>solo de planes Business y Enterprise</strong>. (¡Grábatelo, cae muchísimo!)</li>
+            <li>Se configura a nivel de <strong>repositorio</strong> o de <strong>organización</strong>, nunca por usuario en el IDE.</li>
+            <li>Cuando hay contenido excluido, <strong>no hay completions ni chat</strong> para esos archivos.</li>
+            <li><strong>Agent Mode no puede acceder</strong> a archivos excluidos por content exclusion.</li>
+          </ul>
+        </article>
+
+        <article class="concept-card">
+          <h3>⚠️ Trampa típica</h3>
+          <ul>
+            <li>Un usuario de <strong>Copilot Pro</strong> que quiere configurar content exclusions → <strong>imposible</strong>: Pro no lo incluye, necesita Business o Enterprise.</li>
+          </ul>
+        </article>
+
+        <!-- ============ 2.3 — GitHub Copilot CLI ============ -->
+        <div class="category-header" id="apartado-2-3">
+          <span class="category-header__icon">🌸</span>
+          <h2 class="category-header__title">2.3 — GitHub Copilot CLI</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>La explicación en profundidad</h3>
+          <p>No todo el desarrollo ocurre dentro de un editor gráfico: gran parte de la vida de una desarrolladora transcurre en la <strong>terminal</strong>. La CLI de Copilot lleva la asistencia de IA justo ahí, ayudándote a <strong>generar, explicar y componer comandos de shell, scripts y gestión de archivos</strong> usando lenguaje natural.</p>
+          <p>¿Para qué sirve en concreto? Para cuando no recuerdas la sintaxis exacta de un comando (<code>tar</code> con sus flags, un <code>git rebase</code> complicado, un <code>find</code> con condiciones), para entender qué hace un comando que te han pasado antes de ejecutarlo a ciegas, o para construir un script paso a paso conversando. Trabaja de forma <strong>interactiva y en sesiones</strong>, manteniendo el contexto de lo que vais haciendo.</p>
+          <div class="note note--tip">
+            <p>💻 <strong class="note__label">Analogía kawaii:</strong> es como tener una traductora simpática viviendo en tu terminal. Tú le hablas en cristiano ("comprime esta carpeta ignorando los <code>.log</code> y súbela por scp al servidor") y ella te lo traduce al idioma críptico de la consola. Y si te pasan un comando que parece un jeroglífico, se lo enseñas y te lo explica trocito a trocito. 🗣️</p>
+          </div>
+        </article>
+
+        <article class="concept-card">
+          <h3>🎯 Puntos clave que caen en el examen</h3>
+          <ul>
+            <li>El CLI <strong>está disponible en TODOS los planes</strong> (Free, Pro, Pro+, Business, Enterprise). Es de las pocas funciones tan transversales.</li>
+            <li>Se instala como una <strong>extensión del GitHub CLI (<code>gh</code>)</strong>.</li>
+            <li>Funciones clave: <strong>sugerir</strong> comandos desde lenguaje natural, <strong>explicar</strong> comandos, y ayudar a <strong>componer scripts</strong> y <strong>gestionar archivos</strong>.</li>
+            <li>Uso <strong>interactivo y en sesiones</strong>.</li>
+          </ul>
+        </article>
+
+        <article class="concept-card">
+          <h3>⚠️ Trampa típica</h3>
+          <ul>
+            <li>Marcar el CLI como "solo para planes de pago" → <strong>falso</strong>, está en todos, incluido Free.</li>
+          </ul>
+        </article>
+
+        <article class="concept-card">
+          <h3>📝 Mini-repaso</h3>
+          <ol>
+            <li>¿En qué planes está disponible la CLI de Copilot?</li>
+            <li>Nombra dos cosas que la CLI puede hacer por ti.</li>
+          </ol>
+        </article>
+
+        <!-- ============ 2.4 — Agent Mode, Copilot Edits y MCP (el trío avanzado ⭐) ============ -->
+        <div class="category-header" id="apartado-2-4">
+          <span class="category-header__icon">🌸</span>
+          <h2 class="category-header__title">2.4 — Agent Mode, Copilot Edits y MCP (el trío avanzado ⭐)</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>La explicación en profundidad: Copilot Edits</h3>
+          <p><strong>Copilot Edits</strong> es el paso intermedio entre el chat y la autonomía total. Te permite describir un cambio y aplicarlo <strong>coordinadamente sobre varios archivos</strong>, revisando cada modificación como un <em>diff</em> antes de aceptarla. La gran ventaja frente a ir archivo por archivo es la <strong>coherencia</strong>: si renombras un concepto o cambias una firma de función, Edits propaga el cambio por todos los sitios afectados a la vez. Los <em>checkpoints</em> te dejan retroceder si una iteración no te convence, como los puntos de guardado de un videojuego.</p>
+        </article>
+
+        <article class="concept-card">
+          <h3>La explicación en profundidad: Agent Mode</h3>
+          <p><strong>Agent Mode</strong> es la evolución natural de Copilot Edits, y representa un salto cualitativo. La diferencia esencial: mientras el chat en modo Ask te da <em>una respuesta</em> y se detiene, el Agent Mode recibe una <strong>tarea de alto nivel</strong> y <strong>trabaja de forma iterativa hasta completarla</strong>, tomando decisiones sobre la marcha. Cuando le asignas algo, el agente sigue este ciclo:</p>
+          <ol>
+            <li><strong>Analiza el código base completo</strong> para determinar qué archivos y dependencias son relevantes — no se queda con el archivo abierto, entiende la estructura global del proyecto para que los cambios sean coherentes.</li>
+            <li><strong>Sugiere y ejecuta los cambios</strong>, alineándolos con la estructura y las convenciones del proyecto.</li>
+            <li><strong>Ejecuta comandos de terminal</strong> cuando hace falta: compilar, instalar dependencias, lanzar tests… (siempre pidiéndote confirmación antes).</li>
+            <li><strong>Supervisa y refina su propia salida</strong>, iterando varias veces: si un test falla, lo detecta e intenta corregirlo, y vuelve a probar.</li>
+          </ol>
+          <p>Este bucle de auto-refinamiento es lo que convierte al Agent Mode en un colaborador de verdad y no en un simple autocompletado. Puede crear aplicaciones desde cero, refactorizar entre múltiples archivos, escribir y ejecutar tests, y migrar código heredado a frameworks modernos — todo manteniéndote a ti <strong>en control total</strong>, porque tú apruebas los pasos sensibles.</p>
+          <div class="note note--tip">
+            <p>🍱 <strong class="note__label">Analogía kawaii:</strong> Copilot Edits es como preparar un bento reorganizando varios compartimentos a la vez según tus indicaciones. Agent Mode es subir de nivel: le dices "quiero un bento de cumpleaños kawaii" y tu ayudante decide el menú, cocina cada parte, la prueba, rectifica lo que no salió bien y no para hasta que está perfecto. Eso sí, <strong>te pregunta antes de encender el fuego</strong> (los comandos de terminal). 🔥</p>
+          </div>
+        </article>
+
+        <article class="concept-card">
+          <h3>La explicación en profundidad: MCP (Model Context Protocol)</h3>
+          <p><strong>MCP</strong> es uno de los conceptos más "de moda" y más preguntados. Es un <strong>protocolo abierto</strong> que permite a Copilot (y a otras herramientas de IA) conectarse a <strong>herramientas y fuentes de datos externas</strong> de forma estandarizada. La analogía oficial de Microsoft es tan buena que conviene aprendérsela literalmente:</p>
+          <div class="note note--tip">
+            <p>🔌 <strong class="note__label">Analogía oficial de Microsoft:</strong> MCP es como <strong>el estándar USB-C para las herramientas de IA</strong>. Igual que un único puerto USB-C te sirve para cargar el móvil, transferir datos y conectar una pantalla — sin necesidad de un cable distinto para cada cosa —, MCP es el "conector universal" entre los modelos de IA y el mundo exterior. Un mismo protocolo, muchísimas integraciones.</p>
+          </div>
+          <p>MCP define <strong>tres formas de conexión</strong> según dónde vivan los recursos, y el examen puede preguntarte por ellas:</p>
+          <ul>
+            <li><strong>Local con datos locales:</strong> el servidor MCP corre en tu máquina y accede a archivos o bases de datos locales. Ideal para desarrollo local y datos que quieres mantener privados.</li>
+            <li><strong>Servidor local como puente a servicios remotos:</strong> el servidor corre en local pero llama a APIs web remotas. Útil cuando quieres una capa intermedia para cachear, validar seguridad o preprocesar.</li>
+            <li><strong>Remoto por internet:</strong> el servidor MCP vive enteramente en la nube y se conecta a servicios externos. Ideal para SaaS o integraciones de terceros que solo existen online.</li>
+          </ul>
+          <p><strong>El servidor MCP de GitHub</strong> en concreto es de código abierto, ofrece <strong>más de 30 herramientas</strong> (crear issues, gestionar PRs, buscar en el código, automatizar triaje…) y destaca por su comodidad: <strong>sin ficheros Docker ni configuración manual</strong>, con <strong>login OAuth de un solo clic</strong>, funcionando en web, escritorio y móvil, con soporte de identidad empresarial (Entra, Auth0) y escalado automático.</p>
+        </article>
+
+        <article class="concept-card">
+          <h3>🎯 Puntos clave que caen en el examen</h3>
+          <ul>
+            <li><strong>MCP solo funciona en Agent mode.</strong> Sus herramientas <strong>no se activan solas</strong>: los checkboxes vienen desmarcados por defecto y tú decides cuáles habilitar.</li>
+            <li>En <strong>Business/Enterprise</strong>, para usar MCP debe estar habilitada la política <strong>"Servidores MCP en Copilot"</strong>.</li>
+            <li>Agent Mode <strong>pide confirmación</strong> antes de ejecutar comandos de terminal o herramientas no nativas.</li>
+            <li>Agent Mode solo toca archivos <strong>locales dentro de la solución/directorio abierto</strong> y <strong>no accede a los excluidos</strong>.</li>
+            <li>Copilot Edits <strong>evolucionó</strong> hacia Agent Mode (relación que preguntan).</li>
+          </ul>
+        </article>
+
+        <article class="concept-card">
+          <h3>⚠️ Trampas típicas</h3>
+          <ul>
+            <li>"Agent Mode ejecuta comandos de terminal sin pedir permiso" → falso, pide confirmación.</li>
+            <li>"Las herramientas MCP se activan automáticamente al añadir el servidor" → falso, hay que marcarlas.</li>
+            <li>"MCP funciona en modo Ask" → falso, requiere Agent mode.</li>
+          </ul>
+        </article>
+
+        <article class="concept-card">
+          <h3>📝 Mini-repaso</h3>
+          <ol>
+            <li>Describe el bucle iterativo del Agent Mode en tus palabras.</li>
+            <li>¿Qué es MCP y con qué se compara oficialmente?</li>
+            <li>¿En qué modo de chat funciona MCP? ¿Se activan sus herramientas solas?</li>
+          </ol>
+        </article>
+
+        <!-- ============ 2.5 — Cloud Agent (el agente asíncrono en la nube) ============ -->
+        <div class="category-header" id="apartado-2-5">
+          <span class="category-header__icon">🌸</span>
+          <h2 class="category-header__title">2.5 — Cloud Agent (el agente asíncrono en la nube)</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>La explicación en profundidad</h3>
+          <p>Hasta ahora hemos hablado de agentes que trabajan <em>contigo</em> en tu editor. El <strong>Copilot Cloud Agent</strong> (también llamado <em>coding agent</em>) es distinto: trabaja <strong>de forma asíncrona en la nube</strong>, sin que tú tengas que estar delante. El flujo es precioso en su simplicidad: le <strong>asignas un issue</strong> de GitHub, él se pone a trabajar en segundo plano en su propio entorno, y cuando termina <strong>abre una pull request</strong> que tú (o tu equipo) revisáis, comentáis e iteráis.</p>
+          <p>Esto cambia el paradigma: en vez de "yo programo y Copilot me asiste", pasa a ser "yo delego una tarea acotada y Copilot me trae una propuesta terminada para revisar". Es como sumar un miembro junior al equipo que se encarga de tareas bien definidas mientras tú te centras en lo complejo.</p>
+          <div class="note note--tip">
+            <p>☁️ <strong class="note__label">Analogía kawaii:</strong> si el Agent Mode es una ayudante que cocina contigo en tu propia cocina, el Cloud Agent es como mandar un encargo a un obrador externo. Le pasas la receta (un issue bien definido), ellos se van a currarla a su taller, y te traen la tarta terminada (una pull request) para que le des el visto bueno antes de servirla. 📦</p>
+          </div>
+        </article>
+
+        <article class="concept-card">
+          <h3>🎯 Puntos clave que caen en el examen</h3>
+          <ul>
+            <li>Requiere <strong>Copilot Pro, Pro+, Business o Enterprise</strong> — <strong>NO está en Free</strong>.</li>
+            <li>Solo funciona en <strong>repositorios hospedados en GitHub</strong> (no en hosts de git externos).</li>
+            <li>Se le asignan <strong>issues</strong>; trabaja en <strong>sesiones de pull request</strong> que puedes seguir e iterar comentando a <strong>@copilot</strong>.</li>
+            <li>Se puede <strong>preconfigurar su entorno</strong> y <strong>ampliar con MCP</strong>.</li>
+            <li>Tiene <strong>protecciones integradas</strong>, y conviene <strong>validar su salida antes de hacer merge</strong>.</li>
+          </ul>
+        </article>
+
+        <article class="concept-card">
+          <h3>⚠️ Trampa típica</h3>
+          <ul>
+            <li>Situar el Cloud Agent en el plan <strong>Free</strong> → no está; necesita plan de pago (Pro ya vale).</li>
+            <li>Pensar que funciona en cualquier host de git → solo repos de GitHub.</li>
+          </ul>
+        </article>
+
+        <article class="concept-card">
+          <h3>📝 Mini-repaso</h3>
+          <ol>
+            <li>¿Cómo se le asigna trabajo al Cloud Agent y qué entrega?</li>
+            <li>¿En qué planes está disponible? ¿Funciona en GitLab?</li>
+          </ol>
+        </article>
+
+        <!-- ============ 2.6 — Copilot Spaces ============ -->
+        <div class="category-header" id="apartado-2-6">
+          <span class="category-header__icon">🌸</span>
+          <h2 class="category-header__title">2.6 — Copilot Spaces</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>La explicación en profundidad</h3>
+          <p>Imagina que trabajas en un proyecto concreto y quieres que Copilot responda <strong>siempre anclado a la documentación, el código y las convenciones de <em>ese</em> proyecto</strong>, sin que tengas que recordarle el contexto cada vez. Para eso están los <strong>Copilot Spaces</strong>: áreas de trabajo reutilizables donde Copilot opera dentro de un <strong>ámbito claramente definido</strong> que tú configuras. El resultado son respuestas <strong>fundamentadas</strong> (<em>grounded</em>) y de mucha más calidad, porque el modelo parte de un contexto curado en vez de responder "en abstracto".</p>
+          <div class="note note--tip">
+            <p>📦 <strong class="note__label">Analogía kawaii:</strong> un Space es como una cajita temática de manualidades. Metes dentro solo lo que necesitas para un proyecto concreto (telas, tijeras, patrones) y le pegas una nota con las instrucciones ("aquí hacemos amigurumis kawaii"). Cada vez que abres esa caja, todo está enfocado a ese proyecto y no te lías con material de otras manualidades. 🧶</p>
+          </div>
+          <p>Se crean en <strong>github.com/copilot/spaces</strong>, y a la hora de configurarlos hay dos decisiones y dos tipos de contexto que caen en el examen:</p>
+          <p><strong>Propiedad:</strong> un Space puede ser <strong>personal</strong> (solo tuyo) o <strong>propiedad de una organización</strong> (y estos se comparten con el modelo de permisos integrado de GitHub, ideal para equipos).</p>
+          <p><strong>Contexto</strong>, que se compone de dos ingredientes:</p>
+          <ul>
+            <li><strong>Instrucciones:</strong> texto libre donde defines en qué debe centrarse Copilot dentro de ese Space, en qué es experto, qué tipo de tareas debe abordar y qué debe evitar.</li>
+            <li><strong>Attachments (datos adjuntos):</strong> el material de referencia. Puedes adjuntar archivos y carpetas de repos, vincular issues y pull requests por su URL, subir archivos desde tu máquina (imágenes, documentos, hojas de cálculo) o pegar texto libre (transcripciones, notas). Un detalle importante: Spaces siempre referencia la <strong>versión más reciente</strong> del código de la rama principal.</li>
+          </ul>
+          <p>Un uso muy destacado es <strong>democratizar el conocimiento tribal</strong> del equipo: ese saber que suele estar solo en la cabeza de la persona senior pasa a estar disponible para todos a través del Space.</p>
+          <div class="note note--tip">
+            <p>💡 <strong class="note__label">Space vs Chat general (cae en el examen):</strong> usa un <strong>Space</strong> cuando quieras respuestas repetibles y ancladas a un contexto concreto (un proyecto, una base de conocimiento del equipo). Usa el <strong>chat general</strong> para preguntas sueltas del día a día que no necesitan ese contexto curado.</p>
+          </div>
+        </article>
+
+        <article class="concept-card">
+          <h3>🎯 Puntos clave que caen en el examen</h3>
+          <ul>
+            <li>Disponibles para <strong>cualquier usuario con suscripción a Copilot</strong>, en <strong>GitHub.com</strong>.</li>
+            <li>Dos tipos de contexto: <strong>instrucciones</strong> (texto libre) y <strong>attachments</strong> (archivos, issues, PRs, subidas, texto).</li>
+            <li>Pueden ser <strong>personales u organizativos</strong> (estos usan el modelo de permisos de GitHub).</li>
+            <li><strong>Respetan</strong> las políticas de content exclusion y code referencing.</li>
+          </ul>
+        </article>
+
+        <article class="concept-card">
+          <h3>📝 Mini-repaso</h3>
+          <ol>
+            <li>¿Qué dos tipos de contexto puedes añadir a un Space?</li>
+            <li>¿Cuándo usarías un Space en lugar del chat general?</li>
+          </ol>
+        </article>
+
+        <!-- ============ 2.7 — Code review, Spark, PR summaries e instruction files ============ -->
+        <div class="category-header" id="apartado-2-7">
+          <span class="category-header__icon">🌸</span>
+          <h2 class="category-header__title">2.7 — Code review, Spark, PR summaries e instruction files</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>La explicación en profundidad</h3>
+          <p>Copilot ha crecido más allá del editor para meterse en el <strong>flujo de colaboración</strong> de GitHub:</p>
+          <ul>
+            <li><strong>Copilot code review:</strong> acelera los ciclos de revisión de código, <strong>detecta problemas</strong> y sugiere mejoras aplicando buenas prácticas. Es como tener a alguien dando un primer repaso antes de la revisión humana. En Free solo tienes "Review selection" en VS Code; el resto de planes lo tienen completo.</li>
+            <li><strong>Pull request summaries:</strong> genera automáticamente un resumen de los cambios de una PR, ahorrando el tedioso trabajo de redactar "qué hace este PR". Disponible en Pro y superiores (<strong>no en Free</strong>).</li>
+            <li><strong>GitHub Spark:</strong> permite crear aplicaciones full-stack a partir de lenguaje natural. Está en public preview y solo en <strong>Pro+ y Enterprise</strong>.</li>
+            <li><strong>Instruction files y prompt files:</strong> archivos donde defines cómo quieres que Copilot se comporte (convenciones, estilo, idioma de los comentarios) o guardas prompts reutilizables. Sirven para obtener <strong>respuestas consistentes</strong> sin repetir las mismas indicaciones una y otra vez.</li>
+          </ul>
+          <div class="note note--tip">
+            <p>📝 <strong class="note__label">Analogía de los instruction files:</strong> son como dejarle una nota permanente pegada en la nevera a Copilot: "en esta casa siempre usamos comillas simples, comentamos en español y nombramos las variables en camelCase". Así no tienes que recordárselo en cada conversación. 🗒️</p>
+          </div>
+        </article>
+
+        <article class="concept-card">
+          <h3>🎯 Puntos clave que caen en el examen</h3>
+          <ul>
+            <li>Code review completo: en todos los planes salvo el limitado de Free.</li>
+            <li>PR summaries: Pro y superiores, no Free.</li>
+            <li>Spark: solo Pro+ y Enterprise.</li>
+            <li>Instruction/prompt files → <strong>consistencia</strong> y reutilización.</li>
+          </ul>
+        </article>
+
+        <!-- ============ 2.8 — Planes de Copilot: la tabla que MÁS cae ⭐ ============ -->
+        <div class="category-header" id="apartado-2-8">
+          <span class="category-header__icon">🌸</span>
+          <h2 class="category-header__title">2.8 — Planes de Copilot: la tabla que MÁS cae ⭐</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>La explicación en profundidad</h3>
+          <p>Si tuviera que apostar por el tema del que más preguntas verás en el examen, sería este. GitHub tiene <strong>cinco planes</strong> — <strong>Free, Pro, Pro+, Business y Enterprise</strong> — y el examen se dedica a comprobar si sabes <strong>qué función pertenece a cuál</strong>. La dificultad no está en entender los planes, sino en memorizar las <strong>fronteras</strong>: esos puntos donde una función aparece o desaparece.</p>
+          <div class="note note--tip">
+            <p>🎂 <strong class="note__label">Analogía kawaii:</strong> los planes son como los tamaños de tarta de una pastelería. La Free es la porción de muestra (rica, pero pequeñita y con lo justo). Según subes de tamaño — Pro → Pro+ → Business → Enterprise — vas desbloqueando más pisos, más decoración y utensilios de cocina que los tamaños pequeños no traen. El examen no te pregunta a qué sabe la tarta, sino <strong>qué piso lleva cada tamaño</strong>. 🍰</p>
+          </div>
+          <p>Aquí tienes la tabla con las funciones que más se preguntan:</p>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Función</th><th>Free</th><th>Pro</th><th>Pro+</th><th>Business</th><th>Enterprise</th></tr></thead>
+              <tbody>
+                <tr><td>Chat en IDE</td><td>50/mes</td><td>Ilim.*</td><td>Ilim.*</td><td>Ilim.*</td><td>Ilim.*</td></tr>
+                <tr><td>Completions inline</td><td>2000/mes</td><td>✓</td><td>✓</td><td>✓</td><td>✓</td></tr>
+                <tr><td>Agent mode</td><td>✓</td><td>✓</td><td>✓</td><td>✓</td><td>✓</td></tr>
+                <tr><td>MCP</td><td>✓</td><td>✓</td><td>✓</td><td>✓</td><td>✓</td></tr>
+                <tr><td>CLI</td><td>✓</td><td>✓</td><td>✓</td><td>✓</td><td>✓</td></tr>
+                <tr><td>Cloud Agent</td><td>✗</td><td>✓</td><td>✓</td><td>✓</td><td>✓</td></tr>
+                <tr><td>PR summaries</td><td>✗</td><td>✓</td><td>✓</td><td>✓</td><td>✓</td></tr>
+                <tr><td><strong>Audit logs</strong></td><td>✗</td><td>✗</td><td>✓</td><td>✓</td><td>✓</td></tr>
+                <tr><td><strong>Content exclusion</strong></td><td>✗</td><td>✗</td><td>✗</td><td>✓</td><td>✓</td></tr>
+                <tr><td><strong>Org policy mgmt</strong></td><td>✗</td><td>✗</td><td>✗</td><td>✓</td><td>✓</td></tr>
+                <tr><td><strong>Org custom instructions</strong></td><td>✗</td><td>✗</td><td>✗</td><td>✓</td><td>✓</td></tr>
+                <tr><td>Spark (preview)</td><td>✗</td><td>✗</td><td>✓</td><td>✗</td><td>✓</td></tr>
+                <tr><td>Non-MS agents (preview)</td><td>✗</td><td>✗</td><td>✓</td><td>✗</td><td>✓</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>*Ilimitado con los modelos incluidos.</p>
+        </article>
+
+        <article class="concept-card">
+          <h3>Las tres fronteras que tienes que memorizar sí o sí</h3>
+          <p>En vez de intentar memorizar la tabla entera celda a celda (agotador y propenso a fallos), memoriza estas <strong>tres fronteras clave</strong>, que es lo que el examen explota:</p>
+          <ol>
+            <li><strong>Las funciones "de empresa/administración" empiezan en Business.</strong> Content exclusion, gestión de políticas de organización y organization custom instructions son <strong>solo Business y Enterprise</strong>. Tiene lógica: son cosas que administra una organización, no un individuo.</li>
+            <li><strong>Los audit logs empiezan un escalón antes: en Pro+.</strong> Esta es la trampa favorita, porque intuitivamente pensarías que los logs son "cosa de empresa". Pero <strong>Pro+ ya los tiene</strong>, junto a Business y Enterprise.</li>
+            <li><strong>Spark y los agentes no-Microsoft viven en Pro+ y Enterprise… pero NO en Business.</strong> Esta es la frontera más contraintuitiva y la más preguntada.</li>
+          </ol>
+          <div class="note note--tip">
+            <p>🌷 <strong class="note__label">Truco para la frontera rara:</strong> piensa que <strong>Spark</strong> y los agentes no-Microsoft son "juguetes nuevos experimentales", y esos juguetes van a los planes <em>individuales premium</em> (Pro+) y al <em>tope de gama</em> (Enterprise), pero se saltan el plan "de equipo estándar" (Business), que va más orientado a gestión y control que a experimentar. ✨</p>
+          </div>
+        </article>
+
+        <article class="concept-card">
+          <h3>⚠️ Trampa mortal</h3>
+          <ul>
+            <li>El examen mezcla constantemente Business y Enterprise como si fueran idénticos. Pero <strong>Spark y los agentes no-Microsoft están en Pro+ y Enterprise, no en Business</strong>. Cuando veas un escenario con "Business" y una de las opciones sea Spark, sospecha.</li>
+          </ul>
+        </article>
+
+        <article class="concept-card">
+          <h3>📝 Mini-repaso</h3>
+          <ol>
+            <li>¿En qué planes está content exclusion?</li>
+            <li>¿Los audit logs están en Pro+? ¿Y en Business?</li>
+            <li>Un equipo con Business quiere usar Spark. ¿Puede?</li>
+          </ol>
+        </article>
+
+        <!-- ============ 2.9 — Administración: políticas, audit logs y REST API ============ -->
+        <div class="category-header" id="apartado-2-9">
+          <span class="category-header__icon">🌸</span>
+          <h2 class="category-header__title">2.9 — Administración: políticas, audit logs y REST API</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>La explicación en profundidad</h3>
+          <p>La última pieza del dominio es la <strong>administración</strong>, la parte que gestionan los <em>admins</em> de una organización o empresa. Aunque tú uses Copilot como desarrolladora, el examen espera que entiendas cómo se gobierna a nivel organizativo.</p>
+          <div class="note note--tip">
+            <p>🏫 <strong class="note__label">Analogía kawaii:</strong> la organización es como un cole. Los <strong>administradores</strong> son los profes: ponen las normas de clase (políticas), deciden a qué aulas puede entrar cada alumno (MCP allow list, disponibilidad de features), reparten los carnets de acceso (licencias) y llevan un cuaderno donde apuntan todo lo que ocurre (audit logs). 📓</p>
+          </div>
+          <p><strong>Gestión de políticas.</strong> Se hace desde los <strong>ajustes de organización/empresa en GitHub.com</strong> (nunca desde el IDE, ¡ojo con esta trampa!). Desde ahí, un admin puede habilitar o deshabilitar funciones, activar las <strong>políticas de code review</strong> de Copilot, controlar la <strong>disponibilidad de las características en los distintos IDE y en github.com</strong>, y gestionar el <strong>allow list de servidores MCP</strong> (qué servidores MCP están permitidos; los que no estén en la lista quedan bloqueados). Un principio importante de gobernanza: si la <strong>empresa</strong> (enterprise) impone una política, la <strong>organización y el repositorio no pueden anularla</strong> — solo pueden configurar dentro de lo permitido. La jerarquía manda hacia abajo.</p>
+          <p><strong>Audit logs.</strong> Registran los <strong>eventos administrativos y de uso</strong>: asignaciones de licencias, cambios en la configuración (por ejemplo, cambios en las content exclusions), y actividad de Copilot (quién usó qué y cuándo). Es clave entender que los audit logs registran <strong>eventos de administración y configuración</strong>, <strong>NO el contenido</strong> de las sugerencias que Copilot genera.</p>
+          <p><strong>Gestión de acceso.</strong> En Business/Enterprise, se da o se quita acceso a Copilot mediante la <strong>asignación de licencias (seats)</strong>.</p>
+          <p><strong>REST API de suscripciones.</strong> Permite gestionar <strong>programáticamente</strong> las suscripciones de Copilot de una organización: listar los asientos asignados, añadir o quitar licencias, y obtener métricas de uso (número de sugerencias, actividad del chat…). Pero — y esto es importantísimo y volveremos a ello en el Dominio 6 — la API es de <strong>administración y métricas</strong>, <strong>nunca</strong> da acceso al contenido del código que un usuario concreto ha generado (eso sería una violación de privacidad).</p>
+        </article>
+
+        <article class="concept-card">
+          <h3>🎯 Puntos clave que caen en el examen</h3>
+          <ul>
+            <li>Las políticas se configuran en <strong>GitHub.com (organización/empresa)</strong>, no en el IDE.</li>
+            <li>Las políticas de <strong>enterprise</strong> tienen prioridad; org y repo no pueden anularlas.</li>
+            <li>Los <strong>audit logs</strong> registran administración y uso, <strong>no el contenido</strong> de las sugerencias.</li>
+            <li>El acceso se gestiona por <strong>asignación de licencias</strong>.</li>
+            <li>La <strong>REST API</strong> gestiona suscripciones y métricas, no contenido de código.</li>
+          </ul>
+        </article>
+
+        <article class="concept-card">
+          <h3>⚠️ Trampas típicas</h3>
+          <ul>
+            <li>Ubicar la gestión de políticas "en el IDE" → es en GitHub.com.</li>
+            <li>Confundir deshabilitar Copilot vía <strong>Group Policy / ADMX</strong> (nivel máquina/cliente, p. ej. en Visual Studio) con la gestión de <strong>licencias</strong> en GitHub.com (nivel cuenta). Son mecanismos distintos.</li>
+          </ul>
+        </article>
+
+        <article class="concept-card">
+          <h3>📝 Mini-repaso</h3>
+          <ol>
+            <li>¿Dónde se configuran las políticas de organización?</li>
+            <li>Si la empresa impone una política, ¿puede la organización anularla?</li>
+            <li>¿Los audit logs registran el contenido de las sugerencias de Copilot?</li>
+          </ol>
+        </article>
+
+        <!-- ============ Preguntas trampa — Dominio 2 ============ -->
+        <div class="category-header" id="preguntas-trampa-dominio-2">
+          <span class="category-header__icon">💡</span>
+          <h2 class="category-header__title">Preguntas trampa — Dominio 2</h2>
+        </div>
+        <div class="quiz-q">
+          <p><span class="quiz-q__num">P1.</span> Tu organización usa <strong>GitHub Copilot Business</strong>. Un equipo necesita content exclusions; otro pide usar <strong>GitHub Spark</strong>. ¿Qué es posible con el plan actual?</p>
+          <ul class="quiz-q__options">
+            <li>A) Ambas cosas</li>
+            <li>B) Solo las content exclusions</li>
+            <li>C) Solo GitHub Spark</li>
+            <li>D) Ninguna de las dos</li>
+          </ul>
+        </div>
+        <div class="quiz-q">
+          <p><span class="quiz-q__num">P2.</span> ¿Qué describe mejor el papel de MCP?</p>
+          <ul class="quiz-q__options">
+            <li>A) Un modelo de lenguaje propio de GitHub</li>
+            <li>B) Un estándar tipo "USB-C" para conectar la IA a herramientas y datos externos</li>
+            <li>C) Un plan de suscripción de Copilot</li>
+            <li>D) Un filtro de código público</li>
+          </ul>
+        </div>
+        <div class="quiz-q">
+          <p><span class="quiz-q__num">P3.</span> ¿Cuáles de estas afirmaciones sobre Agent Mode son correctas? (Elige 2)</p>
+          <ul class="quiz-q__options">
+            <li>A) Puede acceder a archivos excluidos si son parte de la solución</li>
+            <li>B) Pide confirmación antes de ejecutar comandos de terminal</li>
+            <li>C) Es necesario estar en Agent mode para usar herramientas MCP</li>
+            <li>D) Se detiene siempre tras una única respuesta</li>
+          </ul>
+        </div>
+        <div class="quiz-q">
+          <p><span class="quiz-q__num">P4.</span> Sobre el <strong>Copilot Cloud Agent</strong>, ¿qué es cierto? (Elige 2)</p>
+          <ul class="quiz-q__options">
+            <li>A) Está disponible en el plan Free</li>
+            <li>B) Requiere repositorios hospedados en GitHub</li>
+            <li>C) Se le asignan issues y abre pull requests</li>
+            <li>D) Funciona en cualquier host de git</li>
+          </ul>
+        </div>
+        <div class="quiz-q">
+          <p><span class="quiz-q__num">P5.</span> Un equipo quiere una zona de trabajo reutilizable donde Copilot responda siempre acotado a la documentación de un proyecto. ¿Qué función usan?</p>
+          <ul class="quiz-q__options">
+            <li>A) Copilot CLI</li>
+            <li>B) Copilot Spaces</li>
+            <li>C) Content exclusion</li>
+            <li>D) PR summaries</li>
+          </ul>
+        </div>
+        <div class="quiz-q">
+          <p><span class="quiz-q__num">P6.</span> Un admin quiere restringir a qué servidores MCP pueden conectarse los devs. ¿Dónde lo configura?</p>
+          <ul class="quiz-q__options">
+            <li>A) En el archivo <code>.gitignore</code></li>
+            <li>B) En las políticas de organización/empresa (allow list de MCP en AI Controls)</li>
+            <li>C) En los ajustes personales de cada desarrollador</li>
+            <li>D) No es posible restringir servidores MCP</li>
+          </ul>
+        </div>
+        <div class="quiz-q">
+          <p><span class="quiz-q__num">P7.</span> ¿Cuál de estas afirmaciones sobre los audit logs es correcta?</p>
+          <ul class="quiz-q__options">
+            <li>A) Registran el contenido completo de cada sugerencia de Copilot</li>
+            <li>B) Registran eventos de administración y uso, pero no el contenido de las sugerencias</li>
+            <li>C) Solo están disponibles en Enterprise</li>
+            <li>D) Se configuran desde el IDE</li>
+          </ul>
+        </div>
+        <details class="answers">
+          <summary><strong>👉 Ver respuestas y explicación</strong></summary>
+          <div class="answers__body">
+            <p><strong>P1 → B) Solo las content exclusions.</strong> La trampa estrella: Business incluye content exclusions pero <strong>NO</strong> GitHub Spark (Spark solo en Pro+ y Enterprise).</p>
+            <p><strong>P2 → B).</strong> MCP es el "USB-C de la IA": un estándar para conectar modelos con herramientas y datos. No es un modelo, ni un plan, ni un filtro.</p>
+            <p><strong>P3 → B y C.</strong> A es falsa (Agent Mode nunca accede a archivos excluidos). D es falsa (itera hasta cumplir el objetivo; quien se detiene tras una respuesta es Ask).</p>
+            <p><strong>P4 → B y C.</strong> A es falsa (no está en Free; requiere Pro o superior). D es falsa (solo repos de GitHub). Se le asignan issues y trabaja en PRs.</p>
+            <p><strong>P5 → B) Copilot Spaces.</strong> Es exactamente su propósito: contexto acotado y reutilizable para respuestas fundamentadas.</p>
+            <p><strong>P6 → B).</strong> La MCP allow list se define en las políticas de organización/empresa (AI Controls). El <code>.gitignore</code> no tiene nada que ver.</p>
+            <p><strong>P7 → B).</strong> Los audit logs registran administración y uso, nunca el contenido de las sugerencias. C es falsa (están desde Pro+... los de organización en Business/Enterprise); D es falsa (se ven/configuran en GitHub.com).</p>
+          </div>
+        </details>
+
+        <!-- ============ Fuentes oficiales ============ -->
+        <div class="category-header" id="fuentes-oficiales">
+          <span class="category-header__icon">📚</span>
+          <h2 class="category-header__title">Fuentes oficiales</h2>
+        </div>
+
+        <article class="concept-card">
+          <ul>
+            <li><a href="https://learn.microsoft.com/training/modules/get-started-github-copilot/3-compare-github-copilot-plans" target="_blank" rel="noopener noreferrer">Comparación de planes de Copilot — Microsoft Learn</a></li>
+            <li><a href="https://learn.microsoft.com/es-es/training/modules/github-copilot-agent-mode/" target="_blank" rel="noopener noreferrer">Modo agente de GitHub Copilot</a></li>
+            <li><a href="https://learn.microsoft.com/es-es/training/modules/github-copilot-code-agent/" target="_blank" rel="noopener noreferrer">Cloud Agent de GitHub Copilot</a></li>
+            <li><a href="https://learn.microsoft.com/es-es/training/modules/mcp-server/" target="_blank" rel="noopener noreferrer">Introducción al servidor MCP</a></li>
+            <li><a href="https://learn.microsoft.com/es-es/training/modules/introduction-copilot-spaces/" target="_blank" rel="noopener noreferrer">Introducción a Copilot Spaces</a></li>
+            <li><a href="https://docs.github.com/en/copilot/get-started/plans" target="_blank" rel="noopener noreferrer">Página oficial de planes (siempre actualizada)</a></li>
+          </ul>
+          <div class="note note--tip">
+            <p>💗 <strong class="note__label">Nota de tu tutora:</strong> las cifras exactas de planes (mensajes, completions, precios) cambian con frecuencia. Enlaza siempre la página oficial de planes junto a la tabla para que tu contenido no quede nunca desactualizado.</p>
+          </div>
+        </article>
+
+        <div class="note note--next">
+          <p>🌸 <em>Siguiente módulo:</em> <strong>Dominio 3 — Entender los datos y la arquitectura de Copilot</strong> (el del aeropuerto ✈️). ¡Vamos a ver qué le pasa a tu prompt por dentro! 💛</p>
+        </div>
+
+        <!-- Navegación del curso -->
+        <div class="course-nav">
+          <a href="dominio-1.html">
+            <span class="course-nav__label">← Anterior</span>
+            <span class="course-nav__title">Dominio 1 · IA responsable</span>
+          </a>
+          <a href="dominio-3.html" class="next">
+            <span class="course-nav__label">Siguiente →</span>
+            <span class="course-nav__title">Dominio 3 · Datos y arquitectura</span>
+          </a>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <button id="back-to-top" class="back-to-top" aria-label="Volver arriba" title="Volver arriba">↑</button>
+
+  <script src="https://cdn.jsdelivr.net/npm/i18next@23/dist/umd/i18next.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1/prism.min.js"></script>
+  <script src="../../../assets/js/theme.js"></script>
+  <script src="../../../assets/js/main.js"></script>
+  <script src="../../../assets/js/cursor.js"></script>
+</body>
+</html>

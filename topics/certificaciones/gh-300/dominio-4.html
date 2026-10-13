@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Prompt engineering en GitHub Copilot en profundidad: las 4 Ss, zero-shot, one-shot y few-shot con ejemplos de código, role prompting, chain prompting, gestión del historial y cómo se determina el contexto. Guía kawaii completa para la GH-300.">
+  <title>GH-300 · Dominio 4: Prompt engineering | Power BI Guide by Kawaii BI</title>
+  <link rel="canonical" href="https://kawaiibi.es/topics/certificaciones/gh-300/dominio-4.html">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Kawaii Power BI Guide">
+  <meta property="og:locale" content="es_ES">
+  <meta property="og:title" content="GH-300 · Dominio 4: Prompt engineering | Power BI Guide by Kawaii BI">
+  <meta property="og:description" content="Prompt engineering en GitHub Copilot en profundidad: las 4 Ss, zero-shot, one-shot y few-shot con ejemplos de código, role prompting, chain prompting, gestión del historial y cómo se determina el contexto. Guía kawaii completa para la GH-300.">
+  <meta property="og:url" content="https://kawaiibi.es/topics/certificaciones/gh-300/dominio-4.html">
+  <meta property="og:image" content="https://kawaiibi.es/assets/images/og-banner.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="1200">
+  <meta property="og:image:alt" content="Sara Lozano Marti - Kawaii Power BI">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="GH-300 · Dominio 4: Prompt engineering | Power BI Guide by Kawaii BI">
+  <meta name="twitter:description" content="Prompt engineering en GitHub Copilot en profundidad: las 4 Ss, zero-shot, one-shot y few-shot con ejemplos de código, role prompting, chain prompting, gestión del historial y cómo se determina el contexto. Guía kawaii completa para la GH-300.">
+  <meta name="twitter:image" content="https://kawaiibi.es/assets/images/og-banner.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/prismjs@1/themes/prism-okaidia.min.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="../../../assets/css/main.css">
+  <link rel="stylesheet" href="../../../assets/css/themes.css">
+  <link rel="stylesheet" href="../../../assets/css/components.css">
+  <link rel="stylesheet" href="../../../assets/css/layout.css">
+
+  <style>
+    .topic-header { text-align: center; padding: 2.25rem 0 1.75rem; border-bottom: 2px solid var(--color-mauve); margin-bottom: 2rem; }
+    .topic-header__eyebrow { font-family: 'Fira Code', monospace; font-size: 0.8125rem; font-weight: 600; color: var(--color-coral); letter-spacing: 0.05em; }
+    .topic-header__icon { font-size: 3.5rem; margin: 0.5rem 0; display: block; }
+    .topic-header__title { font-size: clamp(1.75rem, 4vw, 2.25rem); font-weight: 800; color: var(--color-dark); margin-bottom: 0.625rem; line-height: 1.2; }
+    .topic-header__subtitle { font-size: 1rem; color: var(--color-slate); margin-bottom: 1.25rem; line-height: 1.55; max-width: 680px; margin-left: auto; margin-right: auto; }
+    .topic-header__levels { display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap; align-items: center; }
+
+    .toc { background: var(--color-rose); border-radius: var(--border-radius); padding: 1.25rem 1.5rem; margin-bottom: 2rem; border: 1.5px solid var(--color-mauve); }
+    .toc__title { font-size: 1rem; font-weight: 700; margin: 0 0 0.75rem; }
+    .toc__list { display: flex; flex-wrap: wrap; gap: 0.5rem; list-style: none; padding: 0; margin: 0; }
+    .toc__list a { font-size: 0.8125rem; color: var(--color-coral); text-decoration: none; padding: 0.25rem 0.625rem; background: var(--color-white); border-radius: 999px; border: 1px solid var(--color-mauve); display: inline-block; }
+    .toc__list a:hover { background: var(--color-coral); color: #fff; }
+
+    .category-header { display: flex; align-items: center; gap: 0.75rem; margin: 2.5rem 0 1.25rem; padding: 0.875rem 1.25rem; background: var(--color-rose); border-radius: var(--border-radius-sm); border-left: 4px solid var(--color-coral); scroll-margin-top: 20px; }
+    .category-header__icon { font-size: 1.5rem; }
+    .category-header__title { font-size: 1.25rem; font-weight: 700; margin: 0; }
+
+    .concept-card { background: var(--color-white); border: 1.5px solid var(--color-mauve); border-radius: var(--border-radius); padding: 1.5rem 1.75rem; margin-bottom: 1.25rem; }
+    .concept-card h3 { font-size: 1.0625rem; font-weight: 700; color: var(--color-coral); margin: 0 0 0.6rem; }
+    .concept-card p { font-size: 0.9375rem; line-height: 1.7; color: var(--color-dark); margin-bottom: 0.7rem; }
+    .concept-card ul, .concept-card ol { padding-left: 1.25rem; font-size: 0.9375rem; line-height: 1.75; color: var(--color-dark); margin: 0.4rem 0 0.7rem; }
+    .concept-card code, .note code, .quiz-q code, .answers code { background: var(--color-blush); padding: 0.1em 0.4em; border-radius: 4px; font-family: 'Fira Code', monospace; font-size: 0.85em; color: var(--color-coral); }
+    .concept-card pre { margin: 0.75rem 0; }
+    .concept-card pre code { background: none; color: inherit; padding: 0; }
+
+    /* Notas: el texto en negrita se queda en línea; solo la etiqueta inicial va como título */
+    .note strong { display: inline; margin: 0; font-size: inherit; }
+    .note strong.note__label { display: block; margin-bottom: 0.375rem; font-size: 0.875rem; }
+    .note p { margin: 0 0 0.5rem; line-height: 1.7; }
+    .note p:last-child { margin-bottom: 0; }
+    .note ul { padding-left: 1.25rem; margin: 0.25rem 0 0.5rem; line-height: 1.7; }
+    .note ul:last-child { margin-bottom: 0; }
+
+    .md-table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.84rem; }
+    .md-table th, .md-table td { border: 1px solid var(--color-mauve); padding: 0.5rem 0.7rem; text-align: left; vertical-align: top; }
+    .md-table th { background: var(--color-rose); font-weight: 700; color: var(--color-dark); }
+    .md-table tr:nth-child(even) td { background: var(--color-blush); }
+    .table-scroll { overflow-x: auto; }
+
+    .quiz-q { background: var(--color-white); border: 1.5px solid var(--color-mauve); border-left: 4px solid var(--color-coral); border-radius: var(--border-radius-sm); padding: 1rem 1.25rem; margin: 1rem 0; }
+    .quiz-q p { margin: 0 0 0.5rem; font-size: 0.9375rem; line-height: 1.6; }
+    .quiz-q__num { font-weight: 700; color: var(--color-coral); }
+    .quiz-q__options { list-style: none; margin: 0; padding-left: 0.5rem; font-size: 0.9rem; line-height: 1.7; }
+
+    /* Respuestas plegables de las preguntas trampa */
+    .answers { background: var(--color-rose); border: 1.5px solid var(--color-mauve); border-radius: var(--border-radius); margin: 1.25rem 0; }
+    .answers summary { cursor: pointer; padding: 1rem 1.25rem; color: var(--color-coral); }
+    .answers summary:focus-visible { outline: 2px solid var(--color-coral); outline-offset: 2px; border-radius: var(--border-radius); }
+    .answers__body { padding: 0 1.25rem 1rem; }
+    .answers__body p { font-size: 0.9375rem; line-height: 1.7; margin-bottom: 0.7rem; }
+
+    .course-nav { display: flex; justify-content: space-between; gap: 1rem; margin-top: 2.5rem; flex-wrap: wrap; }
+    .course-nav a { flex: 1 1 220px; display: block; background: var(--color-white); border: 1.5px solid var(--color-mauve); border-radius: var(--border-radius); padding: 1rem 1.25rem; text-decoration: none; color: inherit; transition: var(--transition); }
+    .course-nav a:hover { border-color: var(--color-coral); box-shadow: var(--shadow-md); text-decoration: none; }
+    .course-nav__label { font-size: 0.75rem; color: var(--color-slate); text-transform: uppercase; letter-spacing: 0.05em; display: block; }
+    .course-nav__title { font-weight: 700; color: var(--color-coral); }
+    .course-nav a.next { text-align: right; }
+  </style>
+</head>
+<body>
+
+  <aside class="site-sidebar">
+    <div class="site-sidebar__profile">
+      <img src="../../../assets/images/avatar-sara.png" alt="Sara Lozano Martí" class="site-sidebar__avatar">
+      <p class="site-sidebar__name">Sara Lozano Martí</p>
+      <p class="site-sidebar__subtitle">Power BI Expert</p>
+    </div>
+    <nav class="site-sidebar__nav" aria-label="Navegación principal">
+      <ul>
+        <li><a href="../../../index.html" class="site-sidebar__link"><span class="site-sidebar__icon">🏠</span> Inicio</a></li>
+        <li><a href="../../dax.html" class="site-sidebar__link"><span class="site-sidebar__icon">⚡</span> Funciones DAX</a></li>
+        <li><a href="../../power-query.html" class="site-sidebar__link"><span class="site-sidebar__icon">🔄</span> Power Query</a></li>
+        <li><a href="../../lenguaje-m.html" class="site-sidebar__link"><span class="site-sidebar__icon">〽️</span> Lenguaje M</a></li>
+        <li><a href="../../modelado.html" class="site-sidebar__link"><span class="site-sidebar__icon">🗄️</span> Modelado</a></li>
+        <li><a href="../../conceptos-powerbi.html" class="site-sidebar__link"><span class="site-sidebar__icon">📊</span> Conceptos Power BI</a></li>
+        <li><a href="../../fabric.html" class="site-sidebar__link"><span class="site-sidebar__icon">🧵</span> Microsoft Fabric</a></li>
+        <li><a href="../../tmdl.html" class="site-sidebar__link"><span class="site-sidebar__icon">📝</span> TMDL</a></li>
+        <li><a href="../../diseno-ux.html" class="site-sidebar__link"><span class="site-sidebar__icon">🎨</span> Diseño y UX</a></li>
+        <li><a href="../../gobernanza.html" class="site-sidebar__link"><span class="site-sidebar__icon">🔒</span> Gobernanza</a></li>
+        <li><a href="../../certificaciones.html" class="site-sidebar__link is-active"><span class="site-sidebar__icon">🎓</span> Certificaciones</a></li>
+      </ul>
+    </nav>
+    <div class="site-sidebar__divider"></div>
+    <div class="site-sidebar__footer">
+      <a href="../../../quien-soy.html" class="site-sidebar__link site-sidebar__link--highlight"><span class="site-sidebar__icon">👩‍💻</span> ¿Quién soy?</a>
+      <div class="site-sidebar__social">
+        <a href="https://www.linkedin.com/in/saralozanomarti" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><img src="../../../assets/images/logo-linkedin.png" alt="LinkedIn" class="site-sidebar__social-icon"></a>
+        <a href="https://www.youtube.com/@KawaiiPowerBI" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><img src="../../../assets/images/logo-youtube.png" alt="YouTube" class="site-sidebar__social-icon"></a>
+        <a href="https://github.com/KawaiiBI" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><img src="../../../assets/images/logo-github.png" alt="GitHub" class="site-sidebar__social-icon"></a>
+      </div>
+      <div class="site-sidebar__logo-bottom"><img src="../../../assets/images/logo-kawaii.jpg" alt="Kawaii BI" class="site-sidebar__logo-img"></div>
+      <p class="site-sidebar__copyright">Power BI Guide 🌸<br>© 2026 Kawaii BI</p>
+    </div>
+  </aside>
+
+  <div class="page-wrapper">
+    <main class="main-content">
+      <div class="topic-page">
+
+        <nav class="breadcrumb" aria-label="Ruta de navegación">
+          <span class="breadcrumb__item"><a href="../../../index.html">🏠 Inicio</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item"><a href="../../certificaciones.html">Certificaciones</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item"><a href="../gh-300.html">GH-300</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item">Dominio 4</span>
+        </nav>
+
+        <header class="topic-header">
+          <span class="topic-header__eyebrow">GH-300 · DOMINIO 4</span>
+          <span class="topic-header__icon">📕</span>
+          <h1 class="topic-header__title">Dominio 4 — Aplicar prompt engineering y creación de contexto</h1>
+          <p class="topic-header__subtitle">Prompt engineering en GitHub Copilot en profundidad: las 4 Ss, zero-shot, one-shot y few-shot con ejemplos de código, role prompting, chain prompting, gestión del historial y cómo se determina el contexto. Guía kawaii completa para la GH-300.</p>
+          <div class="topic-header__levels">
+            <span class="badge badge--special">Peso en el examen: 10-15%</span>
+          </div>
+        </header>
+
+        <nav class="toc" aria-label="Índice del dominio">
+          <p class="toc__title">📑 En este dominio:</p>
+          <ul class="toc__list">
+            <li><a href="#apartado-4-1">4.1 — Qué es el prompt engineering y por qué importa</a></li>
+            <li><a href="#apartado-4-2">4.2 — Las 4 Ss: los principios de un buen prompt ⭐</a></li>
+            <li><a href="#apartado-4-3">4.3 — Buenas prácticas de prompting (con ejemplos)</a></li>
+            <li><a href="#apartado-4-4">4.4 — Zero-shot, One-shot y Few-shot ⭐ (con ejemplos)</a></li>
+            <li><a href="#apartado-4-5">4.5 — Role prompting</a></li>
+            <li><a href="#apartado-4-6">4.6 — Chain prompting y gestión del historial</a></li>
+            <li><a href="#apartado-4-7">4.7 — Cómo se determina el contexto</a></li>
+            <li><a href="#preguntas-trampa-dominio-4">Preguntas trampa — Dominio 4</a></li>
+            <li><a href="#fuentes-oficiales">Fuentes oficiales</a></li>
+          </ul>
+        </nav>
+
+        <article class="concept-card">
+          <p><strong>Peso en el examen: 10-15%</strong></p>
+          <p>¡Holi! 🌸 Llegamos al dominio del "arte de pedir bien las cosas". El prompt engineering es lo que separa a quien le saca un 30% a Copilot de quien le saca un 90%: la herramienta es la misma, pero <strong>cómo le hablas</strong> cambia radicalmente el resultado. Y para el examen, este dominio es muy agradecido porque tiene conceptos muy nítidos y memorizables que caen casi tal cual: <strong>las 4 Ss</strong> y la familia <strong>zero/one/few-shot</strong>. Domina esos dos bloques y llevas medio dominio en el bolsillo.</p>
+          <p>En este capítulo vamos a ir más allá de las definiciones: verás <strong>ejemplos concretos de prompts</strong> (buenos y malos) para que interiorices <em>por qué</em> uno funciona mejor que otro, no solo <em>que</em> funciona. ¡Vamos! 💛</p>
+          <div class="note note--best-practice">
+            <p>📋 <strong class="note__label">Lo que mide el examen en este dominio (objetivos oficiales):</strong></p>
+            <ul>
+              <li>Describir la <strong>estructura del prompt</strong> y el contexto.</li>
+              <li>Comprender <strong>cómo se determina el contexto</strong>.</li>
+              <li>Usar creación de solicitudes <strong>zero-shot / one-shot / few-shot</strong>.</li>
+              <li>Aplicar <strong>buenas prácticas</strong> de prompting.</li>
+              <li>Explicar los <strong>principios</strong> de prompt engineering.</li>
+              <li>Describir el <strong>flujo del prompt</strong> y el uso del <strong>historial de chat</strong>.</li>
+            </ul>
+          </div>
+        </article>
+
+        <!-- ============ 4.1 — Qué es el prompt engineering y por qué importa ============ -->
+        <div class="category-header" id="apartado-4-1">
+          <span class="category-header__icon">🌟</span>
+          <h2 class="category-header__title">4.1 — Qué es el prompt engineering y por qué importa</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>La explicación en profundidad</h3>
+          <p>El <strong>prompt engineering</strong> es el proceso de <strong>diseñar instrucciones claras y con el contexto adecuado</strong> para guiar a Copilot hacia el código que realmente necesitas. No es "hablarle bonito": es una disciplina con principios y técnicas concretas. El objetivo último es conseguir código que sea correcto en <strong>tres dimensiones a la vez</strong>: sintáctica (que compile), funcional (que haga lo que debe) y contextual (que encaje con tu proyecto, sus convenciones y sus dependencias).</p>
+          <p>¿Por qué es tan determinante? Porque, como vimos en el Dominio 3, Copilot genera a partir del <strong>contexto</strong> que recibe. Un prompt pobre le da poco contexto y le obliga a "adivinar", lo que dispara las probabilidades de que alucine o de que produzca algo genérico que no encaja. Un buen prompt le da exactamente lo que necesita para acertar a la primera.</p>
+          <div class="note note--tip">
+            <p>🍳 <strong class="note__label">Analogía kawaii:</strong> hacer un buen prompt es como pedirle las cosas a una cocinera dispuestísima pero <strong>muy literal</strong>. Si le dices "hazme algo de comer", te puede traer cualquier cosa — quizás unas gachas cuando tú querías una tortilla. Pero si le dices "hazme una tortilla francesa de dos huevos, poco hecha, con una pizca de sal y sin cebolla", ¡ahí sí sale exactamente lo que tenías en mente! La cocinera es buenísima; solo necesita que le concretes. 🍳</p>
+          </div>
+        </article>
+
+        <article class="concept-card">
+          <h3>📝 Mini-repaso</h3>
+          <ol>
+            <li>¿Qué tres dimensiones de corrección busca un buen prompt?</li>
+            <li>¿Por qué un prompt pobre aumenta el riesgo de alucinaciones?</li>
+          </ol>
+        </article>
+
+        <!-- ============ 4.2 — Las 4 Ss: los principios de un buen prompt ⭐ ============ -->
+        <div class="category-header" id="apartado-4-2">
+          <span class="category-header__icon">🌟</span>
+          <h2 class="category-header__title">4.2 — Las 4 Ss: los principios de un buen prompt ⭐</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>La explicación en profundidad</h3>
+          <p>Los cuatro principios fundamentales de un buen prompt se resumen en las "<strong>4 Ss</strong>" (en inglés, que es como caen en el examen). Vamos a verlos con lo que significa cada uno de verdad:</p>
+          <p><strong>1. Single (Único).</strong> Enfoca el prompt en <strong>una sola tarea bien definida</strong>. Si intentas que Copilot haga cinco cosas a la vez en un mismo prompt, el resultado se difumina. Mejor descomponer: una tarea, un prompt.</p>
+          <p><strong>2. Specific (Específico).</strong> Da instrucciones <strong>explícitas y detalladas</strong>. No dejes espacio a la interpretación: indica el lenguaje, el formato de salida, las restricciones. Cuanto más concreta seas, menos "adivina" Copilot.</p>
+          <p><strong>3. Short (Corto).</strong> Sé <strong>conciso y ve al grano</strong>. Ojo, esto no contradice a "specific": ser específica no es ser prolija. Se trata de dar toda la información necesaria sin paja. Un prompt puede ser corto <em>y</em> específico a la vez — de hecho, ese es el ideal.</p>
+          <p><strong>4. Surround (Rodear).</strong> Aprovecha el <strong>contexto del entorno</strong>: usa <strong>nombres de archivo descriptivos</strong> y mantén <strong>abiertos los archivos relacionados</strong>, porque (recuerda el Dominio 3) Copilot usa las pestañas abiertas como contexto. "Surround" no va de escribir más en el prompt, sino de rodear a Copilot de pistas útiles en tu espacio de trabajo.</p>
+          <div class="note note--tip">
+            <p>🎀 <strong class="note__label">Analogía de las 4 Ss = pedir un helado perfecto:</strong></p>
+            <ul>
+              <li><strong>Single:</strong> pides UN sabor claro, no "mézclame diez cosas a ver qué sale".</li>
+              <li><strong>Specific:</strong> "de fresa, en cucurucho, con virutas de chocolate", no "algo dulce".</li>
+              <li><strong>Short:</strong> lo dices en una frase, sin contarle a la heladera la historia de tu vida.</li>
+              <li><strong>Surround:</strong> estás dentro de la heladería (el contexto), así que ella ya ve de qué va todo. 🍦</li>
+            </ul>
+          </div>
+          <p>Veamos las 4 Ss en acción con un ejemplo. Un prompt flojo sería:</p>
+          <pre><code class="language-plaintext">// haz una función</code></pre>
+          <p>Y uno que aplica las 4 Ss:</p>
+          <pre><code class="language-plaintext">// Write a Python function `filter_even(numbers)` that takes a list of
+// integers and returns a new list with only the even numbers, preserving order.</code></pre>
+          <p>El segundo es <strong>single</strong> (una tarea: filtrar pares), <strong>specific</strong> (nombra la función, el lenguaje, el tipo de entrada y salida, y que preserve el orden) y <strong>short</strong> (una sola frase clara). El <strong>surround</strong> lo aportas tú teniendo abierto el archivo con nombre descriptivo (<code>number_utils.py</code>, por ejemplo).</p>
+          <div class="note note--tip">
+            <p>💡 Memoriza las iniciales inglesas: <strong class="note__label">S</strong>ingle, <strong>S</strong>pecific, <strong>S</strong>hort, <strong>S</strong>urround. Las cuatro con S — pero solo esas cuatro.</p>
+          </div>
+        </article>
+
+        <article class="concept-card">
+          <h3>⚠️ Trampas típicas</h3>
+          <ul>
+            <li>Que te cuelen una <strong>quinta "S" inventada</strong> ("Structured", "Sequential", "Secure") → solo son <strong>cuatro</strong>.</li>
+            <li>Confundir <strong>Surround</strong> con "escribir prompts largos" → Surround es contexto del <em>entorno</em> (archivos abiertos, nombres), no longitud del prompt. De hecho, "Short" empuja justo en la dirección contraria.</li>
+          </ul>
+        </article>
+
+        <article class="concept-card">
+          <h3>📝 Mini-repaso</h3>
+          <ol>
+            <li>Enumera las 4 Ss y explica "Surround" con tus palabras.</li>
+            <li>¿"Short" y "Specific" se contradicen? ¿Por qué no?</li>
+          </ol>
+        </article>
+
+        <!-- ============ 4.3 — Buenas prácticas de prompting (con ejemplos) ============ -->
+        <div class="category-header" id="apartado-4-3">
+          <span class="category-header__icon">🌟</span>
+          <h2 class="category-header__title">4.3 — Buenas prácticas de prompting (con ejemplos)</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>La explicación en profundidad</h3>
+          <p>Más allá de las 4 Ss, hay una serie de buenas prácticas que el examen recoge y que conviene entender con ejemplos:</p>
+          <p><strong>Sé clara con el resultado esperado.</strong> Indica el formato o el tipo de retorno. Compara:</p>
+          <pre><code class="language-plaintext">// dame los clientes</code></pre>
+          <p>frente a:</p>
+          <pre><code class="language-plaintext">// Using SQLAlchemy, write a parameterized query that retrieves all customers
+// from the `Customer` table where `last_name` matches a provided parameter.
+// Return the query result as a list of Customer objects.</code></pre>
+          <p>El segundo especifica la tecnología (SQLAlchemy), la seguridad (parametrizada, no concatenada), la tabla, la condición y el formato de salida. Copilot casi no tiene que adivinar nada.</p>
+          <p><strong>Aporta contexto con comentarios.</strong> Un comentario descriptivo justo encima de donde vas a escribir orienta muchísimo. Y mantén abiertas las pestañas relacionadas (Surround).</p>
+          <p><strong>Da ejemplos cuando el patrón importe.</strong> Si quieres que siga un estilo concreto, enséñaselo (esto nos lleva directos al few-shot de la siguiente sección).</p>
+          <p><strong>Assert and iterate (afirma e itera).</strong> Esta es una de las prácticas más importantes y más preguntadas. Si la primera sugerencia no es perfecta, <strong>no empieces de cero ni te pongas a editarla a mano línea por línea</strong>. En su lugar: descarta la sugerencia, <strong>enriquece tu comentario o prompt</strong> con los detalles que faltaban (o añade un ejemplo), y vuelve a pedir. Es un <strong>diálogo iterativo</strong>: cada vuelta refina el resultado.</p>
+          <div class="note note--tip">
+            <p>🎨 <strong class="note__label">Analogía "assert and iterate":</strong> es como pedirle a una amiga ilustradora que te dibuje. Si el primer boceto no te convence, no tiras el papel y te marchas enfadada, ni le coges el lápiz para corregírselo tú. Le dices "me encanta, pero ponle más sonrisa y el pelo más rizado", y ella ajusta. El buen resultado sale del ida y vuelta, no del primer intento. ✏️</p>
+          </div>
+          <p><strong>Un par de técnicas finas</strong> que también aparecen: <strong>darle un "out" al modelo</strong> (indicarle qué hacer si no puede completar la tarea, p. ej. "si no encuentras el dato, responde 'no encontrado'", lo que reduce alucinaciones) y tener en cuenta que <strong>el orden importa</strong> (dónde colocas las instrucciones respecto al contenido influye en el resultado).</p>
+        </article>
+
+        <article class="concept-card">
+          <h3>⚠️ Trampa típica</h3>
+          <ul>
+            <li>Presentar "refinar el output a mano" como la mejor práctica → lo recomendado es <strong>iterar el prompt</strong>, no editar manualmente. (Editar a mano ocasionalmente está bien, pero la <em>práctica de prompt engineering</em> que el examen premia es enriquecer y volver a pedir.)</li>
+          </ul>
+        </article>
+
+        <article class="concept-card">
+          <h3>📝 Mini-repaso</h3>
+          <ol>
+            <li>Explica "assert and iterate" y por qué es mejor que editar a mano.</li>
+            <li>¿Cómo puede ayudar darle un "out" al modelo a reducir alucinaciones?</li>
+          </ol>
+        </article>
+
+        <!-- ============ 4.4 — Zero-shot, One-shot y Few-shot ⭐ (con ejemplos) ============ -->
+        <div class="category-header" id="apartado-4-4">
+          <span class="category-header__icon">🌟</span>
+          <h2 class="category-header__title">4.4 — Zero-shot, One-shot y Few-shot ⭐ (con ejemplos)</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>La explicación en profundidad</h3>
+          <p>Esta es la otra joya del dominio. Se refiere a <strong>cuántos ejemplos incluyes en el prompt</strong> para guiar a Copilot. La clave nemotécnica es sencilla: <strong>el número del nombre = el número de ejemplos.</strong></p>
+          <p><strong>Zero-shot: cero ejemplos.</strong> Le pides algo directamente, confiando en el conocimiento que el modelo ya tiene de su entrenamiento. Funciona muy bien para tareas comunes y estándar. Ventaja: es lo más económico (menos tokens). Ejemplo:</p>
+          <pre><code class="language-plaintext"># Convert Celsius to Fahrenheit
+def celsius_to_fahrenheit(c):</code></pre>
+          <p>No le has dado ningún ejemplo; confías en que "sabe" la fórmula. Para algo tan estándar, sobra.</p>
+          <p><strong>One-shot: un ejemplo.</strong> Le das <strong>un</strong> ejemplo de entrada→salida para que capte tu patrón o convención concreta. Útil cuando quieres consistencia con un estilo particular. Ejemplo:</p>
+          <pre><code class="language-plaintext"># Format phone numbers like this example:
+# Input: "1234567890" -&gt; Output: "(123) 456-7890"
+def format_phone(number):</code></pre>
+          <p>Ese único ejemplo le dice exactamente el formato que esperas.</p>
+          <p><strong>Few-shot: varios ejemplos.</strong> Le das <strong>varios</strong> pares entrada→salida para que infiera un patrón más sofisticado, o para cubrir varios escenarios y casos límite. Es el equilibrio entre la imprevisibilidad del zero-shot y el coste de reentrenar el modelo. Ejemplo clásico (clasificación por patrón):</p>
+          <pre><code class="language-plaintext"># Classify the topic of each headline:
+# "Twins' Correa to test free agency" -&gt; Baseball
+# "Qatar World Cup zones for sobering up" -&gt; Soccer
+# "Fantasy football intel for Week 6" -&gt; Football
+# "Coach confident injury won't derail Warriors" -&gt;</code></pre>
+          <p>Con esos tres ejemplos, el modelo infiere que debe responder "Basketball" — ¡aunque no le hayas dado ningún ejemplo con esa etiqueta! Ese es el poder del few-shot: los ejemplos "condicionan" al modelo para la tarea actual.</p>
+          <div class="note note--tip">
+            <p>🍪 <strong class="note__label">Analogía kawaii de las galletas:</strong></p>
+            <ul>
+              <li><strong>Zero-shot:</strong> le dices a tu amiga "hazme galletas" sin enseñarle ninguna. Usa lo que ya sabe hornear.</li>
+              <li><strong>One-shot:</strong> le enseñas UNA galleta tuya y le dices "hazlas así". Copia tu estilo.</li>
+              <li><strong>Few-shot:</strong> le enseñas VARIAS (una redonda, una de estrella, una con pepitas) y ella pilla el patrón para hacer toda la bandeja variada y coherente. 🍪✨</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="concept-card">
+          <h3>La confusión estrella: few-shot vs. fine-tuning</h3>
+          <p>Esta distinción cae seguro, así que vamos a dejarla clavada. <strong>Few-shot</strong> consiste en dar ejemplos <strong>dentro del prompt</strong>, en el momento: no cambia el modelo, solo lo "condiciona" para esa consulta concreta. <strong>Fine-tuning</strong> es <strong>reentrenar</strong> el modelo con un conjunto de datos: modifica el modelo de forma <strong>permanente</strong>. Son cosas totalmente distintas.</p>
+          <div class="note note--tip">
+            <p>🧠 <strong class="note__label">Analogía few-shot vs fine-tuning:</strong> el few-shot es enseñarle unas fotos de referencia a tu amiga ilustradora <em>justo antes</em> de que dibuje — le sirven para ese dibujo y ya. El fine-tuning es mandarla a una <em>academia de bellas artes</em> durante meses para que cambie su estilo de dibujo para siempre. Uno es un post-it temporal; el otro es ir al cole a cambiar de verdad. 🎓</p>
+          </div>
+          <p>Regla para el examen: si el enunciado habla de "ejemplos en el prompt" → <strong>few-shot</strong>. Si habla de "reentrenar / ajustar el modelo con datos" → <strong>fine-tuning</strong>.</p>
+        </article>
+
+        <article class="concept-card">
+          <h3>⚠️ Trampas típicas</h3>
+          <ul>
+            <li>Llamar "few-shot" a un prompt con <strong>un solo</strong> ejemplo → eso es <strong>one-shot</strong>.</li>
+            <li>Confundir few-shot (ejemplos en el prompt, temporal) con fine-tuning (reentrenar, permanente).</li>
+          </ul>
+        </article>
+
+        <article class="concept-card">
+          <h3>📝 Mini-repaso</h3>
+          <ol>
+            <li>¿Cuántos ejemplos lleva cada técnica: zero, one, few?</li>
+            <li>¿En qué se diferencian few-shot y fine-tuning?</li>
+            <li>¿Para qué tipo de tarea es ideal el zero-shot?</li>
+          </ol>
+        </article>
+
+        <!-- ============ 4.5 — Role prompting ============ -->
+        <div class="category-header" id="apartado-4-5">
+          <span class="category-header__icon">🌟</span>
+          <h2 class="category-header__title">4.5 — Role prompting</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>La explicación en profundidad</h3>
+          <p>El <strong>role prompting</strong> consiste en pedirle a Copilot que <strong>actúe como un experto</strong> de un dominio concreto, para orientar la respuesta hacia ese enfoque y elevar su calidad. Al asignarle un "rol", el modelo activa los patrones asociados a ese perfil.</p>
+          <p>Ejemplos:</p>
+          <pre><code class="language-plaintext">Act as a cybersecurity expert. Review this login function and harden it
+against common OWASP vulnerabilities.</code></pre>
+          <pre><code class="language-plaintext">Act as a performance optimization expert. Refactor this loop for better
+time complexity on large datasets.</code></pre>
+          <p>El beneficio: obtienes código más alineado con las buenas prácticas de ese dominio, más rápido y con menos ciclos de revisión, porque el modelo "se pone las gafas" de esa especialidad.</p>
+          <div class="note note--tip">
+            <p>🎭 <strong class="note__label">Analogía kawaii:</strong> el role prompting es como ponerle un disfraz a Copilot. Si le dices "actúa como experta en ciberseguridad", se pone su capa de superheroína de la seguridad y empieza a pensar en sanitizar inputs, en OWASP, en validaciones… El disfraz activa el "modo experto" del área que necesitas. 🦸‍♀️</p>
+          </div>
+          <div class="note note--warning">
+            <p>💡 Ojo con un matiz que a veces se pregunta: <strong class="note__label">rol ≠ tono</strong>. Pedirle que "actúe como experta en testing" (rol) no es lo mismo que pedirle que "responda en tono divertido" (tono). El role prompting orienta la <em>experiencia y el enfoque</em>, no el estilo de redacción.</p>
+          </div>
+        </article>
+
+        <article class="concept-card">
+          <h3>📝 Mini-repaso</h3>
+          <ol>
+            <li>¿Qué es el role prompting y qué beneficio aporta?</li>
+            <li>¿Es lo mismo asignar un rol que pedir un tono?</li>
+          </ol>
+        </article>
+
+        <!-- ============ 4.6 — Chain prompting y gestión del historial ============ -->
+        <div class="category-header" id="apartado-4-6">
+          <span class="category-header__icon">🌟</span>
+          <h2 class="category-header__title">4.6 — Chain prompting y gestión del historial</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>La explicación en profundidad</h3>
+          <p>En tareas complejas rara vez basta un solo prompt. El <strong>chain prompting</strong> consiste en <strong>encadenar prompts</strong> donde cada turno construye sobre el anterior: primero la implementación, luego el manejo de errores, luego los tests, luego la documentación, luego la optimización… Vas guiando a Copilot paso a paso hacia una solución completa.</p>
+          <p>El problema es que, según se alarga la conversación, el historial se vuelve <strong>pesado, costoso e incluso contraproducente</strong> (recuerda del Dominio 3 que los LLM pierden coherencia en charlas muy largas). Por eso hay que <strong>gestionar el historial</strong> con cabeza:</p>
+          <ul>
+            <li><strong>Resumir el contexto</strong> cuando la conversación se alarga (en vez de arrastrarlo todo).</li>
+            <li><strong>Resetear</strong> y dar contexto enfocado cuando empiezas una feature nueva.</li>
+            <li>Usar <strong>referencias concisas</strong> en lugar de repetir implementaciones completas en cada turno.</li>
+          </ul>
+          <p>Un dato de eficiencia que a veces aparece: arrastrar un historial completo muy largo puede consumir del orden de <strong>2-3 unidades de petición premium (PRU) por turno</strong>, mientras que resumir o resetear lo acerca a <strong>~1 PRU por petición</strong>. O sea: gestionar el historial no solo mejora la calidad, también el coste.</p>
+          <div class="note note--tip">
+            <p>🧶 <strong class="note__label">Analogía kawaii:</strong> el chain prompting es como tejer una bufanda punto a punto: cada vuelta se apoya en la anterior y así crece la prenda. Pero si arrastras TODO el ovillo enredado a cada puntada, pesa un montón y te lías. Mejor ir haciendo <strong>madejas ordenaditas</strong> (resúmenes) o empezar un ovillo limpio para una parte nueva. 🧣</p>
+          </div>
+        </article>
+
+        <article class="concept-card">
+          <h3>⚠️ Trampa típica</h3>
+          <ul>
+            <li>"Mantener siempre todo el historial completo es lo mejor para la calidad" → falso: es <strong>costoso</strong> y puede <strong>degradar</strong> la relevancia. Lo recomendado es resumir/resetear.</li>
+          </ul>
+        </article>
+
+        <article class="concept-card">
+          <h3>📝 Mini-repaso</h3>
+          <ol>
+            <li>¿Qué es el chain prompting?</li>
+            <li>Da dos formas de gestionar eficientemente un historial largo.</li>
+          </ol>
+        </article>
+
+        <!-- ============ 4.7 — Cómo se determina el contexto ============ -->
+        <div class="category-header" id="apartado-4-7">
+          <span class="category-header__icon">🌟</span>
+          <h2 class="category-header__title">4.7 — Cómo se determina el contexto</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>La explicación en profundidad</h3>
+          <p>Cerramos entendiendo <strong>de dónde saca Copilot el contexto</strong>, porque el examen lo pregunta explícitamente. Copilot no lee tu mente: reúne pistas de varias fuentes.</p>
+          <p>Para las <strong>sugerencias inline</strong>, usa: el código alrededor del cursor, las <strong>pestañas abiertas</strong>, el nombre y tipo del archivo, y la estructura del proyecto.</p>
+          <p>Para el <strong>chat</strong>, además entra en juego:</p>
+          <ul>
+            <li>La <strong>indexación del código</strong>: remota si tu repo está en GitHub o Azure DevOps, local si no.</li>
+            <li>La <strong>búsqueda semántica</strong>: y aquí un concepto que cae. La búsqueda semántica busca por <strong>significado</strong>, usando <em>embeddings</em> (representaciones vectoriales del código), no por coincidencia exacta de palabras. Esto le permite encontrar código <em>relacionado conceptualmente</em> aunque no compartan las mismas palabras.</li>
+            <li>El <strong>historial del chat</strong>, los <strong>archivos abiertos</strong> y el <strong>contexto explícito</strong> que tú añadas con referencias (a archivos, símbolos, cambios de Git…).</li>
+          </ul>
+          <div class="note note--tip">
+            <p>🔍 <strong class="note__label">Analogía búsqueda semántica:</strong> la búsqueda por palabras exactas es como buscar "perro" y encontrar solo la palabra "perro". La búsqueda semántica entiende el <em>significado</em>: buscas "perro" y también te encuentra "cachorro", "can" o "michi peludo que ladra y mueve el rabo". Busca por idea, no por letras. 🐶</p>
+          </div>
+        </article>
+
+        <article class="concept-card">
+          <h3>⚠️ Trampa típica</h3>
+          <ul>
+            <li>Confundir la <strong>búsqueda semántica</strong> (por significado, con embeddings) con la <strong>búsqueda tradicional</strong> por palabras clave exactas.</li>
+          </ul>
+        </article>
+
+        <article class="concept-card">
+          <h3>📝 Mini-repaso</h3>
+          <ol>
+            <li>¿En qué se basa la búsqueda semántica y cómo difiere de la búsqueda por palabras exactas?</li>
+            <li>Nombra tres fuentes de contexto que usa Copilot Chat.</li>
+          </ol>
+        </article>
+
+        <!-- ============ Preguntas trampa — Dominio 4 ============ -->
+        <div class="category-header" id="preguntas-trampa-dominio-4">
+          <span class="category-header__icon">💡</span>
+          <h2 class="category-header__title">Preguntas trampa — Dominio 4</h2>
+        </div>
+        <div class="quiz-q">
+          <p><span class="quiz-q__num">P1.</span> ¿Cuáles son los cuatro principios ("4 Ss")?</p>
+          <ul class="quiz-q__options">
+            <li>A) Single, Specific, Short, Surround</li>
+            <li>B) Simple, Specific, Structured, Short</li>
+            <li>C) Single, Sequential, Short, Surround</li>
+            <li>D) Specific, Short, Secure, Surround</li>
+          </ul>
+        </div>
+        <div class="quiz-q">
+          <p><span class="quiz-q__num">P2.</span> Le das a Copilot <strong>un único ejemplo</strong> de entrada→salida y le pides otro similar. ¿Qué técnica usas?</p>
+          <ul class="quiz-q__options">
+            <li>A) Zero-shot</li>
+            <li>B) One-shot</li>
+            <li>C) Few-shot</li>
+            <li>D) Fine-tuning</li>
+          </ul>
+        </div>
+        <div class="quiz-q">
+          <p><span class="quiz-q__num">P3.</span> Proporcionas <strong>varios ejemplos dentro del prompt</strong> para cubrir múltiples escenarios. ¿Cuál es correcta?</p>
+          <ul class="quiz-q__options">
+            <li>A) Es fine-tuning, porque reentrena el modelo</li>
+            <li>B) Es few-shot; los ejemplos van en el prompt y no reentrenan el modelo</li>
+            <li>C) Es zero-shot avanzado</li>
+            <li>D) Requiere plan Enterprise</li>
+          </ul>
+        </div>
+        <div class="quiz-q">
+          <p><span class="quiz-q__num">P4.</span> Una conversación de Chat se ha vuelto larga y costosa. ¿Qué se recomienda? (Elige 2)</p>
+          <ul class="quiz-q__options">
+            <li>A) Mantener siempre todo el historial</li>
+            <li>B) Resumir el contexto cuando se alarga</li>
+            <li>C) Resetear y dar contexto enfocado para features nuevas</li>
+            <li>D) Repetir la implementación completa en cada turno</li>
+          </ul>
+        </div>
+        <div class="quiz-q">
+          <p><span class="quiz-q__num">P5.</span> ¿Cómo funciona la búsqueda semántica que Copilot usa para el contexto?</p>
+          <ul class="quiz-q__options">
+            <li>A) Busca coincidencias exactas de palabras clave</li>
+            <li>B) Busca por significado usando embeddings vectoriales</li>
+            <li>C) Solo mira el archivo activo</li>
+            <li>D) Requiere que reentrenes el modelo</li>
+          </ul>
+        </div>
+        <div class="quiz-q">
+          <p><span class="quiz-q__num">P6.</span> La primera sugerencia de Copilot no es del todo correcta. ¿Cuál es la mejor práctica de prompt engineering?</p>
+          <ul class="quiz-q__options">
+            <li>A) Editar la sugerencia a mano línea por línea</li>
+            <li>B) Descartarla, enriquecer el prompt con más detalles o un ejemplo, y volver a pedir</li>
+            <li>C) Aceptarla igualmente para no perder tiempo</li>
+            <li>D) Cambiar de modelo</li>
+          </ul>
+        </div>
+        <details class="answers">
+          <summary><strong>👉 Ver respuestas y explicación</strong></summary>
+          <div class="answers__body">
+            <p><strong>P1 → A) Single, Specific, Short, Surround.</strong> Las demás cuelan palabras plausibles ("Structured", "Sequential", "Secure") que no forman parte de las 4 Ss.</p>
+            <p><strong>P2 → B) One-shot.</strong> Un ejemplo = one-shot.</p>
+            <p><strong>P3 → B).</strong> Varios ejemplos en el prompt = few-shot. La trampa es A: few-shot <strong>no</strong> reentrena el modelo (eso sería fine-tuning).</p>
+            <p><strong>P4 → B y C.</strong> A y D son justo lo ineficiente y costoso que hay que evitar.</p>
+            <p><strong>P5 → B).</strong> La búsqueda semántica va por <em>significado</em> (embeddings), no por palabras exactas.</p>
+            <p><strong>P6 → B).</strong> Es el "assert and iterate": enriquecer el prompt y volver a pedir, en vez de editar a mano (A) o aceptar sin más (C).</p>
+          </div>
+        </details>
+
+        <!-- ============ Fuentes oficiales ============ -->
+        <div class="category-header" id="fuentes-oficiales">
+          <span class="category-header__icon">📚</span>
+          <h2 class="category-header__title">Fuentes oficiales</h2>
+        </div>
+
+        <article class="concept-card">
+          <ul>
+            <li><a href="https://learn.microsoft.com/training/modules/introduction-prompt-engineering-with-github-copilot/2-prompt-engineering-foundations-best-practices" target="_blank" rel="noopener noreferrer">Fundamentos y buenas prácticas de prompt engineering — Microsoft Learn</a></li>
+            <li><a href="https://learn.microsoft.com/es-es/training/modules/introduction-prompt-engineering-with-github-copilot/" target="_blank" rel="noopener noreferrer">Introducción a la ingeniería de prompts con GitHub Copilot</a></li>
+            <li><a href="https://docs.github.com/copilot/using-github-copilot/copilot-chat/prompt-engineering-for-copilot-chat" target="_blank" rel="noopener noreferrer">Prompt engineering para Copilot Chat (GitHub Docs)</a></li>
+          </ul>
+        </article>
+
+        <div class="note note--next">
+          <p>🌸 <em>Siguiente módulo:</em> <strong>Dominio 5 — Mejorar la productividad del desarrollador</strong>. Casos de uso reales, testing y seguridad. ¡Vas volando! 💛</p>
+        </div>
+
+        <!-- Navegación del curso -->
+        <div class="course-nav">
+          <a href="dominio-3.html">
+            <span class="course-nav__label">← Anterior</span>
+            <span class="course-nav__title">Dominio 3 · Datos y arquitectura</span>
+          </a>
+          <a href="dominio-5.html" class="next">
+            <span class="course-nav__label">Siguiente →</span>
+            <span class="course-nav__title">Dominio 5 · Productividad</span>
+          </a>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <button id="back-to-top" class="back-to-top" aria-label="Volver arriba" title="Volver arriba">↑</button>
+
+  <script src="https://cdn.jsdelivr.net/npm/i18next@23/dist/umd/i18next.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1/prism.min.js"></script>
+  <script src="../../../assets/js/theme.js"></script>
+  <script src="../../../assets/js/main.js"></script>
+  <script src="../../../assets/js/cursor.js"></script>
+</body>
+</html>

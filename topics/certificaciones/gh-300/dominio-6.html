@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Privacidad y salvaguardas en GitHub Copilot en profundidad: content exclusions y sus limitaciones, filtro de código público, code referencing, protecciones contractuales, propiedad del output, REST API, audit logs y troubleshooting. Guía kawaii completa para la GH-300.">
+  <title>GH-300 · Dominio 6: Privacidad y salvaguardas | Power BI Guide by Kawaii BI</title>
+  <link rel="canonical" href="https://kawaiibi.es/topics/certificaciones/gh-300/dominio-6.html">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Kawaii Power BI Guide">
+  <meta property="og:locale" content="es_ES">
+  <meta property="og:title" content="GH-300 · Dominio 6: Privacidad y salvaguardas | Power BI Guide by Kawaii BI">
+  <meta property="og:description" content="Privacidad y salvaguardas en GitHub Copilot en profundidad: content exclusions y sus limitaciones, filtro de código público, code referencing, protecciones contractuales, propiedad del output, REST API, audit logs y troubleshooting. Guía kawaii completa para la GH-300.">
+  <meta property="og:url" content="https://kawaiibi.es/topics/certificaciones/gh-300/dominio-6.html">
+  <meta property="og:image" content="https://kawaiibi.es/assets/images/og-banner.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="1200">
+  <meta property="og:image:alt" content="Sara Lozano Marti - Kawaii Power BI">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="GH-300 · Dominio 6: Privacidad y salvaguardas | Power BI Guide by Kawaii BI">
+  <meta name="twitter:description" content="Privacidad y salvaguardas en GitHub Copilot en profundidad: content exclusions y sus limitaciones, filtro de código público, code referencing, protecciones contractuales, propiedad del output, REST API, audit logs y troubleshooting. Guía kawaii completa para la GH-300.">
+  <meta name="twitter:image" content="https://kawaiibi.es/assets/images/og-banner.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/prismjs@1/themes/prism-okaidia.min.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="../../../assets/css/main.css">
+  <link rel="stylesheet" href="../../../assets/css/themes.css">
+  <link rel="stylesheet" href="../../../assets/css/components.css">
+  <link rel="stylesheet" href="../../../assets/css/layout.css">
+
+  <style>
+    .topic-header { text-align: center; padding: 2.25rem 0 1.75rem; border-bottom: 2px solid var(--color-mauve); margin-bottom: 2rem; }
+    .topic-header__eyebrow { font-family: 'Fira Code', monospace; font-size: 0.8125rem; font-weight: 600; color: var(--color-coral); letter-spacing: 0.05em; }
+    .topic-header__icon { font-size: 3.5rem; margin: 0.5rem 0; display: block; }
+    .topic-header__title { font-size: clamp(1.75rem, 4vw, 2.25rem); font-weight: 800; color: var(--color-dark); margin-bottom: 0.625rem; line-height: 1.2; }
+    .topic-header__subtitle { font-size: 1rem; color: var(--color-slate); margin-bottom: 1.25rem; line-height: 1.55; max-width: 680px; margin-left: auto; margin-right: auto; }
+    .topic-header__levels { display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap; align-items: center; }
+
+    .toc { background: var(--color-rose); border-radius: var(--border-radius); padding: 1.25rem 1.5rem; margin-bottom: 2rem; border: 1.5px solid var(--color-mauve); }
+    .toc__title { font-size: 1rem; font-weight: 700; margin: 0 0 0.75rem; }
+    .toc__list { display: flex; flex-wrap: wrap; gap: 0.5rem; list-style: none; padding: 0; margin: 0; }
+    .toc__list a { font-size: 0.8125rem; color: var(--color-coral); text-decoration: none; padding: 0.25rem 0.625rem; background: var(--color-white); border-radius: 999px; border: 1px solid var(--color-mauve); display: inline-block; }
+    .toc__list a:hover { background: var(--color-coral); color: #fff; }
+
+    .category-header { display: flex; align-items: center; gap: 0.75rem; margin: 2.5rem 0 1.25rem; padding: 0.875rem 1.25rem; background: var(--color-rose); border-radius: var(--border-radius-sm); border-left: 4px solid var(--color-coral); scroll-margin-top: 20px; }
+    .category-header__icon { font-size: 1.5rem; }
+    .category-header__title { font-size: 1.25rem; font-weight: 700; margin: 0; }
+
+    .concept-card { background: var(--color-white); border: 1.5px solid var(--color-mauve); border-radius: var(--border-radius); padding: 1.5rem 1.75rem; margin-bottom: 1.25rem; }
+    .concept-card h3 { font-size: 1.0625rem; font-weight: 700; color: var(--color-coral); margin: 0 0 0.6rem; }
+    .concept-card p { font-size: 0.9375rem; line-height: 1.7; color: var(--color-dark); margin-bottom: 0.7rem; }
+    .concept-card ul, .concept-card ol { padding-left: 1.25rem; font-size: 0.9375rem; line-height: 1.75; color: var(--color-dark); margin: 0.4rem 0 0.7rem; }
+    .concept-card code, .note code, .quiz-q code, .answers code { background: var(--color-blush); padding: 0.1em 0.4em; border-radius: 4px; font-family: 'Fira Code', monospace; font-size: 0.85em; color: var(--color-coral); }
+    .concept-card pre { margin: 0.75rem 0; }
+    .concept-card pre code { background: none; color: inherit; padding: 0; }
+
+    /* Notas: el texto en negrita se queda en línea; solo la etiqueta inicial va como título */
+    .note strong { display: inline; margin: 0; font-size: inherit; }
+    .note strong.note__label { display: block; margin-bottom: 0.375rem; font-size: 0.875rem; }
+    .note p { margin: 0 0 0.5rem; line-height: 1.7; }
+    .note p:last-child { margin-bottom: 0; }
+    .note ul { padding-left: 1.25rem; margin: 0.25rem 0 0.5rem; line-height: 1.7; }
+    .note ul:last-child { margin-bottom: 0; }
+
+    .md-table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.84rem; }
+    .md-table th, .md-table td { border: 1px solid var(--color-mauve); padding: 0.5rem 0.7rem; text-align: left; vertical-align: top; }
+    .md-table th { background: var(--color-rose); font-weight: 700; color: var(--color-dark); }
+    .md-table tr:nth-child(even) td { background: var(--color-blush); }
+    .table-scroll { overflow-x: auto; }
+
+    .quiz-q { background: var(--color-white); border: 1.5px solid var(--color-mauve); border-left: 4px solid var(--color-coral); border-radius: var(--border-radius-sm); padding: 1rem 1.25rem; margin: 1rem 0; }
+    .quiz-q p { margin: 0 0 0.5rem; font-size: 0.9375rem; line-height: 1.6; }
+    .quiz-q__num { font-weight: 700; color: var(--color-coral); }
+    .quiz-q__options { list-style: none; margin: 0; padding-left: 0.5rem; font-size: 0.9rem; line-height: 1.7; }
+
+    /* Respuestas plegables de las preguntas trampa */
+    .answers { background: var(--color-rose); border: 1.5px solid var(--color-mauve); border-radius: var(--border-radius); margin: 1.25rem 0; }
+    .answers summary { cursor: pointer; padding: 1rem 1.25rem; color: var(--color-coral); }
+    .answers summary:focus-visible { outline: 2px solid var(--color-coral); outline-offset: 2px; border-radius: var(--border-radius); }
+    .answers__body { padding: 0 1.25rem 1rem; }
+    .answers__body p { font-size: 0.9375rem; line-height: 1.7; margin-bottom: 0.7rem; }
+
+    .course-nav { display: flex; justify-content: space-between; gap: 1rem; margin-top: 2.5rem; flex-wrap: wrap; }
+    .course-nav a { flex: 1 1 220px; display: block; background: var(--color-white); border: 1.5px solid var(--color-mauve); border-radius: var(--border-radius); padding: 1rem 1.25rem; text-decoration: none; color: inherit; transition: var(--transition); }
+    .course-nav a:hover { border-color: var(--color-coral); box-shadow: var(--shadow-md); text-decoration: none; }
+    .course-nav__label { font-size: 0.75rem; color: var(--color-slate); text-transform: uppercase; letter-spacing: 0.05em; display: block; }
+    .course-nav__title { font-weight: 700; color: var(--color-coral); }
+    .course-nav a.next { text-align: right; }
+  </style>
+</head>
+<body>
+
+  <aside class="site-sidebar">
+    <div class="site-sidebar__profile">
+      <img src="../../../assets/images/avatar-sara.png" alt="Sara Lozano Martí" class="site-sidebar__avatar">
+      <p class="site-sidebar__name">Sara Lozano Martí</p>
+      <p class="site-sidebar__subtitle">Power BI Expert</p>
+    </div>
+    <nav class="site-sidebar__nav" aria-label="Navegación principal">
+      <ul>
+        <li><a href="../../../index.html" class="site-sidebar__link"><span class="site-sidebar__icon">🏠</span> Inicio</a></li>
+        <li><a href="../../dax.html" class="site-sidebar__link"><span class="site-sidebar__icon">⚡</span> Funciones DAX</a></li>
+        <li><a href="../../power-query.html" class="site-sidebar__link"><span class="site-sidebar__icon">🔄</span> Power Query</a></li>
+        <li><a href="../../lenguaje-m.html" class="site-sidebar__link"><span class="site-sidebar__icon">〽️</span> Lenguaje M</a></li>
+        <li><a href="../../modelado.html" class="site-sidebar__link"><span class="site-sidebar__icon">🗄️</span> Modelado</a></li>
+        <li><a href="../../conceptos-powerbi.html" class="site-sidebar__link"><span class="site-sidebar__icon">📊</span> Conceptos Power BI</a></li>
+        <li><a href="../../fabric.html" class="site-sidebar__link"><span class="site-sidebar__icon">🧵</span> Microsoft Fabric</a></li>
+        <li><a href="../../tmdl.html" class="site-sidebar__link"><span class="site-sidebar__icon">📝</span> TMDL</a></li>
+        <li><a href="../../diseno-ux.html" class="site-sidebar__link"><span class="site-sidebar__icon">🎨</span> Diseño y UX</a></li>
+        <li><a href="../../gobernanza.html" class="site-sidebar__link"><span class="site-sidebar__icon">🔒</span> Gobernanza</a></li>
+        <li><a href="../../certificaciones.html" class="site-sidebar__link is-active"><span class="site-sidebar__icon">🎓</span> Certificaciones</a></li>
+      </ul>
+    </nav>
+    <div class="site-sidebar__divider"></div>
+    <div class="site-sidebar__footer">
+      <a href="../../../quien-soy.html" class="site-sidebar__link site-sidebar__link--highlight"><span class="site-sidebar__icon">👩‍💻</span> ¿Quién soy?</a>
+      <div class="site-sidebar__social">
+        <a href="https://www.linkedin.com/in/saralozanomarti" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><img src="../../../assets/images/logo-linkedin.png" alt="LinkedIn" class="site-sidebar__social-icon"></a>
+        <a href="https://www.youtube.com/@KawaiiPowerBI" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><img src="../../../assets/images/logo-youtube.png" alt="YouTube" class="site-sidebar__social-icon"></a>
+        <a href="https://github.com/KawaiiBI" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><img src="../../../assets/images/logo-github.png" alt="GitHub" class="site-sidebar__social-icon"></a>
+      </div>
+      <div class="site-sidebar__logo-bottom"><img src="../../../assets/images/logo-kawaii.jpg" alt="Kawaii BI" class="site-sidebar__logo-img"></div>
+      <p class="site-sidebar__copyright">Power BI Guide 🌸<br>© 2026 Kawaii BI</p>
+    </div>
+  </aside>
+
+  <div class="page-wrapper">
+    <main class="main-content">
+      <div class="topic-page">
+
+        <nav class="breadcrumb" aria-label="Ruta de navegación">
+          <span class="breadcrumb__item"><a href="../../../index.html">🏠 Inicio</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item"><a href="../../certificaciones.html">Certificaciones</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item"><a href="../gh-300.html">GH-300</a></span>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+          <span class="breadcrumb__item">Dominio 6</span>
+        </nav>
+
+        <header class="topic-header">
+          <span class="topic-header__eyebrow">GH-300 · DOMINIO 6</span>
+          <span class="topic-header__icon">📘</span>
+          <h1 class="topic-header__title">Dominio 6 — Configurar privacidad, exclusiones y salvaguardas</h1>
+          <p class="topic-header__subtitle">Privacidad y salvaguardas en GitHub Copilot en profundidad: content exclusions y sus limitaciones, filtro de código público, code referencing, protecciones contractuales, propiedad del output, REST API, audit logs y troubleshooting. Guía kawaii completa para la GH-300.</p>
+          <div class="topic-header__levels">
+            <span class="badge badge--special">Peso en el examen: 10-15%</span>
+          </div>
+        </header>
+
+        <nav class="toc" aria-label="Índice del dominio">
+          <p class="toc__title">📑 En este dominio:</p>
+          <ul class="toc__list">
+            <li><a href="#apartado-6-1">6.1 — Content exclusions: qué son y cómo se configuran</a></li>
+            <li><a href="#apartado-6-2">6.2 — Las limitaciones de las content exclusions ⭐ (mina de trampas)</a></li>
+            <li><a href="#apartado-6-3">6.3 — Filtro de código público (matching public code) y code referencing</a></li>
+            <li><a href="#apartado-6-4">6.4 — Propiedad del output y protecciones contractuales</a></li>
+            <li><a href="#apartado-6-5">6.5 — REST API y audit logs (qué SÍ y qué NO tocan)</a></li>
+            <li><a href="#apartado-6-6">6.6 — Troubleshooting (resolución de problemas)</a></li>
+            <li><a href="#preguntas-trampa-dominio-6">Preguntas trampa — Dominio 6</a></li>
+            <li><a href="#fuentes-oficiales">Fuentes oficiales</a></li>
+          </ul>
+        </nav>
+
+        <article class="concept-card">
+          <p><strong>Peso en el examen: 10-15%</strong></p>
+          <p>¡Holi! 🌸 Llegamos al broche final. Este dominio enlaza con cosas que ya has visto en los Dominios 2 (content exclusions) y 3 (filtro de código público), pero aquí bajamos al <strong>detalle de configuración, límites y resolución de problemas</strong>, que es justo donde el examen esconde sus trampas más finas. Es un dominio donde los matices lo son todo: quién configura qué, dónde, con qué límites, y qué hacer cuando algo no funciona. Vamos a cerrar con nota. 💛</p>
+          <p>Un consejo antes de empezar: este dominio distingue mucho entre lo que una salvaguarda <strong>promete</strong> y lo que realmente <strong>puede garantizar</strong>. Igual que en la IA responsable, aquí abundan las opciones que suenan a "protección total y absoluta" — y esas casi siempre son la trampa, porque toda salvaguarda tiene sus límites.</p>
+          <div class="note note--best-practice">
+            <p>📋 <strong class="note__label">Lo que mide el examen en este dominio (objetivos oficiales):</strong></p>
+            <ul>
+              <li>Configurar <strong>exclusiones de contenido</strong> y ajustes del editor.</li>
+              <li>Describir la <strong>propiedad y las limitaciones</strong> de los resultados.</li>
+              <li>Habilitar <strong>sugerencias que coincidan con el filtro de código público</strong>.</li>
+              <li><strong>Resolver problemas</strong> con sugerencias y exclusiones de contenido.</li>
+            </ul>
+          </div>
+        </article>
+
+        <!-- ============ 6.1 — Content exclusions: qué son y cómo se configuran ============ -->
+        <div class="category-header" id="apartado-6-1">
+          <span class="category-header__icon">🔐</span>
+          <h2 class="category-header__title">6.1 — Content exclusions: qué son y cómo se configuran</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>La explicación en profundidad</h3>
+          <p>Las <strong>content exclusions</strong> permiten a los administradores <strong>evitar que archivos, directorios o repositorios concretos</strong> se usen para informar las sugerencias de Copilot, manteniendo seguro el contenido sensible. Es la herramienta principal para decirle a Copilot "de estos archivos, ni mires".</p>
+          <p>La configuración se hace a <strong>dos niveles</strong>:</p>
+          <ul>
+            <li><strong>Repositorio:</strong> en Settings → Copilot del repo, indicando los repos y las rutas/patrones a excluir.</li>
+            <li><strong>Organización:</strong> en Settings → Copilot de la organización, aplicando exclusiones más amplias.</li>
+          </ul>
+          <p>Y sobre <strong>quién puede configurarlas</strong>: administradores de repositorio, propietarios de organización y propietarios de empresa. <strong>No</strong> pueden hacerlo colaboradores externos, ni el rol <em>Maintain</em>, ni contributors normales — es una decisión administrativa.</p>
+          <p>En cuanto a la <strong>granularidad</strong>, se puede excluir a nivel de repositorios, rutas/directorios, tipos de archivo y patrones (estilo <em>fnmatch</em>, sin distinguir mayúsculas). Un límite importante: <strong>no se pueden excluir "líneas sueltas" de un archivo</strong> — la unidad mínima es el archivo entero.</p>
+          <p>Cuando un contenido queda excluido, los <strong>efectos</strong> son:</p>
+          <ul>
+            <li><strong>No hay code completion</strong> en los archivos afectados.</li>
+            <li>Ese contenido <strong>no informa</strong> las sugerencias en <em>otros</em> archivos.</li>
+            <li>Ese contenido <strong>no informa</strong> las respuestas de Copilot Chat.</li>
+          </ul>
+          <p>Un detalle sobre cómo se combinan: las exclusiones <strong>se acumulan, no se sobrescriben</strong>. Las heredadas de organización/empresa aparecen como cajas grises de solo lectura, y <strong>las políticas impuestas a nivel de empresa tienen prioridad</strong> y no se pueden anular más abajo.</p>
+          <div class="note note--tip">
+            <p>🙈 <strong class="note__label">Analogía kawaii:</strong> es como colgar un cartelito de "no mirar aquí" en ciertos cajones de tu cuarto. Copilot cocina y sugiere con todo lo demás, pero esos cajones quedan tapaditos: ni saca completions dentro de ellos, ni usa lo que hay dentro para inspirarse en otros sitios, ni lo menciona en el chat. 🎀</p>
+          </div>
+        </article>
+
+        <article class="concept-card">
+          <h3>Content exclusion NO es lo mismo que <code>.gitignore</code></h3>
+          <p>Una confusión típica: <code>.gitignore</code> controla lo que <strong>Git rastrea</strong> (qué archivos entran al control de versiones). Content exclusion controla lo que <strong>Copilot puede ver como entrada</strong>. Son cosas independientes: un archivo puede estar perfectamente versionado en Git y, aun así, estar excluido de Copilot. No mezcles los dos conceptos.</p>
+        </article>
+
+        <article class="concept-card">
+          <h3>🎯 Puntos clave que caen en el examen</h3>
+          <ul>
+            <li>Disponible <strong>solo en Business y Enterprise</strong>.</li>
+            <li>Se configura en <strong>repositorio</strong> u <strong>organización</strong>, nunca por usuario en el IDE.</li>
+            <li>La configuran <strong>admins de repo, org owners y enterprise owners</strong>.</li>
+            <li><strong>No</strong> se pueden excluir líneas sueltas: mínimo, archivo entero.</li>
+            <li>Las exclusiones se <strong>acumulan</strong>; las de empresa tienen <strong>prioridad</strong>.</li>
+            <li>Distinta de <code>.gitignore</code>.</li>
+          </ul>
+        </article>
+
+        <article class="concept-card">
+          <h3>⚠️ Trampas típicas</h3>
+          <ul>
+            <li>"Se configuran en el IDE o por usuario" → no, solo en repo u organización.</li>
+            <li>Confundir content exclusion con <code>.gitignore</code>.</li>
+            <li>Creer que puedes excluir líneas concretas → mínimo archivo entero.</li>
+          </ul>
+        </article>
+
+        <article class="concept-card">
+          <h3>📝 Mini-repaso</h3>
+          <ol>
+            <li>¿En qué dos niveles se configuran las content exclusions y quién puede hacerlo?</li>
+            <li>¿En qué se diferencia content exclusion de <code>.gitignore</code>?</li>
+            <li>¿Puedes excluir solo unas líneas de un archivo?</li>
+          </ol>
+        </article>
+
+        <!-- ============ 6.2 — Las limitaciones de las content exclusions ⭐ (mina de trampas) ============ -->
+        <div class="category-header" id="apartado-6-2">
+          <span class="category-header__icon">🔐</span>
+          <h2 class="category-header__title">6.2 — Las limitaciones de las content exclusions ⭐ (mina de trampas)</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>La explicación en profundidad</h3>
+          <p>Este subtema es, probablemente, <strong>el que más preguntas trampa genera de todo el dominio</strong>, porque revela que las exclusiones <strong>no son una protección hermética</strong>. El examen quiere que sepas <em>dónde</em> tienen fugas, para que no marques la opción de "protección total y absoluta" (que siempre es falsa). Vamos con los "agujeros" oficiales:</p>
+          <p><strong>Agujero 1 — Información semántica indirecta.</strong> Aunque un archivo esté excluido, Copilot puede <strong>seguir usando información semántica</strong> de él si un archivo <strong>no excluido</strong> la expone. ¿Cómo? A través del propio IDE: cuando código no excluido referencia algo del excluido (tipos, definiciones que aparecen al pasar el ratón, símbolos, firmas de funciones), el <em>language server</em> filtra esos metadatos. No es que Copilot "lea" el archivo prohibido, es que se entera de su forma "de oídas" a través de sus vecinos. Ojo con esto: <strong><code>@workspace</code> tampoco salta una exclusión</strong>, pero la fuga semántica sí puede colarse por esta vía indirecta.</p>
+          <p><strong>Agujero 2 — Alcance limitado a la organización (scope).</strong> Las exclusiones aplican <strong>solo a los miembros de la organización</strong> donde se configuran. Si otra persona tiene acceso a esos mismos archivos desde fuera de tu organización, <strong>sí puede</strong> recibir sugerencias y respuestas que los referencien. La cortina solo la respetan los de tu casa, no las visitas de otras casas.</p>
+          <p><strong>Agujero 3 — Limitaciones por IDE, función y versión.</strong> El soporte de exclusiones <strong>varía según el editor, la función y la versión</strong>. Ejemplos concretos que caen:</p>
+          <ul>
+            <li>En <strong>Visual Studio 2022 (v17.11+)</strong>, Copilot respeta las exclusiones, pero <strong>solo en el repositorio raíz</strong> donde vive tu solución: <strong>no</strong> aplica reglas de submódulos git ni de archivos que no estén bajo un repositorio git.</li>
+            <li>Las exclusiones <strong>no aplican</strong> en ciertos contextos como Copilot <strong>CLI</strong>, la app de Copilot, GitHub Mobile, ni en los modos <strong>Edit y Agent</strong> del chat en editores (según la implementación).</li>
+            <li>No aplican a symlinks ni a repos en sistemas de archivos remotos.</li>
+          </ul>
+          <p>Y un dato de <strong>propagación</strong>: los cambios en las exclusiones pueden tardar hasta <strong>30 minutos</strong> en llegar a los IDEs con sesión ya cargada (puedes forzarlo recargando la ventana en VS Code, o reabriendo en Visual Studio/JetBrains).</p>
+          <div class="note note--tip">
+            <p>🚪 <strong class="note__label">Analogía kawaii:</strong> imagina que tapas un cajón con la cortinita, pero… (1) dejas una foto de lo que hay dentro pegada en la puerta de al lado, así que alguien puede intuir el contenido (info semántica); (2) la cortina solo la respetan los de tu casa, no las visitas de otras casas (scope); y (3) según qué habitación de la casa, la cortina cuelga mejor o peor (IDE/versión). O sea: <strong>la cortina ayuda muchísimo, pero tiene sus rendijas</strong>, y hay que conocerlas para no confiarse. 🕵️‍♀️</p>
+          </div>
+        </article>
+
+        <article class="concept-card">
+          <h3>⚠️ Trampa mortal</h3>
+          <ul>
+            <li>Afirmar que las content exclusions garantizan <strong>protección total y absoluta</strong> → <strong>falso</strong>. Recuerda los tres agujeros: fuga semántica vía archivos no excluidos, scope limitado a la organización, y limitaciones según IDE/función/versión.</li>
+          </ul>
+        </article>
+
+        <article class="concept-card">
+          <h3>📝 Mini-repaso</h3>
+          <ol>
+            <li>¿Cómo puede Copilot "enterarse" de un archivo excluido a pesar de la exclusión?</li>
+            <li>Si alguien de fuera de tu organización tiene acceso al archivo, ¿le aplica tu exclusión?</li>
+            <li>¿Sobre qué respeta las exclusiones Visual Studio 17.11+?</li>
+          </ol>
+        </article>
+
+        <!-- ============ 6.3 — Filtro de código público (matching public code) y code referencing ============ -->
+        <div class="category-header" id="apartado-6-3">
+          <span class="category-header__icon">🔐</span>
+          <h2 class="category-header__title">6.3 — Filtro de código público (matching public code) y code referencing</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>La explicación en profundidad</h3>
+          <p>Ya conociste este filtro en el Dominio 3 desde el ángulo del flujo de datos; aquí lo vemos como <strong>salvaguarda configurable</strong>. Es un filtro <strong>opcional</strong> que <strong>bloquea las sugerencias que coincidan estrechamente con código público</strong> de GitHub (recuerda: actúa en el outbound, umbral ~150 caracteres).</p>
+          <p>Se configura a dos niveles:</p>
+          <ul>
+            <li><strong>Individual (Pro):</strong> en los ajustes personales de Copilot de la persona.</li>
+            <li><strong>Organización (Business/Enterprise):</strong> lo controla la política de la organización.</li>
+          </ul>
+          <p>Y aquí entra un concepto que se confunde con frecuencia: el <strong>code referencing</strong>. Son las <strong>dos caras de la misma moneda</strong>:</p>
+          <ul>
+            <li>Si <strong>bloqueas</strong> el código público (filtro activado en modo bloqueo), Copilot simplemente no te muestra sugerencias que coincidan.</li>
+            <li>Si <strong>permites</strong> el código público (con referencias), Copilot sí te muestra la sugerencia, pero te <strong>notifica</strong> cuando coincide con un repositorio público y te da información de <strong>licencia y atribución</strong>, para que decidas con conocimiento de causa.</li>
+          </ul>
+          <div class="note note--tip">
+            <p>🪞 <strong class="note__label">Analogía kawaii:</strong> el filtro es como un detector de "esto lo has copiado clavado de otro sitio". Si lo pones en modo estricto (<strong>bloquear</strong>), directamente no te deja usar esa sugerencia. Si lo pones en modo informativo (<strong>code referencing</strong>), sí te la enseña pero con una notita: "oye, esto se parece muchísimo a este repo, aquí tienes su licencia por si acaso". Tú decides con la info delante. 🔎</p>
+          </div>
+        </article>
+
+        <article class="concept-card">
+          <h3>⚠️ Trampa típica</h3>
+          <ul>
+            <li>Confundir <strong>bloquear</strong> código público (la salvaguarda que lo impide) con <strong>code referencing</strong> (que aparece cuando lo <em>permites</em>, para informarte de la coincidencia y su licencia).</li>
+          </ul>
+        </article>
+
+        <article class="concept-card">
+          <h3>📝 Mini-repaso</h3>
+          <ol>
+            <li>¿Dónde configura el filtro de código público un usuario Pro? ¿Y una organización?</li>
+            <li>¿Qué diferencia hay entre bloquear código público y el code referencing?</li>
+          </ol>
+        </article>
+
+        <!-- ============ 6.4 — Propiedad del output y protecciones contractuales ============ -->
+        <div class="category-header" id="apartado-6-4">
+          <span class="category-header__icon">🔐</span>
+          <h2 class="category-header__title">6.4 — Propiedad del output y protecciones contractuales</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>La explicación en profundidad</h3>
+          <p>¿De quién es el código que genera Copilot? ¿Y qué pasa si una sugerencia acaba pareciéndose a código con licencia? Aquí entran las <strong>protecciones contractuales</strong> que ofrece GitHub.</p>
+          <p>GitHub ofrece a sus <strong>clientes de pago</strong> una <strong>indemnización</strong> (una cobertura legal) frente a ciertas reclamaciones de propiedad intelectual derivadas de las sugerencias de Copilot. Pero — y este es EL matiz que cae — esa protección tiene una <strong>condición</strong>: solo aplica si tienes <strong>activado el filtro de código público</strong>. Tiene toda la lógica: GitHub te cubre siempre que hayas activado la salvaguarda que precisamente reduce el riesgo de coincidencias. Si desactivas el filtro, <strong>pierdes</strong> la cobertura.</p>
+          <p>Además, hay principios de responsabilidad que ya conoces del Dominio 1: la <strong>persona desarrolladora es responsable</strong> de revisar, probar y validar el output. Y Copilot puede generar <strong>sugerencias similares para distintos usuarios</strong> — no garantiza que tu código sea único ni exclusivo.</p>
+          <div class="note note--tip">
+            <p>📜 <strong class="note__label">Analogía kawaii:</strong> GitHub te ofrece una especie de "seguro" para clientes de pago: si te salpica un problema legal por una sugerencia, ellos te cubren. Pero la póliza tiene una condición en la letra pequeña: <strong>solo vale si llevas puesto el casco</strong> (el filtro de código público activado). Si te quitas el casco, el seguro se anula. 🪖</p>
+          </div>
+        </article>
+
+        <article class="concept-card">
+          <h3>⚠️ Trampa típica</h3>
+          <ul>
+            <li>Asumir que la protección contractual aplica <strong>siempre</strong> → <strong>requiere el filtro de código público activado</strong>.</li>
+            <li>Pensar que desactivar el filtro te da la protección → es al revés, te la quita.</li>
+          </ul>
+        </article>
+
+        <article class="concept-card">
+          <h3>📝 Mini-repaso</h3>
+          <ol>
+            <li>¿Qué condición debe cumplirse para tener la indemnización de GitHub?</li>
+            <li>¿Garantiza Copilot que tu código generado sea único?</li>
+          </ol>
+        </article>
+
+        <!-- ============ 6.5 — REST API y audit logs (qué SÍ y qué NO tocan) ============ -->
+        <div class="category-header" id="apartado-6-5">
+          <span class="category-header__icon">🔐</span>
+          <h2 class="category-header__title">6.5 — REST API y audit logs (qué SÍ y qué NO tocan)</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>La explicación en profundidad</h3>
+          <p>Este bloque enlaza con la administración del Dominio 2, pero desde el ángulo de la <strong>privacidad</strong>: es fundamental entender qué información exponen estas herramientas y, sobre todo, <strong>qué NO exponen</strong>.</p>
+          <p><strong>REST API de Copilot.</strong> Permite tareas de administración y métricas: <strong>listar los asientos (seats)</strong> asignados en una organización, obtener <strong>métricas de uso</strong> (número de sugerencias aceptadas, actividad del chat…). Lo que <strong>NO</strong> permite, por privacidad: ver las <strong>sugerencias o el código concreto</strong> de un usuario, medir la <strong>calidad</strong> de su código, ni dar feedback de estilo. La regla de oro: <strong>la API es administración + métricas de uso, nunca el contenido</strong> de lo que Copilot sugiere.</p>
+          <p><strong>Audit logs.</strong> Registran <strong>eventos administrativos y de configuración</strong>: cambios en la configuración de content exclusion, gestión de seats, y actividad de Copilot (quién usó qué y cuándo), en Business y Enterprise. Lo que <strong>NO</strong> registran: el <strong>contenido</strong> de las sugerencias, ni "sugerencias aceptadas/bloqueadas" como tal.</p>
+          <div class="note note--tip">
+            <p>🔒 <strong class="note__label">Analogía kawaii:</strong> tanto la REST API como los audit logs son como el registro de entradas y salidas de un edificio: apuntan <strong>quién entró, cuándo y a qué planta</strong> (administración y uso), pero <strong>no graban lo que cada persona hizo dentro de su despacho</strong> (el contenido del código). La privacidad del contenido está protegida por diseño. 🏢</p>
+          </div>
+        </article>
+
+        <article class="concept-card">
+          <h3>⚠️ Trampa típica</h3>
+          <ul>
+            <li>Pensar que la REST API o los audit logs pueden mostrar el <strong>contenido</strong> del código o de las sugerencias → nunca; solo administración y métricas/eventos.</li>
+          </ul>
+        </article>
+
+        <article class="concept-card">
+          <h3>📝 Mini-repaso</h3>
+          <ol>
+            <li>¿Qué puede y qué no puede hacer la REST API de Copilot?</li>
+            <li>¿Registran los audit logs el contenido de las sugerencias?</li>
+          </ol>
+        </article>
+
+        <!-- ============ 6.6 — Troubleshooting (resolución de problemas) ============ -->
+        <div class="category-header" id="apartado-6-6">
+          <span class="category-header__icon">🔐</span>
+          <h2 class="category-header__title">6.6 — Troubleshooting (resolución de problemas)</h2>
+        </div>
+
+        <article class="concept-card">
+          <h3>La explicación en profundidad</h3>
+          <p>El examen incluye escenarios de "algo no va, ¿qué haces?". La clave es reconocer el síntoma y aplicar la solución correcta, sin irte a soluciones drásticas innecesarias.</p>
+          <div class="note note--tip">
+            <p>🔧 <strong class="note__label">Analogía kawaii:</strong> es como cuando la impresora no imprime. Antes de pensar que está rota y comprar otra, revisas lo básico de la checklist: ¿está enchufada? ¿tiene papel? ¿es la impresora correcta seleccionada? Con Copilot igual: casi siempre es algo sencillo y concreto. 🖨️</p>
+          </div>
+          <p>Los casos más frecuentes y sus soluciones:</p>
+          <div class="table-scroll">
+            <table class="md-table">
+              <thead><tr><th>Síntoma</th><th>Solución correcta</th></tr></thead>
+              <tbody>
+                <tr><td>No aparecen sugerencias en ningún sitio</td><td>Revisa: <strong>suscripción activa</strong>, <strong>cuenta de GitHub correcta</strong> seleccionada en el IDE, <strong>extensión instalada y actualizada</strong>, conexión de red</td></tr>
+                <tr><td>Copilot <strong>bloquea</strong> generaciones legítimas (ej. un <code>pom.xml</code> que se parece a código público)</td><td><strong>Habilitar "suggestions matching public code"</strong> (permitir las coincidencias)</td></tr>
+                <tr><td>No hay completions <strong>en un archivo concreto</strong> pero sí en otros</td><td>Probablemente ese archivo está afectado por una <strong>content exclusion</strong></td></tr>
+                <tr><td>No aparecen los modos ask/plan/agent</td><td>Verifica la <strong>versión mínima del IDE</strong> y que la función esté <strong>habilitada</strong></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>Fíjate en dos discriminaciones que el examen adora:</p>
+          <ul>
+            <li><strong>"Copilot bloquea mi <code>pom.xml</code>"</strong> → la reacción incorrecta es "es un bug, reinstala". La correcta es entender que el <code>pom.xml</code> se parece a código público y el filtro lo está frenando → <strong>habilita las coincidencias con código público</strong>.</li>
+            <li><strong>"No hay sugerencias solo en un archivo"</strong> → no es un fallo general; sospecha de una <strong>content exclusion</strong> sobre ese archivo.</li>
+          </ul>
+        </article>
+
+        <article class="concept-card">
+          <h3>⚠️ Trampas típicas</h3>
+          <ul>
+            <li>Responder "reinstala la extensión" a un bloqueo por código público → la solución es habilitar el matching de código público.</li>
+            <li>Olvidar que la ausencia de sugerencias en un archivo puntual suele ser una content exclusion.</li>
+          </ul>
+        </article>
+
+        <article class="concept-card">
+          <h3>📝 Mini-repaso</h3>
+          <ol>
+            <li>Si Copilot bloquea tu <code>pom.xml</code>, ¿cuál es la solución?</li>
+            <li>Si no hay sugerencias solo en un archivo, ¿qué sospechas?</li>
+          </ol>
+        </article>
+
+        <!-- ============ Preguntas trampa — Dominio 6 ============ -->
+        <div class="category-header" id="preguntas-trampa-dominio-6">
+          <span class="category-header__icon">💡</span>
+          <h2 class="category-header__title">Preguntas trampa — Dominio 6</h2>
+        </div>
+        <div class="quiz-q">
+          <p><span class="quiz-q__num">P1.</span> ¿Cuáles son limitaciones reales de las content exclusions? (Elige 2)</p>
+          <ul class="quiz-q__options">
+            <li>A) Copilot puede usar info semántica del archivo excluido si aparece en un archivo no excluido</li>
+            <li>B) Cifran automáticamente los archivos excluidos</li>
+            <li>C) Aplican solo a los miembros de la organización donde se configuran</li>
+            <li>D) Se aplican también a symlinks y repos remotos</li>
+          </ul>
+        </div>
+        <div class="quiz-q">
+          <p><span class="quiz-q__num">P2.</span> Copilot bloquea la generación en <code>pom.xml</code>, que se parece a código público. ¿Solución correcta?</p>
+          <ul class="quiz-q__options">
+            <li>A) Desinstalar y reinstalar la extensión</li>
+            <li>B) Habilitar "suggestions matching public code"</li>
+            <li>C) Cambiar a plan Enterprise</li>
+            <li>D) Excluir el archivo con content exclusion</li>
+          </ul>
+        </div>
+        <div class="quiz-q">
+          <p><span class="quiz-q__num">P3.</span> ¿Dónde se configuran las content exclusions?</p>
+          <ul class="quiz-q__options">
+            <li>A) En los ajustes personales del usuario en el IDE</li>
+            <li>B) En los ajustes de repositorio u organización en GitHub</li>
+            <li>C) En el archivo <code>.copilotignore</code> de la raíz</li>
+            <li>D) En la REST API exclusivamente</li>
+          </ul>
+        </div>
+        <div class="quiz-q">
+          <p><span class="quiz-q__num">P4.</span> Sobre la protección contractual (indemnización), ¿cuál es correcta?</p>
+          <ul class="quiz-q__options">
+            <li>A) Aplica siempre, en todos los planes</li>
+            <li>B) Aplica a clientes de pago solo si tienen activado el filtro de código público</li>
+            <li>C) Solo aplica en el plan Free</li>
+            <li>D) Requiere desactivar el filtro de código público</li>
+          </ul>
+        </div>
+        <div class="quiz-q">
+          <p><span class="quiz-q__num">P5.</span> ¿Qué puede hacer la REST API de Copilot?</p>
+          <ul class="quiz-q__options">
+            <li>A) Ver el código concreto que ha generado un usuario</li>
+            <li>B) Listar seats asignados y obtener métricas de uso, pero no el contenido de las sugerencias</li>
+            <li>C) Medir la calidad del código de cada usuario</li>
+            <li>D) Refactorizar el código de la organización</li>
+          </ul>
+        </div>
+        <div class="quiz-q">
+          <p><span class="quiz-q__num">P6.</span> En Visual Studio 2022 (17.11+), ¿sobre qué respeta Copilot las reglas de content exclusion?</p>
+          <ul class="quiz-q__options">
+            <li>A) Sobre cualquier archivo del sistema</li>
+            <li>B) Solo sobre el repo raíz donde vive la solución (no submódulos ni archivos fuera de git)</li>
+            <li>C) Solo sobre archivos remotos</li>
+            <li>D) No las respeta nunca</li>
+          </ul>
+        </div>
+        <details class="answers">
+          <summary><strong>👉 Ver respuestas y explicación</strong></summary>
+          <div class="answers__body">
+            <p><strong>P1 → A y C.</strong> Son limitaciones reales (fuga semántica y scope de organización). B es falsa (no cifran nada). D es falsa: <strong>no</strong> aplican a symlinks ni repos remotos.</p>
+            <p><strong>P2 → B).</strong> El bloqueo se debe al filtro de código público; la solución es habilitar las coincidencias. Reinstalar (A) o cambiar de plan (C) no resuelve; excluir el archivo (D) lo empeoraría.</p>
+            <p><strong>P3 → B).</strong> Solo en settings de repositorio u organización. No existe configuración por usuario en el IDE, ni un archivo <code>.copilotignore</code> oficial (distractor goloso).</p>
+            <p><strong>P4 → B).</strong> La indemnización aplica a clientes de pago <strong>con el filtro de código público activado</strong>. Desactivarlo (D) te hace perder la protección, no ganarla.</p>
+            <p><strong>P5 → B).</strong> La REST API da administración y métricas de uso, nunca el contenido de las sugerencias ni medidas de calidad (privacidad).</p>
+            <p><strong>P6 → B).</strong> Visual Studio respeta las reglas solo en el repo raíz de la solución; no aplica a submódulos ni a archivos fuera de un repo git.</p>
+          </div>
+        </details>
+
+        <!-- ============ Fuentes oficiales ============ -->
+        <div class="category-header" id="fuentes-oficiales">
+          <span class="category-header__icon">📚</span>
+          <h2 class="category-header__title">Fuentes oficiales</h2>
+        </div>
+
+        <article class="concept-card">
+          <ul>
+            <li><a href="https://docs.github.com/copilot/managing-copilot/configuring-and-auditing-content-exclusion" target="_blank" rel="noopener noreferrer">Configurar y auditar exclusiones de contenido (GitHub Docs)</a></li>
+            <li><a href="https://learn.microsoft.com/es-es/training/modules/github-copilot-management-and-customizations/" target="_blank" rel="noopener noreferrer">Consideraciones de administración y personalización — Microsoft Learn</a></li>
+            <li><a href="https://learn.microsoft.com/visualstudio/ide/visual-studio-github-copilot-admin" target="_blank" rel="noopener noreferrer">Controles de administrador para GitHub Copilot en Visual Studio</a></li>
+          </ul>
+        </article>
+
+        <div class="note note--next">
+          <p>🎉 <strong class="note__label">¡Enhorabuena, has completado los 6 dominios!</strong> Ya tienes toda la teoría, con su porqué, sus ejemplos y sus trampas. Ahora toca repasar con el glosario, el plan de estudio y el simulacro final. ¡Vas a bordar la GH-300, crack! 🌸💛</p>
+        </div>
+
+        <!-- Navegación del curso -->
+        <div class="course-nav">
+          <a href="dominio-5.html">
+            <span class="course-nav__label">← Anterior</span>
+            <span class="course-nav__title">Dominio 5 · Productividad</span>
+          </a>
+          <a href="../gh-300.html" class="next">
+            <span class="course-nav__label">Volver →</span>
+            <span class="course-nav__title">Índice del curso GH-300</span>
+          </a>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <button id="back-to-top" class="back-to-top" aria-label="Volver arriba" title="Volver arriba">↑</button>
+
+  <script src="https://cdn.jsdelivr.net/npm/i18next@23/dist/umd/i18next.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1/prism.min.js"></script>
+  <script src="../../../assets/js/theme.js"></script>
+  <script src="../../../assets/js/main.js"></script>
+  <script src="../../../assets/js/cursor.js"></script>
+</body>
+</html>
